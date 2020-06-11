@@ -72,15 +72,15 @@ concrete idea of my goals with updating each page:
 
 ## Website Structure
 
--[x] index
-  -[x] userAddUpdate
-  -[x] *USER LOGGED IN*
-    -[x] home
-      -[x] giftAddUpdate
-    -[x] lists
-      -[ ] friendList
-    -[ ] invites
-      -[ ] confirmation
-    -[ ] settings
-      -[ ] faq
+- [x] index
+  - [x] userAddUpdate
+  - [x] *USER LOGGED IN*
+    - [x] home
+      - [x] giftAddUpdate
+    - [x] lists
+      - [ ] friendList
+    - [ ] invites
+      - [ ] confirmation
+    - [ ] settings
+      - [ ] faq
     
