@@ -1,0 +1,380 @@
+body {margin: 0;}
+
+div.giftUpdateContainer {
+  text-align: center;
+}
+
+div.settingsContainer {
+  text-align: center;
+}
+
+div.faqContainer {
+  text-align: center;
+}
+
+p.faqInf {
+  margin: 10px;
+  padding-bottom: 10px;
+  font-family: Verdana;
+}
+p.faqInfSpec {
+  margin: 10px;
+  font-size: 15px;
+  padding-bottom: 10px;
+  font-family: Verdana;
+}
+
+p.giftInf {
+  margin: 0;
+  padding-left: 5px;
+  padding-top: 10px;
+  font-family: Verdana;
+}
+
+input.giftInp {
+  margin: 0;
+  width: 500px;
+  padding-left: 10px;
+  font-size: 16px;
+}
+
+span.addBtn {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  padding: 10px;
+  font-family: Verdana;
+  background: #ff8e8e;
+  color: #FFF;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0;
+}
+
+span.addBtn:hover {
+  background-color: #ff4c4c;
+  color: #000;
+}
+
+span.settingsBtn {
+  margin: 50px;
+  padding: 10px;
+  width: 500px;
+  font-family: Verdana;
+  background: #ff8e8e;
+  color: #FFF;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0;
+}
+
+span.faqBtn {
+  margin: 50px;
+  padding: 10px;
+  width: 500px;
+  font-family: Verdana;
+  background: #ff8e8e;
+  color: #FFF;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0;
+}
+
+span.modBtn {
+  display: none;
+  position: fixed;
+  text-align: center;
+  margin: 50px;
+  padding: 10px;
+  bottom: 10px;
+  right: 10px;
+  font-family: Verdana;
+  background: #ff8e8e;
+  color: #FFF;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0;
+}
+
+span.settingsBtn:hover {
+  background-color: #ff4c4c;
+  color: #000;
+}
+
+span.faqBtn:hover {
+  background-color: #ff4c4c;
+  color: #000;
+}
+
+span.modBtn:hover {
+  background-color: #ff4c4c;
+  color: #000;
+}
+
+img.newInvite {
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  width: 50px;
+  height: 50px;
+  display: none;
+  transition: 0.3s;
+}
+
+span.updateBtn {
+  font-family: Verdana;
+  padding: 10px;
+  width: 500px;
+  background: #d9d9d9;
+  color: #555;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0;
+}
+
+span.updateBtn:hover {
+  background-color: #bbb;
+}
+
+img.imgIcon {
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+}
+
+div.topnav ul{
+  font-family: Verdana;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #008222;
+}
+
+div.topnav ul li {
+  padding-top: 5px;
+  float: left;
+}
+
+div.topnav ul li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  transition: 0.6s;
+}
+
+div.topnav ul li a:hover:not(.active) {
+  background-color: #00d639;
+  color: black;
+}
+
+div.topnav ul li a.active {
+  background-color: #00ad05;
+}
+
+div.topnav ul li a.signOut {
+  background-color: #ff3923;
+}
+
+div.topnav ul li a.signOut:hover:not(.active) {
+  background-color: #f96554;
+}
+
+
+div.topnav ul li.right {float: right;}
+
+@media screen and (max-width: 600px) {
+  input.giftInp {
+    width: 300px;
+  }
+
+  .cropIcon {
+    overflow: hidden;
+    max-width: 600px;
+  }
+  img.imgIcon {
+    display: block;
+    padding: 0px;
+    width: 300px;
+    height: 300px;
+    margin: -75px auto -175px auto;
+  }
+  .break{
+    clear: both;
+  }
+  img.newInvite {
+    width: 40px;
+    height: 40px;
+  }
+  div.topnav ul li.right,
+  div.topnav ul li {
+    font-size: 8pt;
+    padding: 0px;
+  }
+  .modal-header {
+    font-size: 8pt;
+  }
+
+  .modal-body {
+    font-size: 10pt;
+  }
+}
+
+@media screen and (max-width: 342px) {
+  input.giftInp {
+    width: 200px;
+  }
+
+  div.cropIcon {
+    overflow: hidden;
+    max-width: 600px;
+  }
+  img.imgIcon {
+    display: block;
+    padding: 0px;
+    width: 300px;
+    height: 300px;
+    margin: -75px auto -175px auto;
+  }
+  img.newInvite {
+    width: 30px;
+    height: 30px;
+  }
+  div.topnav ul li.right,
+  div.topnav ul li {
+    float: none;
+    padding: 0;
+  }
+  .modal-header {
+    font-size: 6pt;
+  }
+
+  .modal-body {
+    font-size: 8pt;
+  }
+}
+
+ul.giftList {
+  margin: 0;
+  padding: 0;
+}
+
+ul li.gift {
+  cursor: pointer;
+  position: relative;
+  padding: 12px 8px 12px 40px;
+  list-style-type: none;
+  background: #eee;
+  font-size: 18px;
+  transition: 0.2s;
+
+  /* make the list items unselectable */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+ul li:nth-child(odd).gift {
+  background: #f9f9f9;
+}
+
+ul li:hover.gift {
+  background: #ddd;
+}
+
+ul li.checked {
+  color: #f00;
+  text-decoration: line-through;
+}
+
+ul li.checked::before {
+  content: '';
+  position: absolute;
+  border-color: #f00;
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  top: 10px;
+  left: 16px;
+  transform: rotate(45deg);
+  height: 15px;
+  width: 7px;
+}
+
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+  font-family: Verdana;
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 80%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+@-webkit-keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  font-size: 10pt;
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+
+.modal-body {
+  font-size: 12pt;
+  padding: 2px 16px;
+}
+
+.modal-footer {
+  padding-bottom: 50px;
+  background-color: #5cb85c;
+  color: white;
+}

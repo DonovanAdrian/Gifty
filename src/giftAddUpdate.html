@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="img/giftyiconweb.png">
+  <link href="css/main.css" rel="stylesheet" type="text/css"/>
+  <title>Gift Options</title>
+
+  <script src="js/giftAddUpdateAlg.js" type="text/javascript"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-analytics.js"></script>
+
+
+  <div class="topnav">
+    <ul>
+      <li><div class="cropIcon"><img class="imgIcon" src="img/giftyicon.png"></div></li>
+      <div class="break"></div>
+      <li><a class="active" onclick="navigation(0)">Home</a></li>
+      <li><a onclick="navigation(1)">Lists</a></li>
+      <li><a onclick="navigation(2)">Invites</a></li>
+      <li><a onclick="navigation(3)">Settings</a></li>
+      <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
+    </ul>
+  </div>
+</head>
+<body>
+
+<div class="giftUpdateContainer">
+  <p class="giftInf">Title</p>
+  <input type="text" id="giftTitleInp" placeholder="Gift Title" class="giftInp">
+  <p class="giftInf">Link</p>
+  <input type="text" id="giftLinkInp" placeholder="Gift Link" class="giftInp">
+  <p class="giftInf">Where This Gift Can Be Found</p>
+  <input type="text" id="giftWhereInp" placeholder="Gift Location" class="giftInp">
+  <p class="giftInf">Description</p>
+  <input type="text" id="giftDescriptionInp" placeholder="Gift Description" class="giftInp"><br/><br/>
+  <span class="updateBtn" id="updateGift">Loading... Please Wait</span>
+</div>
+
+<div id="offlineModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeOffline">&times;</span>
+      <h2>It appears that you are offline!</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p>Please reconnect to the internet in order to use Gifty properly!</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

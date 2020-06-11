@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="img/giftyiconweb.png">
+  <link href="css/login.css" rel="stylesheet" type="text/css"/>
+  <title>Login</title>
+
+  <script src="js/passOp.js" type="text/javascript"></script>
+  <script src="js/indexAlg.js" type="text/javascript"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-analytics.js"></script>
+
+</head>
+<body>
+
+<div class="loginContainer cropIcon">
+  <img class="imgIcon" src="img/giftyicon.png">
+
+  <div class="centeredLogin">
+    <input type="text" placeholder="User Name" id="username">
+    <input type="password" placeholder="Pin" id="pin">
+    <button onclick="login()">Submit</button>
+    <p id="loginInfo" style="color:red"></p>
+    <p id="loginInfo2" style="color:white"></p>
+    <a style="color:#ffffff" onclick="signUp()">Don't have an account? Click here!</a>
+  </div>
+
+</div>
+
+<div id="offlineModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeOffline">&times;</span>
+      <h2>It appears that you are offline!</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p>Please reconnect to the internet in order to use Gifty properly!</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
