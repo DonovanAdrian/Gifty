@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="img/giftyiconweb.png">
+  <link href="css/main.css" rel="stylesheet" type="text/css"/>
+  <title>Help/FAQ</title>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-analytics.js"></script>
+  <script>
+    /**
+     * Congrats! You're looking at my code, most everything here has been repurposed from Google's Firebase as well as
+     * ideas and assets from www.w3schools.com. Google's example can be found at
+     * https://github.com/firebase/quickstart-js for anyone interested
+     *
+     * ----------------------------------------------------------------
+     * ToDo:
+     *
+     * Test Delete/Update feature
+     *
+     * WebLogin and Login vars in server to display tutorials
+     *
+     * Change Login to have two separate text types that are either blue or red, logbool true/false respectively
+     *
+     * Create a button to add new gifts/edit old ones (Replace Home Buttons "Buy/NotBuy", With "Edit/Delete"
+     *    -Use same modal from before, but with inputs
+     *    -Make this button float on lower right hand side of screen
+     *      -Change size accordingly
+     *
+     * Create "Create User/User Settings Page", change page depending on if a user id is present in memory
+     * Create "About Page"
+     *
+     * Complete other pages as needed (Settings, Invites, Lists, etc)
+     *  -Instructions per page included inside each respective file
+     *
+     * If the last gift is removed, add "testgift" back to list?
+     *  -Make the test gift say "No gifts on this list"
+     *  -Remove the test gift if a new gift is added
+     *  -KEEP TRACK OF ALL GIFTS ADDED? IF GIFTS = 0, SHOW TESTGIFT, IF != 0, HIDE TESTGIFT
+     *
+     */
+
+    var testGiftInt = 0;
+    var offline;
+    var offlineInt = 0;
+    var giftList;
+    var giftListHTML;
+    var listeningFirebaseRefs = [];
+    var giftTitle = "";
+    var giftUid = "";
+    var giftDescription = "";
+    var giftLink = "";
+    var giftReceived = 0;
+    var giftWhere = "";
+    var offlineSpan;
+    var offlineModal;
+    var emailBtn;
+    var user;
+    var userName;
+    var load;
+    var userArr = [];
+    var userData = [];
+    var supportArr = [];
+
+    function getCurrentUser(){
+      user = sessionStorage.getItem("validUser");
+      if(user == null){
+        window.location.href = "index.html";
+      } else {
+        console.log("User: " + user + " logged in");
+      }
+    }
+
+    //Instantiates all data upon loading the webpage
+    window.onload = function instantiate() {
+      getCurrentUser();
+
+      emailBtn = document.getElementById('emailBtn');
+      offlineModal = document.getElementById('offlineModal');
+      offlineSpan = document.getElementById("closeOffline");
+
+      const config = {
+        //Oops! This is gone!
+      };
+      firebase.initializeApp(config);
+      firebase.analytics();
+
+      console.log("Logging in anonymously...");
+      firebase.auth().signInAnonymously().catch(function (error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // ...
+      });
+
+      firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+          // User is signed in.
+          var isAnonymous = user.isAnonymous;
+          var uid = user.uid;
+          // ...
+        } else {
+          // User is signed out.
+          // ...
+        }
+        // ...
+      });
+
+
+      window.addEventListener("online", function () {
+        console.log("Online mode activated, clearing offline notification");
+        offlineModal.style.display = "none";
+      });
+
+      window.addEventListener("offline", function () {
+        var now = 0;
+        console.log("Offline mode activated");
+        var g = setInterval(function () {
+          now = now + 1000;
+          if (now >= 5000) {
+            try {
+              document.getElementById("TestGift").innerHTML = "Loading Failed, Please Connect To Internet";
+            } catch (err) {
+              console.log("Loading Element Missing");
+            }
+            console.log("Offline mode notified, showing offline notification");
+            offlineModal.style.display = "block";
+            clearInterval(g);
+          }
+        }, 1000);
+      });
+
+      //close offlineModal on close
+      offlineSpan.onclick = function () {
+        console.log("Offline modal closed: Closed manually");
+        offlineModal.style.display = "none";
+      };
+
+      //close offlineModal on click
+      window.onclick = function (event) {
+        if (event.target == offlineModal) {
+          console.log("Offline modal closed: Outside of modal");
+          offlineModal.style.display = "none";
+        }
+      };
+
+      emailBtn.onclick = function () {
+        var supportStr = genSupport();
+        window.open('mailto:gifty.application@gmail.com?subject=Gifty Support #' + supportStr +
+          '&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, ' + userName);
+      };
+
+      function genSupport() {
+        var supportCode = "";
+        for(var i = 0; i < 16; i++){
+          supportCode = supportCode + randomizer();
+        }
+        addSupportToDB(supportCode);
+        return supportCode;
+      }
+
+      function addSupportToDB(supportCode) {
+        var supportCount = 0;
+        try{
+          supportCount = supportArr.length;
+        } catch (err) {
+
+        }
+        console.log(supportCode);
+        console.log(supportCount);
+        firebase.database().ref("users/" + user + "/support/" + supportCount).push();
+        firebase.database().ref("users/" + user + "/support/" + supportCount).set({
+          supportCount: supportCount,
+          supportString: supportCode
+        });
+      }
+
+      function randomizer() {
+        var alphabet = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
+        var selector = Math.floor((Math.random() * alphabet.length));
+        var charSelect = alphabet.charAt(selector);
+        return charSelect;
+      }
+
+      databaseQuery();
+
+      function databaseQuery() {
+        userInitial = firebase.database().ref("users/");
+
+        var fetchPosts = function (postRef) {
+          console.log("Fetching data");
+          postRef.on('child_added', function (data) {
+            userArr.push(data.key);
+            userData.push(data);
+            if (data.key == user) {
+              userName = data.val().name;
+              supportArr = data.val().support;
+              if (data.val().moderatorInt == 1) {
+                modBtn.style.display = "block";
+                modBtn.onclick = function () {
+                  navigation(6);
+                }
+              } else {
+              }
+            }
+          });
+
+          postRef.on('child_changed', function (data) {
+            if (data.key == user) {
+              supportArr = data.val().support;
+              if (data.val().moderatorInt == 1) {
+                modBtn.style.display = "block";
+                modBtn.onclick = function () {
+                  navigation(6);
+                }
+              } else {
+              }
+            }
+          });
+
+          postRef.on('child_removed', function (data) {
+          });
+        };
+
+        fetchPosts(userInitial);
+
+        listeningFirebaseRefs.push(userInitial);
+      }
+    };
+
+    function signOut(){
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    }
+
+    function navigation(nav){
+      sessionStorage.setItem("validUser", user);
+      switch(nav){
+        case 0:
+          window.location.href = "home.html";
+          break;
+        case 1:
+          window.location.href = "lists.html";
+          break;
+        case 2:
+          window.location.href = "invites.html";
+          break;
+        case 3:
+          window.location.href = "settings.html";
+          break;
+        default:
+          break;
+      }
+    }
+  </script>
+
+  <div class="topnav">
+    <ul>
+      <li><div class="cropIcon"><img class="imgIcon" src="img/giftyicon.png"></div></li>
+      <div class="break"></div>
+      <li><a class="active" onclick="navigation(0)">Home</a></li>
+      <li><a onclick="navigation(1)">Lists</a></li>
+      <li><a onclick="navigation(2)">Invites</a></li>
+      <li><a onclick="navigation(3)">Settings</a></li>
+      <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
+    </ul>
+  </div>
+</head>
+<body>
+
+<div class="faqContainer">
+  <p class="faqInf">FAQ</p>
+  <p class="faqInfSpec">Welcome to the beta! I'm afraid since I've only just recently sent this out, there isn't anything
+    here yet. Send me some questions below and I'll add them to the next update!</p>
+  <p class="faqInf">Help</p>
+  <p class="faqInfSpec">If you are in need of assistance or just want to send me a suggestion, feel free to email me
+    below! An email dialog will automatically pop up for you with some example text filled in. Thanks for helping me
+    make this app better!</p><br/><br/>
+  <span class="faqBtn" id="emailBtn">Email Me</span>
+</div>
+<!--Use multiple faq containers if needed, this will help center/left dignify text-->
+
+
+
+<div id="myModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2 id="giftTitle">Loading Title...</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p id="giftLink">Loading Link...</p>
+      <p id="giftWhere">Loading Where...</p>
+      <p id="giftDescription">Loading Description...</p>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3 style="float: left;padding-left: 10px" id="giftBuy">Buy</h3>
+      <h3 style="float: right;padding-right: 10px" id="giftDontBuy">Don't Buy</h3>
+    </div>
+  </div>
+</div>
+
+<div id="offlineModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeOffline">&times;</span>
+      <h2>It appears that you are offline!</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p>Please reconnect to the internet in order to use Gifty properly!</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
