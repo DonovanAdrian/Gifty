@@ -1,7 +1,5 @@
 var inviteArr = [];
-var updatedInviteArr = [];
 var friendArr = [];
-var updatedFriendArr = [];
 var listeningFirebaseRefs = [];
 var userArr = [];
 
@@ -11,6 +9,8 @@ var friendCounter = 0;
 
 var userList;
 var userBase;
+var userFriends;
+var userInvites;
 var giftList;
 var offlineSpan;
 var offlineModal;
@@ -124,129 +124,73 @@ window.onload = function instantiate() {
   function databaseQuery() {
 
     userBase = firebase.database().ref("users/" + user.key);
+    userFriends = firebase.database().ref("users/" + user.key + "/friends");
+    userInvites = firebase.database().ref("users/" + user.key + "/invites");
 
     var fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         onlineInt = 1;
-        //--------------------------------------------------------------------------------Fetch Friends
-        if(data.key == "friends") {
-          friendArr = data.val();
+      });
+    };
 
-          if (friendArr.length == 0) {//Friend List exists, but is empty
-            deployFriendListEmptyNotification();
-          } else {//Friend List exists and needs to be loaded into list
-            for (var i = 0; i < friendArr.length; i++) {
-              createFriendElement(friendArr[i]);
-            }
-            console.log("Friend List Loaded");
-          }
-        }
-        //--------------------------------------------------------------------------------Fetch Invites
-        if(data.key == "invites") {
-          inviteArr = data.val();
+    var fetchFriends = function (postRef) {
+      postRef.on('child_added', function (data) {
+        friendArr.push(data.val());
 
-          if(inviteArr.length != 0) {//inviteList exists
-            inviteNote.style.background = "#ff3923";
-            console.log("Invites found");
-          }
-        }
+        createFriendElement(data.val());
       });
 
       postRef.on('child_changed', function (data) {
-        var updatedNode;
-        var updateError = 0;
-        if(data.key == "friends") {
-          updatedFriendArr = data.val();
-          updatedNode = arrayDifferences(friendArr, updatedFriendArr);
+        console.log(friendArr);
+        friendArr[data.key] = data.val();
+        console.log(friendArr);
 
-          if (updatedArrMode == 1) {//delete
-            removeFriendElement(friendArr[updatedNode]);
-            friendArr.splice(updatedNode, 1);
-            if(friendArr.length == 0){
-              console.log("Friend List Empty");
-              deployFriendListEmptyNotification();
-            }
-          } else if (updatedArrMode == 2) {//update
-            friendArr[updatedNode] = updatedFriendArr[updatedNode];
-            changeFriendElement(friendArr[updatedNode]);
-          } else {
-            console.log("Friend Update Error");
-            updateError++;
-          }
-          updatedArrMode = 0;
-
-          if (updateError == 0)
-            console.log("Data Updated Successfully");
-          else
-            console.log("Data Not Updated... Please Advise");
-        }
-
-        if(data.key == "invites") {
-          var updateError = 0;
-          updatedInviteArr = data.val();
-          updatedNode = arrayDifferences(inviteArr, updatedInviteArr);
-
-          if(updatedArrMode == 1){
-            inviteArr.splice(updatedNode, 1);
-            if(inviteArr.length == 0){
-              console.log("Invite List Empty");
-              inviteNote.style.background = "#008222";
-            }
-          } else if (updatedArrMode == 2){
-            inviteArr[updatedNode] = updatedInviteArr[updatedNode];
-          } else {
-            console.log("Invite Update Error");
-            updateError++;
-          }
-          updatedArrMode = 0;
-
-          if (updateError == 0)
-            console.log("Data Updated Successfully");
-          else
-            console.log("Data Not Updated... Please Advise");
-        }
+        changeFriendElement(data.val());
       });
 
       postRef.on('child_removed', function (data) {
-        if(data.key == "friends") {
+        console.log(friendArr);
+        friendArr.splice(data.key, 1);
+        console.log(friendArr);
+        removeFriendElement(data.key);
+
+        if(friendArr.length == 0){
           deployFriendListEmptyNotification();
         }
+      });
+    };
 
-        if (data.key == "invites") {
+    var fetchInvites = function (postRef) {
+      postRef.on('child_added', function (data) {
+        inviteArr.push(data.val());
+
+        inviteNote.style.background = "#ff3923";
+      });
+
+      postRef.on('child_changed', function (data) {
+        console.log(inviteArr);
+        inviteArr[data.key] = data.val();
+        console.log(inviteArr);
+      });
+
+      postRef.on('child_removed', function (data) {
+        console.log(inviteArr);
+        inviteArr.splice(data.key, 1);
+        console.log(inviteArr);
+
+        if (inviteArr.length == 0) {
           console.log("Invite List Removed");
-          if (inviteArr.length == 0) {
-            inviteNote.style.background = "#008222";
-          }
+          inviteNote.style.background = "#008222";
         }
       });
     };
 
     fetchData(userBase);
+    fetchFriends(userFriends);
+    fetchInvites(userInvites);
 
     listeningFirebaseRefs.push(userBase);
-  }
-
-  function arrayDifferences(arr1, arr2) {
-    var tempArr = arr1;
-    if (arr1.length != arr2.length) {//item was removed
-      updatedArrMode = 1;
-    } else {//item was updated
-      updatedArrMode = 2;
-    }
-    for (var a = 0; a < arr1.length; a++) {
-      for (var b = 0; b < arr2.length; b++) {
-        if(arr1[a] == arr2[b]){
-          console.log(arr1);
-          console.log("Removing: " + arr1[a]);
-          arr1.splice(a, 1);
-          console.log(arr1);
-          a--;//adjust "a" value to account for new arr1 size
-          break;
-        }
-      }
-    }
-
-    return tempArr.indexOf(arr1[0]);
+    listeningFirebaseRefs.push(userInvites);
   }
 
   function createFriendElement(friendKey){

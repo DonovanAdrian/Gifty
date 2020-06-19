@@ -1,13 +1,10 @@
 var listeningFirebaseRefs = [];
 var giftArr = [];
-var updatedGiftArr = [];
 var inviteArr = [];
-var updatedInviteArr = [];
 
 var cleanedItems = "";
 
 var giftCounter = 0;
-var updatedArrMode = 0;
 var onlineInt = 0;
 
 var giftList;
@@ -18,6 +15,7 @@ var backBtn;
 var offlineSpan;
 var offlineModal;
 var user;
+var userInvites;
 var offlineTimer;
 var modal;
 var noteModal;
@@ -27,6 +25,7 @@ var noteTitleField;
 var listNote;
 var inviteNote;
 var userBase;
+var userGifts;
 var offlineTimer;
 
 
@@ -133,132 +132,76 @@ window.onload = function instantiate() {
   function databaseQuery() {
 
     userBase = firebase.database().ref("users/" + user.key);
+    userGifts = firebase.database().ref("users/" + user.key + "/giftList");
+    userInvites = firebase.database().ref("users/" + user.key + "/invites");
 
     var fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         onlineInt = 1;
-        //--------------------------------------------------------------------------------Fetch Gifts
-        if(data.key == "giftList") {
-          giftArr = data.val();
+      });
+    };
 
-          if (giftArr.length == 0) {//giftList exists, but is empty
-            deployGiftListEmptyNotification();
-          } else {//giftList exists and needs to be loaded into list
-            for (var i = 0; i < giftArr.length; i++) {
-              createGiftElement(giftArr[i].description, giftArr[i].link, giftArr[i].received, giftArr[i].title,
-                giftArr[i].key, giftArr[i].where);
-            }
-            console.log("Gift List Loaded");
-          }
-        }
-        //--------------------------------------------------------------------------------Fetch Invites
-        if(data.key == "invites") {
-          inviteArr = data.val();
+    var fetchGifts = function (postRef) {
+      postRef.on('child_added', function (data) {
+        giftArr.push(data.val());
 
-          if(inviteArr.length != 0) {//inviteList exists
-            inviteNote.style.background = "#ff3923";
-            console.log("Invites found");
-          }
-        }
+        createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
+          data.key, data.val().where);
       });
 
       postRef.on('child_changed', function(data) {
-        var updatedNode;
-        var updateError = 0;
-        if(data.key == "giftList") {
-          updatedGiftArr = data.val();
-          updatedNode = arrayDifferences(giftArr, updatedGiftArr);
+        console.log(giftArr);
+        giftArr[data.key] = data.val();
+        console.log(giftArr);
 
-          if (updatedArrMode == 1) {//delete
-            removeGiftElement(giftArr[updatedNode].uid);
-            giftArr.splice(updatedNode, 1);
-            if(giftArr.length == 0){
-              console.log("Gift List Empty");
-              deployGiftListEmptyNotification();
-            }
-          } else if (updatedArrMode == 2) {//update
-            giftArr[updatedNode] = updatedGiftArr[updatedNode];
-            changeGiftElement(giftArr[updatedNode].description, giftArr[updatedNode].link,
-              giftArr[updatedNode].received, giftArr[updatedNode].title,
-              giftArr[updatedNode].key, giftArr[updatedNode].where);
-          } else {
-            console.log("Gift Update Error");
-            updateError++;
-          }
-          updatedArrMode = 0;
-
-          if (updateError == 0)
-            console.log("Data Updated Successfully");
-          else
-            console.log("Data Not Updated... Please Advise");
-        }
-
-        if(data.key == "invites") {
-          var updateError = 0;
-          updatedInviteArr = data.val();
-          updatedNode = arrayDifferences(inviteArr, updatedInviteArr);
-
-          if(updatedArrMode == 1){
-            inviteArr.splice(updatedNode, 1);
-            if(inviteArr.length == 0){
-              console.log("Invite List Empty");
-              inviteNote.style.background = "#008222";
-            }
-          } else if (updatedArrMode == 2){
-            inviteArr[updatedNode] = updatedInviteArr[updatedNode];
-          } else {
-            console.log("Invite Update Error");
-            updateError++;
-          }
-          updatedArrMode = 0;
-
-          if (updateError == 0)
-            console.log("Data Updated Successfully");
-          else
-            console.log("Data Not Updated... Please Advise");
-        }
+        changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
+          data.key, data.val().where);
       });
 
       postRef.on('child_removed', function(data) {
-        if (data.key == "giftList") {
+        console.log(giftArr);
+        giftArr.splice(data.key, 1);
+        console.log(giftArr);
+        removeGiftElement(data.key);
+
+        if (giftArr.length == 0) {
           deployGiftListEmptyNotification();
         }
+      });
+    };
 
-        if (data.key == "invites") {
+    var fetchInvites = function (postRef) {
+      postRef.on('child_added', function (data) {
+        inviteArr.push(data.val());
+
+        inviteNote.style.background = "#ff3923";
+      });
+
+      postRef.on('child_changed', function (data) {
+        console.log(inviteArr);
+        inviteArr[data.key] = data.val();
+        console.log(inviteArr);
+      });
+
+      postRef.on('child_removed', function (data) {
+        console.log(inviteArr);
+        inviteArr.splice(data.key, 1);
+        console.log(inviteArr);
+
+        if (inviteArr.length == 0) {
           console.log("Invite List Removed");
-          if (inviteArr.length == 0) {
-            inviteNote.style.background = "#008222";
-          }
+          inviteNote.style.background = "#008222";
         }
       });
     };
 
     fetchData(userBase);
+    fetchGifts(userGifts);
+    fetchInvites(userInvites);
 
     listeningFirebaseRefs.push(userBase);
-  }
-
-  function arrayDifferences(arr1, arr2) {
-    var tempArr = arr1;
-    if (arr1.length != arr2.length) {//item was removed
-      updatedArrMode = 1;
-    } else {//item was updated
-      updatedArrMode = 2;
-    }
-    for (var a = 0; a < arr1.length; a++) {
-      for (var b = 0; b < arr2.length; b++) {
-        if(arr1[a] == arr2[b]){
-          console.log(arr1);
-          console.log("Removing: " + arr1[a]);
-          arr1.splice(a, 1);
-          console.log(arr1);
-          a--;//adjust "a" value to account for new arr1 size
-          break;
-        }
-      }
-    }
-
-    return tempArr.indexOf(arr1[0]);
+    listeningFirebaseRefs.push(userGifts);
+    listeningFirebaseRefs.push(userInvites);
   }
 
   function cleanArrays(){
@@ -388,6 +331,7 @@ window.onload = function instantiate() {
     liItem.appendChild(textNode);
 
     giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
+    clearInterval(offlineTimer);
   }
 
   function changeGiftElement(description, link, received, title, uid, where) {
@@ -461,7 +405,6 @@ window.onload = function instantiate() {
   }
 
   function removeGiftElement(uid) {
-    console.log("Removing " + uid + " from local list...");
     document.getElementById("gift" + uid).remove();
   }
 

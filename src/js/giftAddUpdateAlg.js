@@ -126,19 +126,15 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        console.log("Gift updated: ");
-        console.log(data);
-        //Test this later to ensure that it operates properly*******************************
-        //giftArr[data.key] = data;
-        //console.log(data);
+        console.log(giftArr);
+        giftArr[data.key] = data;
+        console.log(giftArr);
       });
 
       postRef.on('child_removed', function (data) {
-        console.log("Gift removed: ");
-        console.log(data);
-        //Test this later to ensure that it operates properly*******************************
-        //giftArr.splice(data.key, 1);
-        //console.log(data);
+        console.log(giftArr);
+        giftArr.splice(data.key, 1);
+        console.log(giftArr);
       });
 
     };
