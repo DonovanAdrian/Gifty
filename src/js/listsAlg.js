@@ -4,8 +4,7 @@ var listeningFirebaseRefs = [];
 var userArr = [];
 
 var onlineInt = 0;
-var updatedArrMode = 0;
-var friendCounter = 0;
+var friendCount = 0;
 
 var userList;
 var userBase;
@@ -153,10 +152,6 @@ window.onload = function instantiate() {
         friendArr.splice(data.key, 1);
         console.log(friendArr);
         removeFriendElement(data.key);
-
-        if(friendArr.length == 0){
-          deployFriendListEmptyNotification();
-        }
       });
     };
 
@@ -190,6 +185,7 @@ window.onload = function instantiate() {
     fetchInvites(userInvites);
 
     listeningFirebaseRefs.push(userBase);
+    listeningFirebaseRefs.push(userFriends);
     listeningFirebaseRefs.push(userInvites);
   }
 
@@ -230,7 +226,7 @@ window.onload = function instantiate() {
     liItem.appendChild(textNode);
     userList.insertBefore(liItem, document.getElementById("userListContainer").childNodes[0]);
 
-    friendCounter++;
+    friendCount++;
   }
 
   function deployEmptyFriendGiftListNotification(userName){
@@ -273,10 +269,11 @@ window.onload = function instantiate() {
     }
 
     var userUid = friendData.val().uid;
+    var friendName = friendData.val().name;
     var friendUserName = friendData.val().userName;
     var friendGiftList = friendData.val().giftList;
     var editItem = document.createElement("LI");
-    editItem.id = "user" + userUid;
+    editItem.innerHTML = friendName;
     editItem.className = "gift";
     editItem.onclick = function () {
       try {
@@ -294,11 +291,10 @@ window.onload = function instantiate() {
   }
 
   function removeFriendElement(uid){
-    console.log("Removing " + uid + " from local list...");
-    document.getElementById("gift" + uid).remove();
+    document.getElementById("user" + uid).remove();
 
-    friendCounter--;
-    if(friendCounter == 0) {
+    friendCount--;
+    if(friendCount == 0) {
       deployFriendListEmptyNotification();
     }
   }

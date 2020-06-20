@@ -3,6 +3,7 @@ var giftArr = [];
 var inviteArr = [];
 
 var onlineInt = 0;
+var giftCounter = 0;
 
 var giftList;
 var giftListHTML;
@@ -111,13 +112,6 @@ window.onload = function instantiate() {
     }, 1000);
   });
 
-  //initialize back button
-  backBtn.innerHTML = "Back To Lists";
-  backBtn.onclick = function() {
-    sessionStorage.setItem("validUser", currentUser);
-    window.location.href = "lists.html";
-  };
-
   //close offlineModal on close
   offlineSpan.onclick = function() {
     offlineModal.style.display = "none";
@@ -128,6 +122,13 @@ window.onload = function instantiate() {
     if (event.target == offlineModal) {
       offlineModal.style.display = "none";
     }
+  };
+
+  //initialize back button
+  backBtn.innerHTML = "Back To Lists";
+  backBtn.onclick = function() {
+    sessionStorage.setItem("validUser", currentUser);
+    window.location.href = "lists.html";
   };
 
   databaseQuery();
@@ -400,6 +401,11 @@ window.onload = function instantiate() {
 
   function removeGiftElement(uid) {
     document.getElementById("gift" + uid).remove();
+
+    giftCounter--;
+    if (giftCounter == 0){
+      deployGiftListEmptyNotification();
+    }
   }
 };
 
@@ -415,12 +421,6 @@ function deployGiftListEmptyNotification(){
     liItem.appendChild(textNode);
     giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
   }
-
-  backBtn.innerHTML = "Back To Lists";
-  backBtn.onclick = function() {
-    sessionStorage.setItem("validUser", currentUser);
-    window.location.href = "lists.html";
-  };
 
   clearInterval(offlineTimer);
 }

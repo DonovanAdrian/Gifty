@@ -62,8 +62,8 @@ concrete idea of my goals with updating each page:
   - [x] giftAddUpdate.html
   - [x] lists.html
   - [x] friendList.html
-  - [ ] invites.html **\(in progress)**
-  - [ ] confirmation.html
+  - [x] invites.html
+  - [ ] confirmation.html **\(in progress)**
   - [ ] settings.html
   - [ ] faq.html
   - [ ] moderation.html
@@ -80,7 +80,7 @@ concrete idea of my goals with updating each page:
       - [x] giftAddUpdate
     - [x] lists
       - [x] friendList
-    - [ ] invites
+    - [x] invites
       - [ ] confirmation
     - [ ] settings
       - [ ] faq

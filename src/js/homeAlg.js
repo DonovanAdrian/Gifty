@@ -125,6 +125,13 @@ window.onload = function instantiate() {
     }
   };
 
+  backBtn.innerHTML = "Add New Gift";
+  backBtn.onclick = function() {
+    giftStorage = "";
+    sessionStorage.setItem("giftStorage", giftStorage);
+    window.location.href = "giftAddUpdate.html";
+  };
+
   databaseQuery();
 
   cleanArrays();
@@ -163,10 +170,6 @@ window.onload = function instantiate() {
         giftArr.splice(data.key, 1);
         console.log(giftArr);
         removeGiftElement(data.key);
-
-        if (giftArr.length == 0) {
-          deployGiftListEmptyNotification();
-        }
       });
     };
 
@@ -207,7 +210,7 @@ window.onload = function instantiate() {
   function cleanArrays(){
     if (giftArr != undefined) {
       console.log(giftArr);
-      deleteUndefinedObjects(giftArr, undefined, "gift");
+      deleteUndefinedObjects(giftArr, undefined, "gifts");
       console.log(giftArr);
       /*
       firebase.database().ref("users/" + user.key).update({
@@ -218,7 +221,7 @@ window.onload = function instantiate() {
 
     if (inviteArr != undefined) {
       console.log(inviteArr);
-      deleteUndefinedObjects(inviteArr, undefined, "invite");
+      deleteUndefinedObjects(inviteArr, undefined, "invites");
       console.log(inviteArr);
       /*
       firebase.database().ref("users/" + user.key).update({
@@ -257,8 +260,6 @@ window.onload = function instantiate() {
     try{
       document.getElementById("TestGift").remove();
     } catch (err) {}
-
-    giftCounter++;
 
     var liItem = document.createElement("LI");
     liItem.id = "gift" + giftUid;
@@ -332,6 +333,8 @@ window.onload = function instantiate() {
 
     giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
     clearInterval(offlineTimer);
+
+    giftCounter++;
   }
 
   function changeGiftElement(description, link, received, title, uid, where) {
@@ -406,6 +409,11 @@ window.onload = function instantiate() {
 
   function removeGiftElement(uid) {
     document.getElementById("gift" + uid).remove();
+
+    giftCounter--;
+    if (giftCounter == 0){
+      deployGiftListEmptyNotification();
+    }
   }
 
   function updateGiftElement(uid) {
@@ -416,7 +424,6 @@ window.onload = function instantiate() {
 
   function deleteGiftElement(uid, title) {
     var verifyDeleteBool = true;
-    var maxLength = giftArr.length - 1;
     var toDelete = -1;
 
     for (var i = 0; i < giftArr.length; i++){
@@ -427,7 +434,9 @@ window.onload = function instantiate() {
     }
 
     if(toDelete != -1) {
+      console.log(giftArr);
       giftArr.splice(toDelete, 1);
+      console.log(giftArr);
 
       for (var i = 0; i < giftArr.length; i++) {
         if (title == giftArr[i].title) {
@@ -440,16 +449,11 @@ window.onload = function instantiate() {
     }
 
     if(verifyDeleteBool){
+      /*
       firebase.database().ref("users/" + user).update({
         giftList: giftArr
       });
-      
-      removeGiftElement(maxLength);
-
-      giftCounter--;
-      if(giftCounter == 0){
-        deployGiftListEmptyNotification();
-      }
+      */
 
       modal.style.display = "none";
 
@@ -496,13 +500,6 @@ function deployGiftListEmptyNotification(){
     liItem.appendChild(textNode);
     giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
   }
-
-  backBtn.innerHTML = "Add New Gift";
-  backBtn.onclick = function() {
-    giftStorage = "";
-    sessionStorage.setItem("giftStorage", giftStorage);
-    window.location.href = "giftAddUpdate.html";
-  };
 
   clearInterval(offlineTimer);
 }
