@@ -63,8 +63,8 @@ concrete idea of my goals with updating each page:
   - [x] lists.html
   - [x] friendList.html
   - [x] invites.html
-  - [ ] confirmation.html **\(in progress)**
-  - [ ] settings.html
+  - [x] confirmation.html
+  - [ ] settings.html **\(in progress)**
   - [ ] faq.html
   - [ ] moderation.html
   - [ ] passOp.js
@@ -81,7 +81,7 @@ concrete idea of my goals with updating each page:
     - [x] lists
       - [x] friendList
     - [x] invites
-      - [ ] confirmation
+      - [x] confirmation
     - [ ] settings
       - [ ] faq
       - [ ] moderation

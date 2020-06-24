@@ -19,7 +19,7 @@ var listNote;
 var inviteNote;
 var userInput;
 var offlineTimer;
-var userBase;
+var userInitial;
 var userFriends;
 var userInvites;
 
@@ -134,13 +134,44 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
 
-    userBase = firebase.database().ref("users/" + user.key);
+    userInitial = firebase.database().ref("users/");
     userFriends = firebase.database().ref("users/" + user.key + "/friends");
     userInvites = firebase.database().ref("users/" + user.key + "/invites");
 
     var fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         onlineInt = 1;
+
+        var i = findItemInArr(data, userArr);
+        if(userArr[i] != data){
+          console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          console.log(userArr[i]);
+          console.log(data.val());
+          userArr[i] = data;
+          console.log(userArr[i]);
+        }
+      });
+
+      postRef.on('child_changed', function (data) {
+        var i = findItemInArr(data, userArr);
+        if(userArr[i] != data){
+          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          console.log(userArr[i]);
+          console.log(data.val());
+          userArr[i] = data;
+          console.log(userArr[i]);
+        }
+      });
+
+      postRef.on('child_removed', function (data) {
+        var i = findItemInArr(data, userArr);
+        if(userArr[i] != data){
+          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          console.log(userArr[i]);
+          console.log(data.val());
+          userArr.splice(i, 1);
+          console.log(userArr);
+        }
       });
     };
 
@@ -171,6 +202,7 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         inviteArr.push(data.val());
 
+        newInvite.style.display = "block";
         inviteNote.style.background = "#ff3923";
       });
 
@@ -187,16 +219,17 @@ window.onload = function instantiate() {
 
         if (inviteArr.length == 0) {
           console.log("Invite List Removed");
+          newInvite.style.display = "none";
           inviteNote.style.background = "#008222";
         }
       });
     };
 
-    fetchData(userBase);
+    fetchData(userInitial);
     fetchFriends(userFriends);
     fetchInvites(userInvites);
 
-    listeningFirebaseRefs.push(userBase);
+    listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userFriends);
     listeningFirebaseRefs.push(userInvites);
   }
@@ -278,7 +311,7 @@ window.onload = function instantiate() {
       var friendUserNameField = document.getElementById('userUName');
       var friendShareCodeField = document.getElementById('userShareCode');
 
-      if(friendData.val().shareCode == undefined) {
+      if(friendShareCode == undefined) {
         friendShareCode = "This User Does Not Have A Share Code";
       }
 
@@ -327,7 +360,7 @@ window.onload = function instantiate() {
     var friendName = friendData.val().name;
     var friendUserName = friendData.val().userName;
     var friendShareCode = friendData.val().shareCode;
-    var liItemUpdate = document.getElementById("user" + userData.key);
+    var liItemUpdate = document.getElementById("user" + friendData.key);
     liItemUpdate.innerHTML = friendName;
     liItemUpdate.className = "gift";
     liItemUpdate.onclick = function (){
@@ -338,7 +371,7 @@ window.onload = function instantiate() {
       var friendUserNameField = document.getElementById('userUName');
       var friendShareCodeField = document.getElementById('userShareCode');
 
-      if(friendData.val().shareCode == undefined) {
+      if(friendShareCode == undefined) {
         friendShareCode = "This User Does Not Have A Share Code";
       }
 
@@ -369,6 +402,7 @@ window.onload = function instantiate() {
   }
 
   function deleteFriend(uid) {
+    //Delete on user's side
     var verifyDeleteBool = true;
     var toDelete = -1;
 
@@ -403,10 +437,60 @@ window.onload = function instantiate() {
 
       modal.style.display = "none";
 
-      removeFriendElement(uid);
-      alert("Friend Successfully removed!");
+      removeFriendElement(uid);//this should only need to be here until the firebase command is uncommented
+      alert("Friend Successfully removed from your list!");
     } else {
-      alert("Delete failed, please try again later!");
+      alert("Delete failed, please try again later! (user)");
+      return;
+    }
+
+
+
+    //Delete on friend's side
+    verifyDeleteBool = true;
+    toDelete = -1;
+    var friendFriendArr;//Weird name, I know, but it's the friend's friend Array...
+
+    for (var i = 0; i < userArr.length; i++){
+      if(userArr[i].key == uid) {
+        friendFriendArr = userArr[i].friends;
+        break;
+      }
+    }
+    for (var i = 0; i < friendFriendArr.length; i++){
+      if (friendFriendArr[i] == user.key){
+        toDelete = i;
+        break;
+      }
+    }
+
+    if(toDelete != -1) {
+      console.log(friendFriendArr);
+      friendFriendArr.splice(toDelete, 1);
+      console.log(friendFriendArr);
+
+      for (var i = 0; i < friendFriendArr.length; i++) {
+        if (friendFriendArr[i] == user.key) {
+          verifyDeleteBool = false;
+          break;
+        }
+      }
+    } else {
+      verifyDeleteBool = false;
+    }
+
+    if(verifyDeleteBool){
+      /*
+      firebase.database().ref("users/" + uid.key).update({
+        friends: friendFriendArr
+      });
+      */
+
+      modal.style.display = "none";
+
+      alert("Friend Successfully removed from their list!");
+    } else {
+      alert("Delete failed, please try again later! (friend)");
     }
   }
 
