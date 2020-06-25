@@ -1,6 +1,7 @@
 var listeningFirebaseRefs = [];
 var userNameArr = [];
 var userKeyArr = [];
+var userData = [];
 
 var userNameBool = true;
 
@@ -130,8 +131,10 @@ window.onload = function instantiate() {
 
     var fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
+        userData.push(data.val());
         userNameArr.push(data.val().userName);
         userKeyArr.push(data.key);
+
         if(user.key == data.key){
           nameField.value = user.name;
           userNameField.value = user.userName;
@@ -143,7 +146,16 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        var i = findItemInArr(userKeyArr, data.key);
+        var i = findItemInArr(data, userArr);
+        if(userArr[i] != data){
+          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          console.log(userArr[i]);
+          console.log(data.val());
+          userArr[i] = data;
+          console.log(userArr[i]);
+        }
+
+        i = findItemInArr(userKeyArr, data.key);
         console.log("Update userNameArr " + userNameArr[i] + " with data " + data.val().userName + "?");
         if(userNameArr[i] != data.val().userName){
           console.log("Yes!");
@@ -157,7 +169,16 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_removed', function (data) {
-        var i = findItemInArr(userKeyArr, data.key);
+        var i = findItemInArr(data, userArr);
+        if(userArr[i] != data){
+          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          console.log(userArr[i]);
+          console.log(data.val());
+          userArr.splice(i, 1);
+          console.log(userArr);
+        }
+
+        i = findItemInArr(userKeyArr, data.key);
         console.log("Delete user " + userKeyArr[i] + ", " + data.val().userName  + ", from userNameArr: "
           + userNameArr[i]);
         console.log("\nUSER KEY ARR");
@@ -239,6 +260,7 @@ function updateUserToDB(){
     userNameBool = true;
   } else {
     var newPin = parseInt(pinField.value);
+    injectUserArr(userArr);
     var encodeKey = encode(pinField.value);
     firebase.database().ref("users/" + user.key).update({
       name: nameField.value,
@@ -306,6 +328,7 @@ function addUserToDB(){
   } else {
     var newUid = firebase.database().ref("users").push();
     var newPin = parseInt(pinField.value);
+    injectUserArr(userArr);
     var encodeKey = encode(pinField.value);
     var shareCodeNew = genShareCode();
     newUid = newUid.toString();

@@ -55,7 +55,7 @@ concrete idea of my goals with updating each page:
 
 ## ***Task List***
 - [x] Post On GitHub
-- [ ] Update Old Files
+- [x] Update Old Files
   - [x] index.html
   - [x] userAddUpdate.html
   - [x] home.html 
@@ -67,22 +67,24 @@ concrete idea of my goals with updating each page:
   - [x] settings.html 
   - [x] faq.html
   - [x] moderation.html
-  - [ ] passOp.js **\(in progress)**
+  - [x] passOp.js
+- [ ] Test New Gifty Files **\(in progress)**
 - [ ] Set Up Local Database
 
 
 ## Website Structure
 
-- [x] index
-  - [x] userAddUpdate
-  - [x] *USER LOGGED IN*
-    - [x] home
-      - [x] giftAddUpdate
-    - [x] lists
-      - [x] friendList
-    - [x] invites
-      - [x] confirmation
-    - [x] settings
-      - [x] faq
-      - [x] moderation
+- index
+  - userAddUpdate
+  - *USER LOGGED IN*
+    - home
+      - giftAddUpdate
+    - lists
+      - friendList
+    - invites
+      - confirmation
+    - settings
+      - faq
+        - email form
+      - moderation *\(Moderator Role Only)*
     

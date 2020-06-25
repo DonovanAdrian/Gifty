@@ -1,19 +1,28 @@
 var encodeStore = ["0", "1", "2", "3"];
-var encodeNameBool = false;
+var encodeNameBool = true;
+var userArr = [];
 
-function checkEncodeName(encodeName){
-  //this will prevent against duplicate encode names
-  //Normally this will check the database for the encode name
-  //If the name exists, regenerate. If it does not, then continue.
-  encodeNameBool = true;
+function injectUserArr(userArr){
+  this.userArr = userArr;
 }
 
+function checkEncodeName(newEncodeName){
+  var encodeString;
+  var encodeKey;
+  var encodeName;
+  encodeNameBool = true;
 
+  for(var i = 0; i < userArr.length; i++){
+    encodeString = userArr[i].encodeStr;
+    encodeKey = input.split(":");
+    encodeName = encodeKey[0];
+    if (encodeName == newEncodeName) {
+      encodeNameBool = false;
+      break;
+    }
+  }
+}
 
-//-------------------------------------***********************************---------------------------------------
-
-
-/*
 function whatIsInt(rChar){
   switch (rChar){
     case "A":
@@ -91,7 +100,7 @@ function IntToChar(rChar){
   }
   return rChar;
 }
-*/
+
 
 function whatIsOp(rChar){
   switch (rChar){
@@ -352,10 +361,8 @@ function generateDigitSetter(){
 }
 
 function encode(input) {
-  var inputStr = input;
   var nameGenNum = getNameGenNum();
   var encodeStr = "";
-  var encodeHead = "";
   var encodeName = "";
   var encodeEnd = "";
   var rSep = "";
@@ -365,8 +372,7 @@ function encode(input) {
   var operand2 = "";
   var operandResult = 0;
 
-  encodeHead = generateDigitSetter();
-  encodeStr = encodeStr + encodeHead;
+  encodeStr = encodeStr + generateDigitSetter();
   encodeStr = encodeStr + ":";
   while (encodeNameBool == false) {
     for (var i = 0; i < nameGenNum; i++) {
@@ -401,17 +407,11 @@ function encode(input) {
   }
   encodeStr = encodeStr + encodeEnd;
 
-  //store encode name in user file as well as the portion to the right of the ":"
-  //encodes should be stored by their names with their codes as a data point
-
-  //look into pre-initialization of the name and digit generation while the webpage loads (generate, check database when page is loaded)
   return encodeStr;
 }
 
 function decode(input){
-  //var input = initialize(); //This is what will be done normally to fetch the full encode string from the user
   var encodeString = input.split(":");
-  var encodeName = encodeString[1];
   var encodeKey = encodeString[0];
   var encodePass = encodeString[2];
   var encodeKeyNew = [];
