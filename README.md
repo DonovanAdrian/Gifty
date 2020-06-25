@@ -64,9 +64,9 @@ concrete idea of my goals with updating each page:
   - [x] friendList.html
   - [x] invites.html
   - [x] confirmation.html
-  - [ ] settings.html **\(in progress)**
-  - [ ] faq.html
-  - [ ] moderation.html
+  - [x] settings.html 
+  - [x] faq.html
+  - [ ] moderation.html **\(in progress)**
   - [ ] passOp.js
 - [ ] Set Up Local Database
 
@@ -82,7 +82,7 @@ concrete idea of my goals with updating each page:
       - [x] friendList
     - [x] invites
       - [x] confirmation
-    - [ ] settings
-      - [ ] faq
+    - [x] settings
+      - [x] faq
       - [ ] moderation
     

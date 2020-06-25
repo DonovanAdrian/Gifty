@@ -16,6 +16,7 @@ p.faqInf {
   margin: 10px;
   padding-bottom: 10px;
   font-family: Verdana;
+  text-decoration: underline;
 }
 p.faqInfSpec {
   margin: 10px;

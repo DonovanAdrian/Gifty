@@ -32,7 +32,7 @@ var offlineTimer;
 
 function getCurrentUser(){
   user = sessionStorage.getItem("validUser");
-  if(user === null || user == undefined){
+  if(user == null || user == undefined){
     window.location.href = "index.html";
   } else {
     console.log("User: " + user.key + " logged in");

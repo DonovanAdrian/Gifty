@@ -503,6 +503,7 @@ window.onload = function instantiate() {
       userInput = document.getElementById('userNameInp');
 
       userInviteModal.style.display = "block";
+      addBtn.innerHTML = "Send Invite"
 
       addBtn.onclick = function() {
         var userLocation = -1;
