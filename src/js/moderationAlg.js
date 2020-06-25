@@ -236,18 +236,34 @@ window.onload = function instantiate() {
       noteModal = document.getElementById('notificationModal');
       var warnBtn = document.getElementById('warnUser');
       var banBtn = document.getElementById('banUser');
+      var userName = document.getElementById('userName');
       var userUID = document.getElementById('userUID');
       var userUserName = document.getElementById('userUserName');
       var userGifts = document.getElementById('userGifts');
       var userFriends = document.getElementById('userFriends');
       var userPassword = document.getElementById('userPassword');
 
-      //onclick functions for gifts, friends, password
+      userName.innerHTML = userData.name;
+      userUID.innerHTML = userData.key;
+      userUserName.innerHTML = userData.userName;
+      userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
+      userFriends.innerHTML = "# Friends: " + userData.friends.length;
+      userPassword.innerHTML = "Click On Me To View Password";
 
+      userGifts.onclick = function() {
+        sessionStorage.setItem("validGiftUser", userData);//Other User Data
+        sessionStorage.setItem("validUser", user);
+        window.location.href = "friendList.html";
+      };
+      userPassword.onclick = function() {
+        userPassword.innerHTML = decode(userData.encodeStr);
+      };
       warnBtn.onclick = function(){
+        alert("This will eventually warn the user of a certain offense");
         //warn function
       };
       banBtn.onclick = function(){
+        alert("This will eventually ban the user for a certain offense");
         //ban function
       };
 
@@ -285,18 +301,34 @@ window.onload = function instantiate() {
       noteModal = document.getElementById('notificationModal');
       var warnBtn = document.getElementById('warnUser');
       var banBtn = document.getElementById('banUser');
+      var userName = document.getElementById('userName');
       var userUID = document.getElementById('userUID');
       var userUserName = document.getElementById('userUserName');
       var userGifts = document.getElementById('userGifts');
       var userFriends = document.getElementById('userFriends');
       var userPassword = document.getElementById('userPassword');
 
-      //onclick functions for gifts, friends, password
+      userName.innerHTML = userData.name;
+      userUID.innerHTML = userData.key;
+      userUserName.innerHTML = userData.userName;
+      userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
+      userFriends.innerHTML = "# Friends: " + userData.friends.length;
+      userPassword.innerHTML = "Click On Me To View Password";
 
+      userGifts.onclick = function() {
+        sessionStorage.setItem("validGiftUser", userData);//Other User Data
+        sessionStorage.setItem("validUser", user);
+        window.location.href = "friendList.html";
+      };
+      userPassword.onclick = function() {
+        userPassword.innerHTML = decode(userData.encodeStr);
+      };
       warnBtn.onclick = function(){
+        alert("This will eventually warn the user of a certain offense");
         //warn function
       };
       banBtn.onclick = function(){
+        alert("This will eventually ban the user for a certain offense");
         //ban function
       };
 

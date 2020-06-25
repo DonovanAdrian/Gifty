@@ -25,20 +25,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/js/settingsAlg.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="921">
-              <caret line="114" column="38" selection-start-line="114" selection-start-column="38" selection-end-line="114" selection-end-column="38" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1067">
-              <caret line="293" column="54" selection-start-line="293" selection-start-column="54" selection-end-line="293" selection-end-column="54" />
+            <state relative-caret-position="-132">
+              <caret line="361" column="43" lean-forward="true" selection-start-line="361" selection-start-column="43" selection-end-line="361" selection-end-column="43" />
             </state>
           </provider>
         </entry>
@@ -46,17 +37,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/moderation.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="265">
-              <caret line="48" column="24" selection-start-line="48" selection-start-column="24" selection-end-line="48" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/js/confirmationAlg.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="93">
-              <caret line="72" column="4" lean-forward="true" selection-start-line="72" selection-start-column="4" selection-end-line="98" selection-end-column="13" />
+            <state relative-caret-position="211">
+              <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
             </state>
           </provider>
         </entry>
@@ -74,7 +56,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>onlineInt</find>
       <find>inviteArr</find>
       <find>clearinterval(offline</find>
       <find>currentmodalopen</find>
@@ -104,6 +85,7 @@
       <find>faq</find>
       <find>settingsnote</find>
       <find>notification</find>
+      <find>gifttitle</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -336,12 +318,12 @@
       <workItem from="1590734832344" duration="6338000" />
       <workItem from="1591327632265" duration="25143000" />
       <workItem from="1592184044417" duration="794000" />
-      <workItem from="1592246522715" duration="42340000" />
+      <workItem from="1592246522715" duration="44279000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="368317000" />
+    <option name="totallyTimeSpent" value="370256000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="724" extended-state="0" />
@@ -531,31 +513,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/friendListAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="359">
-          <caret line="156" column="29" lean-forward="true" selection-start-line="156" selection-start-column="29" selection-end-line="156" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/listsAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2213">
-          <caret line="274" column="48" lean-forward="true" selection-start-line="274" selection-start-column="48" selection-end-line="274" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/userAddUpdateAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="424">
           <caret line="147" column="50" lean-forward="true" selection-start-line="147" selection-start-column="50" selection-end-line="147" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="134" column="18" lean-forward="true" selection-end-line="530" />
         </state>
       </provider>
     </entry>
@@ -641,17 +602,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="273" column="60" lean-forward="true" selection-start-line="273" selection-start-column="60" selection-end-line="273" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/moderation.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="265">
-          <caret line="48" column="24" selection-start-line="48" selection-start-column="24" selection-end-line="48" selection-end-column="24" />
+        <state relative-caret-position="211">
+          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/friendListAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="31" column="7" lean-forward="true" selection-start-line="31" selection-start-column="7" selection-end-line="31" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/listsAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="236">
+          <caret line="28" column="40" lean-forward="true" selection-start-line="28" selection-start-column="40" selection-end-line="28" selection-end-column="40" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1067">
-          <caret line="293" column="54" selection-start-line="293" selection-start-column="54" selection-end-line="293" selection-end-column="54" />
+        <state relative-caret-position="-132">
+          <caret line="361" column="43" lean-forward="true" selection-start-line="361" selection-start-column="43" selection-end-line="361" selection-end-column="43" />
         </state>
       </provider>
     </entry>

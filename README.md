@@ -66,8 +66,8 @@ concrete idea of my goals with updating each page:
   - [x] confirmation.html
   - [x] settings.html 
   - [x] faq.html
-  - [ ] moderation.html **\(in progress)**
-  - [ ] passOp.js
+  - [x] moderation.html
+  - [ ] passOp.js **\(in progress)**
 - [ ] Set Up Local Database
 
 
@@ -84,5 +84,5 @@ concrete idea of my goals with updating each page:
       - [x] confirmation
     - [x] settings
       - [x] faq
-      - [ ] moderation
+      - [x] moderation
     
