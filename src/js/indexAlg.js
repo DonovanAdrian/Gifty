@@ -1,109 +1,3 @@
-/**
- * ----------------------------------------------------------------------------------------------
- * Congrats! You're looking at my code, most everything here has been
- * repurposed from Google's Firebase as well as ideas and assets from
- * www.w3schools.com. Google's example can be found at:
- * https://github.com/firebase/quickstart-js
- * ----------------------------------------------------------------------------------------------
- *
- * ToDo:
- * Test userAddUpdate data.key update/delete functions (updates/removes usernames from arrays, check that they work)
- * Test userAddUpdate delete user function (firebase remove function NOT active)
- *
- *
- * ----------------------------------------------------------------------------------------------
- *
- * OTHER PLANS:
- * Create Moderator
- * Add decoder to moderator
- * Notifications
- * (bell at bottom left of screen)
- *  -Let's users know about server outages or upgrades
- *  -Email sign up? Automatic email dispatch for invitations?
- *
- *   OTHER STUFF:
- *    -Upon deleting all gifts, create a new "Test Gift" id that says "You no longer have any gifts"
- *    -Edit TestGifts to give hints about where to go. (At home, add a gift! At lists, no friends, send an invite?)
- *    -Settings "Invite notification" (Button turns red) not working
- *    -Change cleanArray to be included in ALL files
- *    -Bonus Points: Clean all user arrays upon login (only of user, not ALL users...)
- *    -CHANGE TESTGIFT (Do not remove) TO SAY "YOU HAVE A PENDING INVITE, GO TO INVITES TAB TO ACCEPT"
- *    -Only remove testgift if needed
- *    -Bonus Points: In Invite Tab, Change Test Gift To Say "Click On The Letter Icon Below To Accept Invites"
- *
- *   !!!-Confirmation-Users not properly being allocated... Almost fixed
- *    -Test end of list, throws error at child_changed?
- *   !!!-Invites-Users not properly being allocated
- *    -Use Confirmation style boi, copy - paste and redefine? Fix Confirmation first though ^^
- *   !!!-FriendList Buy/UnBuy Gifts
- *    -Buy/UnBuy Triggers notification when buying multiple gifts at once, Maybe fixed?
- *
- *
- *
- *   After Initial Release:
- *
- *   -"Error Logs"
- *    -Scatter bools around apps to ensure completion of operations
- *    -If bools are incomplete, push data to an error list in server
- *    -Set location, current user, bools, and other relevant data
- *    -Consent to data sharing to devs to help make the app better?
- *
- *   -"Sent Invite Lists"
- *    -Show as pending
- *    -Remove properly after invite completion
- *
- *   -"Private Gift Lists"
- *    -A gift list that the user cannot see but their friends can
- *    -"Hey this would be cool" but they don't add it to their list
-
- -Gift List Comments (Did you mean to say this?)
- -Gift turns red when there is a notification
- *
- *
- * ----------------------------------------------------------------------------------------------
- *
- * IMPORTANT RELOAD UPDATE:
- *
- * USE THIS FUNCTION:
- reloadTimer();
-
- function reloadTimer(){
-    var reloadNum = 0;
-    var reloadCount = 0;
-    var reloadBool = true;
-    //console.log("Reload Timer Started");
-    var rel = setInterval(function(){
-      reloadNum = reloadNum + 1;
-      if (reload && reloadNum >= 60 && reloadBool) {//reload 1min
-        //console.log("Reload 1");
-        location.reload();
-      } else if (reloadNum >= 60 && reloadBool) {//no reload 1min
-        //console.log("No Reload, 1 - " + reloadCount);
-        reloadCount+=1;
-        if (reloadCount>10) {
-          reloadBool = false;
-        }
-        reloadNum = 0;
-      } else if (reload && reloadNum >= 600){//reload 10min
-        //console.log("Reload 10");
-        location.reload();
-      } else if (reloadNum >= 600){//no reload 10min
-        //console.log("No Reload... 10");
-        reloadNum = 0;
-      }
-    }, 1000);
-  }
- *
- * DECLARE RELOAD AT TOP:
- var reload = false;
- *
- * ADD RELOAD TO DATA_CHANGED AND DATA_DELETED:
- reload=true;
- *
- *
- * ----------------------------------------------------------------------------------------------
- */
-
 var listeningFirebaseRefs = [];
 var userArr = [];
 
@@ -177,30 +71,6 @@ window.onload = function instantiate() {
     }
   };
 
-  reloadTimer();
-
-  function reloadTimer(){
-    var reloadNum = 0;
-    var reloadCount = 0;
-    var reloadBool = true;
-    var rel = setInterval(function(){
-      reloadNum = reloadNum + 1;
-      if (reload && reloadNum >= 60 && reloadBool) {//reload 1min
-        location.reload();
-      } else if (reloadNum >= 60 && reloadBool) {//no reload 1min
-        reloadCount+=1;
-        if (reloadCount>10) {
-          reloadBool = false;
-        }
-        reloadNum = 0;
-      } else if (reload && reloadNum >= 600){//reload 10min
-        location.reload();
-      } else if (reloadNum >= 600){//no reload 10min
-        reloadNum = 0;
-      }
-    }, 1000);
-  }
-
   databaseQuery();
 
   function databaseQuery() {
@@ -209,15 +79,23 @@ window.onload = function instantiate() {
 
     var fetchPosts = function (postRef) {
       postRef.on('child_added', function (data) {
-        userArr.push(data);
+        userArr.push(data.val());
       });
 
       postRef.on('child_changed', function (data) {
-        reload=true;
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
+          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          userArr[i] = data;
+        }
       });
 
       postRef.on('child_removed', function (data) {
-        reload=true;
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
+          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          userArr.splice(i, 1);
+        }
       });
     };
 
@@ -225,35 +103,47 @@ window.onload = function instantiate() {
 
     listeningFirebaseRefs.push(userInitial);
   }
+
+  function findUIDItemInArr(item, userArray){
+    for(var i = 0; i < userArray.length; i++){
+      if(userArray[i].uid == item){
+        console.log("Found item: " + item);
+        return i;
+      }
+    }
+    return -1;
+  }
 };
 
 
 function login() {
+  var validUserInt = 0;
   for(var i = 0; i < userArr.length; i++){
     if(userArr[i].userName.toLowerCase() == username.value.toLowerCase()){
       try {
         if(decode(userArr[i].encodeStr) == pin.value){
           loginBool = true;
+          validUserInt = i;
+          break;
         } else {
 
         }
       } catch (err) {
         if(userArr[i].pin == pin.value){
           loginBool = true;
+          validUserInt = i;
+          break;
         } else {
 
         }
       }
     }
-    if(loginBool === true){
-      break;
-    }
   }
   if (loginBool === true){
-    document.getElementById("loginInfo").innerHTML = "User Authenticated";
-    validUser = userArr[i];
-    sessionStorage.setItem("validUser", validUser);
-    sessionStorage.setItem("userArr", userArr);
+    document.getElementById("loginInfo").innerHTML = "User " + userArr[validUserInt].userName + " Authenticated";
+    validUser = userArr[validUserInt];
+    sessionStorage.setItem("validUser", JSON.stringify(validUser));
+    sessionStorage.setItem("userArr", JSON.stringify(userArr));
     window.location.href = "home.html";
   } else if (loginBool === false) {
     document.getElementById("loginInfo").innerHTML = "Username or Password Incorrect";
