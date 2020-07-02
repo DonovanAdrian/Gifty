@@ -229,7 +229,7 @@ window.onload = function instantiate() {
   function loginTimer(){
     var loginNum = 0;
     console.log("Login Timer Started");
-    setInterval(function(){ //900 15 mins
+    setInterval(function(){ //900 15 mins, 600 10 mins
       document.onmousemove = resetTimer;
       document.onkeypress = resetTimer;
       document.onload = resetTimer;
@@ -240,11 +240,58 @@ window.onload = function instantiate() {
       document.onscroll = resetTimer;    // scrolling with arrow keys
       document.onkeypress = resetTimer;
       loginNum = loginNum + 1;
-      if (loginNum >= 900){
+      if (loginNum = logoutReminder){//default 600
+        areYouStillThereNote();
+      } else if (loginNum > logoutReminder){//default 600
+        updateAYSTNote(loginNum);
+      } else if (loginNum >= logoutLimit){//default 900
         signOut();
       }
       function resetTimer() {
+        ohThereYouAre();
         loginNum = 0;
+      }
+    }, 1000);
+  }
+
+  function areYouStillThereNote(){
+    modal.style.display = "none";
+
+    noteInfoField.innerHTML = "You have been inactive for 10 minutes, you will be logged out in 5:00!";
+    noteTitleField.innerHTML = "Are You Still There?";
+    noteModal.style.display = "block";
+
+    //close on close
+    noteSpan.onclick = function() {
+      noteModal.style.display = "none";
+    };
+
+    //close on click
+    window.onclick = function(event) {
+      if (event.target == noteModal) {
+        noteModal.style.display = "none";
+      }
+    };
+  }
+
+  function updateAYSTNote(timeElapsed){
+    var timeRemaining = logoutLimit - timeElapsed;
+    var timeMins = timeRemaining/60;
+    var timeSecs = timeRemaining%60;
+    noteInfoField.innerHTML = "You have been inactive for 10 minutes, you will be logged out in " + timeMins
+      + ":" + timeSecs + "!";
+  }
+
+  function ohThereYouAre(){
+    noteInfoField.innerHTML = "Welcome back, " + user.name;
+    noteTitleField.innerHTML = "Oh, There You Are!";
+
+    var nowJ = 0;
+    var j = setInterval(function(){
+      nowJ = nowJ + 1000;
+      if(nowJ >= 3000){
+        noteModal.style.display = "none";
+        clearInterval(j);
       }
     }, 1000);
   }
@@ -432,16 +479,12 @@ window.onload = function instantiate() {
     liItem.onclick = function (){
       var spanGift = document.getElementsByClassName("close")[0];
       modal = document.getElementById('giftModal');
-      noteModal = document.getElementById('notificationModal');
       var updateBtn = document.getElementById('giftUpdate');
       var deleteBtn = document.getElementById('giftDelete');
       var descField = document.getElementById('giftDescription');
       var titleField = document.getElementById('giftTitle');
       var whereField = document.getElementById('giftWhere');
       var linkField = document.getElementById('giftLink');
-
-      noteTitleField = document.getElementById('notificationTitle');
-      noteInfoField = document.getElementById('notificationInfo');
 
       if (giftLink != ""){
         linkField.innerHTML = "Click me to go to the webpage!";
@@ -509,16 +552,12 @@ window.onload = function instantiate() {
     editGift.onclick = function (){
       var spanGift = document.getElementsByClassName("close")[0];
       modal = document.getElementById('giftModal');
-      noteModal = document.getElementById('notificationModal');
       var updateBtn = document.getElementById('giftUpdate');
       var deleteBtn = document.getElementById('giftDelete');
       var descField = document.getElementById('giftDescription');
       var titleField = document.getElementById('giftTitle');
       var whereField = document.getElementById('giftWhere');
       var linkField = document.getElementById('giftLink');
-
-      noteTitleField = document.getElementById('notificationTitle');
-      noteInfoField = document.getElementById('notificationInfo');
 
       if (link != ""){
         linkField.innerHTML = "Click me to go to the webpage!";
