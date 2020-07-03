@@ -1,9 +1,14 @@
 var listeningFirebaseRefs = [];
 var giftArr = [];
 var inviteArr = [];
+var userUserNames = [];
+
+var areYouStillThereBool = false;
 
 var onlineInt = 0;
 var giftCounter = 0;
+var logoutReminder = 300;
+var logoutLimit = 900;
 
 var giftList;
 var giftListHTML;
@@ -14,9 +19,9 @@ var offlineModal;
 var user;
 var modal;
 var noteModal;
-var noteSpan;
 var noteInfoField;
 var noteTitleField;
+var noteSpan;
 var listNote;
 var inviteNote;
 var currentUser;
@@ -28,18 +33,26 @@ var userGifts;
 
 
 function getCurrentUser(){
-  user = sessionStorage.getItem("validGiftUser");
-  currentUser = sessionStorage.getItem("validUser");
+  user = JSON.parse(sessionStorage.validGiftUser);
+  currentUser = JSON.parse(sessionStorage.validUser);
   if(currentUser == null || currentUser == undefined){
     window.location.href = "index.html";
   } else {
-    console.log("User: " + currentUser.key + " logged in");
-    console.log("Friend: " + user.key + " loaded in");
+    console.log("User: " + currentUser.userName + " logged in");
+    console.log("Friend: " + user.userName + " loaded in");
     if (user.giftList == undefined) {
       deployGiftListEmptyNotification();
-    } else if (user.invites.length != 0) {
+    } else if (user.giftList.length == 0) {
+      deployGiftListEmptyNotification();
+    }
+    if(currentUser.invites == undefined) {
+      console.log("Invites Not Found");
+    } else if (currentUser.invites != undefined) {
+      inviteNote.style.background = "#ff3923";
+    } else if (currentUser.invites.length > 0) {
       inviteNote.style.background = "#ff3923";
     }
+    userArr = JSON.parse(sessionStorage.userArr);
   }
 }
 
@@ -53,7 +66,16 @@ window.onload = function instantiate() {
   backBtn = document.getElementById('backBtn');
   listNote = document.getElementById('listNote');
   inviteNote = document.getElementById('inviteNote');
+  noteModal = document.getElementById('notificationModal');
+  noteTitleField = document.getElementById('notificationTitle');
+  noteInfoField = document.getElementById('notificationInfo');
+  noteSpan = document.getElementById('closeNotification');
+  modal = document.getElementById('giftModal');
   getCurrentUser();
+
+  for(var i = 0; i < userArr.length; i++){
+    userUserNames.push(userArr[i].userName);
+  }
 
   const config = {
     //Oops! This is gone!
@@ -94,17 +116,19 @@ window.onload = function instantiate() {
             document.getElementById("TestGift").innerHTML = "No Gifts Found! Your Friend Must Not Have Any Gifts!";
           }
         } catch(err){
-          console.log("Loading Element Missing, Creating A New One");
-          var liItem = document.createElement("LI");
-          liItem.id = "TestGift";
-          liItem.className = "gift";
-          if (onlineInt == 0) {
-            var textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
-          } else {
-            var textNode = document.createTextNode("No Gifts Found! Your Friend Must Not Have Any Gifts!");
+          if(giftCounter == 0) {
+            console.log("Loading Element Missing, Creating A New One");
+            var liItem = document.createElement("LI");
+            liItem.id = "TestGift";
+            liItem.className = "gift";
+            if (onlineInt == 0) {
+              var textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
+            } else {
+              var textNode = document.createTextNode("No Gifts Found! Your Friend Must Not Have Any Gifts!");
+            }
+            liItem.appendChild(textNode);
+            giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
           }
-          liItem.appendChild(textNode);
-          giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
         }
         offlineModal.style.display = "block";
         clearInterval(offlineTimer);
@@ -127,27 +151,208 @@ window.onload = function instantiate() {
   //initialize back button
   backBtn.innerHTML = "Back To Lists";
   backBtn.onclick = function() {
-    sessionStorage.setItem("validUser", currentUser);
+    sessionStorage.setItem("validUser", JSON.stringify(currentUser));
+    sessionStorage.setItem("userArr", JSON.stringify(userArr));
     window.location.href = "lists.html";
   };
 
   databaseQuery();
 
+  loginTimer(); //if action, then reset timer
+
+  function loginTimer(){
+    var loginNum = 0;
+    console.log("Login Timer Started");
+    setInterval(function(){ //900 15 mins, 600 10 mins
+      document.onmousemove = resetTimer;
+      document.onkeypress = resetTimer;
+      document.onload = resetTimer;
+      document.onmousemove = resetTimer;
+      document.onmousedown = resetTimer; // touchscreen presses
+      document.ontouchstart = resetTimer;
+      document.onclick = resetTimer;     // touchpad clicks
+      document.onscroll = resetTimer;    // scrolling with arrow keys
+      document.onkeypress = resetTimer;
+      loginNum = loginNum + 1;
+      if (loginNum >= logoutLimit){//default 900
+        signOut();
+      } else if (loginNum > logoutReminder){//default 600
+        areYouStillThereNote(loginNum);
+        areYouStillThereBool = true;
+      }
+      function resetTimer() {
+        if (areYouStillThereBool)
+          ohThereYouAre();
+        loginNum = 0;
+      }
+    }, 1000);
+  }
+
+  function areYouStillThereNote(timeElapsed){
+    var timeRemaining = logoutLimit - timeElapsed;
+    var timeMins = Math.floor(timeRemaining/60);
+    var timeSecs = timeRemaining%60;
+
+    if (timeSecs < 10) {
+      timeSecs = ("0" + timeSecs).slice(-2);
+    }
+
+    modal.style.display = "none";
+    noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
+      + ":" + timeSecs + "!";
+    noteTitleField.innerHTML = "Are You Still There?";
+    noteModal.style.display = "block";
+
+    //close on close
+    noteSpan.onclick = function() {
+      noteModal.style.display = "none";
+      areYouStillThereBool = false;
+    };
+  }
+
+  function ohThereYouAre(){
+    noteInfoField.innerHTML = "Welcome back, " + user.name;
+    noteTitleField.innerHTML = "Oh, There You Are!";
+
+    var nowJ = 0;
+    var j = setInterval(function(){
+      nowJ = nowJ + 1000;
+      if(nowJ >= 3000){
+        noteModal.style.display = "none";
+        areYouStillThereBool = false;
+        clearInterval(j);
+      }
+    }, 1000);
+
+    //close on click
+    window.onclick = function(event) {
+      if (event.target == noteModal) {
+        noteModal.style.display = "none";
+        areYouStillThereBool = false;
+      }
+    };
+  }
+
   function databaseQuery() {
 
-    userBase = firebase.database().ref("users/" + user.key);
-    userGifts = firebase.database().ref("users/" + user.key + "/giftList");
-    userInvites = firebase.database().ref("users/" + currentUser.key + "/invites");
+    userBase = firebase.database().ref("users/" + currentUser.uid);
+    userGifts = firebase.database().ref("users/" + user.uid + "/giftList");
+    userInvites = firebase.database().ref("users/" + currentUser.uid + "/invites");
 
     var fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         onlineInt = 1;
+        if(data.key == "name"){
+          currentUser.name = data.val();
+        } else if (data.key == "pin"){
+          currentUser.pin = data.val();
+        } else if (data.key == "encodeStr"){
+          currentUser.encodeStr = data.val();
+        } else if (data.key == "userName"){
+          currentUser.userName = data.val();
+        } else if (data.key == "ban"){
+          currentUser.ban = data.val();
+        } else if (data.key == "firstLogin"){
+          currentUser.firstLogin = data.val();
+        } else if (data.key == "moderatorInt"){
+          currentUser.moderatorInt = data.val();
+        } else if (data.key == "organize"){
+          currentUser.organize = data.val();
+        } else if (data.key == "strike"){
+          currentUser.strike = data.val();
+        } else if (data.key == "theme"){
+          currentUser.theme = data.val();
+        } else if (data.key == "uid"){
+          currentUser.uid = data.val();
+        } else if (data.key == "warn"){
+          currentUser.warn = data.val();
+        } else if (data.key == "giftList"){
+          currentUser.giftList = data.val();
+        } else if (data.key == "support"){
+          currentUser.support = data.val();
+        } else if (data.key == "invites"){
+          currentUser.invites = data.val();
+        } else if (data.key == "friends"){
+          currentUser.friends = data.val();
+        } else if (data.key == "shareCode"){
+          currentUser.shareCode = data.val();
+        } else {
+          console.log("Unknown Key..." + data.key);
+        }
+      });
+      postRef.on('child_changed', function (data){
+        if(data.key == "name"){
+          currentUser.name = data.val();
+        } else if (data.key == "pin"){
+          currentUser.pin = data.val();
+        } else if (data.key == "encodeStr"){
+          currentUser.encodeStr = data.val();
+        } else if (data.key == "userName"){
+          currentUser.userName = data.val();
+        } else if (data.key == "ban"){
+          currentUser.ban = data.val();
+        } else if (data.key == "firstLogin"){
+          currentUser.firstLogin = data.val();
+        } else if (data.key == "moderatorInt"){
+          currentUser.moderatorInt = data.val();
+        } else if (data.key == "organize"){
+          currentUser.organize = data.val();
+        } else if (data.key == "strike"){
+          currentUser.strike = data.val();
+        } else if (data.key == "theme"){
+          currentUser.theme = data.val();
+        } else if (data.key == "uid"){
+          currentUser.uid = data.val();
+        } else if (data.key == "warn"){
+          currentUser.warn = data.val();
+        } else if (data.key == "giftList"){
+          currentUser.giftList = data.val();
+        } else if (data.key == "support"){
+          currentUser.support = data.val();
+        } else if (data.key == "invites"){
+          currentUser.invites = data.val();
+        } else if (data.key == "friends"){
+          currentUser.friends = data.val();
+        } else if (data.key == "shareCode"){
+          currentUser.shareCode = data.val();
+        } else {
+          console.log("Unknown Key..." + data.key);
+        }
+      });
+      postRef.on('child_removed', function (data){
+        if(data.key == "name"){
+          currentUser.name = "";
+        } else if (data.key == "pin"){
+          currentUser.pin = "";
+        } else if (data.key == "encodeStr"){
+          currentUser.encodeStr = "";
+        } else if (data.key == "userName"){
+          currentUser.userName = "";
+        } else if (data.key == "uid"){
+          currentUser.uid = "";
+        } else if (data.key == "giftList"){
+          currentUser.giftList = [];
+        } else if (data.key == "support"){
+          currentUser.support = [];
+        } else if (data.key == "invites"){
+          currentUser.invites = [];
+        } else if (data.key == "friends"){
+          currentUser.friends = [];
+        } else if (data.key == "shareCode"){
+          currentUser.shareCode = "";
+        } else {
+          console.log("Unknown Key..." + data.key);
+        }
       });
     };
 
     var fetchGifts = function (postRef) {
       postRef.on('child_added', function (data) {
         giftArr.push(data.val());
+
+        if(checkGiftBuyer(data.val().buyer)){
+          updateGiftError(data, data.key);
+        }
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
           data.key, data.val().where, data.val().buyer);
@@ -166,7 +371,7 @@ window.onload = function instantiate() {
         console.log(giftArr);
         giftArr.splice(data.key, 1);
         console.log(giftArr);
-        removeGiftElement(data.key);
+        removeGiftElement(data.val().uid);
 
         if (giftArr.length == 0) {
           deployGiftListEmptyNotification();
@@ -208,6 +413,30 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 
+  function checkGiftBuyer(buyer){
+    var updateGiftToDB = true;
+
+    console.log("Checking for buyer error...");
+
+    if(buyer == "" || buyer == null || buyer == undefined || userUserNames.includes(buyer)){
+      updateGiftToDB = false;
+      console.log("No buyer error");
+    } else {
+      console.log("Buyer error found!");
+    }
+
+    return updateGiftToDB;
+  }
+
+  function updateGiftError(giftData, giftKey){
+    alert("Gift " + giftData.title + " needs to be updated! Key: " + giftKey);
+    /*
+    firebase.database().ref("users/" + user.uid + "/giftList/" + uid).update({
+      buyer: ""
+    });
+    */
+  }
+
   function createGiftElement(giftDescription, giftLink, giftReceived, giftTitle, giftUid, giftWhere, giftBuyer){
     try{
       document.getElementById("TestGift").remove();
@@ -224,8 +453,6 @@ window.onload = function instantiate() {
     }
     liItem.onclick = function (){
       var spanGift = document.getElementsByClassName("close")[0];
-      modal = document.getElementById('giftModal');
-      noteModal = document.getElementById('notificationModal');
       var buyBtn = document.getElementById('giftBuy');
       var dontBuyBtn = document.getElementById('giftDontBuy');
       var descField = document.getElementById('giftDescription');
@@ -275,16 +502,29 @@ window.onload = function instantiate() {
         boughtField.innerHTML = "This gift has not been bought yet";
       }
       buyBtn.onclick = function(){
-        firebase.database().ref("users/" + user + "/giftList/" + giftUid).update({
-          received: 1,
-          buyer: currentUser.key
-        });
+        if (giftReceived == 0) {
+          firebase.database().ref("users/" + user.uid + "/giftList/" + giftUid).update({
+            received: 1,
+            buyer: currentUser.userName
+          });
+        } else {
+          alert("This gift has already been marked as bought!");
+        }
       };
       dontBuyBtn.onclick = function(){
-        firebase.database().ref("users/" + user + "/giftList/" + giftUid).update({
-          received: 0,
-          buyer: ""
-        });
+        if (giftReceived == 1) {
+          if (giftBuyer == currentUser.userName || giftBuyer == "") {
+            firebase.database().ref("users/" + user.uid + "/giftList/" + giftUid).update({
+              received: 0,
+              buyer: ""
+            });
+          } else {
+            alert("Only the buyer, " + giftBuyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
+              "if this has been done in error.");
+          }
+        } else {
+          alert("This gift has already been marked as \"Un-Bought\"!");
+        }
       };
 
       //show modal
@@ -319,8 +559,6 @@ window.onload = function instantiate() {
     }
     editGift.onclick = function (){
       var spanGift = document.getElementsByClassName("close")[0];
-      modal = document.getElementById('giftModal');
-      noteModal = document.getElementById('notificationModal');
       var buyBtn = document.getElementById('giftBuy');
       var dontBuyBtn = document.getElementById('giftDontBuy');
       var descField = document.getElementById('giftDescription');
@@ -370,16 +608,29 @@ window.onload = function instantiate() {
         boughtField.innerHTML = "This gift has not been bought yet";
       }
       buyBtn.onclick = function(){
-        firebase.database().ref("users/" + user + "/giftList/" + uid).update({
-          received: 1,
-          buyer: currentUser.key
-        });
+        if(received == 0) {
+          firebase.database().ref("users/" + user.uid + "/giftList/" + uid).update({
+            received: 1,
+            buyer: currentUser.userName
+          });
+        } else {
+          alert("This gift has already been marked as bought!");
+        }
       };
       dontBuyBtn.onclick = function(){
-        firebase.database().ref("users/" + user + "/giftList/" + uid).update({
-          received: 0,
-          buyer: ""
-        });
+        if(received == 1) {
+          if (buyer == currentUser.userName || buyer == "") {
+            firebase.database().ref("users/" + user.uid + "/giftList/" + uid).update({
+              received: 0,
+              buyer: ""
+            });
+          } else {
+            alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
+              "if this has been done in error.");
+          }
+        } else {
+          alert("This gift has already been marked as \"Un-Bought\"!");
+        }
       };
 
       //show modal
@@ -431,7 +682,8 @@ function signOut(){
 }
 
 function navigation(nav){
-  sessionStorage.setItem("validUser", currentUser);
+  sessionStorage.setItem("validUser", JSON.stringify(currentUser));
+  sessionStorage.setItem("userArr", JSON.stringify(userArr));
   switch(nav){
     case 0:
       window.location.href = "home.html";
