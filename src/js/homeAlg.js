@@ -8,6 +8,8 @@ var updateUserBool = false;
 
 var giftCounter = 0;
 var onlineInt = 0;
+var logoutReminder = 300;
+var logoutLimit = 900;
 
 var giftList;
 var giftListHTML;
@@ -21,9 +23,9 @@ var userInvites;
 var offlineTimer;
 var modal;
 var noteModal;
-var noteSpan;
 var noteInfoField;
 var noteTitleField;
+var noteSpan;
 var listNote;
 var inviteNote;
 var userBase;
@@ -137,10 +139,14 @@ window.onload = function instantiate() {
   giftListHTML = document.getElementById('giftListContainer').innerHTML;
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
+  noteModal = document.getElementById('notificationModal');
+  noteTitleField = document.getElementById('notificationTitle');
+  noteInfoField = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
-  backBtn = document.getElementById('addGift');
-  listNote = document.getElementById('listNote');
   inviteNote = document.getElementById('inviteNote');
+  listNote = document.getElementById('listNote');
+  backBtn = document.getElementById('addGift');
+  modal = document.getElementById('giftModal');
   getCurrentUser();
 
   const config = {
@@ -240,13 +246,12 @@ window.onload = function instantiate() {
       document.onscroll = resetTimer;    // scrolling with arrow keys
       document.onkeypress = resetTimer;
       loginNum = loginNum + 1;
-      if (loginNum = logoutReminder){//default 600
-        areYouStillThereNote();
-      } else if (loginNum > logoutReminder){//default 600
-        updateAYSTNote(loginNum);
-      } else if (loginNum >= logoutLimit){//default 900
+      if (loginNum >= logoutLimit){//default 900
         signOut();
+      } else if (loginNum > logoutReminder){//default 600
+        areYouStillThereNote(loginNum);
       }
+      console.log(loginNum);
       function resetTimer() {
         ohThereYouAre();
         loginNum = 0;
@@ -254,10 +259,18 @@ window.onload = function instantiate() {
     }, 1000);
   }
 
-  function areYouStillThereNote(){
-    modal.style.display = "none";
+  function areYouStillThereNote(timeElapsed){
+    var timeRemaining = logoutLimit - timeElapsed;
+    var timeMins = Math.floor(timeRemaining/60);
+    var timeSecs = timeRemaining%60;
 
-    noteInfoField.innerHTML = "You have been inactive for 10 minutes, you will be logged out in 5:00!";
+    if (timeSecs < 10) {
+      timeSecs = ("0" + timeSecs).slice(-2);
+    }
+
+    modal.style.display = "none";
+    noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
+      + ":" + timeSecs + "!";
     noteTitleField.innerHTML = "Are You Still There?";
     noteModal.style.display = "block";
 
@@ -265,21 +278,6 @@ window.onload = function instantiate() {
     noteSpan.onclick = function() {
       noteModal.style.display = "none";
     };
-
-    //close on click
-    window.onclick = function(event) {
-      if (event.target == noteModal) {
-        noteModal.style.display = "none";
-      }
-    };
-  }
-
-  function updateAYSTNote(timeElapsed){
-    var timeRemaining = logoutLimit - timeElapsed;
-    var timeMins = timeRemaining/60;
-    var timeSecs = timeRemaining%60;
-    noteInfoField.innerHTML = "You have been inactive for 10 minutes, you will be logged out in " + timeMins
-      + ":" + timeSecs + "!";
   }
 
   function ohThereYouAre(){
@@ -294,6 +292,13 @@ window.onload = function instantiate() {
         clearInterval(j);
       }
     }, 1000);
+
+    //close on click
+    window.onclick = function(event) {
+      if (event.target == noteModal) {
+        noteModal.style.display = "none";
+      }
+    };
   }
 
   function databaseQuery() {
@@ -478,7 +483,6 @@ window.onload = function instantiate() {
     liItem.className = "gift";
     liItem.onclick = function (){
       var spanGift = document.getElementsByClassName("close")[0];
-      modal = document.getElementById('giftModal');
       var updateBtn = document.getElementById('giftUpdate');
       var deleteBtn = document.getElementById('giftDelete');
       var descField = document.getElementById('giftDescription');
@@ -551,7 +555,6 @@ window.onload = function instantiate() {
     editGift.className = "gift";
     editGift.onclick = function (){
       var spanGift = document.getElementsByClassName("close")[0];
-      modal = document.getElementById('giftModal');
       var updateBtn = document.getElementById('giftUpdate');
       var deleteBtn = document.getElementById('giftDelete');
       var descField = document.getElementById('giftDescription');
