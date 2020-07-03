@@ -2,6 +2,11 @@ var listeningFirebaseRefs = [];
 var giftArr = [];
 
 var giftPresent = true;
+var areYouStillThereBool = false;
+
+var giftUID = -1;
+var logoutReminder = 300;
+var logoutLimit = 900;
 
 var offline;
 var giftList;
@@ -16,21 +21,32 @@ var linkField;
 var spanUpdate;
 var currentGift;
 var userGifts;
-
+var noteModal;
+var noteInfoField;
+var noteTitleField;
+var noteSpan;
 
 
 function getCurrentUser(){
-  user = sessionStorage.getItem("validUser");
+  user = JSON.parse(sessionStorage.validUser);
   if(user == null || user == undefined){
     window.location.href = "index.html";
   } else {
-    console.log("User: " + user.key + " logged in");
-    giftStorage = sessionStorage.getItem("giftStorage");
-    if(giftStorage == null || giftStorage == undefined || giftStorage == ""){
+    console.log("User: " + user.userName + " logged in");
+    giftStorage = JSON.parse(sessionStorage.giftStorage);
+    if (giftStorage == null || giftStorage == undefined || giftStorage == "") {
       giftPresent = false;
     } else {
       console.log("Gift: " + giftStorage + " found");
     }
+    if(user.invites == undefined) {
+      console.log("Invites Not Found");
+    } else if (user.invites != undefined) {
+      inviteNote.style.background = "#ff3923";
+    } else if (user.invites.length > 0) {
+      inviteNote.style.background = "#ff3923";
+    }
+    userArr = JSON.parse(sessionStorage.userArr);
   }
 }
 
@@ -45,6 +61,10 @@ window.onload = function instantiate() {
   whereField = document.getElementById('giftWhereInp');
   linkField = document.getElementById('giftLinkInp');
   spanUpdate = document.getElementById('updateGift');
+  noteModal = document.getElementById('notificationModal');
+  noteTitleField = document.getElementById('notificationTitle');
+  noteInfoField = document.getElementById('notificationInfo');
+  noteSpan = document.getElementById('closeNotification');
   getCurrentUser();
 
   const config = {
@@ -98,30 +118,107 @@ window.onload = function instantiate() {
     }
   };
 
+  if(giftPresent) {
+    spanUpdate.innerHTML = "Update Gift";
+    spanUpdate.onclick = function() {
+      updateGiftToDB();
+    }
+  } else {
+    spanUpdate.innerHTML = "Add New Gift";
+    spanUpdate.onclick = function() {
+      addGiftToDB();
+    }
+  }
+
   databaseQuery();
+
+  initializeData();
+
+  loginTimer(); //if action, then reset timer
+
+  function loginTimer(){
+    var loginNum = 0;
+    console.log("Login Timer Started");
+    setInterval(function(){ //900 15 mins, 600 10 mins
+      document.onmousemove = resetTimer;
+      document.onkeypress = resetTimer;
+      document.onload = resetTimer;
+      document.onmousemove = resetTimer;
+      document.onmousedown = resetTimer; // touchscreen presses
+      document.ontouchstart = resetTimer;
+      document.onclick = resetTimer;     // touchpad clicks
+      document.onscroll = resetTimer;    // scrolling with arrow keys
+      document.onkeypress = resetTimer;
+      loginNum = loginNum + 1;
+      if (loginNum >= logoutLimit){//default 900
+        signOut();
+      } else if (loginNum > logoutReminder){//default 600
+        areYouStillThereNote(loginNum);
+        areYouStillThereBool = true;
+      }
+      function resetTimer() {
+        if (areYouStillThereBool)
+          ohThereYouAre();
+        loginNum = 0;
+      }
+    }, 1000);
+  }
+
+  function areYouStillThereNote(timeElapsed){
+    var timeRemaining = logoutLimit - timeElapsed;
+    var timeMins = Math.floor(timeRemaining/60);
+    var timeSecs = timeRemaining%60;
+
+    if (timeSecs < 10) {
+      timeSecs = ("0" + timeSecs).slice(-2);
+    }
+
+    modal.style.display = "none";
+    noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
+      + ":" + timeSecs + "!";
+    noteTitleField.innerHTML = "Are You Still There?";
+    noteModal.style.display = "block";
+
+    //close on close
+    noteSpan.onclick = function() {
+      noteModal.style.display = "none";
+      areYouStillThereBool = false;
+    };
+  }
+
+  function ohThereYouAre(){
+    noteInfoField.innerHTML = "Welcome back, " + user.name;
+    noteTitleField.innerHTML = "Oh, There You Are!";
+
+    var nowJ = 0;
+    var j = setInterval(function(){
+      nowJ = nowJ + 1000;
+      if(nowJ >= 3000){
+        noteModal.style.display = "none";
+        areYouStillThereBool = false;
+        clearInterval(j);
+      }
+    }, 1000);
+
+    //close on click
+    window.onclick = function(event) {
+      if (event.target == noteModal) {
+        noteModal.style.display = "none";
+        areYouStillThereBool = false;
+      }
+    };
+  }
 
   function databaseQuery() {
 
-    userGifts = firebase.database().ref("users/" + user.key + "/giftList/");
-
-    initializeData();
+    userGifts = firebase.database().ref("users/" + user.uid + "/giftList/");
 
     var fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         giftArr.push(data);
 
-        if(giftStorage == data.key) {
-          if(giftPresent) {
-            spanUpdate.innerHTML = "Update Gift";
-            spanUpdate.onclick = function() {
-              updateGiftToDB();
-            }
-          } else {
-            spanUpdate.innerHTML = "Add New Gift";
-            spanUpdate.onclick = function() {
-              addGiftToDB();
-            }
-          }
+        if(data.val().uid == giftStorage){
+          giftUID = data.key;
         }
       });
 
@@ -129,6 +226,11 @@ window.onload = function instantiate() {
         console.log(giftArr);
         giftArr[data.key] = data;
         console.log(giftArr);
+
+        if(data.val().uid == giftStorage){
+          currentGift.buyer = data.buyer;
+          currentGift.received = data.received;
+        }
       });
 
       postRef.on('child_removed', function (data) {
@@ -166,7 +268,7 @@ window.onload = function instantiate() {
 
   function getGift() {
     for (var i = 0; i < user.giftList.length; i++){
-      if(user.giftList[i] == giftStorage){
+      if(user.giftList[i].uid == giftStorage){
         currentGift = user.giftList[i];
         break;
       }
@@ -178,18 +280,22 @@ window.onload = function instantiate() {
       alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
         "you!");
     else {
-      firebase.database().ref("users/" + user.key + "/giftList/" + uid).update({
-        title: titleField.value,
-        link: linkField.value,
-        where: whereField.value,
-        received: currentGift.received,
-        uid: giftStorage,
-        buyer: currentGift.buyer,
-        description: descField.value
-      });
+      if(giftUID != -1) {
+        firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
+          title: titleField.value,
+          link: linkField.value,
+          where: whereField.value,
+          received: currentGift.received,
+          uid: giftStorage,
+          buyer: currentGift.buyer,
+          description: descField.value
+        });
 
-      sessionStorage.setItem("validUser", user);
-      window.location.href = "home.html";
+        sessionStorage.setItem("validUser", JSON.stringify(user));
+        window.location.href = "home.html";
+      } else {
+        console.log(giftUID);
+      }
     }
   }
 
@@ -200,10 +306,10 @@ window.onload = function instantiate() {
       alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
         "you!");
     else {
-      var newUid = firebase.database().ref("users/" + user.key + "/giftList/" + uid).push();
+      var newUid = firebase.database().ref("users/" + user.uid + "/giftList/" + uid).push();
       newUid = newUid.toString();
       newUid = newUid.substr(77, 96);
-      firebase.database().ref("users/" + user.key + "/giftList/" + uid).set({
+      firebase.database().ref("users/" + user.uid + "/giftList/" + uid).set({
         title: titleField.value,
         link: linkField.value,
         where: whereField.value,
@@ -213,7 +319,7 @@ window.onload = function instantiate() {
         description: descField.value
       });
 
-      sessionStorage.setItem("validUser", user);
+      sessionStorage.setItem("validUser", JSON.stringify(user));
       window.location.href = "home.html";
     }
   }
@@ -225,7 +331,8 @@ function signOut(){
 }
 
 function navigation(nav){
-  sessionStorage.setItem("validUser", user);
+  sessionStorage.setItem("validUser", JSON.stringify(user));
+  sessionStorage.setItem("userArr", JSON.stringify(userArr));
   switch(nav){
     case 0:
       window.location.href = "home.html";

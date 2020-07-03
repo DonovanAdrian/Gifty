@@ -250,10 +250,11 @@ window.onload = function instantiate() {
         signOut();
       } else if (loginNum > logoutReminder){//default 600
         areYouStillThereNote(loginNum);
+        areYouStillThereBool = true;
       }
-      console.log(loginNum);
       function resetTimer() {
-        ohThereYouAre();
+        if (areYouStillThereBool)
+          ohThereYouAre();
         loginNum = 0;
       }
     }, 1000);
@@ -277,6 +278,7 @@ window.onload = function instantiate() {
     //close on close
     noteSpan.onclick = function() {
       noteModal.style.display = "none";
+      areYouStillThereBool = false;
     };
   }
 
@@ -289,6 +291,7 @@ window.onload = function instantiate() {
       nowJ = nowJ + 1000;
       if(nowJ >= 3000){
         noteModal.style.display = "none";
+        areYouStillThereBool = false;
         clearInterval(j);
       }
     }, 1000);
@@ -297,6 +300,7 @@ window.onload = function instantiate() {
     window.onclick = function(event) {
       if (event.target == noteModal) {
         noteModal.style.display = "none";
+        areYouStillThereBool = false;
       }
     };
   }
