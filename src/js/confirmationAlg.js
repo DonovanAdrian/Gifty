@@ -1,9 +1,14 @@
 var userArr = [];
+var friendArr = [];
 var inviteArr = [];
 var listeningFirebaseRefs = [];
 
+var areYouStillThereBool = false;
+
 var inviteCount = 0;
 var onlineInt = 0;
+var logoutReminder = 300;
+var logoutLimit = 900;
 
 var offline;
 var userList;
@@ -18,17 +23,26 @@ var modal;
 var listNote;
 var inviteNote;
 var offlineTimer;
+var noteModal;
+var noteInfoField;
+var noteTitleField;
+var noteSpan;
 
 function getCurrentUser(){
-  user = sessionStorage.getItem("validUser");
+  user = JSON.parse(sessionStorage.validUser);
   if(user == null || user == undefined){
     window.location.href = "index.html";
   } else {
-    console.log("User: " + user.key + " logged in");
-    if(user.friends == undefined){
-      deployFriendListEmptyNotification();
+    console.log("User: " + user.userName + " logged in");
+    if(user.invites == undefined) {
+      console.log("Invites Not Found");
+      deployInviteListEmptyNotification();
+    } else if (user.invites != undefined) {
+      if (user.invites.length > 0) {
+        inviteNote.style.background = "#ff3923";
+      }
     }
-    userArr = sessionStorage.getItem("userArr");
+    userArr = JSON.parse(sessionStorage.userArr);
   }
 }
 
@@ -40,6 +54,11 @@ window.onload = function instantiate() {
   offlineSpan = document.getElementById("closeOffline");
   listNote = document.getElementById('listNote');
   inviteNote = document.getElementById('inviteNote');
+  noteModal = document.getElementById('notificationModal');
+  noteTitleField = document.getElementById('notificationTitle');
+  noteInfoField = document.getElementById('notificationInfo');
+  noteSpan = document.getElementById('closeNotification');
+  modal = document.getElementById('myModal');
   getCurrentUser();
 
   const config = {
@@ -78,20 +97,22 @@ window.onload = function instantiate() {
           if (onlineInt == 0) {
             document.getElementById("TestGift").innerHTML = "Loading Failed, Please Connect To Internet";
           } else {
-            document.getElementById("TestGift").innerHTML = "No Friends Found! Wait For More Friends To Send You Invites!";
+            document.getElementById("TestGift").innerHTML = "No Invites Found! Wait For More Friends To Send You Invites!";
           }
         } catch(err){
-          console.log("Loading Element Missing, Creating A New One");
-          var liItem = document.createElement("LI");
-          liItem.id = "TestGift";
-          liItem.className = "gift";
-          if (onlineInt == 0) {
-            var textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
-          } else {
-            var textNode = document.createTextNode("No Friends Found! Wait For More Friends To Send You Invites!");
+          if(inviteCount == 0) {
+            console.log("Loading Element Missing, Creating A New One");
+            var liItem = document.createElement("LI");
+            liItem.id = "TestGift";
+            liItem.className = "gift";
+            if (onlineInt == 0) {
+              var textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
+            } else {
+              var textNode = document.createTextNode("No Invites Found! Wait For More Friends To Send You Invites!");
+            }
+            liItem.appendChild(textNode);
+            userList.insertBefore(liItem, document.getElementById("userListContainer").childNodes[0]);
           }
-          liItem.appendChild(textNode);
-          giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
         }
         offlineModal.style.display = "block";
         clearInterval(offlineTimer);
@@ -112,7 +133,83 @@ window.onload = function instantiate() {
   };
 
   databaseQuery();
+
   inviteConfirmButton();
+
+  loginTimer(); //if action, then reset timer
+
+  function loginTimer(){
+    var loginNum = 0;
+    console.log("Login Timer Started");
+    setInterval(function(){ //900 15 mins, 600 10 mins
+      document.onmousemove = resetTimer;
+      document.onkeypress = resetTimer;
+      document.onload = resetTimer;
+      document.onmousemove = resetTimer;
+      document.onmousedown = resetTimer; // touchscreen presses
+      document.ontouchstart = resetTimer;
+      document.onclick = resetTimer;     // touchpad clicks
+      document.onscroll = resetTimer;    // scrolling with arrow keys
+      document.onkeypress = resetTimer;
+      loginNum = loginNum + 1;
+      if (loginNum >= logoutLimit){//default 900
+        signOut();
+      } else if (loginNum > logoutReminder){//default 600
+        areYouStillThereNote(loginNum);
+        areYouStillThereBool = true;
+      }
+      function resetTimer() {
+        if (areYouStillThereBool)
+          ohThereYouAre();
+        loginNum = 0;
+      }
+    }, 1000);
+  }
+
+  function areYouStillThereNote(timeElapsed){
+    var timeRemaining = logoutLimit - timeElapsed;
+    var timeMins = Math.floor(timeRemaining/60);
+    var timeSecs = timeRemaining%60;
+
+    if (timeSecs < 10) {
+      timeSecs = ("0" + timeSecs).slice(-2);
+    }
+
+    modal.style.display = "none";
+    noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
+      + ":" + timeSecs + "!";
+    noteTitleField.innerHTML = "Are You Still There?";
+    noteModal.style.display = "block";
+
+    //close on close
+    noteSpan.onclick = function() {
+      noteModal.style.display = "none";
+      areYouStillThereBool = false;
+    };
+  }
+
+  function ohThereYouAre(){
+    noteInfoField.innerHTML = "Welcome back, " + user.name;
+    noteTitleField.innerHTML = "Oh, There You Are!";
+
+    var nowJ = 0;
+    var j = setInterval(function(){
+      nowJ = nowJ + 1000;
+      if(nowJ >= 3000){
+        noteModal.style.display = "none";
+        areYouStillThereBool = false;
+        clearInterval(j);
+      }
+    }, 1000);
+
+    //close on click
+    window.onclick = function(event) {
+      if (event.target == noteModal) {
+        noteModal.style.display = "none";
+        areYouStillThereBool = false;
+      }
+    };
+  }
 
   function inviteConfirmButton(){
     var nowConfirm = 0;
@@ -138,49 +235,51 @@ window.onload = function instantiate() {
   function databaseQuery() {
 
     userInitial = firebase.database().ref("users/");
-    userFriends = firebase.database().ref("users/" + user.key + "/friends");
-    userInvites = firebase.database().ref("users/" + user.key + "/invites");
+    userFriends = firebase.database().ref("users/" + user.uid + "/friends");
+    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
     var fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         onlineInt = 1;
 
-        var i = findItemInArr(data, userArr);
-        if(userArr[i] != data){
-          console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
-          console.log(userArr[i]);
-          console.log(data.val());
-          userArr[i] = data;
-          console.log(userArr[i]);
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
+          //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          userArr[i] = data.val();
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 1");
         }
       });
 
       postRef.on('child_changed', function (data) {
-        var i = findItemInArr(data, userArr);
-        if(userArr[i] != data){
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
           console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
-          console.log(userArr[i]);
-          console.log(data.val());
-          userArr[i] = data;
-          console.log(userArr[i]);
+          userArr[i] = data.val();
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 2");
         }
       });
 
       postRef.on('child_removed', function (data) {
-        var i = findItemInArr(data, userArr);
-        if(userArr[i] != data){
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
           console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
-          console.log(userArr[i]);
-          console.log(data.val());
           userArr.splice(i, 1);
-          console.log(userArr);
         }
       });
     };
 
     var fetchFriends = function (postRef) {
       postRef.on('child_added', function (data) {
-        friendArr.push(data.val());
+        if (!friendArr.includes(data.val()))
+          friendArr.push(data.val());
       });
 
       postRef.on('child_changed', function (data) {
@@ -205,24 +304,9 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        console.log(inviteArr);
         inviteArr[data.key] = data.val();
-        console.log(inviteArr);
 
         changeInviteElement(data.val());
-      });
-
-      postRef.on('child_removed', function (data) {
-        console.log(inviteArr);
-        inviteArr.splice(data.key, 1);
-        console.log(inviteArr);
-
-        removeInviteElement(data.key);
-
-        if (inviteArr.length == 0) {
-          console.log("Invite List Removed");
-          inviteNote.style.background = "#008222";
-        }
       });
     };
 
@@ -235,13 +319,14 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 
-  function findItemInArr(item, array){
-    for(var i = 0; i < array.length; i++){
-      if(array[i] == item){
-        console.log("Found item: " + item);
+  function findUIDItemInArr(item, userArray){
+    for(var i = 0; i < userArray.length; i++){
+      if(userArray[i].uid == item){
+        //console.log("Found item: " + item);
         return i;
       }
     }
+    return -1;
   }
 
   function createInviteElement(inviteKey){
@@ -251,22 +336,21 @@ window.onload = function instantiate() {
 
     var inviteData;
     for (var i = 0; i < userArr.length; i++){
-      if(inviteKey == userArr[i].key){
+      if(inviteKey == userArr[i].uid){
         inviteData = userArr[i];
         break;
       }
     }
 
-    var userUid = inviteData.val().uid;
-    var inviteName = inviteData.val().name;
-    var inviteUserName = inviteData.val().userName;
-    var inviteShareCode = inviteData.val().shareCode;
+    var userUid = inviteData.uid;
+    var inviteName = inviteData.name;
+    var inviteUserName = inviteData.userName;
+    var inviteShareCode = inviteData.shareCode;
     var liItem = document.createElement("LI");
     liItem.id = "user" + userUid;
     liItem.className = "gift";
     liItem.onclick = function (){
       var span = document.getElementsByClassName("close")[0];
-      var modal = document.getElementById('myModal');
       var inviteAdd = document.getElementById('userAccept');
       var inviteDelete = document.getElementById('userDelete');
       var inviteNameField = document.getElementById('userName');
@@ -282,13 +366,13 @@ window.onload = function instantiate() {
       inviteShareCodeField.innerHTML = "Share Code: " + inviteShareCode;
 
       inviteAdd.onclick = function(){
-        modal.style.display = "none";
         addInvite(inviteData);
+        modal.style.display = "none";
       };
 
       inviteDelete.onclick = function(){
-        modal.style.display = "none";
         deleteInvite(userUid);
+        modal.style.display = "none";
       };
 
       //show modal
@@ -317,22 +401,21 @@ window.onload = function instantiate() {
   function changeInviteElement(inviteKey){
     var inviteData;
     for (var i = 0; i < userArr.length; i++){
-      if(inviteKey == userArr[i].key){
+      if(inviteKey == userArr[i].uid){
         inviteData = userArr[i];
         break;
       }
     }
 
-    var userUid = inviteData.val().uid;
-    var inviteName = inviteData.val().name;
-    var inviteUserName = inviteData.val().userName;
-    var inviteShareCode = inviteData.val().shareCode;
-    var liItemUpdate = document.getElementById("user" + inviteData.key);
+    var userUid = inviteData.uid;
+    var inviteName = inviteData.name;
+    var inviteUserName = inviteData.userName;
+    var inviteShareCode = inviteData.shareCode;
+    var liItemUpdate = document.getElementById("user" + inviteData.uid);
     liItemUpdate.innerHTML = inviteName;
     liItemUpdate.className = "gift";
     liItemUpdate.onclick = function (){
       var span = document.getElementsByClassName("close")[0];
-      modal = document.getElementById('myModal');
       var inviteAdd = document.getElementById('userAccept');
       var inviteDelete = document.getElementById('userDelete');
       var inviteNameField = document.getElementById('userName');
@@ -373,33 +456,45 @@ window.onload = function instantiate() {
   }
 
   function addInvite(inviteData){
-    var friendFriendArr = inviteData.friends;
+    console.log("Adding " + inviteData.uid);
+    console.log(friendArr);
 
-    console.log(friendFriendArr);
-    friendFriendArr.push(user.key);
-    console.log(friendFriendArr);
-    /*
-    firebase.database().ref("users/" + inviteData.key).update({
+    var friendFriendArr;
+    if(inviteData.friends == undefined || inviteData.friends == null) {
+      friendFriendArr = [];
+    } else {
+      friendFriendArr = inviteData.friends;
+    }
+
+    friendFriendArr.push(user.uid);
+    firebase.database().ref("users/" + inviteData.uid).update({
       friends: friendFriendArr
     });
-    */
 
-    console.log(friendArr);
-    friendArr.push(inviteData.key);
-    console.log(friendArr);
-    /*
-    firebase.database().ref("users/" + user.key).update({
+
+    if (friendArr == undefined || friendArr == null || friendArr.length == 0){
+      friendArr = [];
+      friendArr.push(inviteData.uid);
+      user.friends = [];
+      user.friends.push(inviteData.uid);
+    } else {
+      friendArr.push(inviteData.uid);
+      user.friends.push(inviteData.uid);
+    }
+    firebase.database().ref("users/" + user.uid).update({
       friends: friendArr
     });
-    */
 
-    deleteInvite(inviteData.key);
+    console.log(friendArr);
+
+    deleteInvite(inviteData.uid);
   }
 
   function deleteInvite(uid) {
     var verifyDeleteBool = true;
     var toDelete = -1;
 
+    console.log("Deleting " + uid);
     for (var i = 0; i < inviteArr.length; i++){
       if(inviteArr[i] == uid) {
         toDelete = i;
@@ -408,9 +503,7 @@ window.onload = function instantiate() {
     }
 
     if(toDelete != -1) {
-      console.log(inviteArr);
       inviteArr.splice(toDelete, 1);
-      console.log(inviteArr);
 
       for (var i = 0; i < inviteArr.length; i++) {
         if (inviteArr[i] == uid) {
@@ -423,18 +516,11 @@ window.onload = function instantiate() {
     }
 
     if(verifyDeleteBool){
-      /*
-      firebase.database().ref("users/" + user.key).update({
+      removeInviteElement(uid);
+      user.invites = inviteArr;
+      firebase.database().ref("users/" + user.uid).update({
         invites: inviteArr
       });
-      */
-
-      modal.style.display = "none";
-
-      removeInviteElement(uid);//This will only need to be here until firebase commands are uncommented
-      alert("Invite Successfully removed!");
-    } else {
-      alert("Delete failed, please try again later!");
     }
   }
 
@@ -450,15 +536,15 @@ window.onload = function instantiate() {
 
 function deployInviteListEmptyNotification(){
   try{
-    document.getElementById("TestGift").innerHTML = "No Friends Found! Invite Some Friends With The Button Below!";
+    document.getElementById("TestGift").innerHTML = "No Invites Found! Invite Some Friends On The Invites Page!";
   } catch(err){
     console.log("Loading Element Missing, Creating A New One");
     var liItem = document.createElement("LI");
     liItem.id = "TestGift";
     liItem.className = "gift";
-    var textNode = document.createTextNode("No Friends Found! Invite Some Friends With The Button Below!");
+    var textNode = document.createTextNode("No Invites Found! Invite Some Friends On The Invites Page!");
     liItem.appendChild(textNode);
-    giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
+    userList.insertBefore(liItem, document.getElementById("userListContainer").childNodes[0]);
   }
 
   clearInterval(offlineTimer);
@@ -470,7 +556,8 @@ function signOut(){
 }
 
 function navigation(nav){
-  sessionStorage.setItem("validUser", user);
+  sessionStorage.setItem("validUser", JSON.stringify(user));
+  sessionStorage.setItem("userArr", JSON.stringify(userArr));
   switch(nav){
     case 0:
       window.location.href = "home.html";

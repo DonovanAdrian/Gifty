@@ -12,7 +12,6 @@ var offlineModal;
 var validUser;
 
 
-//Instantiates all data upon loading the webpage
 window.onload = function instantiate() {
 
   username = document.getElementById("username");

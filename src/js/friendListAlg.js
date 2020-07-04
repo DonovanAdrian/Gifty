@@ -4,11 +4,13 @@ var inviteArr = [];
 var userUserNames = [];
 
 var areYouStillThereBool = false;
+var updateGiftToDBBool = false;
 
 var onlineInt = 0;
 var giftCounter = 0;
 var logoutReminder = 300;
 var logoutLimit = 900;
+var moderationSet = -1;
 
 var giftList;
 var giftListHTML;
@@ -33,6 +35,7 @@ var userGifts;
 
 
 function getCurrentUser(){
+  moderationSet = sessionStorage.getItem("moderationSet");
   user = JSON.parse(sessionStorage.validGiftUser);
   currentUser = JSON.parse(sessionStorage.validUser);
   if(currentUser == null || currentUser == undefined){
@@ -48,9 +51,9 @@ function getCurrentUser(){
     if(currentUser.invites == undefined) {
       console.log("Invites Not Found");
     } else if (currentUser.invites != undefined) {
-      inviteNote.style.background = "#ff3923";
-    } else if (currentUser.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
+      if (currentUser.invites.length > 0) {
+        inviteNote.style.background = "#ff3923";
+      }
     }
     userArr = JSON.parse(sessionStorage.userArr);
   }
@@ -153,7 +156,11 @@ window.onload = function instantiate() {
   backBtn.onclick = function() {
     sessionStorage.setItem("validUser", JSON.stringify(currentUser));
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    window.location.href = "lists.html";
+    if(moderationSet == 1){
+      window.location.href = "moderation.html";
+    } else {
+      window.location.href = "lists.html";
+    }
   };
 
   databaseQuery();
@@ -351,11 +358,17 @@ window.onload = function instantiate() {
         giftArr.push(data.val());
 
         if(checkGiftBuyer(data.val().buyer)){
-          updateGiftError(data, data.key);
+          data.val().buyer = "";
+          updateGiftToDBBool = true;
         }
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().buyer);
+          data.key, data.val().where, data.val().buyer, data.val().uid);
+
+        if(updateGiftToDBBool){
+          updateGiftError(data, data.key);
+          updateGiftToDBBool = false;
+        }
       });
 
       postRef.on('child_changed', function(data) {
@@ -364,7 +377,7 @@ window.onload = function instantiate() {
         console.log(giftArr);
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().buyer);
+          data.key, data.val().where, data.val().buyer, data.val().uid);
       });
 
       postRef.on('child_removed', function(data) {
@@ -429,15 +442,14 @@ window.onload = function instantiate() {
   }
 
   function updateGiftError(giftData, giftKey){
-    alert("Gift " + giftData.title + " needs to be updated! Key: " + giftKey);
-    /*
-    firebase.database().ref("users/" + user.uid + "/giftList/" + uid).update({
+    //alert("A gift needs to be updated! Key: " + giftKey);
+    firebase.database().ref("users/" + user.uid + "/giftList/" + giftKey).update({
       buyer: ""
     });
-    */
   }
 
-  function createGiftElement(giftDescription, giftLink, giftReceived, giftTitle, giftUid, giftWhere, giftBuyer){
+  function createGiftElement(giftDescription, giftLink, giftReceived, giftTitle, giftKey, giftWhere, giftBuyer, giftUid){
+    console.log("Creating " + giftUid);
     try{
       document.getElementById("TestGift").remove();
     } catch (err) {}
@@ -503,7 +515,7 @@ window.onload = function instantiate() {
       }
       buyBtn.onclick = function(){
         if (giftReceived == 0) {
-          firebase.database().ref("users/" + user.uid + "/giftList/" + giftUid).update({
+          firebase.database().ref("users/" + user.uid + "/giftList/" + giftKey).update({
             received: 1,
             buyer: currentUser.userName
           });
@@ -514,7 +526,7 @@ window.onload = function instantiate() {
       dontBuyBtn.onclick = function(){
         if (giftReceived == 1) {
           if (giftBuyer == currentUser.userName || giftBuyer == "") {
-            firebase.database().ref("users/" + user.uid + "/giftList/" + giftUid).update({
+            firebase.database().ref("users/" + user.uid + "/giftList/" + giftKey).update({
               received: 0,
               buyer: ""
             });
@@ -549,7 +561,7 @@ window.onload = function instantiate() {
     clearInterval(offlineTimer);
   }
 
-  function changeGiftElement(description, link, received, title, uid, where, buyer) {
+  function changeGiftElement(description, link, received, title, key, where, buyer, uid) {
     var editGift = document.getElementById("gift" + uid);
     editGift.innerHTML = title;
     editGift.className = "gift";
@@ -609,7 +621,7 @@ window.onload = function instantiate() {
       }
       buyBtn.onclick = function(){
         if(received == 0) {
-          firebase.database().ref("users/" + user.uid + "/giftList/" + uid).update({
+          firebase.database().ref("users/" + user.uid + "/giftList/" + key).update({
             received: 1,
             buyer: currentUser.userName
           });
@@ -620,7 +632,7 @@ window.onload = function instantiate() {
       dontBuyBtn.onclick = function(){
         if(received == 1) {
           if (buyer == currentUser.userName || buyer == "") {
-            firebase.database().ref("users/" + user.uid + "/giftList/" + uid).update({
+            firebase.database().ref("users/" + user.uid + "/giftList/" + key).update({
               received: 0,
               buyer: ""
             });

@@ -5,6 +5,7 @@ var inviteArr = [];
 var invitesValidBool = false;
 var friendsValidBool = false;
 var updateUserBool = false;
+var areYouStillThereBool = false;
 
 var giftCounter = 0;
 var onlineInt = 0;
@@ -47,17 +48,17 @@ function getCurrentUser(){
     if(user.invites == undefined) {
       console.log("Invites Not Found");
     } else if (user.invites != undefined) {
-      invitesValidBool = true;
-    } else if (user.invites.length > 0) {
-      invitesValidBool = true;
+      if (user.invites.length > 0) {
+        invitesValidBool = true;
+      }
     }
 
     if(user.friends == undefined) {
       console.log("Friends Not Found");
     } else if (user.friends != undefined) {
-      friendsValidBool = true;
-    } else if (user.friends.length > 0) {
-      friendsValidBool = true;
+      if (user.friends.length > 0) {
+        friendsValidBool = true;
+      }
     }
 
     userArr = JSON.parse(sessionStorage.userArr);
@@ -121,14 +122,18 @@ function checkUserErrors(){
 
 function updateUserToDB(totalErrors, friendEditInt, inviteEditInt){
   if(inviteEditInt > 0) {
+    var supplementaryInvitesArr = user.invites;
     firebase.database().ref("users/" + user.uid).update({
       invites: user.invites
     });
+    user.invites = supplementaryInvitesArr;
   }
   if(friendEditInt > 0) {
+    var supplementaryFriendsArr = user.friends;
     firebase.database().ref("users/" + user.uid).update({
       friends: user.friends
     });
+    user.friends = supplementaryFriendsArr;
   }
   console.log("Updates pushed!");
 }
@@ -436,11 +441,6 @@ window.onload = function instantiate() {
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
           data.key, data.val().where, data.val().uid);
       });
-
-      postRef.on('child_removed', function(data) {
-        giftArr.splice(data.key, 1);
-        removeGiftElement(data.key);
-      });
     };
 
     var fetchInvites = function (postRef) {
@@ -483,7 +483,7 @@ window.onload = function instantiate() {
     } catch (err) {}
 
     var liItem = document.createElement("LI");
-    liItem.id = "gift" + giftKey;
+    liItem.id = "gift" + giftUid;
     liItem.className = "gift";
     liItem.onclick = function (){
       var spanGift = document.getElementsByClassName("close")[0];
@@ -526,7 +526,7 @@ window.onload = function instantiate() {
         updateGiftElement(giftUid);
       };
       deleteBtn.onclick = function(){
-        deleteGiftElement(giftKey, giftTitle);
+        deleteGiftElement(giftKey, giftTitle, giftUid);
       };
 
       //show modal
@@ -554,7 +554,7 @@ window.onload = function instantiate() {
   }
 
   function changeGiftElement(description, link, received, title, key, where, uid) {
-    var editGift = document.getElementById("gift" + key);
+    var editGift = document.getElementById("gift" + uid);
     editGift.innerHTML = title;
     editGift.className = "gift";
     editGift.onclick = function (){
@@ -598,7 +598,7 @@ window.onload = function instantiate() {
         updateGiftElement(uid);
       };
       deleteBtn.onclick = function(){
-        deleteGiftElement(key, title);
+        deleteGiftElement(key, title, uid);
       };
 
       //show modal
@@ -635,7 +635,7 @@ window.onload = function instantiate() {
     window.location.href = "giftAddUpdate.html";
   }
 
-  function deleteGiftElement(uid, title) {
+  function deleteGiftElement(key, title, uid) {
     var verifyDeleteBool = true;
     var toDelete = -1;
 
@@ -660,6 +660,7 @@ window.onload = function instantiate() {
     }
 
     if(verifyDeleteBool){
+      removeGiftElement(uid);
       firebase.database().ref("users/" + user.uid).update({
         giftList: giftArr
       });

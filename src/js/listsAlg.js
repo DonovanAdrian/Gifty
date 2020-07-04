@@ -5,6 +5,7 @@ var userArr = [];
 
 var areYouStillThereBool = false;
 
+var moderationSet = 0;
 var onlineInt = 0;
 var friendCount = 0;
 var logoutReminder = 300;
@@ -42,12 +43,14 @@ function getCurrentUser(){
     if(user.invites == undefined) {
       console.log("Invites Not Found");
     } else if (user.invites != undefined) {
-      inviteNote.style.background = "#ff3923";
-    } else if (user.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
+      if (user.invites.length > 0) {
+        inviteNote.style.background = "#ff3923";
+      }
     }
     userArr = JSON.parse(sessionStorage.userArr);
   }
+
+  sessionStorage.setItem("moderationSet", moderationSet);
 }
 
 window.onload = function instantiate() {

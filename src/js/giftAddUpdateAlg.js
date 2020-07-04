@@ -42,9 +42,9 @@ function getCurrentUser(){
     if(user.invites == undefined) {
       console.log("Invites Not Found");
     } else if (user.invites != undefined) {
-      inviteNote.style.background = "#ff3923";
-    } else if (user.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
+      if (user.invites.length > 0) {
+        inviteNote.style.background = "#ff3923";
+      }
     }
     userArr = JSON.parse(sessionStorage.userArr);
   }

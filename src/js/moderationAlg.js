@@ -1,10 +1,13 @@
 var listeningFirebaseRefs = [];
 var inviteArr = [];
 
-var cleanedItems = "";
+var areYouStillThereBool = false;
 
+var moderationSet = 1;
 var userCounter = 0;
 var onlineInt = 0;
+var logoutReminder = 300;
+var logoutLimit = 1800;
 
 var giftList;
 var giftListHTML;
@@ -16,9 +19,9 @@ var userInvites;
 var offlineTimer;
 var modal;
 var noteModal;
-var noteSpan;
 var noteInfoField;
 var noteTitleField;
+var noteSpan;
 var listNote;
 var inviteNote;
 var userInitial;
@@ -26,15 +29,22 @@ var userInitial;
 
 
 function getCurrentUser(){
-  user = sessionStorage.getItem("validUser");
+  user = JSON.parse(sessionStorage.validUser);
   if(user == null || user == undefined){
     window.location.href = "index.html";
   } else {
-    console.log("User: " + user.key + " logged in");
-    if (user.invites.length != 0) {
-      inviteNote.style.background = "#ff3923";
+    console.log("User: " + user.userName + " logged in");
+    if(user.invites == undefined) {
+      console.log("Invites Not Found");
+    } else if (user.invites != undefined) {
+      if (user.invites.length > 0) {
+        inviteNote.style.background = "#ff3923";
+      }
     }
+    userArr = JSON.parse(sessionStorage.userArr);
   }
+
+  sessionStorage.setItem("moderationSet", moderationSet);
 }
 
 window.onload = function instantiate() {
@@ -43,9 +53,13 @@ window.onload = function instantiate() {
   giftListHTML = document.getElementById('giftListContainer').innerHTML;
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
-  noteSpan = document.getElementById('closeNotification');
   listNote = document.getElementById('listNote');
   inviteNote = document.getElementById('inviteNote');
+  noteModal = document.getElementById('notificationModal');
+  noteTitleField = document.getElementById('notificationTitle');
+  noteInfoField = document.getElementById('notificationInfo');
+  noteSpan = document.getElementById('closeNotification');
+  modal = document.getElementById('giftModal');
   getCurrentUser();
 
   const config = {
@@ -87,17 +101,19 @@ window.onload = function instantiate() {
             document.getElementById("TestGift").innerHTML = "No Users Found!";
           }
         } catch(err) {
-          console.log("Loading Element Missing, Creating A New One");
-          var liItem = document.createElement("LI");
-          liItem.id = "TestGift";
-          liItem.className = "gift";
-          if (onlineInt == 0) {
-            var textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
-          } else {
-            var textNode = document.createTextNode("No Users Found!");
+          if(userCounter == 0){
+            console.log("Loading Element Missing, Creating A New One");
+            var liItem = document.createElement("LI");
+            liItem.id = "TestGift";
+            liItem.className = "gift";
+            if (onlineInt == 0) {
+              var textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
+            } else {
+              var textNode = document.createTextNode("No Users Found!");
+            }
+            liItem.appendChild(textNode);
+            giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
           }
-          liItem.appendChild(textNode);
-          giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
         }
         offlineModal.style.display = "block";
         clearInterval(offlineTimer);
@@ -121,6 +137,81 @@ window.onload = function instantiate() {
 
   settingsModerateButton();
 
+  loginTimer(); //if action, then reset timer
+
+  function loginTimer(){
+    var loginNum = 0;
+    console.log("Login Timer Started");
+    setInterval(function(){ //900 15 mins, 600 10 mins
+      document.onmousemove = resetTimer;
+      document.onkeypress = resetTimer;
+      document.onload = resetTimer;
+      document.onmousemove = resetTimer;
+      document.onmousedown = resetTimer; // touchscreen presses
+      document.ontouchstart = resetTimer;
+      document.onclick = resetTimer;     // touchpad clicks
+      document.onscroll = resetTimer;    // scrolling with arrow keys
+      document.onkeypress = resetTimer;
+      loginNum = loginNum + 1;
+      if (loginNum >= logoutLimit){//default 900
+        signOut();
+      } else if (loginNum > logoutReminder){//default 600
+        areYouStillThereNote(loginNum);
+        areYouStillThereBool = true;
+      }
+      function resetTimer() {
+        if (areYouStillThereBool)
+          ohThereYouAre();
+        loginNum = 0;
+      }
+    }, 1000);
+  }
+
+  function areYouStillThereNote(timeElapsed){
+    var timeRemaining = logoutLimit - timeElapsed;
+    var timeMins = Math.floor(timeRemaining/60);
+    var timeSecs = timeRemaining%60;
+
+    if (timeSecs < 10) {
+      timeSecs = ("0" + timeSecs).slice(-2);
+    }
+
+    modal.style.display = "none";
+    noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
+      + ":" + timeSecs + "!";
+    noteTitleField.innerHTML = "Are You Still There?";
+    noteModal.style.display = "block";
+
+    //close on close
+    noteSpan.onclick = function() {
+      noteModal.style.display = "none";
+      areYouStillThereBool = false;
+    };
+  }
+
+  function ohThereYouAre(){
+    noteInfoField.innerHTML = "Welcome back, " + user.name;
+    noteTitleField.innerHTML = "Oh, There You Are!";
+
+    var nowJ = 0;
+    var j = setInterval(function(){
+      nowJ = nowJ + 1000;
+      if(nowJ >= 3000){
+        noteModal.style.display = "none";
+        areYouStillThereBool = false;
+        clearInterval(j);
+      }
+    }, 1000);
+
+    //close on click
+    window.onclick = function(event) {
+      if (event.target == noteModal) {
+        noteModal.style.display = "none";
+        areYouStillThereBool = false;
+      }
+    };
+  }
+
   function settingsModerateButton(){
     var nowConfirm = 0;
     var alternator = 0;
@@ -132,11 +223,11 @@ window.onload = function instantiate() {
         if(alternator == 0) {
           alternator++;
           document.getElementById("settingsNote").innerHTML = "Settings";
-          inviteNote.style.background = "#00c606";
+          settingsNote.style.background = "#00c606";
         } else {
           alternator--;
           document.getElementById("settingsNote").innerHTML = "Moderation";
-          inviteNote.style.background = "#00ad05";
+          settingsNote.style.background = "#00ad05";
         }
       }
     }, 1000);
@@ -145,47 +236,48 @@ window.onload = function instantiate() {
   function databaseQuery() {
 
     userInitial = firebase.database().ref("users/");
-    userInvites = firebase.database().ref("users/" + user.key + "/invites");
+    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
     var fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-        createUserElement(data);
+        createUserElement(data.val());
 
         onlineInt = 1;
 
-        var i = findItemInArr(data, userArr);
-        if(userArr[i] != data){
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
           console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
-          console.log(userArr[i]);
-          console.log(data.val());
-          userArr[i] = data;
-          console.log(userArr[i]);
+          userArr[i] = data.val();
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 1");
         }
       });
 
       postRef.on('child_changed', function (data) {
-        changeUserElement(data);
+        changeUserElement(data.val());
 
-        var i = findItemInArr(data, userArr);
-        if(userArr[i] != data){
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
           console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
-          console.log(userArr[i]);
-          console.log(data.val());
-          userArr[i] = data;
-          console.log(userArr[i]);
+          userArr[i] = data.val();
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 2");
         }
       });
 
       postRef.on('child_removed', function (data) {
-        removeUserElement(data.key);
+        removeUserElement(data.val().uid);
 
-        var i = findItemInArr(data, userArr);
-        if(userArr[i] != data){
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
           console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
-          console.log(userArr[i]);
-          console.log(data.val());
           userArr.splice(i, 1);
-          console.log(userArr);
         }
       });
     };
@@ -222,18 +314,26 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 
+  function findUIDItemInArr(item, userArray){
+    for(var i = 0; i < userArray.length; i++){
+      if(userArray[i].uid == item){
+        console.log("Found item: " + item);
+        return i;
+      }
+    }
+    return -1;
+  }
+
   function createUserElement(userData){
     try{
       document.getElementById("TestGift").remove();
     } catch (err) {}
 
     var liItem = document.createElement("LI");
-    liItem.id = "user" + userData.key;
+    liItem.id = "user" + userData.uid;
     liItem.className = "gift";
     liItem.onclick = function (){
       var spanGift = document.getElementsByClassName("close")[0];
-      modal = document.getElementById('giftModal');
-      noteModal = document.getElementById('notificationModal');
       var warnBtn = document.getElementById('warnUser');
       var banBtn = document.getElementById('banUser');
       var userName = document.getElementById('userName');
@@ -244,19 +344,27 @@ window.onload = function instantiate() {
       var userPassword = document.getElementById('userPassword');
 
       userName.innerHTML = userData.name;
-      userUID.innerHTML = userData.key;
+      userUID.innerHTML = userData.uid;
       userUserName.innerHTML = userData.userName;
-      userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
-      userFriends.innerHTML = "# Friends: " + userData.friends.length;
+      if(userData.giftList != undefined){
+        userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
+      }
+      if(userData.friends != undefined) {
+        userFriends.innerHTML = "# Friends: " + userData.friends.length;
+      }
       userPassword.innerHTML = "Click On Me To View Password";
 
       userGifts.onclick = function() {
-        sessionStorage.setItem("validGiftUser", userData);//Other User Data
-        sessionStorage.setItem("validUser", user);
+        sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
+        sessionStorage.setItem("validUser", JSON.stringify(user));
         window.location.href = "friendList.html";
       };
       userPassword.onclick = function() {
-        userPassword.innerHTML = decode(userData.encodeStr);
+        try {
+          userPassword.innerHTML = decode(userData.encodeStr);
+        } catch (err) {
+          userPassword.innerHTML = userData.pin;
+        }
       };
       warnBtn.onclick = function(){
         alert("This will eventually warn the user of a certain offense");
@@ -292,13 +400,11 @@ window.onload = function instantiate() {
   }
 
   function changeUserElement(userData) {
-    var editGift = document.getElementById("user" + userData.key);
+    var editGift = document.getElementById("user" + userData.uid);
     editGift.innerHTML = userData.name;
     editGift.className = "gift";
     editGift.onclick = function (){
       var spanGift = document.getElementsByClassName("close")[0];
-      modal = document.getElementById('giftModal');
-      noteModal = document.getElementById('notificationModal');
       var warnBtn = document.getElementById('warnUser');
       var banBtn = document.getElementById('banUser');
       var userName = document.getElementById('userName');
@@ -309,15 +415,19 @@ window.onload = function instantiate() {
       var userPassword = document.getElementById('userPassword');
 
       userName.innerHTML = userData.name;
-      userUID.innerHTML = userData.key;
+      userUID.innerHTML = userData.uid;
       userUserName.innerHTML = userData.userName;
-      userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
-      userFriends.innerHTML = "# Friends: " + userData.friends.length;
+      if(userData.giftList != undefined){
+        userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
+      }
+      if(userData.friends != undefined) {
+        userFriends.innerHTML = "# Friends: " + userData.friends.length;
+      }
       userPassword.innerHTML = "Click On Me To View Password";
 
       userGifts.onclick = function() {
-        sessionStorage.setItem("validGiftUser", userData);//Other User Data
-        sessionStorage.setItem("validUser", user);
+        sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
+        sessionStorage.setItem("validUser", JSON.stringify(user));
         window.location.href = "friendList.html";
       };
       userPassword.onclick = function() {
@@ -381,7 +491,8 @@ function signOut(){
 }
 
 function navigation(nav){
-  sessionStorage.setItem("validUser", user);
+  sessionStorage.setItem("validUser", JSON.stringify(user));
+  sessionStorage.setItem("userArr", JSON.stringify(userArr));
   switch(nav){
     case 0:
       window.location.href = "home.html";

@@ -306,53 +306,53 @@ function generateDigitSetter(){
     }
 
     if(rBool == 1)//set number
-    switch (rChar){
-      case "A":
-        rChar = 1;//multiply
-        break;
-      case "B":
-      case "G":
-      case "L":
-      case "Q":
-        rChar = 2;//add
-        break;
-      case "E":
-        rChar = 3;//multiply
-        break;
-      case "C":
-      case "H":
-      case "M":
-      case "R":
-        rChar = 4;//add
-        break;
-      case "I":
-        rChar = 5;//multiply
-        break;
-      case "D":
-      case "J":
-      case "N":
-      case "S":
-        rChar = 6;//add
-        break;
-      case "O":
-        rChar = 7;//multiply
-        break;
-      case "F":
-      case "K":
-      case "P":
-      case "T":
-        rChar = 8;//add
-        break;
-      case "U":
-        rChar = 9;//multiply
-        break;
-      default:
-        rChar = 5;
-        break;
-    }
+      switch (rChar){
+        case "A":
+          rChar = 1;//multiply
+          break;
+        case "B":
+        case "G":
+        case "L":
+        case "Q":
+          rChar = 2;//add
+          break;
+        case "E":
+          rChar = 3;//multiply
+          break;
+        case "C":
+        case "H":
+        case "M":
+        case "R":
+          rChar = 4;//add
+          break;
+        case "I":
+          rChar = 5;//multiply
+          break;
+        case "D":
+        case "J":
+        case "N":
+        case "S":
+          rChar = 6;//add
+          break;
+        case "O":
+          rChar = 7;//multiply
+          break;
+        case "F":
+        case "K":
+        case "P":
+        case "T":
+          rChar = 8;//add
+          break;
+        case "U":
+          rChar = 9;//multiply
+          break;
+        default:
+          rChar = 5;
+          break;
+      }
 
     if(i != 3)
-    rSep = getRandomSep();
+      rSep = getRandomSep();
 
     encodeStore[i] = rChar + rNum;
     tempStr = tempStr + rChar + rNum + rSep;
