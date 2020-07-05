@@ -29,22 +29,26 @@ var userInitial;
 
 
 function getCurrentUser(){
-  user = JSON.parse(sessionStorage.validUser);
-  if(user == null || user == undefined){
-    window.location.href = "index.html";
-  } else {
-    console.log("User: " + user.userName + " logged in");
-    if(user.invites == undefined) {
-      console.log("Invites Not Found");
-    } else if (user.invites != undefined) {
-      if (user.invites.length > 0) {
-        inviteNote.style.background = "#ff3923";
+  try {
+    user = JSON.parse(sessionStorage.validUser);
+    if (user == null || user == undefined) {
+      window.location.href = "index.html";
+    } else {
+      console.log("User: " + user.userName + " logged in");
+      if (user.invites == undefined) {
+        console.log("Invites Not Found");
+      } else if (user.invites != undefined) {
+        if (user.invites.length > 0) {
+          inviteNote.style.background = "#ff3923";
+        }
       }
+      userArr = JSON.parse(sessionStorage.userArr);
     }
-    userArr = JSON.parse(sessionStorage.userArr);
-  }
 
-  sessionStorage.setItem("moderationSet", moderationSet);
+    sessionStorage.setItem("moderationSet", moderationSet);
+  } catch (err) {
+    window.location.href = "index.html";
+  }
 }
 
 window.onload = function instantiate() {
@@ -355,9 +359,13 @@ window.onload = function instantiate() {
       userPassword.innerHTML = "Click On Me To View Password";
 
       userGifts.onclick = function() {
-        sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        window.location.href = "friendList.html";
+        if(userData.uid == user.uid){
+          alert("Navigate to the home page to see your gifts!");
+        } else {
+          sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          window.location.href = "friendList.html";
+        }
       };
       userPassword.onclick = function() {
         try {
@@ -374,6 +382,39 @@ window.onload = function instantiate() {
         alert("This will eventually ban the user for a certain offense");
         //ban function
       };
+      if (userData.uid == "-L__dcUyFssV44G9stxY" && user.uid != "-L__dcUyFssV44G9stxY") {
+        moderatorOp.innerHTML = "Don't Even Think About It";
+        moderatorOp.onclick = function() {
+
+        }
+      } else if (userData.moderatorInt == 1) {
+        moderatorOp.innerHTML = "Revoke Moderator Role";
+        moderatorOp.onclick = function() {
+          if(userData.uid == user.uid){
+            alert("You cannot adjust your own role");
+          } else {
+            alert("Revoked role for: " + userData.userName);
+            firebase.database().ref("users/" + userData.uid).update({
+              moderatorInt: 0
+            });
+            modal.style.display = "none";
+          }
+        };
+      } else {
+        moderatorOp.innerHTML = "Grant Moderator Role";
+        moderatorOp.onclick = function() {
+          if(userData.userName == user.userName){
+            alert("You cannot adjust your own role");
+            console.log("...How'd you get here...?");
+          } else {
+            alert("Granted role for: " + userData.userName);
+            firebase.database().ref("users/" + userData.uid).update({
+              moderatorInt: 1
+            });
+            modal.style.display = "none";
+          }
+        };
+      }
 
       //show modal
       modal.style.display = "block";
@@ -413,6 +454,7 @@ window.onload = function instantiate() {
       var userGifts = document.getElementById('userGifts');
       var userFriends = document.getElementById('userFriends');
       var userPassword = document.getElementById('userPassword');
+      var moderatorOp = document.getElementById('moderatorOp');
 
       userName.innerHTML = userData.name;
       userUID.innerHTML = userData.uid;
@@ -426,9 +468,13 @@ window.onload = function instantiate() {
       userPassword.innerHTML = "Click On Me To View Password";
 
       userGifts.onclick = function() {
-        sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        window.location.href = "friendList.html";
+        if(userData.uid == user.uid){
+          alert("Navigate to the home page to see your gifts!");
+        } else {
+          sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          window.location.href = "friendList.html";
+        }
       };
       userPassword.onclick = function() {
         userPassword.innerHTML = decode(userData.encodeStr);
@@ -441,6 +487,39 @@ window.onload = function instantiate() {
         alert("This will eventually ban the user for a certain offense");
         //ban function
       };
+      if (userData.uid == "-L__dcUyFssV44G9stxY" && user.uid != "-L__dcUyFssV44G9stxY") {
+        moderatorOp.innerHTML = "Don't Even Think About It";
+        moderatorOp.onclick = function() {
+
+        }
+      } else if (userData.moderatorInt == 1) {
+        moderatorOp.innerHTML = "Revoke Moderator Role";
+        moderatorOp.onclick = function() {
+          if(userData.uid == user.uid){
+            alert("You cannot adjust your own role");
+          } else {
+            alert("Revoked role for: " + userData.userName);
+            firebase.database().ref("users/" + userData.uid).update({
+              moderatorInt: 0
+            });
+            modal.style.display = "none";
+          }
+        };
+      } else {
+        moderatorOp.innerHTML = "Grant Moderator Role";
+        moderatorOp.onclick = function() {
+          if(userData.userName == user.userName){
+            alert("You cannot adjust your own role");
+            console.log("...How'd you get here...?");
+          } else {
+            alert("Granted role for: " + userData.userName);
+            firebase.database().ref("users/" + userData.uid).update({
+              moderatorInt: 1
+            });
+            modal.style.display = "none";
+          }
+        };
+      }
 
       //show modal
       modal.style.display = "block";

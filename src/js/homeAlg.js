@@ -35,33 +35,37 @@ var userGifts;
 
 
 function getCurrentUser(){
-  user = JSON.parse(sessionStorage.validUser);
-  if(user == null || user == undefined){
+  try {
+    user = JSON.parse(sessionStorage.validUser);
+    if (user == null || user == undefined) {
+      window.location.href = "index.html";
+    } else {
+      console.log("User: " + user.userName + " logged in");
+      if (user.giftList == undefined) {
+        deployGiftListEmptyNotification();
+      } else if (user.giftList.length == 0) {
+        deployGiftListEmptyNotification();
+      }
+      if (user.invites == undefined) {
+        console.log("Invites Not Found");
+      } else if (user.invites != undefined) {
+        if (user.invites.length > 0) {
+          invitesValidBool = true;
+        }
+      }
+
+      if (user.friends == undefined) {
+        console.log("Friends Not Found");
+      } else if (user.friends != undefined) {
+        if (user.friends.length > 0) {
+          friendsValidBool = true;
+        }
+      }
+
+      userArr = JSON.parse(sessionStorage.userArr);
+    }
+  } catch (err) {
     window.location.href = "index.html";
-  } else {
-    console.log("User: " + user.userName + " logged in");
-    if (user.giftList == undefined) {
-      deployGiftListEmptyNotification();
-    } else if (user.giftList.length == 0) {
-      deployGiftListEmptyNotification();
-    }
-    if(user.invites == undefined) {
-      console.log("Invites Not Found");
-    } else if (user.invites != undefined) {
-      if (user.invites.length > 0) {
-        invitesValidBool = true;
-      }
-    }
-
-    if(user.friends == undefined) {
-      console.log("Friends Not Found");
-    } else if (user.friends != undefined) {
-      if (user.friends.length > 0) {
-        friendsValidBool = true;
-      }
-    }
-
-    userArr = JSON.parse(sessionStorage.userArr);
   }
 }
 

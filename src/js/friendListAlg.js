@@ -6,6 +6,8 @@ var userUserNames = [];
 var areYouStillThereBool = false;
 var updateGiftToDBBool = false;
 
+var currentModalOpen = "";
+
 var onlineInt = 0;
 var giftCounter = 0;
 var logoutReminder = 300;
@@ -35,27 +37,31 @@ var userGifts;
 
 
 function getCurrentUser(){
-  moderationSet = sessionStorage.getItem("moderationSet");
-  user = JSON.parse(sessionStorage.validGiftUser);
-  currentUser = JSON.parse(sessionStorage.validUser);
-  if(currentUser == null || currentUser == undefined){
-    window.location.href = "index.html";
-  } else {
-    console.log("User: " + currentUser.userName + " logged in");
-    console.log("Friend: " + user.userName + " loaded in");
-    if (user.giftList == undefined) {
-      deployGiftListEmptyNotification();
-    } else if (user.giftList.length == 0) {
-      deployGiftListEmptyNotification();
-    }
-    if(currentUser.invites == undefined) {
-      console.log("Invites Not Found");
-    } else if (currentUser.invites != undefined) {
-      if (currentUser.invites.length > 0) {
-        inviteNote.style.background = "#ff3923";
+  try {
+    moderationSet = sessionStorage.getItem("moderationSet");
+    user = JSON.parse(sessionStorage.validGiftUser);
+    currentUser = JSON.parse(sessionStorage.validUser);
+    if (currentUser == null || currentUser == undefined) {
+      window.location.href = "index.html";
+    } else {
+      console.log("User: " + currentUser.userName + " logged in");
+      console.log("Friend: " + user.userName + " loaded in");
+      if (user.giftList == undefined) {
+        deployGiftListEmptyNotification();
+      } else if (user.giftList.length == 0) {
+        deployGiftListEmptyNotification();
       }
+      if (currentUser.invites == undefined) {
+        console.log("Invites Not Found");
+      } else if (currentUser.invites != undefined) {
+        if (currentUser.invites.length > 0) {
+          inviteNote.style.background = "#ff3923";
+        }
+      }
+      userArr = JSON.parse(sessionStorage.userArr);
     }
-    userArr = JSON.parse(sessionStorage.userArr);
+  } catch (err) {
+    window.location.href = "index.html";
   }
 }
 

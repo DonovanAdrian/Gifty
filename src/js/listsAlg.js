@@ -30,27 +30,31 @@ var modal;
 
 
 function getCurrentUser(){
-  user = JSON.parse(sessionStorage.validUser);
-  if(user == null || user == undefined){
-    window.location.href = "index.html";
-  } else {
-    console.log("User: " + user.userName + " logged in");
-    if(user.friends == undefined){
-      deployFriendListEmptyNotification();
-    } else if (user.friends.length == 0) {
-      deployFriendListEmptyNotification();
-    }
-    if(user.invites == undefined) {
-      console.log("Invites Not Found");
-    } else if (user.invites != undefined) {
-      if (user.invites.length > 0) {
-        inviteNote.style.background = "#ff3923";
+  try {
+    user = JSON.parse(sessionStorage.validUser);
+    if (user == null || user == undefined) {
+      window.location.href = "index.html";
+    } else {
+      console.log("User: " + user.userName + " logged in");
+      if (user.friends == undefined) {
+        deployFriendListEmptyNotification();
+      } else if (user.friends.length == 0) {
+        deployFriendListEmptyNotification();
       }
+      if (user.invites == undefined) {
+        console.log("Invites Not Found");
+      } else if (user.invites != undefined) {
+        if (user.invites.length > 0) {
+          inviteNote.style.background = "#ff3923";
+        }
+      }
+      userArr = JSON.parse(sessionStorage.userArr);
     }
-    userArr = JSON.parse(sessionStorage.userArr);
-  }
 
-  sessionStorage.setItem("moderationSet", moderationSet);
+    sessionStorage.setItem("moderationSet", moderationSet);
+  } catch (err) {
+    window.location.href = "index.html";
+  }
 }
 
 window.onload = function instantiate() {

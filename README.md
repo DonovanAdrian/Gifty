@@ -69,8 +69,8 @@ concrete idea of my goals with updating each page:
   - [x] moderation.html
   - [x] passOp.js
 - [x] Test New Gifty Files
-- [ ] Add Supplemental ModerationAlg Features **\(in progress)**
-- [ ] Add Private Gift List Feature
+- [x] Add Supplemental ModerationAlg Features
+- [ ] Add Private Gift List Feature **\(in progress)**
 - [ ] Add Notifications Feature Across All Pages
 - [ ] Set Up Local Database
 
