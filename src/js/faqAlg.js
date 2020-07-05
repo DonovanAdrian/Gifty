@@ -12,7 +12,6 @@ var offlineSpan;
 var offlineModal;
 var emailBtn;
 var user;
-var userName;
 var inviteNote;
 var noteModal;
 var noteInfoField;
@@ -104,7 +103,7 @@ window.onload = function instantiate() {
   emailBtn.onclick = function () {
     var supportStr = genSupport();
     window.open('mailto:gifty.application@gmail.com?subject=Gifty Support #' + supportStr +
-      '&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, ' + userName);
+      '&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, ' + user.userName);
   };
 
   function genSupport() {
@@ -125,8 +124,8 @@ window.onload = function instantiate() {
     }
     console.log(supportCode);
     console.log(supportCount);
-    firebase.database().ref("users/" + user + "/support/" + supportCount).push();
-    firebase.database().ref("users/" + user + "/support/" + supportCount).set({
+    firebase.database().ref("users/" + user.uid + "/support/" + supportCount).push();
+    firebase.database().ref("users/" + user.uid + "/support/" + supportCount).set({
       supportCount: supportCount,
       supportString: supportCode
     });
