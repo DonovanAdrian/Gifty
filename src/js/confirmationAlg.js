@@ -31,20 +31,16 @@ var noteSpan;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if (user == null || user == undefined) {
-      window.location.href = "index.html";
-    } else {
-      console.log("User: " + user.userName + " logged in");
-      if (user.invites == undefined) {
-        console.log("Invites Not Found");
-        deployInviteListEmptyNotification();
-      } else if (user.invites != undefined) {
-        if (user.invites.length > 0) {
-          inviteNote.style.background = "#ff3923";
-        }
+    console.log("User: " + user.userName + " logged in");
+    if (user.invites == undefined) {
+      console.log("Invites Not Found");
+      deployInviteListEmptyNotification();
+    } else if (user.invites != undefined) {
+      if (user.invites.length > 0) {
+        inviteNote.style.background = "#ff3923";
       }
-      userArr = JSON.parse(sessionStorage.userArr);
     }
+    userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
     window.location.href = "index.html";
   }
@@ -311,6 +307,10 @@ window.onload = function instantiate() {
         inviteArr[data.key] = data.val();
 
         changeInviteElement(data.val());
+      });
+
+      postRef.on('child_removed', function (data) {
+        location.reload();
       });
     };
 

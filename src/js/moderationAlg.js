@@ -31,20 +31,15 @@ var userInitial;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if (user == null || user == undefined) {
-      window.location.href = "index.html";
-    } else {
-      console.log("User: " + user.userName + " logged in");
-      if (user.invites == undefined) {
-        console.log("Invites Not Found");
-      } else if (user.invites != undefined) {
-        if (user.invites.length > 0) {
-          inviteNote.style.background = "#ff3923";
-        }
+    console.log("User: " + user.userName + " logged in");
+    if (user.invites == undefined) {
+      console.log("Invites Not Found");
+    } else if (user.invites != undefined) {
+      if (user.invites.length > 0) {
+        inviteNote.style.background = "#ff3923";
       }
-      userArr = JSON.parse(sessionStorage.userArr);
     }
-
+    userArr = JSON.parse(sessionStorage.userArr);
     sessionStorage.setItem("moderationSet", moderationSet);
   } catch (err) {
     window.location.href = "index.html";
@@ -352,9 +347,13 @@ window.onload = function instantiate() {
       userUserName.innerHTML = userData.userName;
       if(userData.giftList != undefined){
         userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
+      } else {
+        userGifts.innerHTML = "This User Has No Gifts";
       }
       if(userData.friends != undefined) {
         userFriends.innerHTML = "# Friends: " + userData.friends.length;
+      } else {
+        userFriends.innerHTML = "This User Has No Friends";
       }
       userPassword.innerHTML = "Click On Me To View Password";
 
@@ -461,9 +460,13 @@ window.onload = function instantiate() {
       userUserName.innerHTML = userData.userName;
       if(userData.giftList != undefined){
         userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
+      } else {
+        userGifts.innerHTML = "This User Has No Gifts";
       }
       if(userData.friends != undefined) {
         userFriends.innerHTML = "# Friends: " + userData.friends.length;
+      } else {
+        userFriends.innerHTML = "This User Has No Friends";
       }
       userPassword.innerHTML = "Click On Me To View Password";
 

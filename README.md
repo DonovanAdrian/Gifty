@@ -18,7 +18,8 @@
   - [x] passOp.js
 - [x] Test New Gifty Files
 - [x] Add Supplemental ModerationAlg Features
-- [ ] Add Private Gift List Feature **\(in progress)**
+- [x] Add Private Gift List Feature
+- [ ] Touch Up Work/Testing **\(in progress)**
 - [ ] Add Notifications Feature Across All Pages
 - [ ] Set Up Local Database
 

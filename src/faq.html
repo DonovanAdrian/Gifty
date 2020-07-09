@@ -18,10 +18,10 @@
     <ul>
       <li><div class="cropIcon"><img class="imgIcon" src="img/giftyicon.png"></div></li>
       <div class="break"></div>
-      <li><a class="active" onclick="navigation(0)">Home</a></li>
+      <li><a onclick="navigation(0)">Home</a></li>
       <li><a onclick="navigation(1)">Lists</a></li>
       <li><a onclick="navigation(2)" id="inviteNote">Invites</a></li>
-      <li><a onclick="navigation(3)" id="settingsNote">Settings</a></li>
+      <li><a class="active" onclick="navigation(3)" id="settingsNote">Settings</a></li>
       <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
     </ul>
   </div>
@@ -98,6 +98,22 @@
     <!--Modal Body-->
     <div class="modal-body">
       <p>Please reconnect to the internet in order to use Gifty properly!</p>
+    </div>
+  </div>
+</div>
+
+<div id="notificationModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeNotification">&times;</span>
+      <h2 id="notificationTitle"></h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p id="notificationInfo"></p>
     </div>
   </div>
 </div>
