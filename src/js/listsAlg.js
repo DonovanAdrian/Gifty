@@ -25,6 +25,7 @@ var noteModal;
 var noteInfoField;
 var noteTitleField;
 var noteSpan;
+var modalSpan;
 var modal;
 
 
@@ -32,25 +33,20 @@ var modal;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if (user == null || user == undefined) {
-      window.location.href = "index.html";
-    } else {
-      console.log("User: " + user.userName + " logged in");
-      if (user.friends == undefined) {
-        deployFriendListEmptyNotification();
-      } else if (user.friends.length == 0) {
-        deployFriendListEmptyNotification();
-      }
-      if (user.invites == undefined) {
-        console.log("Invites Not Found");
-      } else if (user.invites != undefined) {
-        if (user.invites.length > 0) {
-          inviteNote.style.background = "#ff3923";
-        }
-      }
-      userArr = JSON.parse(sessionStorage.userArr);
+    console.log("User: " + user.userName + " logged in");
+    if (user.friends == undefined) {
+      deployFriendListEmptyNotification();
+    } else if (user.friends.length == 0) {
+      deployFriendListEmptyNotification();
     }
-
+    if (user.invites == undefined) {
+      console.log("Invites Not Found");
+    } else if (user.invites != undefined) {
+      if (user.invites.length > 0) {
+        inviteNote.style.background = "#ff3923";
+      }
+    }
+    userArr = JSON.parse(sessionStorage.userArr);
     sessionStorage.setItem("moderationSet", moderationSet);
   } catch (err) {
     window.location.href = "index.html";
@@ -68,6 +64,7 @@ window.onload = function instantiate() {
   noteTitleField = document.getElementById('notificationTitle');
   noteInfoField = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
+  modalSpan = document.getElementById('closeModal');
   modal = document.getElementById('myModal');
   getCurrentUser();
 
@@ -221,113 +218,48 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
 
-    userBase = firebase.database().ref("users/" + user.uid);
+    userBase = firebase.database().ref("users/");
     userFriends = firebase.database().ref("users/" + user.uid + "/friends");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
     var fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         onlineInt = 1;
-        if(data.key == "name"){
-          user.name = data.val();
-        } else if (data.key == "pin"){
-          user.pin = data.val();
-        } else if (data.key == "encodeStr"){
-          user.encodeStr = data.val();
-        } else if (data.key == "userName"){
-          user.userName = data.val();
-        } else if (data.key == "ban"){
-          user.ban = data.val();
-        } else if (data.key == "firstLogin"){
-          user.firstLogin = data.val();
-        } else if (data.key == "moderatorInt"){
-          user.moderatorInt = data.val();
-        } else if (data.key == "organize"){
-          user.organize = data.val();
-        } else if (data.key == "strike"){
-          user.strike = data.val();
-        } else if (data.key == "theme"){
-          user.theme = data.val();
-        } else if (data.key == "uid"){
-          user.uid = data.val();
-        } else if (data.key == "warn"){
-          user.warn = data.val();
-        } else if (data.key == "giftList"){
-          user.giftList = data.val();
-        } else if (data.key == "support"){
-          user.support = data.val();
-        } else if (data.key == "invites"){
-          user.invites = data.val();
-        } else if (data.key == "friends"){
-          user.friends = data.val();
-        } else if (data.key == "shareCode"){
-          user.shareCode = data.val();
-        } else {
-          console.log("Unknown Key..." + data.key);
+
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
+          //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          userArr[i] = data.val();
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 1");
         }
       });
+
       postRef.on('child_changed', function (data) {
-        if(data.key == "name"){
-          user.name = data.val();
-        } else if (data.key == "pin"){
-          user.pin = data.val();
-        } else if (data.key == "encodeStr"){
-          user.encodeStr = data.val();
-        } else if (data.key == "userName"){
-          user.userName = data.val();
-        } else if (data.key == "ban"){
-          user.ban = data.val();
-        } else if (data.key == "firstLogin"){
-          user.firstLogin = data.val();
-        } else if (data.key == "moderatorInt"){
-          user.moderatorInt = data.val();
-        } else if (data.key == "organize"){
-          user.organize = data.val();
-        } else if (data.key == "strike"){
-          user.strike = data.val();
-        } else if (data.key == "theme"){
-          user.theme = data.val();
-        } else if (data.key == "uid"){
-          user.uid = data.val();
-        } else if (data.key == "warn"){
-          user.warn = data.val();
-        } else if (data.key == "giftList"){
-          user.giftList = data.val();
-        } else if (data.key == "support"){
-          user.support = data.val();
-        } else if (data.key == "invites"){
-          user.invites = data.val();
-        } else if (data.key == "friends"){
-          user.friends = data.val();
-        } else if (data.key == "shareCode"){
-          user.shareCode = data.val();
-        } else {
-          console.log("Unknown Key..." + data.key);
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
+          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          userArr[i] = data.val();
+
+          if(friendArr.includes(data.key)){
+            changeFriendElement(friendArr[friendArr.indexOf(data.key)]);
+          }
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 2");
         }
       });
+
       postRef.on('child_removed', function (data) {
-        if(data.key == "name"){
-          user.name = "";
-        } else if (data.key == "pin"){
-          user.pin = "";
-        } else if (data.key == "encodeStr"){
-          user.encodeStr = "";
-        } else if (data.key == "userName"){
-          user.userName = "";
-        } else if (data.key == "uid"){
-          user.uid = "";
-        } else if (data.key == "giftList"){
-          user.giftList = [];
-        } else if (data.key == "support"){
-          user.support = [];
-        } else if (data.key == "invites"){
-          user.invites = [];
-        } else if (data.key == "friends"){
-          user.friends = [];
-        } else if (data.key == "shareCode"){
-          user.shareCode = "";
-        } else {
-          console.log("Unknown Key..." + data.key);
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
+          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          userArr.splice(i, 1);
         }
       });
     };
@@ -348,10 +280,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_removed', function (data) {
-        console.log(friendArr);
-        friendArr.splice(data.key, 1);
-        console.log(friendArr);
-        removeFriendElement(data.val().uid);
+        location.reload();
       });
     };
 
@@ -389,6 +318,16 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 
+  function findUIDItemInArr(item, userArray){
+    for(var i = 0; i < userArray.length; i++){
+      if(userArray[i].uid == item){
+        //console.log("Found item: " + item);
+        return i;
+      }
+    }
+    return -1;
+  }
+
   function createFriendElement(friendKey) {
     var friendData;
     for (var i = 0; i < userArr.length; i++) {
@@ -411,55 +350,76 @@ window.onload = function instantiate() {
       liItem.id = "user" + userUid;
       liItem.className = "gift";
       liItem.onclick = function () {
-        try {
-          if (friendGiftList.length == 0) {
-            deployEmptyFriendGiftListNotification(friendUserName);
+        var userTitle = document.getElementById('userTitle');
+        var publicListCount = document.getElementById('publicListCount');
+        var publicList = document.getElementById('publicList');
+        var privateListCount = document.getElementById('privateListCount');
+        var privateListHTML = document.getElementById('privateList');
+        userTitle.innerHTML = friendData.name;
+        if(friendData.giftList != undefined){
+          if(friendData.giftList.length > 0) {
+            publicList.innerHTML = "Click on me to access " + friendData.name + "\'s public list!";
+            publicList.onclick = function () {
+              sessionStorage.setItem("userArr", JSON.stringify(userArr));
+              sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
+              sessionStorage.setItem("validUser", JSON.stringify(user));
+              window.location.href = "friendList.html";
+            };
+            if (friendData.giftList.length == 1)
+              publicListCount.innerHTML = friendData.name + " has 1 gift on their public list";
+            else
+              publicListCount.innerHTML = friendData.name + " has " + friendData.giftList.length + " gifts on their public list";
           } else {
-            sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
-            sessionStorage.setItem("validUser", JSON.stringify(user));
-            window.location.href = "friendList.html";
+            publicList.innerHTML = friendData.name + "\'s public gift list is empty, please check back later!";
+            publicList.onclick = function () {};
+            publicListCount.innerHTML = friendData.name + " has 0 gifts on their public list";
           }
-        } catch (err) {
-          console.log(err.toString());
-          deployEmptyFriendGiftListNotification(friendUserName);
+        } else {
+          publicList.innerHTML = friendData.name + "\'s public gift list is empty, please check back later!";
+          publicList.onclick = function () {};
+          publicListCount.innerHTML = friendData.name + " has 0 gifts on their public list";
+        }
+        if(friendData.privateList != undefined){
+          if(friendData.privateList.length > 0) {
+            if (friendData.privateList.length == 1)
+              privateListCount.innerHTML = friendData.name + " has 1 gift on their private list";
+            else
+              privateListCount.innerHTML = friendData.name + " has " + friendData.privateList.length + " gifts on their private list";
+          } else {
+            privateListCount.innerHTML = friendData.name + " has 0 gifts on their private list";
+          }
+        } else {
+          privateListCount.innerHTML = friendData.name + " has 0 gifts on their private list";
+        }
+        privateListHTML.innerHTML = "Click on me to access " + friendData.name + "\'s private gift list!";
+        privateListHTML.onclick = function() {
+          sessionStorage.setItem("userArr", JSON.stringify(userArr));
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          window.location.href = "privateFriendList.html";
+        };
+        //show modal
+        modal.style.display = "block";
+
+        //close on close
+        modalSpan.onclick = function() {
+          modal.style.display = "none";
+        };
+
+        //close on click
+        window.onclick = function(event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
         }
       };
       var textNode = document.createTextNode(friendName);
       liItem.appendChild(textNode);
       userList.insertBefore(liItem, document.getElementById("userListContainer").childNodes[0]);
+      clearInterval(offlineTimer);
 
       friendCount++;
     }
-  }
-
-  function deployEmptyFriendGiftListNotification(userName){
-    noteInfoField.innerHTML = userName + " does not currently have any items in their list, " +
-      "please check back later!";
-    noteTitleField.innerHTML = userName + " Gift List Empty!";
-    noteModal.style.display = "block";
-
-    //close on close
-    noteSpan.onclick = function() {
-      noteModal.style.display = "none";
-      clearInterval(j);
-    };
-
-    //close on click
-    window.onclick = function(event) {
-      if (event.target == noteModal) {
-        noteModal.style.display = "none";
-        clearInterval(j);
-      }
-    };
-
-    var nowJ = 0;
-    var j = setInterval(function(){
-      nowJ = nowJ + 1000;
-      if(nowJ >= 3000){
-        noteModal.style.display = "none";
-        clearInterval(j);
-      }
-    }, 1000);
   }
 
   function changeFriendElement(friendKey){
@@ -480,16 +440,67 @@ window.onload = function instantiate() {
       editItem.innerHTML = friendName;
       editItem.className = "gift";
       editItem.onclick = function () {
-        try {
-          if (friendGiftList.length == 0) {
-            deployEmptyFriendGiftListNotification(friendUserName);
+        var userTitle = document.getElementById('userTitle');
+        var publicListCount = document.getElementById('publicListCount');
+        var publicList = document.getElementById('publicList');
+        var privateListCount = document.getElementById('privateListCount');
+        var privateListHTML = document.getElementById('privateList');
+        userTitle.innerHTML = friendData.name;
+        if(friendData.giftList != undefined){
+          if(friendData.giftList.length > 0) {
+            publicList.innerHTML = "Click on me to access " + friendData.name + "\'s public list!";
+            publicList.onclick = function () {
+              sessionStorage.setItem("userArr", JSON.stringify(userArr));
+              sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
+              sessionStorage.setItem("validUser", JSON.stringify(user));
+              window.location.href = "friendList.html";
+            };
+            if (friendData.giftList.length == 1)
+              publicListCount.innerHTML = friendData.name + " has 1 gift on their public list";
+            else
+              publicListCount.innerHTML = friendData.name + " has " + friendData.giftList.length + " gifts on their public list";
           } else {
-            sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
-            sessionStorage.setItem("validUser", JSON.stringify(user));
-            window.location.href = "friendList.html";
+            publicList.innerHTML = friendData.name + "\'s public gift list is empty, please check back later!";
+            publicList.onclick = function () {};
+            publicListCount.innerHTML = friendData.name + " has 0 gifts on their public list";
           }
-        } catch (err) {
-          deployEmptyFriendGiftListNotification(friendUserName);
+        } else {
+          publicList.innerHTML = friendData.name + "\'s public gift list is empty, please check back later!";
+          publicList.onclick = function () {};
+          publicListCount.innerHTML = friendData.name + " has 0 gifts on their public list";
+        }
+        if(friendData.privateList != undefined){
+          if(friendData.privateList.length > 0) {
+            if (friendData.privateList.length == 1)
+              privateListCount.innerHTML = friendData.name + " has 1 gift on their private list";
+            else
+              privateListCount.innerHTML = friendData.name + " has " + friendData.privateList.length + " gifts on their private list";
+          } else {
+            privateListCount.innerHTML = friendData.name + " has 0 gifts on their private list";
+          }
+        } else {
+          privateListCount.innerHTML = friendData.name + " has 0 gifts on their private list";
+        }
+        privateListHTML.innerHTML = "Click on me to access " + friendData.name + "\'s private gift list!";
+        privateListHTML.onclick = function() {
+          sessionStorage.setItem("userArr", JSON.stringify(userArr));
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          window.location.href = "privateFriendList.html";
+        };
+        //show modal
+        modal.style.display = "block";
+
+        //close on close
+        modalSpan.onclick = function() {
+          modal.style.display = "none";
+        };
+
+        //close on click
+        window.onclick = function(event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
         }
       };
     }

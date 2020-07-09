@@ -36,29 +36,24 @@ var modal;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if (user == null || user == undefined) {
-      window.location.href = "index.html";
-    } else {
-      console.log("User: " + user.userName + " logged in");
-      if (user.invites == undefined) {
-        console.log("Invites Not Found");
-      } else if (user.invites != undefined) {
-        if (user.invites.length > 0) {
-          newInvite.style.display = "block";
-          inviteNote.style.background = "#ff3923";
-          invitesFound = true;
-        }
+    console.log("User: " + user.userName + " logged in");
+    if (user.invites == undefined) {
+      console.log("Invites Not Found");
+    } else if (user.invites != undefined) {
+      if (user.invites.length > 0) {
+        newInvite.style.display = "block";
+        inviteNote.style.background = "#ff3923";
+        invitesFound = true;
       }
-      if (user.friends == undefined) {
-        deployFriendListEmptyNotification();
-      } else if (user.friends.length == 0) {
-        deployFriendListEmptyNotification();
-      } else {
-        console.log(user.friends);
-      }
-
-      userArr = JSON.parse(sessionStorage.userArr);
     }
+    if (user.friends == undefined) {
+      deployFriendListEmptyNotification();
+    } else if (user.friends.length == 0) {
+      deployFriendListEmptyNotification();
+    } else {
+      console.log(user.friends);
+    }
+    userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
     window.location.href = "index.html";
   }
@@ -294,6 +289,10 @@ window.onload = function instantiate() {
         friendArr[data.key] = data.val();
         console.log("Changing " + data.val());
         changeFriendElement(data.val());
+      });
+
+      postRef.on('child_removed', function (data) {
+        location.reload();
       });
     };
 
@@ -654,8 +653,8 @@ window.onload = function instantiate() {
     var inviteInfo = document.getElementById('inviteInfo');
     userInput = document.getElementById('userNameInp');
 
-    console.log(userLocation);
-    console.log(userArr[userLocation].userName);
+    //console.log(userLocation);
+    //console.log(userArr[userLocation].userName);
     if (userLocation != -1) {
       confUserName.innerHTML = "Did you mean to add \"" + userArr[userLocation].name + "\"?";
       userInviteModal.style.display = "none";
@@ -713,14 +712,14 @@ window.onload = function instantiate() {
     }
     invitedUserInvites.push(user.uid);
 
-    console.log(invitedUser.uid);
+    //console.log(invitedUser.uid);
     if(invitedUser.invites != undefined) {
 
       firebase.database().ref("users/" + invitedUser.uid).update({
         invites: invitedUserInvites
       });
     } else {
-      console.log("New Invite List");
+      //console.log("New Invite List");
       firebase.database().ref("users/" + invitedUser.uid).update({invites:{0:user.uid}});
     }
   }

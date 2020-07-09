@@ -14,6 +14,7 @@ var logoutReminder = 300;
 var logoutLimit = 900;
 var moderationSet = -1;
 
+var giftCreationDate;
 var giftList;
 var giftListHTML;
 var offline;
@@ -41,25 +42,21 @@ function getCurrentUser(){
     moderationSet = sessionStorage.getItem("moderationSet");
     user = JSON.parse(sessionStorage.validGiftUser);
     currentUser = JSON.parse(sessionStorage.validUser);
-    if (currentUser == null || currentUser == undefined) {
-      window.location.href = "index.html";
-    } else {
-      console.log("User: " + currentUser.userName + " logged in");
-      console.log("Friend: " + user.userName + " loaded in");
-      if (user.giftList == undefined) {
-        deployGiftListEmptyNotification();
-      } else if (user.giftList.length == 0) {
-        deployGiftListEmptyNotification();
-      }
-      if (currentUser.invites == undefined) {
-        console.log("Invites Not Found");
-      } else if (currentUser.invites != undefined) {
-        if (currentUser.invites.length > 0) {
-          inviteNote.style.background = "#ff3923";
-        }
-      }
-      userArr = JSON.parse(sessionStorage.userArr);
+    console.log("User: " + currentUser.userName + " logged in");
+    console.log("Friend: " + user.userName + " loaded in");
+    if (user.giftList == undefined) {
+      deployGiftListEmptyNotification();
+    } else if (user.giftList.length == 0) {
+      deployGiftListEmptyNotification();
     }
+    if (currentUser.invites == undefined) {
+      console.log("Invites Not Found");
+    } else if (currentUser.invites != undefined) {
+      if (currentUser.invites.length > 0) {
+        inviteNote.style.background = "#ff3923";
+      }
+    }
+    userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
     window.location.href = "index.html";
   }
@@ -67,6 +64,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
+  giftCreationDate = document.getElementById('giftCreationDate');
   giftList = document.getElementById('giftListContainer');
   giftListHTML = document.getElementById('giftListContainer').innerHTML;
   offlineModal = document.getElementById('offlineModal');
@@ -173,6 +171,8 @@ window.onload = function instantiate() {
 
   loginTimer(); //if action, then reset timer
 
+  friendListButton();
+
   function loginTimer(){
     var loginNum = 0;
     console.log("Login Timer Started");
@@ -244,6 +244,27 @@ window.onload = function instantiate() {
         areYouStillThereBool = false;
       }
     };
+  }
+
+  function friendListButton(){
+    var nowConfirm = 0;
+    var alternator = 0;
+    console.log("Friend List Button Feature Active");
+    setInterval(function(){
+      nowConfirm = nowConfirm + 1000;
+      if(nowConfirm >= 3000){
+        nowConfirm = 0;
+        if(alternator == 0) {
+          alternator++;
+          document.getElementById("listNote").innerHTML = "Lists";
+          document.getElementById("listNote").style.background = "#00c606";
+        } else {
+          alternator--;
+          document.getElementById("listNote").innerHTML = "Public";
+          document.getElementById("listNote").style.background = "#00ad05";
+        }
+      }
+    }, 1000);
   }
 
   function databaseQuery() {
@@ -369,7 +390,7 @@ window.onload = function instantiate() {
         }
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().buyer, data.val().uid);
+          data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate);
 
         if(updateGiftToDBBool){
           updateGiftError(data, data.key);
@@ -378,23 +399,14 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function(data) {
-        console.log(giftArr);
         giftArr[data.key] = data.val();
-        console.log(giftArr);
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().buyer, data.val().uid);
+          data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate);
       });
 
       postRef.on('child_removed', function(data) {
-        console.log(giftArr);
-        giftArr.splice(data.key, 1);
-        console.log(giftArr);
-        removeGiftElement(data.val().uid);
-
-        if (giftArr.length == 0) {
-          deployGiftListEmptyNotification();
-        }
+        location.reload();
       });
     };
 
@@ -435,11 +447,11 @@ window.onload = function instantiate() {
   function checkGiftBuyer(buyer){
     var updateGiftToDB = true;
 
-    console.log("Checking for buyer error...");
+    //console.log("Checking for buyer error...");
 
     if(buyer == "" || buyer == null || buyer == undefined || userUserNames.includes(buyer)){
       updateGiftToDB = false;
-      console.log("No buyer error");
+      //console.log("No buyer error");
     } else {
       console.log("Buyer error found!");
     }
@@ -454,7 +466,8 @@ window.onload = function instantiate() {
     });
   }
 
-  function createGiftElement(giftDescription, giftLink, giftReceived, giftTitle, giftKey, giftWhere, giftBuyer, giftUid){
+  function createGiftElement(giftDescription, giftLink, giftReceived, giftTitle, giftKey, giftWhere, giftBuyer, giftUid,
+                             giftDate){
     console.log("Creating " + giftUid);
     try{
       document.getElementById("TestGift").remove();
@@ -467,7 +480,7 @@ window.onload = function instantiate() {
     liItem.className = "gift";
     if(giftReceived == 1) {
       liItem.className += " checked";
-      console.log("Checked, created");
+      //console.log("Checked, created");
     }
     liItem.onclick = function (){
       var spanGift = document.getElementsByClassName("close")[0];
@@ -519,6 +532,15 @@ window.onload = function instantiate() {
       } else {
         boughtField.innerHTML = "This gift has not been bought yet";
       }
+      if(giftDate != undefined) {
+        if (giftDate != "") {
+          giftCreationDate.innerHTML = "Created on: " + giftDate;
+        } else {
+          giftCreationDate.innerHTML = "Creation date not available";
+        }
+      } else {
+        giftCreationDate.innerHTML = "Creation date not available";
+      }
       buyBtn.onclick = function(){
         if (giftReceived == 0) {
           firebase.database().ref("users/" + user.uid + "/giftList/" + giftKey).update({
@@ -567,13 +589,13 @@ window.onload = function instantiate() {
     clearInterval(offlineTimer);
   }
 
-  function changeGiftElement(description, link, received, title, key, where, buyer, uid) {
+  function changeGiftElement(description, link, received, title, key, where, buyer, uid, date) {
     var editGift = document.getElementById("gift" + uid);
     editGift.innerHTML = title;
     editGift.className = "gift";
     if(received == 1) {
       editGift.className += " checked";
-      console.log("Checked, changed");
+      //console.log("Checked, changed");
     }
     editGift.onclick = function (){
       var spanGift = document.getElementsByClassName("close")[0];
@@ -624,6 +646,15 @@ window.onload = function instantiate() {
         }
       } else {
         boughtField.innerHTML = "This gift has not been bought yet";
+      }
+      if(date != undefined) {
+        if (date != "") {
+          giftCreationDate.innerHTML = "Created on: " + date;
+        } else {
+          giftCreationDate.innerHTML = "Creation date not available";
+        }
+      } else {
+        giftCreationDate.innerHTML = "Creation date not available";
       }
       buyBtn.onclick = function(){
         if(received == 0) {

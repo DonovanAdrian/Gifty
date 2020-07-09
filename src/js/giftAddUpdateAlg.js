@@ -2,18 +2,22 @@ var listeningFirebaseRefs = [];
 var giftArr = [];
 
 var giftPresent = true;
+var privateListBool = true;
 var areYouStillThereBool = false;
 
 var giftUID = -1;
 var logoutReminder = 300;
 var logoutLimit = 900;
 
+var giftCreationDate;
 var offline;
 var giftList;
 var giftStorage;
+var privateList;
 var offlineSpan;
 var offlineModal;
 var user;
+var privateUser;
 var descField;
 var titleField;
 var whereField;
@@ -30,25 +34,31 @@ var noteSpan;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if (user == null || user == undefined) {
-      window.location.href = "index.html";
-    } else {
+    privateList = JSON.parse(sessionStorage.privateList);
+    if(privateList == null || privateList == undefined || privateList == "") {
+      privateListBool = false;
       console.log("User: " + user.userName + " logged in");
-      giftStorage = JSON.parse(sessionStorage.giftStorage);
-      if (giftStorage == null || giftStorage == undefined || giftStorage == "") {
-        giftPresent = false;
-      } else {
-        console.log("Gift: " + giftStorage + " found");
-      }
-      if (user.invites == undefined) {
-        console.log("Invites Not Found");
-      } else if (user.invites != undefined) {
-        if (user.invites.length > 0) {
-          inviteNote.style.background = "#ff3923";
-        }
-      }
-      userArr = JSON.parse(sessionStorage.userArr);
+    } else {
+      privateUser = JSON.parse(sessionStorage.validPrivateUser);
+      document.getElementById('homeNote').className = "";
+      document.getElementById('listNote').className = "active";
+      console.log("User: " + privateUser.userName + " logged in");
+      console.log("Friend: " + user.userName + " logged in");
     }
+    giftStorage = JSON.parse(sessionStorage.giftStorage);
+    if (giftStorage == null || giftStorage == undefined || giftStorage == "") {
+      giftPresent = false;
+    } else {
+      console.log("Gift: " + giftStorage + " found");
+    }
+    if (user.invites == undefined) {
+      console.log("Invites Not Found");
+    } else if (user.invites != undefined) {
+      if (user.invites.length > 0) {
+        inviteNote.style.background = "#ff3923";
+      }
+    }
+    userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
     window.location.href = "index.html";
   }
@@ -136,8 +146,6 @@ window.onload = function instantiate() {
 
   databaseQuery();
 
-  initializeData();
-
   loginTimer(); //if action, then reset timer
 
   function loginTimer(){
@@ -215,7 +223,15 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
 
-    userGifts = firebase.database().ref("users/" + user.uid + "/giftList/");
+    if(!privateListBool) {
+      userGifts = firebase.database().ref("users/" + user.uid + "/giftList/");
+    } else {
+      try{
+        userGifts = firebase.database().ref("users/" + privateList.uid + "/privateList/");
+      } catch (err) {
+        console.log("Unable to connect to private list");
+      }
+    }
 
     var fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
@@ -223,24 +239,23 @@ window.onload = function instantiate() {
 
         if(data.val().uid == giftStorage){
           giftUID = data.key;
+          if(privateListBool){
+            currentGift = data.val();
+          }
+          initializeData();
         }
       });
 
       postRef.on('child_changed', function (data) {
-        console.log(giftArr);
         giftArr[data.key] = data;
-        console.log(giftArr);
 
         if(data.val().uid == giftStorage){
-          currentGift.buyer = data.buyer;
-          currentGift.received = data.received;
+          currentGift = data.val();
         }
       });
 
       postRef.on('child_removed', function (data) {
-        console.log(giftArr);
-        giftArr.splice(data.key, 1);
-        console.log(giftArr);
+        location.reload();
       });
 
     };
@@ -271,10 +286,19 @@ window.onload = function instantiate() {
   }
 
   function getGift() {
-    for (var i = 0; i < user.giftList.length; i++){
-      if(user.giftList[i].uid == giftStorage){
-        currentGift = user.giftList[i];
-        break;
+    if(!privateListBool) {
+      for (var i = 0; i < user.giftList.length; i++) {
+        if (user.giftList[i].uid == giftStorage) {
+          currentGift = user.giftList[i];
+          break;
+        }
+      }
+    } else {
+      for (var i = 0; i < user.privateList.length; i++) {
+        if (privateList.privateList[i].uid == giftStorage) {
+          currentGift = privateList.privateList[i];
+          break;
+        }
       }
     }
   }
@@ -285,18 +309,46 @@ window.onload = function instantiate() {
         "you!");
     else {
       if(giftUID != -1) {
-        firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
-          title: titleField.value,
-          link: linkField.value,
-          where: whereField.value,
-          received: currentGift.received,
-          uid: giftStorage,
-          buyer: currentGift.buyer,
-          description: descField.value
-        });
+        if (!privateListBool) {
+          firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
+            title: titleField.value,
+            link: linkField.value,
+            where: whereField.value,
+            received: currentGift.received,
+            uid: giftStorage,
+            buyer: currentGift.buyer,
+            description: descField.value,
+            creationDate: ""
+          });
+          if (currentGift.creationDate != undefined) {
+            if (currentGift.creationDate != "") {
+              firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
+                creationDate: currentGift.creationDate
+              });
+            }
+          }
 
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        window.location.href = "home.html";
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          sessionStorage.setItem("userArr", JSON.stringify(userArr));
+          window.location.href = "home.html";
+        } else {
+          firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
+            title: titleField.value,
+            link: linkField.value,
+            where: whereField.value,
+            received: currentGift.received,
+            uid: giftStorage,
+            buyer: currentGift.buyer,
+            description: descField.value,
+            creationDate: currentGift.creationDate,
+            creator: currentGift.creator
+          });
+
+          sessionStorage.setItem("validGiftUser", JSON.stringify(user));
+          sessionStorage.setItem("validUser", JSON.stringify(privateUser));
+          sessionStorage.setItem("userArr", JSON.stringify(userArr));
+          window.location.href = "privateFriendList.html";
+        }
       } else {
         console.log(giftUID);
       }
@@ -305,26 +357,55 @@ window.onload = function instantiate() {
 
   function addGiftToDB(){
     var uid = giftArr.length;
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1;
+    var yy = today.getFullYear();
+    var creationDate = mm + "/" + dd + "/" + yy;
 
     if(titleField.value === "")
       alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
         "you!");
     else {
-      var newUid = firebase.database().ref("users/" + user.uid + "/giftList/" + uid).push();
-      newUid = newUid.toString();
-      newUid = newUid.substr(77, 96);
-      firebase.database().ref("users/" + user.uid + "/giftList/" + uid).set({
-        title: titleField.value,
-        link: linkField.value,
-        where: whereField.value,
-        received: 0,
-        uid: newUid,
-        buyer: "",
-        description: descField.value
-      });
+      if(!privateListBool) {
+        var newUid = firebase.database().ref("users/" + user.uid + "/giftList/" + uid).push();
+        newUid = newUid.toString();
+        newUid = newUid.substr(77, 96);
+        firebase.database().ref("users/" + user.uid + "/giftList/" + uid).set({
+          title: titleField.value,
+          link: linkField.value,
+          where: whereField.value,
+          received: 0,
+          uid: newUid,
+          buyer: "",
+          description: descField.value,
+          creationDate: creationDate
+        });
 
-      sessionStorage.setItem("validUser", JSON.stringify(user));
-      window.location.href = "home.html";
+        sessionStorage.setItem("validUser", JSON.stringify(user));
+        sessionStorage.setItem("userArr", JSON.stringify(userArr));
+        window.location.href = "home.html"
+      } else {
+
+        var newUid = firebase.database().ref("users/" + user.uid + "/privateList/" + uid).push();
+        newUid = newUid.toString();
+        newUid = newUid.substr(80, 96);
+        firebase.database().ref("users/" + user.uid + "/privateList/" + uid).set({
+          title: titleField.value,
+          link: linkField.value,
+          where: whereField.value,
+          received: 0,
+          uid: newUid,
+          buyer: "",
+          description: descField.value,
+          creationDate: creationDate,
+          creator: privateUser.userName
+        });
+        sessionStorage.setItem("validGiftUser", JSON.stringify(user));
+        sessionStorage.setItem("validUser", JSON.stringify(privateUser));
+        sessionStorage.setItem("userArr", JSON.stringify(userArr));
+        window.location.href = "privateFriendList.html";
+      }
     }
   }
 };

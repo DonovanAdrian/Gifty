@@ -569,7 +569,16 @@ window.onload = function instantiate() {
         updateGiftElement(giftUid);
       };
       deleteBtn.onclick = function(){
-        deleteGiftElement(giftKey, giftTitle, giftUid);
+        if (giftCreator == currentUser.userName || giftCreator == null || giftCreator == undefined) {
+          deleteGiftElement(giftKey, giftTitle, giftUid);
+        } else {
+          if (giftCreator == ""){
+            deleteGiftElement(giftKey, giftTitle, giftUid);
+          } else {
+            alert("Only the creator, " + giftCreator + ", can delete this gift. Please contact them to delete this gift " +
+              "if it needs to be removed.");
+          }
+        }
       };
       buyField.innerHTML = "Click on me to buy the gift!";
       buyField.onclick = function(){
@@ -585,14 +594,21 @@ window.onload = function instantiate() {
       dontBuyField.innerHTML = "Click on me to un-buy the gift!";
       dontBuyField.onclick = function(){
         if (giftReceived == 1) {
-          if (giftBuyer == currentUser.userName || giftBuyer == "") {
+          if (giftBuyer == currentUser.userName || giftBuyer == null || giftBuyer == undefined) {
             firebase.database().ref("users/" + user.uid + "/privateList/" + giftKey).update({
               received: 0,
               buyer: ""
             });
           } else {
-            alert("Only the buyer, " + giftBuyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-              "if this has been done in error.");
+            if (giftBuyer == "") {
+              firebase.database().ref("users/" + user.uid + "/privateList/" + giftKey).update({
+                received: 0,
+                buyer: ""
+              });
+            } else {
+              alert("Only the buyer, " + giftBuyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
+                "if this has been done in error.");
+            }
           }
         } else {
           alert("This gift has already been marked as \"Un-Bought\"!");
@@ -705,7 +721,16 @@ window.onload = function instantiate() {
         updateGiftElement(uid);
       };
       deleteBtn.onclick = function () {
-        deleteGiftElement(key, title, uid);
+        if (creator == currentUser.userName || creator == null || creator == undefined) {
+          deleteGiftElement(key, title, uid);
+        } else {
+          if (creator == ""){
+            deleteGiftElement(key, title, uid);
+          } else {
+            alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
+              "if it needs to be removed.");
+          }
+        }
       };
       buyField.innerHTML = "Click on me to buy the gift!";
       buyField.onclick = function () {
@@ -721,14 +746,21 @@ window.onload = function instantiate() {
       dontBuyField.innerHTML = "Click on me to un-buy the gift!";
       dontBuyField.onclick = function () {
         if (received == 1) {
-          if (buyer == currentUser.userName || buyer == "") {
+          if (buyer == currentUser.userName || buyer == null || buyer == undefined) {
             firebase.database().ref("users/" + user.uid + "/privateList/" + key).update({
               received: 0,
               buyer: ""
             });
           } else {
-            alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-              "if this has been done in error.");
+            if (buyer == "") {
+              firebase.database().ref("users/" + user.uid + "/privateList/" + key).update({
+                received: 0,
+                buyer: ""
+              });
+            } else {
+              alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
+                "if this has been done in error.");
+            }
           }
         } else {
           alert("This gift has already been marked as \"Un-Bought\"!");

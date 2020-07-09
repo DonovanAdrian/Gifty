@@ -12,10 +12,12 @@ var onlineInt = 0;
 var logoutReminder = 300;
 var logoutLimit = 900;
 
+var giftCreationDate;
 var giftList;
 var giftListHTML;
 var offline;
 var giftStorage;
+var privateList;
 var backBtn;
 var offlineSpan;
 var offlineModal;
@@ -37,33 +39,28 @@ var userGifts;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if (user == null || user == undefined) {
-      window.location.href = "index.html";
-    } else {
-      console.log("User: " + user.userName + " logged in");
-      if (user.giftList == undefined) {
-        deployGiftListEmptyNotification();
-      } else if (user.giftList.length == 0) {
-        deployGiftListEmptyNotification();
-      }
-      if (user.invites == undefined) {
-        console.log("Invites Not Found");
-      } else if (user.invites != undefined) {
-        if (user.invites.length > 0) {
-          invitesValidBool = true;
-        }
-      }
-
-      if (user.friends == undefined) {
-        console.log("Friends Not Found");
-      } else if (user.friends != undefined) {
-        if (user.friends.length > 0) {
-          friendsValidBool = true;
-        }
-      }
-
-      userArr = JSON.parse(sessionStorage.userArr);
+    console.log("User: " + user.userName + " logged in");
+    if (user.giftList == undefined) {
+      deployGiftListEmptyNotification();
+    } else if (user.giftList.length == 0) {
+      deployGiftListEmptyNotification();
     }
+    if (user.invites == undefined) {
+      console.log("Invites Not Found");
+    } else if (user.invites != undefined) {
+      if (user.invites.length > 0) {
+        invitesValidBool = true;
+      }
+    }
+
+    if (user.friends == undefined) {
+      console.log("Friends Not Found");
+    } else if (user.friends != undefined) {
+      if (user.friends.length > 0) {
+        friendsValidBool = true;
+      }
+    }
+    userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
     window.location.href = "index.html";
   }
@@ -144,6 +141,7 @@ function updateUserToDB(totalErrors, friendEditInt, inviteEditInt){
 
 window.onload = function instantiate() {
 
+  giftCreationDate = document.getElementById('giftCreationDate');
   giftList = document.getElementById('giftListContainer');
   giftListHTML = document.getElementById('giftListContainer').innerHTML;
   offlineModal = document.getElementById('offlineModal');
@@ -233,6 +231,10 @@ window.onload = function instantiate() {
   backBtn.innerHTML = "Add New Gift";
   backBtn.onclick = function() {
     giftStorage = "";
+    privateList = "";
+    sessionStorage.setItem("privateList", JSON.stringify(privateList));
+    sessionStorage.setItem("validUser", JSON.stringify(user));
+    sessionStorage.setItem("userArr", JSON.stringify(userArr));
     sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
     window.location.href = "giftAddUpdate.html";
   };
@@ -322,9 +324,6 @@ window.onload = function instantiate() {
 
     var fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-        //check friends
-        //check giftList
-        //if a user does not exist in these lists, remove them and update to database
 
         onlineInt = 1;
         if(data.key == "name"){
@@ -436,14 +435,18 @@ window.onload = function instantiate() {
         giftArr.push(data.val());
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid);
+          data.key, data.val().where, data.val().uid, data.val().creationDate);
       });
 
       postRef.on('child_changed', function(data) {
         giftArr[data.key] = data.val();
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid);
+          data.key, data.val().where, data.val().uid, data.val().creationDate);
+      });
+
+      postRef.on('child_removed', function(data) {
+        location.reload();
       });
     };
 
@@ -481,7 +484,7 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 
-  function createGiftElement(giftDescription, giftLink, giftReceived, giftTitle, giftKey, giftWhere, giftUid){
+  function createGiftElement(giftDescription, giftLink, giftReceived, giftTitle, giftKey, giftWhere, giftUid, giftDate){
     try{
       document.getElementById("TestGift").remove();
     } catch (err) {}
@@ -526,6 +529,15 @@ window.onload = function instantiate() {
       } else {
         whereField.innerHTML = "There was no location provided";
       }
+      if(giftDate != undefined) {
+        if (giftDate != "") {
+          giftCreationDate.innerHTML = "Created on: " + giftDate;
+        } else {
+          giftCreationDate.innerHTML = "Creation date not available";
+        }
+      } else {
+        giftCreationDate.innerHTML = "Creation date not available";
+      }
       updateBtn.onclick = function(){
         updateGiftElement(giftUid);
       };
@@ -550,14 +562,13 @@ window.onload = function instantiate() {
     };
     var textNode = document.createTextNode(giftTitle);
     liItem.appendChild(textNode);
-
     giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
     clearInterval(offlineTimer);
 
     giftCounter++;
   }
 
-  function changeGiftElement(description, link, received, title, key, where, uid) {
+  function changeGiftElement(description, link, received, title, key, where, uid, date) {
     var editGift = document.getElementById("gift" + uid);
     editGift.innerHTML = title;
     editGift.className = "gift";
@@ -598,6 +609,15 @@ window.onload = function instantiate() {
       } else {
         whereField.innerHTML = "There was no location provided";
       }
+      if(date != undefined) {
+        if (date != "") {
+          giftCreationDate.innerHTML = "Created on: " + date;
+        } else {
+          giftCreationDate.innerHTML = "Creation date not available";
+        }
+      } else {
+        giftCreationDate.innerHTML = "Creation date not available";
+      }
       updateBtn.onclick = function(){
         updateGiftElement(uid);
       };
@@ -633,6 +653,8 @@ window.onload = function instantiate() {
 
   function updateGiftElement(uid) {
     giftStorage = uid;
+    privateList = "";
+    sessionStorage.setItem("privateList", JSON.stringify(privateList));
     sessionStorage.setItem("validUser", JSON.stringify(user));
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
     sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
