@@ -1,6 +1,6 @@
-# Contributing to HTML5 Boilerplate
+# Contributing to Gifty
 
-♥ [HTML5 Boilerplate](https://html5boilerplate.com/) and want to get involved?
+♥ Gifty and want to get involved?
 Thanks! We're actively looking for folks interested in helping out and there 
 are plenty of ways you can help!
 

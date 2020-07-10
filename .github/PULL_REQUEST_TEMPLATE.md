@@ -12,7 +12,8 @@
 - [ ] I have updated the documentation accordingly.
 - [ ] I have read the **CONTRIBUTING** document.
 - [ ] I have added tests to cover my changes.
-- [ ] All new and existing tests passed.
+- [ ] I have not added tests, **but** have done tests that verify my code's integrity
+- [ ] All new and existing code tests have passed.
 
 Pull requests should be thought of as a conversation. There will be some back and forth when trying to get code merged into this or any other project. With all but the simplest changes you can and should expect that the maintainers of the project will request changes to your code. Please be aware of that and check in after you open your PR in order to get your code merged in cleanly. 
 
