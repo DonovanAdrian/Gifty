@@ -39,6 +39,25 @@ input.giftInp {
   font-size: 16px;
 }
 
+span.boughtBtn {
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  padding: 10px;
+  font-family: Verdana;
+  background: #ff8e8e;
+  color: #FFF;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0;
+}
+
+span.boughtBtn:hover {
+  background-color: #ff4c4c;
+  color: #000;
+}
+
 span.addBtn {
   position: fixed;
   right: 10px;
@@ -192,6 +211,34 @@ div.topnav ul li a.signOut:hover:not(.active) {
 div.topnav ul li.right {float: right;}
 
 @media screen and (max-width: 600px) {
+  span.boughtBtn {
+    position: fixed;
+    left: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-family: Verdana;
+    background: #ff8e8e;
+    color: #FFF;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 0;
+  }
+
+  span.addBtn {
+    position: fixed;
+    right: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-family: Verdana;
+    background: #ff8e8e;
+    color: #FFF;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 0;
+  }
+
   input.giftInp {
     width: 300px;
   }
@@ -229,6 +276,34 @@ div.topnav ul li.right {float: right;}
 }
 
 @media screen and (max-width: 342px) {
+  span.boughtBtn {
+    position: fixed;
+    left: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-family: Verdana;
+    background: #ff8e8e;
+    color: #FFF;
+    font-size: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 0;
+  }
+
+  span.addBtn {
+    position: fixed;
+    right: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-family: Verdana;
+    background: #ff8e8e;
+    color: #FFF;
+    font-size: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 0;
+  }
+
   input.giftInp {
     width: 200px;
   }

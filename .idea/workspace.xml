@@ -13,7 +13,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
@@ -21,6 +21,15 @@
                 <caret line="20" column="35" lean-forward="true" selection-start-line="20" selection-start-column="35" selection-end-line="20" selection-end-column="35" />
               </first_editor>
               <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/css/main.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="559">
+              <caret line="456" selection-start-line="456" selection-end-line="456" />
             </state>
           </provider>
         </entry>
@@ -90,7 +99,6 @@
         <option value="$PROJECT_DIR$/src/css/login.css" />
         <option value="$PROJECT_DIR$/src/js/friendList.js" />
         <option value="$PROJECT_DIR$/src/js/comfirmationAlg.js" />
-        <option value="$PROJECT_DIR$/src/css/main.css" />
         <option value="$PROJECT_DIR$/src/js/passOp.js" />
         <option value="$PROJECT_DIR$/src/confirmation.html" />
         <option value="$PROJECT_DIR$/src/faq.html" />
@@ -106,7 +114,6 @@
         <option value="$PROJECT_DIR$/src/js/confirmationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/faqAlg.js" />
         <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
         <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
         <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
@@ -120,6 +127,9 @@
         <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/friendListAlg.js" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/src/js/boughtGiftsAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
+        <option value="$PROJECT_DIR$/src/css/main.css" />
       </list>
     </option>
   </component>
@@ -172,6 +182,18 @@
               <item name="Gifty" type="b2602c69:ProjectViewProjectNode" />
               <item name="Gifty" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="css" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Gifty" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Gifty" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="img" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Gifty" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Gifty" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="js" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -196,8 +218,8 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/js" />
       <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/js" />
       <recent name="$PROJECT_DIR$/src/img" />
     </key>
   </component>
@@ -325,12 +347,12 @@
       <workItem from="1594418902022" duration="240000" />
       <workItem from="1594521494011" duration="222000" />
       <workItem from="1594867772500" duration="531000" />
-      <workItem from="1595130492142" duration="540000" />
+      <workItem from="1595130492142" duration="1517000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="388549000" />
+    <option name="totallyTimeSpent" value="389526000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="728" extended-state="6" />
@@ -444,13 +466,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/css/main.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="28" selection-start-line="18" selection-start-column="28" selection-end-line="18" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/confirmation.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1365">
@@ -469,6 +484,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
           <caret line="75" column="10" lean-forward="true" selection-start-line="75" selection-start-column="10" selection-end-line="75" selection-end-column="10" />
+          <folding>
+            <element signature="e#1649#1656#1" expanded="true" />
+            <element signature="n#style#0;n#h3#0;n#div#2;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#h3#1;n#div#2;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -594,13 +614,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11001">
-          <caret line="767" selection-start-line="767" selection-end-line="767" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.github/ISSUE_TEMPLATE.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -685,6 +698,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/boughtGiftsAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7224">
+          <caret line="544" selection-start-line="544" selection-end-line="544" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/boughtGifts.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="532">
+          <caret line="806" selection-start-line="806" selection-end-line="806" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider editor-type-id="text-editor">
         <state relative-caret-position="-218">
@@ -697,6 +727,13 @@
             <caret line="20" column="35" lean-forward="true" selection-start-line="20" selection-start-column="35" selection-end-line="20" selection-end-column="35" />
           </first_editor>
           <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/css/main.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="559">
+          <caret line="456" selection-start-line="456" selection-end-line="456" />
         </state>
       </provider>
     </entry>
