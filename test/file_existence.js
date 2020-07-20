@@ -2,7 +2,6 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import glob from 'glob';
-
 import pkg  from './../package.json';
 
 const dirs = pkg['h5bp-configs'].directories;
@@ -12,18 +11,9 @@ const expectedFilesInArchiveDir = [
 ];
 
 const expectedFilesInDistDir = [
-
-  '.editorconfig',
-  '.gitattributes',
-  '.gitignore',
-  '.htaccess',
-  '404.html',
-  'browserconfig.xml',
-
-  'css/', // for directories, a `/` character
-  // should be included at the end
+  'css/',
   'css/main.css',
-  'css/normalize.css',
+  'css/login.css',
 
   'doc/',
   'doc/TOC.md',
@@ -35,29 +25,50 @@ const expectedFilesInDistDir = [
   'doc/misc.md',
   'doc/usage.md',
 
-  'favicon.ico',
-  'humans.txt',
-
-  'icon.png',
-
   'img/',
   'img/.gitignore',
-
-  'index.html',
+  'img/bellNotificationOff.png',
+  'img/bellNotificationOn.png',
+  'img/giftyicon.png',
+  'img/giftyiconweb.png',
+  'img/newInvite.png',
 
   'js/',
-  'js/main.js',
-  'js/plugins.js',
-  'js/vendor/',
-  `js/vendor/jquery-${pkg.devDependencies.jquery}.min.js`,
-  `js/vendor/modernizr-${pkg.devDependencies.modernizr}.min.js`,
+  'js/boughtGiftsAlg.js',
+  'js/confirmationAlg.js',
+  'js/faqAlg.js',
+  'js/friendListAlg.js',
+  'js/giftAddUpdate.js',
+  'js/homeAlg.js',
+  'js/indexAlg.js',
+  'js/invitesAlg.js',
+  'js/listsAlg.js',
+  'js/moderationAlg.js',
+  'js/passOp.js',
+  'js/privateFriendListAlg.js',
+  'js/settingsAlg.js',
+  'js/userAddUpdateAlg.js',
 
-  'LICENSE.txt',
+  '.editorconfig',
+  '.gitattributes',
+  '.gitignore',
+  '404.html',
+  'boughtGifts.html',
+  'confirmation.html',
+  'faq.html',
+  'friendList.html',
+  'giftAddUpdate.html',
+  'home.html',
+  'humans.txt',
+  'index.html',
+  'invites.html',
+  'lists.html',
+  'moderation.html',
+  'privateFriendList.html',
   'robots.txt',
+  'settings.html',
   'site.webmanifest',
-  'tile-wide.png',
-  'tile.png'
-
+  'userAddUpdate.html',
 ];
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,7 +126,6 @@ function checkFiles(directory, expectedFiles) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 function runTests() {
-
   describe('Test if all the expected files, and only them, are present in the build directories', () => {
 
     describe(dirs.archive, () => {
@@ -125,9 +135,7 @@ function runTests() {
     describe(dirs.dist, () => {
       checkFiles(dirs.dist, expectedFilesInDistDir);
     });
-
   });
-
 }
 
 runTests();

@@ -51,30 +51,19 @@ function runTests() {
 
   describe(`Test if the files from the "${dir}" directory have the expected content`, () => {
 
+    /*
+    //Will try to add more to this later, if needed
+
     it('".htaccess" should have the "ErrorDocument..." line uncommented', (done) => {
       const string = '\n\nErrorDocument 404 /404.html\n\n';
       checkString(path.resolve(dir, '.htaccess'), string, done);
     });
 
-    it('"index.html" should contain the correct jQuery version in the CDN URL', (done) => {
-      const string = `code.jquery.com/jquery-${pkg.devDependencies.jquery}.min.js`;
-      checkString(path.resolve(dir, 'index.html'), string, done);
-    });
-
-    it('"index.html" should contain the correct jQuery version in the local URL', (done) => {
-      const string = `js/vendor/jquery-${pkg.devDependencies.jquery}.min.js`;
-      checkString(path.resolve(dir, 'index.html'), string, done);
-    });
-
-    it('"index.html" should contain the correct Modernizr version in the local URL', (done) => {
-      const string = `js/vendor/modernizr-${pkg.devDependencies.modernizr}.min.js`;
-      checkString(path.resolve(dir, 'index.html'), string, done);
-    });
-
     it('"main.css" should contain a custom banner', function (done) {
-      const string = `/*! HTML5 Boilerplate v${pkg.version} | ${pkg.license} License | ${pkg.homepage} */\n`;
+      const string = `! HTML5 Boilerplate v${pkg.version} | ${pkg.license} License | ${pkg.homepage} \n`;
       checkString(path.resolve(dir, 'css/main.css'), string, done);
     });
+    */
 
   });
 

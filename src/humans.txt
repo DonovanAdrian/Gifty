@@ -3,13 +3,13 @@
 
 # TEAM
 
-    <name> -- <role> -- <twitter>
+    Donovan Adrian -- Main Developer -- GitHub.com/DonovanAdrian
 
 # THANKS
 
-    <name>
+    To my family for all the unending support in this development process!
 
 # TECHNOLOGY COLOPHON
 
-    CSS3, HTML5
-    Apache Server Configs, jQuery, Modernizr, Normalize.css
+    CSS3, HTML5, JavaScript
+    Apache Server Configs, jQuery
