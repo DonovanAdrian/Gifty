@@ -145,20 +145,27 @@ function updateUserToDB(totalErrors, friendEditInt, inviteEditInt){
 function collectUserBoughtGifts(){
   var userGiftArr = [];
   var userPrivateGiftArr = [];
-  for(var i = 0; i < userArr.length; i++){
+  for(var i = 0; i < userArr.length; i++) {
     userGiftArr = userArr[i].giftList;
     userPrivateGiftArr = userArr[i].privateList;
-    for(var a = 0; a < userGiftArr.length; a++){
-      if(userGiftArr[a].buyer == user.userName){
-        userBoughtGifts.add(userGiftArr[a]);
-        userBoughtGiftsUsers.add(userArr[i].userName);
+
+    if(userGiftArr == undefined){}
+    else if (userGiftArr.length != undefined) {
+      for (var a = 0; a < userGiftArr.length; a++) {
+        if (userGiftArr[a].buyer == user.userName) {
+          userBoughtGifts.push(userGiftArr[a]);
+          userBoughtGiftsUsers.push(userArr[i].name);
+        }
       }
     }
 
-    for(var b = 0; b < userPrivateGiftArr.length; b++){
-      if(userPrivateGiftArr[b].buyer == user.userName){
-        userBoughtGifts.add(userPrivateGiftArr[b]);
-        userBoughtGiftsUsers.add(userArr[i].userName + " (Private)");
+    if(userPrivateGiftArr == undefined){}
+    else if (userPrivateGiftArr.length != undefined) {
+      for (var b = 0; b < userPrivateGiftArr.length; b++) {
+        if (userPrivateGiftArr[b].buyer == user.userName) {
+          userBoughtGifts.push(userPrivateGiftArr[b]);
+          userBoughtGiftsUsers.push(userArr[i].name + " (Private List)");
+        }
       }
     }
   }

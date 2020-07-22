@@ -219,7 +219,6 @@ div.topnav ul li.right {float: right;}
     font-family: Verdana;
     background: #ff8e8e;
     color: #FFF;
-    font-size: 13px;
     cursor: pointer;
     transition: 0.3s;
     border-radius: 0;
@@ -233,7 +232,6 @@ div.topnav ul li.right {float: right;}
     font-family: Verdana;
     background: #ff8e8e;
     color: #FFF;
-    font-size: 13px;
     cursor: pointer;
     transition: 0.3s;
     border-radius: 0;
@@ -284,7 +282,7 @@ div.topnav ul li.right {float: right;}
     font-family: Verdana;
     background: #ff8e8e;
     color: #FFF;
-    font-size: 10px;
+    font-size: 13px;
     cursor: pointer;
     transition: 0.3s;
     border-radius: 0;
@@ -298,7 +296,7 @@ div.topnav ul li.right {float: right;}
     font-family: Verdana;
     background: #ff8e8e;
     color: #FFF;
-    font-size: 10px;
+    font-size: 13px;
     cursor: pointer;
     transition: 0.3s;
     border-radius: 0;

@@ -3,6 +3,7 @@ var inviteArr = [];
 var userUserNames = [];
 var userBoughtGifts = [];
 var userBoughtGiftsUsers = [];
+var initializedGiftsArr = [];
 
 var areYouStillThereBool = false;
 
@@ -30,6 +31,7 @@ var noteSpan;
 var listNote;
 var inviteNote;
 var offlineTimer;
+var userInitial;
 var userBase;
 var userInvites;
 
@@ -281,10 +283,53 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
 
+    userInitial = firebase.database().ref("users/");
     userBase = firebase.database().ref("users/" + user.uid);
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
     var fetchData = function (postRef) {
+      postRef.on('child_added', function (data) {
+        onlineInt = 1;
+
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
+          checkGiftLists(data.val());
+
+          //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          userArr[i] = data.val();
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 1");
+        }
+      });
+
+      postRef.on('child_changed', function (data) {
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
+          checkGiftLists(data.val());
+
+          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          userArr[i] = data.val();
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 2");
+        }
+      });
+
+      postRef.on('child_removed', function (data) {
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() || i != -1){
+          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          userArr.splice(i, 1);
+        }
+      });
+    };
+
+    var fetchUserData = function (postRef) {
       postRef.on('child_added', function (data) {
 
         onlineInt = 1;
@@ -417,11 +462,57 @@ window.onload = function instantiate() {
       });
     };
 
-    fetchData(userBase);
+    fetchData(userInitial);
+    fetchUserData(userBase);
     fetchInvites(userInvites);
 
+    listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userBase);
     listeningFirebaseRefs.push(userInvites);
+  }
+
+  function checkGiftLists(updatedUserData){
+    var newGiftList = updatedUserData.giftList;
+    var newPrivateGiftList = updatedUserData.privateList;
+
+    for(var i = 0; i < initializedGiftsArr.length; i++){
+      var a = findUIDItemInArr(initializedGiftsArr[i], newGiftList);
+      if(a != -1){
+        checkGiftData(initializedGiftsArr[i], newGiftList[a], updatedUserData.userName);
+      }
+    }
+
+    for(var i = 0; i < initializedGiftsArr.length; i++){
+      var a = findUIDItemInArr(initializedGiftsArr[i], newPrivateGiftList);
+      if(a != -1){
+        checkGiftData(initializedGiftsArr[i], newPrivateGiftList[a], updatedUserData.userName);
+      }
+    }
+  }
+
+  function checkGiftData(currentGiftData, newGiftData, giftOwner){
+    var updateGiftBool = false;
+    if(currentGiftData.description != newGiftData.description)
+      updateGiftBool = true;
+    if(currentGiftData.link != newGiftData.link)
+      updateGiftBool = true;
+    if(currentGiftData.title != newGiftData.title)
+      updateGiftBool = true;
+    if(currentGiftData.where != newGiftData.where)
+      updateGiftBool = true;
+
+    if(updateGiftBool)
+      changeGiftElement(newGiftData, giftOwner);
+  }
+
+  function findUIDItemInArr(item, itemArray){
+    for(var i = 0; i < itemArray.length; i++){
+      if(itemArray[i].uid == item){
+        //console.log("Found item: " + item);
+        return i;
+      }
+    }
+    return -1;
   }
 
   function createGiftElement(giftData, giftOwner){
@@ -446,9 +537,6 @@ window.onload = function instantiate() {
       var titleField = document.getElementById('giftTitle');
       var whereField = document.getElementById('giftWhere');
       var linkField = document.getElementById('giftLink');
-
-      noteTitleField = document.getElementById('notificationTitle');
-      noteInfoField = document.getElementById('notificationInfo');
 
       if (giftLink != ""){
         linkField.innerHTML = "Click me to go to the webpage!";
@@ -513,7 +601,89 @@ window.onload = function instantiate() {
     liItem.appendChild(textNode);
 
     giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
+    initializedGiftsArr.push(giftUid);
     clearInterval(offlineTimer);
+  }
+
+
+
+  function changeGiftElement(giftData, giftOwner){
+    var description = giftData.description;
+    var link = giftData.link;
+    var title = giftData.title + " - for " + giftOwner;
+    var where = giftData.where;
+    var uid = giftData.uid;
+    var date = giftData.creationDate;
+
+    var editGift = document.getElementById("gift" + uid);
+    editGift.innerHTML = title;
+    editGift.className = "gift";
+    editGift.onclick = function (){
+      var spanGift = document.getElementsByClassName("close")[0];
+      var descField = document.getElementById('giftDescription');
+      var titleField = document.getElementById('giftTitle');
+      var whereField = document.getElementById('giftWhere');
+      var linkField = document.getElementById('giftLink');
+
+      if (link != ""){
+        linkField.innerHTML = "Click me to go to the webpage!";
+        linkField.onclick = function() {
+          var newGiftLink = "http://";
+          if(link.includes("https://")){
+            link = link.slice(8, link.length);
+          } else if (link.includes("http://")){
+            link = link.slice(7, link.length);
+          }
+          newGiftLink += link;
+          window.open(newGiftLink, "_blank");
+        };
+      } else {
+        linkField.innerHTML = "There was no link provided";
+        linkField.onclick = function() {
+        };
+      }
+      if(description != "") {
+        descField.innerHTML = "Description: " + description;
+      } else {
+        descField.innerHTML = "There was no description provided";
+      }
+      titleField.innerHTML = title;
+      if(where != "") {
+        whereField.innerHTML = "This can be found at: " + where;
+      } else {
+        whereField.innerHTML = "There was no location provided";
+      }
+      if(date != undefined) {
+        if (date != "") {
+          giftCreationDate.innerHTML = "Created on: " + date;
+        } else {
+          giftCreationDate.innerHTML = "Creation date not available";
+        }
+      } else {
+        giftCreationDate.innerHTML = "Creation date not available";
+      }
+
+      //show modal
+      modal.style.display = "block";
+      currentModalOpen = uid;
+      console.log("Modal Open: " + currentModalOpen);
+
+      //close on close
+      spanGift.onclick = function() {
+        currentModalOpen = "";
+        console.log("Closed modal");
+        modal.style.display = "none";
+      };
+
+      //close on click
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          currentModalOpen = "";
+          console.log("Closed modal");
+          modal.style.display = "none";
+        }
+      };
+    };
   }
 };
 

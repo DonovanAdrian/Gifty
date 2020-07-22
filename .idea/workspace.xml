@@ -28,8 +28,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/js/boughtGiftsAlg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8160">
-              <caret line="544" selection-start-line="544" selection-end-line="544" />
+            <state relative-caret-position="532">
+              <caret line="714" selection-start-line="714" selection-end-line="714" />
             </state>
           </provider>
         </entry>
@@ -126,13 +126,13 @@
         <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/friendListAlg.js" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/src/js/boughtGiftsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
         <option value="$PROJECT_DIR$/src/css/main.css" />
         <option value="$PROJECT_DIR$/src/site.webmanifest" />
         <option value="$PROJECT_DIR$/src/humans.txt" />
         <option value="$PROJECT_DIR$/test/file_content.js" />
         <option value="$PROJECT_DIR$/test/file_existence.js" />
+        <option value="$PROJECT_DIR$/src/js/boughtGiftsAlg.js" />
       </list>
     </option>
   </component>
@@ -147,10 +147,10 @@
       <path value="$PROJECT_DIR$/package.json" />
     </packageJsonPaths>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
+  <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1280" />
-    <option name="height" value="728" />
+    <option name="height" value="726" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -332,12 +332,12 @@
       <workItem from="1594418902022" duration="240000" />
       <workItem from="1594521494011" duration="222000" />
       <workItem from="1594867772500" duration="531000" />
-      <workItem from="1595130492142" duration="4328000" />
+      <workItem from="1595130492142" duration="4714000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="392337000" />
+    <option name="totallyTimeSpent" value="392723000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="728" extended-state="1" />
@@ -739,8 +739,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/boughtGiftsAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8160">
-          <caret line="544" selection-start-line="544" selection-end-line="544" />
+        <state relative-caret-position="532">
+          <caret line="714" selection-start-line="714" selection-end-line="714" />
         </state>
       </provider>
     </entry>
