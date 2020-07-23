@@ -19,7 +19,7 @@
 - [x] Test New Gifty Files
 - [x] Add Supplemental ModerationAlg Features
 - [x] Add Private Gift List Feature
-- [ ] Add Bought Gifts List **\(in progress)**
+- [x] Add Bought Gifts List Feature
 - [ ] Touch Up Work/Testing **\(in progress)**
 - [ ] Add Notifications Feature Across All Pages
 - [ ] Set Up Local Database

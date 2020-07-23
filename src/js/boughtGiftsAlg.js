@@ -1,8 +1,8 @@
 var listeningFirebaseRefs = [];
 var inviteArr = [];
 var userUserNames = [];
-var userBoughtGifts = [];
-var userBoughtGiftsUsers = [];
+var userBoughtGiftsArr = [];
+var userBoughtGiftsUsersArr = [];
 var initializedGiftsArr = [];
 
 var areYouStillThereBool = false;
@@ -49,8 +49,8 @@ function getCurrentUser(){
       }
     }
     userArr = JSON.parse(sessionStorage.userArr);
-    userBoughtGifts = JSON.parse(sessionStorage.userBoughtGifts);
-    userBoughtGiftsUsers = JSON.parse(sessionStorage.userBoughtGiftsUsers);
+    userBoughtGiftsArr = JSON.parse(sessionStorage.boughtGifts);
+    userBoughtGiftsUsersArr = JSON.parse(sessionStorage.boughtGiftsUsers);
   } catch (err) {
     window.location.href = "index.html";
   }
@@ -166,9 +166,12 @@ window.onload = function instantiate() {
   homeButton();
 
   function initializeGifts(){
-    if(userBoughtGifts.length == userBoughtGiftsUsers.length) {
-      for (var i = 0; i < userBoughtGifts.length; i++) {
-        createGiftElement(userBoughtGifts[i], userBoughtGiftsUsers[i]);
+    console.log(userBoughtGiftsArr);
+    console.log(userBoughtGiftsUsersArr);
+
+    if(userBoughtGiftsArr.length == userBoughtGiftsUsersArr.length) {
+      for (var i = 0; i < userBoughtGiftsArr.length; i++) {
+        createGiftElement(userBoughtGiftsArr[i], userBoughtGiftsUsersArr[i]);
       }
     } else {
       alert("There has been a critical error, redirecting back home...");
@@ -475,17 +478,23 @@ window.onload = function instantiate() {
     var newGiftList = updatedUserData.giftList;
     var newPrivateGiftList = updatedUserData.privateList;
 
-    for(var i = 0; i < initializedGiftsArr.length; i++){
-      var a = findUIDItemInArr(initializedGiftsArr[i], newGiftList);
-      if(a != -1){
-        checkGiftData(initializedGiftsArr[i], newGiftList[a], updatedUserData.userName);
+    if(newGiftList == undefined){}
+    else if(newGiftList != undefined) {
+      for (var i = 0; i < initializedGiftsArr.length; i++) {
+        var a = findUIDItemInArr(initializedGiftsArr[i], newGiftList);
+        if (a != -1) {
+          checkGiftData(initializedGiftsArr[i], newGiftList[a], updatedUserData.name);
+        }
       }
     }
 
-    for(var i = 0; i < initializedGiftsArr.length; i++){
-      var a = findUIDItemInArr(initializedGiftsArr[i], newPrivateGiftList);
-      if(a != -1){
-        checkGiftData(initializedGiftsArr[i], newPrivateGiftList[a], updatedUserData.userName);
+    if(newPrivateGiftList == undefined){}
+    else if(newPrivateGiftList.length != undefined) {
+      for (var i = 0; i < initializedGiftsArr.length; i++) {
+        var a = findUIDItemInArr(initializedGiftsArr[i], newPrivateGiftList);
+        if (a != -1) {
+          checkGiftData(initializedGiftsArr[i], newPrivateGiftList[a], updatedUserData.name);
+        }
       }
     }
   }
@@ -501,8 +510,14 @@ window.onload = function instantiate() {
     if(currentGiftData.where != newGiftData.where)
       updateGiftBool = true;
 
-    if(updateGiftBool)
+    if(updateGiftBool) {
+      if (newGiftData.uid == currentModalOpen){
+        currentModalOpen = "";
+        console.log("Closed modal");
+        modal.style.display = "none";
+      }
       changeGiftElement(newGiftData, giftOwner);
+    }
   }
 
   function findUIDItemInArr(item, itemArray){
