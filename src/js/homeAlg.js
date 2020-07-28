@@ -63,6 +63,19 @@ function getCurrentUser(){
         friendsValidBool = true;
       }
     }
+
+    if (user.notifications == undefined) {
+      console.log("Notifications Not Found");
+    } else if (user.notifications != undefined) {
+      if (user.notifications.length > 0) {
+        notificationBtn.src = "img/bellNotificationOn.png";
+        notificationBtn.onclick = function() {
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          sessionStorage.setItem("userArr", JSON.stringify(userArr));
+          window.location.href = "notifications.html";
+        }
+      }
+    }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
     window.location.href = "index.html";
