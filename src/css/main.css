@@ -12,6 +12,18 @@ div.faqContainer {
   text-align: center;
 }
 
+img.notificationIcon {
+  width: 40px;
+  height: 40px;
+}
+
+div.centeredImage {
+  position: fixed;
+  display: block;
+  bottom: 5px;
+  left: 50%;
+}
+
 p.faqInf {
   margin: 10px;
   padding-bottom: 10px;
@@ -211,6 +223,11 @@ div.topnav ul li a.signOut:hover:not(.active) {
 div.topnav ul li.right {float: right;}
 
 @media screen and (max-width: 600px) {
+  img.notificationIcon {
+    width: 25px;
+    height: 25px;
+  }
+
   span.boughtBtn {
     position: fixed;
     left: 5px;
@@ -274,6 +291,11 @@ div.topnav ul li.right {float: right;}
 }
 
 @media screen and (max-width: 342px) {
+  img.notificationIcon {
+    width: 20px;
+    height: 20px;
+  }
+
   span.boughtBtn {
     position: fixed;
     left: 5px;
