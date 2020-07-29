@@ -396,6 +396,11 @@ function updateUserToDB(){
         shareCode: user.shareCode
       });
     }
+    if(user.notifications != undefined) {
+      firebase.database().ref("users/" + user.uid).update({
+        notifications: user.notifications
+      });
+    }
 
     btnUpdate.innerHTML = "Please Wait...";
     btnUpdate.onclick = function(){};//forces the update button to do nothing

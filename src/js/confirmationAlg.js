@@ -449,10 +449,12 @@ window.onload = function instantiate() {
 
       inviteAdd.onclick = function(){
         addInvite(inviteData);
+        modal.style.display = "none";
       };
 
       inviteDelete.onclick = function(){
         deleteInvite(userUid);
+        modal.style.display = "none";
       };
 
       //show modal

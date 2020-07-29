@@ -21,7 +21,7 @@
 - [x] Add Private Gift List Feature
 - [x] Add Bought Gifts List Feature
 - [ ] Touch Up Work/Testing **\(in progress)**
-- [ ] Add Notifications Feature Across All Pages
+- [ ] Add Notifications Feature Across All Pages **\(in progress)**
 - [ ] Set Up Local Database
 
 ## Website Structure
