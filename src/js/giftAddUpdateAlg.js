@@ -9,7 +9,6 @@ var giftUID = -1;
 var logoutReminder = 300;
 var logoutLimit = 900;
 
-var giftCreationDate;
 var offline;
 var giftList;
 var giftStorage;
@@ -349,10 +348,64 @@ window.onload = function instantiate() {
           sessionStorage.setItem("userArr", JSON.stringify(userArr));
           window.location.href = "privateFriendList.html";
         }
+
+        if(currentGift.buyer != ""){
+          var userFound = findUserNameItemInArr(currentGift.buyer, userArr);
+          if(userFound != -1){
+            addNotificationToDB(userArr[userFound], currentGift.title);
+          } else {
+            console.log("User not found");
+          }
+        } else {
+          console.log("No buyer, no notification needed");
+        }
       } else {
+        alert("There was an error updating the gift, please try again!");
         console.log(giftUID);
       }
     }
+  }
+
+  function findUserNameItemInArr(item, userArray){
+    for(var i = 0; i < userArray.length; i++){
+      if(userArray[i].userName == item){
+        console.log("Found item: " + item);
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  function addNotificationToDB(buyerUserData, giftTitle){
+    var pageName = "friendList.html";
+    var giftOwner = user.name;
+    if(privateListBool){
+      pageName = "privateFriendList.html";
+      giftOwner = privateList.name;
+    }
+    var notificationString = generateNotificationString(giftOwner, giftTitle, pageName);
+    var buyerUserNotificiations;
+    if(buyerUserData.notifications == undefined || buyerUserData.notifications == null){
+      buyerUserNotificiations = [];
+    } else {
+      buyerUserNotificiations = buyerUserData.notifications;
+    }
+    buyerUserNotificiations.push(notificationString);
+
+    if(buyerUserData.notifications != undefined) {
+      firebase.database().ref("users/" + buyerUserData.uid).update({
+        notifications: buyerUserNotificiations
+      });
+    } else {
+      console.log("New Notifications List");
+      firebase.database().ref("users/" + buyerUserData.uid).update({notifications:{0:notificationString}});
+    }
+    console.log("Added Notification To DB");
+  }
+
+  function generateNotificationString(giftOwner, giftTitle, pageName){
+    console.log("Generating Notification");
+    return (giftOwner + "," + giftTitle + "," + pageName);
   }
 
   function addGiftToDB(){

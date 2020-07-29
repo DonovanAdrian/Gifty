@@ -725,9 +725,7 @@ window.onload = function instantiate() {
     }
     invitedUserInvites.push(user.uid);
 
-    //console.log(invitedUser.uid);
     if(invitedUser.invites != undefined) {
-
       firebase.database().ref("users/" + invitedUser.uid).update({
         invites: invitedUserInvites
       });
@@ -735,6 +733,28 @@ window.onload = function instantiate() {
       //console.log("New Invite List");
       firebase.database().ref("users/" + invitedUser.uid).update({invites:{0:user.uid}});
     }
+
+    var notificationString = generateNotificationString(user.name, "invites.html");
+    var invitedUserNotificiations;
+    if(invitedUser.notifications == undefined || invitedUser.notifications == null){
+      invitedUserNotificiations = [];
+    } else {
+      invitedUserNotificiations = invitedUser.notifications;
+    }
+    invitedUserNotificiations.push(notificationString);
+
+    if(invitedUser.notifications != undefined) {
+      firebase.database().ref("users/" + invitedUser.uid).update({
+        notifications: invitedUserNotificiations
+      });
+    } else {
+      console.log("New Notifications List");
+      firebase.database().ref("users/" + invitedUser.uid).update({notifications:{0:notificationString}});
+    }
+  }
+
+  function generateNotificationString(invitedName, pageName){
+    return (invitedName + "," + pageName);
   }
 };
 
