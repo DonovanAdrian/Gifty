@@ -13,7 +13,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
@@ -34,9 +34,13 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/js/notificationsAlg.js">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="470">
+              <caret line="495" lean-forward="true" selection-start-line="495" selection-end-line="495" />
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -134,13 +138,13 @@
         <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/notificationsAlg.js" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/js/confirmationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/userAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/notifications.html" />
         <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
         <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/notificationsAlg.js" />
       </list>
     </option>
   </component>
@@ -353,12 +357,12 @@
       <workItem from="1594521494011" duration="222000" />
       <workItem from="1594867772500" duration="531000" />
       <workItem from="1595130492142" duration="4714000" />
-      <workItem from="1595384212224" duration="6326000" />
+      <workItem from="1595384212224" duration="6891000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="399049000" />
+    <option name="totallyTimeSpent" value="399614000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="726" extended-state="0" />
@@ -709,9 +713,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/notificationsAlg.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/friendListAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="177">
@@ -745,6 +746,13 @@
             <caret line="24" column="27" lean-forward="true" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="27" />
           </first_editor>
           <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/notificationsAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="470">
+          <caret line="495" lean-forward="true" selection-start-line="495" selection-end-line="495" />
         </state>
       </provider>
     </entry>
