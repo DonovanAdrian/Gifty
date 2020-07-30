@@ -33,6 +33,7 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
+    console.log(err.toString());
     window.location.href = "index.html";
   }
 }

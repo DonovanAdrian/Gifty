@@ -27,6 +27,7 @@ var noteModal;
 var noteInfoField;
 var noteTitleField;
 var noteSpan;
+var notificationBtn;
 
 function getCurrentUser(){
   try {
@@ -55,12 +56,14 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
+    console.log(err.toString());
     window.location.href = "index.html";
   }
 }
 
 window.onload = function instantiate() {
 
+  notificationBtn = document.getElementById('notificationButton');
   userList = document.getElementById("userListContainer");
   userListHTML = document.getElementById("userListContainer").innerHTML;
   offlineModal = document.getElementById('offlineModal');
@@ -256,7 +259,7 @@ window.onload = function instantiate() {
         onlineInt = 1;
 
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
+        if(userArr[i] != data.val() && i != -1){
           //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
@@ -269,7 +272,7 @@ window.onload = function instantiate() {
 
       postRef.on('child_changed', function (data) {
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
+        if(userArr[i] != data.val() && i != -1){
           console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
@@ -282,7 +285,7 @@ window.onload = function instantiate() {
 
       postRef.on('child_removed', function (data) {
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
+        if(userArr[i] != data.val() && i != -1){
           console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
@@ -535,20 +538,10 @@ window.onload = function instantiate() {
     }
 
     if(verifyDeleteBool){
-      removeInviteElement(uid);
       user.invites = inviteArr;
       firebase.database().ref("users/" + user.uid).update({
         invites: inviteArr
       });
-    }
-  }
-
-  function removeInviteElement(uid){
-    document.getElementById("user" + uid).remove();
-
-    inviteCount--;
-    if(inviteCount == 0){
-      deployInviteListEmptyNotification();
     }
   }
 };

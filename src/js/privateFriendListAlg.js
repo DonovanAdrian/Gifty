@@ -33,6 +33,7 @@ var noteTitleField;
 var noteSpan;
 var listNote;
 var inviteNote;
+var notificationBtn;
 var userBase;
 var userGifts;
 
@@ -76,12 +77,14 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
+    console.log(err.toString());
     window.location.href = "index.html";
   }
 }
 
 window.onload = function instantiate() {
 
+  notificationBtn = document.getElementById('notificationButton');
   giftCreationDate = document.getElementById('giftCreationDate');
   giftList = document.getElementById('giftListContainer');
   giftListHTML = document.getElementById('giftListContainer').innerHTML;
@@ -300,120 +303,44 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
 
-    userBase = firebase.database().ref("users/" + currentUser.uid);
+    userBase = firebase.database().ref("users/");
     userGifts = firebase.database().ref("users/" + user.uid + "/privateList/");
     userInvites = firebase.database().ref("users/" + currentUser.uid + "/invites");
 
     var fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-
         onlineInt = 1;
-        if(data.key == "name"){
-          currentUser.name = data.val();
-        } else if (data.key == "pin"){
-          currentUser.pin = data.val();
-        } else if (data.key == "encodeStr"){
-          currentUser.encodeStr = data.val();
-        } else if (data.key == "userName"){
-          currentUser.userName = data.val();
-        } else if (data.key == "ban"){
-          currentUser.ban = data.val();
-        } else if (data.key == "firstLogin"){
-          currentUser.firstLogin = data.val();
-        } else if (data.key == "moderatorInt"){
-          currentUser.moderatorInt = data.val();
-        } else if (data.key == "organize"){
-          currentUser.organize = data.val();
-        } else if (data.key == "strike"){
-          currentUser.strike = data.val();
-        } else if (data.key == "theme"){
-          currentUser.theme = data.val();
-        } else if (data.key == "uid"){
-          currentUser.uid = data.val();
-        } else if (data.key == "warn"){
-          currentUser.warn = data.val();
-        } else if (data.key == "giftList"){
-          currentUser.giftList = data.val();
-        } else if (data.key == "support"){
-          currentUser.support = data.val();
-        } else if (data.key == "invites"){
-          currentUser.invites = data.val();
-        } else if (data.key == "friends"){
-          currentUser.friends = data.val();
-        } else if (data.key == "shareCode"){
-          currentUser.shareCode = data.val();
-        } else if (data.key == "privateList"){
-          currentUser.privateList = data.val();
-        } else {
-          console.log("Unknown Key..." + data.key);
+
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() && i != -1){
+          //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          userArr[i] = data.val();
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 1");
         }
       });
+
       postRef.on('child_changed', function (data) {
-        if(data.key == "name"){
-          currentUser.name = data.val();
-        } else if (data.key == "pin"){
-          currentUser.pin = data.val();
-        } else if (data.key == "encodeStr"){
-          currentUser.encodeStr = data.val();
-        } else if (data.key == "userName"){
-          currentUser.userName = data.val();
-        } else if (data.key == "ban"){
-          currentUser.ban = data.val();
-        } else if (data.key == "firstLogin"){
-          currentUser.firstLogin = data.val();
-        } else if (data.key == "moderatorInt"){
-          currentUser.moderatorInt = data.val();
-        } else if (data.key == "organize"){
-          currentUser.organize = data.val();
-        } else if (data.key == "strike"){
-          currentUser.strike = data.val();
-        } else if (data.key == "theme"){
-          currentUser.theme = data.val();
-        } else if (data.key == "uid"){
-          currentUser.uid = data.val();
-        } else if (data.key == "warn"){
-          currentUser.warn = data.val();
-        } else if (data.key == "giftList"){
-          currentUser.giftList = data.val();
-        } else if (data.key == "support"){
-          currentUser.support = data.val();
-        } else if (data.key == "invites"){
-          currentUser.invites = data.val();
-        } else if (data.key == "friends"){
-          currentUser.friends = data.val();
-        } else if (data.key == "shareCode"){
-          currentUser.shareCode = data.val();
-        } else if (data.key == "privateList"){
-          currentUser.privateList = data.val();
-        } else {
-          console.log("Unknown Key..." + data.key);
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() && i != -1){
+          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          userArr[i] = data.val();
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 2");
         }
       });
+
       postRef.on('child_removed', function (data) {
-        if(data.key == "name"){
-          currentUser.name = "";
-        } else if (data.key == "pin"){
-          currentUser.pin = "";
-        } else if (data.key == "encodeStr"){
-          currentUser.encodeStr = "";
-        } else if (data.key == "userName"){
-          currentUser.userName = "";
-        } else if (data.key == "uid"){
-          currentUser.uid = "";
-        } else if (data.key == "giftList"){
-          currentUser.giftList = [];
-        } else if (data.key == "support"){
-          currentUser.support = [];
-        } else if (data.key == "invites"){
-          currentUser.invites = [];
-        } else if (data.key == "friends"){
-          currentUser.friends = [];
-        } else if (data.key == "shareCode"){
-          currentUser.shareCode = "";
-        } else if (data.key == "privateList"){
-          currentUser.privateList = [];
-        } else {
-          console.log("Unknown Key..." + data.key);
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() && i != -1){
+          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          userArr.splice(i, 1);
         }
       });
     };
@@ -491,6 +418,16 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userBase);
     listeningFirebaseRefs.push(userGifts);
     listeningFirebaseRefs.push(userInvites);
+  }
+
+  function findUIDItemInArr(item, userArray){
+    for(var i = 0; i < userArray.length; i++){
+      if(userArray[i].uid == item){
+        //console.log("Found item: " + item);
+        return i;
+      }
+    }
+    return -1;
   }
 
   function checkGiftBuyer(buyer){

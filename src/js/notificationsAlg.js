@@ -11,7 +11,6 @@ var logoutLimit = 900;
 
 var offline;
 var userList;
-var userListHTML;
 var offlineSpan;
 var offlineModal;
 var user;
@@ -44,6 +43,7 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
+    console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -51,7 +51,6 @@ function getCurrentUser(){
 window.onload = function instantiate() {
 
   userList = document.getElementById("userListContainer");
-  userListHTML = document.getElementById("userListContainer").innerHTML;
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById("closeOffline");
   listNote = document.getElementById('listNote');
@@ -253,14 +252,14 @@ window.onload = function instantiate() {
       });
     };
 
-    fetchInvites(userNotifications);
+    fetchNotifications(userNotifications);
     fetchInvites(userInvites);
 
     listeningFirebaseRefs.push(userNotifications);
     listeningFirebaseRefs.push(userInvites);
   }
 
-  function createInviteElement(notificationString){
+  function createNotificationElement(notificationString){
     var notificationSplit = notificationString.split(",");
     if (notificationSplit.length == 2){
       //invite
@@ -344,7 +343,7 @@ window.onload = function instantiate() {
     notificationCount++;
   }
 
-  function changeInviteElement(notificationString){
+  function changeNotificationElement(notificationString){
     var notificationSplit = notificationString.split(",");
     if (notificationSplit.length == 2){
       //invite

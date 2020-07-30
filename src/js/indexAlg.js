@@ -83,16 +83,16 @@ window.onload = function instantiate() {
 
       postRef.on('child_changed', function (data) {
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
-          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+        if(userArr[i] != data.val() && i != -1){
+          //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data;
         }
       });
 
       postRef.on('child_removed', function (data) {
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
-          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+        if(userArr[i] != data.val() && i != -1){
+          //console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
       });

@@ -28,6 +28,7 @@ var noteModal;
 var noteInfoField;
 var noteTitleField;
 var noteSpan;
+var notificationBtn;
 var listNote;
 var inviteNote;
 var offlineTimer;
@@ -65,12 +66,14 @@ function getCurrentUser(){
     userBoughtGiftsArr = JSON.parse(sessionStorage.boughtGifts);
     userBoughtGiftsUsersArr = JSON.parse(sessionStorage.boughtGiftsUsers);
   } catch (err) {
+    console.log(err.toString());
     window.location.href = "index.html";
   }
 }
 
 window.onload = function instantiate() {
 
+  notificationBtn = document.getElementById('notificationButton');
   giftCreationDate = document.getElementById('giftCreationDate');
   giftList = document.getElementById('giftListContainer');
   giftListHTML = document.getElementById('giftListContainer').innerHTML;
@@ -308,7 +311,7 @@ window.onload = function instantiate() {
         onlineInt = 1;
 
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
+        if(userArr[i] != data.val() && i != -1){
           checkGiftLists(data.val());
 
           //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
@@ -323,7 +326,7 @@ window.onload = function instantiate() {
 
       postRef.on('child_changed', function (data) {
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
+        if(userArr[i] != data.val() && i != -1){
           checkGiftLists(data.val());
 
           console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
@@ -338,7 +341,7 @@ window.onload = function instantiate() {
 
       postRef.on('child_removed', function (data) {
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
+        if(userArr[i] != data.val() && i != -1){
           console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
