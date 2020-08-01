@@ -540,10 +540,10 @@ window.onload = function instantiate() {
       };
       deleteBtn.onclick = function(){
         if (giftCreator == currentUser.userName || giftCreator == null || giftCreator == undefined) {
-          deleteGiftElement(giftKey, giftTitle, giftUid);
+          deleteGiftElement(giftKey, giftTitle, giftBuyer);
         } else {
           if (giftCreator == ""){
-            deleteGiftElement(giftKey, giftTitle, giftUid);
+            deleteGiftElement(giftKey, giftTitle, giftBuyer);
           } else {
             alert("Only the creator, " + giftCreator + ", can delete this gift. Please contact them to delete this gift " +
               "if it needs to be removed.");
@@ -698,10 +698,10 @@ window.onload = function instantiate() {
       };
       deleteBtn.onclick = function () {
         if (creator == currentUser.userName || creator == null || creator == undefined) {
-          deleteGiftElement(key, title, uid);
+          deleteGiftElement(key, title, buyer);
         } else {
           if (creator == ""){
-            deleteGiftElement(key, title, uid);
+            deleteGiftElement(key, title, buyer);
           } else {
             alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
               "if it needs to be removed.");
@@ -785,7 +785,7 @@ window.onload = function instantiate() {
     window.location.href = "giftAddUpdate.html";
   }
 
-  function deleteGiftElement(key, title, uid) {
+  function deleteGiftElement(key, title, buyer) {
     var verifyDeleteBool = true;
     var toDelete = -1;
 
@@ -797,8 +797,6 @@ window.onload = function instantiate() {
     }
 
     if(toDelete != -1) {
-
-
       alert("Attempting to delete " + giftArr[toDelete].title + "! If this is successful, the page will reload.");
       giftArr.splice(toDelete, 1);
 
@@ -816,9 +814,60 @@ window.onload = function instantiate() {
       firebase.database().ref("users/" + user.uid).update({
         privateList: giftArr
       });
+
+      if(buyer != ""){
+        var userFound = findUserNameItemInArr(buyer, userArr);
+        if(userFound != -1){
+          if(userArr[userFound].uid != user.uid) {
+            addNotificationToDB(userArr[userFound], currentUser.name, title);
+          }
+        } else {
+          console.log("User not found");
+        }
+      } else {
+        console.log("No buyer, no notification needed");
+      }
     } else {
       alert("Delete failed, please try again later!");
     }
+  }
+
+  function findUserNameItemInArr(item, userArray){
+    for(var i = 0; i < userArray.length; i++){
+      if(userArray[i].userName == item){
+        console.log("Found item: " + item);
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  function addNotificationToDB(buyerUserData, giftDeleter, giftTitle){
+    var pageName = "deleteGiftPrivate";
+    var giftOwner = user.uid;
+    var notificationString = generateNotificationString(giftOwner, giftDeleter, giftTitle, pageName);
+    var buyerUserNotifications;
+    if(buyerUserData.notifications == undefined || buyerUserData.notifications == null){
+      buyerUserNotifications = [];
+    } else {
+      buyerUserNotifications = buyerUserData.notifications;
+    }
+    buyerUserNotifications.push(notificationString);
+
+    if(buyerUserData.notifications != undefined) {
+      firebase.database().ref("users/" + buyerUserData.uid).update({
+        notifications: buyerUserNotifications
+      });
+    } else {
+      console.log("New Notifications List");
+      firebase.database().ref("users/" + buyerUserData.uid).update({notifications:{0:notificationString}});
+    }
+    console.log("Added Notification To DB");
+  }
+
+  function generateNotificationString(giftOwner, giftDeleter, giftTitle, pageName){
+    console.log("Generating Notification");
+    return (giftOwner + "," + giftDeleter + "," + giftTitle + "," + pageName);
   }
 };
 

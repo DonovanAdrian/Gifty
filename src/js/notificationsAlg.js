@@ -1,5 +1,6 @@
 var userArr = [];
 var inviteArr = [];
+var notificationArr = [];
 var listeningFirebaseRefs = [];
 
 var areYouStillThereBool = false;
@@ -259,63 +260,123 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 
-  function createNotificationElement(notificationString){
-    var notificationSplit = notificationString.split(",");
-    if (notificationSplit.length == 2){
-      //invite
-      //0, invitedName
-      //1, pageName
-      var invitedName = notificationSplit[0];
-      var pageName = notificationSplit[1];
-      console.log(invitedName + " " + pageName);
-    } else if (notificationSplit.length == 3){
-      //gift update
-      //0, giftOwner
-      //1, giftTitle
-      //2, pageName (friendList, privateFriendList)
-      var giftOwner = notificationSplit[0];
-      var giftTitle = notificationSplit[1];
-      var pageName = notificationSplit[2];
-      console.log(giftOwner + " " + giftTitle + " " + pageName);
-    }
-
-    /*
+  function createNotificationElement(notificationString, notificationKey){
     try{
       document.getElementById("TestGift").remove();
     } catch (err) {}
 
-    var inviteData;
-    for (var i = 0; i < userArr.length; i++){
-      if(inviteKey == userArr[i].uid){
-        inviteData = userArr[i];
-        break;
+    var friendUserData;
+    var notificationTitle;
+    var notificationDetails;
+    var notificationPage;
+    var notificationSplit = notificationString.split(",");
+    if (notificationSplit.length == 2){
+      var invitedName = notificationSplit[0];
+      var pageName = notificationSplit[1];
+      console.log(invitedName + " " + pageName);
+
+      notificationTitle = "You received an invite!";
+      notificationDetails = invitedName + " has sent you an invite!";
+      notificationPage = pageName;
+    } else if (notificationSplit.length == 3){
+      var giftOwner = notificationSplit[0];
+      var giftTitle = notificationSplit[1];
+      var pageName = notificationSplit[2];
+      console.log(giftOwner + " " + giftTitle + " " + pageName);
+
+      friendUserData = findFriendUserData(giftOwner);
+      notificationPage = pageName;
+
+      if (pageName == "friendList.html"){
+        if(friendUserData != -1)
+          notificationTitle = friendUserData.name + " updated a gift you bought!";
+        else
+          notificationTitle = "A gift you bought was updated!";
+        notificationDetails = "The gift, " + giftTitle + ", was updated!";
+      } else if (pageName == "privateFriendList.html") {
+        if(friendUserData != -1)
+          notificationTitle = friendUserData.name + "\'s private gift that you bought was updated!";
+        else
+          notificationTitle = "A private gift that you bought was updated!";
+        notificationDetails = "The gift, " + giftTitle + ", was updated!";
+      } else if (pageName == "deleteGift") {
+        if(friendUserData != -1)
+          notificationTitle = friendUserData.name + " deleted a gift you bought!";
+        else
+          notificationTitle = "A gift you bought was deleted!";
+        notificationDetails = "The gift, " + giftTitle + ", was deleted...";
+      } else {
+        console.log("Notification Page Error");
       }
+    } else if (notificationSplit.length == 4){
+      var giftOwner = notificationSplit[0];
+      var giftDeleter = notificationSplit[1];
+      var giftTitle = notificationSplit[2];
+      var pageName = notificationSplit[3];
+
+      friendUserData = findFriendUserData(giftOwner);
+
+      notificationPage = pageName;
+
+      if(friendUserData != -1)
+        notificationTitle = friendUserData.name + "\'s private gift that you bought was deleted!";
+      else
+        notificationTitle = giftDeleter + " deleted a gift that you bought!";
+      notificationDetails = "The gift, " + giftTitle + ", was deleted by " + giftDeleter + "...";
+    } else {
+      console.log("Unknown Notification String Received...");
     }
 
-    var userUid = inviteData.uid;
-    var inviteName = inviteData.name;
-    var inviteUserName = inviteData.userName;
-    var inviteShareCode = inviteData.shareCode;
     var liItem = document.createElement("LI");
-    liItem.id = "user" + userUid;
+    liItem.id = "notification" + notificationKey;
     liItem.className = "gift";
     liItem.onclick = function (){
       var span = document.getElementsByClassName("close")[0];
-      var inviteDelete = document.getElementById('userDelete');
-      var inviteNameField = document.getElementById('userName');
-      var inviteUserNameField = document.getElementById('userUName');
-      var inviteShareCodeField = document.getElementById('userShareCode');
+      var notificationTitleField = document.getElementById('userNotificationTitle');
+      var notificationDetailsField = document.getElementById('notificationDetails');
+      var notificationPageField = document.getElementById('notificationPage');
+      var notificationDelete = document.getElementById('notificationDelete');
 
-      if(inviteShareCode == undefined) {
-        inviteShareCode = "This User Does Not Have A Share Code";
+      notificationTitleField.innerHTML = notificationTitle;
+      notificationDetailsField.innerHTML = notificationDetails;
+
+      if (notificationPage == "invites.html"){
+        notificationPageField.innerHTML = "Click here to access your invites!";
+        notificationPageField.onclick = function(){
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          window.location.href = "confirmation.html";
+        };
+      } else if (notificationPage == "friendList.html" && friendUserData != -1) {
+        notificationPageField.innerHTML = "Click here to access their friend list!";
+        notificationPageField.onclick = function(){
+          sessionStorage.setItem("userArr", JSON.stringify(userArr));
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          window.location.href = "friendList.html";
+        };
+      } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
+        notificationPageField.innerHTML = "Click here to access their private friend list!";
+        notificationPageField.onclick = function(){
+          sessionStorage.setItem("userArr", JSON.stringify(userArr));
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          window.location.href = "privateFriendList.html";
+        };
+      } else if (notificationPage == "deleteGift") {
+        notificationPageField.innerHTML = "If this has been done in error, please contact the gift owner.";
+        notificationPageField.onclick = function(){};
+      } else if (notificationPage == "deleteGiftPrivate") {
+        notificationPageField.innerHTML = "If this has been done in error, please contact the person who deleted " +
+          "the gift.";
+        notificationPageField.onclick = function(){};
+      } else {
+        console.log("Notification Page Error");
+        notificationPageField.innerHTML = "There was an error loading this link, contact an administrator.";
+        notificationPageField.onclick = function(){};
       }
 
-      inviteNameField.innerHTML = inviteName;
-      inviteUserNameField.innerHTML = "User Name: " + inviteUserName;
-      inviteShareCodeField.innerHTML = "Share Code: " + inviteShareCode;
-
-      inviteDelete.onclick = function(){
-        deleteInvite(userUid);
+      notificationDelete.onclick = function(){
+        deleteNotification(notificationKey);
         modal.style.display = "none";
       };
 
@@ -334,66 +395,132 @@ window.onload = function instantiate() {
         }
       }
     };
-    var textNode = document.createTextNode(inviteName);
+    var textNode = document.createTextNode(notificationTitle);
     liItem.appendChild(textNode);
 
     userList.insertBefore(liItem, document.getElementById("userListContainer").childNodes[0]);
-    */
 
     notificationCount++;
   }
 
-  function changeNotificationElement(notificationString){
+  function changeNotificationElement(notificationString, notificationKey){
+    try{
+      document.getElementById("TestGift").remove();
+    } catch (err) {}
+
+    var friendUserData;
+    var notificationTitle;
+    var notificationDetails;
+    var notificationPage;
     var notificationSplit = notificationString.split(",");
     if (notificationSplit.length == 2){
-      //invite
-      //0, invitedName
-      //1, pageName
       var invitedName = notificationSplit[0];
       var pageName = notificationSplit[1];
+      console.log(invitedName + " " + pageName);
+
+      notificationTitle = "You received an invite!";
+      notificationDetails = invitedName + " has sent you an invite!";
+      notificationPage = pageName;
     } else if (notificationSplit.length == 3){
-      //gift update
-      //0, giftOwner
-      //1, giftTitle
-      //2, pageName (friendList, privateFriendList)
       var giftOwner = notificationSplit[0];
       var giftTitle = notificationSplit[1];
       var pageName = notificationSplit[2];
-    }
+      console.log(giftOwner + " " + giftTitle + " " + pageName);
 
-    /*
-    var inviteData;
-    for (var i = 0; i < userArr.length; i++){
-      if(inviteKey == userArr[i].uid){
-        inviteData = userArr[i];
-        break;
+      friendUserData = findFriendUserData(giftOwner);
+      notificationPage = pageName;
+
+      if (pageName == "friendList.html"){
+        if(friendUserData != -1)
+          notificationTitle = friendUserData.name + " updated a gift you bought!";
+        else
+          notificationTitle = "A gift you bought was updated!";
+        notificationDetails = "The gift, " + giftTitle + ", was updated!";
+      } else if (pageName == "privateFriendList.html") {
+        if(friendUserData != -1)
+          notificationTitle = friendUserData.name + "\'s private gift that you bought was updated!";
+        else
+          notificationTitle = "A private gift that you bought was updated!";
+        notificationDetails = "The gift, " + giftTitle + ", was updated!";
+      } else if (pageName == "deleteGift") {
+        if(friendUserData != -1)
+          notificationTitle = friendUserData.name + " deleted a gift you bought!";
+        else
+          notificationTitle = "A gift you bought was deleted!";
+        notificationDetails = "The gift, " + giftTitle + ", was deleted...";
+      } else {
+        console.log("Notification Page Error");
       }
+    } else if (notificationSplit.length == 4){
+      var giftOwner = notificationSplit[0];
+      var giftDeleter = notificationSplit[1];
+      var giftTitle = notificationSplit[2];
+      var pageName = notificationSplit[3];
+
+      friendUserData = findFriendUserData(giftOwner);
+
+      notificationPage = pageName;
+
+      if(friendUserData != -1)
+        notificationTitle = friendUserData.name + "\'s private gift that you bought was deleted!";
+      else
+        notificationTitle = giftDeleter + " deleted a gift that you bought!";
+      notificationDetails = "The gift, " + giftTitle + ", was deleted by " + giftDeleter + "...";
+    } else {
+      console.log("Unknown Notification String Received...");
     }
 
-    var userUid = inviteData.uid;
-    var inviteName = inviteData.name;
-    var inviteUserName = inviteData.userName;
-    var inviteShareCode = inviteData.shareCode;
-    var liItemUpdate = document.getElementById("user" + inviteData.uid);
-    liItemUpdate.innerHTML = inviteName;
+    var liItemUpdate = document.getElementById("notification" + notificationKey);
+    liItemUpdate.innerHTML = notificationTitle;
     liItemUpdate.className = "gift";
     liItemUpdate.onclick = function (){
       var span = document.getElementsByClassName("close")[0];
-      var inviteDelete = document.getElementById('userDelete');
-      var inviteNameField = document.getElementById('userName');
-      var inviteUserNameField = document.getElementById('userUName');
-      var inviteShareCodeField = document.getElementById('userShareCode');
+      var notificationTitleField = document.getElementById('userNotificationTitle');
+      var notificationDetailsField = document.getElementById('notificationDetails');
+      var notificationPageField = document.getElementById('notificationPage');
+      var notificationDelete = document.getElementById('notificationDelete');
 
-      if(inviteShareCode == undefined) {
-        inviteShareCode = "This User Does Not Have A Share Code";
+      notificationTitleField.innerHTML = notificationTitle;
+      notificationDetailsField.innerHTML = notificationDetails;
+
+      if (notificationPage == "invites.html"){
+        notificationPageField.innerHTML = "Click here to access your invites!";
+        notificationPageField.onclick = function(){
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          window.location.href = "confirmation.html";
+        };
+      } else if (notificationPage == "friendList.html" && friendUserData != -1) {
+        notificationPageField.innerHTML = "Click here to access their friend list!";
+        notificationPageField.onclick = function(){
+          sessionStorage.setItem("userArr", JSON.stringify(userArr));
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          window.location.href = "friendList.html";
+        };
+      } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
+        notificationPageField.innerHTML = "Click here to access their private friend list!";
+        notificationPageField.onclick = function(){
+          sessionStorage.setItem("userArr", JSON.stringify(userArr));
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          window.location.href = "privateFriendList.html";
+        };
+      } else if (notificationPage == "deleteGift") {
+        notificationPageField.innerHTML = "If this has been done in error, please contact the gift owner.";
+        notificationPageField.onclick = function(){};
+      } else if (notificationPage == "deleteGiftPrivate") {
+        notificationPageField.innerHTML = "If this has been done in error, please contact the person who deleted " +
+          "the gift.";
+        notificationPageField.onclick = function(){};
+      } else {
+        console.log("Notification Page Error");
+        notificationPageField.innerHTML = "There was an error loading this link, contact an administrator.";
+        notificationPageField.onclick = function(){};
       }
 
-      inviteNameField.innerHTML = inviteName;
-      inviteUserNameField.innerHTML = "User Name: " + inviteUserName;
-      inviteShareCodeField.innerHTML = "Share Code: " + inviteShareCode;
-
-      inviteDelete.onclick = function(){
-        deleteInvite(userUid);
+      notificationDelete.onclick = function(){
+        deleteNotification(notificationKey);
+        modal.style.display = "none";
       };
 
       //show modal
@@ -411,26 +538,43 @@ window.onload = function instantiate() {
         }
       }
     };
-    */
   }
 
-  function deleteInvite(uid) {
+  function findFriendUserData(giftOwnerUID) {
+    var i = findUIDItemInArr(giftOwnerUID, userArr);
+    if (i != -1){
+      return userArr[i];
+    }
+    return i;
+  }
+
+  function findUIDItemInArr(item, userArray){
+    for(var i = 0; i < userArray.length; i++){
+      if(userArray[i].uid == item){
+        //console.log("Found item: " + item);
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  function deleteNotification(uid) {
     var verifyDeleteBool = true;
     var toDelete = -1;
 
     console.log("Deleting " + uid);
-    for (var i = 0; i < inviteArr.length; i++){
-      if(inviteArr[i] == uid) {
+    for (var i = 0; i < notificationArr.length; i++){
+      if(notificationArr[i] == uid) {
         toDelete = i;
         break;
       }
     }
 
     if(toDelete != -1) {
-      inviteArr.splice(toDelete, 1);
+      notificationArr.splice(toDelete, 1);
 
-      for (var i = 0; i < inviteArr.length; i++) {
-        if (inviteArr[i] == uid) {
+      for (var i = 0; i < notificationArr.length; i++) {
+        if (notificationArr[i] == uid) {
           verifyDeleteBool = false;
           break;
         }
@@ -439,10 +583,10 @@ window.onload = function instantiate() {
       verifyDeleteBool = false;
     }
 
-    if(verifyDeleteBool){
-      user.invites = inviteArr;
+    if(verifyDeleteBool) {
+      user.notifications = notificationArr;
       firebase.database().ref("users/" + user.uid).update({
-        invites: inviteArr
+        notifications: notificationArr
       });
     }
   }

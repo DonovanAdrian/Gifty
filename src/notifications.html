@@ -7,7 +7,7 @@
   <link href="css/main.css" rel="stylesheet" type="text/css"/>
   <title>Notifications</title>
 
-  <script src="js/confirmationAlg.js" type="text/javascript"></script>
+  <script src="js/notificationsAlg.js" type="text/javascript"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase-auth.js"></script>
@@ -38,18 +38,18 @@
     <!--Modal Header-->
     <div class="modal-header">
       <span class="close">&times;</span>
-      <h2 id="userName">Loading Title...</h2>
+      <h2 id="userNotificationTitle">Loading Title...</h2>
     </div>
 
     <!--Modal Body-->
     <div class="modal-body">
-      <p id="userUName">Loading Notification...</p>
-      <p id="userShareCode">Loading Destination Page...</p>
+      <p id="notificationDetails">Loading Notification...</p>
+      <p id="notificationPage">Loading Destination Page...</p>
     </div>
 
     <!--Modal Footer-->
     <div class="modal-footer">
-      <h3 style="float: right;padding-right: 10px" id="userDelete">Delete Notification</h3>
+      <h3 style="float: right;padding-right: 10px" id="notificationDelete">Delete Notification</h3>
     </div>
   </div>
 </div>

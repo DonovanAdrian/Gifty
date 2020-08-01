@@ -353,7 +353,9 @@ window.onload = function instantiate() {
         if(currentGift.buyer != ""){
           var userFound = findUserNameItemInArr(currentGift.buyer, userArr);
           if(userFound != -1){
-            addNotificationToDB(userArr[userFound], currentGift.title);
+            if(userArr[userFound].uid != user.uid) {
+              addNotificationToDB(userArr[userFound], currentGift.title);
+            }
           } else {
             console.log("User not found");
           }
@@ -379,10 +381,10 @@ window.onload = function instantiate() {
 
   function addNotificationToDB(buyerUserData, giftTitle){
     var pageName = "friendList.html";
-    var giftOwner = user.name;
+    var giftOwner = user.uid;
     if(privateListBool){
       pageName = "privateFriendList.html";
-      giftOwner = privateList.name;
+      giftOwner = privateList.uid;
     }
     var notificationString = generateNotificationString(giftOwner, giftTitle, pageName);
     var buyerUserNotificiations;

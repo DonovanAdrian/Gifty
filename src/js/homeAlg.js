@@ -751,19 +751,19 @@ window.onload = function instantiate() {
 
   function addNotificationToDB(buyerUserData, giftTitle){
     var pageName = "deleteGift";
-    var giftOwner = user.name;
+    var giftOwner = user.uid;
     var notificationString = generateNotificationString(giftOwner, giftTitle, pageName);
-    var buyerUserNotificiations;
+    var buyerUserNotifications;
     if(buyerUserData.notifications == undefined || buyerUserData.notifications == null){
-      buyerUserNotificiations = [];
+      buyerUserNotifications = [];
     } else {
-      buyerUserNotificiations = buyerUserData.notifications;
+      buyerUserNotifications = buyerUserData.notifications;
     }
-    buyerUserNotificiations.push(notificationString);
+    buyerUserNotifications.push(notificationString);
 
     if(buyerUserData.notifications != undefined) {
       firebase.database().ref("users/" + buyerUserData.uid).update({
-        notifications: buyerUserNotificiations
+        notifications: buyerUserNotifications
       });
     } else {
       console.log("New Notifications List");
