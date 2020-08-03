@@ -13,7 +13,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
@@ -21,6 +21,15 @@
                 <caret line="24" column="27" lean-forward="true" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="27" />
               </first_editor>
               <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/js/notificationsAlg.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="364">
+              <caret line="561" column="10" selection-start-line="561" selection-start-column="10" selection-end-line="561" selection-end-column="10" />
             </state>
           </provider>
         </entry>
@@ -115,18 +124,18 @@
         <option value="$PROJECT_DIR$/src/js/boughtGiftsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/confirmationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/faqAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/friendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
         <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
         <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/settingsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/userAddUpdateAlg.js" />
-        <option value="$PROJECT_DIR$/src/notifications.html" />
-        <option value="$PROJECT_DIR$/src/js/notificationsAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/friendListAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
+        <option value="$PROJECT_DIR$/src/notifications.html" />
+        <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/notificationsAlg.js" />
       </list>
     </option>
   </component>
@@ -339,12 +348,12 @@
       <workItem from="1594521494011" duration="222000" />
       <workItem from="1594867772500" duration="531000" />
       <workItem from="1595130492142" duration="4714000" />
-      <workItem from="1595384212224" duration="8415000" />
+      <workItem from="1595384212224" duration="9066000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="401138000" />
+    <option name="totallyTimeSpent" value="401789000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="726" extended-state="0" />
@@ -632,13 +641,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/friendListAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="530">
-          <caret line="744" selection-start-line="744" selection-end-line="744" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/indexAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="530">
@@ -681,24 +683,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/giftAddUpdateAlg.js">
+    <entry file="file://$PROJECT_DIR$/src/js/listsAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="530">
-          <caret line="493" selection-start-line="493" selection-end-line="493" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/notificationsAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="530">
-          <caret line="638" selection-start-line="638" selection-end-line="638" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/notifications.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="530">
-          <caret line="90" selection-start-line="90" selection-end-line="90" />
+          <caret line="575" selection-start-line="575" selection-end-line="575" />
         </state>
       </provider>
     </entry>
@@ -709,6 +697,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/friendListAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="530">
+          <caret line="744" selection-start-line="744" selection-end-line="744" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/privateFriendListAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="530">
@@ -716,10 +711,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/listsAlg.js">
+    <entry file="file://$PROJECT_DIR$/src/notifications.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="530">
-          <caret line="575" selection-start-line="575" selection-end-line="575" />
+          <caret line="90" selection-start-line="90" selection-end-line="90" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/giftAddUpdateAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="530">
+          <caret line="500" lean-forward="true" selection-start-line="500" selection-end-line="500" />
         </state>
       </provider>
     </entry>
@@ -735,6 +737,13 @@
             <caret line="24" column="27" lean-forward="true" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="27" />
           </first_editor>
           <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/notificationsAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="364">
+          <caret line="561" column="10" selection-start-line="561" selection-start-column="10" selection-end-line="561" selection-end-column="10" />
         </state>
       </provider>
     </entry>

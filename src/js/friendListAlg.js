@@ -58,13 +58,13 @@ function getCurrentUser(){
       }
     }
 
-    if (user.notifications == undefined) {
+    if (currentUser.notifications == undefined) {
       console.log("Notifications Not Found");
-    } else if (user.notifications != undefined) {
-      if (user.notifications.length > 0) {
+    } else if (currentUser.notifications != undefined) {
+      if (currentUser.notifications.length > 0) {
         notificationBtn.src = "img/bellNotificationOn.png";
         notificationBtn.onclick = function() {
-          sessionStorage.setItem("validUser", JSON.stringify(user));
+          sessionStorage.setItem("validUser", JSON.stringify(currentUser));
           sessionStorage.setItem("userArr", JSON.stringify(userArr));
           window.location.href = "notifications.html";
         }

@@ -11,7 +11,7 @@ var logoutReminder = 300;
 var logoutLimit = 900;
 
 var offline;
-var userList;
+var notificationList;
 var offlineSpan;
 var offlineModal;
 var user;
@@ -41,6 +41,11 @@ function getCurrentUser(){
     if(user.notifications == undefined) {
       console.log("Notifications Not Found");
       deployNotificationListEmptyNotification();
+    } else {
+      if (user.notifications.length == 0) {
+        console.log("Notifications Empty");
+        deployNotificationListEmptyNotification();
+      }
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
@@ -51,7 +56,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
-  userList = document.getElementById("userListContainer");
+  notificationList = document.getElementById("notificationListContainer");
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById("closeOffline");
   listNote = document.getElementById('listNote');
@@ -113,7 +118,7 @@ window.onload = function instantiate() {
               var textNode = document.createTextNode("No Notifications Found!");
             }
             liItem.appendChild(textNode);
-            userList.insertBefore(liItem, document.getElementById("userListContainer").childNodes[0]);
+            notificationList.insertBefore(liItem, document.getElementById("notificationListContainer").childNodes[0]);
           }
         }
         offlineModal.style.display = "block";
@@ -218,10 +223,12 @@ window.onload = function instantiate() {
 
     var fetchNotifications = function (postRef) {
       postRef.on('child_added', function (data) {
+        notificationArr.push(data.val());
         createNotificationElement(data.val(), data.key);
       });
 
       postRef.on('child_changed', function (data) {
+        notificationArr[data.key] = data.val();
         changeNotificationElement(data.val(), data.key);
       });
 
@@ -306,7 +313,7 @@ window.onload = function instantiate() {
           notificationTitle = "A gift you bought was deleted!";
         notificationDetails = "The gift, " + giftTitle + ", was deleted...";
       } else {
-        console.log("Notification Page Error");
+        console.log("Notification Page Error, 1");
       }
     } else if (notificationSplit.length == 4){
       var giftOwner = notificationSplit[0];
@@ -350,7 +357,7 @@ window.onload = function instantiate() {
         notificationPageField.innerHTML = "Click here to access their friend list!";
         notificationPageField.onclick = function(){
           sessionStorage.setItem("userArr", JSON.stringify(userArr));
-          sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
           sessionStorage.setItem("validUser", JSON.stringify(user));
           window.location.href = "friendList.html";
         };
@@ -370,7 +377,7 @@ window.onload = function instantiate() {
           "the gift.";
         notificationPageField.onclick = function(){};
       } else {
-        console.log("Notification Page Error");
+        console.log("Notification Page Error, 2");
         notificationPageField.innerHTML = "There was an error loading this link, contact an administrator.";
         notificationPageField.onclick = function(){};
       }
@@ -398,7 +405,7 @@ window.onload = function instantiate() {
     var textNode = document.createTextNode(notificationTitle);
     liItem.appendChild(textNode);
 
-    userList.insertBefore(liItem, document.getElementById("userListContainer").childNodes[0]);
+    notificationList.insertBefore(liItem, document.getElementById("notificationListContainer").childNodes[0]);
 
     notificationCount++;
   }
@@ -449,7 +456,7 @@ window.onload = function instantiate() {
           notificationTitle = "A gift you bought was deleted!";
         notificationDetails = "The gift, " + giftTitle + ", was deleted...";
       } else {
-        console.log("Notification Page Error");
+        console.log("Notification Page Error, 1");
       }
     } else if (notificationSplit.length == 4){
       var giftOwner = notificationSplit[0];
@@ -493,7 +500,7 @@ window.onload = function instantiate() {
         notificationPageField.innerHTML = "Click here to access their friend list!";
         notificationPageField.onclick = function(){
           sessionStorage.setItem("userArr", JSON.stringify(userArr));
-          sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
           sessionStorage.setItem("validUser", JSON.stringify(user));
           window.location.href = "friendList.html";
         };
@@ -513,7 +520,7 @@ window.onload = function instantiate() {
           "the gift.";
         notificationPageField.onclick = function(){};
       } else {
-        console.log("Notification Page Error");
+        console.log("Notification Page Error, 2");
         notificationPageField.innerHTML = "There was an error loading this link, contact an administrator.";
         notificationPageField.onclick = function(){};
       }
@@ -542,6 +549,7 @@ window.onload = function instantiate() {
 
   function findFriendUserData(giftOwnerUID) {
     var i = findUIDItemInArr(giftOwnerUID, userArr);
+    //console.log(i + " " + userArr[i].name);
     if (i != -1){
       return userArr[i];
     }
@@ -559,36 +567,15 @@ window.onload = function instantiate() {
   }
 
   function deleteNotification(uid) {
-    var verifyDeleteBool = true;
-    var toDelete = -1;
-
+    var tempNotificationArr = notificationArr;
     console.log("Deleting " + uid);
-    for (var i = 0; i < notificationArr.length; i++){
-      if(notificationArr[i] == uid) {
-        toDelete = i;
-        break;
-      }
-    }
+    tempNotificationArr.splice(uid, 1);
 
-    if(toDelete != -1) {
-      notificationArr.splice(toDelete, 1);
-
-      for (var i = 0; i < notificationArr.length; i++) {
-        if (notificationArr[i] == uid) {
-          verifyDeleteBool = false;
-          break;
-        }
-      }
-    } else {
-      verifyDeleteBool = false;
-    }
-
-    if(verifyDeleteBool) {
-      user.notifications = notificationArr;
-      firebase.database().ref("users/" + user.uid).update({
-        notifications: notificationArr
-      });
-    }
+    notificationArr = tempNotificationArr;
+    user.notifications = notificationArr;
+    firebase.database().ref("users/" + user.uid).update({
+      notifications: notificationArr
+    });
   }
 };
 
@@ -602,7 +589,7 @@ function deployNotificationListEmptyNotification(){
     liItem.className = "gift";
     var textNode = document.createTextNode("No Notifications Found!");
     liItem.appendChild(textNode);
-    userList.insertBefore(liItem, document.getElementById("userListContainer").childNodes[0]);
+    notificationList.insertBefore(liItem, document.getElementById("notificationListContainer").childNodes[0]);
   }
 
   clearInterval(offlineTimer);

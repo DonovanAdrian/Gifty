@@ -353,8 +353,15 @@ window.onload = function instantiate() {
         if(currentGift.buyer != ""){
           var userFound = findUserNameItemInArr(currentGift.buyer, userArr);
           if(userFound != -1){
-            if(userArr[userFound].uid != user.uid) {
-              addNotificationToDB(userArr[userFound], currentGift.title);
+            if(privateListBool){
+              if (userArr[userFound].uid != privateUser.uid) {
+                addNotificationToDB(userArr[userFound], currentGift.title);
+              }
+            } else {
+              console.log(user.uid);
+              if (userArr[userFound].uid != user.uid) {
+                addNotificationToDB(userArr[userFound], currentGift.title);
+              }
             }
           } else {
             console.log("User not found");
