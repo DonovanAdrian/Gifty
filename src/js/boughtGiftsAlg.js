@@ -33,7 +33,6 @@ var listNote;
 var inviteNote;
 var offlineTimer;
 var userInitial;
-var userBase;
 var userInvites;
 
 
@@ -182,8 +181,8 @@ window.onload = function instantiate() {
   homeButton();
 
   function initializeGifts(){
-    console.log(userBoughtGiftsArr);
-    console.log(userBoughtGiftsUsersArr);
+    //console.log(userBoughtGiftsArr);
+    //console.log(userBoughtGiftsUsersArr);
 
     if(userBoughtGiftsArr.length == userBoughtGiftsUsersArr.length) {
       for (var i = 0; i < userBoughtGiftsArr.length; i++) {
@@ -303,7 +302,6 @@ window.onload = function instantiate() {
   function databaseQuery() {
 
     userInitial = firebase.database().ref("users/");
-    userBase = firebase.database().ref("users/" + user.uid);
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
     var fetchData = function (postRef) {
@@ -348,114 +346,6 @@ window.onload = function instantiate() {
       });
     };
 
-    var fetchUserData = function (postRef) {
-      postRef.on('child_added', function (data) {
-
-        onlineInt = 1;
-        if(data.key == "name"){
-          user.name = data.val();
-        } else if (data.key == "pin"){
-          user.pin = data.val();
-        } else if (data.key == "encodeStr"){
-          user.encodeStr = data.val();
-        } else if (data.key == "userName"){
-          user.userName = data.val();
-        } else if (data.key == "ban"){
-          user.ban = data.val();
-        } else if (data.key == "firstLogin"){
-          user.firstLogin = data.val();
-        } else if (data.key == "moderatorInt"){
-          user.moderatorInt = data.val();
-        } else if (data.key == "organize"){
-          user.organize = data.val();
-        } else if (data.key == "strike"){
-          user.strike = data.val();
-        } else if (data.key == "theme"){
-          user.theme = data.val();
-        } else if (data.key == "uid"){
-          user.uid = data.val();
-        } else if (data.key == "warn"){
-          user.warn = data.val();
-        } else if (data.key == "giftList"){
-          user.giftList = data.val();
-        } else if (data.key == "support"){
-          user.support = data.val();
-        } else if (data.key == "invites"){
-          user.invites = data.val();
-        } else if (data.key == "friends"){
-          user.friends = data.val();
-        } else if (data.key == "shareCode"){
-          user.shareCode = data.val();
-        } else {
-          console.log("Unknown Key..." + data.key);
-        }
-      });
-      postRef.on('child_changed', function (data) {
-        if(data.key == "name"){
-          user.name = data.val();
-        } else if (data.key == "pin"){
-          user.pin = data.val();
-        } else if (data.key == "encodeStr"){
-          user.encodeStr = data.val();
-        } else if (data.key == "userName"){
-          user.userName = data.val();
-        } else if (data.key == "ban"){
-          user.ban = data.val();
-        } else if (data.key == "firstLogin"){
-          user.firstLogin = data.val();
-        } else if (data.key == "moderatorInt"){
-          user.moderatorInt = data.val();
-        } else if (data.key == "organize"){
-          user.organize = data.val();
-        } else if (data.key == "strike"){
-          user.strike = data.val();
-        } else if (data.key == "theme"){
-          user.theme = data.val();
-        } else if (data.key == "uid"){
-          user.uid = data.val();
-        } else if (data.key == "warn"){
-          user.warn = data.val();
-        } else if (data.key == "giftList"){
-          user.giftList = data.val();
-        } else if (data.key == "support"){
-          user.support = data.val();
-        } else if (data.key == "invites"){
-          user.invites = data.val();
-        } else if (data.key == "friends"){
-          user.friends = data.val();
-        } else if (data.key == "shareCode"){
-          user.shareCode = data.val();
-        } else {
-          console.log("Unknown Key..." + data.key);
-        }
-      });
-      postRef.on('child_removed', function (data) {
-        if(data.key == "name"){
-          user.name = "";
-        } else if (data.key == "pin"){
-          user.pin = "";
-        } else if (data.key == "encodeStr"){
-          user.encodeStr = "";
-        } else if (data.key == "userName"){
-          user.userName = "";
-        } else if (data.key == "uid"){
-          user.uid = "";
-        } else if (data.key == "giftList"){
-          user.giftList = [];
-        } else if (data.key == "support"){
-          user.support = [];
-        } else if (data.key == "invites"){
-          user.invites = [];
-        } else if (data.key == "friends"){
-          user.friends = [];
-        } else if (data.key == "shareCode"){
-          user.shareCode = "";
-        } else {
-          console.log("Unknown Key..." + data.key);
-        }
-      });
-    };
-
     var fetchInvites = function (postRef) {
       postRef.on('child_added', function (data) {
         inviteArr.push(data.val());
@@ -482,11 +372,9 @@ window.onload = function instantiate() {
     };
 
     fetchData(userInitial);
-    fetchUserData(userBase);
     fetchInvites(userInvites);
 
     listeningFirebaseRefs.push(userInitial);
-    listeningFirebaseRefs.push(userBase);
     listeningFirebaseRefs.push(userInvites);
   }
 
@@ -496,20 +384,22 @@ window.onload = function instantiate() {
 
     if(newGiftList == undefined){}
     else if(newGiftList != undefined) {
-      for (var i = 0; i < initializedGiftsArr.length; i++) {
-        var a = findUIDItemInArr(initializedGiftsArr[i], newGiftList);
+      for (var i = 0; i < userBoughtGiftsArr.length; i++) {
+        var a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newGiftList);
         if (a != -1) {
-          checkGiftData(initializedGiftsArr[i], newGiftList[a], updatedUserData.name);
+          //console.log(newGiftList[a]);
+          checkGiftData(userBoughtGiftsArr[i], newGiftList[a], updatedUserData.name);
         }
       }
     }
 
     if(newPrivateGiftList == undefined){}
     else if(newPrivateGiftList.length != undefined) {
-      for (var i = 0; i < initializedGiftsArr.length; i++) {
-        var a = findUIDItemInArr(initializedGiftsArr[i], newPrivateGiftList);
+      for (var i = 0; i < userBoughtGiftsArr.length; i++) {
+        var a = findUIDItemInArr(userBoughtGiftsArr[i], newPrivateGiftList);
         if (a != -1) {
-          checkGiftData(initializedGiftsArr[i], newPrivateGiftList[a], updatedUserData.name);
+          //console.log(newPrivateGiftList[a]);
+          checkGiftData(userBoughtGiftsArr[i], newPrivateGiftList[a], updatedUserData.name);
         }
       }
     }
@@ -517,14 +407,22 @@ window.onload = function instantiate() {
 
   function checkGiftData(currentGiftData, newGiftData, giftOwner){
     var updateGiftBool = false;
-    if(currentGiftData.description != newGiftData.description)
+    if(currentGiftData.description != newGiftData.description) {
+      console.log("Description Updated: " + currentGiftData.description + " " + newGiftData.description);
       updateGiftBool = true;
-    if(currentGiftData.link != newGiftData.link)
+    }
+    if(currentGiftData.link != newGiftData.link) {
+      //console.log("Link Updated");
       updateGiftBool = true;
-    if(currentGiftData.title != newGiftData.title)
+    }
+    if(currentGiftData.title != newGiftData.title) {
+      //console.log("Title Updated");
       updateGiftBool = true;
-    if(currentGiftData.where != newGiftData.where)
+    }
+    if(currentGiftData.where != newGiftData.where) {
+      //console.log("Where Updated");
       updateGiftBool = true;
+    }
 
     if(updateGiftBool) {
       if (newGiftData.uid == currentModalOpen){
@@ -554,7 +452,7 @@ window.onload = function instantiate() {
     var giftUid = giftData.uid;
     var giftDate = giftData.creationDate;
 
-    console.log("Creating " + giftUid);
+    //console.log("Creating " + giftUid);
     try{
       document.getElementById("TestGift").remove();
     } catch (err) {}
@@ -646,6 +544,7 @@ window.onload = function instantiate() {
     var uid = giftData.uid;
     var date = giftData.creationDate;
 
+    console.log("Updating " + uid);
     var editGift = document.getElementById("gift" + uid);
     editGift.innerHTML = title;
     editGift.className = "gift";

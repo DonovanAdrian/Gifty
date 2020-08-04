@@ -38,13 +38,21 @@ function getCurrentUser(){
       }
     }
 
+    console.log(user.notifications);
     if(user.notifications == undefined) {
       console.log("Notifications Not Found");
       deployNotificationListEmptyNotification();
     } else {
-      if (user.notifications.length == 0) {
-        console.log("Notifications Empty");
-        deployNotificationListEmptyNotification();
+      var notificationOverride = sessionStorage.getItem("notificationOverride");
+      if (notificationOverride == undefined) {
+        console.log("Notifications Found");
+      } else {
+        if (notificationOverride == "notificationArrEmpty") {
+          console.log("Notifications Empty");
+          deployNotificationListEmptyNotification();
+        } else {
+          console.log("Notifications Found");
+        }
       }
     }
     userArr = JSON.parse(sessionStorage.userArr);
@@ -289,7 +297,7 @@ window.onload = function instantiate() {
       var giftOwner = notificationSplit[0];
       var giftTitle = notificationSplit[1];
       var pageName = notificationSplit[2];
-      console.log(giftOwner + " " + giftTitle + " " + pageName);
+      //console.log(giftOwner + " " + giftTitle + " " + pageName);
 
       friendUserData = findFriendUserData(giftOwner);
       notificationPage = pageName;
@@ -478,73 +486,78 @@ window.onload = function instantiate() {
     }
 
     var liItemUpdate = document.getElementById("notification" + notificationKey);
-    liItemUpdate.innerHTML = notificationTitle;
-    liItemUpdate.className = "gift";
-    liItemUpdate.onclick = function (){
-      var span = document.getElementsByClassName("close")[0];
-      var notificationTitleField = document.getElementById('userNotificationTitle');
-      var notificationDetailsField = document.getElementById('notificationDetails');
-      var notificationPageField = document.getElementById('notificationPage');
-      var notificationDelete = document.getElementById('notificationDelete');
+    if (liItemUpdate == undefined) {
+      liItemUpdate.innerHTML = notificationTitle;
+      liItemUpdate.className = "gift";
+      liItemUpdate.onclick = function () {
+        var span = document.getElementsByClassName("close")[0];
+        var notificationTitleField = document.getElementById('userNotificationTitle');
+        var notificationDetailsField = document.getElementById('notificationDetails');
+        var notificationPageField = document.getElementById('notificationPage');
+        var notificationDelete = document.getElementById('notificationDelete');
 
-      notificationTitleField.innerHTML = notificationTitle;
-      notificationDetailsField.innerHTML = notificationDetails;
+        notificationTitleField.innerHTML = notificationTitle;
+        notificationDetailsField.innerHTML = notificationDetails;
 
-      if (notificationPage == "invites.html"){
-        notificationPageField.innerHTML = "Click here to access your invites!";
-        notificationPageField.onclick = function(){
-          sessionStorage.setItem("validUser", JSON.stringify(user));
-          window.location.href = "confirmation.html";
-        };
-      } else if (notificationPage == "friendList.html" && friendUserData != -1) {
-        notificationPageField.innerHTML = "Click here to access their friend list!";
-        notificationPageField.onclick = function(){
-          sessionStorage.setItem("userArr", JSON.stringify(userArr));
-          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
-          sessionStorage.setItem("validUser", JSON.stringify(user));
-          window.location.href = "friendList.html";
-        };
-      } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
-        notificationPageField.innerHTML = "Click here to access their private friend list!";
-        notificationPageField.onclick = function(){
-          sessionStorage.setItem("userArr", JSON.stringify(userArr));
-          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
-          sessionStorage.setItem("validUser", JSON.stringify(user));
-          window.location.href = "privateFriendList.html";
-        };
-      } else if (notificationPage == "deleteGift") {
-        notificationPageField.innerHTML = "If this has been done in error, please contact the gift owner.";
-        notificationPageField.onclick = function(){};
-      } else if (notificationPage == "deleteGiftPrivate") {
-        notificationPageField.innerHTML = "If this has been done in error, please contact the person who deleted " +
-          "the gift.";
-        notificationPageField.onclick = function(){};
-      } else {
-        console.log("Notification Page Error, 2");
-        notificationPageField.innerHTML = "There was an error loading this link, contact an administrator.";
-        notificationPageField.onclick = function(){};
-      }
-
-      notificationDelete.onclick = function(){
-        deleteNotification(notificationKey);
-        modal.style.display = "none";
-      };
-
-      //show modal
-      modal.style.display = "block";
-
-      //close on close
-      span.onclick = function() {
-        modal.style.display = "none";
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
+        if (notificationPage == "invites.html") {
+          notificationPageField.innerHTML = "Click here to access your invites!";
+          notificationPageField.onclick = function () {
+            sessionStorage.setItem("validUser", JSON.stringify(user));
+            window.location.href = "confirmation.html";
+          };
+        } else if (notificationPage == "friendList.html" && friendUserData != -1) {
+          notificationPageField.innerHTML = "Click here to access their friend list!";
+          notificationPageField.onclick = function () {
+            sessionStorage.setItem("userArr", JSON.stringify(userArr));
+            sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
+            sessionStorage.setItem("validUser", JSON.stringify(user));
+            window.location.href = "friendList.html";
+          };
+        } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
+          notificationPageField.innerHTML = "Click here to access their private friend list!";
+          notificationPageField.onclick = function () {
+            sessionStorage.setItem("userArr", JSON.stringify(userArr));
+            sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
+            sessionStorage.setItem("validUser", JSON.stringify(user));
+            window.location.href = "privateFriendList.html";
+          };
+        } else if (notificationPage == "deleteGift") {
+          notificationPageField.innerHTML = "If this has been done in error, please contact the gift owner.";
+          notificationPageField.onclick = function () {
+          };
+        } else if (notificationPage == "deleteGiftPrivate") {
+          notificationPageField.innerHTML = "If this has been done in error, please contact the person who deleted " +
+            "the gift.";
+          notificationPageField.onclick = function () {
+          };
+        } else {
+          console.log("Notification Page Error, 2");
+          notificationPageField.innerHTML = "There was an error loading this link, contact an administrator.";
+          notificationPageField.onclick = function () {
+          };
         }
-      }
-    };
+
+        notificationDelete.onclick = function () {
+          deleteNotification(notificationKey);
+          modal.style.display = "none";
+        };
+
+        //show modal
+        modal.style.display = "block";
+
+        //close on close
+        span.onclick = function () {
+          modal.style.display = "none";
+        };
+
+        //close on click
+        window.onclick = function (event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        }
+      };
+    }
   }
 
   function findFriendUserData(giftOwnerUID) {
@@ -567,15 +580,30 @@ window.onload = function instantiate() {
   }
 
   function deleteNotification(uid) {
-    var tempNotificationArr = notificationArr;
+    removeNotificationElement(uid);
     console.log("Deleting " + uid);
-    tempNotificationArr.splice(uid, 1);
+    notificationArr.splice(uid, 1);
 
-    notificationArr = tempNotificationArr;
+    if (notificationArr.length == 0) {
+      sessionStorage.setItem("notificationOverride", "notificationArrEmpty");
+    }
+
     user.notifications = notificationArr;
+
+    sessionStorage.setItem("validUser", JSON.stringify(user));
+
     firebase.database().ref("users/" + user.uid).update({
       notifications: notificationArr
     });
+  }
+
+  function removeNotificationElement(uid) {
+    document.getElementById("notification" + uid).remove();
+
+    notificationCount--;
+    if (notificationCount == 0){
+      deployNotificationListEmptyNotification();
+    }
   }
 };
 

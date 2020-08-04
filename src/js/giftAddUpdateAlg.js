@@ -339,10 +339,22 @@ window.onload = function instantiate() {
             received: currentGift.received,
             uid: giftStorage,
             buyer: currentGift.buyer,
-            description: descField.value,
-            creationDate: currentGift.creationDate,
-            creator: currentGift.creator
+            description: descField.value
           });
+          if (currentGift.creationDate != undefined) {
+            if (currentGift.creationDate != "") {
+              firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
+                creationDate: currentGift.creationDate
+              });
+            }
+          }
+          if (currentGift.creator != undefined) {
+            if (currentGift.creator != "") {
+              firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
+                creator: currentGift.creator
+              });
+            }
+          }
 
           sessionStorage.setItem("validGiftUser", JSON.stringify(user));
           sessionStorage.setItem("validUser", JSON.stringify(privateUser));
@@ -406,11 +418,12 @@ window.onload = function instantiate() {
       firebase.database().ref("users/" + buyerUserData.uid).update({
         notifications: buyerUserNotificiations
       });
+      console.log("Added New Notification To DB");
     } else {
       console.log("New Notifications List");
       firebase.database().ref("users/" + buyerUserData.uid).update({notifications:{0:notificationString}});
+      console.log("Added Notification To DB");
     }
-    console.log("Added Notification To DB");
   }
 
   function generateNotificationString(giftOwner, giftTitle, pageName){
@@ -479,7 +492,10 @@ function signOut(){
 }
 
 function navigation(nav){
-  sessionStorage.setItem("validUser", JSON.stringify(user));
+  if (!privateListBool)
+    sessionStorage.setItem("validUser", JSON.stringify(user));
+  else
+    sessionStorage.setItem("validUser", JSON.stringify(privateUser));
   sessionStorage.setItem("userArr", JSON.stringify(userArr));
   switch(nav){
     case 0:

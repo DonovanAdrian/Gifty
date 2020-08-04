@@ -21,6 +21,10 @@
 - [x] Add Private Gift List Feature
 - [x] Add Bought Gifts List Feature
 - [x] Add Notifications Feature Across All Pages
+- [ ] Reconfigure Config Section **\(in progress)**
+- [ ] Append "Please Wait" To "Loading"
+- [ ] Add User Timeout Notification In Console
+- [ ] Add "Read Notifications" Feature
 - [ ] Touch Up Work/Testing **\(in progress)**
 
 ## Website Structure
