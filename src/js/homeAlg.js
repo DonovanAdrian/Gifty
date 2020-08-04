@@ -36,6 +36,7 @@ var listNote;
 var inviteNote;
 var userBase;
 var userGifts;
+var notificationBtn;
 
 
 
@@ -63,8 +64,22 @@ function getCurrentUser(){
         friendsValidBool = true;
       }
     }
+
+    if (user.notifications == undefined) {
+      console.log("Notifications Not Found");
+    } else if (user.notifications != undefined) {
+      if (user.notifications.length > 0) {
+        notificationBtn.src = "img/bellNotificationOn.png";
+        notificationBtn.onclick = function() {
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          sessionStorage.setItem("userArr", JSON.stringify(userArr));
+          window.location.href = "notifications.html";
+        }
+      }
+    }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
+    console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -173,6 +188,7 @@ function collectUserBoughtGifts(){
 
 window.onload = function instantiate() {
 
+  notificationBtn = document.getElementById('notificationButton');
   giftCreationDate = document.getElementById('giftCreationDate');
   giftList = document.getElementById('giftListContainer');
   giftListHTML = document.getElementById('giftListContainer').innerHTML;
@@ -365,113 +381,45 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
 
-    userBase = firebase.database().ref("users/" + user.uid);
+    userBase = firebase.database().ref("users/");
     userGifts = firebase.database().ref("users/" + user.uid + "/giftList");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
     var fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         onlineInt = 1;
-        if(data.key == "name"){
-          user.name = data.val();
-        } else if (data.key == "pin"){
-          user.pin = data.val();
-        } else if (data.key == "encodeStr"){
-          user.encodeStr = data.val();
-        } else if (data.key == "userName"){
-          user.userName = data.val();
-        } else if (data.key == "ban"){
-          user.ban = data.val();
-        } else if (data.key == "firstLogin"){
-          user.firstLogin = data.val();
-        } else if (data.key == "moderatorInt"){
-          user.moderatorInt = data.val();
-        } else if (data.key == "organize"){
-          user.organize = data.val();
-        } else if (data.key == "strike"){
-          user.strike = data.val();
-        } else if (data.key == "theme"){
-          user.theme = data.val();
-        } else if (data.key == "uid"){
-          user.uid = data.val();
-        } else if (data.key == "warn"){
-          user.warn = data.val();
-        } else if (data.key == "giftList"){
-          user.giftList = data.val();
-        } else if (data.key == "support"){
-          user.support = data.val();
-        } else if (data.key == "invites"){
-          user.invites = data.val();
-        } else if (data.key == "friends"){
-          user.friends = data.val();
-        } else if (data.key == "shareCode"){
-          user.shareCode = data.val();
-        } else {
-          console.log("Unknown Key..." + data.key);
+
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() && i != -1){
+          //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          userArr[i] = data.val();
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 1");
         }
       });
+
       postRef.on('child_changed', function (data) {
-        if(data.key == "name"){
-          user.name = data.val();
-        } else if (data.key == "pin"){
-          user.pin = data.val();
-        } else if (data.key == "encodeStr"){
-          user.encodeStr = data.val();
-        } else if (data.key == "userName"){
-          user.userName = data.val();
-        } else if (data.key == "ban"){
-          user.ban = data.val();
-        } else if (data.key == "firstLogin"){
-          user.firstLogin = data.val();
-        } else if (data.key == "moderatorInt"){
-          user.moderatorInt = data.val();
-        } else if (data.key == "organize"){
-          user.organize = data.val();
-        } else if (data.key == "strike"){
-          user.strike = data.val();
-        } else if (data.key == "theme"){
-          user.theme = data.val();
-        } else if (data.key == "uid"){
-          user.uid = data.val();
-        } else if (data.key == "warn"){
-          user.warn = data.val();
-        } else if (data.key == "giftList"){
-          user.giftList = data.val();
-        } else if (data.key == "support"){
-          user.support = data.val();
-        } else if (data.key == "invites"){
-          user.invites = data.val();
-        } else if (data.key == "friends"){
-          user.friends = data.val();
-        } else if (data.key == "shareCode"){
-          user.shareCode = data.val();
-        } else {
-          console.log("Unknown Key..." + data.key);
+        console.log("User Updated: " + data.val().userName);
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() && i != -1){
+          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          userArr[i] = data.val();
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 2");
         }
       });
+
       postRef.on('child_removed', function (data) {
-        if(data.key == "name"){
-          user.name = "";
-        } else if (data.key == "pin"){
-          user.pin = "";
-        } else if (data.key == "encodeStr"){
-          user.encodeStr = "";
-        } else if (data.key == "userName"){
-          user.userName = "";
-        } else if (data.key == "uid"){
-          user.uid = "";
-        } else if (data.key == "giftList"){
-          user.giftList = [];
-        } else if (data.key == "support"){
-          user.support = [];
-        } else if (data.key == "invites"){
-          user.invites = [];
-        } else if (data.key == "friends"){
-          user.friends = [];
-        } else if (data.key == "shareCode"){
-          user.shareCode = "";
-        } else {
-          console.log("Unknown Key..." + data.key);
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() && i != -1){
+          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          userArr.splice(i, 1);
         }
       });
     };
@@ -481,14 +429,14 @@ window.onload = function instantiate() {
         giftArr.push(data.val());
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate);
+          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
       });
 
       postRef.on('child_changed', function(data) {
         giftArr[data.key] = data.val();
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate);
+          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
       });
 
       postRef.on('child_removed', function(data) {
@@ -530,7 +478,18 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 
-  function createGiftElement(giftDescription, giftLink, giftReceived, giftTitle, giftKey, giftWhere, giftUid, giftDate){
+  function findUIDItemInArr(item, userArray){
+    for(var i = 0; i < userArray.length; i++){
+      if(userArray[i].uid == item){
+        //console.log("Found item: " + item);
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  function createGiftElement(giftDescription, giftLink, giftReceived, giftTitle, giftKey, giftWhere, giftUid, giftDate,
+                             giftBuyer){
     try{
       document.getElementById("TestGift").remove();
     } catch (err) {}
@@ -588,7 +547,7 @@ window.onload = function instantiate() {
         updateGiftElement(giftUid);
       };
       deleteBtn.onclick = function(){
-        deleteGiftElement(giftKey, giftTitle, giftUid);
+        deleteGiftElement(giftKey, giftTitle, giftUid, giftBuyer);
       };
 
       //show modal
@@ -614,7 +573,7 @@ window.onload = function instantiate() {
     giftCounter++;
   }
 
-  function changeGiftElement(description, link, received, title, key, where, uid, date) {
+  function changeGiftElement(description, link, received, title, key, where, uid, date, buyer) {
     var editGift = document.getElementById("gift" + uid);
     editGift.innerHTML = title;
     editGift.className = "gift";
@@ -668,7 +627,7 @@ window.onload = function instantiate() {
         updateGiftElement(uid);
       };
       deleteBtn.onclick = function(){
-        deleteGiftElement(key, title, uid);
+        deleteGiftElement(key, title, uid, buyer);
       };
 
       //show modal
@@ -707,7 +666,7 @@ window.onload = function instantiate() {
     window.location.href = "giftAddUpdate.html";
   }
 
-  function deleteGiftElement(key, title, uid) {
+  function deleteGiftElement(key, title, uid, buyer) {
     var verifyDeleteBool = true;
     var toDelete = -1;
 
@@ -764,9 +723,58 @@ window.onload = function instantiate() {
         }
       }, 1000);
 
+      if(buyer != ""){
+        var userFound = findUserNameItemInArr(buyer, userArr);
+        if(userFound != -1){
+          addNotificationToDB(userArr[userFound], title);
+        } else {
+          console.log("User not found");
+        }
+      } else {
+        console.log("No buyer, no notification needed");
+      }
+
     } else {
       alert("Delete failed, please try again later!");
     }
+  }
+
+  function findUserNameItemInArr(item, userArray){
+    for(var i = 0; i < userArray.length; i++){
+      if(userArray[i].userName == item){
+        console.log("Found item: " + item);
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  function addNotificationToDB(buyerUserData, giftTitle){
+    var pageName = "deleteGift";
+    var giftOwner = user.uid;
+    var notificationString = generateNotificationString(giftOwner, giftTitle, pageName);
+    var buyerUserNotifications;
+    if(buyerUserData.notifications == undefined || buyerUserData.notifications == null){
+      buyerUserNotifications = [];
+    } else {
+      buyerUserNotifications = buyerUserData.notifications;
+    }
+    buyerUserNotifications.push(notificationString);
+
+    if(buyerUserData.notifications != undefined) {
+      firebase.database().ref("users/" + buyerUserData.uid).update({
+        notifications: buyerUserNotifications
+      });
+    } else {
+      console.log("New Notifications List");
+      firebase.database().ref("users/" + buyerUserData.uid).update({notifications:{0:notificationString}});
+    }
+    console.log("Added Notification To DB");
+  }
+
+  function generateNotificationString(giftOwner, giftTitle, pageName){
+    console.log("Generating Notification");
+    return (giftOwner + "," + giftTitle + "," + pageName);
   }
 };
 

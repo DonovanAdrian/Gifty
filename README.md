@@ -20,9 +20,8 @@
 - [x] Add Supplemental ModerationAlg Features
 - [x] Add Private Gift List Feature
 - [x] Add Bought Gifts List Feature
+- [x] Add Notifications Feature Across All Pages
 - [ ] Touch Up Work/Testing **\(in progress)**
-- [ ] Add Notifications Feature Across All Pages
-- [ ] Set Up Local Database
 
 ## Website Structure
 - index

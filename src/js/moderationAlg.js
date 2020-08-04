@@ -42,6 +42,7 @@ function getCurrentUser(){
     userArr = JSON.parse(sessionStorage.userArr);
     sessionStorage.setItem("moderationSet", moderationSet);
   } catch (err) {
+    console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -244,7 +245,7 @@ window.onload = function instantiate() {
         onlineInt = 1;
 
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
+        if(userArr[i] != data.val() && i != -1){
           console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
@@ -259,7 +260,7 @@ window.onload = function instantiate() {
         changeUserElement(data.val());
 
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
+        if(userArr[i] != data.val() && i != -1){
           console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
@@ -274,7 +275,7 @@ window.onload = function instantiate() {
         removeUserElement(data.val().uid);
 
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
+        if(userArr[i] != data.val() && i != -1){
           console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }

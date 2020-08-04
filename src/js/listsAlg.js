@@ -25,6 +25,7 @@ var noteModal;
 var noteInfoField;
 var noteTitleField;
 var noteSpan;
+var notificationBtn;
 var modalSpan;
 var modal;
 
@@ -46,15 +47,30 @@ function getCurrentUser(){
         inviteNote.style.background = "#ff3923";
       }
     }
+
+    if (user.notifications == undefined) {
+      console.log("Notifications Not Found");
+    } else if (user.notifications != undefined) {
+      if (user.notifications.length > 0) {
+        notificationBtn.src = "img/bellNotificationOn.png";
+        notificationBtn.onclick = function() {
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          sessionStorage.setItem("userArr", JSON.stringify(userArr));
+          window.location.href = "notifications.html";
+        }
+      }
+    }
     userArr = JSON.parse(sessionStorage.userArr);
     sessionStorage.setItem("moderationSet", moderationSet);
   } catch (err) {
+    console.log(err.toString());
     window.location.href = "index.html";
   }
 }
 
 window.onload = function instantiate() {
 
+  notificationBtn = document.getElementById('notificationButton');
   userList = document.getElementById("userListContainer");
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById("closeOffline");
@@ -227,7 +243,7 @@ window.onload = function instantiate() {
         onlineInt = 1;
 
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
+        if(userArr[i] != data.val() && i != -1){
           //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
@@ -240,7 +256,7 @@ window.onload = function instantiate() {
 
       postRef.on('child_changed', function (data) {
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
+        if(userArr[i] != data.val() && i != -1){
           console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
 
@@ -257,7 +273,7 @@ window.onload = function instantiate() {
 
       postRef.on('child_removed', function (data) {
         var i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() || i != -1){
+        if(userArr[i] != data.val() && i != -1){
           console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
