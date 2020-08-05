@@ -1,0 +1,18 @@
+# Welcome to the config file!
+# Below is an example config to show you what your config file *should* look like!
+# As far as I know, Google's Firebase has moved on from using "configs", so this is more
+# of a legacy way of doing things. If you wish to still make your own "Gifty" work based
+# off of a config similar to the one below, you may have to do some extra leg work on your
+# own! Good luck!
+#
+# PS, use those "#" to make comments here if you need to! Otherwise the website will likely
+# be unable to properly read the file. Thanks!
+
+apiKey: "APIKEYGOESHERE",
+authDomain: "AUTHDOMAINGOESHERE",
+databaseURL: "DATABASEURLGOESHERE",
+projectId: "PROJECTIDGOESHERE",
+storageBucket: "STORAGEBUCKETGOESHERE",
+messagingSenderId: "MESSAGINGSENDERIDGOESHERE",
+appId: "APPIDGOESHERE",
+measurementId: "MEASUREMENTIDGOESHERE"
