@@ -81,7 +81,8 @@ database.
 Of course! All you should need to do is fill in the config 
 details of your own Google Firebase 
 (Realtime Database, NOT Firestore!) and you will be all 
-good to go! Please keep in mind that very MINOR security 
+good to go! This data can be filled in on the /txt/config.txt
+file. Please keep in mind that very MINOR security 
 is built in to this application. As such, I am not 
 responsible for any misuse of my own code that leads to 
 the loss of personal data. If you have any additional 
