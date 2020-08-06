@@ -21,8 +21,9 @@
 - [x] Add Private Gift List Feature
 - [x] Add Bought Gifts List Feature
 - [x] Add Notifications Feature Across All Pages
-- [ ] Reconfigure Config Section **\(in progress)**
-- [ ] Append "Please Wait" To "Loading"
+- [x] Reconfigure Config Section
+- [ ] Append "Please Wait" To "Loading" **\(in progress)**
+  - "Please Wait" will only be appended if loading takes longer than 5 seconds
 - [ ] Add User Timeout Notification In Console
 - [ ] Add "Read Notifications" Feature
 - [ ] Touch Up Work/Testing **\(in progress)**

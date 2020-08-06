@@ -66,10 +66,8 @@ window.onload = function instantiate() {
     navigation(5);
   };
 
+  const config = JSON.parse(sessionStorage.config);
 
-  const config = {
-    //Oops! This is gone!
-  };
   firebase.initializeApp(config);
   firebase.analytics();
 

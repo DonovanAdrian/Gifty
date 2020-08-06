@@ -100,9 +100,8 @@ window.onload = function instantiate() {
     userUserNames.push(userArr[i].userName);
   }
 
-  const config = {
-    //Oops! This is gone!
-  };
+  const config = JSON.parse(sessionStorage.config);
+
   firebase.initializeApp(config);
   firebase.analytics();
 

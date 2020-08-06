@@ -62,9 +62,8 @@ window.onload = function instantiate() {
   modal = document.getElementById('giftModal');
   getCurrentUser();
 
-  const config = {
-    //Oops! This is gone!
-  };
+  const config = JSON.parse(sessionStorage.config);
+
   firebase.initializeApp(config);
   firebase.analytics();
 

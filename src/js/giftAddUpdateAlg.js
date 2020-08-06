@@ -81,9 +81,8 @@ window.onload = function instantiate() {
   noteSpan = document.getElementById('closeNotification');
   getCurrentUser();
 
-  const config = {
-    //Oops! This is gone!
-  };
+  const config = JSON.parse(sessionStorage.config);
+
   firebase.initializeApp(config);
   firebase.analytics();
 
