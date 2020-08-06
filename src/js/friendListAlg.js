@@ -10,6 +10,7 @@ var currentModalOpen = "";
 
 var onlineInt = 0;
 var giftCounter = 0;
+var loadingTimerInt = 0;
 var logoutReminder = 300;
 var logoutLimit = 900;
 var moderationSet = -1;
@@ -32,6 +33,7 @@ var inviteNote;
 var notificationBtn;
 var currentUser;
 var offlineTimer;
+var loadingTimer;
 var userBase;
 var userInvites;
 var userGifts;
@@ -189,6 +191,19 @@ window.onload = function instantiate() {
       window.location.href = "lists.html";
     }
   };
+
+  loadingTimer = setInterval(function(){
+    loadingTimerInt = loadingTimerInt + 1000;
+    if(loadingTimerInt >= 2000){
+      var testGift = document.getElementById("TestGift");
+      if (testGift == undefined){
+        //console.log("TestGift Missing. Loading Properly.");
+      } else {
+        testGift.innerHTML = "Loading... Please Wait...";
+      }
+      clearInterval(loadingTimer);
+    }
+  }, 1000);
 
   databaseQuery();
 

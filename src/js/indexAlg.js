@@ -129,8 +129,10 @@ window.onload = function instantiate() {
   pin = document.getElementById("pin");
   offlineModal = document.getElementById("offlineModal");
   offlineSpan = document.getElementById("closeOffline");
-  loginBtn = document.getElementById("loginBtn");
+  loginBtn = document.getElementById('loginBtn');
   signUpFld = document.getElementById("signUpFld");
+
+  loginBtn.innerHTML = "Please Wait...";
 
   window.addEventListener("online", function(){
     offlineModal.style.display = "none";
@@ -187,6 +189,7 @@ function initializeDatabase(){
 
   console.log("Database Successfully Initialized!");
   databaseQuery();
+  loginBtn.innerHTML = "Log In";
   loginBtn.onclick = function(){
     login();
   }

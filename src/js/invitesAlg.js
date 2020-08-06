@@ -6,6 +6,7 @@ var areYouStillThereBool = false;
 var invitesFound = false;
 
 var friendCount = 0;
+var loadingTimerInt = 0;
 var logoutReminder = 300;
 var logoutLimit = 900;
 
@@ -23,6 +24,7 @@ var listNote;
 var inviteNote;
 var userInput;
 var offlineTimer;
+var loadingTimer;
 var userInitial;
 var userFriends;
 var userInvites;
@@ -168,6 +170,19 @@ window.onload = function instantiate() {
     sessionStorage.setItem("validUser", JSON.stringify(user));
     window.location.href = "confirmation.html";
   };
+
+  loadingTimer = setInterval(function(){
+    loadingTimerInt = loadingTimerInt + 1000;
+    if(loadingTimerInt >= 2000){
+      var testGift = document.getElementById("TestGift");
+      if (testGift == undefined){
+        //console.log("TestGift Missing. Loading Properly.");
+      } else {
+        testGift.innerHTML = "Loading... Please Wait...";
+      }
+      clearInterval(loadingTimer);
+    }
+  }, 1000);
 
   addUserBtn.innerHTML = "Invite User";
   generateAddUserBtn();

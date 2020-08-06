@@ -7,6 +7,7 @@ var areYouStillThereBool = false;
 
 var inviteCount = 0;
 var onlineInt = 0;
+var loadingTimerInt = 0;
 var logoutReminder = 300;
 var logoutLimit = 900;
 
@@ -22,6 +23,7 @@ var userFriends;
 var modal;
 var listNote;
 var inviteNote;
+var loadingTimer;
 var offlineTimer;
 var noteModal;
 var noteInfoField;
@@ -146,6 +148,19 @@ window.onload = function instantiate() {
       offlineModal.style.display = "none";
     }
   };
+
+  loadingTimer = setInterval(function(){
+    loadingTimerInt = loadingTimerInt + 1000;
+    if(loadingTimerInt >= 2000){
+      var testGift = document.getElementById("TestGift");
+      if (testGift == undefined){
+        //console.log("TestGift Missing. Loading Properly.");
+      } else {
+        testGift.innerHTML = "Loading... Please Wait...";
+      }
+      clearInterval(loadingTimer);
+    }
+  }, 1000);
 
   databaseQuery();
 

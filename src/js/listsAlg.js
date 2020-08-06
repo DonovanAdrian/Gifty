@@ -8,6 +8,7 @@ var areYouStillThereBool = false;
 var moderationSet = 0;
 var onlineInt = 0;
 var friendCount = 0;
+var loadingTimerInt = 0;
 var logoutReminder = 300;
 var logoutLimit = 900;
 
@@ -18,6 +19,7 @@ var userInvites;
 var offlineSpan;
 var offlineModal;
 var offlineTimer;
+var loadingTimer;
 var user;
 var listNote;
 var inviteNote;
@@ -153,6 +155,19 @@ window.onload = function instantiate() {
       offlineModal.style.display = "none";
     }
   };
+
+  loadingTimer = setInterval(function(){
+    loadingTimerInt = loadingTimerInt + 1000;
+    if(loadingTimerInt >= 2000){
+      var testGift = document.getElementById("TestGift");
+      if (testGift == undefined){
+        //console.log("TestGift Missing. Loading Properly.");
+      } else {
+        testGift.innerHTML = "Loading... Please Wait...";
+      }
+      clearInterval(loadingTimer);
+    }
+  }, 1000);
 
   databaseQuery();
 
