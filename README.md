@@ -23,8 +23,8 @@
 - [x] Add Notifications Feature Across All Pages
 - [x] Reconfigure Config Section
 - [x] Append "Please Wait" To "Loading"
-- [ ] Add User Timeout Notification In Console **\(in progress)**
-- [ ] Add "Read Notifications" Feature
+- [x] Add User Timeout Notification In Console
+- [ ] Add "Read Notifications" Feature **\(in progress)**
 - [ ] Touch Up Work/Testing **\(in progress)**
 
 ## Website Structure

@@ -224,14 +224,17 @@ window.onload = function instantiate() {
       document.onkeypress = resetTimer;
       loginNum = loginNum + 1;
       if (loginNum >= logoutLimit){//default 900
+        console.log("User Timed Out");
         signOut();
       } else if (loginNum > logoutReminder){//default 600
+        console.log("User Inactive");
         areYouStillThereNote(loginNum);
         areYouStillThereBool = true;
       }
       function resetTimer() {
         if (areYouStillThereBool)
-          ohThereYouAre();
+          console.log("User Active");
+        ohThereYouAre();
         loginNum = 0;
       }
     }, 1000);
