@@ -23,7 +23,7 @@ var offline;
 var giftStorage;
 var privateList;
 var boughtGifts;
-var backBtn;
+var addBtn;
 var offlineSpan;
 var offlineModal;
 var user;
@@ -226,7 +226,7 @@ window.onload = function instantiate() {
   inviteNote = document.getElementById('inviteNote');
   listNote = document.getElementById('listNote');
   boughtGifts = document.getElementById('boughtGifts');
-  backBtn = document.getElementById('addGift');
+  addBtn = document.getElementById('addGift');
   modal = document.getElementById('giftModal');
   getCurrentUser();
 
@@ -315,8 +315,8 @@ window.onload = function instantiate() {
     }
   };
 
-  backBtn.innerHTML = "Add Gift";
-  backBtn.onclick = function() {
+  addBtn.innerHTML = "Add Gift";
+  addBtn.onclick = function() {
     giftStorage = "";
     privateList = "";
     sessionStorage.setItem("privateList", JSON.stringify(privateList));

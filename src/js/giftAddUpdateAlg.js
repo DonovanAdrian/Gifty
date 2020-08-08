@@ -413,17 +413,17 @@ window.onload = function instantiate() {
       giftOwner = privateList.uid;
     }
     var notificationString = generateNotificationString(giftOwner, giftTitle, pageName);
-    var buyerUserNotificiations;
-    if(buyerUserData.notifications == undefined || buyerUserData.notifications == null){
-      buyerUserNotificiations = [];
+    var buyerUserNotifications;
+    if(buyerUserData.notifications == undefined){
+      buyerUserNotifications = [];
     } else {
-      buyerUserNotificiations = buyerUserData.notifications;
+      buyerUserNotifications = buyerUserData.notifications;
     }
-    buyerUserNotificiations.push(notificationString);
+    buyerUserNotifications.push(notificationString);
 
     if(buyerUserData.notifications != undefined) {
       firebase.database().ref("users/" + buyerUserData.uid).update({
-        notifications: buyerUserNotificiations
+        notifications: buyerUserNotifications
       });
       console.log("Added New Notification To DB");
     } else {

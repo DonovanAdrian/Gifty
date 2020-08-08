@@ -25,7 +25,7 @@
 - [x] Append "Please Wait" To "Loading"
 - [x] Add User Timeout Notification In Console
 - [x] Add "Read Notifications" Feature
-- [ ] Add Global Notifications
+- [x] Add Global Notifications
 - [ ] Add Helpful Comments
   -  This is something that I've been meaning to do in case other people want to learn from my work. This may be done in the form of a new repository labeled "Education Edition"
 - [ ] Touch Up Work/Testing **\(in progress)**

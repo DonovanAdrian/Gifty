@@ -15,6 +15,8 @@ var giftListHTML;
 var offline;
 var offlineSpan;
 var offlineModal;
+var addGlobalMsgModal;
+var addGlobalMsgBtn;
 var user;
 var userInvites;
 var offlineTimer;
@@ -41,6 +43,10 @@ function getCurrentUser(){
         inviteNote.style.background = "#ff3923";
       }
     }
+
+    if (user.moderatorInt == 0){
+      window.location.href = "home.html";
+    }
     userArr = JSON.parse(sessionStorage.userArr);
     sessionStorage.setItem("moderationSet", moderationSet);
   } catch (err) {
@@ -61,6 +67,8 @@ window.onload = function instantiate() {
   noteTitleField = document.getElementById('notificationTitle');
   noteInfoField = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
+  addGlobalMsgModal = document.getElementById('userModal');
+  addGlobalMsgBtn = document.getElementById('sendGlobalNotification');
   modal = document.getElementById('giftModal');
   getCurrentUser();
 
@@ -251,6 +259,64 @@ window.onload = function instantiate() {
     }, 1000);
   }
 
+  function initializeGlobalNotification() {
+    addGlobalMsgBtn.innerHTML = "Send Global Message";
+    addGlobalMsgBtn.onclick = function (){
+      var sendNote = document.getElementById('sendNote');
+      var cancelNote = document.getElementById('cancelNote');
+      var globalNoteInp = document.getElementById('globalNoteInp');
+      var spanNote = document.getElementById('globalNoteSpan');
+
+      sendNote.onclick = function (){
+        if(globalNoteInp.value.includes(",")){
+          alert("Please do not use commas in the notification. Thank you!")
+        } else {
+          addGlobalInviteToDB(globalNoteInp.value);
+          globalNoteInp.value = "";
+          addGlobalMsgModal.style.display = "none";
+        }
+      };
+      cancelNote.onclick = function (){
+        globalNoteInp.value = "";
+        addGlobalMsgModal.style.display = "none";
+      };
+
+      addGlobalMsgModal.style.display = "block";
+
+      //close on close
+      spanNote.onclick = function() {
+        addGlobalMsgModal.style.display = "none";
+      };
+
+      //close on click
+      window.onclick = function(event) {
+        if (event.target == addGlobalMsgModal) {
+          addGlobalMsgModal.style.display = "none";
+        }
+      };
+    };
+  }
+
+  function addGlobalInviteToDB(message) {
+    var userNotificationArr = [];
+    for (var i = 0; i < userArr.length; i++){
+      if(userArr[i].notifications == undefined){
+        userNotificationArr = [];
+      } else {
+        userNotificationArr = userArr[i].notifications;
+      }
+      userNotificationArr.push(message);
+
+      if(userArr[i].notifications == undefined) {
+        firebase.database().ref("users/" + userArr[i].uid).update({notifications:{0:message}});
+      } else {
+        firebase.database().ref("users/" + userArr[i].uid).update({
+          notifications: userNotificationArr
+        });
+      }
+    }
+  }
+
   function databaseQuery() {
 
     userInitial = firebase.database().ref("users/");
@@ -260,7 +326,10 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         createUserElement(data.val());
 
-        onlineInt = 1;
+        if(onlineInt == 0) {
+          onlineInt = 1;
+          initializeGlobalNotification();
+        }
 
         var i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
