@@ -24,7 +24,9 @@
 - [x] Reconfigure Config Section
 - [x] Append "Please Wait" To "Loading"
 - [x] Add User Timeout Notification In Console
-- [ ] Add "Read Notifications" Feature **\(in progress)**
+- [x] Add "Read Notifications" Feature
+- [ ] Add Helpful Comments
+  -  This is something that I've been meaning to do in case other people want to learn from my work. This may be done in the form of a new repository labeled "Education Edition"
 - [ ] Touch Up Work/Testing **\(in progress)**
 
 ## Website Structure

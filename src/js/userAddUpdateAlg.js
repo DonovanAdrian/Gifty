@@ -70,14 +70,14 @@ function getCurrentUser(){
           console.log("User Timed Out");
           signOut();
         } else if (loginNum > logoutReminder){//default 600
-          console.log("User Inactive");
+          //console.log("User Inactive");
           areYouStillThereNote(loginNum);
           areYouStillThereBool = true;
         }
         function resetTimer() {
           if (areYouStillThereBool)
-            console.log("User Active");
-          ohThereYouAre();
+          //console.log("User Active");
+            ohThereYouAre();
           loginNum = 0;
         }
       }, 1000);
@@ -401,6 +401,11 @@ function updateUserToDB(){
     if(user.notifications != undefined) {
       firebase.database().ref("users/" + user.uid).update({
         notifications: user.notifications
+      });
+    }
+    if (user.readNotifications != undefined) {
+      firebase.database().ref("users/" + user.uid).update({
+        readNotifications: user.readNotifications
       });
     }
 

@@ -5,6 +5,7 @@ var userUserNames = [];
 var instantiatedNodes = [];
 
 var areYouStillThereBool = false;
+var readNotificationsBool = false;
 var updateGiftToDBBool = false;
 
 var currentModalOpen = "";
@@ -65,10 +66,32 @@ function getCurrentUser(){
       }
     }
 
+    if (currentUser.readNotifications == undefined) {
+      console.log("Read Notifications Not Found");
+    } else {
+      readNotificationsBool = true;
+    }
+
     if (currentUser.notifications == undefined) {
       console.log("Notifications Not Found");
     } else if (currentUser.notifications != undefined) {
-      if (currentUser.notifications.length > 0) {
+      if (readNotificationsBool){
+        if (currentUser.notifications.length > 0 && currentUser.readNotifications.length != currentUser.notifications.length) {
+          notificationBtn.src = "img/bellNotificationOn.png";
+          notificationBtn.onclick = function() {
+            sessionStorage.setItem("validUser", JSON.stringify(currentUser));
+            sessionStorage.setItem("userArr", JSON.stringify(userArr));
+            window.location.href = "notifications.html";
+          }
+        } else {
+          notificationBtn.src = "img/bellNotificationOff.png";
+          notificationBtn.onclick = function() {
+            sessionStorage.setItem("validUser", JSON.stringify(currentUser));
+            sessionStorage.setItem("userArr", JSON.stringify(userArr));
+            window.location.href = "notifications.html";
+          }
+        }
+      } else if (currentUser.notifications.length > 0) {
         notificationBtn.src = "img/bellNotificationOn.png";
         notificationBtn.onclick = function() {
           sessionStorage.setItem("validUser", JSON.stringify(currentUser));
@@ -231,14 +254,15 @@ window.onload = function instantiate() {
         console.log("User Timed Out");
         signOut();
       } else if (loginNum > logoutReminder){//default 600
-        console.log("User Inactive");
+        //console.log("User Inactive");
         areYouStillThereNote(loginNum);
         areYouStillThereBool = true;
       }
       function resetTimer() {
-        if (areYouStillThereBool)
-          console.log("User Active");
-        ohThereYouAre();
+        if (areYouStillThereBool) {
+          //console.log("User Active");
+          ohThereYouAre();
+        }
         loginNum = 0;
       }
     }, 1000);
@@ -623,7 +647,7 @@ window.onload = function instantiate() {
           console.log("Closed modal");
           modal.style.display = "none";
         }
-      }
+      };
     };
     var textNode = document.createTextNode(giftTitle);
     liItem.appendChild(textNode);

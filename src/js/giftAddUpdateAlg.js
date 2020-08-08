@@ -165,14 +165,15 @@ window.onload = function instantiate() {
         console.log("User Timed Out");
         signOut();
       } else if (loginNum > logoutReminder){//default 600
-        console.log("User Inactive");
+        //console.log("User Inactive");
         areYouStillThereNote(loginNum);
         areYouStillThereBool = true;
       }
       function resetTimer() {
-        if (areYouStillThereBool)
-          console.log("User Active");
-        ohThereYouAre();
+        if (areYouStillThereBool) {
+          //console.log("User Active");
+          ohThereYouAre();
+        }
         loginNum = 0;
       }
     }, 1000);

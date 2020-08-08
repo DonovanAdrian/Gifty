@@ -6,6 +6,7 @@ var userBoughtGiftsUsers = [];
 
 var invitesValidBool = false;
 var friendsValidBool = false;
+var readNotificationsBool = false;
 var updateUserBool = false;
 var areYouStillThereBool = false;
 
@@ -67,10 +68,32 @@ function getCurrentUser(){
       }
     }
 
+    if (user.readNotifications == undefined) {
+      console.log("Read Notifications Not Found");
+    } else {
+      readNotificationsBool = true;
+    }
+
     if (user.notifications == undefined) {
       console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
-      if (user.notifications.length > 0) {
+      if (readNotificationsBool){
+        if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
+          notificationBtn.src = "img/bellNotificationOn.png";
+          notificationBtn.onclick = function() {
+            sessionStorage.setItem("validUser", JSON.stringify(user));
+            sessionStorage.setItem("userArr", JSON.stringify(userArr));
+            window.location.href = "notifications.html";
+          }
+        } else {
+          notificationBtn.src = "img/bellNotificationOff.png";
+          notificationBtn.onclick = function() {
+            sessionStorage.setItem("validUser", JSON.stringify(user));
+            sessionStorage.setItem("userArr", JSON.stringify(userArr));
+            window.location.href = "notifications.html";
+          }
+        }
+      } else if (user.notifications.length > 0) {
         notificationBtn.src = "img/bellNotificationOn.png";
         notificationBtn.onclick = function() {
           sessionStorage.setItem("validUser", JSON.stringify(user));
@@ -338,14 +361,15 @@ window.onload = function instantiate() {
         console.log("User Timed Out");
         signOut();
       } else if (loginNum > logoutReminder){//default 600
-        console.log("User Inactive");
+        //console.log("User Inactive");
         areYouStillThereNote(loginNum);
         areYouStillThereBool = true;
       }
       function resetTimer() {
-        if (areYouStillThereBool)
-          console.log("User Active");
-        ohThereYouAre();
+        if (areYouStillThereBool) {
+          //console.log("User Active");
+          ohThereYouAre();
+        }
         loginNum = 0;
       }
     }, 1000);
@@ -417,6 +441,15 @@ window.onload = function instantiate() {
           if (data.val().notifications == undefined) {
             notificationBtn.src = "img/bellNotificationOff.png";
             notificationBtn.onclick = function () {}
+          } else if (data.val().readNotifications == undefined){
+            //console.log("No Read Notifications");
+          } else if (data.val().readNotifications.length == data.val().notifications.length) {
+            notificationBtn.src = "img/bellNotificationOff.png";
+            notificationBtn.onclick = function() {
+              sessionStorage.setItem("validUser", JSON.stringify(user));
+              sessionStorage.setItem("userArr", JSON.stringify(userArr));
+              window.location.href = "notifications.html";
+            }
           }
           console.log("User Updated: 1");
         }
@@ -580,13 +613,16 @@ window.onload = function instantiate() {
         modal.style.display = "none";
       };
 
+      console.log("Sooooo");
       //close on click
       window.onclick = function(event) {
+        console.log("Uhhhhh");
         if (event.target == modal) {
+          console.log("Welp");
           modal.style.display = "none";
         }
       }
-    };
+    }
     var textNode = document.createTextNode(giftTitle);
     liItem.appendChild(textNode);
     giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
@@ -665,7 +701,7 @@ window.onload = function instantiate() {
         if (event.target == modal) {
           modal.style.display = "none";
         }
-      };
+      }
     };
   }
 

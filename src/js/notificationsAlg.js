@@ -1,6 +1,7 @@
 var userArr = [];
 var inviteArr = [];
 var notificationArr = [];
+var readNotificationArr = [];
 var listeningFirebaseRefs = [];
 
 var areYouStillThereBool = false;
@@ -16,6 +17,7 @@ var notificationList;
 var offlineSpan;
 var offlineModal;
 var user;
+var userReadNotifications;
 var userNotifications;
 var userInvites;
 var modal;
@@ -40,7 +42,7 @@ function getCurrentUser(){
       }
     }
 
-    console.log(user.notifications);
+    //console.log(user.notifications);
     if(user.notifications == undefined) {
       console.log("Notifications Not Found");
       deployNotificationListEmptyNotification();
@@ -153,6 +155,8 @@ window.onload = function instantiate() {
       var testGift = document.getElementById("TestGift");
       if (testGift == undefined){
         //console.log("TestGift Missing. Loading Properly.");
+      } else if (testGift.innerHTML == "No Notifications Found!"){
+        //console.log("No Notifications Found");
       } else {
         testGift.innerHTML = "Loading... Please Wait...";
       }
@@ -182,14 +186,15 @@ window.onload = function instantiate() {
         console.log("User Timed Out");
         signOut();
       } else if (loginNum > logoutReminder){//default 600
-        console.log("User Inactive");
+        //console.log("User Inactive");
         areYouStillThereNote(loginNum);
         areYouStillThereBool = true;
       }
       function resetTimer() {
-        if (areYouStillThereBool)
-          console.log("User Active");
-        ohThereYouAre();
+        if (areYouStillThereBool) {
+          //console.log("User Active");
+          ohThereYouAre();
+        }
         loginNum = 0;
       }
     }, 1000);
@@ -242,8 +247,30 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
 
+    userReadNotifications = firebase.database().ref("users/" + user.uid + "/readNotifications");
     userNotifications = firebase.database().ref("users/" + user.uid + "/notifications");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+
+    var fetchReadNotifications = function (postRef){
+      postRef.on('child_added', function (data) {
+        if(!readNotificationArr.includes(data.val())) {
+          readNotificationArr.push(data.val());
+        }
+        if (notificationArr.includes(data.val())){
+          var liItemUpdate = document.getElementById("notification" + notificationArr.indexOf(data.val()));
+          liItemUpdate.className += " checked";
+        }
+      });
+
+      postRef.on('child_changed', function (data) {
+        readNotificationArr[data.key] = data.val();
+      });
+
+      postRef.on('child_removed', function (data) {
+        sessionStorage.setItem("validUser", JSON.stringify(user));
+        location.reload();
+      });
+    };
 
     var fetchNotifications = function (postRef) {
       postRef.on('child_added', function (data) {
@@ -285,9 +312,11 @@ window.onload = function instantiate() {
       });
     };
 
+    fetchReadNotifications(userReadNotifications);
     fetchNotifications(userNotifications);
     fetchInvites(userInvites);
 
+    listeningFirebaseRefs.push(userReadNotifications);
     listeningFirebaseRefs.push(userNotifications);
     listeningFirebaseRefs.push(userInvites);
   }
@@ -362,6 +391,10 @@ window.onload = function instantiate() {
     var liItem = document.createElement("LI");
     liItem.id = "notification" + notificationKey;
     liItem.className = "gift";
+    if(readNotificationArr.includes(notificationString)) {
+      liItem.className += " checked";
+      //console.log("Checked, created");
+    }
     liItem.onclick = function (){
       var span = document.getElementsByClassName("close")[0];
       var notificationTitleField = document.getElementById('userNotificationTitle');
@@ -425,6 +458,13 @@ window.onload = function instantiate() {
         if (event.target == modal) {
           modal.style.display = "none";
         }
+      };
+
+      if (!readNotificationArr.includes(notificationString)) {
+        readNotificationArr.push(notificationString);
+
+        user.readNotifications = readNotificationArr;
+        updateReadNotificationToDB();
       }
     };
     var textNode = document.createTextNode(notificationTitle);
@@ -506,6 +546,10 @@ window.onload = function instantiate() {
     if (liItemUpdate == undefined) {
       liItemUpdate.innerHTML = notificationTitle;
       liItemUpdate.className = "gift";
+      if(readNotificationArr.includes(notificationString)) {
+        liItemUpdate.className += " checked";
+        //console.log("Checked, created");
+      }
       liItemUpdate.onclick = function () {
         var span = document.getElementsByClassName("close")[0];
         var notificationTitleField = document.getElementById('userNotificationTitle');
@@ -572,6 +616,13 @@ window.onload = function instantiate() {
           if (event.target == modal) {
             modal.style.display = "none";
           }
+        };
+
+        if (!readNotificationArr.includes(notificationString)) {
+          readNotificationArr.push(notificationString);
+
+          user.readNotifications = readNotificationArr;
+          updateReadNotificationToDB();
         }
       };
     }
@@ -597,19 +648,37 @@ window.onload = function instantiate() {
   }
 
   function deleteNotification(uid) {
-    removeNotificationElement(uid);
+    var deleteNotificationBool = true;
     console.log("Deleting " + uid);
-    notificationArr.splice(uid, 1);
 
-    if (notificationArr.length == 0) {
-      sessionStorage.setItem("notificationOverride", "notificationArrEmpty");
+    var toDelete = readNotificationArr.indexOf(notificationArr[uid]);
+    readNotificationArr.splice(toDelete, 1);
+
+    for (var i = 0; i < readNotificationArr.length; i++){
+      if(readNotificationArr[i] == notificationArr[uid]){
+        deleteNotificationBool = false;
+      }
     }
 
-    user.notifications = notificationArr;
+    if(deleteNotificationBool) {
+      notificationArr.splice(uid, 1);
 
-    firebase.database().ref("users/" + user.uid).update({
-      notifications: notificationArr
-    });
+      if (notificationArr.length == 0) {
+        sessionStorage.setItem("notificationOverride", "notificationArrEmpty");
+      }
+
+      user.notifications = notificationArr;
+
+      firebase.database().ref("users/" + user.uid).update({
+        notifications: notificationArr,
+      });
+
+      updateReadNotificationToDB();
+
+      removeNotificationElement(uid);
+    } else {
+      alert("Notification Not Deleted, Please Try Again!");
+    }
   }
 
   function removeNotificationElement(uid) {
@@ -618,6 +687,18 @@ window.onload = function instantiate() {
     notificationCount--;
     if (notificationCount == 0){
       deployNotificationListEmptyNotification();
+    }
+  }
+
+  function updateReadNotificationToDB(){
+    //console.log(readNotificationArr);
+    if (user.readNotifications != undefined) {
+      firebase.database().ref("users/" + user.uid).update({
+        readNotifications: readNotificationArr
+      });
+    } else {
+      console.log("New Read Notifications List");
+      firebase.database().ref("users/" + user.uid).update({readNotifications:{0:readNotificationArr}});
     }
   }
 };

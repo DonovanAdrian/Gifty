@@ -4,6 +4,7 @@ var listeningFirebaseRefs = [];
 var userArr = [];
 
 var areYouStillThereBool = false;
+var readNotificationsBool = false;
 
 var moderationSet = 0;
 var onlineInt = 0;
@@ -50,10 +51,32 @@ function getCurrentUser(){
       }
     }
 
+    if (user.readNotifications == undefined) {
+      console.log("Read Notifications Not Found");
+    } else {
+      readNotificationsBool = true;
+    }
+
     if (user.notifications == undefined) {
       console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
-      if (user.notifications.length > 0) {
+      if (readNotificationsBool){
+        if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
+          notificationBtn.src = "img/bellNotificationOn.png";
+          notificationBtn.onclick = function() {
+            sessionStorage.setItem("validUser", JSON.stringify(user));
+            sessionStorage.setItem("userArr", JSON.stringify(userArr));
+            window.location.href = "notifications.html";
+          }
+        } else {
+          notificationBtn.src = "img/bellNotificationOff.png";
+          notificationBtn.onclick = function() {
+            sessionStorage.setItem("validUser", JSON.stringify(user));
+            sessionStorage.setItem("userArr", JSON.stringify(userArr));
+            window.location.href = "notifications.html";
+          }
+        }
+      } else if (user.notifications.length > 0) {
         notificationBtn.src = "img/bellNotificationOn.png";
         notificationBtn.onclick = function() {
           sessionStorage.setItem("validUser", JSON.stringify(user));
@@ -191,14 +214,15 @@ window.onload = function instantiate() {
         console.log("User Timed Out");
         signOut();
       } else if (loginNum > logoutReminder){//default 600
-        console.log("User Inactive");
+        //console.log("User Inactive");
         areYouStillThereNote(loginNum);
         areYouStillThereBool = true;
       }
       function resetTimer() {
-        if (areYouStillThereBool)
-          console.log("User Active");
-        ohThereYouAre();
+        if (areYouStillThereBool) {
+          //console.log("User Active");
+          ohThereYouAre();
+        }
         loginNum = 0;
       }
     }, 1000);
@@ -445,7 +469,7 @@ window.onload = function instantiate() {
           if (event.target == modal) {
             modal.style.display = "none";
           }
-        }
+        };
       };
       var textNode = document.createTextNode(friendName);
       liItem.appendChild(textNode);
