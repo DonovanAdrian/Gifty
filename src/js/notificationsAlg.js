@@ -493,7 +493,11 @@ window.onload = function instantiate() {
     var notificationDetails;
     var notificationPage;
     var notificationSplit = notificationString.split(",");
-    if (notificationSplit.length == 2){
+    if(notificationSplit.length == 1){
+      notificationTitle = "New Message From An Administrator!";
+      notificationDetails = notificationSplit[0];
+      notificationPage = "globalNotification";
+    } else if (notificationSplit.length == 2){
       var invitedName = notificationSplit[0];
       var pageName = notificationSplit[1];
       console.log(invitedName + " " + pageName);
@@ -568,7 +572,11 @@ window.onload = function instantiate() {
         notificationTitleField.innerHTML = notificationTitle;
         notificationDetailsField.innerHTML = notificationDetails;
 
-        if (notificationPage == "invites.html") {
+        if (notificationPage == "globalNotification"){
+          notificationPageField.innerHTML = "As always, if you need any other information, send me a support email that can" +
+            " be found in the Help/FAQ under settings! Thank you!";
+          notificationPageField.onclick = function(){};
+        } else if (notificationPage == "invites.html") {
           notificationPageField.innerHTML = "Click here to access your invites!";
           notificationPageField.onclick = function () {
             sessionStorage.setItem("validUser", JSON.stringify(user));
