@@ -26,7 +26,7 @@
 - [x] Add User Timeout Notification In Console
 - [x] Add "Read Notifications" Feature
 - [x] Add Global Notifications
-- [ ] Add Moderator Private Messages (To Users)
+- [x] Add Moderator Private Messages
 - [ ] Add Private Messages (User to User)
 - [ ] Add Helpful Comments
   -  This is something that I've been meaning to do in case other people want to learn from my work. This may be done in the form of a new repository labeled "Education Edition"

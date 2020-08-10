@@ -17,6 +17,7 @@ var offlineSpan;
 var offlineModal;
 var addGlobalMsgModal;
 var addGlobalMsgBtn;
+var sendPrivateMessage;
 var user;
 var userInvites;
 var offlineTimer;
@@ -69,6 +70,7 @@ window.onload = function instantiate() {
   noteSpan = document.getElementById('closeNotification');
   addGlobalMsgModal = document.getElementById('userModal');
   addGlobalMsgBtn = document.getElementById('sendGlobalNotification');
+  sendPrivateMessage = document.getElementById('sendPrivateMessage');
   modal = document.getElementById('giftModal');
   getCurrentUser();
 
@@ -259,6 +261,63 @@ window.onload = function instantiate() {
     }, 1000);
   }
 
+  function generatePrivateMessageDialog(userData) {
+    var sendNote = document.getElementById('sendNote');
+    var cancelNote = document.getElementById('cancelNote');
+    var privateNoteInp = document.getElementById('globalNoteInp');
+    var spanNote = document.getElementById('globalNoteSpan');
+    var globalNoteTitle = document.getElementById('globalNoteTitle');
+
+    globalNoteTitle.innerHTML = "Send A Private Message Below";
+    privateNoteInp.placeholder = "Hey! Just to let you know...";
+
+    sendNote.onclick = function (){
+      if(privateNoteInp.value.includes(",")){
+        alert("Please do not use commas in the message. Thank you!");
+      } else {
+        addPrivateMessageToDB(userData, privateNoteInp.value);
+        privateNoteInp.value = "";
+        addGlobalMsgModal.style.display = "none";
+      }
+    };
+    cancelNote.onclick = function (){
+      privateNoteInp.value = "";
+      addGlobalMsgModal.style.display = "none";
+    };
+
+    addGlobalMsgModal.style.display = "block";
+
+    //close on close
+    spanNote.onclick = function() {
+      addGlobalMsgModal.style.display = "none";
+    };
+
+    //close on click
+    window.onclick = function(event) {
+      if (event.target == addGlobalMsgModal) {
+        addGlobalMsgModal.style.display = "none";
+      }
+    };
+  }
+
+  function addPrivateMessageToDB(userData, message) {
+    var userNotificationArr = [];
+    if(userData.notifications == undefined){
+      userNotificationArr = [];
+    } else {
+      userNotificationArr = userData.notifications;
+    }
+    userNotificationArr.push(message);
+
+    if(userData.notifications == undefined) {
+      firebase.database().ref("users/" + userData.uid).update({notifications:{0:message}});
+    } else {
+      firebase.database().ref("users/" + userData.uid).update({
+        notifications: userNotificationArr
+      });
+    }
+  }
+
   function initializeGlobalNotification() {
     addGlobalMsgBtn.innerHTML = "Send Global Message";
     addGlobalMsgBtn.onclick = function (){
@@ -266,12 +325,16 @@ window.onload = function instantiate() {
       var cancelNote = document.getElementById('cancelNote');
       var globalNoteInp = document.getElementById('globalNoteInp');
       var spanNote = document.getElementById('globalNoteSpan');
+      var globalNoteTitle = document.getElementById('globalNoteTitle');
+
+      globalNoteInp.placeholder = "WARNING: An Important Message...";
+      globalNoteTitle.innerHTML = "Enter Global Notification Below";
 
       sendNote.onclick = function (){
         if(globalNoteInp.value.includes(",")){
-          alert("Please do not use commas in the notification. Thank you!")
+          alert("Please do not use commas in the notification. Thank you!");
         } else {
-          addGlobalInviteToDB(globalNoteInp.value);
+          addGlobalMessageToDB(globalNoteInp.value);
           globalNoteInp.value = "";
           addGlobalMsgModal.style.display = "none";
         }
@@ -297,7 +360,7 @@ window.onload = function instantiate() {
     };
   }
 
-  function addGlobalInviteToDB(message) {
+  function addGlobalMessageToDB(message) {
     var userNotificationArr = [];
     for (var i = 0; i < userArr.length; i++){
       if(userArr[i].notifications == undefined){
@@ -503,6 +566,11 @@ window.onload = function instantiate() {
         };
       }
 
+      sendPrivateMessage.innerHTML = "Send Message To " + userData.name;
+      sendPrivateMessage.onclick = function() {
+        generatePrivateMessageDialog(userData);
+      };
+
       //show modal
       modal.style.display = "block";
 
@@ -611,6 +679,11 @@ window.onload = function instantiate() {
           }
         };
       }
+
+      sendPrivateMessage.innerHTML = "Send Message To " + userData.name;
+      sendPrivateMessage.onclick = function() {
+        generatePrivateMessageDialog(userData);
+      };
 
       //show modal
       modal.style.display = "block";
