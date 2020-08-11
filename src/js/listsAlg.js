@@ -29,6 +29,7 @@ var noteInfoField;
 var noteTitleField;
 var noteSpan;
 var notificationBtn;
+var addGlobalMsgModal;
 var modalSpan;
 var modal;
 
@@ -105,6 +106,7 @@ window.onload = function instantiate() {
   noteTitleField = document.getElementById('notificationTitle');
   noteInfoField = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
+  addGlobalMsgModal = document.getElementById('userModal');
   modalSpan = document.getElementById('closeModal');
   modal = document.getElementById('myModal');
   getCurrentUser();
@@ -413,6 +415,7 @@ window.onload = function instantiate() {
         var publicList = document.getElementById('publicList');
         var privateListCount = document.getElementById('privateListCount');
         var privateListHTML = document.getElementById('privateList');
+        var friendSendMessage = document.getElementById('sendPrivateMessage');
         userTitle.innerHTML = friendData.name;
         if(friendData.giftList != undefined){
           if(friendData.giftList.length > 0) {
@@ -456,6 +459,11 @@ window.onload = function instantiate() {
           sessionStorage.setItem("validUser", JSON.stringify(user));
           window.location.href = "privateFriendList.html";
         };
+
+        friendSendMessage.onclick = function() {
+          generatePrivateMessageDialog(friendData);
+        };
+
         //show modal
         modal.style.display = "block";
 
@@ -503,6 +511,7 @@ window.onload = function instantiate() {
         var publicList = document.getElementById('publicList');
         var privateListCount = document.getElementById('privateListCount');
         var privateListHTML = document.getElementById('privateList');
+        var friendSendMessage = document.getElementById('sendPrivateMessage');
         userTitle.innerHTML = friendData.name;
         if(friendData.giftList != undefined){
           if(friendData.giftList.length > 0) {
@@ -546,6 +555,11 @@ window.onload = function instantiate() {
           sessionStorage.setItem("validUser", JSON.stringify(user));
           window.location.href = "privateFriendList.html";
         };
+
+        friendSendMessage.onclick = function() {
+          generatePrivateMessageDialog(friendData);
+        };
+
         //show modal
         modal.style.display = "block";
 
@@ -561,6 +575,65 @@ window.onload = function instantiate() {
           }
         }
       };
+    }
+  }
+
+  function generatePrivateMessageDialog(userData) {
+    var sendNote = document.getElementById('sendNote');
+    var cancelNote = document.getElementById('cancelNote');
+    var privateNoteInp = document.getElementById('privateNoteInp');
+    var spanNote = document.getElementById('privateNoteSpan');
+    var globalNoteTitle = document.getElementById('privateNoteTitle');
+    var message = "";
+
+    globalNoteTitle.innerHTML = "Send A Private Message Below";
+    privateNoteInp.placeholder = "Hey! Just to let you know...";
+
+    sendNote.onclick = function (){
+      message = generatePrivateMessage(user.uid, privateNoteInp.value);
+      addPrivateMessageToDB(userData, message);
+      privateNoteInp.value = "";
+      addGlobalMsgModal.style.display = "none";
+    };
+    cancelNote.onclick = function (){
+      privateNoteInp.value = "";
+      addGlobalMsgModal.style.display = "none";
+    };
+
+    addGlobalMsgModal.style.display = "block";
+
+    //close on close
+    spanNote.onclick = function() {
+      addGlobalMsgModal.style.display = "none";
+    };
+
+    //close on click
+    window.onclick = function(event) {
+      if (event.target == addGlobalMsgModal) {
+        addGlobalMsgModal.style.display = "none";
+      }
+    };
+  }
+
+  function generatePrivateMessage(userUID, message){
+    return userUID + "@#$:" + message;
+  }
+
+  function addPrivateMessageToDB(userData, message) {
+    var userNotificationArr = [];
+    if(userData.notifications == undefined){
+      userNotificationArr = [];
+    } else {
+      userNotificationArr = userData.notifications;
+    }
+    userNotificationArr.push(message);
+
+    if(userData.notifications == undefined) {
+      firebase.database().ref("users/" + userData.uid).update({notifications:{0:message}});
+    } else {
+      firebase.database().ref("users/" + userData.uid).update({
+        notifications: userNotificationArr
+      });
     }
   }
 

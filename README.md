@@ -2,32 +2,9 @@
 > made by Donovan Adrian in JavaScript, HTML, and CSS
 
 ## ***Task List***
-- [x] Post On GitHub
-- [x] Update Old Files
-  - [x] index.html
-  - [x] userAddUpdate.html
-  - [x] home.html 
-  - [x] giftAddUpdate.html
-  - [x] lists.html
-  - [x] friendList.html
-  - [x] invites.html
-  - [x] confirmation.html
-  - [x] settings.html 
-  - [x] faq.html
-  - [x] moderation.html
-  - [x] passOp.js
-- [x] Test New Gifty Files
-- [x] Add Supplemental ModerationAlg Features
-- [x] Add Private Gift List Feature
-- [x] Add Bought Gifts List Feature
-- [x] Add Notifications Feature Across All Pages
-- [x] Reconfigure Config Section
-- [x] Append "Please Wait" To "Loading"
-- [x] Add User Timeout Notification In Console
-- [x] Add "Read Notifications" Feature
 - [x] Add Global Notifications
 - [x] Add Moderator Private Messages
-- [ ] Add Private Messages (User to User)
+- [x] Add Private Messages (User to User)
 - [ ] Add Helpful Comments
   -  This is something that I've been meaning to do in case other people want to learn from my work. This may be done in the form of a new repository labeled "Education Edition"
 - [ ] Add Moderation Support Queue

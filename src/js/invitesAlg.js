@@ -29,6 +29,7 @@ var loadingTimer;
 var userInitial;
 var userFriends;
 var userInvites;
+var addGlobalMsgModal;
 var noteModal;
 var noteInfoField;
 var noteTitleField;
@@ -55,7 +56,7 @@ function getCurrentUser(){
     } else if (user.friends.length == 0) {
       deployFriendListEmptyNotification();
     } else {
-      console.log(user.friends);
+      //console.log(user.friends);
     }
 
     if (user.readNotifications == undefined) {
@@ -106,7 +107,7 @@ window.onload = function instantiate() {
   userListHTML = document.getElementById("userListContainer").innerHTML;
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById("closeOffline");
-  userInviteModal = document.getElementById('userModal');
+  userInviteModal = document.getElementById('userInviteModal');
   confirmUserModal = document.getElementById('confirmModal');
   listNote = document.getElementById('listNote');
   inviteNote = document.getElementById('inviteNote');
@@ -116,6 +117,7 @@ window.onload = function instantiate() {
   noteTitleField = document.getElementById('notificationTitle');
   noteInfoField = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
+  addGlobalMsgModal = document.getElementById('userModal');
   modal = document.getElementById('myModal');
   getCurrentUser();
 
@@ -338,13 +340,13 @@ window.onload = function instantiate() {
     var fetchFriends = function (postRef) {
       postRef.on('child_added', function (data) {
         friendArr.push(data.val());
-        console.log("Creating " + data.val());
+        //console.log("Creating " + data.val());
         createFriendElement(data.val());
       });
 
       postRef.on('child_changed', function (data) {
         friendArr[data.key] = data.val();
-        console.log("Changing " + data.val());
+        //console.log("Changing " + data.val());
         changeFriendElement(data.val());
       });
 
@@ -416,6 +418,7 @@ window.onload = function instantiate() {
       liItem.className = "gift";
       liItem.onclick = function () {
         var span = document.getElementsByClassName("close")[0];
+        var friendSendMessage = document.getElementById('sendPrivateMessage');
         var friendInviteRemove = document.getElementById('userInviteRemove');
         var friendNameField = document.getElementById('userName');
         var friendUserNameField = document.getElementById('userUName');
@@ -428,6 +431,10 @@ window.onload = function instantiate() {
         friendNameField.innerHTML = friendName;
         friendUserNameField.innerHTML = "User Name: " + friendUserName;
         friendShareCodeField.innerHTML = "Share Code: " + friendShareCode;
+
+        friendSendMessage.onclick = function() {
+          generatePrivateMessageDialog(friendData);
+        };
 
         friendInviteRemove.onclick = function () {
           modal.style.display = "none";
@@ -477,6 +484,7 @@ window.onload = function instantiate() {
       liItemUpdate.className = "gift";
       liItemUpdate.onclick = function () {
         var span = document.getElementsByClassName("close")[0];
+        var friendSendMessage = document.getElementById('sendPrivateMessage');
         var friendInviteRemove = document.getElementById('userInviteRemove');
         var friendNameField = document.getElementById('userName');
         var friendUserNameField = document.getElementById('userUName');
@@ -489,6 +497,10 @@ window.onload = function instantiate() {
         friendNameField.innerHTML = friendName;
         friendUserNameField.innerHTML = "User Name: " + friendUserName;
         friendShareCodeField.innerHTML = "Share Code: " + friendShareCode;
+
+        friendSendMessage.onclick = function() {
+          generatePrivateMessageDialog(friendData);
+        };
 
         friendInviteRemove.onclick = function () {
           modal.style.display = "none";
@@ -510,6 +522,65 @@ window.onload = function instantiate() {
           }
         }
       };
+    }
+  }
+
+  function generatePrivateMessageDialog(userData) {
+    var sendNote = document.getElementById('sendNote');
+    var cancelNote = document.getElementById('cancelNote');
+    var privateNoteInp = document.getElementById('privateNoteInp');
+    var spanNote = document.getElementById('privateNoteSpan');
+    var globalNoteTitle = document.getElementById('privateNoteTitle');
+    var message = "";
+
+    globalNoteTitle.innerHTML = "Send A Private Message Below";
+    privateNoteInp.placeholder = "Hey! Just to let you know...";
+
+    sendNote.onclick = function (){
+      message = generatePrivateMessage(user.uid, privateNoteInp.value);
+      addPrivateMessageToDB(userData, message);
+      privateNoteInp.value = "";
+      addGlobalMsgModal.style.display = "none";
+    };
+    cancelNote.onclick = function (){
+      privateNoteInp.value = "";
+      addGlobalMsgModal.style.display = "none";
+    };
+
+    addGlobalMsgModal.style.display = "block";
+
+    //close on close
+    spanNote.onclick = function() {
+      addGlobalMsgModal.style.display = "none";
+    };
+
+    //close on click
+    window.onclick = function(event) {
+      if (event.target == addGlobalMsgModal) {
+        addGlobalMsgModal.style.display = "none";
+      }
+    };
+  }
+
+  function generatePrivateMessage(userUID, message){
+    return userUID + "@#$:" + message;
+  }
+
+  function addPrivateMessageToDB(userData, message) {
+    var userNotificationArr = [];
+    if(userData.notifications == undefined){
+      userNotificationArr = [];
+    } else {
+      userNotificationArr = userData.notifications;
+    }
+    userNotificationArr.push(message);
+
+    if(userData.notifications == undefined) {
+      firebase.database().ref("users/" + userData.uid).update({notifications:{0:message}});
+    } else {
+      firebase.database().ref("users/" + userData.uid).update({
+        notifications: userNotificationArr
+      });
     }
   }
 
