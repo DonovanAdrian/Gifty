@@ -12,4 +12,4 @@
 # TECHNOLOGY COLOPHON
 
     CSS3, HTML5, JavaScript
-    Apache Server Configs, jQuery
+    Apache Server Configs, jQuery, AJAX

@@ -5,8 +5,6 @@
 - [x] Add Global Notifications
 - [x] Add Moderator Private Messages
 - [x] Add Private Messages (User to User)
-- [ ] Add Helpful Comments
-  -  This is something that I've been meaning to do in case other people want to learn from my work. This may be done in the form of a new repository labeled "Education Edition"
 - [ ] Add Moderation Support Queue
   -  This will be put on the backburner for the time being, as it is a very minor feature.
 - [ ] Touch Up Work/Testing **\(in progress)**
