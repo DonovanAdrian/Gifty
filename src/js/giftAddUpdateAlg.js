@@ -20,6 +20,7 @@ var titleField;
 var whereField;
 var linkField;
 var spanUpdate;
+var inviteNote;
 var currentGift;
 var userGifts;
 var noteModal;
@@ -72,6 +73,7 @@ window.onload = function instantiate() {
     whereField = document.getElementById('giftWhereInp');
     linkField = document.getElementById('giftLinkInp');
     spanUpdate = document.getElementById('updateGift');
+    inviteNote = document.getElementById('inviteNote');
     noteModal = document.getElementById('notificationModal');
     noteTitleField = document.getElementById('notificationTitle');
     noteInfoField = document.getElementById('notificationInfo');
