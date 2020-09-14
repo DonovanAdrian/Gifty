@@ -11,7 +11,6 @@ var logoutReminder = 300;
 var logoutLimit = 1800;
 
 var giftList;
-var giftListHTML;
 var offline;
 var offlineSpan;
 var offlineModal;
@@ -27,7 +26,6 @@ var noteModal;
 var noteInfoField;
 var noteTitleField;
 var noteSpan;
-var listNote;
 var inviteNote;
 var userInitial;
 
@@ -59,10 +57,8 @@ function getCurrentUser(){
 window.onload = function instantiate() {
 
     giftList = document.getElementById('giftListContainer');
-    giftListHTML = document.getElementById('giftListContainer').innerHTML;
     offlineModal = document.getElementById('offlineModal');
     offlineSpan = document.getElementById('closeOffline');
-    listNote = document.getElementById('listNote');
     inviteNote = document.getElementById('inviteNote');
     noteModal = document.getElementById('notificationModal');
     noteTitleField = document.getElementById('notificationTitle');

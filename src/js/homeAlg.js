@@ -19,7 +19,6 @@ var logoutLimit = 900;
 
 var giftCreationDate;
 var giftList;
-var giftListHTML;
 var giftStorage;
 var privateList;
 var boughtGifts;
@@ -215,7 +214,6 @@ window.onload = function instantiate() {
     notificationBtn = document.getElementById('notificationButton');
     giftCreationDate = document.getElementById('giftCreationDate');
     giftList = document.getElementById('giftListContainer');
-    giftListHTML = document.getElementById('giftListContainer').innerHTML;
     offlineModal = document.getElementById('offlineModal');
     offlineSpan = document.getElementById('closeOffline');
     noteModal = document.getElementById('notificationModal');

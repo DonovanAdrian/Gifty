@@ -12,7 +12,6 @@ var loadingTimerInt = 0;
 var logoutReminder = 300;
 var logoutLimit = 900;
 
-var offline;
 var notificationList;
 var offlineSpan;
 var offlineModal;
@@ -21,7 +20,6 @@ var userReadNotifications;
 var userNotifications;
 var userInvites;
 var modal;
-var listNote;
 var inviteNote;
 var loadingTimer;
 var offlineTimer;
@@ -72,7 +70,6 @@ window.onload = function instantiate() {
     notificationList = document.getElementById("notificationListContainer");
     offlineModal = document.getElementById('offlineModal');
     offlineSpan = document.getElementById("closeOffline");
-    listNote = document.getElementById('listNote');
     inviteNote = document.getElementById('inviteNote');
     noteModal = document.getElementById('notificationModal');
     noteTitleField = document.getElementById('notificationTitle');

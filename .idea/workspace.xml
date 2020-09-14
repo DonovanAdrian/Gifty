@@ -17,8 +17,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="105">
-                <caret line="7" selection-start-line="7" selection-end-line="7" />
+              <first_editor relative-caret-position="210">
+                <caret line="14" column="20" lean-forward="true" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
               </first_editor>
               <second_editor />
             </state>
@@ -26,10 +26,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/js/giftAddUpdateAlg.js">
+        <entry file="file://$PROJECT_DIR$/src/js/userAddUpdateAlg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="519">
-              <caret line="522" lean-forward="true" selection-start-line="522" selection-end-line="522" />
+            <state relative-caret-position="159">
+              <caret line="448" column="1" lean-forward="true" selection-start-line="448" selection-start-column="1" selection-end-line="448" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -112,7 +112,6 @@
         <option value="$PROJECT_DIR$/src/confirmation.html" />
         <option value="$PROJECT_DIR$/src/faq.html" />
         <option value="$PROJECT_DIR$/src/friendList.html" />
-        <option value="$PROJECT_DIR$/src/giftAddUpdate.html" />
         <option value="$PROJECT_DIR$/src/home.html" />
         <option value="$PROJECT_DIR$/src/index.html" />
         <option value="$PROJECT_DIR$/src/invites.html" />
@@ -121,10 +120,12 @@
         <option value="$PROJECT_DIR$/src/notifications.html" />
         <option value="$PROJECT_DIR$/src/privateFriendList.html" />
         <option value="$PROJECT_DIR$/src/userAddUpdate.html" />
+        <option value="$PROJECT_DIR$/src/giftAddUpdate.html" />
         <option value="$PROJECT_DIR$/src/js/boughtGiftsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/confirmationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/faqAlg.js" />
         <option value="$PROJECT_DIR$/src/js/friendListAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
         <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
@@ -135,7 +136,6 @@
         <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/settingsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/userAddUpdateAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
       </list>
     </option>
   </component>
@@ -156,6 +156,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -183,7 +184,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -340,11 +340,13 @@
       <workItem from="1598068050923" duration="260000" />
       <workItem from="1598417558711" duration="299000" />
       <workItem from="1599276916116" duration="60000" />
+      <workItem from="1599277137424" duration="124000" />
+      <workItem from="1599961719289" duration="417000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="416581000" />
+    <option name="totallyTimeSpent" value="417122000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1280" height="721" extended-state="6" />
@@ -458,13 +460,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/giftAddUpdate.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="77" selection-start-line="77" selection-end-line="77" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/home.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="519">
@@ -528,10 +523,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/boughtGiftsAlg.js">
+    <entry file="file://$PROJECT_DIR$/src/giftAddUpdate.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="519">
-          <caret line="690" selection-start-line="690" selection-end-line="690" />
+          <caret line="77" selection-start-line="77" selection-end-line="77" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/boughtGiftsAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="489">
+          <caret line="688" selection-start-line="688" selection-end-line="688" />
         </state>
       </provider>
     </entry>
@@ -551,15 +553,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/friendListAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="530">
-          <caret line="786" selection-start-line="786" selection-end-line="786" />
+        <state relative-caret-position="500">
+          <caret line="784" selection-start-line="784" selection-end-line="784" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/giftAddUpdateAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="519">
+          <caret line="522" selection-start-line="522" selection-end-line="522" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="877" selection-start-line="877" selection-end-line="877" />
+        <state relative-caret-position="508">
+          <caret line="875" selection-start-line="875" selection-end-line="875" />
         </state>
       </provider>
     </entry>
@@ -586,29 +595,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
-          <caret line="755" selection-start-line="755" selection-end-line="755" />
+        <state relative-caret-position="459">
+          <caret line="751" selection-start-line="751" selection-end-line="751" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/notificationsAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="508">
-          <caret line="858" selection-start-line="858" selection-end-line="858" />
+        <state relative-caret-position="463">
+          <caret line="855" selection-start-line="855" selection-end-line="855" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/passOp.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="466" selection-start-line="466" selection-end-line="466" />
+        <state relative-caret-position="459">
+          <caret line="460" selection-start-line="460" selection-end-line="460" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/privateFriendListAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="957" selection-start-line="957" selection-end-line="957" />
+        <state relative-caret-position="474">
+          <caret line="954" selection-start-line="954" selection-end-line="954" />
         </state>
       </provider>
     </entry>
@@ -619,18 +628,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/userAddUpdateAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="472" selection-start-line="472" selection-end-line="472" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="105">
-            <caret line="7" selection-start-line="7" selection-end-line="7" />
+          <first_editor relative-caret-position="210">
+            <caret line="14" column="20" lean-forward="true" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
           </first_editor>
           <second_editor />
         </state>
@@ -641,10 +643,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/giftAddUpdateAlg.js">
+    <entry file="file://$PROJECT_DIR$/src/js/userAddUpdateAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="522" lean-forward="true" selection-start-line="522" selection-end-line="522" />
+        <state relative-caret-position="159">
+          <caret line="448" column="1" lean-forward="true" selection-start-line="448" selection-start-column="1" selection-end-line="448" selection-end-column="1" />
         </state>
       </provider>
     </entry>

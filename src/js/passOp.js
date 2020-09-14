@@ -166,43 +166,37 @@ function whatIsOp(rChar){
 function getRandomAlphabet(){
     var alphabet = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
     var selector = Math.floor((Math.random() * alphabet.length));
-    var charSelect = alphabet.charAt(selector);
-    return charSelect;
+    return alphabet.charAt(selector);
 }
 
 function getRandomNumber(){
     var alphabet = "123456789";
     var selector = Math.floor((Math.random() * alphabet.length));
-    var charSelect = alphabet.charAt(selector);
-    return charSelect;
+    return alphabet.charAt(selector);
 }
 
 function getRandomMax(){
     var alphabet = "1234";
     var selector = Math.floor((Math.random() * alphabet.length));
-    var charSelect = alphabet.charAt(selector);
-    return charSelect;
+    return alphabet.charAt(selector);
 }
 
 function getRandomLetter(){
     var alphabet = "ABCDEFGHIJKLMNPQRSTU";
     var selector = Math.floor((Math.random() * alphabet.length));
-    var charSelect = alphabet.charAt(selector);
-    return charSelect;
+    return alphabet.charAt(selector);
 }
 
 function getRandomSep(){
     var alphabet = "VWX";
     var selector = Math.floor((Math.random() * alphabet.length));
-    var charSelect = alphabet.charAt(selector);
-    return charSelect;
+    return alphabet.charAt(selector);
 }
 
 function getRandomBool(){
     var alphabet = "01";
     var selector = Math.floor((Math.random() * alphabet.length));
-    var charSelect = alphabet.charAt(selector);
-    return charSelect;
+    return alphabet.charAt(selector);
 }
 
 function isAlph(rChar){
