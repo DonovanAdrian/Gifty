@@ -1,26 +1,27 @@
-var encodeStore = ["0", "1", "2", "3"];
-var encodeNameBool = true;
-var userArr = [];
+let encodeStore = ["0", "1", "2", "3"];
+let encodeNameBool = false;
+let userArrPassOp = [];
 
-function injectUserArr(userArr){
-    this.userArr = userArr;
+function injectUserArr(userArrInput){
+    userArrPassOp = userArrInput;
 }
 
-function checkEncodeName(newEncodeName){
-    var encodeString;
-    var encodeKey;
-    var encodeName;
+function checkEncodeName(newEncodeName, input){
+    let encodeString;
+    let encodeKey;
+    let encodeName;
     encodeNameBool = true;
 
-    for(var i = 0; i < userArr.length; i++){
-        encodeString = userArr[i].encodeStr;
-        encodeKey = input.split(":");
-        encodeName = encodeKey[0];
-        if (encodeName == newEncodeName) {
-            encodeNameBool = false;
-            break;
+    if (userArrPassOp.length != 0)
+        for(let i = 0; i < userArrPassOp.length; i++){
+            encodeString = userArrPassOp[i].encodeStr;
+            encodeKey = input.split(":");
+            encodeName = encodeKey[0];
+            if (encodeName == newEncodeName) {
+                encodeNameBool = false;
+                break;
+            }
         }
-    }
 }
 
 function whatIsInt(rChar){
@@ -164,38 +165,38 @@ function whatIsOp(rChar){
 }
 
 function getRandomAlphabet(){
-    var alphabet = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
-    var selector = Math.floor((Math.random() * alphabet.length));
+    let alphabet = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
+    let selector = Math.floor((Math.random() * alphabet.length));
     return alphabet.charAt(selector);
 }
 
 function getRandomNumber(){
-    var alphabet = "123456789";
-    var selector = Math.floor((Math.random() * alphabet.length));
+    let alphabet = "123456789";
+    let selector = Math.floor((Math.random() * alphabet.length));
     return alphabet.charAt(selector);
 }
 
 function getRandomMax(){
-    var alphabet = "1234";
-    var selector = Math.floor((Math.random() * alphabet.length));
+    let alphabet = "1234";
+    let selector = Math.floor((Math.random() * alphabet.length));
     return alphabet.charAt(selector);
 }
 
 function getRandomLetter(){
-    var alphabet = "ABCDEFGHIJKLMNPQRSTU";
-    var selector = Math.floor((Math.random() * alphabet.length));
+    let alphabet = "ABCDEFGHIJKLMNPQRSTU";
+    let selector = Math.floor((Math.random() * alphabet.length));
     return alphabet.charAt(selector);
 }
 
 function getRandomSep(){
-    var alphabet = "VWX";
-    var selector = Math.floor((Math.random() * alphabet.length));
+    let alphabet = "VWX";
+    let selector = Math.floor((Math.random() * alphabet.length));
     return alphabet.charAt(selector);
 }
 
 function getRandomBool(){
-    var alphabet = "01";
-    var selector = Math.floor((Math.random() * alphabet.length));
+    let alphabet = "01";
+    let selector = Math.floor((Math.random() * alphabet.length));
     return alphabet.charAt(selector);
 }
 
@@ -234,7 +235,7 @@ function isAlph(rChar){
 }
 
 function getNameGenNum(){
-    var num = getRandomNumber();
+    let num = getRandomNumber();
     switch(num) {
         case "0":
             num = 6;
@@ -274,15 +275,15 @@ function getNameGenNum(){
 }
 
 function generateDigitSetter(){
-    var rNum;
-    var rChar;
-    var rBool;
-    var rSep;
-    var tempStr = "";
-    var max = getRandomMax();
-    var iterate = 0;
+    let rNum;
+    let rChar;
+    let rBool;
+    let rSep;
+    let tempStr = "";
+    let max = getRandomMax();
+    let iterate = 0;
 
-    for(var i = 0; i < 4; i++) {
+    for(let i = 0; i < 4; i++) {
         rNum = 0;
         rChar = "";
         rSep = "";
@@ -355,30 +356,32 @@ function generateDigitSetter(){
 }
 
 function encode(input) {
-    var nameGenNum = getNameGenNum();
-    var encodeStr = "";
-    var encodeName = "";
-    var encodeEnd = "";
-    var rSep = "";
-    var a = 0;
-    var operator = "";
-    var operand1 = "";
-    var operand2 = "";
-    var operandResult = 0;
+    let nameGenNum = getNameGenNum();
+    let encodeStr = "";
+    let encodeName = "";
+    let encodeEnd = "";
+    let rSep = "";
+    let a = 0;
+    let operator = "";
+    let operand1 = "";
+    let operand2 = "";
+    let operandResult = 0;
 
     encodeStr = encodeStr + generateDigitSetter();
     encodeStr = encodeStr + ":";
     while (encodeNameBool == false) {
-        for (var i = 0; i < nameGenNum; i++) {
+        for (let i = 0; i < nameGenNum; i++) {
             encodeName = encodeName + getRandomAlphabet();
         }
+
         nameGenNum = getNameGenNum();
-        checkEncodeName(encodeName);
+        checkEncodeName(encodeName, input);
     }
+
     encodeNameBool = false;
     encodeStr = encodeStr + encodeName;
     encodeStr = encodeStr + ":";
-    for(var i = 0; i < input.length; i++, a++){
+    for(let i = 0; i < input.length; i++, a++){
         rSep = "";
         if(a > 3) {
             a = 0;
@@ -391,7 +394,7 @@ function encode(input) {
             operandResult = operand1 * operand2;
         } else {
             operand1 = parseInt(operand1);
-            operand2 = parseInt(input.charAt(i))
+            operand2 = parseInt(input.charAt(i));
             operandResult = operand1 + operand2;
         }
         if(i < input.length-1) {
@@ -405,22 +408,22 @@ function encode(input) {
 }
 
 function decode(input){
-    var encodeString = input.split(":");
-    var encodeKey = encodeString[0];
-    var encodePass = encodeString[2];
-    var encodeKeyNew = [];
-    var encodePassNew = [];
-    var incr = 0;
-    var from = 0;
-    var examineChar;
-    var a = 0;
-    var operator = "";
-    var operand1 = "";
-    var operand2 = "";
-    var operandResult = 0;
-    var passwordResult = "";
+    let encodeString = input.split(":");
+    let encodeKey = encodeString[0];
+    let encodePass = encodeString[2];
+    let encodeKeyNew = [];
+    let encodePassNew = [];
+    let incr = 0;
+    let from = 0;
+    let examineChar;
+    let a = 0;
+    let operator = "";
+    let operand1 = "";
+    let operand2 = "";
+    let operandResult = 0;
+    let passwordResult = "";
 
-    for(var i = 0; i <= encodeKey.length; i++) {
+    for(let i = 0; i <= encodeKey.length; i++) {
         examineChar = encodeKey.charAt(i);
         if(examineChar == "X" || examineChar == "W" || examineChar == "V" || examineChar == ""){
             encodeKeyNew[incr] = encodeKey.slice(from, i);
@@ -430,7 +433,7 @@ function decode(input){
     }
     from = 0;
     incr=0;
-    for(var i = 0; i <= encodePass.length; i++) {
+    for(let i = 0; i <= encodePass.length; i++) {
         examineChar = encodePass.charAt(i);
         if(isAlph(examineChar) || examineChar == ""){
             encodePassNew[incr] = encodePass.slice(from, i);
@@ -438,7 +441,7 @@ function decode(input){
             incr++;
         }
     }
-    for(var i = 0; i < encodePassNew.length; i++, a++){
+    for(let i = 0; i < encodePassNew.length; i++, a++){
         if(a > 3) {
             a = 0;
         }
