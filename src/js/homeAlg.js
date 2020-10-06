@@ -609,12 +609,9 @@ window.onload = function instantiate() {
                 modal.style.display = "none";
             };
 
-            console.log("Sooooo");
             //close on click
             window.onclick = function(event) {
-                console.log("Uhhhhh");
                 if (event.target == modal) {
-                    console.log("Welp");
                     modal.style.display = "none";
                 }
             }

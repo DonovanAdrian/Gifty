@@ -16,8 +16,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="274">
-              <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
+            <state relative-caret-position="465">
+              <caret line="31" selection-start-line="31" selection-end-line="31" />
             </state>
           </provider>
         </entry>
@@ -27,7 +27,7 @@
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
               <first_editor relative-caret-position="255">
-                <caret line="17" column="11" lean-forward="true" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
+                <caret line="17" column="11" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
               </first_editor>
               <second_editor />
             </state>
@@ -35,31 +35,28 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/js/indexAlg.js">
+        <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="173">
-              <caret line="41" column="51" selection-start-line="41" selection-start-column="43" selection-end-line="41" selection-end-column="51" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/js/userAddUpdateAlg.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="211">
-              <caret line="414" column="35" lean-forward="true" selection-start-line="414" selection-start-column="35" selection-end-line="414" selection-end-column="35" />
+            <state relative-caret-position="172">
+              <caret line="563" column="40" selection-start-line="563" selection-start-column="32" selection-end-line="563" selection-end-column="40" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/js/passOp.js">
+        <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="114">
-              <caret line="441" column="49" lean-forward="true" selection-start-line="441" selection-start-column="49" selection-end-line="441" selection-end-column="49" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
+            <state relative-caret-position="172">
+              <caret line="72" column="4" lean-forward="true" selection-start-line="72" selection-start-column="4" selection-end-line="72" selection-end-column="53" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/txt/config.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="17" column="38" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
             </state>
           </provider>
         </entry>
@@ -77,13 +74,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>friendcount</find>
-      <find>notespan</find>
-      <find>inviteuserdb</find>
-      <find>newinvite</find>
-      <find>removefriend</find>
-      <find>friendArr</find>
-      <find>addgift</find>
       <find>invitenote</find>
       <find>settingsNote</find>
       <find>modbtn</find>
@@ -106,7 +96,14 @@
       <find>for</find>
       <find>please wait</find>
       <find>newuid</find>
+      <find>users/&quot; + user</find>
+      <find>updateuserbool</find>
+      <find>.remove</find>
+      <find>createGiftElement</find>
+      <find>giftList</find>
       <find>includes</find>
+      <find>usergifts</find>
+      <find>config</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -135,7 +132,6 @@
         <option value="$PROJECT_DIR$/test/file_content.js" />
         <option value="$PROJECT_DIR$/test/file_existence.js" />
         <option value="$PROJECT_DIR$/src/css/main.css" />
-        <option value="$PROJECT_DIR$/src/txt/config.txt" />
         <option value="$PROJECT_DIR$/src/humans.txt" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/boughtGifts.html" />
@@ -156,16 +152,17 @@
         <option value="$PROJECT_DIR$/src/js/faqAlg.js" />
         <option value="$PROJECT_DIR$/src/js/friendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
         <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
         <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/notificationsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/settingsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/userAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/js/passOp.js" />
+        <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
+        <option value="$PROJECT_DIR$/src/txt/config.txt" />
       </list>
     </option>
   </component>
@@ -387,15 +384,19 @@
       <workItem from="1600228690985" duration="83000" />
       <workItem from="1600308449930" duration="5978000" />
       <workItem from="1600909046610" duration="2434000" />
-      <workItem from="1601015183709" duration="11409000" />
+      <workItem from="1601015183709" duration="12512000" />
+      <workItem from="1601423496857" duration="549000" />
+      <workItem from="1601433543567" duration="1804000" />
+      <workItem from="1601600735978" duration="58000" />
+      <workItem from="1601603461327" duration="7674000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="437026000" />
+    <option name="totallyTimeSpent" value="448214000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="25" width="1280" height="721" extended-state="6" />
+    <frame x="0" y="25" width="1280" height="716" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19301033" />
@@ -501,13 +502,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/moderation.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
-          <caret line="123" selection-start-line="123" selection-end-line="123" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/notifications.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="518">
@@ -526,13 +520,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
           <caret line="16" column="22" lean-forward="true" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/confirmationAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="628" selection-start-line="628" selection-end-line="628" />
         </state>
       </provider>
     </entry>
@@ -571,13 +558,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="751" selection-start-line="751" selection-end-line="751" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/notificationsAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="463">
@@ -613,24 +593,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/txt/config.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret lean-forward="true" selection-end-line="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/giftAddUpdate.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="465">
           <caret line="31" selection-start-line="31" selection-end-line="41" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/home.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="28" column="6" lean-forward="true" selection-start-line="28" selection-start-column="6" selection-end-line="28" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -662,10 +628,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+    <entry file="file://$PROJECT_DIR$/src/js/passOp.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/indexAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12840">
-          <caret line="856" column="4" selection-start-line="856" selection-start-column="4" selection-end-line="857" selection-end-column="63" />
+        <state relative-caret-position="298">
+          <caret line="38" column="37" lean-forward="true" selection-start-line="38" selection-start-column="37" selection-end-line="38" selection-end-column="37" />
         </state>
       </provider>
     </entry>
@@ -673,7 +642,7 @@
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="255">
-            <caret line="17" column="11" lean-forward="true" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
+            <caret line="17" column="11" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
           </first_editor>
           <second_editor />
         </state>
@@ -684,34 +653,59 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/index.html">
+    <entry file="file://$PROJECT_DIR$/src/js/confirmationAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/indexAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="41" column="51" selection-start-line="41" selection-start-column="43" selection-end-line="41" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/passOp.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="441" column="49" lean-forward="true" selection-start-line="441" selection-start-column="49" selection-end-line="441" selection-end-column="49" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+        <state relative-caret-position="340">
+          <caret line="389" column="47" selection-start-line="389" selection-start-column="47" selection-end-line="389" selection-end-column="47" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/userAddUpdateAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="211">
-          <caret line="414" column="35" lean-forward="true" selection-start-line="414" selection-start-column="35" selection-end-line="414" selection-end-column="35" />
+        <state relative-caret-position="352">
+          <caret line="256" column="57" lean-forward="true" selection-start-line="256" selection-start-column="57" selection-end-line="258" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/home.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-140">
+          <caret line="28" column="6" lean-forward="true" selection-start-line="28" selection-start-column="6" selection-end-line="28" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="563" column="40" selection-start-line="563" selection-start-column="32" selection-end-line="563" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/moderation.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1347">
+          <caret line="123" selection-start-line="123" selection-end-line="123" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="31" selection-start-line="31" selection-end-line="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/txt/config.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="38" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="72" column="4" lean-forward="true" selection-start-line="72" selection-start-column="4" selection-end-line="72" selection-end-column="53" />
         </state>
       </provider>
     </entry>

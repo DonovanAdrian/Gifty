@@ -488,12 +488,17 @@ window.onload = function instantiate() {
             var userGifts = document.getElementById('userGifts');
             var userFriends = document.getElementById('userFriends');
             var userPassword = document.getElementById('userPassword');
+            var totalGifts = 0;
+            if(userData.giftList != undefined)
+                totalGifts = userData.giftList.length;
+            if(userData.privateList != undefined)
+                totalGifts += userData.privateList.length;
 
             userName.innerHTML = userData.name;
             userUID.innerHTML = userData.uid;
             userUserName.innerHTML = userData.userName;
-            if(userData.giftList != undefined){
-                userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
+            if(userData.giftList != undefined) {
+                userGifts.innerHTML = "# Gifts: " + totalGifts;
             } else {
                 userGifts.innerHTML = "This User Has No Gifts";
             }
@@ -606,12 +611,17 @@ window.onload = function instantiate() {
             var userFriends = document.getElementById('userFriends');
             var userPassword = document.getElementById('userPassword');
             var moderatorOp = document.getElementById('moderatorOp');
+            var totalGifts = 0;
+            if(userData.giftList != undefined)
+                totalGifts = userData.giftList.length;
+            if(userData.privateList != undefined)
+                totalGifts += userData.privateList.length;
 
             userName.innerHTML = userData.name;
             userUID.innerHTML = userData.uid;
             userUserName.innerHTML = userData.userName;
             if(userData.giftList != undefined){
-                userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
+                userGifts.innerHTML = "# Gifts: " + totalGifts;
             } else {
                 userGifts.innerHTML = "This User Has No Gifts";
             }
