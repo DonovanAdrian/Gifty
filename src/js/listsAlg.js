@@ -31,6 +31,9 @@ var notificationBtn;
 var addGlobalMsgModal;
 var modalSpan;
 var modal;
+var secretSantaSignUp;
+var secretSantaData;
+var secretSantaNameBool = false;
 
 
 
@@ -108,6 +111,7 @@ window.onload = function instantiate() {
     addGlobalMsgModal = document.getElementById('userModal');
     modalSpan = document.getElementById('closeModal');
     modal = document.getElementById('myModal');
+    secretSantaSignUp = document.getElementById('secretSanta');
     getCurrentUser();
 
     const config = JSON.parse(sessionStorage.config);
@@ -196,6 +200,66 @@ window.onload = function instantiate() {
     databaseQuery();
 
     loginTimer(); //if action, then reset timer
+
+    if (user.secretSantaName == null)
+        if (user.secretSanta != null)
+            if (user.secretSanta == 0)
+                secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
+            else
+                secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
+        else
+            secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
+    else {
+        if (user.secretSantaName != "") {
+            var i = findUIDItemInArr(user.secretSantaName, userArr);
+            secretSantaData = userArr[i];
+            secretSantaSignUp.innerHTML = userArr[i].name;
+            secretSantaNameBool = true;
+        } else {
+            if (user.secretSanta != null)
+                if (user.secretSanta == 0)
+                    secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
+                else
+                    secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
+            else
+                secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
+        }
+    }
+
+    secretSantaSignUp.onclick = function() {
+        if (secretSantaNameBool) {
+            //open secret santa window with their gift list options
+            //generateSecretSantaModal() (secretSantaData)
+        } else {
+            if (user.secretSanta != null) {
+                if (user.secretSanta == 0) {
+                    firebase.database().ref("users/" + user.uid).update({
+                        secretSanta: 1
+                    });
+                    user.secretSanta = 1;
+                    alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
+                        " Santa Recipient!");
+                    secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
+                } else {
+                    firebase.database().ref("users/" + user.uid).update({
+                        secretSanta: 0
+                    });
+                    user.secretSanta = 0;
+                    alert("You Have Opted Out Of Secret Santa.");
+                    secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
+                }
+            } else {
+                firebase.database().ref("users/" + user.uid).update({
+                    secretSanta: 1
+                });
+                user.secretSanta = 1;
+                alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
+                    " Santa Recipient!");
+                secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
+            }
+            sessionStorage.setItem("validUser", JSON.stringify(user));
+        }
+    };
 
     function loginTimer(){
         var loginNum = 0;
