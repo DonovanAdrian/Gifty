@@ -1,5 +1,7 @@
 var listeningFirebaseRefs = [];
 var inviteArr = [];
+var userUIDArr = [];
+var optInUserArr = [];
 
 var areYouStillThereBool = false;
 
@@ -28,6 +30,9 @@ var noteTitleField;
 var noteSpan;
 var inviteNote;
 var userInitial;
+var activateSecretSanta;
+var secretSantaIntBool = false;
+var secretSantaNameBool = false;
 
 
 
@@ -68,6 +73,7 @@ window.onload = function instantiate() {
     addGlobalMsgBtn = document.getElementById('sendGlobalNotification');
     sendPrivateMessage = document.getElementById('sendPrivateMessage');
     modal = document.getElementById('giftModal');
+    activateSecretSanta = document.getElementById('activateSecretSanta');
     getCurrentUser();
 
     const config = JSON.parse(sessionStorage.config);
@@ -158,6 +164,107 @@ window.onload = function instantiate() {
     settingsModerateButton();
 
     loginTimer(); //if action, then reset timer
+
+    for (var i = 0; i < userArr.length; i++) {
+        if (userArr[i].secretSantaName != null)
+            if (userArr[i].secretSantaName != "")
+                secretSantaNameBool = true;
+        if (userArr[i].secretSanta != null)
+            if (userArr[i].secretSanta == 1) {
+                optInUserArr.push(userArr[i]);
+                if (optInUserArr.length > 1)
+                    secretSantaIntBool = true;
+            }
+    }
+
+    if (secretSantaNameBool && secretSantaIntBool)
+        activateSecretSanta.innerHTML = "Deactivate Secret Santa";
+    else if (secretSantaIntBool)
+        activateSecretSanta.innerHTML = "Activate Secret Santa";
+    else
+        activateSecretSanta.innerHTML = "Secret Santa Inactive";
+
+    activateSecretSanta.onclick = function() {
+        if (secretSantaNameBool && secretSantaIntBool) {
+            activateSecretSanta.innerHTML = "Deactivate Secret Santa";
+            removeSecretSantaNames();
+            removeSecretSantaNums();
+            updateAllUsersToDB();
+            activateSecretSanta.innerHTML = "Activate Secret Santa";
+        } else if (secretSantaIntBool) {
+            activateSecretSanta.innerHTML = "Activate Secret Santa";
+            createSecretSantaNames();
+        } else {
+            alert("The Secret Santa Is Currently Inactive. You Need At Least Two People To Opt In For Secret Santa To Become"
+                + " Active");
+        }
+    };
+
+    function createSecretSantaNames(){
+        var tempUserArr = optInUserArr;
+        var selector;
+        var userIndex;
+
+        for (var i = 0; i < optInUserArr.length; i++) {
+            selector = Math.floor((Math.random() * tempUserArr.length));
+            if (!userUIDArr.includes(tempUserArr[selector].uid)) {
+                console.log("Attempting To Match " + tempUserArr[selector].name + " to " + optInUserArr[i].name);
+                if (optInUserArr[i].friends.includes(tempUserArr[selector].uid)) {
+                    console.log("Matched " + tempUserArr[selector].name + " to " + optInUserArr[i].name);
+                    userUIDArr.push(tempUserArr[selector].uid);
+                    userIndex = findUIDItemInArr(optInUserArr[i].uid, userArr);
+                    userArr[userIndex].secretSantaName = tempUserArr[selector].uid;
+                    tempUserArr.splice(selector, 1);
+                } else
+                    i--;
+            } else
+                i--;
+        }
+
+        if (optInUserArr.length != userUIDArr.length) {
+            console.log("USERUIDARR:");
+            console.log(userUIDArr);
+            console.log("TEMPUSERARR:");
+            console.log(tempUserArr);
+            userUIDArr = [];
+            removeSecretSantaNames();
+            alert("Secret Santa System Was Unable To Properly Initialize Secret Santa Names. Please Try Again");
+        } else {
+            sessionStorage.setItem("userArr", JSON.stringify(userArr));
+            updateAllUsersToDB();
+            activateSecretSanta.innerHTML = "Deactivate Secret Santa";
+            alert("Secret Santa System Has Been Initialized. Enjoy!");
+        }
+    }
+
+    function removeSecretSantaNames(){
+        for (var i = 0; i < userArr.length; i++)
+            userArr[i].secretSantaName = "";
+
+        sessionStorage.setItem("userArr", JSON.stringify(userArr));
+    }
+
+    function removeSecretSantaNums(){
+        for (var i = 0; i < userArr.length; i++)
+            userArr[i].secretSanta = 0;
+
+        sessionStorage.setItem("userArr", JSON.stringify(userArr));
+    }
+
+    function updateAllUsersToDB(){
+        for(var i = 0; i < userArr.length; i++){
+            if (userArr[i].secretSanta != undefined) {
+                firebase.database().ref("users/" + userArr[i].uid).update({
+                    secretSanta: userArr[i].secretSanta
+                });
+            }
+            if (userArr[i].secretSantaName != undefined) {
+                firebase.database().ref("users/" + userArr[i].uid).update({
+                    secretSantaName: userArr[i].secretSantaName
+                });
+            }
+        }
+    }
 
     function loginTimer(){
         var loginNum = 0;
@@ -488,6 +595,7 @@ window.onload = function instantiate() {
             var userGifts = document.getElementById('userGifts');
             var userFriends = document.getElementById('userFriends');
             var userPassword = document.getElementById('userPassword');
+            var userSecretSanta = document.getElementById('userSecretSanta');
             var totalGifts = 0;
             if(userData.giftList != undefined)
                 totalGifts = userData.giftList.length;
@@ -508,6 +616,15 @@ window.onload = function instantiate() {
                 userFriends.innerHTML = "This User Has No Friends";
             }
             userPassword.innerHTML = "Click On Me To View Password";
+
+            if(userData.secretSanta != undefined) {
+                if (userData.secretSanta == 0)
+                    userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
+                else
+                    userSecretSanta.innerHTML = "This User Is Signed Up For Secret Santa";
+            } else {
+                userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
+            }
 
             userGifts.onclick = function() {
                 if(userData.uid == user.uid){
@@ -594,6 +711,9 @@ window.onload = function instantiate() {
         clearInterval(offlineTimer);
 
         userCounter++;
+        if (userCounter > 5) {
+            activateSecretSanta.style.opacity = ".75";
+        }
     }
 
     function changeUserElement(userData) {
@@ -610,6 +730,7 @@ window.onload = function instantiate() {
             var userGifts = document.getElementById('userGifts');
             var userFriends = document.getElementById('userFriends');
             var userPassword = document.getElementById('userPassword');
+            var userSecretSanta = document.getElementById('userSecretSanta');
             var moderatorOp = document.getElementById('moderatorOp');
             var totalGifts = 0;
             if(userData.giftList != undefined)
@@ -631,6 +752,15 @@ window.onload = function instantiate() {
                 userFriends.innerHTML = "This User Has No Friends";
             }
             userPassword.innerHTML = "Click On Me To View Password";
+
+            if(userData.secretSanta != undefined) {
+                if (userData.secretSanta == 0)
+                    userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
+                else
+                    userSecretSanta.innerHTML = "This User Is Signed Up For Secret Santa";
+            } else {
+                userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
+            }
 
             userGifts.onclick = function() {
                 if(userData.uid == user.uid){
