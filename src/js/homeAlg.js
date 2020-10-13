@@ -622,6 +622,8 @@ window.onload = function instantiate() {
         clearInterval(offlineTimer);
 
         giftCounter++;
+        if (giftCounter > 5)
+            boughtGifts.style.opacity = ".75";
     }
 
     function changeGiftElement(description, link, received, title, key, where, uid, date, buyer) {

@@ -23,10 +23,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
+        <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="519">
-              <caret line="891" lean-forward="true" selection-start-line="891" selection-end-line="891" />
+            <state relative-caret-position="487">
+              <caret line="874" lean-forward="true" selection-start-line="874" selection-end-line="874" />
             </state>
           </provider>
         </entry>
@@ -126,13 +126,13 @@
         <option value="$PROJECT_DIR$/src/js/settingsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/userAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/js/passOp.js" />
-        <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
         <option value="$PROJECT_DIR$/src/txt/config.txt" />
         <option value="$PROJECT_DIR$/src/lists.html" />
         <option value="$PROJECT_DIR$/src/404.html" />
         <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
         <option value="$PROJECT_DIR$/src/moderation.html" />
+        <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
       </list>
     </option>
   </component>
@@ -369,14 +369,17 @@
       <workItem from="1602446848286" duration="254000" />
       <workItem from="1602448661204" duration="181000" />
       <workItem from="1602466134037" duration="919000" />
+      <workItem from="1602543873474" duration="3000" />
+      <workItem from="1602543890392" duration="639000" />
+      <workItem from="1602544692529" duration="44000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="452786000" />
+    <option name="totallyTimeSpent" value="453472000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="25" width="1280" height="721" extended-state="6" />
+    <frame x="0" y="25" width="1280" height="722" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19301033" />
@@ -638,13 +641,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16">
-          <caret line="341" column="26" lean-forward="true" selection-start-line="341" selection-start-column="26" selection-end-line="341" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/css/login.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="547">
@@ -681,6 +677,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="519">
+          <caret line="891" selection-start-line="891" selection-end-line="891" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -688,10 +691,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
+    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="891" lean-forward="true" selection-start-line="891" selection-end-line="891" />
+        <state relative-caret-position="487">
+          <caret line="874" lean-forward="true" selection-start-line="874" selection-end-line="874" />
         </state>
       </provider>
     </entry>
