@@ -262,87 +262,76 @@ window.onload = function instantiate() {
 
     function generateSecretSantaModal(){
         if(secretSantaData != null){
-            var userUid = secretSantaData.uid;
-            var friendName = secretSantaData.name;
-            var liItem = document.createElement("LI");
-            liItem.id = "user" + userUid;
-            liItem.className = "gift";
-            liItem.onclick = function () {
-                var userTitle = document.getElementById('userTitle');
-                var publicListCount = document.getElementById('publicListCount');
-                var publicList = document.getElementById('publicList');
-                var privateListCount = document.getElementById('privateListCount');
-                var privateListHTML = document.getElementById('privateList');
-                var friendSendMessage = document.getElementById('sendPrivateMessage');
-                userTitle.innerHTML = secretSantaData.name;
-                if(secretSantaData.giftList != undefined){
-                    if(secretSantaData.giftList.length > 0) {
-                        publicList.innerHTML = "Click on me to access " + secretSantaData.name + "\'s public list!";
-                        publicList.onclick = function () {
-                            sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                            sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));//Friend's User Data
-                            sessionStorage.setItem("validUser", JSON.stringify(user));
-                            window.location.href = "friendList.html";
-                        };
-                        if (secretSantaData.giftList.length == 1)
-                            publicListCount.innerHTML = secretSantaData.name + " has 1 gift on their public list";
-                        else
-                            publicListCount.innerHTML = secretSantaData.name + " has " + secretSantaData.giftList.length + " gifts on their public list";
-                    } else {
-                        publicList.innerHTML = secretSantaData.name + "\'s public gift list is empty, please check back later!";
-                        publicList.onclick = function () {};
-                        publicListCount.innerHTML = secretSantaData.name + " has 0 gifts on their public list";
-                    }
+            var userTitle = document.getElementById('userTitle');
+            var publicListCount = document.getElementById('publicListCount');
+            var publicList = document.getElementById('publicList');
+            var privateListCount = document.getElementById('privateListCount');
+            var privateListHTML = document.getElementById('privateList');
+            var friendSendMessage = document.getElementById('sendPrivateMessage');
+            userTitle.innerHTML = secretSantaData.name;
+            if(secretSantaData.giftList != undefined){
+                if(secretSantaData.giftList.length > 0) {
+                    publicList.innerHTML = "Click on me to access " + secretSantaData.name + "\'s public list!";
+                    publicList.onclick = function () {
+                        sessionStorage.setItem("userArr", JSON.stringify(userArr));
+                        sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));//Friend's User Data
+                        sessionStorage.setItem("validUser", JSON.stringify(user));
+                        window.location.href = "friendList.html";
+                    };
+                    if (secretSantaData.giftList.length == 1)
+                        publicListCount.innerHTML = secretSantaData.name + " has 1 gift on their public list";
+                    else
+                        publicListCount.innerHTML = secretSantaData.name + " has " + secretSantaData.giftList.length + " gifts on their public list";
                 } else {
                     publicList.innerHTML = secretSantaData.name + "\'s public gift list is empty, please check back later!";
                     publicList.onclick = function () {};
                     publicListCount.innerHTML = secretSantaData.name + " has 0 gifts on their public list";
                 }
-                if(secretSantaData.privateList != undefined){
-                    if(secretSantaData.privateList.length > 0) {
-                        if (secretSantaData.privateList.length == 1)
-                            privateListCount.innerHTML = secretSantaData.name + " has 1 gift on their private list";
-                        else
-                            privateListCount.innerHTML = secretSantaData.name + " has " + secretSantaData.privateList.length + " gifts on their private list";
-                    } else {
-                        privateListCount.innerHTML = secretSantaData.name + " has 0 gifts on their private list";
-                    }
+            } else {
+                publicList.innerHTML = secretSantaData.name + "\'s public gift list is empty, please check back later!";
+                publicList.onclick = function () {};
+                publicListCount.innerHTML = secretSantaData.name + " has 0 gifts on their public list";
+            }
+            if(secretSantaData.privateList != undefined){
+                if(secretSantaData.privateList.length > 0) {
+                    if (secretSantaData.privateList.length == 1)
+                        privateListCount.innerHTML = secretSantaData.name + " has 1 gift on their private list";
+                    else
+                        privateListCount.innerHTML = secretSantaData.name + " has " + secretSantaData.privateList.length + " gifts on their private list";
                 } else {
                     privateListCount.innerHTML = secretSantaData.name + " has 0 gifts on their private list";
                 }
-                privateListHTML.innerHTML = "Click on me to access " + secretSantaData.name + "\'s private gift list!";
-                privateListHTML.onclick = function() {
-                    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                    sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));//Friend's User Data
-                    sessionStorage.setItem("validUser", JSON.stringify(user));
-                    window.location.href = "privateFriendList.html";
-                };
-
-                friendSendMessage.onclick = function() {
-                    generatePrivateMessageDialog(secretSantaData);
-                };
-
-                //show modal
-                modal.style.display = "block";
-
-                //close on close
-                modalSpan.onclick = function() {
-                    modal.style.display = "none";
-                };
-
-                //close on click
-                window.onclick = function(event) {
-                    if (event.target == modal) {
-                        modal.style.display = "none";
-                    }
-                };
+            } else {
+                privateListCount.innerHTML = secretSantaData.name + " has 0 gifts on their private list";
+            }
+            privateListHTML.innerHTML = "Click on me to access " + secretSantaData.name + "\'s private gift list!";
+            privateListHTML.onclick = function() {
+                sessionStorage.setItem("userArr", JSON.stringify(userArr));
+                sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));//Friend's User Data
+                sessionStorage.setItem("validUser", JSON.stringify(user));
+                window.location.href = "privateFriendList.html";
             };
-            var textNode = document.createTextNode(friendName);
-            liItem.appendChild(textNode);
-            userList.insertBefore(liItem, document.getElementById("userListContainer").childNodes[0]);
-            clearInterval(offlineTimer);
 
-            friendCount++;
+            friendSendMessage.onclick = function() {
+                generatePrivateMessageDialog(secretSantaData);
+            };
+
+            //close on close
+            modalSpan.onclick = function() {
+                modal.style.display = "none";
+            };
+
+            //close on click
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            };
+
+            //show modal
+            modal.style.display = "block";
+
+            clearInterval(offlineTimer);
         }
     }
 

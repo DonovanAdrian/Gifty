@@ -23,10 +23,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+        <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="454">
-              <caret line="874" selection-start-line="874" selection-end-line="874" />
+            <state relative-caret-position="514">
+              <caret line="924" lean-forward="true" selection-start-line="924" selection-end-line="924" />
             </state>
           </provider>
         </entry>
@@ -129,10 +129,10 @@
         <option value="$PROJECT_DIR$/src/txt/config.txt" />
         <option value="$PROJECT_DIR$/src/lists.html" />
         <option value="$PROJECT_DIR$/src/404.html" />
-        <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
         <option value="$PROJECT_DIR$/src/moderation.html" />
         <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
       </list>
     </option>
   </component>
@@ -372,15 +372,15 @@
       <workItem from="1602543873474" duration="3000" />
       <workItem from="1602543890392" duration="639000" />
       <workItem from="1602544692529" duration="44000" />
-      <workItem from="1603149732411" duration="602000" />
+      <workItem from="1603149732411" duration="1826000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="454074000" />
+    <option name="totallyTimeSpent" value="455298000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="25" width="1280" height="716" extended-state="6" />
+    <frame x="0" y="26" width="1280" height="716" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19301033" />
@@ -664,24 +664,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/listsAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="547">
-          <caret line="833" selection-start-line="833" selection-end-line="833" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/moderation.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="504">
           <caret line="125" column="7" selection-start-line="125" selection-start-column="7" selection-end-line="125" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="891" selection-start-line="891" selection-end-line="891" />
         </state>
       </provider>
     </entry>
@@ -696,6 +682,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="454">
           <caret line="874" selection-start-line="874" selection-end-line="874" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/listsAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="454">
+          <caret line="822" selection-start-line="822" selection-end-line="822" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="514">
+          <caret line="924" lean-forward="true" selection-start-line="924" selection-end-line="924" />
         </state>
       </provider>
     </entry>
