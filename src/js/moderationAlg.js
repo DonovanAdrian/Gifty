@@ -1,6 +1,7 @@
 var listeningFirebaseRefs = [];
 var inviteArr = [];
 var userUIDArr = [];
+var tempUserArr = [];
 var optInUserArr = [];
 
 var areYouStillThereBool = false;
@@ -171,6 +172,7 @@ window.onload = function instantiate() {
                 secretSantaNameBool = true;
         if (userArr[i].secretSanta != null)
             if (userArr[i].secretSanta == 1) {
+                tempUserArr.push(userArr[i]);
                 optInUserArr.push(userArr[i]);
                 if (optInUserArr.length > 1)
                     secretSantaIntBool = true;
@@ -188,12 +190,16 @@ window.onload = function instantiate() {
         if (secretSantaNameBool && secretSantaIntBool) {
             activateSecretSanta.innerHTML = "Deactivate Secret Santa";
             removeSecretSantaNames();
+            updateAllUsersToDBSantaNames();
+            alert("The Secret Santa Has Been Deactivated!");
             removeSecretSantaNums();
-            updateAllUsersToDB();
+            updateAllUsersToDBSantaNums();
+            secretSantaNameBool = false;
             activateSecretSanta.innerHTML = "Activate Secret Santa";
         } else if (secretSantaIntBool) {
             activateSecretSanta.innerHTML = "Activate Secret Santa";
             createSecretSantaNames();
+            secretSantaNameBool = true;
         } else {
             alert("The Secret Santa Is Currently Inactive. You Need At Least Two People To Opt In For Secret Santa To Become"
                 + " Active");
@@ -201,24 +207,42 @@ window.onload = function instantiate() {
     };
 
     function createSecretSantaNames(){
-        var tempUserArr = optInUserArr;
         var selector;
         var userIndex;
+        var retryCount = 0;
 
         for (var i = 0; i < optInUserArr.length; i++) {
             selector = Math.floor((Math.random() * tempUserArr.length));
             if (!userUIDArr.includes(tempUserArr[selector].uid)) {
-                console.log("Attempting To Match " + tempUserArr[selector].name + " to " + optInUserArr[i].name);
-                if (optInUserArr[i].friends.includes(tempUserArr[selector].uid)) {
-                    console.log("Matched " + tempUserArr[selector].name + " to " + optInUserArr[i].name);
-                    userUIDArr.push(tempUserArr[selector].uid);
-                    userIndex = findUIDItemInArr(optInUserArr[i].uid, userArr);
-                    userArr[userIndex].secretSantaName = tempUserArr[selector].uid;
-                    tempUserArr.splice(selector, 1);
-                } else
+                if (tempUserArr[selector].name != optInUserArr[i].name) {
+                    if (optInUserArr[i].friends.includes(tempUserArr[selector].uid)) {
+                        console.log("Matched " + tempUserArr[selector].name + " to " + optInUserArr[i].name);
+                        userUIDArr.push(tempUserArr[selector].uid);
+                        userIndex = findUIDItemInArr(optInUserArr[i].uid, userArr);
+                        userArr[userIndex].secretSantaName = tempUserArr[selector].uid;
+                        tempUserArr.splice(selector, 1);
+                        retryCount = 0;
+                    } else {
+                        //console.log("These Users Aren't Friends :(");
+                        retryCount++;
+                        if(retryCount >= 10)
+                            break;
+                        i--;
+                    }
+                } else {
+                    //console.log("These Are The Same Users :(");
+                    retryCount++;
+                    if(retryCount >= 10)
+                        break;
                     i--;
-            } else
+                }
+            } else {
+                //console.log("User Has Already Been Picked");
+                retryCount++;
+                if(retryCount >= 10)
+                    break;
                 i--;
+            }
         }
 
         if (optInUserArr.length != userUIDArr.length) {
@@ -231,7 +255,7 @@ window.onload = function instantiate() {
             alert("Secret Santa System Was Unable To Properly Initialize Secret Santa Names. Please Try Again");
         } else {
             sessionStorage.setItem("userArr", JSON.stringify(userArr));
-            updateAllUsersToDB();
+            updateAllUsersToDBSantaNums();
             activateSecretSanta.innerHTML = "Deactivate Secret Santa";
             alert("Secret Santa System Has Been Initialized. Enjoy!");
         }
@@ -251,17 +275,26 @@ window.onload = function instantiate() {
         sessionStorage.setItem("userArr", JSON.stringify(userArr));
     }
 
-    function updateAllUsersToDB(){
+    function updateAllUsersToDBSantaNums(){
         for(var i = 0; i < userArr.length; i++){
             if (userArr[i].secretSanta != undefined) {
                 firebase.database().ref("users/" + userArr[i].uid).update({
                     secretSanta: userArr[i].secretSanta
                 });
+            } else {
+                console.log("Failed To Update Num " + userArr[i].name);
             }
+        }
+    }
+
+    function updateAllUsersToDBSantaNames(){
+        for(var i = 0; i < userArr.length; i++) {
             if (userArr[i].secretSantaName != undefined) {
                 firebase.database().ref("users/" + userArr[i].uid).update({
                     secretSantaName: userArr[i].secretSantaName
                 });
+            } else {
+                console.log("Failed To Update Name " + userArr[i].name);
             }
         }
     }
@@ -499,7 +532,7 @@ window.onload = function instantiate() {
 
                 var i = findUIDItemInArr(data.key, userArr);
                 if(userArr[i] != data.val() && i != -1){
-                    console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+                    //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
                     userArr[i] = data.val();
                 }
 
@@ -514,13 +547,13 @@ window.onload = function instantiate() {
 
                 var i = findUIDItemInArr(data.key, userArr);
                 if(userArr[i] != data.val() && i != -1){
-                    console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+                    //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
                     userArr[i] = data.val();
                 }
 
                 if(data.key == user.uid){
                     user = data.val();
-                    console.log("User Updated: 2");
+                    //console.log("User Updated: 2");
                 }
             });
 
@@ -529,7 +562,7 @@ window.onload = function instantiate() {
 
                 var i = findUIDItemInArr(data.key, userArr);
                 if(userArr[i] != data.val() && i != -1){
-                    console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+                    //console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
                     userArr.splice(i, 1);
                 }
             });
@@ -570,7 +603,7 @@ window.onload = function instantiate() {
     function findUIDItemInArr(item, userArray){
         for(var i = 0; i < userArray.length; i++){
             if(userArray[i].uid == item){
-                console.log("Found item: " + item);
+                //console.log("Found item: " + item);
                 return i;
             }
         }
