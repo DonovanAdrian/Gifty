@@ -404,6 +404,23 @@ ul li.checked::before {
   width: 7px;
 }
 
+ul li.santa {
+  color: #00d118;
+}
+
+ul li.santa::before {
+  content: '';
+  position: absolute;
+  border-color: #00d118;
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  top: 10px;
+  left: 16px;
+  transform: rotate(45deg);
+  height: 15px;
+  width: 7px;
+}
+
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
