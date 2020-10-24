@@ -1,5 +1,6 @@
 body {
-  background-color: #008222;
+  background-color: #870b0b;
+  transition: 3.5s;
 }
 
 .loginContainer {
