@@ -380,6 +380,16 @@ function updateUserToDB(){
                 readNotifications: user.readNotifications
             });
         }
+        if (user.secretSanta != undefined) {
+            firebase.database().ref("users/" + user.uid).update({
+                secretSanta: user.secretSanta
+            });
+        }
+        if (user.secretSantaName != undefined) {
+            firebase.database().ref("users/" + user.uid).update({
+                secretSantaName: user.secretSantaName
+            });
+        }
 
         btnUpdate.innerHTML = "Please Wait...";
         btnUpdate.onclick = function(){};//forces the update button to do nothing
@@ -427,7 +437,9 @@ function addUserToDB(){
             theme: 0,
             uid: newUid,
             warn: 0,
-            shareCode: shareCodeNew
+            shareCode: shareCodeNew,
+            secretSanta: 0,
+            secretSantaName: ""
         });
 
         btnUpdate.innerHTML = "Please Wait...";
