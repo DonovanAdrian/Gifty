@@ -162,6 +162,36 @@ window.onload = function instantiate() {
     };
 
     fetchConfigFile();
+
+    backgroundAlternator();
+
+    function backgroundAlternator(){
+        var nowBackground = 0;
+        var alternator = 0;
+        console.log("Background Alternator Feature Active");
+        setInterval(function(){
+            nowBackground = nowBackground + 1000;
+            if(nowBackground >= 15000){
+                nowBackground = 0;
+                if(alternator == 0) {
+                    alternator++;
+                    document.body.style.background = "#0041a3";
+                } else if (alternator == 1){
+                    alternator++;
+                    document.body.style.background = "#008222";
+                } else if (alternator == 2){
+                    alternator++;
+                    document.body.style.background = "#0b8781";
+                } else if (alternator == 3){
+                    alternator++;
+                    document.body.style.background = "#700b87";
+                } else {
+                    alternator = 0;
+                    document.body.style.background = "#870b0b";
+                }
+            }
+        }, 1000);
+    }
 };
 
 function initializeDatabase(){
