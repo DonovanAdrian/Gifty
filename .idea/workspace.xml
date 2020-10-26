@@ -13,20 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/index.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="519">
               <caret line="52" selection-start-line="52" selection-end-line="52" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/js/listsAlg.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="283">
-              <caret line="807" column="47" lean-forward="true" selection-start-line="807" selection-start-column="47" selection-end-line="807" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -125,7 +116,6 @@
         <option value="$PROJECT_DIR$/src/lists.html" />
         <option value="$PROJECT_DIR$/src/404.html" />
         <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
         <option value="$PROJECT_DIR$/src/moderation.html" />
         <option value="$PROJECT_DIR$/src/css/main.css" />
         <option value="$PROJECT_DIR$/src/js/userAddUpdateAlg.js" />
@@ -133,6 +123,7 @@
         <option value="$PROJECT_DIR$/src/index.html" />
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
         <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
       </list>
     </option>
   </component>
@@ -374,12 +365,12 @@
       <workItem from="1602544692529" duration="44000" />
       <workItem from="1603149732411" duration="1826000" />
       <workItem from="1603239684440" duration="1433000" />
-      <workItem from="1603323118171" duration="2091000" />
+      <workItem from="1603323118171" duration="2229000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="458822000" />
+    <option name="totallyTimeSpent" value="458960000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="25" width="1280" height="721" extended-state="6" />
@@ -687,17 +678,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/listsAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="519">
+          <caret line="823" selection-start-line="823" selection-end-line="823" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="519">
           <caret line="52" selection-start-line="52" selection-end-line="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/listsAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="283">
-          <caret line="807" column="47" lean-forward="true" selection-start-line="807" selection-start-column="47" selection-end-line="807" selection-end-column="47" />
         </state>
       </provider>
     </entry>

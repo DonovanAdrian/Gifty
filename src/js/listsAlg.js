@@ -726,6 +726,7 @@ window.onload = function instantiate() {
             addPrivateMessageToDB(userData, message);
             privateNoteInp.value = "";
             addGlobalMsgModal.style.display = "none";
+            alert("The Message Has Been Sent!");
         };
         cancelNote.onclick = function (){
             privateNoteInp.value = "";
