@@ -474,6 +474,7 @@ window.onload = function instantiate() {
                 addPrivateMessageToDB(userData, privateNoteInp.value);
                 privateNoteInp.value = "";
                 addGlobalMsgModal.style.display = "none";
+                alert("The Private Message Has Been Sent!");
             }
         };
         cancelNote.onclick = function (){
@@ -533,6 +534,7 @@ window.onload = function instantiate() {
                     addGlobalMessageToDB(globalNoteInp.value);
                     globalNoteInp.value = "";
                     addGlobalMsgModal.style.display = "none";
+                    alert("The Global Message Has Been Sent!");
                 }
             };
             cancelNote.onclick = function (){
