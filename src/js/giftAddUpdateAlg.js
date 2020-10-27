@@ -310,6 +310,8 @@ window.onload = function instantiate() {
     }
 
     function updateGiftToDB(){
+        var newURL = trimURLString(linkField.value);
+
         if(titleField.value === "")
             alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
                 "you!");
@@ -318,7 +320,7 @@ window.onload = function instantiate() {
                 if (!privateListBool) {
                     firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
                         title: titleField.value,
-                        link: linkField.value,
+                        link: newURL,
                         where: whereField.value,
                         received: currentGift.received,
                         uid: giftStorage,
@@ -340,7 +342,7 @@ window.onload = function instantiate() {
                 } else {
                     firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
                         title: titleField.value,
-                        link: linkField.value,
+                        link: newURL,
                         where: whereField.value,
                         received: currentGift.received,
                         uid: giftStorage,
@@ -444,6 +446,7 @@ window.onload = function instantiate() {
         var mm = today.getMonth()+1;
         var yy = today.getFullYear();
         var creationDate = mm + "/" + dd + "/" + yy;
+        var newURL = trimURLString(linkField.value);
 
         if(titleField.value === "")
             alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
@@ -455,7 +458,7 @@ window.onload = function instantiate() {
                 newUid = newUid.substr(77, 96);
                 firebase.database().ref("users/" + user.uid + "/giftList/" + uid).set({
                     title: titleField.value,
-                    link: linkField.value,
+                    link: newURL,
                     where: whereField.value,
                     received: 0,
                     uid: newUid,
@@ -474,7 +477,7 @@ window.onload = function instantiate() {
                 newUid = newUid.substr(80, 96);
                 firebase.database().ref("users/" + user.uid + "/privateList/" + uid).set({
                     title: titleField.value,
-                    link: linkField.value,
+                    link: newURL,
                     where: whereField.value,
                     received: 0,
                     uid: newUid,
@@ -489,6 +492,23 @@ window.onload = function instantiate() {
                 window.location.href = "privateFriendList.html";
             }
         }
+    }
+
+    function trimURLString(url){
+        var tempURL = "";
+
+        for(var i = 0; i < url.length; i++){
+            if(url.charAt(i) == " "){
+                console.log("This is a space between the string, resetting tempURL");
+                tempURL = "";
+            } else {
+                tempURL += url.charAt(i);
+            }
+        }
+
+        console.log(tempURL);
+
+        return tempURL;
     }
 };
 

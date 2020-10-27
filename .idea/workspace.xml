@@ -106,7 +106,6 @@
         <option value="$PROJECT_DIR$/src/js/confirmationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/faqAlg.js" />
         <option value="$PROJECT_DIR$/src/js/friendListAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
         <option value="$PROJECT_DIR$/src/js/notificationsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
@@ -124,6 +123,7 @@
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
         <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
       </list>
     </option>
   </component>
@@ -365,12 +365,12 @@
       <workItem from="1602544692529" duration="44000" />
       <workItem from="1603149732411" duration="1826000" />
       <workItem from="1603239684440" duration="1433000" />
-      <workItem from="1603323118171" duration="2229000" />
+      <workItem from="1603323118171" duration="2444000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="458960000" />
+    <option name="totallyTimeSpent" value="459175000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="25" width="1280" height="721" extended-state="6" />
@@ -500,13 +500,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="500">
           <caret line="784" selection-start-line="784" selection-end-line="784" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/giftAddUpdateAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="522" selection-start-line="522" selection-end-line="522" />
         </state>
       </provider>
     </entry>
@@ -682,6 +675,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="519">
           <caret line="823" selection-start-line="823" selection-end-line="823" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/giftAddUpdateAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="519">
+          <caret line="542" selection-start-line="542" selection-end-line="542" />
         </state>
       </provider>
     </entry>
