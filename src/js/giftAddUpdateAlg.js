@@ -49,13 +49,22 @@ function getCurrentUser(){
         } else {
             console.log("Gift: " + giftStorage + " found");
         }
-        if (user.invites == undefined) {
-            console.log("Invites Not Found");
-        } else if (user.invites != undefined) {
-            if (user.invites.length > 0) {
-                inviteNote.style.background = "#ff3923";
+        if (!privateListBool)
+            if (user.invites == undefined) {
+                console.log("Invites Not Found");
+            } else if (user.invites != undefined) {
+                if (user.invites.length > 0) {
+                    inviteNote.style.background = "#ff3923";
+                }
             }
-        }
+            else
+            if (currentUser.invites == undefined) {
+                console.log("Invites Not Found");
+            } else if (currentUser.invites != undefined) {
+                if (currentUser.invites.length > 0) {
+                    inviteNote.style.background = "#ff3923";
+                }
+            }
         userArr = JSON.parse(sessionStorage.userArr);
     } catch (err) {
         console.log(err.toString());
@@ -310,7 +319,7 @@ window.onload = function instantiate() {
     }
 
     function updateGiftToDB(){
-        var newURL = trimURLString(linkField.value);
+        var newURL = verifyURLString(linkField.value);
 
         if(titleField.value === "")
             alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
@@ -446,7 +455,7 @@ window.onload = function instantiate() {
         var mm = today.getMonth()+1;
         var yy = today.getFullYear();
         var creationDate = mm + "/" + dd + "/" + yy;
-        var newURL = trimURLString(linkField.value);
+        var newURL = verifyURLString(linkField.value);
 
         if(titleField.value === "")
             alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
@@ -494,17 +503,31 @@ window.onload = function instantiate() {
         }
     }
 
-    function trimURLString(url){
+    function verifyURLString(url){
         var tempURL = "";
+        var failedURLs = [];
+        var preDot = false;
+        var dotBool = false;
+        var postDot = false;
 
         for(var i = 0; i < url.length; i++){
             if(url.charAt(i) == " "){
                 console.log("This is a space between the string, resetting tempURL");
+                failedURLs.push(tempURL);
                 tempURL = "";
             } else {
                 tempURL += url.charAt(i);
             }
         }
+        failedURLs.push(tempURL);
+
+        if(failedURLs.length != 1)
+            for(var a = 0; a < failedURLs.length; a++) {
+                for(var b = 0; b < failedURLs[a].length; b++) {
+                    //traverse string to see if each quality of a good link is present
+                    //text before ".", a ".", and text after the "." TODO
+                }
+            }
 
         console.log(tempURL);
 
