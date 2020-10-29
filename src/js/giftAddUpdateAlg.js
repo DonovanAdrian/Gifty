@@ -505,33 +505,113 @@ window.onload = function instantiate() {
 
     function verifyURLString(url){
         var tempURL = "";
+        var goodURL = "";
         var failedURLs = [];
         var preDot = false;
         var dotBool = false;
+        var dotDuplicate = false;
         var postDot = false;
+        var validURLBool = false;
+        var validURLOverride = true;
+        var dotEnder = false;
 
         for(var i = 0; i < url.length; i++){
-            if(url.charAt(i) == " "){
-                console.log("This is a space between the string, resetting tempURL");
+            if (url.charAt(i) == " ") {
                 failedURLs.push(tempURL);
                 tempURL = "";
-            } else {
+            } else
                 tempURL += url.charAt(i);
-            }
         }
         failedURLs.push(tempURL);
 
-        if(failedURLs.length != 1)
-            for(var a = 0; a < failedURLs.length; a++) {
-                for(var b = 0; b < failedURLs[a].length; b++) {
-                    //traverse string to see if each quality of a good link is present
-                    //text before ".", a ".", and text after the "." TODO
+        if (failedURLs.length > 1) {
+            for (var a = 0; a < failedURLs.length; a++) {
+                for (var b = 0; b < failedURLs[a].length; b++) {
+                    if (isAlphNum(failedURLs[a].charAt(b))) {
+                        preDot = true;
+                        dotDuplicate = false;
+                        dotEnder = false;
+                    }
+                    if (isAlphNum(failedURLs[a].charAt(b)) && dotBool) {
+                        postDot = true;
+                        dotDuplicate = false;
+                        dotEnder = false;
+                    }
+                    if (failedURLs[a].charAt(b) == ".") {
+                        dotBool = true;
+                        dotEnder = true;
+                        if (!dotDuplicate)
+                            dotDuplicate = true;
+                        else
+                            validURLOverride = false;
+                    }
+                    if (postDot)
+                        validURLBool = true;
                 }
+
+                if (!dotEnder && validURLBool && validURLOverride)
+                    goodURL = failedURLs[a];
+
+                preDot = false;
+                dotBool = false;
+                dotDuplicate = false;
+                postDot = false;
+                validURLBool = false;
+                validURLOverride = true;
+                dotEnder = false;
             }
 
-        console.log(tempURL);
+            tempURL = goodURL;
+        }
+
+        //console.log("Valid URL! " + tempURL);
 
         return tempURL;
+    }
+
+    function isAlphNum(rChar){
+        rChar = rChar.toUpperCase();
+        switch (rChar){
+            case "A":
+            case "B":
+            case "C":
+            case "D":
+            case "E":
+            case "F":
+            case "G":
+            case "H":
+            case "I":
+            case "J":
+            case "K":
+            case "L":
+            case "M":
+            case "N":
+            case "O":
+            case "P":
+            case "Q":
+            case "R":
+            case "S":
+            case "T":
+            case "U":
+            case "V":
+            case "W":
+            case "X":
+            case "Y":
+            case "Z":
+            case "0":
+            case "1":
+            case "2":
+            case "3":
+            case "4":
+            case "5":
+            case "6":
+            case "7":
+            case "8":
+            case "9":
+                return true;
+            default:
+                return false;
+        }
     }
 };
 
