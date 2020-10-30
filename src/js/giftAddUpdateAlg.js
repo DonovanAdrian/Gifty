@@ -4,6 +4,7 @@ var giftArr = [];
 var giftPresent = true;
 var privateListBool = true;
 var areYouStillThereBool = false;
+var invalidURLBool = false;
 
 var giftUID = -1;
 var logoutReminder = 300;
@@ -116,7 +117,7 @@ window.onload = function instantiate() {
         location.reload();
     });
 
-    window.addEventListener("offline", function() {
+    window.addEventListener("offline", function() {//ToDo
         var now = 0;
         var g = setInterval(function(){
             now = now + 1000;
@@ -187,7 +188,7 @@ window.onload = function instantiate() {
         }, 1000);
     }
 
-    function areYouStillThereNote(timeElapsed){
+    function areYouStillThereNote(timeElapsed){//ToDo
         var timeRemaining = logoutLimit - timeElapsed;
         var timeMins = Math.floor(timeRemaining/60);
         var timeSecs = timeRemaining%60;
@@ -324,6 +325,8 @@ window.onload = function instantiate() {
         if(titleField.value === "")
             alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
                 "you!");
+        else if (invalidURLBool)
+            alert("It looks like you entered an invalid URL, please enter a valid URL or leave the field blank.");
         else {
             if(giftUID != -1) {
                 if (!privateListBool) {
@@ -403,6 +406,7 @@ window.onload = function instantiate() {
                 console.log(giftUID);
             }
         }
+        invalidURLBool = false;
     }
 
     function findUserNameItemInArr(item, userArray){
@@ -460,6 +464,8 @@ window.onload = function instantiate() {
         if(titleField.value === "")
             alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
                 "you!");
+        else if (invalidURLBool)
+            alert("It looks like you entered an invalid URL, please enter a valid URL or leave the field blank.");
         else {
             if(!privateListBool) {
                 var newUid = firebase.database().ref("users/" + user.uid + "/giftList/" + uid).push();
@@ -501,70 +507,81 @@ window.onload = function instantiate() {
                 window.location.href = "privateFriendList.html";
             }
         }
+        invalidURLBool = false;
     }
 
     function verifyURLString(url){
+        var urlBuilder = "";
         var tempURL = "";
-        var goodURL = "";
         var failedURLs = [];
+        var isChar = false;
         var preDot = false;
         var dotBool = false;
         var dotDuplicate = false;
         var postDot = false;
         var validURLBool = false;
         var validURLOverride = true;
+        var invalidChar = false;
         var dotEnder = false;
 
         for(var i = 0; i < url.length; i++){
             if (url.charAt(i) == " ") {
-                failedURLs.push(tempURL);
-                tempURL = "";
+                failedURLs.push(urlBuilder);
+                urlBuilder = "";
             } else
-                tempURL += url.charAt(i);
+                urlBuilder += url.charAt(i);
         }
-        failedURLs.push(tempURL);
+        failedURLs.push(urlBuilder);
 
-        if (failedURLs.length > 1) {
-            for (var a = 0; a < failedURLs.length; a++) {
-                for (var b = 0; b < failedURLs[a].length; b++) {
-                    if (isAlphNum(failedURLs[a].charAt(b))) {
-                        preDot = true;
-                        dotDuplicate = false;
-                        dotEnder = false;
-                    }
-                    if (isAlphNum(failedURLs[a].charAt(b)) && dotBool) {
-                        postDot = true;
-                        dotDuplicate = false;
-                        dotEnder = false;
-                    }
-                    if (failedURLs[a].charAt(b) == ".") {
-                        dotBool = true;
-                        dotEnder = true;
-                        if (!dotDuplicate)
-                            dotDuplicate = true;
-                        else
-                            validURLOverride = false;
-                    }
-                    if (postDot)
-                        validURLBool = true;
+        for (var a = 0; a < failedURLs.length; a++) {
+            for (var b = 0; b < failedURLs[a].length; b++) {
+                if (isAlphNum(failedURLs[a].charAt(b))) {
+                    isChar = true;
+                    preDot = true;
+                    dotDuplicate = false;
+                    dotEnder = false;
                 }
-
-                if (!dotEnder && validURLBool && validURLOverride)
-                    goodURL = failedURLs[a];
-
-                preDot = false;
-                dotBool = false;
-                dotDuplicate = false;
-                postDot = false;
-                validURLBool = false;
-                validURLOverride = true;
-                dotEnder = false;
+                if (isAlphNum(failedURLs[a].charAt(b)) && dotBool) {
+                    postDot = true;
+                    dotDuplicate = false;
+                    dotEnder = false;
+                }
+                if (failedURLs[a].charAt(b) == ".") {
+                    dotBool = true;
+                    dotEnder = true;
+                    if (!dotDuplicate)
+                        dotDuplicate = true;
+                    else
+                        validURLOverride = false;
+                }
+                if (isInvalid(failedURLs[a].charAt(b))) {
+                    validURLOverride = false;
+                    invalidChar = true;
+                }
+                if (postDot)
+                    validURLBool = true;
             }
 
-            tempURL = goodURL;
+            if (!dotEnder && validURLBool && validURLOverride) {
+                tempURL = failedURLs[a];
+            }
+
+            preDot = false;
+            dotBool = false;
+            dotDuplicate = false;
+            postDot = false;
+            validURLBool = false;
+            validURLOverride = true;
+            dotEnder = false;
         }
 
-        //console.log("Valid URL! " + tempURL);
+
+        if (tempURL == "" && isChar)
+            invalidURLBool = true;
+        else if (invalidChar)
+            invalidURLBool = true;
+        else
+            console.log("Valid URL! " + tempURL);
 
         return tempURL;
     }
@@ -608,6 +625,44 @@ window.onload = function instantiate() {
             case "7":
             case "8":
             case "9":
+            case "-":
+            case "_":
+            case "~":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    function isInvalid(rChar){
+        switch(rChar){
+            case "!":
+            case "@":
+            case "#":
+            case "$":
+            case "%":
+            case "^":
+            case "&":
+            case "*":
+            case "(":
+            case ")":
+            case " ":
+            case "+":
+            case "=":
+            case ":":
+            case "\"":
+            case "\'":
+            case "{":
+            case "}":
+            case "[":
+            case "]":
+            case "\\":
+            case "|":
+            case ";":
+            case ",":
+            case "<":
+            case ">":
+            case "?":
                 return true;
             default:
                 return false;
