@@ -1,3 +1,9 @@
+/*
+ * This project was created by Donovan Adrian and any
+ * edits or changes must be confirmed as valid by Donovan
+ * with written consent under any circumstance.
+ */
+
 let encodeStore = ["0", "1", "2", "3"];
 let encodeNameBool = false;
 let userArrPassOp = [];

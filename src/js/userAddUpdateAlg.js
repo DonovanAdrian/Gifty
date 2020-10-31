@@ -93,7 +93,6 @@ function getCurrentUser(){
                 timeSecs = ("0" + timeSecs).slice(-2);
             }
 
-            modal.style.display = "none";
             noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
                 + ":" + timeSecs + "!";
             noteTitleField.innerHTML = "Are You Still There?";
