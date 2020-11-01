@@ -639,16 +639,12 @@ window.onload = function instantiate() {
             case "@":
             case "#":
             case "$":
-            case "%":
             case "^":
-            case "&":
             case "*":
             case "(":
             case ")":
             case " ":
             case "+":
-            case "=":
-            case ":":
             case "\"":
             case "\'":
             case "{":
@@ -661,7 +657,6 @@ window.onload = function instantiate() {
             case ",":
             case "<":
             case ">":
-            case "?":
                 return true;
             default:
                 return false;
