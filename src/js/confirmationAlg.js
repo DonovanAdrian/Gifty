@@ -55,24 +55,18 @@ function getCurrentUser(){
                 if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
                     notificationBtn.src = "img/bellNotificationOn.png";
                     notificationBtn.onclick = function() {
-                        sessionStorage.setItem("validUser", JSON.stringify(user));
-                        sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                        window.location.href = "notifications.html";
+                        navigation(5);
                     }
                 } else {
                     notificationBtn.src = "img/bellNotificationOff.png";
                     notificationBtn.onclick = function() {
-                        sessionStorage.setItem("validUser", JSON.stringify(user));
-                        sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                        window.location.href = "notifications.html";
+                        navigation(5);
                     }
                 }
             } else if (user.notifications.length > 0) {
                 notificationBtn.src = "img/bellNotificationOn.png";
                 notificationBtn.onclick = function() {
-                    sessionStorage.setItem("validUser", JSON.stringify(user));
-                    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                    window.location.href = "notifications.html";
+                    navigation(5);
                 }
             }
         }
@@ -625,6 +619,9 @@ function navigation(nav){
             break;
         case 4:
             window.location.href = "confirmation.html";
+            break;
+        case 5:
+            window.location.href = "notifications.html";
             break;
         default:
             break;
