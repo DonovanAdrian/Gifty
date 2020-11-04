@@ -19,7 +19,6 @@ var moderationSet = -1;
 
 var giftCreationDate;
 var giftList;
-var offline;
 var backBtn;
 var offlineSpan;
 var offlineModal;
@@ -30,7 +29,6 @@ var noteInfoField;
 var noteTitleField;
 var noteSpan;
 var notificationBtn;
-var listNote;
 var inviteNote;
 var offlineTimer;
 var loadingTimer;
@@ -70,24 +68,18 @@ function getCurrentUser(){
                 if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
                     notificationBtn.src = "img/bellNotificationOn.png";
                     notificationBtn.onclick = function() {
-                        sessionStorage.setItem("validUser", JSON.stringify(user));
-                        sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                        window.location.href = "notifications.html";
+                        navigation(4);
                     }
                 } else {
                     notificationBtn.src = "img/bellNotificationOff.png";
                     notificationBtn.onclick = function() {
-                        sessionStorage.setItem("validUser", JSON.stringify(user));
-                        sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                        window.location.href = "notifications.html";
+                        navigation(4);
                     }
                 }
             } else if (user.notifications.length > 0) {
                 notificationBtn.src = "img/bellNotificationOn.png";
                 notificationBtn.onclick = function() {
-                    sessionStorage.setItem("validUser", JSON.stringify(user));
-                    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                    window.location.href = "notifications.html";
+                    navigation(4);
                 }
             }
         }
@@ -109,7 +101,6 @@ window.onload = function instantiate() {
     offlineSpan = document.getElementById('closeOffline');
     noteSpan = document.getElementById('closeNotification');
     backBtn = document.getElementById('backBtn');
-    listNote = document.getElementById('listNote');
     inviteNote = document.getElementById('inviteNote');
     noteModal = document.getElementById('notificationModal');
     noteTitleField = document.getElementById('notificationTitle');
@@ -194,9 +185,7 @@ window.onload = function instantiate() {
     //initialize back button
     backBtn.innerHTML = "Back To Home";
     backBtn.onclick = function() {
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        sessionStorage.setItem("userArr", JSON.stringify(userArr));
-        window.location.href = "home.html";
+        navigation(0);
     };
 
     loadingTimer = setInterval(function(){
@@ -230,9 +219,7 @@ window.onload = function instantiate() {
             }
         } else {
             alert("There has been a critical error, redirecting back home...");
-            sessionStorage.setItem("validUser", JSON.stringify(user));
-            sessionStorage.setItem("userArr", JSON.stringify(userArr));
-            window.location.href = "home.html";
+            navigation(0);
         }
     }
 
@@ -685,6 +672,9 @@ function navigation(nav){
             break;
         case 3:
             window.location.href = "settings.html";
+            break;
+        case 4:
+            window.location.href = "notifications.html";
             break;
         default:
             break;
