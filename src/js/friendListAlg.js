@@ -73,24 +73,18 @@ function getCurrentUser(){
                 if (currentUser.notifications.length > 0 && currentUser.readNotifications.length != currentUser.notifications.length) {
                     notificationBtn.src = "img/bellNotificationOn.png";
                     notificationBtn.onclick = function() {
-                        sessionStorage.setItem("validUser", JSON.stringify(currentUser));
-                        sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                        window.location.href = "notifications.html";
+                        navigation(4);
                     }
                 } else {
                     notificationBtn.src = "img/bellNotificationOff.png";
                     notificationBtn.onclick = function() {
-                        sessionStorage.setItem("validUser", JSON.stringify(currentUser));
-                        sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                        window.location.href = "notifications.html";
+                        navigation(4);
                     }
                 }
             } else if (currentUser.notifications.length > 0) {
                 notificationBtn.src = "img/bellNotificationOn.png";
                 notificationBtn.onclick = function() {
-                    sessionStorage.setItem("validUser", JSON.stringify(currentUser));
-                    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                    window.location.href = "notifications.html";
+                    navigation(4);
                 }
             }
         }
@@ -203,12 +197,10 @@ window.onload = function instantiate() {
     //initialize back button
     backBtn.innerHTML = "Back To Lists";
     backBtn.onclick = function() {
-        sessionStorage.setItem("validUser", JSON.stringify(currentUser));
-        sessionStorage.setItem("userArr", JSON.stringify(userArr));
         if(moderationSet == 1){
-            window.location.href = "moderation.html";
+            navigation(5);
         } else {
-            window.location.href = "lists.html";
+            navigation(1);
         }
     };
 
@@ -781,6 +773,12 @@ function navigation(nav){
             break;
         case 3:
             window.location.href = "settings.html";
+            break;
+        case 4:
+            window.location.href = "notifications.html";
+            break;
+        case 5:
+            window.location.href = "moderation.html";
             break;
         default:
             break;
