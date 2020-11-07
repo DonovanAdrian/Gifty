@@ -7,6 +7,7 @@ var userUserNames = [];
 var areYouStillThereBool = false;
 var readNotificationsBool = false;
 var updateGiftToDBBool = false;
+var giftListEmptyBool = false;
 
 var currentModalOpen = "";
 
@@ -49,8 +50,10 @@ function getCurrentUser(){
         console.log("Friend: " + user.userName + " loaded in");
         if (user.giftList == undefined) {
             deployGiftListEmptyNotification();
+            giftListEmptyBool = true;
         } else if (user.giftList.length == 0) {
             deployGiftListEmptyNotification();
+            giftListEmptyBool = true;
         }
         if (currentUser.invites == undefined) {
             console.log("Invites Not Found");
@@ -210,7 +213,7 @@ window.onload = function instantiate() {
             var testGift = document.getElementById("TestGift");
             if (testGift == undefined){
                 //console.log("TestGift Missing. Loading Properly.");
-            } else {
+            } else if (!giftListEmptyBool) {
                 testGift.innerHTML = "Loading... Please Wait...";
             }
             clearInterval(loadingTimer);
@@ -287,7 +290,7 @@ window.onload = function instantiate() {
     }
 
     function ohThereYouAre(){
-        noteInfoField.innerHTML = "Welcome back, " + user.name;
+        noteInfoField.innerHTML = "Welcome back, " + currentUser.name;
         noteTitleField.innerHTML = "Oh, There You Are!";
 
         var nowJ = 0;
