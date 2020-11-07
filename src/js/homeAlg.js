@@ -10,6 +10,7 @@ var friendsValidBool = false;
 var readNotificationsBool = false;
 var updateUserBool = false;
 var areYouStillThereBool = false;
+var giftListEmptyBool = false;
 
 var giftCounter = 0;
 var onlineInt = 0;
@@ -47,8 +48,10 @@ function getCurrentUser(){
         console.log("User: " + user.userName + " logged in");
         if (user.giftList == undefined) {
             deployGiftListEmptyNotification();
+            giftListEmptyBool = true;
         } else if (user.giftList.length == 0) {
             deployGiftListEmptyNotification();
+            giftListEmptyBool = true;
         }
         if (user.invites == undefined) {
             console.log("Invites Not Found");
@@ -79,24 +82,18 @@ function getCurrentUser(){
                 if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
                     notificationBtn.src = "img/bellNotificationOn.png";
                     notificationBtn.onclick = function() {
-                        sessionStorage.setItem("validUser", JSON.stringify(user));
-                        sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                        window.location.href = "notifications.html";
+                        navigation(4);
                     }
                 } else {
                     notificationBtn.src = "img/bellNotificationOff.png";
                     notificationBtn.onclick = function() {
-                        sessionStorage.setItem("validUser", JSON.stringify(user));
-                        sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                        window.location.href = "notifications.html";
+                        navigation(4);
                     }
                 }
             } else if (user.notifications.length > 0) {
                 notificationBtn.src = "img/bellNotificationOn.png";
                 notificationBtn.onclick = function() {
-                    sessionStorage.setItem("validUser", JSON.stringify(user));
-                    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                    window.location.href = "notifications.html";
+                    navigation(4);
                 }
             }
         }
@@ -305,9 +302,7 @@ window.onload = function instantiate() {
         } else {
             sessionStorage.setItem("boughtGifts", JSON.stringify(userBoughtGifts));
             sessionStorage.setItem("boughtGiftsUsers", JSON.stringify(userBoughtGiftsUsers));
-            sessionStorage.setItem("validUser", JSON.stringify(user));
-            sessionStorage.setItem("userArr", JSON.stringify(userArr));
-            window.location.href = "boughtGifts.html";
+            navigation(5);
         }
     };
 
@@ -316,10 +311,8 @@ window.onload = function instantiate() {
         giftStorage = "";
         privateList = "";
         sessionStorage.setItem("privateList", JSON.stringify(privateList));
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        sessionStorage.setItem("userArr", JSON.stringify(userArr));
         sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
-        window.location.href = "giftAddUpdate.html";
+        navigation(5);
     };
 
     loadingTimer = setInterval(function(){
@@ -328,7 +321,7 @@ window.onload = function instantiate() {
             var testGift = document.getElementById("TestGift");
             if (testGift == undefined){
                 //console.log("TestGift Missing. Loading Properly.");
-            } else {
+            } else if (!giftListEmptyBool) {
                 testGift.innerHTML = "Loading... Please Wait...";
             }
             clearInterval(loadingTimer);
@@ -446,9 +439,7 @@ window.onload = function instantiate() {
                     } else if (data.val().readNotifications.length == data.val().notifications.length) {
                         notificationBtn.src = "img/bellNotificationOff.png";
                         notificationBtn.onclick = function() {
-                            sessionStorage.setItem("validUser", JSON.stringify(user));
-                            sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                            window.location.href = "notifications.html";
+                            navigation(4);
                         }
                     }
                     console.log("User Updated: 1");
@@ -717,10 +708,8 @@ window.onload = function instantiate() {
         giftStorage = uid;
         privateList = "";
         sessionStorage.setItem("privateList", JSON.stringify(privateList));
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        sessionStorage.setItem("userArr", JSON.stringify(userArr));
         sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
-        window.location.href = "giftAddUpdate.html";
+        navigation(5);
     }
 
     function deleteGiftElement(key, title, uid, buyer) {
@@ -872,6 +861,11 @@ function navigation(nav){
         case 3:
             window.location.href = "settings.html";
             break;
+        case 4:
+            window.location.href = "notifications.html";
+            break;
+        case 5:
+            window.location.href = "giftAddUpdate.html";
         default:
             break;
     }
