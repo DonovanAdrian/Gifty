@@ -188,7 +188,7 @@ window.onload = function instantiate() {
         }, 1000);
     }
 
-    function areYouStillThereNote(timeElapsed){//ToDo
+    function areYouStillThereNote(timeElapsed){
         var timeRemaining = logoutLimit - timeElapsed;
         var timeMins = Math.floor(timeRemaining/60);
         var timeSecs = timeRemaining%60;
@@ -210,7 +210,10 @@ window.onload = function instantiate() {
     }
 
     function ohThereYouAre(){
-        noteInfoField.innerHTML = "Welcome back, " + user.name;
+        if (!privateListBool)
+            noteInfoField.innerHTML = "Welcome back, " + user.name;
+        else
+            noteInfoField.innerHTML = "Welcome back, " + privateUser.name;
         noteTitleField.innerHTML = "Oh, There You Are!";
 
         var nowJ = 0;
@@ -347,9 +350,7 @@ window.onload = function instantiate() {
                         }
                     }
 
-                    sessionStorage.setItem("validUser", JSON.stringify(user));
-                    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                    window.location.href = "home.html";
+                    navigation(0);
                 } else {
                     firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
                         title: titleField.value,
@@ -376,9 +377,7 @@ window.onload = function instantiate() {
                     }
 
                     sessionStorage.setItem("validGiftUser", JSON.stringify(user));
-                    sessionStorage.setItem("validUser", JSON.stringify(privateUser));
-                    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                    window.location.href = "privateFriendList.html";
+                    navigation(4);
                 }
 
                 if(currentGift.buyer != ""){
@@ -481,9 +480,7 @@ window.onload = function instantiate() {
                     creationDate: creationDate
                 });
 
-                sessionStorage.setItem("validUser", JSON.stringify(user));
-                sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                window.location.href = "home.html"
+                navigation(0);
             } else {
 
                 var newUid = firebase.database().ref("users/" + user.uid + "/privateList/" + uid).push();
@@ -501,9 +498,7 @@ window.onload = function instantiate() {
                     creator: privateUser.userName
                 });
                 sessionStorage.setItem("validGiftUser", JSON.stringify(user));
-                sessionStorage.setItem("validUser", JSON.stringify(privateUser));
-                sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                window.location.href = "privateFriendList.html";
+                navigation(4);
             }
         }
         invalidURLBool = false;
@@ -687,6 +682,9 @@ function navigation(nav){
             break;
         case 3:
             window.location.href = "settings.html";
+            break;
+        case 4:
+            window.location.href = "privateFriendList.html";
             break;
         default:
             break;
