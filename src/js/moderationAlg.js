@@ -225,7 +225,6 @@ window.onload = function instantiate() {
                 secretSantaBtn.onclick = function () {
                     secretSantaBtn.innerHTML = "Click On Me To Activate Secret Santa";
                     createSecretSantaNames();
-                    alert("Secret Santa System Has Been Initialized. Enjoy!");
                     secretSantaNameBool = true;
                     secretSantaModal.style.display = "none";
                     generateSecretSantaModal();
@@ -318,6 +317,7 @@ window.onload = function instantiate() {
             sessionStorage.setItem("userArr", JSON.stringify(userArr));
             updateAllUsersToDBSantaNames();
             userUIDArr = [];
+            alert("Secret Santa System Has Been Initialized. Enjoy!");
         }
     }
 
