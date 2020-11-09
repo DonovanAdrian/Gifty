@@ -590,9 +590,11 @@ window.onload = function instantiate() {
                 giftCreationDate.innerHTML = "Creation date not available";
             }
             updateBtn.onclick = function(){
+                updateMaintenanceLog("home", "Attempting to update gift: " + giftTitle + " " + giftKey + " " + user.userName);
                 updateGiftElement(giftUid);
             };
             deleteBtn.onclick = function(){
+                updateMaintenanceLog("home", "Attempting to delete gift: " + giftTitle + " " + giftKey + " " + user.userName);
                 deleteGiftElement(giftKey, giftTitle, giftUid, giftBuyer);
             };
 
@@ -672,9 +674,11 @@ window.onload = function instantiate() {
                 giftCreationDate.innerHTML = "Creation date not available";
             }
             updateBtn.onclick = function(){
+                updateMaintenanceLog("home", "Attempting to update gift: " + title + " " + key + " " + user.userName);
                 updateGiftElement(uid);
             };
             deleteBtn.onclick = function(){
+                updateMaintenanceLog("home", "Attempting to delete gift: " + title + " " + key + " " + user.userName);
                 deleteGiftElement(key, title, uid, buyer);
             };
 
@@ -823,6 +827,27 @@ window.onload = function instantiate() {
         return (giftOwner + "," + giftTitle + "," + pageName);
     }
 };
+
+function updateMaintenanceLog(locationData, detailsData) {
+    var today = new Date();
+    var UTChh = today.getUTCHours();
+    var UTCmm = today.getUTCMinutes();
+    var UTCss = today.getUTCSeconds();
+    var dd = today.getUTCDate();
+    var mm = today.getMonth()+1;
+    var yy = today.getFullYear();
+    var timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
+    var newUid = firebase.database().ref("maintenance").push();
+    newUid = newUid.toString();
+    newUid = newUid.substr(51, 70);
+
+    firebase.database().ref("maintenance/" + newUid).set({
+        uid: newUid,
+        location: locationData,
+        details: detailsData,
+        time: timeData
+    });
+}
 
 function deployGiftListEmptyNotification(){
     try{
