@@ -22,20 +22,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="339">
               <caret line="864" column="56" lean-forward="true" selection-start-line="864" selection-start-column="56" selection-end-line="864" selection-end-column="56" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="319" column="70" selection-start-line="319" selection-start-column="70" selection-end-line="319" selection-end-column="70" />
             </state>
           </provider>
         </entry>
@@ -53,7 +44,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>addbtn</find>
       <find>faq</find>
       <find>settingsnote</find>
       <find>notification</find>
@@ -83,6 +73,7 @@
       <find>activate secret</find>
       <find>deactivate</find>
       <find>activate</find>
+      <find>inviteListEmpty</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -140,8 +131,8 @@
         <option value="$PROJECT_DIR$/src/js/friendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/confirmationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/confirmationAlg.js" />
       </list>
     </option>
   </component>
@@ -387,12 +378,12 @@
       <workItem from="1603851890448" duration="1673000" />
       <workItem from="1604112058531" duration="788000" />
       <workItem from="1604276757492" duration="1534000" />
-      <workItem from="1604621347099" duration="6098000" />
+      <workItem from="1604621347099" duration="6803000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="469268000" />
+    <option name="totallyTimeSpent" value="469973000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1280" height="721" extended-state="0" />
@@ -700,10 +691,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="319" column="70" selection-start-line="319" selection-start-column="70" selection-end-line="319" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/confirmationAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="634" selection-start-line="634" selection-end-line="634" />
+        <state relative-caret-position="141">
+          <caret line="166" column="36" lean-forward="true" selection-start-line="166" selection-start-column="36" selection-end-line="166" selection-end-column="36" />
         </state>
       </provider>
     </entry>
@@ -711,13 +709,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="339">
           <caret line="864" column="56" lean-forward="true" selection-start-line="864" selection-start-column="56" selection-end-line="864" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="319" column="70" selection-start-line="319" selection-start-column="70" selection-end-line="319" selection-end-column="70" />
         </state>
       </provider>
     </entry>

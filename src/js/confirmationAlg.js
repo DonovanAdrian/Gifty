@@ -5,6 +5,7 @@ var listeningFirebaseRefs = [];
 
 var areYouStillThereBool = false;
 var readNotificationsBool = false;
+var inviteListEmptyBool = false;
 
 var inviteCount = 0;
 var onlineInt = 0;
@@ -36,6 +37,7 @@ function getCurrentUser(){
         if (user.invites == undefined) {
             console.log("Invites Not Found");
             deployInviteListEmptyNotification();
+            inviteListEmptyBool = true;
         } else if (user.invites != undefined) {
             if (user.invites.length > 0) {
                 inviteNote.style.background = "#ff3923";
@@ -166,7 +168,7 @@ window.onload = function instantiate() {
             var testGift = document.getElementById("TestGift");
             if (testGift == undefined){
                 //console.log("TestGift Missing. Loading Properly.");
-            } else {
+            } else if (!inviteListEmptyBool) {
                 testGift.innerHTML = "Loading... Please Wait...";
             }
             clearInterval(loadingTimer);
@@ -576,6 +578,9 @@ window.onload = function instantiate() {
             firebase.database().ref("users/" + user.uid).update({
                 invites: inviteArr
             });
+
+            if(inviteArr.length == 0)
+                navigation(2);
         }
     }
 };
