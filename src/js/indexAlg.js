@@ -229,7 +229,7 @@ function initializeDatabase(){
 
 function databaseQuery() {
 
-    console.log("Fetching Users From Database");
+    console.log("Fetching Data From Database");
     userInitial = firebase.database().ref("users/");
 
     var fetchPosts = function (postRef) {
@@ -241,7 +241,7 @@ function databaseQuery() {
             var i = findUIDItemInArr(data.key, userArr);
             if(userArr[i] != data.val() && i != -1){
                 //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
-                userArr[i] = data;
+                userArr[i] = data.val();
             }
         });
 
@@ -268,6 +268,7 @@ function findUIDItemInArr(item, userArray){
 
 function login() {
     var validUserInt = 0;
+
     for(var i = 0; i < userArr.length; i++){
         if(userArr[i].userName.toLowerCase() == username.value.toLowerCase()){
             try {
@@ -297,7 +298,29 @@ function login() {
         window.location.href = "home.html";
     } else if (loginBool === false) {
         document.getElementById("loginInfo").innerHTML = "Username or Password Incorrect";
+        updateMaintenanceLog("index", "Invalid Login: " + username.value.toLowerCase() + " " + pin.value.toString());
     }
+}
+
+function updateMaintenanceLog(locationData, detailsData) {
+    var today = new Date();
+    var UTChh = today.getUTCHours();
+    var UTCmm = today.getUTCMinutes();
+    var UTCss = today.getUTCSeconds();
+    var dd = today.getUTCDate();
+    var mm = today.getMonth()+1;
+    var yy = today.getFullYear();
+    var timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
+    var newUid = firebase.database().ref("maintenance").push();
+    newUid = newUid.toString();
+    newUid = newUid.substr(51, 70);
+
+    firebase.database().ref("maintenance/" + newUid).set({
+        uid: newUid,
+        location: locationData,
+        details: detailsData,
+        time: timeData
+    });
 }
 
 function signUp(){
