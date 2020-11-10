@@ -13,11 +13,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/index.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="84">
               <caret line="23" column="29" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/js/invitesAlg.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="489">
+              <caret line="928" column="1" selection-start-line="928" selection-start-column="1" selection-end-line="928" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -44,7 +53,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>faq</find>
       <find>settingsnote</find>
       <find>notification</find>
       <find>gifttitle</find>
@@ -74,6 +82,7 @@
       <find>deactivate</find>
       <find>activate</find>
       <find>inviteListEmpty</find>
+      <find>maintenance</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -118,7 +127,6 @@
         <option value="$PROJECT_DIR$/src/css/login.css" />
         <option value="$PROJECT_DIR$/src/index.html" />
         <option value="$PROJECT_DIR$/src/js/faqAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
         <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/notificationsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/passOp.js" />
@@ -133,6 +141,7 @@
         <option value="$PROJECT_DIR$/src/js/confirmationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
       </list>
     </option>
   </component>
@@ -378,12 +387,12 @@
       <workItem from="1603851890448" duration="1673000" />
       <workItem from="1604112058531" duration="788000" />
       <workItem from="1604276757492" duration="1534000" />
-      <workItem from="1604621347099" duration="7232000" />
+      <workItem from="1604621347099" duration="8567000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="470402000" />
+    <option name="totallyTimeSpent" value="471737000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1280" height="721" extended-state="0" />
@@ -597,13 +606,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/invitesAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="927" selection-start-line="927" selection-end-line="927" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/listsAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="546">
@@ -691,6 +693,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="23" column="29" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="177">
+          <caret line="680" column="33" selection-start-line="680" selection-start-column="22" selection-end-line="680" selection-end-column="33" />
+          <folding>
+            <element signature="n#!!block;n#getCurrentUser#0" />
+            <element signature="n#!!block;n#checkUserErrors#0" />
+            <element signature="n#!!block;n#updateUserToDB#0" />
+            <element signature="n#!!block;n#collectUserBoughtGifts#0" />
+            <element signature="n#!!block;n#updateMaintenanceLog#0" />
+            <element signature="n#!!block;n#deployGiftListEmptyNotification#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/indexAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="519">
@@ -698,35 +722,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+    <entry file="file://$PROJECT_DIR$/src/js/invitesAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="118">
-          <caret line="872" selection-start-line="872" selection-end-line="896" selection-end-column="1" />
-          <folding>
-            <element signature="n#!!block;n#getCurrentUser#0" />
-            <element signature="n#!!block;n#checkUserErrors#0" />
-            <element signature="n#!!block;n#updateUserToDB#0" />
-            <element signature="n#!!block;n#collectUserBoughtGifts#0" />
-            <element signature="e#6938#8159#0" />
-            <element signature="e#8547#8849#0" />
-            <element signature="e#8915#9127#0" />
-            <element signature="e#9653#10717#0" />
-            <element signature="e#10763#11473#0" />
-            <element signature="e#11501#12047#0" />
-            <element signature="e#12076#15846#0" />
-            <element signature="e#16233#19330#0" />
-            <element signature="e#19427#22044#0" />
-            <element signature="e#22535#24253#0" />
-            <element signature="e#24546#25385#0" />
-            <element signature="n#!!block;n#deployGiftListEmptyNotification#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="23" column="29" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="29" />
+        <state relative-caret-position="489">
+          <caret line="928" column="1" selection-start-line="928" selection-start-column="1" selection-end-line="928" selection-end-column="1" />
         </state>
       </provider>
     </entry>
