@@ -221,7 +221,7 @@ function initializeDatabase(){
     loginBtn.innerHTML = "Log In";
     loginBtn.onclick = function(){
         login();
-    }
+    };
     signUpFld.onclick = function(){
         signUp();
     }

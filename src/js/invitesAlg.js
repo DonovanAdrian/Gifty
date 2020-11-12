@@ -21,7 +21,6 @@ var confirmUserModal;
 var addUserBtn;
 var user;
 var newInvite;
-var listNote;
 var inviteNote;
 var userInput;
 var offlineTimer;
@@ -104,7 +103,6 @@ window.onload = function instantiate() {
     offlineSpan = document.getElementById("closeOffline");
     userInviteModal = document.getElementById('userInviteModal');
     confirmUserModal = document.getElementById('confirmModal');
-    listNote = document.getElementById('listNote');
     inviteNote = document.getElementById('inviteNote');
     newInvite = document.getElementById('newInviteIcon');
     addUserBtn = document.getElementById('addUser');
