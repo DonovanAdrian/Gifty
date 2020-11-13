@@ -13,31 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
+            <state relative-caret-position="84">
               <caret line="23" column="29" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/js/invitesAlg.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="56">
-              <caret line="901" selection-start-line="901" selection-end-line="926" selection-end-column="1" />
-              <folding>
-                <element signature="n#!!block;n#getCurrentUser#0" />
-                <element signature="e#9996#13325#0" />
-                <element signature="e#13641#16283#0" />
-                <element signature="e#16328#18635#0" />
-                <element signature="e#18689#20009#0" />
-                <element signature="e#20776#23547#0" />
-                <element signature="e#23582#28010#0" />
-                <element signature="e#28061#29974#0" />
-                <element signature="e#30231#31663#0" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -55,8 +35,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>notification</find>
-      <find>gifttitle</find>
       <find>encodehead</find>
       <find>inputStr</find>
       <find>encode</find>
@@ -85,6 +63,8 @@
       <find>inviteListEmpty</find>
       <find>maintenance</find>
       <find>listnote</find>
+      <find>secretsantanamebool</find>
+      <find>sessionStorage</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -129,7 +109,6 @@
         <option value="$PROJECT_DIR$/src/css/login.css" />
         <option value="$PROJECT_DIR$/src/index.html" />
         <option value="$PROJECT_DIR$/src/js/faqAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/notificationsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/passOp.js" />
         <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
@@ -144,6 +123,7 @@
         <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
         <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
       </list>
     </option>
   </component>
@@ -390,12 +370,12 @@
       <workItem from="1604112058531" duration="788000" />
       <workItem from="1604276757492" duration="1534000" />
       <workItem from="1604621347099" duration="8802000" />
-      <workItem from="1605141037397" duration="1233000" />
+      <workItem from="1605141037397" duration="2968000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="473205000" />
+    <option name="totallyTimeSpent" value="474940000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1280" height="721" extended-state="0" />
@@ -609,13 +589,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/listsAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="546">
-          <caret line="827" selection-start-line="827" selection-end-line="827" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/notificationsAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="519">
@@ -708,13 +681,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" column="29" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/indexAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2220">
@@ -732,8 +698,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/invitesAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="56">
-          <caret line="901" selection-start-line="901" selection-end-line="926" selection-end-column="1" />
+        <state relative-caret-position="176">
+          <caret line="909" column="48" lean-forward="true" selection-start-line="909" selection-start-column="48" selection-end-line="909" selection-end-column="48" />
           <folding>
             <element signature="n#!!block;n#getCurrentUser#0" />
             <element signature="e#9996#13325#0" />
@@ -745,6 +711,28 @@
             <element signature="e#28061#29974#0" />
             <element signature="e#30231#31663#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/listsAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="17" lean-forward="true" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+          <folding>
+            <element signature="n#!!block;n#getCurrentUser#0" />
+            <element signature="e#8748#12287#0" />
+            <element signature="e#18042#22297#0" />
+            <element signature="e#22340#26228#0" />
+            <element signature="e#26280#27503#0" />
+            <element signature="n#!!block;n#navigation#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="23" column="29" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="29" />
         </state>
       </provider>
     </entry>
