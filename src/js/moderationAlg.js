@@ -6,6 +6,8 @@ var optInUserArr = [];
 
 var areYouStillThereBool = false;
 
+var currentModalOpen = "";
+
 var moderationSet = 1;
 var userCounter = 0;
 var onlineInt = 0;
@@ -108,6 +110,7 @@ window.onload = function instantiate() {
 
     window.addEventListener("online", function(){
         offlineModal.style.display = "none";
+        currentModalOpen = "";
         location.reload();
     });
 
@@ -138,6 +141,7 @@ window.onload = function instantiate() {
                     }
                 }
                 offlineModal.style.display = "block";
+                currentModalOpen = "offlineModal";
                 clearInterval(offlineTimer);
             }
         }, 1000);
@@ -146,12 +150,14 @@ window.onload = function instantiate() {
     //close offlineModal on close
     offlineSpan.onclick = function() {
         offlineModal.style.display = "none";
+        currentModalOpen = "";
     };
 
     //close offlineModal on click
     window.onclick = function(event) {
         if (event.target == offlineModal) {
             offlineModal.style.display = "none";
+            currentModalOpen = "";
         }
     };
 
@@ -208,6 +214,7 @@ window.onload = function instantiate() {
                     updateAllUsersToDBSantaNums();
                     secretSantaNameBool = false;
                     secretSantaModal.style.display = "none";
+                    currentModalOpen = "";
                     generateSecretSantaModal();
                 };
 
@@ -216,6 +223,7 @@ window.onload = function instantiate() {
                     removeSecretSantaNames();
                     createSecretSantaNames();
                     secretSantaNameBool = true;
+                    alert("The Secret Santa has been shuffled!");
                 };
 
                 secretSantaBtn.innerHTML = "Click On Me To Deactivate Secret Santa";
@@ -225,8 +233,10 @@ window.onload = function instantiate() {
                 secretSantaBtn.onclick = function () {
                     secretSantaBtn.innerHTML = "Click On Me To Activate Secret Santa";
                     createSecretSantaNames();
+                    alert("Secret Santa System Has Been Initialized. Enjoy!");
                     secretSantaNameBool = true;
                     secretSantaModal.style.display = "none";
+                    currentModalOpen = "";
                     generateSecretSantaModal();
                 };
 
@@ -252,15 +262,18 @@ window.onload = function instantiate() {
 
             santaModalSpan.onclick = function(){
                 secretSantaModal.style.display = "none";
+                currentModalOpen = "";
             };
 
             window.onclick = function(event) {
                 if (event.target == secretSantaModal) {
                     secretSantaModal.style.display = "none";
+                    currentModalOpen = "";
                 }
             };
 
             secretSantaModal.style.display = "block";
+            currentModalOpen = "secretSantaModal";
         };
 
         activateSecretSanta.innerHTML = "Secret Santa";
@@ -317,7 +330,6 @@ window.onload = function instantiate() {
             sessionStorage.setItem("userArr", JSON.stringify(userArr));
             updateAllUsersToDBSantaNames();
             userUIDArr = [];
-            alert("Secret Santa System Has Been Initialized. Enjoy!");
         }
     }
 
@@ -402,6 +414,7 @@ window.onload = function instantiate() {
 
         try {
             modal.style.display = "none";
+            currentModalOpen = "";
         } catch (err) {
             //console.log("Basic Modal Not Open");
         }
@@ -409,10 +422,12 @@ window.onload = function instantiate() {
             + ":" + timeSecs + "!";
         noteTitleField.innerHTML = "Are You Still There?";
         noteModal.style.display = "block";
+        currentModalOpen = "noteModal";
 
         //close on close
         noteSpan.onclick = function() {
             noteModal.style.display = "none";
+            currentModalOpen = "";
             areYouStillThereBool = false;
         };
     }
@@ -426,6 +441,7 @@ window.onload = function instantiate() {
             nowJ = nowJ + 1000;
             if(nowJ >= 3000){
                 noteModal.style.display = "none";
+                currentModalOpen = "";
                 areYouStillThereBool = false;
                 clearInterval(j);
             }
@@ -435,6 +451,7 @@ window.onload = function instantiate() {
         window.onclick = function(event) {
             if (event.target == noteModal) {
                 noteModal.style.display = "none";
+                currentModalOpen = "";
                 areYouStillThereBool = false;
             }
         };
@@ -478,25 +495,30 @@ window.onload = function instantiate() {
                 addPrivateMessageToDB(userData, privateNoteInp.value);
                 privateNoteInp.value = "";
                 addGlobalMsgModal.style.display = "none";
+                currentModalOpen = "";
                 alert("The Private Message Has Been Sent!");
             }
         };
         cancelNote.onclick = function (){
             privateNoteInp.value = "";
             addGlobalMsgModal.style.display = "none";
+            currentModalOpen = "";
         };
 
         addGlobalMsgModal.style.display = "block";
+        currentModalOpen = "globalMessageModal";
 
         //close on close
         spanNote.onclick = function() {
             addGlobalMsgModal.style.display = "none";
+            currentModalOpen = "";
         };
 
         //close on click
         window.onclick = function(event) {
             if (event.target == addGlobalMsgModal) {
                 addGlobalMsgModal.style.display = "none";
+                currentModalOpen = "";
             }
         };
     }
@@ -538,25 +560,30 @@ window.onload = function instantiate() {
                     addGlobalMessageToDB(globalNoteInp.value);
                     globalNoteInp.value = "";
                     addGlobalMsgModal.style.display = "none";
+                    currentModalOpen = "";
                     alert("The Global Message Has Been Sent!");
                 }
             };
             cancelNote.onclick = function (){
                 globalNoteInp.value = "";
                 addGlobalMsgModal.style.display = "none";
+                currentModalOpen = "";
             };
 
             addGlobalMsgModal.style.display = "block";
+            currentModalOpen = "globalMessageModal";
 
             //close on close
             spanNote.onclick = function() {
                 addGlobalMsgModal.style.display = "none";
+                currentModalOpen = "";
             };
 
             //close on click
             window.onclick = function(event) {
                 if (event.target == addGlobalMsgModal) {
                     addGlobalMsgModal.style.display = "none";
+                    currentModalOpen = "";
                 }
             };
         };
@@ -621,6 +648,11 @@ window.onload = function instantiate() {
                     user = data.val();
                     //console.log("User Updated: 2");
                 }
+
+                if(currentModalOpen == data.key) {
+                    modal.style.display = "none";
+                    currentModalOpen = "";
+                }
             });
 
             postRef.on('child_removed', function (data) {
@@ -630,6 +662,11 @@ window.onload = function instantiate() {
                 if(userArr[i] != data.val() && i != -1){
                     //console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
                     userArr.splice(i, 1);
+                }
+
+                if(currentModalOpen == data.key) {
+                    modal.style.display = "none";
+                    currentModalOpen = "";
                 }
             });
         };
@@ -695,22 +732,24 @@ window.onload = function instantiate() {
             var userUID = document.getElementById('userUID');
             var userUserName = document.getElementById('userUserName');
             var userGifts = document.getElementById('userGifts');
+            var userPrivateGifts = document.getElementById('userPrivateGifts');
             var userFriends = document.getElementById('userFriends');
             var userPassword = document.getElementById('userPassword');
             var userSecretSanta = document.getElementById('userSecretSanta');
-            var totalGifts = 0;
-            if(userData.giftList != undefined)
-                totalGifts = userData.giftList.length;
-            if(userData.privateList != undefined)
-                totalGifts += userData.privateList.length;
+            var moderatorOp = document.getElementById('moderatorOp');
 
             userName.innerHTML = userData.name;
             userUID.innerHTML = userData.uid;
             userUserName.innerHTML = userData.userName;
-            if(userData.giftList != undefined) {
-                userGifts.innerHTML = "# Gifts: " + totalGifts;
+            if(userData.giftList != undefined){
+                userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
             } else {
                 userGifts.innerHTML = "This User Has No Gifts";
+            }
+            if(userData.privateList != undefined){
+                userPrivateGifts.innerHTML = "# Private Gifts: " + userData.privateList.length;
+            } else {
+                userPrivateGifts.innerHTML = "This User Has No Private Gifts";
             }
             if(userData.friends != undefined) {
                 userFriends.innerHTML = "# Friends: " + userData.friends.length;
@@ -728,13 +767,24 @@ window.onload = function instantiate() {
                 userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
             }
 
+            userSecretSanta.onclick = function() {
+                manuallyOptInOut(userData);
+            };
+
             userGifts.onclick = function() {
                 if(userData.uid == user.uid){
                     alert("Navigate to the home page to see your gifts!");
                 } else {
                     sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
-                    sessionStorage.setItem("validUser", JSON.stringify(user));
-                    window.location.href = "friendList.html";
+                    navigation(4);
+                }
+            };
+            userPrivateGifts.onclick = function() {
+                if(userData.uid == user.uid){
+                    alert("You aren't allowed to see these gifts, silly!");
+                } else {
+                    sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
+                    navigation(5);
                 }
             };
             userPassword.onclick = function() {
@@ -768,6 +818,7 @@ window.onload = function instantiate() {
                             moderatorInt: 0
                         });
                         modal.style.display = "none";
+                        currentModalOpen = "";
                     }
                 };
             } else {
@@ -782,6 +833,7 @@ window.onload = function instantiate() {
                             moderatorInt: 1
                         });
                         modal.style.display = "none";
+                        currentModalOpen = "";
                     }
                 };
             }
@@ -793,16 +845,19 @@ window.onload = function instantiate() {
 
             //show modal
             modal.style.display = "block";
+            currentModalOpen = userData.uid;
 
             //close on close
             spanGift.onclick = function() {
                 modal.style.display = "none";
+                currentModalOpen = "";
             };
 
             //close on click
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = "none";
+                    currentModalOpen = "";
                 }
             };
         };
@@ -833,23 +888,24 @@ window.onload = function instantiate() {
             var userUID = document.getElementById('userUID');
             var userUserName = document.getElementById('userUserName');
             var userGifts = document.getElementById('userGifts');
+            var userPrivateGifts = document.getElementById('userPrivateGifts');
             var userFriends = document.getElementById('userFriends');
             var userPassword = document.getElementById('userPassword');
             var userSecretSanta = document.getElementById('userSecretSanta');
             var moderatorOp = document.getElementById('moderatorOp');
-            var totalGifts = 0;
-            if(userData.giftList != undefined)
-                totalGifts = userData.giftList.length;
-            if(userData.privateList != undefined)
-                totalGifts += userData.privateList.length;
 
             userName.innerHTML = userData.name;
             userUID.innerHTML = userData.uid;
             userUserName.innerHTML = userData.userName;
             if(userData.giftList != undefined){
-                userGifts.innerHTML = "# Gifts: " + totalGifts;
+                userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
             } else {
                 userGifts.innerHTML = "This User Has No Gifts";
+            }
+            if(userData.privateList != undefined){
+                userPrivateGifts.innerHTML = "# Private Gifts: " + userData.privateList.length;
+            } else {
+                userPrivateGifts.innerHTML = "This User Has No Private Gifts";
             }
             if(userData.friends != undefined) {
                 userFriends.innerHTML = "# Friends: " + userData.friends.length;
@@ -867,13 +923,24 @@ window.onload = function instantiate() {
                 userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
             }
 
+            userSecretSanta.onclick = function() {
+                manuallyOptInOut(userData);
+            };
+
             userGifts.onclick = function() {
                 if(userData.uid == user.uid){
                     alert("Navigate to the home page to see your gifts!");
                 } else {
                     sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
-                    sessionStorage.setItem("validUser", JSON.stringify(user));
-                    window.location.href = "friendList.html";
+                    navigation(4);
+                }
+            };
+            userPrivateGifts.onclick = function() {
+                if(userData.uid == user.uid){
+                    alert("You aren't allowed to see these gifts, silly!");
+                } else {
+                    sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
+                    navigation(5);
                 }
             };
             userPassword.onclick = function() {
@@ -903,6 +970,7 @@ window.onload = function instantiate() {
                             moderatorInt: 0
                         });
                         modal.style.display = "none";
+                        currentModalOpen = "";
                     }
                 };
             } else {
@@ -917,6 +985,7 @@ window.onload = function instantiate() {
                             moderatorInt: 1
                         });
                         modal.style.display = "none";
+                        currentModalOpen = "";
                     }
                 };
             }
@@ -928,16 +997,19 @@ window.onload = function instantiate() {
 
             //show modal
             modal.style.display = "block";
+            currentModalOpen = userData.uid;
 
             //close on close
             spanGift.onclick = function() {
                 modal.style.display = "none";
+                currentModalOpen = "";
             };
 
             //close on click
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = "none";
+                    currentModalOpen = "";
                 }
             };
         };
@@ -952,6 +1024,27 @@ window.onload = function instantiate() {
         }
     }
 };
+
+function manuallyOptInOut(userData){
+    if (userData.secretSanta != null) {
+        if (userData.secretSanta == 0) {
+            firebase.database().ref("users/" + userData.uid).update({
+                secretSanta: 1
+            });
+            alert(userData.name + " has been manually opted in to the Secret Santa Program!");
+        } else {
+            firebase.database().ref("users/" + userData.uid).update({
+                secretSanta: 0
+            });
+            alert(userData.name + " has been manually opted out of the Secret Santa Program!");
+        }
+    } else {
+        firebase.database().ref("users/" + userData.uid).update({
+            secretSanta: 0
+        });
+        alert(userData.name + " has been manually opted out of the Secret Santa Program!");
+    }
+}
 
 function deployUserListEmptyNotification(){
     try{
@@ -989,6 +1082,12 @@ function navigation(nav){
             break;
         case 3:
             window.location.href = "settings.html";
+            break;
+        case 4:
+            window.location.href = "friendList.html";
+            break;
+        case 5:
+            window.location.href = "privateFriendList.html";
             break;
         default:
             break;

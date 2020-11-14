@@ -370,12 +370,13 @@
       <workItem from="1604112058531" duration="788000" />
       <workItem from="1604276757492" duration="1534000" />
       <workItem from="1604621347099" duration="8802000" />
-      <workItem from="1605141037397" duration="3249000" />
+      <workItem from="1605141037397" duration="3434000" />
+      <workItem from="1605245165155" duration="317000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="475221000" />
+    <option name="totallyTimeSpent" value="475723000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1280" height="721" extended-state="0" />
@@ -663,14 +664,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="177">
           <caret line="680" column="33" selection-start-line="680" selection-start-column="22" selection-end-line="680" selection-end-column="33" />
-          <folding>
-            <element signature="n#!!block;n#getCurrentUser#0" />
-            <element signature="n#!!block;n#checkUserErrors#0" />
-            <element signature="n#!!block;n#updateUserToDB#0" />
-            <element signature="n#!!block;n#collectUserBoughtGifts#0" />
-            <element signature="n#!!block;n#updateMaintenanceLog#0" />
-            <element signature="n#!!block;n#deployGiftListEmptyNotification#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -678,14 +671,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2220">
           <caret line="294" column="42" lean-forward="true" selection-start-line="294" selection-start-column="42" selection-end-line="294" selection-end-column="42" />
-          <folding>
-            <element signature="n#!!block;n#fetchConfigFile#0" />
-            <element signature="e#7603#8627#0" />
-            <element signature="e#10707#10932#0" />
-            <element signature="e#10994#11116#0" />
-            <element signature="e#11122#11142#0" />
-            <element signature="n#!!block;n#updateMaintenanceLog#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -693,17 +678,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
           <caret line="909" column="48" lean-forward="true" selection-start-line="909" selection-start-column="48" selection-end-line="909" selection-end-column="48" />
-          <folding>
-            <element signature="n#!!block;n#getCurrentUser#0" />
-            <element signature="e#9996#13325#0" />
-            <element signature="e#13641#16283#0" />
-            <element signature="e#16328#18635#0" />
-            <element signature="e#18689#20009#0" />
-            <element signature="e#20776#23547#0" />
-            <element signature="e#23582#28010#0" />
-            <element signature="e#28061#29974#0" />
-            <element signature="e#30231#31663#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -711,14 +685,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
           <caret line="2" column="17" lean-forward="true" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
-          <folding>
-            <element signature="n#!!block;n#getCurrentUser#0" />
-            <element signature="e#8748#12287#0" />
-            <element signature="e#18042#22297#0" />
-            <element signature="e#22340#26228#0" />
-            <element signature="e#26280#27503#0" />
-            <element signature="n#!!block;n#navigation#0" />
-          </folding>
         </state>
       </provider>
     </entry>
