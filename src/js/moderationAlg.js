@@ -1,10 +1,13 @@
 var listeningFirebaseRefs = [];
 var inviteArr = [];
+var userArr = [];
 var userUIDArr = [];
 var tempUserArr = [];
 var optInUserArr = [];
 
 var areYouStillThereBool = false;
+var secretSantaIntBool = false;
+var secretSantaNameBool = false;
 
 var currentModalOpen = "";
 
@@ -16,14 +19,12 @@ var logoutReminder = 300;
 var logoutLimit = 1800;
 
 var giftList;
-var offline;
 var offlineSpan;
 var offlineModal;
 var addGlobalMsgModal;
 var addGlobalMsgBtn;
 var sendPrivateMessage;
 var user;
-var userInvites;
 var offlineTimer;
 var loadingTimer;
 var modal;
@@ -33,13 +34,12 @@ var noteTitleField;
 var noteSpan;
 var inviteNote;
 var userInitial;
+var userInvites;
 var activateSecretSanta;
 var secretSantaModal;
 var santaModalSpan;
 var secretSantaShuffle;
 var secretSantaBtn;
-var secretSantaIntBool = false;
-var secretSantaNameBool = false;
 
 
 

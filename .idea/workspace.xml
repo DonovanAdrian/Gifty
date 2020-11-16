@@ -13,11 +13,41 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="84">
+            <state relative-caret-position="124">
               <caret line="23" column="29" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+              <folding>
+                <element signature="n#!!block;n#getCurrentUser#0" />
+                <element signature="e#3242#4429#0" />
+                <element signature="e#4808#5168#0" />
+                <element signature="e#5344#5832#0" />
+                <element signature="e#5902#8633#0" />
+                <element signature="e#8670#10453#0" />
+                <element signature="e#10490#10644#0" />
+                <element signature="e#10680#10829#0" />
+                <element signature="e#10871#11189#0" />
+                <element signature="e#11232#11564#0" />
+                <element signature="e#11589#12653#0" />
+                <element signature="e#12699#13503#0" />
+                <element signature="e#13531#14139#0" />
+                <element signature="e#14835#16294#0" />
+                <element signature="e#16893#18525#0" />
+                <element signature="e#19186#21859#0" />
+                <element signature="e#22126#27860#0" />
+                <element signature="e#27901#33156#0" />
+                <element signature="n#!!block;n#manuallyOptInOut#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -35,8 +65,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>encodehead</find>
-      <find>inputStr</find>
       <find>encode</find>
       <find>encodename</find>
       <find>checkencodename</find>
@@ -65,6 +93,8 @@
       <find>listnote</find>
       <find>secretsantanamebool</find>
       <find>sessionStorage</find>
+      <find>userinvites</find>
+      <find>userArr</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -117,13 +147,13 @@
         <option value="$PROJECT_DIR$/src/js/boughtGiftsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/friendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/confirmationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
         <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
         <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
         <option value="$PROJECT_DIR$/src/moderation.html" />
+        <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
       </list>
     </option>
   </component>
@@ -133,10 +163,10 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="25" />
     <option name="width" value="1280" />
-    <option name="height" value="721" />
+    <option name="height" value="716" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -371,15 +401,15 @@
       <workItem from="1604276757492" duration="1534000" />
       <workItem from="1604621347099" duration="8802000" />
       <workItem from="1605141037397" duration="3434000" />
-      <workItem from="1605245165155" duration="317000" />
+      <workItem from="1605245165155" duration="1834000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="475723000" />
+    <option name="totallyTimeSpent" value="477240000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="25" width="1280" height="721" extended-state="0" />
+    <frame x="0" y="25" width="1280" height="716" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19301033" />
@@ -646,13 +676,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="319" column="70" selection-start-line="319" selection-start-column="70" selection-end-line="319" selection-end-column="70" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/confirmationAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="141">
@@ -664,6 +687,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="177">
           <caret line="680" column="33" selection-start-line="680" selection-start-column="22" selection-end-line="680" selection-end-column="33" />
+          <folding>
+            <element signature="n#!!block;n#getCurrentUser#0" />
+            <element signature="n#!!block;n#checkUserErrors#0" />
+            <element signature="n#!!block;n#updateUserToDB#0" />
+            <element signature="n#!!block;n#collectUserBoughtGifts#0" />
+            <element signature="n#!!block;n#updateMaintenanceLog#0" />
+            <element signature="n#!!block;n#deployGiftListEmptyNotification#0" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -671,6 +702,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2220">
           <caret line="294" column="42" lean-forward="true" selection-start-line="294" selection-start-column="42" selection-end-line="294" selection-end-column="42" />
+          <folding>
+            <element signature="n#!!block;n#fetchConfigFile#0" />
+            <element signature="e#7603#8627#0" />
+            <element signature="e#10707#10932#0" />
+            <element signature="e#10994#11116#0" />
+            <element signature="e#11122#11142#0" />
+            <element signature="n#!!block;n#updateMaintenanceLog#0" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -678,6 +717,17 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
           <caret line="909" column="48" lean-forward="true" selection-start-line="909" selection-start-column="48" selection-end-line="909" selection-end-column="48" />
+          <folding>
+            <element signature="n#!!block;n#getCurrentUser#0" />
+            <element signature="e#9996#13325#0" />
+            <element signature="e#13641#16283#0" />
+            <element signature="e#16328#18635#0" />
+            <element signature="e#18689#20009#0" />
+            <element signature="e#20776#23547#0" />
+            <element signature="e#23582#28010#0" />
+            <element signature="e#28061#29974#0" />
+            <element signature="e#30231#31663#0" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -685,6 +735,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
           <caret line="2" column="17" lean-forward="true" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+          <folding>
+            <element signature="n#!!block;n#getCurrentUser#0" />
+            <element signature="e#8748#12287#0" />
+            <element signature="e#18042#22297#0" />
+            <element signature="e#22340#26228#0" />
+            <element signature="e#26280#27503#0" />
+            <element signature="n#!!block;n#navigation#0" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -697,8 +755,36 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
+        <state relative-caret-position="124">
           <caret line="23" column="29" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+          <folding>
+            <element signature="n#!!block;n#getCurrentUser#0" />
+            <element signature="e#3242#4429#0" />
+            <element signature="e#4808#5168#0" />
+            <element signature="e#5344#5832#0" />
+            <element signature="e#5902#8633#0" />
+            <element signature="e#8670#10453#0" />
+            <element signature="e#10490#10644#0" />
+            <element signature="e#10680#10829#0" />
+            <element signature="e#10871#11189#0" />
+            <element signature="e#11232#11564#0" />
+            <element signature="e#11589#12653#0" />
+            <element signature="e#12699#13503#0" />
+            <element signature="e#13531#14139#0" />
+            <element signature="e#14835#16294#0" />
+            <element signature="e#16893#18525#0" />
+            <element signature="e#19186#21859#0" />
+            <element signature="e#22126#27860#0" />
+            <element signature="e#27901#33156#0" />
+            <element signature="n#!!block;n#manuallyOptInOut#0" />
+          </folding>
         </state>
       </provider>
     </entry>
