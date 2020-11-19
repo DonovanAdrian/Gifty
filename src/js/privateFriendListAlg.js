@@ -7,6 +7,7 @@ var instantiatedNodes = [];
 var areYouStillThereBool = false;
 var readNotificationsBool = false;
 var updateGiftToDBBool = false;
+var giftListEmptyBool = false;
 
 var currentModalOpen = "";
 
@@ -53,8 +54,10 @@ function getCurrentUser(){
         console.log("Friend: " + user.userName + " loaded in");
         if (user.privateList == undefined) {
             deployGiftListEmptyNotification();
+            giftListEmptyBool = true;
         } else if (user.privateList.length == 0) {
             deployGiftListEmptyNotification();
+            giftListEmptyBool = true;
         }
         if (currentUser.invites == undefined) {
             console.log("Invites Not Found");
@@ -77,24 +80,18 @@ function getCurrentUser(){
                 if (currentUser.notifications.length > 0 && currentUser.readNotifications.length != currentUser.notifications.length) {
                     notificationBtn.src = "img/bellNotificationOn.png";
                     notificationBtn.onclick = function() {
-                        sessionStorage.setItem("validUser", JSON.stringify(currentUser));
-                        sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                        window.location.href = "notifications.html";
+                        navigation(4);
                     }
                 } else {
                     notificationBtn.src = "img/bellNotificationOff.png";
                     notificationBtn.onclick = function() {
-                        sessionStorage.setItem("validUser", JSON.stringify(currentUser));
-                        sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                        window.location.href = "notifications.html";
+                        navigation(4);
                     }
                 }
             } else if (currentUser.notifications.length > 0) {
                 notificationBtn.src = "img/bellNotificationOn.png";
                 notificationBtn.onclick = function() {
-                    sessionStorage.setItem("validUser", JSON.stringify(currentUser));
-                    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-                    window.location.href = "notifications.html";
+                    navigation(4);
                 }
             }
         }
@@ -220,7 +217,7 @@ window.onload = function instantiate() {
             var testGift = document.getElementById("TestGift");
             if (testGift == undefined){
                 //console.log("TestGift Missing. Loading Properly.");
-            } else {
+            } else if (!giftListEmptyBool) {
                 testGift.innerHTML = "Loading... Please Wait...";
             }
             clearInterval(loadingTimer);
@@ -296,7 +293,7 @@ window.onload = function instantiate() {
     }
 
     function ohThereYouAre(){
-        noteInfoField.innerHTML = "Welcome back, " + user.name;
+        noteInfoField.innerHTML = "Welcome back, " + currentUser.name;
         noteTitleField.innerHTML = "Oh, There You Are!";
 
         var nowJ = 0;
@@ -580,15 +577,19 @@ window.onload = function instantiate() {
                 giftCreationDate.innerHTML = "Creation date not available";
             }
             editBtn.onclick = function(){
+                updateMaintenanceLog("privateList", "Attempting to update gift:" + giftTitle + " " + giftKey + " " + currentUser.userName);
                 updateGiftElement(giftUid);
             };
             deleteBtn.onclick = function(){
                 if (giftCreator == currentUser.userName || giftCreator == null || giftCreator == undefined) {
+                    updateMaintenanceLog("privateList", "Attempting to delete gift:" + giftTitle + " " + giftKey + " " + currentUser.userName);
                     deleteGiftElement(giftKey, giftTitle, giftBuyer);
                 } else {
                     if (giftCreator == ""){
+                        updateMaintenanceLog("privateList", "Attempting to delete gift:" + giftTitle + " " + giftKey + " " + currentUser.userName);
                         deleteGiftElement(giftKey, giftTitle, giftBuyer);
                     } else {
+                        updateMaintenanceLog("privateList", "Attempting to delete gift:" + giftTitle + " " + giftKey + " " + currentUser.userName);
                         alert("Only the creator, " + giftCreator + ", can delete this gift. Please contact them to delete this gift " +
                             "if it needs to be removed.");
                     }
@@ -738,15 +739,19 @@ window.onload = function instantiate() {
                 giftCreationDate.innerHTML = "Creation date not available";
             }
             editBtn.onclick = function () {
+                updateMaintenanceLog("privateList", "Attempting to update gift:" + title + " " + key + " " + currentUser.userName);
                 updateGiftElement(uid);
             };
             deleteBtn.onclick = function () {
                 if (creator == currentUser.userName || creator == null || creator == undefined) {
+                    updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + currentUser.userName);
                     deleteGiftElement(key, title, buyer);
                 } else {
                     if (creator == ""){
+                        updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + currentUser.userName);
                         deleteGiftElement(key, title, buyer);
                     } else {
+                        updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + currentUser.userName);
                         alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
                             "if it needs to be removed.");
                     }
@@ -915,6 +920,27 @@ window.onload = function instantiate() {
     }
 };
 
+function updateMaintenanceLog(locationData, detailsData) {
+    var today = new Date();
+    var UTChh = today.getUTCHours();
+    var UTCmm = today.getUTCMinutes();
+    var UTCss = today.getUTCSeconds();
+    var dd = today.getUTCDate();
+    var mm = today.getMonth()+1;
+    var yy = today.getFullYear();
+    var timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
+    var newUid = firebase.database().ref("maintenance").push();
+    newUid = newUid.toString();
+    newUid = newUid.substr(51, 70);
+
+    firebase.database().ref("maintenance/" + newUid).set({
+        uid: newUid,
+        location: locationData,
+        details: detailsData,
+        time: timeData
+    });
+}
+
 function deployGiftListEmptyNotification(){
     try{
         document.getElementById("TestGift").innerHTML = "No Gifts Found! Add Some Gifts With The Button Below!";
@@ -951,6 +977,9 @@ function navigation(nav){
             break;
         case 3:
             window.location.href = "settings.html";
+            break;
+        case 4:
+            window.location.href = "notifications.html";
             break;
         default:
             break;
