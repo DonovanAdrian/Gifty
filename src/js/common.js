@@ -1,3 +1,5 @@
+var currentModalOpen = "";
+
 function newNavigation(num) {
     switch(num){
         case 1:
@@ -51,9 +53,15 @@ function newNavigation(num) {
 function openModal(openThisModal, modalName){
     currentModalOpen = modalName;
     openThisModal.style.display = "block";
+    console.log("Modal Opened: " + modalName);
 }
 
 function closeModal(closeThisModal){
-    currentModalOpen = "";
-    closeThisModal.style.display = "none";
+    try {
+        currentModalOpen = "";
+        closeThisModal.style.display = "none";
+        console.log("Modal Closed");
+    } catch (err) {
+        console.log("Modal Not Open");
+    }
 }
