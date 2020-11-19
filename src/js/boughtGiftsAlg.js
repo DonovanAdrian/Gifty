@@ -8,8 +8,6 @@ var initializedGiftsArr = [];
 var areYouStillThereBool = false;
 var readNotificationsBool = false;
 
-var currentModalOpen = "";
-
 var onlineInt = 0;
 var giftCounter = 0;
 var loadingTimerInt = 0;
@@ -134,9 +132,7 @@ window.onload = function instantiate() {
     });
 
     window.addEventListener("online", function(){
-        currentModalOpen = "";
-        console.log("Closed modal");
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
         location.reload();
     });
 
@@ -158,9 +154,7 @@ window.onload = function instantiate() {
                         giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
                     }
                 }
-                offlineModal.style.display = "block";
-                currentModalOpen = "offlineModal";
-                console.log("Modal Open: " + currentModalOpen);
+                openModal(offlineModal, "offlineModal");
                 clearInterval(offlineTimer);
             }
         }, 1000);
@@ -168,17 +162,13 @@ window.onload = function instantiate() {
 
     //close offlineModal on close
     offlineSpan.onclick = function() {
-        currentModalOpen = "";
-        console.log("Closed modal");
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
     };
 
     //close offlineModal on click
     window.onclick = function(event) {
         if (event.target == offlineModal) {
-            currentModalOpen = "";
-            console.log("Closed modal");
-            offlineModal.style.display = "none";
+            closeModal(offlineModal);
         }
     };
 
@@ -210,8 +200,6 @@ window.onload = function instantiate() {
     homeButton();
 
     function initializeGifts(){
-        //console.log(userBoughtGiftsArr);
-        //console.log(userBoughtGiftsUsersArr);
 
         if(userBoughtGiftsArr.length == userBoughtGiftsUsersArr.length) {
             for (var i = 0; i < userBoughtGiftsArr.length; i++) {
@@ -264,24 +252,15 @@ window.onload = function instantiate() {
             timeSecs = ("0" + timeSecs).slice(-2);
         }
 
-
-        try {
-            modal.style.display = "none";
-        } catch (err) {
-            //console.log("Basic Modal Not Open");
-        }
+        closeModal(modal);
         noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
             + ":" + timeSecs + "!";
         noteTitleField.innerHTML = "Are You Still There?";
-        noteModal.style.display = "block";
-        currentModalOpen = "noteModal";
-        console.log("Modal Open: " + currentModalOpen);
+        openModal(noteModal, "noteModal");
 
         //close on close
         noteSpan.onclick = function() {
-            currentModalOpen = "";
-            console.log("Closed modal");
-            noteModal.style.display = "none";
+            closeModal(noteModal);
             areYouStillThereBool = false;
         };
     }
@@ -294,9 +273,7 @@ window.onload = function instantiate() {
         var j = setInterval(function(){
             nowJ = nowJ + 1000;
             if(nowJ >= 3000){
-                currentModalOpen = "";
-                console.log("Closed modal");
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
                 clearInterval(j);
             }
@@ -305,9 +282,7 @@ window.onload = function instantiate() {
         //close on click
         window.onclick = function(event) {
             if (event.target == noteModal) {
-                currentModalOpen = "";
-                console.log("Closed modal");
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
             }
         };
@@ -346,8 +321,6 @@ window.onload = function instantiate() {
                 var i = findUIDItemInArr(data.key, userArr);
                 if(userArr[i] != data.val() && i != -1){
                     checkGiftLists(data.val());
-
-                    //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
                     userArr[i] = data.val();
                 }
 
@@ -422,7 +395,6 @@ window.onload = function instantiate() {
             for (var i = 0; i < userBoughtGiftsArr.length; i++) {
                 var a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newGiftList);
                 if (a != -1) {
-                    //console.log(newGiftList[a]);
                     checkGiftData(userBoughtGiftsArr[i], newGiftList[a], updatedUserData.name);
                 }
             }
@@ -433,7 +405,6 @@ window.onload = function instantiate() {
             for (var i = 0; i < userBoughtGiftsArr.length; i++) {
                 var a = findUIDItemInArr(userBoughtGiftsArr[i], newPrivateGiftList);
                 if (a != -1) {
-                    //console.log(newPrivateGiftList[a]);
                     checkGiftData(userBoughtGiftsArr[i], newPrivateGiftList[a], updatedUserData.name);
                 }
             }
@@ -443,27 +414,21 @@ window.onload = function instantiate() {
     function checkGiftData(currentGiftData, newGiftData, giftOwner){
         var updateGiftBool = false;
         if(currentGiftData.description != newGiftData.description) {
-            console.log("Description Updated: " + currentGiftData.description + " " + newGiftData.description);
             updateGiftBool = true;
         }
         if(currentGiftData.link != newGiftData.link) {
-            //console.log("Link Updated");
             updateGiftBool = true;
         }
         if(currentGiftData.title != newGiftData.title) {
-            //console.log("Title Updated");
             updateGiftBool = true;
         }
         if(currentGiftData.where != newGiftData.where) {
-            //console.log("Where Updated");
             updateGiftBool = true;
         }
 
         if(updateGiftBool) {
-            if (newGiftData.uid == currentModalOpen){
-                currentModalOpen = "";
-                console.log("Closed modal");
-                modal.style.display = "none";
+            if (newGiftData.uid == currentModalOpen){//Moved currentModalOpen reference to common.js
+                closeModal(modal);
             }
             changeGiftElement(newGiftData, giftOwner);
         }
@@ -472,7 +437,6 @@ window.onload = function instantiate() {
     function findUIDItemInArr(item, itemArray){
         for(var i = 0; i < itemArray.length; i++){
             if(itemArray[i].uid == item){
-                //console.log("Found item: " + item);
                 return i;
             }
         }
@@ -487,7 +451,6 @@ window.onload = function instantiate() {
         var giftUid = giftData.uid;
         var giftDate = giftData.creationDate;
 
-        //console.log("Creating " + giftUid);
         try{
             document.getElementById("TestGift").remove();
         } catch (err) {}
@@ -541,23 +504,17 @@ window.onload = function instantiate() {
             }
 
             //show modal
-            modal.style.display = "block";
-            currentModalOpen = giftUid;
-            console.log("Modal Open: " + currentModalOpen);
+            openModal(modal, giftUid);
 
             //close on close
             spanGift.onclick = function() {
-                currentModalOpen = "";
-                console.log("Closed modal");
-                modal.style.display = "none";
+                closeModal(modal);
             };
 
             //close on click
             window.onclick = function(event) {
                 if (event.target == modal) {
-                    currentModalOpen = "";
-                    console.log("Closed modal");
-                    modal.style.display = "none";
+                    closeModal(modal);
                 }
             }
         };
@@ -629,23 +586,17 @@ window.onload = function instantiate() {
             }
 
             //show modal
-            modal.style.display = "block";
-            currentModalOpen = uid;
-            console.log("Modal Open: " + currentModalOpen);
+            openModal(modal, uid);
 
             //close on close
             spanGift.onclick = function() {
-                currentModalOpen = "";
-                console.log("Closed modal");
-                modal.style.display = "none";
+                closeModal(modal);
             };
 
             //close on click
             window.onclick = function(event) {
                 if (event.target == modal) {
-                    currentModalOpen = "";
-                    console.log("Closed modal");
-                    modal.style.display = "none";
+                    closeModal(modal);
                 }
             };
         };
