@@ -73,7 +73,7 @@ window.onload = function instantiate() {
 
 
     window.addEventListener("online", function () {
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
         location.reload();
     });
 
@@ -82,21 +82,19 @@ window.onload = function instantiate() {
         offlineTimer = setInterval(function(){
             now = now + 1000;
             if(now >= 5000){
-                offlineModal.style.display = "block";
+                openModal(offlineModal, "offlineModal");
                 clearInterval(offlineTimer);
             }
         }, 1000);
     });
 
     offlineSpan.onclick = function () {
-        console.log("Offline modal closed: Closed manually");
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
     };
 
     window.onclick = function (event) {
         if (event.target == offlineModal) {
-            console.log("Offline modal closed: Outside of modal");
-            offlineModal.style.display = "none";
+            closeModal(offlineModal);
         }
     };
 
@@ -186,11 +184,11 @@ window.onload = function instantiate() {
         noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
             + ":" + timeSecs + "!";
         noteTitleField.innerHTML = "Are You Still There?";
-        noteModal.style.display = "block";
+        openModal(noteModal, "noteModal");
 
         //close on close
         noteSpan.onclick = function() {
-            noteModal.style.display = "none";
+            closeModal(noteModal);
             areYouStillThereBool = false;
         };
     }
@@ -203,7 +201,7 @@ window.onload = function instantiate() {
         var j = setInterval(function(){
             nowJ = nowJ + 1000;
             if(nowJ >= 3000){
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
                 clearInterval(j);
             }
@@ -212,7 +210,7 @@ window.onload = function instantiate() {
         //close on click
         window.onclick = function(event) {
             if (event.target == noteModal) {
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
             }
         };
