@@ -262,7 +262,7 @@ window.onload = function instantiate() {
         noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
             + ":" + timeSecs + "!";
         noteTitleField.innerHTML = "Are You Still There?";
-        openModal(noteModal);
+        openModal(noteModal, "noteModal");
 
         //close on close
         noteSpan.onclick = function() {
