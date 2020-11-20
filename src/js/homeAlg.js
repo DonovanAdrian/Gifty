@@ -246,7 +246,7 @@ window.onload = function instantiate() {
     checkUserErrors();
 
     window.addEventListener("online", function(){
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
         location.reload();
     });
 
@@ -276,7 +276,7 @@ window.onload = function instantiate() {
                         giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
                     }
                 }
-                offlineModal.style.display = "block";
+                openModal(offlineModal, "offlineModal");
                 clearInterval(offlineTimer);
             }
         }, 1000);
@@ -284,13 +284,13 @@ window.onload = function instantiate() {
 
     //close offlineModal on close
     offlineSpan.onclick = function() {
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
     };
 
     //close offlineModal on click
     window.onclick = function(event) {
         if (event.target == offlineModal) {
-            offlineModal.style.display = "none";
+            closeModal(offlineModal);
         }
     };
 
@@ -374,18 +374,18 @@ window.onload = function instantiate() {
         }
 
         try {
-            modal.style.display = "none";
+            closeModal(modal);
         } catch (err) {
             //console.log("Basic Modal Not Open");
         }
         noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
             + ":" + timeSecs + "!";
         noteTitleField.innerHTML = "Are You Still There?";
-        noteModal.style.display = "block";
+        openModal(noteModal, "noteModal");
 
         //close on close
         noteSpan.onclick = function() {
-            noteModal.style.display = "none";
+            closeModal(noteModal);
             areYouStillThereBool = false;
         };
     }
@@ -398,7 +398,7 @@ window.onload = function instantiate() {
         var j = setInterval(function(){
             nowJ = nowJ + 1000;
             if(nowJ >= 3000){
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
                 clearInterval(j);
             }
@@ -407,7 +407,7 @@ window.onload = function instantiate() {
         //close on click
         window.onclick = function(event) {
             if (event.target == noteModal) {
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
             }
         };
@@ -599,17 +599,17 @@ window.onload = function instantiate() {
             };
 
             //show modal
-            modal.style.display = "block";
+            openModal(modal, giftUid);
 
             //close on close
             spanGift.onclick = function() {
-                modal.style.display = "none";
+                closeModal(modal);
             };
 
             //close on click
             window.onclick = function(event) {
                 if (event.target == modal) {
-                    modal.style.display = "none";
+                    closeModal(modal);
                 }
             }
         }
@@ -683,17 +683,17 @@ window.onload = function instantiate() {
             };
 
             //show modal
-            modal.style.display = "block";
+            openModal(modal, uid);
 
             //close on close
             spanGift.onclick = function() {
-                modal.style.display = "none";
+                closeModal(modal);
             };
 
             //close on click
             window.onclick = function(event) {
                 if (event.target == modal) {
-                    modal.style.display = "none";
+                    closeModal(modal);
                 }
             }
         };
@@ -746,21 +746,21 @@ window.onload = function instantiate() {
                 giftList: giftArr
             });
 
-            modal.style.display = "none";
+            closeModal(modal);
 
             noteInfoField.innerHTML = "Gift Deleted";
             noteTitleField.innerHTML = "Gift " + title + " successfully deleted!";
-            noteModal.style.display = "block";
+            openModal(noteModal, "noteModal");
 
             //close on close
             noteSpan.onclick = function() {
-                noteModal.style.display = "none";
+                closeModal(noteModal);
             };
 
             //close on click
             window.onclick = function(event) {
                 if (event.target == noteModal) {
-                    noteModal.style.display = "none";
+                    closeModal(noteModal);
                 }
             };
 
@@ -768,7 +768,7 @@ window.onload = function instantiate() {
             var j = setInterval(function(){
                 nowJ = nowJ + 1000;
                 if(nowJ >= 3000){
-                    noteModal.style.display = "none";
+                    closeModal(noteModal);
                     clearInterval(j);
                 }
             }, 1000);

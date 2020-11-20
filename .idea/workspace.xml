@@ -22,11 +22,28 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/js/common.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="94">
               <caret line="43" column="16" lean-forward="true" selection-start-line="43" selection-start-column="16" selection-end-line="43" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="342">
+              <caret line="691" lean-forward="true" selection-start-line="691" selection-end-line="691" />
+              <folding>
+                <element signature="n#!!block;n#getCurrentUser#0" />
+                <element signature="n#!!block;n#checkUserErrors#0" />
+                <element signature="n#!!block;n#updateUserToDB#0" />
+                <element signature="n#!!block;n#collectUserBoughtGifts#0" />
+                <element signature="n#!!block;n#updateMaintenanceLog#0" />
+                <element signature="n#!!block;n#deployGiftListEmptyNotification#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -380,12 +397,12 @@
       <workItem from="1604276757492" duration="1534000" />
       <workItem from="1604621347099" duration="8802000" />
       <workItem from="1605141037397" duration="3434000" />
-      <workItem from="1605245165155" duration="7951000" />
+      <workItem from="1605245165155" duration="8121000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="483357000" />
+    <option name="totallyTimeSpent" value="483527000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1280" height="716" extended-state="6" />
@@ -619,21 +636,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="177">
-          <caret line="680" column="33" selection-start-line="680" selection-start-column="22" selection-end-line="680" selection-end-column="33" />
-          <folding>
-            <element signature="n#!!block;n#getCurrentUser#0" />
-            <element signature="n#!!block;n#checkUserErrors#0" />
-            <element signature="n#!!block;n#updateUserToDB#0" />
-            <element signature="n#!!block;n#collectUserBoughtGifts#0" />
-            <element signature="n#!!block;n#updateMaintenanceLog#0" />
-            <element signature="n#!!block;n#deployGiftListEmptyNotification#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/indexAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2220">
@@ -775,8 +777,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/friendListAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="753" selection-start-line="753" selection-end-line="753" />
+        <state relative-caret-position="503">
+          <caret line="753" lean-forward="true" selection-start-line="753" selection-end-line="753" />
         </state>
       </provider>
     </entry>
@@ -784,6 +786,21 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="94">
           <caret line="43" column="16" lean-forward="true" selection-start-line="43" selection-start-column="16" selection-end-line="43" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="691" lean-forward="true" selection-start-line="691" selection-end-line="691" />
+          <folding>
+            <element signature="n#!!block;n#getCurrentUser#0" />
+            <element signature="n#!!block;n#checkUserErrors#0" />
+            <element signature="n#!!block;n#updateUserToDB#0" />
+            <element signature="n#!!block;n#collectUserBoughtGifts#0" />
+            <element signature="n#!!block;n#updateMaintenanceLog#0" />
+            <element signature="n#!!block;n#deployGiftListEmptyNotification#0" />
+          </folding>
         </state>
       </provider>
     </entry>
