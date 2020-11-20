@@ -134,7 +134,7 @@ window.onload = function instantiate() {
     loginBtn.innerHTML = "Please Wait...";
 
     window.addEventListener("online", function(){
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
         location.reload();
     });
 
@@ -143,7 +143,7 @@ window.onload = function instantiate() {
         var g = setInterval(function(){
             now = now + 1000;
             if(now >= 5000){
-                offlineModal.style.display = "block";
+                openModal(offlineModal, "offlineModal");
                 clearInterval(g);
             }
         }, 1000);
@@ -151,13 +151,13 @@ window.onload = function instantiate() {
 
     //close offlineModal on close
     offlineSpan.onclick = function() {
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
     };
 
     //close offlineModal on click
     window.onclick = function(event) {
         if (event.target == offlineModal) {
-            offlineModal.style.display = "none";
+            closeModal(offlineModal);
         }
     };
 
@@ -221,7 +221,7 @@ function initializeDatabase(){
     loginBtn.innerHTML = "Log In";
     loginBtn.onclick = function(){
         login();
-    };
+    }
     signUpFld.onclick = function(){
         signUp();
     }
