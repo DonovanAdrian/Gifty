@@ -69,11 +69,11 @@
       <find>activate</find>
       <find>inviteListEmpty</find>
       <find>maintenance</find>
-      <find>listnote</find>
       <find>secretsantanamebool</find>
       <find>sessionStorage</find>
       <find>userinvites</find>
       <find>userArr</find>
+      <find>listnote</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -380,12 +380,12 @@
       <workItem from="1604276757492" duration="1534000" />
       <workItem from="1604621347099" duration="8802000" />
       <workItem from="1605141037397" duration="3434000" />
-      <workItem from="1605245165155" duration="8566000" />
+      <workItem from="1605245165155" duration="9208000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="483972000" />
+    <option name="totallyTimeSpent" value="484614000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1280" height="716" extended-state="6" />
@@ -748,8 +748,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/invitesAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="514">
-          <caret line="924" selection-start-line="924" selection-end-line="924" />
+        <state relative-caret-position="200">
+          <caret line="137" column="22" selection-start-line="137" selection-start-column="22" selection-end-line="137" selection-end-column="22" />
         </state>
       </provider>
     </entry>

@@ -37,7 +37,6 @@ var secretSantaData;
 var secretSantaNameBool = false;
 
 
-
 function getCurrentUser(){
     try {
         user = JSON.parse(sessionStorage.validUser);
@@ -133,7 +132,7 @@ window.onload = function instantiate() {
 
 
     window.addEventListener("online", function(){
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
         location.reload();
     });
 
@@ -163,7 +162,7 @@ window.onload = function instantiate() {
                         userList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
                     }
                 }
-                offlineModal.style.display = "block";
+                openModal(offlineModal, "offlineModal");
                 clearInterval(offlineTimer);
             }
         }, 1000);
@@ -171,13 +170,13 @@ window.onload = function instantiate() {
 
     //close offlineModal on close
     offlineSpan.onclick = function() {
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
     };
 
     //close offlineModal on click
     window.onclick = function(event) {
         if (event.target == offlineModal) {
-            offlineModal.style.display = "none";
+            closeModal(offlineModal);
         }
     };
 
@@ -311,18 +310,18 @@ window.onload = function instantiate() {
 
             //close on close
             modalSpan.onclick = function() {
-                modal.style.display = "none";
+                closeModal(modal);
             };
 
             //close on click
             window.onclick = function(event) {
                 if (event.target == modal) {
-                    modal.style.display = "none";
+                    closeModal(modal);
                 }
             };
 
             //show modal
-            modal.style.display = "block";
+            openModal(modal, secretSantaData.uid);
 
             clearInterval(offlineTimer);
         }
@@ -369,19 +368,15 @@ window.onload = function instantiate() {
             timeSecs = ("0" + timeSecs).slice(-2);
         }
 
-        try {
-            modal.style.display = "none";
-        } catch (err) {
-            //console.log("Basic Modal Not Open");
-        }
+        closeModal(modal);
         noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
             + ":" + timeSecs + "!";
         noteTitleField.innerHTML = "Are You Still There?";
-        noteModal.style.display = "block";
+        openModal(noteModal, "noteModal");
 
         //close on close
         noteSpan.onclick = function() {
-            noteModal.style.display = "none";
+            closeModal(noteModal);
             areYouStillThereBool = false;
         };
     }
@@ -394,7 +389,7 @@ window.onload = function instantiate() {
         var j = setInterval(function(){
             nowJ = nowJ + 1000;
             if(nowJ >= 3000){
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
                 clearInterval(j);
             }
@@ -403,7 +398,7 @@ window.onload = function instantiate() {
         //close on click
         window.onclick = function(event) {
             if (event.target == noteModal) {
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
             }
         };
@@ -593,17 +588,17 @@ window.onload = function instantiate() {
                 };
 
                 //show modal
-                modal.style.display = "block";
+                openModal(modal, userUid);
 
                 //close on close
                 modalSpan.onclick = function() {
-                    modal.style.display = "none";
+                    closeModal(modal);
                 };
 
                 //close on click
                 window.onclick = function(event) {
                     if (event.target == modal) {
-                        modal.style.display = "none";
+                        closeModal(modal);
                     }
                 };
             };
@@ -682,17 +677,17 @@ window.onload = function instantiate() {
                 };
 
                 //show modal
-                modal.style.display = "block";
+                openModal(modal, friendData.uid);
 
                 //close on close
                 modalSpan.onclick = function() {
-                    modal.style.display = "none";
+                    closeModal(modal);
                 };
 
                 //close on click
                 window.onclick = function(event) {
                     if (event.target == modal) {
-                        modal.style.display = "none";
+                        closeModal(modal);
                     }
                 }
             };
@@ -714,25 +709,25 @@ window.onload = function instantiate() {
             message = generatePrivateMessage(user.uid, privateNoteInp.value);
             addPrivateMessageToDB(userData, message);
             privateNoteInp.value = "";
-            addGlobalMsgModal.style.display = "none";
+            closeModal(addGlobalMsgModal);
             alert("The Message Has Been Sent!");
         };
         cancelNote.onclick = function (){
             privateNoteInp.value = "";
-            addGlobalMsgModal.style.display = "none";
+            closeModal(addGlobalMsgModal);
         };
 
-        addGlobalMsgModal.style.display = "block";
+        openModal(addGlobalMsgModal, "add");
 
         //close on close
         spanNote.onclick = function() {
-            addGlobalMsgModal.style.display = "none";
+            closeModal(addGlobalMsgModal);
         };
 
         //close on click
         window.onclick = function(event) {
             if (event.target == addGlobalMsgModal) {
-                addGlobalMsgModal.style.display = "none";
+                closeModal(addGlobalMsgModal);
             }
         };
     }
