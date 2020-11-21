@@ -136,7 +136,7 @@ window.onload = function instantiate() {
 
 
     window.addEventListener("online", function(){
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
         location.reload();
     });
 
@@ -166,7 +166,7 @@ window.onload = function instantiate() {
                         userList.insertBefore(liItem, document.getElementById("userListContainer").childNodes[0]);
                     }
                 }
-                offlineModal.style.display = "block";
+                openModal(offlineModal, "offlineModal");
                 clearInterval(offlineTimer);
             }
         }, 1000);
@@ -174,13 +174,13 @@ window.onload = function instantiate() {
 
     //close offlineModal on close
     offlineSpan.onclick = function() {
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
     };
 
     //close offlineModal on click
     window.onclick = function(event) {
         if (event.target == offlineModal) {
-            offlineModal.style.display = "none";
+            closeModal(offlineModal);
         }
     };
 
@@ -249,19 +249,15 @@ window.onload = function instantiate() {
             timeSecs = ("0" + timeSecs).slice(-2);
         }
 
-        try {
-            modal.style.display = "none";
-        } catch (err) {
-            //console.log("Basic Modal Not Open");
-        }
+        closeModal(modal);
         noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
             + ":" + timeSecs + "!";
         noteTitleField.innerHTML = "Are You Still There?";
-        noteModal.style.display = "block";
+        openModal(noteModal, "noteModal");
 
         //close on close
         noteSpan.onclick = function() {
-            noteModal.style.display = "none";
+            closeModal(noteModal);
             areYouStillThereBool = false;
         };
     }
@@ -274,7 +270,7 @@ window.onload = function instantiate() {
         var j = setInterval(function(){
             nowJ = nowJ + 1000;
             if(nowJ >= 3000){
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
                 clearInterval(j);
             }
@@ -283,7 +279,7 @@ window.onload = function instantiate() {
         //close on click
         window.onclick = function(event) {
             if (event.target == noteModal) {
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
             }
         };
@@ -433,22 +429,22 @@ window.onload = function instantiate() {
                 };
 
                 friendInviteRemove.onclick = function () {
-                    modal.style.display = "none";
+                    closeModal(modal);
                     deleteFriend(userUid);
                 };
 
                 //show modal
-                modal.style.display = "block";
+                openModal(modal, userUid);
 
                 //close on close
                 span.onclick = function () {
-                    modal.style.display = "none";
+                    closeModal(modal);
                 };
 
                 //close on click
                 window.onclick = function (event) {
                     if (event.target == modal) {
-                        modal.style.display = "none";
+                        closeModal(modal);
                     }
                 };
             };
@@ -499,22 +495,22 @@ window.onload = function instantiate() {
                 };
 
                 friendInviteRemove.onclick = function () {
-                    modal.style.display = "none";
+                    closeModal(modal);
                     deleteFriend(userUid);
                 };
 
                 //show modal
-                modal.style.display = "block";
+                openModal(modal, userUid);
 
                 //close on close
                 span.onclick = function () {
-                    modal.style.display = "none";
+                    closeModal(modal);
                 };
 
                 //close on click
                 window.onclick = function (event) {
                     if (event.target == modal) {
-                        modal.style.display = "none";
+                        closeModal(modal);
                     }
                 }
             };
@@ -536,24 +532,24 @@ window.onload = function instantiate() {
             message = generatePrivateMessage(user.uid, privateNoteInp.value);
             addPrivateMessageToDB(userData, message);
             privateNoteInp.value = "";
-            addGlobalMsgModal.style.display = "none";
+            closeModal(addGlobalMsgModal);
         };
         cancelNote.onclick = function (){
             privateNoteInp.value = "";
-            addGlobalMsgModal.style.display = "none";
+            closeModal(addGlobalMsgModal);
         };
 
-        addGlobalMsgModal.style.display = "block";
+        openModal(addGlobalMsgModal, "addGlobalMsgModal");
 
         //close on close
         spanNote.onclick = function() {
-            addGlobalMsgModal.style.display = "none";
+            closeModal(addGlobalMsgModal);
         };
 
         //close on click
         window.onclick = function(event) {
             if (event.target == addGlobalMsgModal) {
-                addGlobalMsgModal.style.display = "none";
+                closeModal(addGlobalMsgModal);
             }
         };
     }
@@ -699,7 +695,7 @@ window.onload = function instantiate() {
             userInput = document.getElementById('userNameInp');
 
 
-            userInviteModal.style.display = "block";
+            openModal(userInviteModal, "userInviteModal");
             addBtn.innerHTML = "Send Invite";
 
             addBtn.onclick = function() {
@@ -750,20 +746,20 @@ window.onload = function instantiate() {
             };
 
             cancelBtn.onclick = function() {
-                userInviteModal.style.display = "none";
+                closeModal(userInviteModal);
                 userInput.value = "";
                 inviteInfo.innerHTML = "";
             };
 
             addSpan.onclick = function() {
-                userInviteModal.style.display = "none";
+                closeModal(userInviteModal);
                 userInput.value = "";
                 inviteInfo.innerHTML = "";
             };
 
             window.onclick = function(event) {
                 if (event.target == userInviteModal) {
-                    userInviteModal.style.display = "none";
+                    closeModal(userInviteModal);
                 }
             }
         };
@@ -782,26 +778,26 @@ window.onload = function instantiate() {
         //console.log(userArr[userLocation].userName);
         if (userLocation != -1) {
             confUserName.innerHTML = "Did you mean to add \"" + userArr[userLocation].name + "\"?";
-            userInviteModal.style.display = "none";
-            confirmUserModal.style.display = "block";
+            closeModal(userInviteModal);
+            openModal(confirmUserModal, "confirmUserModal");
 
             inviteConfirm.onclick = function () {
                 inviteUserDB(userArr[userLocation]);
-                confirmUserModal.style.display = "none";
+                closeModal(confirmUserModal);
                 userInput.value = "";
                 inviteInfo.innerHTML = "";
             };
 
             inviteDeny.onclick = function () {
-                confirmUserModal.style.display = "none";
-                userInviteModal.style.display = "block";
+                closeModal(confirmUserModal);
+                openModal(userInviteModal, "userInviteModal");
                 userInput.value = "";
                 inviteInfo.innerHTML = "";
             };
 
             //close on close
             confirmSpan.onclick = function () {
-                confirmUserModal.style.display = "none";
+                closeModal(confirmUserModal);
                 userInput.value = "";
                 inviteInfo.innerHTML = "";
             };
@@ -809,7 +805,7 @@ window.onload = function instantiate() {
             //close on click
             window.onclick = function (event) {
                 if (event.target == confirmUserModal) {
-                    confirmUserModal.style.display = "none";
+                    closeModal(confirmUserModal);
                     userInput.value = "";
                     inviteInfo.innerHTML = "";
                 }
