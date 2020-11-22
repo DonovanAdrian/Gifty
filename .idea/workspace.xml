@@ -25,26 +25,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/js/common.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="645">
-              <caret line="43" column="16" lean-forward="true" selection-start-line="43" selection-start-column="16" selection-end-line="43" selection-end-column="16" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/js/faqAlg.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="514">
-              <caret line="273" lean-forward="true" selection-start-line="273" selection-end-line="273" />
+            <state relative-caret-position="240">
+              <caret line="16" column="15" lean-forward="true" selection-start-line="16" selection-start-column="15" selection-end-line="16" selection-end-column="15" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/js/friendListAlg.js">
+        <entry file="file://$PROJECT_DIR$/src/js/giftAddUpdateAlg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="353">
-              <caret line="743" column="15" lean-forward="true" selection-end-line="753" />
+            <state relative-caret-position="541">
+              <caret line="699" lean-forward="true" selection-start-line="699" selection-end-line="699" />
             </state>
           </provider>
         </entry>
@@ -62,7 +53,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>encode</find>
       <find>encodename</find>
       <find>checkencodename</find>
       <find>encode(</find>
@@ -92,6 +82,7 @@
       <find>userinvites</find>
       <find>userArr</find>
       <find>listnote</find>
+      <find>welcome</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -137,11 +128,9 @@
         <option value="$PROJECT_DIR$/src/js/settingsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/userAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/userAddUpdate.html" />
-        <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/moderation.html" />
         <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/common.js" />
-        <option value="$PROJECT_DIR$/src/js/friendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
         <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
@@ -151,6 +140,8 @@
         <option value="$PROJECT_DIR$/src/js/boughtGiftsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/confirmationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/faqAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/friendListAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
       </list>
     </option>
   </component>
@@ -398,12 +389,12 @@
       <workItem from="1604276757492" duration="1534000" />
       <workItem from="1604621347099" duration="8802000" />
       <workItem from="1605141037397" duration="3434000" />
-      <workItem from="1605245165155" duration="10786000" />
+      <workItem from="1605245165155" duration="11033000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="486192000" />
+    <option name="totallyTimeSpent" value="486439000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1280" height="716" extended-state="6" />
@@ -630,13 +621,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/giftAddUpdateAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="15" lean-forward="true" selection-start-line="22" selection-start-column="15" selection-end-line="22" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/moderation.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1667">
@@ -731,10 +715,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/common.js">
+    <entry file="file://$PROJECT_DIR$/src/js/friendListAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="645">
-          <caret line="43" column="16" lean-forward="true" selection-start-line="43" selection-start-column="16" selection-end-line="43" selection-end-column="16" />
+        <state relative-caret-position="142">
+          <caret line="276" lean-forward="true" selection-start-line="276" selection-end-line="276" />
         </state>
       </provider>
     </entry>
@@ -745,10 +729,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/friendListAlg.js">
+    <entry file="file://$PROJECT_DIR$/src/js/common.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="743" column="15" lean-forward="true" selection-end-line="753" />
+        <state relative-caret-position="240">
+          <caret line="16" column="15" lean-forward="true" selection-start-line="16" selection-start-column="15" selection-end-line="16" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/giftAddUpdateAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="541">
+          <caret line="699" lean-forward="true" selection-start-line="699" selection-end-line="699" />
         </state>
       </provider>
     </entry>

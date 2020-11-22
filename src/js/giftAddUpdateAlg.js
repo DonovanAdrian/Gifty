@@ -4,6 +4,7 @@ var giftArr = [];
 var giftPresent = true;
 var privateListBool = true;
 var areYouStillThereBool = false;
+var areYouStillThereInit = false;
 var invalidURLBool = false;
 
 var giftUID = -1;
@@ -112,8 +113,7 @@ window.onload = function instantiate() {
 
 
     window.addEventListener("online", function(){
-        console.log("Online mode activated, clearing offline notification");
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
         location.reload();
     });
 
@@ -122,7 +122,7 @@ window.onload = function instantiate() {
         var g = setInterval(function(){
             now = now + 1000;
             if(now >= 5000){
-                offlineModal.style.display = "block";
+                openModal(offlineModal, "offlineModal");
                 clearInterval(g);
             }
         }, 1000);
@@ -130,13 +130,13 @@ window.onload = function instantiate() {
 
     //close offlineModal on close
     offlineSpan.onclick = function() {
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
     };
 
     //close offlineModal on click
     window.onclick = function(event) {
         if (event.target == offlineModal) {
-            offlineModal.style.display = "none";
+            closeModal(offlineModal);
         }
     };
 
@@ -197,15 +197,20 @@ window.onload = function instantiate() {
             timeSecs = ("0" + timeSecs).slice(-2);
         }
 
+        if(!areYouStillThereInit) {
+            closeModal(modal);
+            openModal(noteModal, "noteModal");
+            areYouStillThereInit = true;
+        }
         noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
             + ":" + timeSecs + "!";
         noteTitleField.innerHTML = "Are You Still There?";
-        noteModal.style.display = "block";
 
         //close on close
         noteSpan.onclick = function() {
-            noteModal.style.display = "none";
+            closeModal(noteModal);
             areYouStillThereBool = false;
+            areYouStillThereInit = false;
         };
     }
 
@@ -220,8 +225,9 @@ window.onload = function instantiate() {
         var j = setInterval(function(){
             nowJ = nowJ + 1000;
             if(nowJ >= 3000){
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
+                areYouStillThereInit = false;
                 clearInterval(j);
             }
         }, 1000);
@@ -229,8 +235,9 @@ window.onload = function instantiate() {
         //close on click
         window.onclick = function(event) {
             if (event.target == noteModal) {
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
+                areYouStillThereInit = false;
             }
         };
     }
