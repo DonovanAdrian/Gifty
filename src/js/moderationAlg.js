@@ -9,8 +9,6 @@ var areYouStillThereBool = false;
 var secretSantaIntBool = false;
 var secretSantaNameBool = false;
 
-var currentModalOpen = "";
-
 var moderationSet = 1;
 var userCounter = 0;
 var onlineInt = 0;
@@ -109,8 +107,7 @@ window.onload = function instantiate() {
 
 
     window.addEventListener("online", function(){
-        offlineModal.style.display = "none";
-        currentModalOpen = "";
+        closeModal(offlineModal);
         location.reload();
     });
 
@@ -140,8 +137,7 @@ window.onload = function instantiate() {
                         giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
                     }
                 }
-                offlineModal.style.display = "block";
-                currentModalOpen = "offlineModal";
+                openModal(offlineModal, "offlineModal");
                 clearInterval(offlineTimer);
             }
         }, 1000);
@@ -149,15 +145,13 @@ window.onload = function instantiate() {
 
     //close offlineModal on close
     offlineSpan.onclick = function() {
-        offlineModal.style.display = "none";
-        currentModalOpen = "";
+        closeModal(offlineModal);
     };
 
     //close offlineModal on click
     window.onclick = function(event) {
         if (event.target == offlineModal) {
-            offlineModal.style.display = "none";
-            currentModalOpen = "";
+            closeModal(offlineModal);
         }
     };
 
@@ -213,8 +207,7 @@ window.onload = function instantiate() {
                     removeSecretSantaNums();
                     updateAllUsersToDBSantaNums();
                     secretSantaNameBool = false;
-                    secretSantaModal.style.display = "none";
-                    currentModalOpen = "";
+                    closeModal(secretSantaModal);
                     generateSecretSantaModal();
                 };
 
@@ -235,8 +228,7 @@ window.onload = function instantiate() {
                     createSecretSantaNames();
                     alert("Secret Santa System Has Been Initialized. Enjoy!");
                     secretSantaNameBool = true;
-                    secretSantaModal.style.display = "none";
-                    currentModalOpen = "";
+                    closeModal(secretSantaModal);
                     generateSecretSantaModal();
                 };
 
@@ -261,19 +253,16 @@ window.onload = function instantiate() {
             }
 
             santaModalSpan.onclick = function(){
-                secretSantaModal.style.display = "none";
-                currentModalOpen = "";
+                closeModal(secretSantaModal);
             };
 
             window.onclick = function(event) {
                 if (event.target == secretSantaModal) {
-                    secretSantaModal.style.display = "none";
-                    currentModalOpen = "";
+                    closeModal(secretSantaModal);
                 }
             };
 
-            secretSantaModal.style.display = "block";
-            currentModalOpen = "secretSantaModal";
+            openModal(secretSantaModal, "secretSantaModal");
         };
 
         activateSecretSanta.innerHTML = "Secret Santa";
@@ -413,21 +402,18 @@ window.onload = function instantiate() {
         }
 
         try {
-            modal.style.display = "none";
-            currentModalOpen = "";
+            closeModal(modal);
         } catch (err) {
             //console.log("Basic Modal Not Open");
         }
         noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
             + ":" + timeSecs + "!";
         noteTitleField.innerHTML = "Are You Still There?";
-        noteModal.style.display = "block";
-        currentModalOpen = "noteModal";
+        openModal(noteModal, "openModal");
 
         //close on close
         noteSpan.onclick = function() {
-            noteModal.style.display = "none";
-            currentModalOpen = "";
+            closeModal(noteModal);
             areYouStillThereBool = false;
         };
     }
@@ -440,8 +426,7 @@ window.onload = function instantiate() {
         var j = setInterval(function(){
             nowJ = nowJ + 1000;
             if(nowJ >= 3000){
-                noteModal.style.display = "none";
-                currentModalOpen = "";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
                 clearInterval(j);
             }
@@ -450,8 +435,7 @@ window.onload = function instantiate() {
         //close on click
         window.onclick = function(event) {
             if (event.target == noteModal) {
-                noteModal.style.display = "none";
-                currentModalOpen = "";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
             }
         };
@@ -494,31 +478,26 @@ window.onload = function instantiate() {
             } else {
                 addPrivateMessageToDB(userData, privateNoteInp.value);
                 privateNoteInp.value = "";
-                addGlobalMsgModal.style.display = "none";
-                currentModalOpen = "";
+                closeModal(addGlobalMsgModal);
                 alert("The Private Message Has Been Sent!");
             }
         };
         cancelNote.onclick = function (){
             privateNoteInp.value = "";
-            addGlobalMsgModal.style.display = "none";
-            currentModalOpen = "";
+            closeModal(addGlobalMsgModal);
         };
 
-        addGlobalMsgModal.style.display = "block";
-        currentModalOpen = "globalMessageModal";
+        openModal(addGlobalMsgModal, "addGlobalMsgModal");
 
         //close on close
         spanNote.onclick = function() {
-            addGlobalMsgModal.style.display = "none";
-            currentModalOpen = "";
+            closeModal(addGlobalMsgModal);
         };
 
         //close on click
         window.onclick = function(event) {
             if (event.target == addGlobalMsgModal) {
-                addGlobalMsgModal.style.display = "none";
-                currentModalOpen = "";
+                closeModal(addGlobalMsgModal);
             }
         };
     }
@@ -559,31 +538,26 @@ window.onload = function instantiate() {
                 } else {
                     addGlobalMessageToDB(globalNoteInp.value);
                     globalNoteInp.value = "";
-                    addGlobalMsgModal.style.display = "none";
-                    currentModalOpen = "";
+                    closeModal(addGlobalMsgModal);
                     alert("The Global Message Has Been Sent!");
                 }
             };
             cancelNote.onclick = function (){
                 globalNoteInp.value = "";
-                addGlobalMsgModal.style.display = "none";
-                currentModalOpen = "";
+                closeModal(addGlobalMsgModal);
             };
 
-            addGlobalMsgModal.style.display = "block";
-            currentModalOpen = "globalMessageModal";
+            openModal(addGlobalMsgModal, "addGlobalMsgModal");
 
             //close on close
             spanNote.onclick = function() {
-                addGlobalMsgModal.style.display = "none";
-                currentModalOpen = "";
+                closeModal(addGlobalMsgModal);
             };
 
             //close on click
             window.onclick = function(event) {
                 if (event.target == addGlobalMsgModal) {
-                    addGlobalMsgModal.style.display = "none";
-                    currentModalOpen = "";
+                    closeModal(addGlobalMsgModal);
                 }
             };
         };
@@ -649,9 +623,8 @@ window.onload = function instantiate() {
                     //console.log("User Updated: 2");
                 }
 
-                if(currentModalOpen == data.key) {
-                    modal.style.display = "none";
-                    currentModalOpen = "";
+                if(currentModalOpen == data.key) {//Moved currentModalOpen reference to common.js
+                    closeModal(modal);
                 }
             });
 
@@ -664,9 +637,8 @@ window.onload = function instantiate() {
                     userArr.splice(i, 1);
                 }
 
-                if(currentModalOpen == data.key) {
-                    modal.style.display = "none";
-                    currentModalOpen = "";
+                if(currentModalOpen == data.key) {//Moved currentModalOpen reference to common.js
+                    closeModal(modal);
                 }
             });
         };
@@ -817,8 +789,7 @@ window.onload = function instantiate() {
                         firebase.database().ref("users/" + userData.uid).update({
                             moderatorInt: 0
                         });
-                        modal.style.display = "none";
-                        currentModalOpen = "";
+                        closeModal(modal);
                     }
                 };
             } else {
@@ -832,8 +803,7 @@ window.onload = function instantiate() {
                         firebase.database().ref("users/" + userData.uid).update({
                             moderatorInt: 1
                         });
-                        modal.style.display = "none";
-                        currentModalOpen = "";
+                        closeModal(modal);
                     }
                 };
             }
@@ -844,20 +814,17 @@ window.onload = function instantiate() {
             };
 
             //show modal
-            modal.style.display = "block";
-            currentModalOpen = userData.uid;
+            openModal(modal, userData.uid);
 
             //close on close
             spanGift.onclick = function() {
-                modal.style.display = "none";
-                currentModalOpen = "";
+                closeModal(modal);
             };
 
             //close on click
             window.onclick = function(event) {
                 if (event.target == modal) {
-                    modal.style.display = "none";
-                    currentModalOpen = "";
+                    closeModal(modal);
                 }
             };
         };
@@ -969,8 +936,7 @@ window.onload = function instantiate() {
                         firebase.database().ref("users/" + userData.uid).update({
                             moderatorInt: 0
                         });
-                        modal.style.display = "none";
-                        currentModalOpen = "";
+                        closeModal(modal);
                     }
                 };
             } else {
@@ -984,8 +950,7 @@ window.onload = function instantiate() {
                         firebase.database().ref("users/" + userData.uid).update({
                             moderatorInt: 1
                         });
-                        modal.style.display = "none";
-                        currentModalOpen = "";
+                        closeModal(modal);
                     }
                 };
             }
@@ -996,20 +961,17 @@ window.onload = function instantiate() {
             };
 
             //show modal
-            modal.style.display = "block";
-            currentModalOpen = userData.uid;
+            openModal(modal, userData.uid);
 
             //close on close
             spanGift.onclick = function() {
-                modal.style.display = "none";
-                currentModalOpen = "";
+                closeModal(modal);
             };
 
             //close on click
             window.onclick = function(event) {
                 if (event.target == modal) {
-                    modal.style.display = "none";
-                    currentModalOpen = "";
+                    closeModal(modal);
                 }
             };
         };
