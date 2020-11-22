@@ -6,6 +6,7 @@ var userBoughtGiftsUsersArr = [];
 var initializedGiftsArr = [];
 
 var areYouStillThereBool = false;
+var areYouStillThereInit = false;
 var readNotificationsBool = false;
 
 var onlineInt = 0;
@@ -252,16 +253,20 @@ window.onload = function instantiate() {
             timeSecs = ("0" + timeSecs).slice(-2);
         }
 
-        closeModal(modal);
+        if(!areYouStillThereInit) {
+            closeModal(modal);
+            openModal(noteModal, "noteModal");
+            areYouStillThereInit = true;
+        }
         noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
             + ":" + timeSecs + "!";
         noteTitleField.innerHTML = "Are You Still There?";
-        openModal(noteModal, "noteModal");
 
         //close on close
         noteSpan.onclick = function() {
             closeModal(noteModal);
             areYouStillThereBool = false;
+            areYouStillThereInit = false;
         };
     }
 
@@ -275,6 +280,7 @@ window.onload = function instantiate() {
             if(nowJ >= 3000){
                 closeModal(noteModal);
                 areYouStillThereBool = false;
+                areYouStillThereInit = false;
                 clearInterval(j);
             }
         }, 1000);
@@ -284,6 +290,7 @@ window.onload = function instantiate() {
             if (event.target == noteModal) {
                 closeModal(noteModal);
                 areYouStillThereBool = false;
+                areYouStillThereInit = false;
             }
         };
     }
