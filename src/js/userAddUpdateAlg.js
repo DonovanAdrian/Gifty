@@ -6,6 +6,7 @@ var userArr = [];
 
 var userNameBool = true;
 var areYouStillThereBool = false;
+var areYouStillThereInit = false;
 
 var pinClearedInt = 0;
 var logoutReminder = 300;
@@ -77,6 +78,7 @@ function getCurrentUser(){
                 }
                 function resetTimer() {
                     if (areYouStillThereBool) {
+                        //console.log("User Active");
                         ohThereYouAre();
                     }
                     loginNum = 0;
@@ -93,15 +95,20 @@ function getCurrentUser(){
                 timeSecs = ("0" + timeSecs).slice(-2);
             }
 
+            if(!areYouStillThereInit) {
+                closeModal(modal);
+                openModal(noteModal, "noteModal");
+                areYouStillThereInit = true;
+            }
             noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
                 + ":" + timeSecs + "!";
             noteTitleField.innerHTML = "Are You Still There?";
-            noteModal.style.display = "block";
 
             //close on close
             noteSpan.onclick = function() {
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
+                areYouStillThereInit = false;
             };
         }
 
@@ -113,8 +120,9 @@ function getCurrentUser(){
             var j = setInterval(function(){
                 nowJ = nowJ + 1000;
                 if(nowJ >= 3000){
-                    noteModal.style.display = "none";
+                    closeModal(noteModal);
                     areYouStillThereBool = false;
+                    areYouStillThereInit = false;
                     clearInterval(j);
                 }
             }, 1000);
@@ -122,8 +130,9 @@ function getCurrentUser(){
             //close on click
             window.onclick = function(event) {
                 if (event.target == noteModal) {
-                    noteModal.style.display = "none";
+                    closeModal(noteModal);
                     areYouStillThereBool = false;
+                    areYouStillThereInit = false;
                 }
             };
         }
@@ -175,7 +184,7 @@ window.onload = function instantiate() {
 
 
     window.addEventListener("online", function(){
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
         location.reload();
     });
 
@@ -184,7 +193,7 @@ window.onload = function instantiate() {
         var g = setInterval(function(){
             now = now + 1000;
             if(now >= 5000){
-                offlineModal.style.display = "block";
+                openModal(offlineModal, "offlineModal");
                 clearInterval(g);
             }
         }, 1000);
@@ -192,13 +201,13 @@ window.onload = function instantiate() {
 
     //close offlineModal on close
     offlineSpan.onclick = function() {
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
     };
 
     //close offlineModal on click
     window.onclick = function(event) {
         if (event.target == offlineModal) {
-            offlineModal.style.display = "none";
+            closeModal(offlineModal);
         }
     };
 
@@ -276,15 +285,37 @@ window.onload = function instantiate() {
     }
 };
 
+function updateMaintenanceLog(locationData, detailsData) {
+    var today = new Date();
+    var UTChh = today.getUTCHours();
+    var UTCmm = today.getUTCMinutes();
+    var UTCss = today.getUTCSeconds();
+    var dd = today.getUTCDate();
+    var mm = today.getMonth()+1;
+    var yy = today.getFullYear();
+    var timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
+    var newUid = firebase.database().ref("maintenance").push();
+    newUid = newUid.toString();
+    newUid = newUid.substr(51, 70);
+
+    firebase.database().ref("maintenance/" + newUid).set({
+        uid: newUid,
+        location: locationData,
+        details: detailsData,
+        time: timeData
+    });
+}
+
 function deleteCheck(){
+    updateMaintenanceLog("userAddUpdate", "Attempting to delete user: " + user.userName);
 
     console.log(user.uid + " will be deleted. Are you sure?");
-    confirmModal.style.display = "block";
+    openModal(confirmModal, "confirmModal");
 
     deleteConfirm.onclick = function () {
         console.log("Confirmed to delete user " + user.uid);
         firebase.database().ref("users/").child(user.uid).remove();
-        confirmModal.style.display = "none";
+        closeModal(confirmModal);
 
         btnDelete.innerHTML = "Please Wait...";
         btnUpdate.onclick = function(){};//forces the update button to do nothing
@@ -294,20 +325,20 @@ function deleteCheck(){
 
     deleteDeny.onclick = function () {
         console.log("Denied to delete user " + user.uid);
-        confirmModal.style.display = "none";
+        closeModal(confirmModal);
     };
 
     //close on close
     confirmSpan.onclick = function () {
         console.log("Closed window, user " + user.uid + " not deleted");
-        confirmModal.style.display = "none";
+        closeModal(confirmModal);
     };
 
     //close on click
     window.onclick = function (event) {
         if (event.target == confirmModal) {
             console.log("Clicked outside window, user " + user.uid + " not deleted");
-            confirmModal.style.display = "none";
+            closeModal(confirmModal);
         }
     }
 }
