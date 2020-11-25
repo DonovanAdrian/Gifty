@@ -32,10 +32,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/js/privateFriendListAlg.js">
+        <entry file="file://$PROJECT_DIR$/src/js/settingsAlg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="503">
-              <caret line="958" lean-forward="true" selection-start-line="958" selection-end-line="958" />
+            <state relative-caret-position="514">
+              <caret line="239" lean-forward="true" selection-start-line="239" selection-end-line="239" />
             </state>
           </provider>
         </entry>
@@ -125,7 +125,6 @@
         <option value="$PROJECT_DIR$/src/css/login.css" />
         <option value="$PROJECT_DIR$/src/index.html" />
         <option value="$PROJECT_DIR$/src/js/passOp.js" />
-        <option value="$PROJECT_DIR$/src/js/settingsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/userAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/userAddUpdate.html" />
         <option value="$PROJECT_DIR$/src/moderation.html" />
@@ -142,6 +141,7 @@
         <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/notificationsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/settingsAlg.js" />
       </list>
     </option>
   </component>
@@ -389,12 +389,12 @@
       <workItem from="1604276757492" duration="1534000" />
       <workItem from="1604621347099" duration="8802000" />
       <workItem from="1605141037397" duration="3434000" />
-      <workItem from="1605245165155" duration="12959000" />
+      <workItem from="1605245165155" duration="13208000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="488365000" />
+    <option name="totallyTimeSpent" value="488614000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1280" height="716" extended-state="6" />
@@ -600,13 +600,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/settingsAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="231" selection-start-line="231" selection-end-line="231" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/userAddUpdateAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="208">
@@ -721,6 +714,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/privateFriendListAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="383">
+          <caret line="950" column="18" lean-forward="true" selection-start-line="950" selection-start-column="18" selection-end-line="950" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/common.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
@@ -728,10 +728,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/privateFriendListAlg.js">
+    <entry file="file://$PROJECT_DIR$/src/js/settingsAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="503">
-          <caret line="958" lean-forward="true" selection-start-line="958" selection-end-line="958" />
+        <state relative-caret-position="514">
+          <caret line="239" lean-forward="true" selection-start-line="239" selection-end-line="239" />
         </state>
       </provider>
     </entry>
