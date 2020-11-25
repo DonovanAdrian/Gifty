@@ -5,11 +5,10 @@ var userUserNames = [];
 var instantiatedNodes = [];
 
 var areYouStillThereBool = false;
+var areYouStillThereInit = false;
 var readNotificationsBool = false;
 var updateGiftToDBBool = false;
 var giftListEmptyBool = false;
-
-var currentModalOpen = "";
 
 var giftCounter = 0;
 var onlineInt = 0;
@@ -144,9 +143,7 @@ window.onload = function instantiate() {
     });
 
     window.addEventListener("online", function(){
-        offlineModal.style.display = "none";
-        currentModalOpen = "";
-        console.log("Closed modal");
+        closeModal(offlineModal);
         location.reload();
     });
 
@@ -176,9 +173,7 @@ window.onload = function instantiate() {
                         giftList.insertBefore(liItem, document.getElementById("giftListContainer").childNodes[0]);
                     }
                 }
-                offlineModal.style.display = "block";
-                currentModalOpen = "offlineModal";
-                console.log("Modal Open: " + currentModalOpen);
+                openModal(offlineModal, "offlineModal");
                 clearInterval(offlineTimer);
             }
         }, 1000);
@@ -186,17 +181,13 @@ window.onload = function instantiate() {
 
     //close offlineModal on close
     offlineSpan.onclick = function() {
-        currentModalOpen = "";
-        console.log("Closed modal");
-        offlineModal.style.display = "none";
+        closeModal(offlineModal);
     };
 
     //close offlineModal on click
     window.onclick = function(event) {
-        currentModalOpen = "";
-        console.log("Closed modal");
         if (event.target == offlineModal) {
-            offlineModal.style.display = "none";
+            closeModal(offlineModal);
         }
     };
 
@@ -271,39 +262,34 @@ window.onload = function instantiate() {
             timeSecs = ("0" + timeSecs).slice(-2);
         }
 
-        try {
-            modal.style.display = "none";
-        } catch (err) {
-            //console.log("Basic Modal Not Open");
+        if(!areYouStillThereInit) {
+            closeModal(modal);
+            openModal(noteModal, "noteModal");
+            areYouStillThereInit = true;
         }
         noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
             + ":" + timeSecs + "!";
         noteTitleField.innerHTML = "Are You Still There?";
-        noteModal.style.display = "block";
-        currentModalOpen = "noteModal";
-        console.log("Modal Open: " + currentModalOpen);
 
         //close on close
         noteSpan.onclick = function() {
-            currentModalOpen = "";
-            console.log("Closed modal");
-            noteModal.style.display = "none";
+            closeModal(noteModal);
             areYouStillThereBool = false;
+            areYouStillThereInit = false;
         };
     }
 
     function ohThereYouAre(){
-        noteInfoField.innerHTML = "Welcome back, " + currentUser.name;
+        noteInfoField.innerHTML = "Welcome back, " + user.name;
         noteTitleField.innerHTML = "Oh, There You Are!";
 
         var nowJ = 0;
         var j = setInterval(function(){
             nowJ = nowJ + 1000;
             if(nowJ >= 3000){
-                currentModalOpen = "";
-                console.log("Closed modal");
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
+                areYouStillThereInit = false;
                 clearInterval(j);
             }
         }, 1000);
@@ -311,10 +297,9 @@ window.onload = function instantiate() {
         //close on click
         window.onclick = function(event) {
             if (event.target == noteModal) {
-                currentModalOpen = "";
-                console.log("Closed modal");
-                noteModal.style.display = "none";
+                closeModal(noteModal);
                 areYouStillThereBool = false;
+                areYouStillThereInit = false;
             }
         };
     }
@@ -409,10 +394,8 @@ window.onload = function instantiate() {
                 giftArr[data.key] = data.val();
                 instantiatedNodes[data.key] = data.val();
 
-                if(data.val().uid == currentModalOpen){
-                    currentModalOpen = "";
-                    console.log("Closed modal");
-                    modal.style.display = "none";
+                if(data.val().uid == currentModalOpen){//Moved currentModalOpen reference to common.js
+                    closeModal(modal);
                 }
 
                 changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
@@ -631,23 +614,17 @@ window.onload = function instantiate() {
             };
 
             //show modal
-            modal.style.display = "block";
-            currentModalOpen = giftUid;
-            console.log("Modal Open: " + currentModalOpen);
+            openModal(modal, giftUid);
 
             //close on close
             spanGift.onclick = function() {
-                currentModalOpen = "";
-                console.log("Closed modal");
-                modal.style.display = "none";
+                closeModal(modal);
             };
 
             //close on click
             window.onclick = function(event) {
                 if (event.target == modal) {
-                    currentModalOpen = "";
-                    console.log("Closed modal");
-                    modal.style.display = "none";
+                    closeModal(modal);
                 }
             };
         };
@@ -793,23 +770,17 @@ window.onload = function instantiate() {
             };
 
             //show modal
-            modal.style.display = "block";
-            currentModalOpen = uid;
-            console.log("Modal Open: " + currentModalOpen);
+            openModal(modal, uid);
 
             //close on close
             spanGift.onclick = function () {
-                currentModalOpen = "";
-                console.log("Closed modal");
-                modal.style.display = "none";
+                closeModal(modal);
             };
 
             //close on click
             window.onclick = function (event) {
                 if (event.target == modal) {
-                    currentModalOpen = "";
-                    console.log("Closed modal");
-                    modal.style.display = "none";
+                    closeModal(modal);
                 }
             };
         };
