@@ -357,7 +357,7 @@ window.onload = function instantiate() {
                         }
                     }
 
-                    navigation(0);
+                    newNavigation(2);//Home
                 } else {
                     firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
                         title: titleField.value,
@@ -384,7 +384,7 @@ window.onload = function instantiate() {
                     }
 
                     sessionStorage.setItem("validGiftUser", JSON.stringify(user));
-                    navigation(4);
+                    newNavigation(10);//PrivateFriendList
                 }
 
                 if(currentGift.buyer != ""){
@@ -487,7 +487,7 @@ window.onload = function instantiate() {
                     creationDate: creationDate
                 });
 
-                navigation(0);
+                newNavigation(2);//Home
             } else {
 
                 var newUid = firebase.database().ref("users/" + user.uid + "/privateList/" + uid).push();
@@ -505,7 +505,7 @@ window.onload = function instantiate() {
                     creator: privateUser.userName
                 });
                 sessionStorage.setItem("validGiftUser", JSON.stringify(user));
-                navigation(4);
+                newNavigation(10);//PrivateFriendList
             }
         }
         invalidURLBool = false;
@@ -665,35 +665,3 @@ window.onload = function instantiate() {
         }
     }
 };
-
-function signOut(){
-    sessionStorage.clear();
-    window.location.href = "index.html";
-}
-
-function navigation(nav){
-    if (!privateListBool)
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-    else
-        sessionStorage.setItem("validUser", JSON.stringify(privateUser));
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    switch(nav){
-        case 0:
-            window.location.href = "home.html";
-            break;
-        case 1:
-            window.location.href = "lists.html";
-            break;
-        case 2:
-            window.location.href = "invites.html";
-            break;
-        case 3:
-            window.location.href = "settings.html";
-            break;
-        case 4:
-            window.location.href = "privateFriendList.html";
-            break;
-        default:
-            break;
-    }
-}
