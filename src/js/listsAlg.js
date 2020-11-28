@@ -41,7 +41,7 @@ var secretSantaNameBool = false;
 function getCurrentUser(){
     try {
         user = JSON.parse(sessionStorage.validUser);
-        console.log("User: " + user.userName + " logged in");
+        console.log("User: " + user.userName + " loaded in");
         if (user.friends == undefined) {
             deployFriendListEmptyNotification();
             friendListEmptyBool = true;
@@ -70,18 +70,18 @@ function getCurrentUser(){
                 if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
                     notificationBtn.src = "img/bellNotificationOn.png";
                     notificationBtn.onclick = function() {
-                        navigation(4);
+                        newNavigation(6);//Notifications
                     }
                 } else {
                     notificationBtn.src = "img/bellNotificationOff.png";
                     notificationBtn.onclick = function() {
-                        navigation(4);
+                        newNavigation(6);//Notifications
                     }
                 }
             } else if (user.notifications.length > 0) {
                 notificationBtn.src = "img/bellNotificationOn.png";
                 notificationBtn.onclick = function() {
-                    navigation(4);
+                    newNavigation(6);//Notifications
                 }
             }
         }
@@ -271,7 +271,7 @@ window.onload = function instantiate() {
                     publicList.innerHTML = "Click on me to access " + secretSantaData.name + "\'s public list!";
                     publicList.onclick = function () {
                         sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));//Friend's User Data
-                        navigation(5);
+                        newNavigation(9);//FriendList
                     };
                     if (secretSantaData.giftList.length == 1)
                         publicListCount.innerHTML = secretSantaData.name + " has 1 gift on their public list";
@@ -302,7 +302,7 @@ window.onload = function instantiate() {
             privateListHTML.innerHTML = "Click on me to access " + secretSantaData.name + "\'s private gift list!";
             privateListHTML.onclick = function() {
                 sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));//Friend's User Data
-                navigation(6);
+                newNavigation(10);//PrivateFriendList
             };
 
             friendSendMessage.onclick = function() {
@@ -556,7 +556,7 @@ window.onload = function instantiate() {
                         publicList.innerHTML = "Click on me to access " + friendData.name + "\'s public list!";
                         publicList.onclick = function () {
                             sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
-                            navigation(5);
+                            newNavigation(9);//FriendList
                         };
                         if (friendData.giftList.length == 1)
                             publicListCount.innerHTML = friendData.name + " has 1 gift on their public list";
@@ -587,7 +587,7 @@ window.onload = function instantiate() {
                 privateListHTML.innerHTML = "Click on me to access " + friendData.name + "\'s private gift list!";
                 privateListHTML.onclick = function() {
                     sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
-                    navigation(6);
+                    newNavigation(10);//PrivateFriendList
                 };
 
                 friendSendMessage.onclick = function() {
@@ -645,7 +645,7 @@ window.onload = function instantiate() {
                         publicList.innerHTML = "Click on me to access " + friendData.name + "\'s public list!";
                         publicList.onclick = function () {
                             sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
-                            navigation(5);
+                            newNavigation(9);//FriendList
                         };
                         if (friendData.giftList.length == 1)
                             publicListCount.innerHTML = friendData.name + " has 1 gift on their public list";
@@ -676,7 +676,7 @@ window.onload = function instantiate() {
                 privateListHTML.innerHTML = "Click on me to access " + friendData.name + "\'s private gift list!";
                 privateListHTML.onclick = function() {
                     sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
-                    navigation(6);
+                    newNavigation(10);//PrivateFriendList
                 };
 
                 friendSendMessage.onclick = function() {
@@ -785,39 +785,4 @@ function deployFriendListEmptyNotification(){
     }
 
     clearInterval(offlineTimer);
-}
-
-function signOut(){
-    sessionStorage.clear();
-    window.location.href = "index.html";
-}
-
-function navigation(nav){
-    sessionStorage.setItem("validUser", JSON.stringify(user));
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    switch(nav){
-        case 0:
-            window.location.href = "home.html";
-            break;
-        case 1:
-            window.location.href = "lists.html";
-            break;
-        case 2:
-            window.location.href = "invites.html";
-            break;
-        case 3:
-            window.location.href = "settings.html";
-            break;
-        case 4:
-            window.location.href = "notifications.html";
-            break;
-        case 5:
-            window.location.href = "friendList.html";
-            break;
-        case 6:
-            window.location.href = "privateFriendList.html";
-            break;
-        default:
-            break;
-    }
 }
