@@ -245,29 +245,3 @@ window.onload = function instantiate() {
         }, 1000);
     }
 };
-
-function signOut(){
-    sessionStorage.clear();
-    window.location.href = "index.html";
-}
-
-function navigation(nav){
-    sessionStorage.setItem("validUser", JSON.stringify(user));
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    switch(nav){
-        case 0:
-            window.location.href = "home.html";
-            break;
-        case 1:
-            window.location.href = "lists.html";
-            break;
-        case 2:
-            window.location.href = "invites.html";
-            break;
-        case 3:
-            window.location.href = "settings.html";
-            break;
-        default:
-            break;
-    }
-}
