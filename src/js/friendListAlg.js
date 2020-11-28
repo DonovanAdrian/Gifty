@@ -75,18 +75,18 @@ function getCurrentUser(){
                 if (currentUser.notifications.length > 0 && currentUser.readNotifications.length != currentUser.notifications.length) {
                     notificationBtn.src = "img/bellNotificationOn.png";
                     notificationBtn.onclick = function() {
-                        navigation(4);
+                        newNavigation(6);//Notifications
                     }
                 } else {
                     notificationBtn.src = "img/bellNotificationOff.png";
                     notificationBtn.onclick = function() {
-                        navigation(4);
+                        newNavigation(6);//Notifications
                     }
                 }
             } else if (currentUser.notifications.length > 0) {
                 notificationBtn.src = "img/bellNotificationOn.png";
                 notificationBtn.onclick = function() {
-                    navigation(4);
+                    newNavigation(6);//Notifications
                 }
             }
         }
@@ -192,9 +192,9 @@ window.onload = function instantiate() {
     backBtn.innerHTML = "Back To Lists";
     backBtn.onclick = function() {
         if(moderationSet == 1){
-            navigation(5);
+            newNavigation(14);//Moderation
         } else {
-            navigation(1);
+            newNavigation(3);//Lists
         }
     };
 
@@ -724,36 +724,4 @@ function deployGiftListEmptyNotification(){
     }
 
     clearInterval(offlineTimer);
-}
-
-function signOut(){
-    sessionStorage.clear();
-    window.location.href = "index.html";
-}
-
-function navigation(nav){
-    sessionStorage.setItem("validUser", JSON.stringify(currentUser));
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    switch(nav){
-        case 0:
-            window.location.href = "home.html";
-            break;
-        case 1:
-            window.location.href = "lists.html";
-            break;
-        case 2:
-            window.location.href = "invites.html";
-            break;
-        case 3:
-            window.location.href = "settings.html";
-            break;
-        case 4:
-            window.location.href = "notifications.html";
-            break;
-        case 5:
-            window.location.href = "moderation.html";
-            break;
-        default:
-            break;
-    }
 }
