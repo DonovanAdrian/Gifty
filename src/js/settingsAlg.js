@@ -23,7 +23,7 @@ var modal;
 function getCurrentUser(){
     try {
         user = JSON.parse(sessionStorage.validUser);
-        console.log("User: " + user.userName + " logged in");
+        console.log("User: " + user.userName + " loaded in");
         if (user.invites == undefined) {
             console.log("Invites Not Found");
         } else if (user.invites != undefined) {
@@ -34,7 +34,7 @@ function getCurrentUser(){
         if (user.moderatorInt == 1) {
             modBtn.style.display = "block";
             modBtn.onclick = function () {
-                navigation(6);
+                newNavigation(14);//Moderation
             }
         }
         userArr = JSON.parse(sessionStorage.userArr);
@@ -60,11 +60,11 @@ window.onload = function instantiate() {
     getCurrentUser();
 
     editBtn.onclick = function (){
-        navigation(4);
+        newNavigation(13);//UserAddUpdate
     };
 
     faqBtn.onclick = function (){
-        navigation(5);
+        newNavigation(12);//FAQ
     };
 
     const config = JSON.parse(sessionStorage.config);
@@ -201,39 +201,3 @@ window.onload = function instantiate() {
         };
     }
 };
-
-function signOut(){
-    sessionStorage.clear();
-    window.location.href = "index.html";
-}
-
-function navigation(nav){
-    sessionStorage.setItem("validUser", JSON.stringify(user));
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    switch(nav){
-        case 0:
-            window.location.href = "home.html";
-            break;
-        case 1:
-            window.location.href = "lists.html";
-            break;
-        case 2:
-            window.location.href = "invites.html";
-            break;
-        case 3:
-            window.location.href = "settings.html";
-            break;
-        case 4:
-            //edit user page
-            window.location.href = "userAddUpdate.html";
-            break;
-        case 5:
-            window.location.href = "faq.html";
-            break;
-        case 6:
-            window.location.href = "moderation.html";
-            break;
-        default:
-            break;
-    }
-}
