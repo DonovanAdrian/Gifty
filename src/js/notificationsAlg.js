@@ -34,7 +34,7 @@ var noteSpan;
 function getCurrentUser(){
     try {
         user = JSON.parse(sessionStorage.validUser);
-        console.log("User: " + user.userName + " logged in");
+        console.log("User: " + user.userName + " loaded in");
         if (user.invites == undefined) {
             console.log("Invites Not Found");
         } else if (user.invites != undefined) {
@@ -441,19 +441,19 @@ window.onload = function instantiate() {
             } else if (notificationPage == "invites.html"){
                 notificationPageField.innerHTML = "Click here to access your invites!";
                 notificationPageField.onclick = function(){
-                    navigation(4);
+                    newNavigation(11);//Confirmation
                 };
             } else if (notificationPage == "friendList.html" && friendUserData != -1) {
                 notificationPageField.innerHTML = "Click here to access their friend list!";
                 notificationPageField.onclick = function(){
                     sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
-                    navigation(5);
+                    newNavigation(9);//FriendList
                 };
             } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
                 notificationPageField.innerHTML = "Click here to access their private friend list!";
                 notificationPageField.onclick = function(){
                     sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
-                    navigation(6);
+                    newNavigation(10);//PrivateFriendList
                 };
             } else if (notificationPage == "deleteGift") {
                 notificationPageField.innerHTML = "If this has been done in error, please contact the gift owner.";
@@ -615,19 +615,19 @@ window.onload = function instantiate() {
                 } else if (notificationPage == "invites.html") {
                     notificationPageField.innerHTML = "Click here to access your invites!";
                     notificationPageField.onclick = function () {
-                        navigation(4);
+                        newNavigation(11);//Confirmation
                     };
                 } else if (notificationPage == "friendList.html" && friendUserData != -1) {
                     notificationPageField.innerHTML = "Click here to access their friend list!";
                     notificationPageField.onclick = function () {
                         sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
-                        navigation(5);
+                        newNavigation(9);//FriendList
                     };
                 } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
                     notificationPageField.innerHTML = "Click here to access their private friend list!";
                     notificationPageField.onclick = function () {
                         sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
-                        navigation(6);
+                        newNavigation(10);//PrivateFriendList
                     };
                 } else if (notificationPage == "deleteGift") {
                     notificationPageField.innerHTML = "If this has been done in error, please contact the gift owner.";
@@ -823,39 +823,4 @@ function deployNotificationListEmptyNotification(){
     }
 
     clearInterval(offlineTimer);
-}
-
-function signOut(){
-    sessionStorage.clear();
-    window.location.href = "index.html";
-}
-
-function navigation(nav){
-    sessionStorage.setItem("validUser", JSON.stringify(user));
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    switch(nav){
-        case 0:
-            window.location.href = "home.html";
-            break;
-        case 1:
-            window.location.href = "lists.html";
-            break;
-        case 2:
-            window.location.href = "invites.html";
-            break;
-        case 3:
-            window.location.href = "settings.html";
-            break;
-        case 4:
-            window.location.href = "confirmation.html";
-            break;
-        case 5:
-            window.location.href = "friendList.html";
-            break;
-        case 6:
-            window.location.href = "privateFriendList.html";
-            break;
-        default:
-            break;
-    }
 }
