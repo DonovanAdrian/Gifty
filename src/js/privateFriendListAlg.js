@@ -19,11 +19,11 @@ var logoutLimit = 900;
 var giftCreationDate;
 var giftList;
 var giftStorage;
-var currentUser;
+var user;
 var backBtn;
 var offlineSpan;
 var offlineModal;
-var user;
+var giftUser;
 var userInvites;
 var offlineTimer;
 var loadingTimer;
@@ -43,54 +43,54 @@ var userGifts;
 function getCurrentUser(){
     try {
         moderationSet = sessionStorage.getItem("moderationSet");
-        user = JSON.parse(sessionStorage.validGiftUser);
-        currentUser = JSON.parse(sessionStorage.validUser);
-        if(currentUser.uid == user.uid){
+        giftUser = JSON.parse(sessionStorage.validGiftUser);
+        user = JSON.parse(sessionStorage.validUser);
+        if(user.uid == giftUser.uid){
             console.log("HOW'D YOU GET HERE???");
-            navigation(0);
+            newNavigation(2);//Home
         }
-        console.log("User: " + currentUser.userName + " logged in");
-        console.log("Friend: " + user.userName + " loaded in");
-        if (user.privateList == undefined) {
+        console.log("User: " + user.userName + " loaded in");
+        console.log("Friend: " + giftUser.userName + " loaded in");
+        if (giftUser.privateList == undefined) {
             deployGiftListEmptyNotification();
             giftListEmptyBool = true;
-        } else if (user.privateList.length == 0) {
+        } else if (giftUser.privateList.length == 0) {
             deployGiftListEmptyNotification();
             giftListEmptyBool = true;
         }
-        if (currentUser.invites == undefined) {
+        if (user.invites == undefined) {
             console.log("Invites Not Found");
-        } else if (currentUser.invites != undefined) {
-            if (currentUser.invites.length > 0) {
+        } else if (user.invites != undefined) {
+            if (user.invites.length > 0) {
                 inviteNote.style.background = "#ff3923";
             }
         }
 
-        if (currentUser.readNotifications == undefined) {
+        if (user.readNotifications == undefined) {
             console.log("Read Notifications Not Found");
         } else {
             readNotificationsBool = true;
         }
 
-        if (currentUser.notifications == undefined) {
+        if (user.notifications == undefined) {
             console.log("Notifications Not Found");
-        } else if (currentUser.notifications != undefined) {
+        } else if (user.notifications != undefined) {
             if (readNotificationsBool){
-                if (currentUser.notifications.length > 0 && currentUser.readNotifications.length != currentUser.notifications.length) {
+                if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
                     notificationBtn.src = "img/bellNotificationOn.png";
                     notificationBtn.onclick = function() {
-                        navigation(4);
+                        newNavigation(6);//Notifications
                     }
                 } else {
                     notificationBtn.src = "img/bellNotificationOff.png";
                     notificationBtn.onclick = function() {
-                        navigation(4);
+                        newNavigation(6);//Notifications
                     }
                 }
-            } else if (currentUser.notifications.length > 0) {
+            } else if (user.notifications.length > 0) {
                 notificationBtn.src = "img/bellNotificationOn.png";
                 notificationBtn.onclick = function() {
-                    navigation(4);
+                    newNavigation(6);//Notifications
                 }
             }
         }
@@ -194,9 +194,9 @@ window.onload = function instantiate() {
     backBtn.innerHTML = "Add Private Gift";
     backBtn.onclick = function() {
         giftStorage = "";
-        sessionStorage.setItem("privateList", JSON.stringify(user));
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        sessionStorage.setItem("validPrivateUser", JSON.stringify(currentUser));
+        sessionStorage.setItem("privateList", JSON.stringify(giftUser));
+        sessionStorage.setItem("validUser", JSON.stringify(giftUser));
+        sessionStorage.setItem("validPrivateUser", JSON.stringify(user));
         sessionStorage.setItem("userArr", JSON.stringify(userArr));
         sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
         window.location.href = "giftAddUpdate.html";
@@ -280,7 +280,7 @@ window.onload = function instantiate() {
     }
 
     function ohThereYouAre(){
-        noteInfoField.innerHTML = "Welcome back, " + user.name;
+        noteInfoField.innerHTML = "Welcome back, " + giftUser.name;
         noteTitleField.innerHTML = "Oh, There You Are!";
 
         var nowJ = 0;
@@ -328,8 +328,8 @@ window.onload = function instantiate() {
     function databaseQuery() {
 
         userBase = firebase.database().ref("users/");
-        userGifts = firebase.database().ref("users/" + user.uid + "/privateList/");
-        userInvites = firebase.database().ref("users/" + currentUser.uid + "/invites");
+        userGifts = firebase.database().ref("users/" + giftUser.uid + "/privateList/");
+        userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
         var fetchData = function (postRef) {
             postRef.on('child_added', function (data) {
@@ -341,8 +341,8 @@ window.onload = function instantiate() {
                     userArr[i] = data.val();
                 }
 
-                if(data.key == user.uid){
-                    user = data.val();
+                if(data.key == giftUser.uid){
+                    giftUser = data.val();
                     console.log("User Updated: 1");
                 }
             });
@@ -354,8 +354,8 @@ window.onload = function instantiate() {
                     userArr[i] = data.val();
                 }
 
-                if(data.key == user.uid){
-                    user = data.val();
+                if(data.key == giftUser.uid){
+                    giftUser = data.val();
                     console.log("User Updated: 2");
                 }
             });
@@ -404,8 +404,8 @@ window.onload = function instantiate() {
             });
 
             postRef.on('child_removed', function(data) {
-                sessionStorage.setItem("validGiftUser", JSON.stringify(user));
-                sessionStorage.setItem("validUser", JSON.stringify(currentUser));
+                sessionStorage.setItem("validGiftUser", JSON.stringify(giftUser));
+                sessionStorage.setItem("validUser", JSON.stringify(user));
                 location.reload();
             });
         };
@@ -471,7 +471,7 @@ window.onload = function instantiate() {
 
     function updateGiftError(giftData, giftKey){
         alert("A gift needs to be updated! Key: " + giftKey);
-        firebase.database().ref("users/" + user.uid + "/privateList/" + giftKey).update({
+        firebase.database().ref("users/" + giftUser.uid + "/privateList/" + giftKey).update({
             buyer: ""
         });
     }
@@ -560,19 +560,19 @@ window.onload = function instantiate() {
                 giftCreationDate.innerHTML = "Creation date not available";
             }
             editBtn.onclick = function(){
-                updateMaintenanceLog("privateList", "Attempting to update gift:" + giftTitle + " " + giftKey + " " + currentUser.userName);
+                updateMaintenanceLog("privateList", "Attempting to update gift:" + giftTitle + " " + giftKey + " " + user.userName);
                 updateGiftElement(giftUid);
             };
             deleteBtn.onclick = function(){
-                if (giftCreator == currentUser.userName || giftCreator == null || giftCreator == undefined) {
-                    updateMaintenanceLog("privateList", "Attempting to delete gift:" + giftTitle + " " + giftKey + " " + currentUser.userName);
+                if (giftCreator == user.userName || giftCreator == null || giftCreator == undefined) {
+                    updateMaintenanceLog("privateList", "Attempting to delete gift:" + giftTitle + " " + giftKey + " " + user.userName);
                     deleteGiftElement(giftKey, giftTitle, giftBuyer);
                 } else {
                     if (giftCreator == ""){
-                        updateMaintenanceLog("privateList", "Attempting to delete gift:" + giftTitle + " " + giftKey + " " + currentUser.userName);
+                        updateMaintenanceLog("privateList", "Attempting to delete gift:" + giftTitle + " " + giftKey + " " + user.userName);
                         deleteGiftElement(giftKey, giftTitle, giftBuyer);
                     } else {
-                        updateMaintenanceLog("privateList", "Attempting to delete gift:" + giftTitle + " " + giftKey + " " + currentUser.userName);
+                        updateMaintenanceLog("privateList", "Attempting to delete gift:" + giftTitle + " " + giftKey + " " + user.userName);
                         alert("Only the creator, " + giftCreator + ", can delete this gift. Please contact them to delete this gift " +
                             "if it needs to be removed.");
                     }
@@ -581,9 +581,9 @@ window.onload = function instantiate() {
             buyField.innerHTML = "Click on me to buy the gift!";
             buyField.onclick = function(){
                 if (giftReceived == 0) {
-                    firebase.database().ref("users/" + user.uid + "/privateList/" + giftKey).update({
+                    firebase.database().ref("users/" + giftUser.uid + "/privateList/" + giftKey).update({
                         received: 1,
-                        buyer: currentUser.userName
+                        buyer: user.userName
                     });
                 } else {
                     alert("This gift has already been marked as bought!");
@@ -592,14 +592,14 @@ window.onload = function instantiate() {
             dontBuyField.innerHTML = "Click on me to un-buy the gift!";
             dontBuyField.onclick = function(){
                 if (giftReceived == 1) {
-                    if (giftBuyer == currentUser.userName || giftBuyer == null || giftBuyer == undefined) {
-                        firebase.database().ref("users/" + user.uid + "/privateList/" + giftKey).update({
+                    if (giftBuyer == user.userName || giftBuyer == null || giftBuyer == undefined) {
+                        firebase.database().ref("users/" + giftUser.uid + "/privateList/" + giftKey).update({
                             received: 0,
                             buyer: ""
                         });
                     } else {
                         if (giftBuyer == "") {
-                            firebase.database().ref("users/" + user.uid + "/privateList/" + giftKey).update({
+                            firebase.database().ref("users/" + giftUser.uid + "/privateList/" + giftKey).update({
                                 received: 0,
                                 buyer: ""
                             });
@@ -716,19 +716,19 @@ window.onload = function instantiate() {
                 giftCreationDate.innerHTML = "Creation date not available";
             }
             editBtn.onclick = function () {
-                updateMaintenanceLog("privateList", "Attempting to update gift:" + title + " " + key + " " + currentUser.userName);
+                updateMaintenanceLog("privateList", "Attempting to update gift:" + title + " " + key + " " + user.userName);
                 updateGiftElement(uid);
             };
             deleteBtn.onclick = function () {
-                if (creator == currentUser.userName || creator == null || creator == undefined) {
-                    updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + currentUser.userName);
+                if (creator == user.userName || creator == null || creator == undefined) {
+                    updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
                     deleteGiftElement(key, title, buyer);
                 } else {
                     if (creator == ""){
-                        updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + currentUser.userName);
+                        updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
                         deleteGiftElement(key, title, buyer);
                     } else {
-                        updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + currentUser.userName);
+                        updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
                         alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
                             "if it needs to be removed.");
                     }
@@ -737,9 +737,9 @@ window.onload = function instantiate() {
             buyField.innerHTML = "Click on me to buy the gift!";
             buyField.onclick = function () {
                 if (received == 0) {
-                    firebase.database().ref("users/" + user.uid + "/privateList/" + key).update({
+                    firebase.database().ref("users/" + giftUser.uid + "/privateList/" + key).update({
                         received: 1,
-                        buyer: currentUser.userName
+                        buyer: user.userName
                     });
                 } else {
                     alert("This gift has already been marked as bought!");
@@ -748,14 +748,14 @@ window.onload = function instantiate() {
             dontBuyField.innerHTML = "Click on me to un-buy the gift!";
             dontBuyField.onclick = function () {
                 if (received == 1) {
-                    if (buyer == currentUser.userName || buyer == null || buyer == undefined) {
-                        firebase.database().ref("users/" + user.uid + "/privateList/" + key).update({
+                    if (buyer == user.userName || buyer == null || buyer == undefined) {
+                        firebase.database().ref("users/" + giftUser.uid + "/privateList/" + key).update({
                             received: 0,
                             buyer: ""
                         });
                     } else {
                         if (buyer == "") {
-                            firebase.database().ref("users/" + user.uid + "/privateList/" + key).update({
+                            firebase.database().ref("users/" + giftUser.uid + "/privateList/" + key).update({
                                 received: 0,
                                 buyer: ""
                             });
@@ -797,9 +797,9 @@ window.onload = function instantiate() {
 
     function updateGiftElement(uid) {
         giftStorage = uid;
-        sessionStorage.setItem("privateList", JSON.stringify(user));
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        sessionStorage.setItem("validPrivateUser", JSON.stringify(currentUser));
+        sessionStorage.setItem("privateList", JSON.stringify(giftUser));
+        sessionStorage.setItem("validUser", JSON.stringify(giftUser));
+        sessionStorage.setItem("validPrivateUser", JSON.stringify(user));
         sessionStorage.setItem("userArr", JSON.stringify(userArr));
         sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
         window.location.href = "giftAddUpdate.html";
@@ -831,15 +831,15 @@ window.onload = function instantiate() {
         }
 
         if(verifyDeleteBool){
-            firebase.database().ref("users/" + user.uid).update({
+            firebase.database().ref("users/" + giftUser.uid).update({
                 privateList: giftArr
             });
 
             if(buyer != ""){
                 var userFound = findUserNameItemInArr(buyer, userArr);
                 if(userFound != -1){
-                    if(userArr[userFound].uid != currentUser.uid) {
-                        addNotificationToDB(userArr[userFound], currentUser.name, title);
+                    if(userArr[userFound].uid != user.uid) {
+                        addNotificationToDB(userArr[userFound], user.name, title);
                     }
                 } else {
                     console.log("User not found");
@@ -864,7 +864,7 @@ window.onload = function instantiate() {
 
     function addNotificationToDB(buyerUserData, giftDeleter, giftTitle){
         var pageName = "deleteGiftPrivate";
-        var giftOwner = user.uid;
+        var giftOwner = giftUser.uid;
         var notificationString = generateNotificationString(giftOwner, giftDeleter, giftTitle, pageName);
         var buyerUserNotifications;
         if(buyerUserData.notifications == undefined || buyerUserData.notifications == null){
@@ -926,33 +926,4 @@ function deployGiftListEmptyNotification(){
     }
 
     clearInterval(offlineTimer);
-}
-
-function signOut(){
-    sessionStorage.clear();
-    window.location.href = "index.html";
-}
-
-function navigation(nav){
-    sessionStorage.setItem("validUser", JSON.stringify(currentUser));
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    switch(nav){
-        case 0:
-            window.location.href = "home.html";
-            break;
-        case 1:
-            window.location.href = "lists.html";
-            break;
-        case 2:
-            window.location.href = "invites.html";
-            break;
-        case 3:
-            window.location.href = "settings.html";
-            break;
-        case 4:
-            window.location.href = "notifications.html";
-            break;
-        default:
-            break;
-    }
 }
