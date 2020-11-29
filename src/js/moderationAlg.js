@@ -45,7 +45,7 @@ var secretSantaBtn;
 function getCurrentUser(){
     try {
         user = JSON.parse(sessionStorage.validUser);
-        console.log("User: " + user.userName + " logged in");
+        console.log("User: " + user.userName + " loaded in");
         if (user.invites == undefined) {
             console.log("Invites Not Found");
         } else if (user.invites != undefined) {
@@ -751,7 +751,7 @@ window.onload = function instantiate() {
                     alert("Navigate to the home page to see your gifts!");
                 } else {
                     sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
-                    navigation(4);
+                    newNavigation(9);//FriendList
                 }
             };
             userPrivateGifts.onclick = function() {
@@ -759,7 +759,7 @@ window.onload = function instantiate() {
                     alert("You aren't allowed to see these gifts, silly!");
                 } else {
                     sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
-                    navigation(5);
+                    newNavigation(10);//PrivateFriendList
                 }
             };
             userPassword.onclick = function() {
@@ -902,7 +902,7 @@ window.onload = function instantiate() {
                     alert("Navigate to the home page to see your gifts!");
                 } else {
                     sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
-                    navigation(4);
+                    newNavigation(9);//FriendList
                 }
             };
             userPrivateGifts.onclick = function() {
@@ -910,7 +910,7 @@ window.onload = function instantiate() {
                     alert("You aren't allowed to see these gifts, silly!");
                 } else {
                     sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
-                    navigation(5);
+                    newNavigation(10);//PrivateFriendList
                 }
             };
             userPassword.onclick = function() {
@@ -1025,36 +1025,4 @@ function deployUserListEmptyNotification(){
     }
 
     clearInterval(offlineTimer);
-}
-
-function signOut(){
-    sessionStorage.clear();
-    window.location.href = "index.html";
-}
-
-function navigation(nav){
-    sessionStorage.setItem("validUser", JSON.stringify(user));
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    switch(nav){
-        case 0:
-            window.location.href = "home.html";
-            break;
-        case 1:
-            window.location.href = "lists.html";
-            break;
-        case 2:
-            window.location.href = "invites.html";
-            break;
-        case 3:
-            window.location.href = "settings.html";
-            break;
-        case 4:
-            window.location.href = "friendList.html";
-            break;
-        case 5:
-            window.location.href = "privateFriendList.html";
-            break;
-        default:
-            break;
-    }
 }
