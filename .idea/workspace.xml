@@ -117,7 +117,6 @@
         <option value="$PROJECT_DIR$/src/index.html" />
         <option value="$PROJECT_DIR$/src/userAddUpdate.html" />
         <option value="$PROJECT_DIR$/src/moderation.html" />
-        <option value="$PROJECT_DIR$/src/js/boughtGiftsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/confirmationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/faqAlg.js" />
         <option value="$PROJECT_DIR$/src/js/friendListAlg.js" />
@@ -132,6 +131,7 @@
         <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/settingsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/userAddUpdateAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/boughtGiftsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/common.js" />
       </list>
     </option>
@@ -142,10 +142,10 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="y" value="305" />
+  <component name="ProjectFrameBounds">
+    <option name="y" value="25" />
     <option name="width" value="1280" />
-    <option name="height" value="721" />
+    <option name="height" value="716" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -380,15 +380,15 @@
       <workItem from="1604276757492" duration="1534000" />
       <workItem from="1604621347099" duration="8802000" />
       <workItem from="1605141037397" duration="3434000" />
-      <workItem from="1605245165155" duration="19599000" />
+      <workItem from="1605245165155" duration="19615000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="495005000" />
+    <option name="totallyTimeSpent" value="495021000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="25" width="1280" height="716" extended-state="6" />
+    <frame x="0" y="25" width="1280" height="716" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19301033" />
@@ -591,13 +591,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/boughtGiftsAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="611" selection-start-line="611" selection-end-line="611" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/confirmationAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="454">
@@ -707,6 +700,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="19" column="6" lean-forward="true" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/boughtGiftsAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="454">
+          <caret line="460" selection-start-line="460" selection-end-line="460" />
         </state>
       </provider>
     </entry>
