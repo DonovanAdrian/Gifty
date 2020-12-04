@@ -1,7 +1,7 @@
 var listeningFirebaseRefs = [];
 var userArr = [];
 
-var configObj = {};
+var config = {};
 
 var loginBool = false;
 
@@ -13,6 +13,8 @@ var offlineModal;
 var validUser;
 var loginBtn;
 var signUpFld;
+
+
 
 function fetchConfigFile(){
     console.log("Fetching Config");
@@ -102,7 +104,7 @@ function fetchConfigFile(){
                     alert("Config not properly initialized! Please contact an administrator!");
                     console.log("Config Not Initialized! Are You Using The Default Config File?");
                 } else {
-                    configObj = {
+                    config = {
                         apiKey: apiKeyString,
                         authDomain: authDomainString,
                         databaseURL: databaseURLString,
@@ -114,8 +116,16 @@ function fetchConfigFile(){
                     };
                     console.log("Config Successfully Initialized!");
 
-                    sessionStorage.setItem("config", JSON.stringify(configObj));
-                    initializeDatabase();
+                    sessionStorage.setItem("config", JSON.stringify(config));
+                    commonInitialization();
+                    databaseQuery();
+                    loginBtn.innerHTML = "Log In";
+                    loginBtn.onclick = function(){
+                        login();
+                    };
+                    signUpFld.onclick = function(){
+                        signUp();
+                    };
                 }
             }
         }
@@ -132,37 +142,7 @@ window.onload = function instantiate() {
     signUpFld = document.getElementById("signUpFld");
 
     loginBtn.innerHTML = "Please Wait...";
-
-    window.addEventListener("online", function(){
-        closeModal(offlineModal);
-        location.reload();
-    });
-
-    window.addEventListener("offline", function() {
-        var now = 0;
-        var g = setInterval(function(){
-            now = now + 1000;
-            if(now >= 5000){
-                openModal(offlineModal, "offlineModal");
-                clearInterval(g);
-            }
-        }, 1000);
-    });
-
-    //close offlineModal on close
-    offlineSpan.onclick = function() {
-        closeModal(offlineModal);
-    };
-
-    //close offlineModal on click
-    window.onclick = function(event) {
-        if (event.target == offlineModal) {
-            closeModal(offlineModal);
-        }
-    };
-
     fetchConfigFile();
-
     backgroundAlternator();
 
     function backgroundAlternator(){
@@ -193,39 +173,6 @@ window.onload = function instantiate() {
         }, 1000);
     }
 };
-
-function initializeDatabase(){
-
-    console.log("Initializing Database");
-
-    firebase.initializeApp(configObj);
-    firebase.analytics();
-
-    firebase.auth().signInAnonymously().catch(function (error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-    });
-
-    firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-            // User is signed in.
-            var isAnonymous = user.isAnonymous;
-            var uid = user.uid;
-        } else {
-            // User is signed out.
-        }
-    });
-
-    console.log("Database Successfully Initialized!");
-    databaseQuery();
-    loginBtn.innerHTML = "Log In";
-    loginBtn.onclick = function(){
-        login();
-    }
-    signUpFld.onclick = function(){
-        signUp();
-    }
-}
 
 function databaseQuery() {
 
