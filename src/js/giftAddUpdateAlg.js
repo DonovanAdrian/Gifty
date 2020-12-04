@@ -3,13 +3,9 @@ var giftArr = [];
 
 var giftPresent = true;
 var privateListBool = true;
-var areYouStillThereBool = false;
-var areYouStillThereInit = false;
 var invalidURLBool = false;
 
 var giftUID = -1;
-var logoutReminder = 300;
-var logoutLimit = 900;
 
 var giftStorage;
 var privateList;
@@ -31,19 +27,20 @@ var noteTitleField;
 var noteSpan;
 
 
+
 function getCurrentUser(){
     try {
         user = JSON.parse(sessionStorage.validUser);
         privateList = JSON.parse(sessionStorage.privateList);
         if(privateList == null || privateList == undefined || privateList == "") {
             privateListBool = false;
-            console.log("User: " + user.userName + " logged in");
+            console.log("User: " + user.userName + " loaded in");
         } else {
             privateUser = JSON.parse(sessionStorage.validPrivateUser);
             document.getElementById('homeNote').className = "";
             document.getElementById('listNote').className = "active";
-            console.log("User: " + privateUser.userName + " logged in");
-            console.log("Friend: " + user.userName + " logged in");
+            console.log("User: " + privateUser.userName + " loaded in");
+            console.log("Friend: " + user.userName + " loaded in");
         }
         giftStorage = JSON.parse(sessionStorage.giftStorage);
         if (giftStorage == null || giftStorage == undefined || giftStorage == "") {
@@ -60,10 +57,10 @@ function getCurrentUser(){
                 }
             }
             else
-            if (currentUser.invites == undefined) {
+            if (user.invites == undefined) {
                 console.log("Invites Not Found");
-            } else if (currentUser.invites != undefined) {
-                if (currentUser.invites.length > 0) {
+            } else if (user.invites != undefined) {
+                if (user.invites.length > 0) {
                     inviteNote.style.background = "#ff3923";
                 }
             }
@@ -90,55 +87,7 @@ window.onload = function instantiate() {
     noteInfoField = document.getElementById('notificationInfo');
     noteSpan = document.getElementById('closeNotification');
     getCurrentUser();
-
-    const config = JSON.parse(sessionStorage.config);
-
-    firebase.initializeApp(config);
-    firebase.analytics();
-
-    firebase.auth().signInAnonymously().catch(function (error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-    });
-
-    firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-            // User is signed in.
-            var isAnonymous = user.isAnonymous;
-            var uid = user.uid;
-        } else {
-            // User is signed out.
-        }
-    });
-
-
-    window.addEventListener("online", function(){
-        closeModal(offlineModal);
-        location.reload();
-    });
-
-    window.addEventListener("offline", function() {//ToDo
-        var now = 0;
-        var g = setInterval(function(){
-            now = now + 1000;
-            if(now >= 5000){
-                openModal(offlineModal, "offlineModal");
-                clearInterval(g);
-            }
-        }, 1000);
-    });
-
-    //close offlineModal on close
-    offlineSpan.onclick = function() {
-        closeModal(offlineModal);
-    };
-
-    //close offlineModal on click
-    window.onclick = function(event) {
-        if (event.target == offlineModal) {
-            closeModal(offlineModal);
-        }
-    };
+    commonInitialization();
 
     if(giftPresent) {
         spanUpdate.innerHTML = "Update Gift";
@@ -153,94 +102,6 @@ window.onload = function instantiate() {
     }
 
     databaseQuery();
-
-    loginTimer(); //if action, then reset timer
-
-    function loginTimer(){
-        var loginNum = 0;
-        console.log("Login Timer Started");
-        setInterval(function(){ //900 15 mins, 600 10 mins
-            document.onmousemove = resetTimer;
-            document.onkeypress = resetTimer;
-            document.onload = resetTimer;
-            document.onmousemove = resetTimer;
-            document.onmousedown = resetTimer; // touchscreen presses
-            document.ontouchstart = resetTimer;
-            document.onclick = resetTimer;     // touchpad clicks
-            document.onscroll = resetTimer;    // scrolling with arrow keys
-            document.onkeypress = resetTimer;
-            loginNum = loginNum + 1;
-            if (loginNum >= logoutLimit){//default 900
-                console.log("User Timed Out");
-                signOut();
-            } else if (loginNum > logoutReminder){//default 600
-                //console.log("User Inactive");
-                areYouStillThereNote(loginNum);
-                areYouStillThereBool = true;
-            }
-            function resetTimer() {
-                if (areYouStillThereBool) {
-                    //console.log("User Active");
-                    ohThereYouAre();
-                }
-                loginNum = 0;
-            }
-        }, 1000);
-    }
-
-    function areYouStillThereNote(timeElapsed){
-        var timeRemaining = logoutLimit - timeElapsed;
-        var timeMins = Math.floor(timeRemaining/60);
-        var timeSecs = timeRemaining%60;
-
-        if (timeSecs < 10) {
-            timeSecs = ("0" + timeSecs).slice(-2);
-        }
-
-        if(!areYouStillThereInit) {
-            closeModal(modal);
-            openModal(noteModal, "noteModal");
-            areYouStillThereInit = true;
-        }
-        noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
-            + ":" + timeSecs + "!";
-        noteTitleField.innerHTML = "Are You Still There?";
-
-        //close on close
-        noteSpan.onclick = function() {
-            closeModal(noteModal);
-            areYouStillThereBool = false;
-            areYouStillThereInit = false;
-        };
-    }
-
-    function ohThereYouAre(){
-        if (!privateListBool)
-            noteInfoField.innerHTML = "Welcome back, " + user.name;
-        else
-            noteInfoField.innerHTML = "Welcome back, " + privateUser.name;
-        noteTitleField.innerHTML = "Oh, There You Are!";
-
-        var nowJ = 0;
-        var j = setInterval(function(){
-            nowJ = nowJ + 1000;
-            if(nowJ >= 3000){
-                closeModal(noteModal);
-                areYouStillThereBool = false;
-                areYouStillThereInit = false;
-                clearInterval(j);
-            }
-        }, 1000);
-
-        //close on click
-        window.onclick = function(event) {
-            if (event.target == noteModal) {
-                closeModal(noteModal);
-                areYouStillThereBool = false;
-                areYouStillThereInit = false;
-            }
-        };
-    }
 
     function databaseQuery() {
 
@@ -646,7 +507,6 @@ window.onload = function instantiate() {
             case "(":
             case ")":
             case " ":
-            case "+":
             case "\"":
             case "\'":
             case "{":
