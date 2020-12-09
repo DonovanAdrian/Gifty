@@ -102,6 +102,11 @@ span.settingsBtn {
   border-radius: 0;
 }
 
+span.settingsBtn:hover {
+  background-color: #ff4c4c;
+  color: #000;
+}
+
 span.faqBtn {
   margin: 50px;
   padding: 10px;
@@ -115,14 +120,17 @@ span.faqBtn {
   border-radius: 0;
 }
 
+span.faqBtn:hover {
+  background-color: #ff4c4c;
+  color: #000;
+}
+
 span.modBtn {
   display: none;
   position: fixed;
-  text-align: center;
-  margin: 50px;
-  padding: 10px;
-  bottom: 10px;
   right: 10px;
+  bottom: 10px;
+  padding: 10px;
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
@@ -132,17 +140,27 @@ span.modBtn {
   border-radius: 0;
 }
 
-span.settingsBtn:hover {
-  background-color: #ff4c4c;
-  color: #000;
-}
-
-span.faqBtn:hover {
-  background-color: #ff4c4c;
-  color: #000;
-}
-
 span.modBtn:hover {
+  background-color: #ff4c4c;
+  color: #000;
+}
+
+span.familyBtn {
+  display:none;
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  padding: 10px;
+  font-family: Verdana;
+  background: #ff8e8e;
+  color: #FFF;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0;
+}
+
+span.familyBtn:hover {
   background-color: #ff4c4c;
   color: #000;
 }
