@@ -3,6 +3,7 @@ var userArr = [];
 var editBtn;
 var faqBtn;
 var modBtn;
+var familyBtn;
 var offlineTimer;
 var offlineSpan;
 var offlineModal;
@@ -31,7 +32,12 @@ function getCurrentUser(){
             modBtn.style.display = "block";
             modBtn.onclick = function () {
                 newNavigation(14);//Moderation
-            }
+            };
+
+            familyBtn.style.display = "block";
+            familyBtn.onclick = function () {
+                newNavigation(15);//Family
+            };
         }
         userArr = JSON.parse(sessionStorage.userArr);
     } catch (err) {
@@ -48,6 +54,7 @@ window.onload = function instantiate() {
     editBtn = document.getElementById("edit");
     faqBtn = document.getElementById("faq");
     modBtn = document.getElementById("mod");
+    familyBtn = document.getElementById("family");
     noteModal = document.getElementById('notificationModal');
     noteTitleField = document.getElementById('notificationTitle');
     noteInfoField = document.getElementById('notificationInfo');
