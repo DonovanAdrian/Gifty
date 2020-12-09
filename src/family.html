@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="img/giftyiconweb.png">
+  <link href="css/main.css" rel="stylesheet" type="text/css"/>
+  <title>Family</title>
+
+  <script src="js/familyAlg.js" type="text/javascript"></script>
+  <script src="js/common.js" type="text/javascript"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-analytics.js"></script>
+
+  <div class="topnav">
+    <ul>
+      <li><div class="cropIcon"><img class="imgIcon" src="img/giftyicon.png"></div></li>
+      <div class="break"></div>
+      <li><a onclick="newNavigation(2)">Home</a></li>
+      <li><a onclick="newNavigation(3)" id="listNote">Lists</a></li>
+      <li><a onclick="newNavigation(4)" id="inviteNote">Invites</a></li>
+      <li><a class="active" onclick="newNavigation(5)" id="settingsNote">Settings</a></li>
+      <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
+    </ul>
+  </div>
+</head>
+<body>
+
+<ul id="dataListContainer" class="giftList">
+  <li class="gift" id="TestGift">Loading...</li>
+</ul>
+
+<span class="addBtn" id="createFamily">Loading... Please Wait</span>
+
+<div id="myModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeModal">&times;</span>
+      <h2 id="familyTitle">Loading Title...</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p id="familyMemberCount">Loading Number Of Family Members...</p>
+      <ul id="familyListContainer" class="giftList">
+        <li class="gift" id="TestFamily">Loading...</li>
+      </ul>
+      <p id="familyConnectionCount">Loading Number Of Connections...</p>
+      <p id="publicListCount">Loading Number Of Gifts...</p>
+      <p id="privateListCount">Loading Number Of Gifts...</p>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3 style="float: left;padding-left: 10px" id="familyView">View Family</h3>
+      <h3 style="float: right;padding-left: 10px" id="familyRemove">Remove Family</h3>
+    </div>
+  </div>
+</div>
+
+<div id="familyAddModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2>Enter Name Of Family Below</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p></p>
+      <input type="text" id="familyNameInp" placeholder="The XYZ Family..." class="giftInp">
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3 style="float: left;padding-left: 10px" id="addFamily">Add</h3>
+      <h3 style="float: right;padding-right: 10px" id="cancelFamily">Cancel</h3>
+    </div>
+  </div>
+</div>
+
+<div id="familySelectModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2>Select A User To Add To This Family</h2>
+    </div>
+
+    <!--Modal Body-->
+    <ul id="userListContainer" class="giftList">
+      <li class="gift" id="TestUser">Loading...</li>
+    </ul>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3></h3>
+    </div>
+  </div>
+</div>
+
+<div id="offlineModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeOffline">&times;</span>
+      <h2>It appears that you are offline!</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p>Please reconnect to the internet in order to use Gifty properly!</p>
+    </div>
+  </div>
+</div>
+
+<div id="notificationModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeNotification">&times;</span>
+      <h2 id="notificationTitle"></h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p id="notificationInfo"></p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
