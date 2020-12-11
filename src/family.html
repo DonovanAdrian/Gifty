@@ -20,7 +20,7 @@
       <li><div class="cropIcon"><img class="imgIcon" src="img/giftyicon.png"></div></li>
       <div class="break"></div>
       <li><a onclick="newNavigation(2)">Home</a></li>
-      <li><a onclick="newNavigation(3)" id="listNote">Lists</a></li>
+      <li><a onclick="newNavigation(3)">Lists</a></li>
       <li><a onclick="newNavigation(4)" id="inviteNote">Invites</a></li>
       <li><a class="active" onclick="newNavigation(5)" id="settingsNote">Settings</a></li>
       <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
@@ -30,17 +30,17 @@
 <body>
 
 <ul id="dataListContainer" class="giftList">
-  <li class="gift" id="TestGift">Loading...</li>
+  <li class="gift" id="testData">Loading...</li>
 </ul>
 
 <span class="addBtn" id="createFamily">Loading... Please Wait</span>
 
-<div id="myModal" class="modal">
+<div id="familyModal" class="modal">
   <div class="modal-content">
 
     <!--Modal Header-->
     <div class="modal-header">
-      <span class="close" id="closeModal">&times;</span>
+      <span class="close" id="closeFamilyModal">&times;</span>
       <h2 id="familyTitle">Loading Title...</h2>
     </div>
 
@@ -48,7 +48,7 @@
     <div class="modal-body">
       <p id="familyMemberCount">Loading Number Of Family Members...</p>
       <ul id="familyListContainer" class="giftList">
-        <li class="gift" id="TestFamily">Loading...</li>
+        <li class="gift" id="testFamily">Loading...</li>
       </ul>
       <p id="familyConnectionCount">Loading Number Of Connections...</p>
       <p id="publicListCount">Loading Number Of Gifts...</p>
@@ -57,7 +57,7 @@
 
     <!--Modal Footer-->
     <div class="modal-footer">
-      <h3 style="float: left;padding-left: 10px" id="familyView">View Family</h3>
+      <h3 style="float: right;padding-left: 10px" id="familyEdit">Edit Family</h3>
       <h3 style="float: right;padding-left: 10px" id="familyRemove">Remove Family</h3>
     </div>
   </div>
@@ -68,8 +68,8 @@
 
     <!--Modal Header-->
     <div class="modal-header">
-      <span class="close">&times;</span>
-      <h2>Enter Name Of Family Below</h2>
+      <span class="close" id="closeFamilyAddModal">&times;</span>
+      <h2>Enter Family Name Below</h2>
     </div>
 
     <!--Modal Body-->
@@ -82,27 +82,6 @@
     <div class="modal-footer">
       <h3 style="float: left;padding-left: 10px" id="addFamily">Add</h3>
       <h3 style="float: right;padding-right: 10px" id="cancelFamily">Cancel</h3>
-    </div>
-  </div>
-</div>
-
-<div id="familySelectModal" class="modal">
-  <div class="modal-content">
-
-    <!--Modal Header-->
-    <div class="modal-header">
-      <span class="close">&times;</span>
-      <h2>Select A User To Add To This Family</h2>
-    </div>
-
-    <!--Modal Body-->
-    <ul id="userListContainer" class="giftList">
-      <li class="gift" id="TestUser">Loading...</li>
-    </ul>
-
-    <!--Modal Footer-->
-    <div class="modal-footer">
-      <h3></h3>
     </div>
   </div>
 </div>
