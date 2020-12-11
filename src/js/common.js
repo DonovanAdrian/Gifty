@@ -197,7 +197,8 @@ function newNavigation(navNum) {
         "confirmation.html", //11
         "faq.html",//12
         "userAddUpdate.html",//13
-        "moderation.html"];//14
+        "moderation.html",//14
+        "family.html"];//15
 
     if (navNum >= navLocations.length)
         navNum = 0;
