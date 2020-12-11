@@ -11,6 +11,15 @@ var dataListChecker;
 
 
 
+function verifyElementIntegrity(arr){
+    for(var i = 0; i < arr.length; i++){
+        if(arr[i].innerHTML == undefined)
+            console.log("WARNING: " + i + " UNDEFINED!");
+        else if(arr[i].innerHTML == null)
+            console.log("WARNING: " + i + " NULL!");
+    }
+}
+
 function instantiateCommon(){
     try {
         userChecker = JSON.parse(sessionStorage.validUser);
@@ -54,16 +63,16 @@ function commonInitialization(){
             if(now >= 5000){
                 if(dataListChecker.innerHTML != null)
                     try{
-                        document.getElementById("TestGift").innerHTML = "Loading Failed, Please Connect To Internet";
+                        document.getElementById("testGift").innerHTML = "Loading Failed, Please Connect To Internet";
                     } catch(err){
                         if(giftCounter == 0) {
                             console.log("Loading Element Missing, Creating A New One");
                             var liItem = document.createElement("LI");
-                            liItem.id = "TestGift";
+                            liItem.id = "testGift";
                             liItem.className = "gift";
                             var textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
                             liItem.appendChild(textNode);
-                            giftList.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+                            giftList.insertBefore(liItem, dataListChecker.childNodes[0]);
                         }
                     }
                 openModal(offlineModal, "offlineModal");
@@ -198,7 +207,8 @@ function newNavigation(navNum) {
         "faq.html",//12
         "userAddUpdate.html",//13
         "moderation.html",//14
-        "family.html"];//15
+        "family.html",//15
+        "familyUpdate.html"];//16
 
     if (navNum >= navLocations.length)
         navNum = 0;
