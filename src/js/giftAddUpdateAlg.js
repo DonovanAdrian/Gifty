@@ -4,6 +4,9 @@ var giftArr = [];
 var giftPresent = true;
 var privateListBool = true;
 var invalidURLBool = false;
+var invalidURLOverride = false;
+
+var invalidURL = "";
 
 var giftUID = -1;
 
@@ -327,12 +330,17 @@ window.onload = function instantiate() {
         var creationDate = mm + "/" + dd + "/" + yy;
         var newURL = verifyURLString(linkField.value);
 
+        if(invalidURL != newURL)
+            invalidURLOverride = false;
         if(titleField.value === "")
             alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
                 "you!");
-        else if (invalidURLBool)
-            alert("It looks like you entered an invalid URL, please enter a valid URL or leave the field blank.");
-        else {
+        else if (invalidURLBool && !invalidURLOverride) {
+            alert("It looks like you might have entered an invalid URL, double check to see if your url is valid and " +
+                "try again.");
+            invalidURLOverride = true;
+            invalidURL = newURL;
+        } else {
             if(!privateListBool) {
                 var newUid = firebase.database().ref("users/" + user.uid + "/giftList/" + uid).push();
                 newUid = newUid.toString();
@@ -416,10 +424,6 @@ window.onload = function instantiate() {
                     else
                         validURLOverride = false;
                 }
-                if (isInvalid(failedURLs[a].charAt(b))) {
-                    validURLOverride = false;
-                    invalidChar = true;
-                }
                 if (postDot)
                     validURLBool = true;
             }
@@ -490,35 +494,26 @@ window.onload = function instantiate() {
             case "-":
             case "_":
             case "~":
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    function isInvalid(rChar){
-        switch(rChar){
-            case "!":
-            case "@":
+            case ".":
+            case ":":
+            case "/":
+            case "?":
             case "#":
-            case "$":
-            case "^":
-            case "*":
-            case "(":
-            case ")":
-            case " ":
-            case "\"":
-            case "\'":
-            case "{":
-            case "}":
             case "[":
             case "]":
-            case "\\":
-            case "|":
-            case ";":
+            case "@":
+            case "!":
+            case "$":
+            case "&":
+            case "\"":
+            case "\'":
+            case "(":
+            case ")":
+            case "*":
+            case "+":
             case ",":
-            case "<":
-            case ">":
+            case ";":
+            case "=":
                 return true;
             default:
                 return false;
