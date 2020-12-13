@@ -13,7 +13,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/index.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="315">
@@ -22,7 +22,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/js/giftAddUpdateAlg.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="454">
@@ -63,7 +63,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>encodename</find>
       <find>checkencodename</find>
       <find>encode(</find>
       <find>loginTimer</find>
@@ -93,6 +92,7 @@
       <find>userArr</find>
       <find>listnote</find>
       <find>welcome</find>
+      <find>invalidurl</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -101,7 +101,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/doc/html.md" />
         <option value="$PROJECT_DIR$/src/doc/js.md" />
         <option value="$PROJECT_DIR$/src/template.html" />
         <option value="$PROJECT_DIR$/src/testingGrounds.html" />
@@ -152,6 +151,7 @@
         <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/family.html" />
         <option value="$PROJECT_DIR$/src/js/common.js" />
+        <option value="$PROJECT_DIR$/../RasPi_Gifty_Backup/html/js/giftAddUpdateAlg.js" />
       </list>
     </option>
   </component>
@@ -400,12 +400,12 @@
       <workItem from="1604621347099" duration="8802000" />
       <workItem from="1605141037397" duration="3434000" />
       <workItem from="1605245165155" duration="22869000" />
-      <workItem from="1607499276904" duration="2430000" />
+      <workItem from="1607499276904" duration="3146000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="500705000" />
+    <option name="totallyTimeSpent" value="501421000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="30" width="1280" height="716" extended-state="6" />
@@ -446,7 +446,6 @@
     </ignored-roots>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/CHANGELOG.md" />
     <entry file="file://$PROJECT_DIR$/.editorconfig" />
     <entry file="file://$PROJECT_DIR$/.gitattributes" />
     <entry file="file://$PROJECT_DIR$/.gitignore" />
@@ -717,13 +716,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/giftAddUpdateAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="522" lean-forward="true" selection-start-line="522" selection-end-line="522" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/family.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="514">
@@ -743,10 +735,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../RasPi_Gifty_Backup/html/js/giftAddUpdateAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="20" selection-start-line="9" selection-start-column="20" selection-end-line="9" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
           <caret line="21" column="37" selection-start-line="21" selection-start-column="37" selection-end-line="21" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/giftAddUpdateAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="454">
+          <caret line="522" lean-forward="true" selection-start-line="522" selection-end-line="522" />
         </state>
       </provider>
     </entry>
