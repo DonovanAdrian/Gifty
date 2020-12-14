@@ -51,6 +51,23 @@ input.giftInp {
   font-size: 16px;
 }
 
+span.basicBtn {
+  position: fixed;
+  padding: 10px;
+  font-family: Verdana;
+  background: #ff8e8e;
+  color: #FFF;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0;
+}
+
+span.basicBtn:hover {
+  background-color: #ff4c4c;
+  color: #000;
+}
+
 span.boughtBtn {
   position: fixed;
   left: 10px;
@@ -263,6 +280,17 @@ div.topnav ul li.right {float: right;}
     position: fixed;
     right: 5px;
     bottom: 5px;
+    padding: 5px;
+    font-family: Verdana;
+    background: #ff8e8e;
+    color: #FFF;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 0;
+  }
+
+  span.basicBtn {
+    position: fixed;
     padding: 5px;
     font-family: Verdana;
     background: #ff8e8e;
