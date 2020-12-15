@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/giftyiconweb.png">
+    <link href="css/main.css" rel="stylesheet" type="text/css"/>
+    <title>Family Update</title>
+
+    <script src="js/familyUpdateAlg.js" type="text/javascript"></script>
+    <script src="js/common.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-analytics.js"></script>
+
+    <div class="topnav">
+        <ul>
+            <li><div class="cropIcon"><img class="imgIcon" src="img/giftyicon.png"></div></li>
+            <div class="break"></div>
+            <li><a onclick="newNavigation(2)">Home</a></li>
+            <li><a onclick="newNavigation(3)">Lists</a></li>
+            <li><a onclick="newNavigation(4)" id="inviteNote">Invites</a></li>
+            <li><a class="active" onclick="newNavigation(5)" id="settingsNote">Settings</a></li>
+            <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
+        </ul>
+    </div>
+</head>
+<body>
+
+<ul id="dataListContainer" class="giftList">
+    <li class="gift" id="testData">Loading...</li>
+</ul>
+
+<div id="familyAddModal" class="modal">
+    <div class="modal-content">
+
+        <!--Modal Header-->
+        <div class="modal-header">
+            <span class="close" id="closeFamilyAddModal">&times;</span>
+            <h2>Enter User Name Below</h2>
+        </div>
+
+        <!--Modal Body-->
+        <div class="modal-body">
+            <p></p>
+            <input type="text" id="familyNameInp" placeholder="The XYZ Family..." class="giftInp">
+        </div>
+
+        <!--Modal Footer-->
+        <div class="modal-footer">
+            <h3 style="float: left;padding-left: 10px" id="addFamily">Add</h3>
+            <h3 style="float: right;padding-right: 10px" id="cancelFamily">Cancel</h3>
+        </div>
+    </div>
+</div>
+
+<div id="offlineModal" class="modal">
+    <div class="modal-content">
+
+        <!--Modal Header-->
+        <div class="modal-header">
+            <span class="close" id="closeOffline">&times;</span>
+            <h2>It appears that you are offline!</h2>
+        </div>
+
+        <!--Modal Body-->
+        <div class="modal-body">
+            <p>Please reconnect to the internet in order to use Gifty properly!</p>
+        </div>
+    </div>
+</div>
+
+<div id="notificationModal" class="modal">
+    <div class="modal-content">
+
+        <!--Modal Header-->
+        <div class="modal-header">
+            <span class="close" id="closeNotification">&times;</span>
+            <h2 id="notificationTitle"></h2>
+        </div>
+
+        <!--Modal Body-->
+        <div class="modal-body">
+            <p id="notificationInfo"></p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
