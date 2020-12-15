@@ -7,6 +7,8 @@ var listeningFirebaseRefs = [];
 var inviteArr = [];
 var userArr = [];
 var familyArr = [];
+var familyMemberArr = [];
+var familyConnectionArr = [];
 
 var moderationSet = 1;
 var onlineInt = 0;
@@ -110,12 +112,20 @@ window.onload = function instantiate() {
     loadingTimer = setInterval(function(){
         loadingTimerInt = loadingTimerInt + 1000;
         if(loadingTimerInt >= 2000){
-            if (testData == undefined){
-                //console.log("TestGift Missing. Loading Properly.");
+            if(loadingTimerInt >= 5000){
+                clearInterval(loadingTimer);
+                if (testData == undefined) {
+                    //console.log("testGift Missing. Loading Properly.");
+                } else {
+                    deployFamilyListEmptyNotification();
+                }
             } else {
-                testData.innerHTML = "Loading... Please Wait...";
+                if (testData == undefined) {
+                    //console.log("testGift Missing. Loading Properly.");
+                } else {
+                    testData.innerHTML = "Loading... Please Wait...";
+                }
             }
-            clearInterval(loadingTimer);
         }
     }, 1000);
 
@@ -305,7 +315,45 @@ window.onload = function instantiate() {
         liItem.id = "family" + familyData.uid;
         liItem.className = "gift";
         liItem.onclick = function (){
-            //initializeModalData
+            familyConnectionArr = familyData.connections;
+            familyMemberArr = familyData.members;
+
+            if(familyConnectionArr != null)
+                familyConnectionCount.innerHTML = familyConnectionArr.length;
+
+            if(familyMemberArr != null) {
+                familyMemberCount.innerHTML = familyMemberArr.length;
+                try{
+                    testFamily.remove();
+                } catch (err) {}
+                for(var i = 0; i < familyMemberArr.length; i++){
+                    var liItem = document.createElement("LI");
+                    var familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
+                    liItem.id = familyMemberArr[i];
+                    liItem.className = "gift";
+                    var textNode = document.createTextNode(userArr[familyMember].name);
+                    liItem.appendChild(textNode);
+                    dataListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+                }
+            } else {
+                familyMemberCount.innerHTML = 0;
+                var liItem = document.createElement("LI");
+                liItem.id = "testFamily";
+                liItem.className = "gift";
+                var textNode = document.createTextNode("No Family Members Found!");
+                liItem.appendChild(textNode);
+                dataListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+            }
+
+
+            familyEdit.onclick = function (){
+                sessionStorage.setItem("familyData", JSON.stringify(familyData));
+                newNavigation(16);
+            };
+
+            familyRemove.onclick = function (){
+                removeFamilyFromDB(familyData.uid);
+            };
 
             //show modal
             openModal(familyModal, familyData.uid);
@@ -325,7 +373,7 @@ window.onload = function instantiate() {
         var textNode = document.createTextNode(familyData.name);
         liItem.appendChild(textNode);
 
-        giftList.insertBefore(liItem, dataListContainer.childNodes[0]);
+        dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
         clearInterval(offlineTimer);
         familyCounter++;
     }
@@ -335,7 +383,45 @@ window.onload = function instantiate() {
         editGift.innerHTML = familyData.name;
         editGift.className = "gift";
         editGift.onclick = function (){
-            //initializeModalData
+            familyConnectionArr = familyData.connections;
+            familyMemberArr = familyData.members;
+
+            if(familyConnectionArr != null)
+                familyConnectionCount.innerHTML = familyConnectionArr.length;
+
+            if(familyMemberArr != null) {
+                familyMemberCount.innerHTML = familyMemberArr.length;
+                try{
+                    testFamily.remove();
+                } catch (err) {}
+                for(var i = 0; i < familyMemberArr.length; i++){
+                    var liItem = document.createElement("LI");
+                    var familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
+                    liItem.id = familyMemberArr[i];
+                    liItem.className = "gift";
+                    var textNode = document.createTextNode(userArr[familyMember].name);
+                    liItem.appendChild(textNode);
+                    dataListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+                }
+            } else {
+                familyMemberCount.innerHTML = 0;
+                var liItem = document.createElement("LI");
+                liItem.id = "testFamily";
+                liItem.className = "gift";
+                var textNode = document.createTextNode("No Family Members Found!");
+                liItem.appendChild(textNode);
+                dataListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+            }
+
+
+            familyEdit.onclick = function (){
+                sessionStorage.setItem("familyData", JSON.stringify(familyData));
+                newNavigation(16);
+            };
+
+            familyRemove.onclick = function (){
+                removeFamilyFromDB(familyData.uid);
+            };
 
             //show modal
             openModal(familyModal, familyData.uid);
@@ -354,12 +440,18 @@ window.onload = function instantiate() {
         };
     }
 
+    function removeFamilyFromDB(uid) {
+        //ToDo
+        alert("This will eventually remove the family data from the database");
+    }
+
+
     function removeFamilyElement(uid) {
         document.getElementById("family" + uid).remove();
 
         familyCounter--;
         if (familyCounter == 0){
-            deployUserListEmptyNotification();
+            deployFamilyListEmptyNotification();
         }
     }
 
@@ -379,17 +471,17 @@ window.onload = function instantiate() {
     }
 };
 
-function deployUserListEmptyNotification(){
+function deployFamilyListEmptyNotification(){
     try{
-        testData.innerHTML = "No Users Found!";
+        testData.innerHTML = "No Families Found!";
     } catch(err){
         console.log("Loading Element Missing, Creating A New One");
         var liItem = document.createElement("LI");
-        liItem.id = "TestGift";
+        liItem.id = "testGift";
         liItem.className = "gift";
-        var textNode = document.createTextNode("No Users Found!");
+        var textNode = document.createTextNode("No Families Found!");
         liItem.appendChild(textNode);
-        giftList.insertBefore(liItem, dataListContainer.childNodes[0]);
+        dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     }
 
     clearInterval(offlineTimer);
