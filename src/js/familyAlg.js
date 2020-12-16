@@ -1,8 +1,4 @@
-var familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, familyModal,
-    closeFamilyModal, familyTitle, familyMemberCount, familyListContainer, testFamily, familyConnectionCount,
-    publicListCount, privateListCount, familyEdit, familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp,
-    addFamily, cancelFamily, offlineModal, closeOffline, notificationModal, closeNotification, notificationTitle,
-    notificationInfo];
+var familyElements = [];
 var listeningFirebaseRefs = [];
 var inviteArr = [];
 var userArr = [];
@@ -27,8 +23,6 @@ var familyMemberCount;
 var familyListContainer;
 var testFamily;
 var familyConnectionCount;
-var publicListCount;
-var privateListCount;
 var familyEdit;
 var familyRemove;
 var familyAddModal;
@@ -37,11 +31,14 @@ var familyNameInp;
 var addFamily;
 var cancelFamily;
 var offlineModal;
-var closeOffline;
+var offlineSpan;
 var notificationModal;
 var closeNotification;
 var notificationTitle;
 var notificationInfo;
+var offlineTimer;
+var loadingTimer;
+
 
 var userInitial;
 var userInvites;
@@ -86,8 +83,6 @@ window.onload = function instantiate() {
     familyListContainer = document.getElementById('familyListContainer');
     testFamily = document.getElementById('testFamily');
     familyConnectionCount = document.getElementById('familyConnectionCount');
-    publicListCount = document.getElementById('publicListCount');
-    privateListCount = document.getElementById('privateListCount');
     familyEdit = document.getElementById('familyEdit');
     familyRemove = document.getElementById('familyRemove');
     familyAddModal = document.getElementById('familyAddModal');
@@ -96,18 +91,22 @@ window.onload = function instantiate() {
     addFamily = document.getElementById('addFamily');
     cancelFamily = document.getElementById('cancelFamily');
     offlineModal = document.getElementById('offlineModal');
-    closeOffline = document.getElementById('closeOffline');
+    offlineSpan = document.getElementById('closeOffline');
     notificationModal = document.getElementById('notificationModal');
     closeNotification = document.getElementById('closeNotification');
     notificationTitle = document.getElementById('notificationTitle');
     notificationInfo = document.getElementById('notificationInfo');
+    familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, familyModal,
+        closeFamilyModal, familyTitle, familyMemberCount, familyListContainer, testFamily, familyConnectionCount,
+        familyEdit, familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
+        offlineSpan, notificationModal, closeNotification, notificationTitle, notificationInfo];
+    verifyElementIntegrity(familyElements);
+    getCurrentUser();
+    commonInitialization();
 
     userInitial = firebase.database().ref("users/");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
     familyInitial = firebase.database().ref("family/");
-    verifyElementIntegrity(familyElements);
-    getCurrentUser();
-    commonInitialization();
 
     loadingTimer = setInterval(function(){
         loadingTimerInt = loadingTimerInt + 1000;
@@ -133,7 +132,9 @@ window.onload = function instantiate() {
 
     familyModerateButton();
 
-    addFamily.onclick = function() {
+    createFamilyBtn.innerHTML = "Create Family";
+
+    createFamilyBtn.onclick = function() {
         generateAddFamilyModal();
     };
 
