@@ -13,10 +13,14 @@ var dataListChecker;
 
 function verifyElementIntegrity(arr){
     for(var i = 0; i < arr.length; i++){
-        if(arr[i].innerHTML == undefined)
-            console.log("WARNING: " + i + " UNDEFINED!");
-        else if(arr[i].innerHTML == null)
-            console.log("WARNING: " + i + " NULL!");
+        try {
+            if (arr[i].innerHTML == undefined)
+                console.log("WARNING: " + i + " UNDEFINED!");
+            else if (arr[i].innerHTML == null)
+                console.log("WARNING: " + i + " NULL!");
+        } catch (err) {
+            console.log("ERROR: Element " + i + " " + err.toString());
+        }
     }
 }
 
