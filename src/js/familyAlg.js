@@ -33,7 +33,7 @@ var cancelFamily;
 var offlineModal;
 var offlineSpan;
 var notificationModal;
-var closeNotification;
+var noteSpan;
 var notificationTitle;
 var notificationInfo;
 var offlineTimer;
@@ -93,13 +93,13 @@ window.onload = function instantiate() {
     offlineModal = document.getElementById('offlineModal');
     offlineSpan = document.getElementById('closeOffline');
     notificationModal = document.getElementById('notificationModal');
-    closeNotification = document.getElementById('closeNotification');
+    noteSpan = document.getElementById('closeNotification');
     notificationTitle = document.getElementById('notificationTitle');
     notificationInfo = document.getElementById('notificationInfo');
     familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, familyModal,
         closeFamilyModal, familyTitle, familyMemberCount, familyListContainer, testFamily, familyConnectionCount,
         familyEdit, familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
-        offlineSpan, notificationModal, closeNotification, notificationTitle, notificationInfo];
+        offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
     verifyElementIntegrity(familyElements);
     getCurrentUser();
     commonInitialization();
@@ -442,8 +442,9 @@ window.onload = function instantiate() {
     }
 
     function removeFamilyFromDB(uid) {
-        //ToDo
         alert("This will eventually remove the family data from the database");
+        //confirm
+        //firebase.database().ref("family/").child(uid).remove();
     }
 
 
