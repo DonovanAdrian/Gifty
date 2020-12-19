@@ -126,7 +126,6 @@
         <option value="$PROJECT_DIR$/../RasPi_Gifty_Backup/html/css/main.css" />
         <option value="$PROJECT_DIR$/../RasPi_Gifty_Backup/html/js/listsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
-        <option value="$PROJECT_DIR$/src/css/main.css" />
         <option value="$PROJECT_DIR$/src/family.html" />
         <option value="$PROJECT_DIR$/src/familyUpdate.html" />
         <option value="$PROJECT_DIR$/src/lists.html" />
@@ -137,6 +136,7 @@
         <option value="$PROJECT_DIR$/src/home.html" />
         <option value="$PROJECT_DIR$/src/friendList.html" />
         <option value="$PROJECT_DIR$/src/privateFriendList.html" />
+        <option value="$PROJECT_DIR$/src/css/main.css" />
       </list>
     </option>
   </component>
@@ -386,12 +386,12 @@
       <workItem from="1604621347099" duration="8802000" />
       <workItem from="1605141037397" duration="3434000" />
       <workItem from="1605245165155" duration="22869000" />
-      <workItem from="1607499276904" duration="9689000" />
+      <workItem from="1607499276904" duration="10288000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="507964000" />
+    <option name="totallyTimeSpent" value="508563000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1" y="30" width="1280" height="716" extended-state="6" />
@@ -668,13 +668,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/css/main.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="541">
-          <caret line="539" lean-forward="true" selection-start-line="539" selection-end-line="539" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="503">
@@ -777,6 +770,13 @@
             <element signature="n#style#0;n#p#9;n#div#1;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#p#10;n#div#1;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/css/main.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="541">
+          <caret line="550" selection-start-line="550" selection-end-line="550" />
         </state>
       </provider>
     </entry>
