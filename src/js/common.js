@@ -76,7 +76,7 @@ function commonInitialization(){
                             liItem.className = "gift";
                             var textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
                             liItem.appendChild(textNode);
-                            giftList.insertBefore(liItem, dataListChecker.childNodes[0]);
+                            dataListContainer.insertBefore(liItem, dataListChecker.childNodes[0]);
                         }
                     }
                 openModal(offlineModal, "offlineModal");
@@ -147,30 +147,30 @@ function areYouStillThereNote(timeElapsed){
 
     if(!areYouStillThereInit) {
         closeModal(modal);
-        openModal(noteModal, "noteModal");
+        openModal(notificationModal, "noteModal");
         areYouStillThereInit = true;
     }
-    noteInfoField.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
+    notificationInfo.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
         + ":" + timeSecs + "!";
-    noteTitleField.innerHTML = "Are You Still There?";
+    notificationTitle.innerHTML = "Are You Still There?";
 
     //close on close
     noteSpan.onclick = function() {
-        closeModal(noteModal);
+        closeModal(notificationModal);
         areYouStillThereBool = false;
         areYouStillThereInit = false;
     };
 }
 
 function ohThereYouAre(){
-    noteInfoField.innerHTML = "Welcome back, " + user.name;
-    noteTitleField.innerHTML = "Oh, There You Are!";
+    notificationInfo.innerHTML = "Welcome back, " + user.name;
+    notificationTitle.innerHTML = "Oh, There You Are!";
 
     var nowJ = 0;
     var j = setInterval(function(){
         nowJ = nowJ + 1000;
         if(nowJ >= 3000){
-            closeModal(noteModal);
+            closeModal(notificationModal);
             areYouStillThereBool = false;
             areYouStillThereInit = false;
             clearInterval(j);
@@ -179,8 +179,8 @@ function ohThereYouAre(){
 
     //close on click
     window.onclick = function(event) {
-        if (event.target == noteModal) {
-            closeModal(noteModal);
+        if (event.target == notificationModal) {
+            closeModal(notificationModal);
             areYouStillThereBool = false;
             areYouStillThereInit = false;
         }
