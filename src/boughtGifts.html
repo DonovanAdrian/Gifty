@@ -20,7 +20,7 @@
       <li><div class="cropIcon"><img class="imgIcon" src="img/giftyicon.png"></div></li>
       <div class="break"></div>
       <li><a class="active" onclick="newNavigation(2)" id="homeNote">Home</a></li>
-      <li><a onclick="newNavigation(3)" id="listNote">Lists</a></li>
+      <li><a onclick="newNavigation(3)">Lists</a></li>
       <li><a onclick="newNavigation(4)" id="inviteNote">Invites</a></li>
       <li><a onclick="newNavigation(5)">Settings</a></li>
       <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
@@ -30,13 +30,13 @@
 <body>
 
 <ul id="dataListContainer" class="giftList">
-  <li class="gift" id="TestGift">Loading...</li>
+  <li class="gift" id="testGift">Loading...</li>
 </ul>
 
 <span class="addBtn" id="backBtn">Loading... Please Wait</span>
 
 <div class="centeredImage">
-  <img class="notificationIcon" id="notificationButton" src="img/bellNotificationOff.png">
+  <img class="notificationIcon" id="notificationBtn" src="img/bellNotificationOff.png">
 </div>
 
 <div id="giftModal" class="modal">
@@ -45,15 +45,18 @@
     <!--Modal Header-->
     <div class="modal-header">
       <span class="close">&times;</span>
-      <h2 id="giftTitle">Loading Title...</h2>
+      <h2 id="giftTitleFld">Loading Title...</h2>
     </div>
 
     <!--Modal Body-->
     <div class="modal-body">
-      <p id="giftLink">Loading Link...</p>
-      <p id="giftWhere">Loading Where...</p>
-      <p id="giftDescription">Loading Description...</p>
-      <p id="giftCreationDate">Loading Date Created...</p>
+      <br/>
+      <span class="basicBtn" id="giftLinkFld">Loading Link...</span>
+      <br/>
+      <br/>
+      <p id="giftWhereFld">Loading Where...</p>
+      <p id="giftDescriptionFld">Loading Description...</p>
+      <p id="giftCreationDateFld">Loading Date Created...</p>
     </div>
 
     <!--Modal Footer-->
