@@ -1,3 +1,4 @@
+var boughtGiftElements = [];
 var listeningFirebaseRefs = [];
 var inviteArr = [];
 var userUserNames = [];
@@ -12,21 +13,27 @@ var giftCounter = 0;
 var moderationSet = -1;
 var loadingTimerInt = 0;
 
-var giftCreationDate;
-var giftList;
+var dataListContainer;
 var backBtn;
 var offlineSpan;
 var offlineModal;
 var user;
+var giftTitleFld;
+var giftLinkFld;
+var giftWhereFld;
+var giftDescriptionFld;
+var giftCreationDateFld;
 var modal;
-var noteModal;
-var noteInfoField;
-var noteTitleField;
+var notificationModal;
+var notificationInfo;
+var notificationTitle;
 var noteSpan;
 var notificationBtn;
 var inviteNote;
+var homeNote;
 var offlineTimer;
 var loadingTimer;
+var testGift;
 var userInitial;
 var userInvites;
 
@@ -89,19 +96,24 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
-    notificationBtn = document.getElementById('notificationButton');
-    giftCreationDate = document.getElementById('giftCreationDate');
-    giftList = document.getElementById('dataListContainer');
+    notificationBtn = document.getElementById('notificationBtn');
+    giftCreationDateFld = document.getElementById('giftCreationDateFld');
+    dataListContainer = document.getElementById('dataListContainer');
     offlineModal = document.getElementById('offlineModal');
     offlineSpan = document.getElementById('closeOffline');
-    noteSpan = document.getElementById('closeNotification');
     backBtn = document.getElementById('backBtn');
     inviteNote = document.getElementById('inviteNote');
-    noteModal = document.getElementById('notificationModal');
-    noteTitleField = document.getElementById('notificationTitle');
-    noteInfoField = document.getElementById('notificationInfo');
+    homeNote = document.getElementById('homeNote');
+    notificationModal = document.getElementById('notificationModal');
+    notificationTitle = document.getElementById('notificationTitle');
+    notificationInfo = document.getElementById('notificationInfo');
     noteSpan = document.getElementById('closeNotification');
+    giftTitleFld = document.getElementById('giftTitleFld');
+    giftLinkFld = document.getElementById('giftLinkFld');
+    giftWhereFld = document.getElementById('giftWhereFld');
+    giftDescriptionFld = document.getElementById('giftDescriptionFld');
     modal = document.getElementById('giftModal');
+    testGift = document.getElementById('testGift');
     getCurrentUser();
     commonInitialization();
 
@@ -118,7 +130,6 @@ window.onload = function instantiate() {
     loadingTimer = setInterval(function(){
         loadingTimerInt = loadingTimerInt + 1000;
         if(loadingTimerInt >= 2000){
-            var testGift = document.getElementById("TestGift");
             if (testGift == undefined){
                 //console.log("TestGift Missing. Loading Properly.");
             } else {
@@ -156,12 +167,12 @@ window.onload = function instantiate() {
                 nowConfirm = 0;
                 if(alternator == 0) {
                     alternator++;
-                    document.getElementById("homeNote").innerHTML = "Home";
-                    document.getElementById("homeNote").style.background = "#00c606";
+                    homeNote.innerHTML = "Home";
+                    homeNote.style.background = "#00c606";
                 } else {
                     alternator--;
-                    document.getElementById("homeNote").innerHTML = "Bought";
-                    document.getElementById("homeNote").style.background = "#00ad05";
+                    homeNote.innerHTML = "Bought";
+                    homeNote.style.background = "#00ad05";
                 }
             }
         }, 1000);
@@ -310,7 +321,7 @@ window.onload = function instantiate() {
         var giftDate = giftData.creationDate;
 
         try{
-            document.getElementById("TestGift").remove();
+            testGift.remove();
         } catch (err) {}
 
         var liItem = document.createElement("LI");
@@ -318,14 +329,10 @@ window.onload = function instantiate() {
         liItem.className = "gift";
         liItem.onclick = function (){
             var spanGift = document.getElementsByClassName("close")[0];
-            var descField = document.getElementById('giftDescription');
-            var titleField = document.getElementById('giftTitle');
-            var whereField = document.getElementById('giftWhere');
-            var linkField = document.getElementById('giftLink');
 
             if (giftLink != ""){
-                linkField.innerHTML = "Click me to go to the webpage!";
-                linkField.onclick = function() {
+                giftLinkFld.innerHTML = "Click me to go to the webpage!";
+                giftLinkFld.onclick = function() {
                     var newGiftLink = "http://";
                     if(giftLink.includes("https://")){
                         giftLink = giftLink.slice(8, giftLink.length);
@@ -336,29 +343,29 @@ window.onload = function instantiate() {
                     window.open(newGiftLink, "_blank");
                 };
             } else {
-                linkField.innerHTML = "There was no link provided";
-                linkField.onclick = function() {
+                giftLinkFld.innerHTML = "There was no link provided";
+                giftLinkFld.onclick = function() {
                 };
             }
             if(giftDescription != "") {
-                descField.innerHTML = "Description: " + giftDescription;
+                giftDescriptionFld.innerHTML = "Description: " + giftDescription;
             } else {
-                descField.innerHTML = "There was no description provided";
+                giftDescriptionFld.innerHTML = "There was no description provided";
             }
-            titleField.innerHTML = giftTitle;
+            giftTitleFld.innerHTML = giftTitle;
             if(giftWhere != "") {
-                whereField.innerHTML = "This can be found at: " + giftWhere;
+                giftWhereFld.innerHTML = "This can be found at: " + giftWhere;
             } else {
-                whereField.innerHTML = "There was no location provided";
+                giftWhereFld.innerHTML = "There was no location provided";
             }
             if(giftDate != undefined) {
                 if (giftDate != "") {
-                    giftCreationDate.innerHTML = "Created on: " + giftDate;
+                    giftCreationDateFld.innerHTML = "Created on: " + giftDate;
                 } else {
-                    giftCreationDate.innerHTML = "Creation date not available";
+                    giftCreationDateFld.innerHTML = "Creation date not available";
                 }
             } else {
-                giftCreationDate.innerHTML = "Creation date not available";
+                giftCreationDateFld.innerHTML = "Creation date not available";
             }
 
             //show modal
@@ -379,7 +386,7 @@ window.onload = function instantiate() {
         var textNode = document.createTextNode(giftTitle);
         liItem.appendChild(textNode);
 
-        giftList.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+        dataListContainer.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
         initializedGiftsArr.push(giftUid);
         clearInterval(offlineTimer);
     }
@@ -398,14 +405,10 @@ window.onload = function instantiate() {
         editGift.className = "gift";
         editGift.onclick = function (){
             var spanGift = document.getElementsByClassName("close")[0];
-            var descField = document.getElementById('giftDescription');
-            var titleField = document.getElementById('giftTitle');
-            var whereField = document.getElementById('giftWhere');
-            var linkField = document.getElementById('giftLink');
 
             if (link != ""){
-                linkField.innerHTML = "Click me to go to the webpage!";
-                linkField.onclick = function() {
+                giftLinkFld.innerHTML = "Click me to go to the webpage!";
+                giftLinkFld.onclick = function() {
                     var newGiftLink = "http://";
                     if(link.includes("https://")){
                         link = link.slice(8, link.length);
@@ -416,29 +419,29 @@ window.onload = function instantiate() {
                     window.open(newGiftLink, "_blank");
                 };
             } else {
-                linkField.innerHTML = "There was no link provided";
-                linkField.onclick = function() {
+                giftLinkFld.innerHTML = "There was no link provided";
+                giftLinkFld.onclick = function() {
                 };
             }
             if(description != "") {
-                descField.innerHTML = "Description: " + description;
+                giftDescriptionFld.innerHTML = "Description: " + description;
             } else {
-                descField.innerHTML = "There was no description provided";
+                giftDescriptionFld.innerHTML = "There was no description provided";
             }
-            titleField.innerHTML = title;
+            giftTitleFld.innerHTML = title;
             if(where != "") {
-                whereField.innerHTML = "This can be found at: " + where;
+                giftWhereFld.innerHTML = "This can be found at: " + where;
             } else {
-                whereField.innerHTML = "There was no location provided";
+                giftWhereFld.innerHTML = "There was no location provided";
             }
             if(date != undefined) {
                 if (date != "") {
-                    giftCreationDate.innerHTML = "Created on: " + date;
+                    giftCreationDateFld.innerHTML = "Created on: " + date;
                 } else {
-                    giftCreationDate.innerHTML = "Creation date not available";
+                    giftCreationDateFld.innerHTML = "Creation date not available";
                 }
             } else {
-                giftCreationDate.innerHTML = "Creation date not available";
+                giftCreationDateFld.innerHTML = "Creation date not available";
             }
 
             //show modal
