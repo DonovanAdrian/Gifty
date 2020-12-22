@@ -6,6 +6,7 @@ var currentModalOpen = "";
 var logoutReminder = 300;
 var logoutLimit = 900;
 
+var currentModalOpenObj = null;
 var userChecker;
 var dataListChecker;
 
@@ -146,7 +147,7 @@ function areYouStillThereNote(timeElapsed){
     }
 
     if(!areYouStillThereInit) {
-        closeModal(modal);
+        closeModal(currentModalOpenObj);
         openModal(notificationModal, "noteModal");
         areYouStillThereInit = true;
     }
@@ -222,6 +223,7 @@ function newNavigation(navNum) {
 }
 
 function openModal(openThisModal, modalName){
+    currentModalOpenObj = openThisModal;
     currentModalOpen = modalName;
     openThisModal.style.display = "block";
     console.log("Modal Opened: " + modalName);
@@ -229,6 +231,7 @@ function openModal(openThisModal, modalName){
 
 function closeModal(closeThisModal){
     try {
+        currentModalOpenObj = null;
         currentModalOpen = "";
         closeThisModal.style.display = "none";
         console.log("Modal Closed");
