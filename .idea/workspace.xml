@@ -13,11 +13,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/index.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="366">
               <caret line="43" lean-forward="true" selection-start-line="43" selection-end-line="43" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/js/boughtGiftsAlg.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="514">
+              <caret line="463" lean-forward="true" selection-start-line="463" selection-end-line="463" />
             </state>
           </provider>
         </entry>
@@ -115,15 +124,15 @@
         <option value="$PROJECT_DIR$/src/family.html" />
         <option value="$PROJECT_DIR$/src/familyUpdate.html" />
         <option value="$PROJECT_DIR$/src/js/userAddUpdateAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/boughtGiftsAlg.js" />
         <option value="$PROJECT_DIR$/src/css/main.css" />
         <option value="$PROJECT_DIR$/src/friendList.html" />
         <option value="$PROJECT_DIR$/src/privateFriendList.html" />
         <option value="$PROJECT_DIR$/src/home.html" />
         <option value="$PROJECT_DIR$/src/js/familyAlg.js" />
-        <option value="$PROJECT_DIR$/src/js/common.js" />
         <option value="$PROJECT_DIR$/src/boughtGifts.html" />
         <option value="$PROJECT_DIR$/src/lists.html" />
+        <option value="$PROJECT_DIR$/src/js/common.js" />
+        <option value="$PROJECT_DIR$/src/js/boughtGiftsAlg.js" />
       </list>
     </option>
   </component>
@@ -373,12 +382,12 @@
       <workItem from="1604621347099" duration="8802000" />
       <workItem from="1605141037397" duration="3434000" />
       <workItem from="1605245165155" duration="22869000" />
-      <workItem from="1607499276904" duration="11208000" />
+      <workItem from="1607499276904" duration="11454000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="509483000" />
+    <option name="totallyTimeSpent" value="509729000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1" y="30" width="1280" height="716" extended-state="6" />
@@ -687,13 +696,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/boughtGiftsAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="503">
-          <caret line="460" selection-start-line="460" selection-end-line="460" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/css/main.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="541">
@@ -732,13 +734,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/common.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="514">
-          <caret line="238" selection-start-line="238" selection-end-line="238" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/boughtGifts.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="514">
@@ -753,10 +748,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/common.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="514">
+          <caret line="238" selection-start-line="238" selection-end-line="238" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="366">
           <caret line="43" lean-forward="true" selection-start-line="43" selection-end-line="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/boughtGiftsAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="514">
+          <caret line="463" lean-forward="true" selection-start-line="463" selection-end-line="463" />
         </state>
       </provider>
     </entry>

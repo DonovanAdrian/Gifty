@@ -23,7 +23,7 @@ var giftLinkFld;
 var giftWhereFld;
 var giftDescriptionFld;
 var giftCreationDateFld;
-var modal;
+var giftModal;
 var notificationModal;
 var notificationInfo;
 var notificationTitle;
@@ -97,7 +97,6 @@ function getCurrentUser(){
 window.onload = function instantiate() {
 
     notificationBtn = document.getElementById('notificationBtn');
-    giftCreationDateFld = document.getElementById('giftCreationDateFld');
     dataListContainer = document.getElementById('dataListContainer');
     offlineModal = document.getElementById('offlineModal');
     offlineSpan = document.getElementById('closeOffline');
@@ -112,8 +111,13 @@ window.onload = function instantiate() {
     giftLinkFld = document.getElementById('giftLinkFld');
     giftWhereFld = document.getElementById('giftWhereFld');
     giftDescriptionFld = document.getElementById('giftDescriptionFld');
-    modal = document.getElementById('giftModal');
+    giftCreationDateFld = document.getElementById('giftCreationDateFld');
+    giftModal = document.getElementById('giftModal');
     testGift = document.getElementById('testGift');
+    boughtGiftElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, backBtn, inviteNote, homeNote,
+        notificationModal, notificationTitle, notificationInfo, noteSpan, giftTitleFld, giftLinkFld, giftWhereFld,
+        giftDescriptionFld, giftCreationDateFld, giftModal, testGift];
+    verifyElementIntegrity(boughtGiftElements);
     getCurrentUser();
     commonInitialization();
 
@@ -297,7 +301,7 @@ window.onload = function instantiate() {
 
         if(updateGiftBool) {
             if (newGiftData.uid == currentModalOpen){//Moved currentModalOpen reference to common.js
-                closeModal(modal);
+                closeModal(giftModal);
             }
             changeGiftElement(newGiftData, giftOwner);
         }
@@ -369,17 +373,17 @@ window.onload = function instantiate() {
             }
 
             //show modal
-            openModal(modal, giftUid);
+            openModal(giftModal, giftUid);
 
             //close on close
             spanGift.onclick = function() {
-                closeModal(modal);
+                closeModal(giftModal);
             };
 
             //close on click
             window.onclick = function(event) {
-                if (event.target == modal) {
-                    closeModal(modal);
+                if (event.target == giftModal) {
+                    closeModal(giftModal);
                 }
             }
         };
@@ -445,17 +449,17 @@ window.onload = function instantiate() {
             }
 
             //show modal
-            openModal(modal, uid);
+            openModal(giftModal, uid);
 
             //close on close
             spanGift.onclick = function() {
-                closeModal(modal);
+                closeModal(giftModal);
             };
 
             //close on click
             window.onclick = function(event) {
-                if (event.target == modal) {
-                    closeModal(modal);
+                if (event.target == giftModal) {
+                    closeModal(giftModal);
                 }
             };
         };
