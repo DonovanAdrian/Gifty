@@ -1,3 +1,4 @@
+var confirmationElements = [];
 var userArr = [];
 var friendArr = [];
 var inviteArr = [];
@@ -10,23 +11,29 @@ var inviteCount = 0;
 var onlineInt = 0;
 var loadingTimerInt = 0;
 
-var userList;
+var testGift;
+var dataListContainer;
 var offlineSpan;
 var offlineModal;
 var user;
 var userInitial;
 var userInvites;
 var userFriends;
-var modal;
+var inviteModal;
 var inviteNote;
 var loadingTimer;
 var offlineTimer;
-var noteModal;
-var noteInfoField;
-var noteTitleField;
+var notificationModal;
+var notificationInfo;
+var notificationTitle;
 var noteSpan;
 var notificationBtn;
-
+var closeInviteModal;
+var userNameFld;
+var userUNameFld;
+var userShareCodeFld;
+var userAcceptBtn;
+var userDeleteBtn;
 
 
 function getCurrentUser(){
@@ -80,23 +87,33 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
+    testGift = document.getElementById('testGift');
     notificationBtn = document.getElementById('notificationButton');
-    userList = document.getElementById("dataListContainer");
+    dataListContainer = document.getElementById("dataListContainer");
     offlineModal = document.getElementById('offlineModal');
     offlineSpan = document.getElementById("closeOffline");
     inviteNote = document.getElementById('inviteNote');
-    noteModal = document.getElementById('notificationModal');
-    noteTitleField = document.getElementById('notificationTitle');
-    noteInfoField = document.getElementById('notificationInfo');
+    notificationModal = document.getElementById('notificationModal');
+    notificationTitle = document.getElementById('notificationTitle');
+    notificationInfo = document.getElementById('notificationInfo');
     noteSpan = document.getElementById('closeNotification');
-    modal = document.getElementById('myModal');
+    inviteModal = document.getElementById('inviteModal');
+    closeInviteModal = document.getElementById('closeInviteModal');
+    userNameFld = document.getElementById('userNameFld');
+    userUNameFld = document.getElementById('userUNameFld');
+    userShareCodeFld = document.getElementById('userShareCodeFld');
+    userAcceptBtn = document.getElementById('userAcceptBtn');
+    userDeleteBtn = document.getElementById('userDeleteBtn');
+    confirmationElements = [testGift, notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote,
+        notificationModal, notificationTitle, notificationInfo, noteSpan, inviteModal, closeInviteModal, userNameFld,
+        userUNameFld, userShareCodeFld, userAcceptBtn, userDeleteBtn];
+    verifyElementIntegrity(confirmationElements);
     getCurrentUser();
     commonInitialization();
 
     loadingTimer = setInterval(function(){
         loadingTimerInt = loadingTimerInt + 1000;
         if(loadingTimerInt >= 2000){
-            var testGift = document.getElementById("TestGift");
             if (testGift == undefined){
                 //console.log("TestGift Missing. Loading Properly.");
             } else if (!inviteListEmptyBool) {
@@ -161,7 +178,7 @@ window.onload = function instantiate() {
                 }
 
                 if(data.key == currentModalOpen) {//Moved currentModalOpen reference to common.js
-                    closeModal(modal);
+                    closeModal(inviteModal);
                 }
 
                 if(data.key == user.uid){
@@ -239,7 +256,7 @@ window.onload = function instantiate() {
 
     function createInviteElement(inviteKey){
         try{
-            document.getElementById("TestGift").remove();
+            testGift.remove();
         } catch (err) {}
 
         var inviteData;
@@ -258,50 +275,44 @@ window.onload = function instantiate() {
         liItem.id = "user" + userUid;
         liItem.className = "gift";
         liItem.onclick = function (){
-            var span = document.getElementsByClassName("close")[0];
-            var inviteAdd = document.getElementById('userAccept');
-            var inviteDelete = document.getElementById('userDelete');
-            var inviteNameField = document.getElementById('userName');
-            var inviteUserNameField = document.getElementById('userUName');
-            var inviteShareCodeField = document.getElementById('userShareCode');
 
             if(inviteShareCode == undefined) {
                 inviteShareCode = "This User Does Not Have A Share Code";
             }
 
-            inviteNameField.innerHTML = inviteName;
-            inviteUserNameField.innerHTML = "User Name: " + inviteUserName;
-            inviteShareCodeField.innerHTML = "Share Code: " + inviteShareCode;
+            userNameFld.innerHTML = inviteName;
+            userUNameFld.innerHTML = "User Name: " + inviteUserName;
+            userShareCodeFld.innerHTML = "Share Code: " + inviteShareCode;
 
-            inviteAdd.onclick = function(){
+            userAcceptBtn.onclick = function(){
                 addInvite(inviteData);
-                closeModal(modal);
+                closeModal(inviteModal);
             };
 
-            inviteDelete.onclick = function(){
+            userDeleteBtn.onclick = function(){
                 deleteInvite(userUid);
-                closeModal(modal);
+                closeModal(inviteModal);
             };
 
             //show modal
-            openModal(modal, userUid);
+            openModal(inviteModal, userUid);
 
             //close on close
-            span.onclick = function() {
-                closeModal(modal);
+            closeInviteModal.onclick = function() {
+                closeModal(inviteModal);
             };
 
             //close on click
             window.onclick = function(event) {
-                if (event.target == modal) {
-                    closeModal(modal);
+                if (event.target == inviteModal) {
+                    closeModal(inviteModal);
                 }
             }
         };
         var textNode = document.createTextNode(inviteName);
         liItem.appendChild(textNode);
 
-        userList.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+        dataListContainer.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
 
         inviteCount++;
     }
@@ -323,43 +334,37 @@ window.onload = function instantiate() {
         liItemUpdate.innerHTML = inviteName;
         liItemUpdate.className = "gift";
         liItemUpdate.onclick = function (){
-            var span = document.getElementsByClassName("close")[0];
-            var inviteAdd = document.getElementById('userAccept');
-            var inviteDelete = document.getElementById('userDelete');
-            var inviteNameField = document.getElementById('userName');
-            var inviteUserNameField = document.getElementById('userUName');
-            var inviteShareCodeField = document.getElementById('userShareCode');
 
             if(inviteShareCode == undefined) {
                 inviteShareCode = "This User Does Not Have A Share Code";
             }
 
-            inviteNameField.innerHTML = inviteName;
-            inviteUserNameField.innerHTML = "User Name: " + inviteUserName;
-            inviteShareCodeField.innerHTML = "Share Code: " + inviteShareCode;
+            userNameFld.innerHTML = inviteName;
+            userUNameFld.innerHTML = "User Name: " + inviteUserName;
+            userShareCodeFld.innerHTML = "Share Code: " + inviteShareCode;
 
-            inviteAdd.onclick = function(){
+            userAcceptBtn.onclick = function(){
                 addInvite(inviteData);
-                closeModal(modal);
+                closeModal(inviteModal);
             };
 
-            inviteDelete.onclick = function(){
+            userDeleteBtn.onclick = function(){
                 deleteInvite(userUid);
-                closeModal(modal);
+                closeModal(inviteModal);
             };
 
             //show modal
-            openModal(modal, userUid);
+            openModal(inviteModal, userUid);
 
             //close on close
-            span.onclick = function() {
-                closeModal(modal);
+            closeInviteModal.onclick = function() {
+                closeModal(inviteModal);
             };
 
             //close on click
             window.onclick = function(event) {
-                if (event.target == modal) {
-                    closeModal(modal);
+                if (event.target == inviteModal) {
+                    closeModal(inviteModal);
                 }
             }
         };
@@ -464,15 +469,15 @@ window.onload = function instantiate() {
 
 function deployInviteListEmptyNotification(){
     try{
-        document.getElementById("TestGift").innerHTML = "No Invites Found! You Already Accepted All Your Invites!";
+        testGift.innerHTML = "No Invites Found! You Already Accepted All Your Invites!";
     } catch(err){
         console.log("Loading Element Missing, Creating A New One");
         var liItem = document.createElement("LI");
-        liItem.id = "TestGift";
+        liItem.id = "testGift";
         liItem.className = "gift";
         var textNode = document.createTextNode("No Invites Found! Invite Some Friends On The Invites Page!");
         liItem.appendChild(textNode);
-        userList.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+        dataListContainer.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
     }
 
     clearInterval(offlineTimer);
