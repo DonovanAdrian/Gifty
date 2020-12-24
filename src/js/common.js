@@ -7,22 +7,32 @@ var logoutReminder = 300;
 var logoutLimit = 900;
 
 var currentModalOpenObj = null;
+
 var userChecker;
 var dataListChecker;
+var verifiedElements;
 
 
 
 function verifyElementIntegrity(arr){
+    verifiedElements = [];
+
+    console.log("Checking " + arr.length + " Elements...");
+
     for(var i = 0; i < arr.length; i++){
         try {
             if (arr[i].innerHTML == undefined)
                 console.log("WARNING: " + i + " UNDEFINED!");
             else if (arr[i].innerHTML == null)
                 console.log("WARNING: " + i + " NULL!");
+            else
+                verifiedElements.push(arr[i]);
         } catch (err) {
             console.log("ERROR: Element " + i + " " + err.toString());
         }
     }
+
+    console.log("Verified " + verifiedElements.length + " Elements!");
 }
 
 function instantiateCommon(){
