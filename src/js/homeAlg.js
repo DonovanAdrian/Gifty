@@ -1,3 +1,4 @@
+var homeElements = [];
 var listeningFirebaseRefs = [];
 var userArr = [];
 var giftArr = [];
@@ -15,27 +16,35 @@ var giftCounter = 0;
 var onlineInt = 0;
 var loadingTimerInt = 0;
 
-var giftCreationDate;
-var giftList;
+var dataListContainer;
 var giftStorage;
 var privateList;
 var boughtGifts;
-var addBtn;
+var addGift;
 var offlineSpan;
 var offlineModal;
 var user;
 var offlineTimer;
 var loadingTimer;
-var modal;
-var noteModal;
-var noteInfoField;
-var noteTitleField;
+var giftModal;
+var giftTitle;
+var giftLink;
+var giftWhere;
+var giftDescription;
+var giftCreationDate;
+var giftUpdate;
+var giftDelete;
+var closeGiftModal;
+var notificationModal;
+var notificationInfo;
+var notificationTitle;
 var noteSpan;
 var inviteNote;
 var userBase;
 var userGifts;
 var userInvites;
 var notificationBtn;
+var testGift;
 
 
 
@@ -206,18 +215,30 @@ function collectUserBoughtGifts(){
 window.onload = function instantiate() {
 
     notificationBtn = document.getElementById('notificationButton');
-    giftCreationDate = document.getElementById('giftCreationDate');
-    giftList = document.getElementById('dataListContainer');
+    dataListContainer = document.getElementById('dataListContainer');
     offlineModal = document.getElementById('offlineModal');
     offlineSpan = document.getElementById('closeOffline');
-    noteModal = document.getElementById('notificationModal');
-    noteTitleField = document.getElementById('notificationTitle');
-    noteInfoField = document.getElementById('notificationInfo');
+    notificationModal = document.getElementById('notificationModal');
+    notificationTitle = document.getElementById('notificationTitle');
+    notificationInfo = document.getElementById('notificationInfo');
     noteSpan = document.getElementById('closeNotification');
     inviteNote = document.getElementById('inviteNote');
     boughtGifts = document.getElementById('boughtGifts');
-    addBtn = document.getElementById('addGift');
-    modal = document.getElementById('giftModal');
+    addGift = document.getElementById('addGift');
+    giftModal = document.getElementById('giftModal');
+    giftTitle = document.getElementById('giftTitle');
+    giftLink = document.getElementById('giftLink');
+    giftWhere = document.getElementById('giftWhere');
+    giftDescription = document.getElementById('giftDescription');
+    giftCreationDate = document.getElementById('giftCreationDate');
+    giftUpdate = document.getElementById('giftUpdate');
+    giftDelete = document.getElementById('giftDelete');
+    closeGiftModal = document.getElementById('closeGiftModal');
+    testGift = document.getElementById('testGift');
+    homeElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, notificationModal, notificationTitle,
+        notificationInfo, noteSpan, inviteNote, boughtGifts, addGift, giftModal, giftTitle, giftLink, giftWhere,
+        giftDescription, giftCreationDate, giftUpdate, giftDelete, closeGiftModal, testGift];
+    verifyElementIntegrity(homeElements);
     getCurrentUser();
     commonInitialization();
 
@@ -235,8 +256,8 @@ window.onload = function instantiate() {
         }
     };
 
-    addBtn.innerHTML = "Add Gift";
-    addBtn.onclick = function() {
+    addGift.innerHTML = "Add Gift";
+    addGift.onclick = function() {
         giftStorage = "";
         privateList = "";
         sessionStorage.setItem("privateList", JSON.stringify(privateList));
@@ -247,7 +268,6 @@ window.onload = function instantiate() {
     loadingTimer = setInterval(function(){
         loadingTimerInt = loadingTimerInt + 1000;
         if(loadingTimerInt >= 2000){
-            var testGift = document.getElementById("TestGift");
             if (testGift == undefined){
                 //console.log("TestGift Missing. Loading Properly.");
             } else if (!giftListEmptyBool) {
@@ -380,88 +400,79 @@ window.onload = function instantiate() {
         return -1;
     }
 
-    function createGiftElement(giftDescription, giftLink, giftReceived, giftTitle, giftKey, giftWhere, giftUid, giftDate,
-                               giftBuyer){
+    function createGiftElement(description, link, received, title, key, where, uid, date, buyer){
         try{
-            document.getElementById("TestGift").remove();
+            testGift.remove();
         } catch (err) {}
 
         var liItem = document.createElement("LI");
-        liItem.id = "gift" + giftUid;
+        liItem.id = "gift" + uid;
         liItem.className = "gift";
         liItem.onclick = function (){
-            var spanGift = document.getElementsByClassName("close")[0];
-            var updateBtn = document.getElementById('giftUpdate');
-            var deleteBtn = document.getElementById('giftDelete');
-            var descField = document.getElementById('giftDescription');
-            var titleField = document.getElementById('giftTitle');
-            var whereField = document.getElementById('giftWhere');
-            var linkField = document.getElementById('giftLink');
-
-            if (giftLink != ""){
-                linkField.innerHTML = "Click me to go to the webpage!";
-                linkField.onclick = function() {
+            if (link != ""){
+                giftLink.innerHTML = "Click me to go to the webpage!";
+                giftLink.onclick = function() {
                     var newGiftLink = "http://";
-                    if(giftLink.includes("https://")){
-                        giftLink = giftLink.slice(8, giftLink.length);
-                    } else if (giftLink.includes("http://")){
-                        giftLink = giftLink.slice(7, giftLink.length);
+                    if(link.includes("https://")){
+                        giftLink = link.slice(8, link.length);
+                    } else if (link.includes("http://")){
+                        giftLink = link.slice(7, link.length);
                     }
-                    newGiftLink += giftLink;
+                    newGiftLink += link;
                     window.open(newGiftLink, "_blank");
                 };
             } else {
-                linkField.innerHTML = "There was no link provided";
-                linkField.onclick = function() {
+                giftLink.innerHTML = "There was no link provided";
+                giftLink.onclick = function() {
                 };
             }
-            if(giftDescription != "") {
-                descField.innerHTML = "Description: " + giftDescription;
+            if(description != "") {
+                giftDescription.innerHTML = "Description: " + description;
             } else {
-                descField.innerHTML = "There was no description provided";
+                giftDescription.innerHTML = "There was no description provided";
             }
-            titleField.innerHTML = giftTitle;
-            if(giftWhere != "") {
-                whereField.innerHTML = "This can be found at: " + giftWhere;
+            giftTitle.innerHTML = title;
+            if(where != "") {
+                giftWhere.innerHTML = "This can be found at: " + where;
             } else {
-                whereField.innerHTML = "There was no location provided";
+                giftWhere.innerHTML = "There was no location provided";
             }
-            if(giftDate != undefined) {
-                if (giftDate != "") {
-                    giftCreationDate.innerHTML = "Created on: " + giftDate;
+            if(date != undefined) {
+                if (date != "") {
+                    giftCreationDate.innerHTML = "Created on: " + date;
                 } else {
                     giftCreationDate.innerHTML = "Creation date not available";
                 }
             } else {
                 giftCreationDate.innerHTML = "Creation date not available";
             }
-            updateBtn.onclick = function(){
-                updateMaintenanceLog("home", "Attempting to update gift: " + giftTitle + " " + giftKey + " " + user.userName);
-                updateGiftElement(giftUid);
+            giftUpdate.onclick = function(){
+                updateMaintenanceLog("home", "Attempting to update gift: " + title + " " + key + " " + user.userName);
+                updateGiftElement(uid);
             };
-            deleteBtn.onclick = function(){
-                updateMaintenanceLog("home", "Attempting to delete gift: " + giftTitle + " " + giftKey + " " + user.userName);
-                deleteGiftElement(giftKey, giftTitle, giftUid, giftBuyer);
+            giftDelete.onclick = function(){
+                updateMaintenanceLog("home", "Attempting to delete gift: " + title + " " + key + " " + user.userName);
+                deleteGiftElement(key, title, uid, buyer);
             };
 
             //show modal
-            openModal(modal, giftUid);
+            openModal(giftModal, uid);
 
             //close on close
-            spanGift.onclick = function() {
-                closeModal(modal);
+            closeGiftModal.onclick = function() {
+                closeModal(giftModal);
             };
 
             //close on click
             window.onclick = function(event) {
-                if (event.target == modal) {
-                    closeModal(modal);
+                if (event.target == giftModal) {
+                    closeModal(giftModal);
                 }
             }
-        }
-        var textNode = document.createTextNode(giftTitle);
+        };
+        var textNode = document.createTextNode(title);
         liItem.appendChild(textNode);
-        giftList.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+        dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
         clearInterval(offlineTimer);
 
         giftCounter++;
@@ -474,17 +485,9 @@ window.onload = function instantiate() {
         editGift.innerHTML = title;
         editGift.className = "gift";
         editGift.onclick = function (){
-            var spanGift = document.getElementsByClassName("close")[0];
-            var updateBtn = document.getElementById('giftUpdate');
-            var deleteBtn = document.getElementById('giftDelete');
-            var descField = document.getElementById('giftDescription');
-            var titleField = document.getElementById('giftTitle');
-            var whereField = document.getElementById('giftWhere');
-            var linkField = document.getElementById('giftLink');
-
             if (link != ""){
-                linkField.innerHTML = "Click me to go to the webpage!";
-                linkField.onclick = function() {
+                giftLink.innerHTML = "Click me to go to the webpage!";
+                giftLink.onclick = function() {
                     var newGiftLink = "http://";
                     if(link.includes("https://")){
                         link = link.slice(8, link.length);
@@ -495,20 +498,20 @@ window.onload = function instantiate() {
                     window.open(newGiftLink, "_blank");
                 };
             } else {
-                linkField.innerHTML = "There was no link provided";
-                linkField.onclick = function() {
+                giftLink.innerHTML = "There was no link provided";
+                giftLink.onclick = function() {
                 };
             }
             if(description != "") {
-                descField.innerHTML = "Description: " + description;
+                giftDescription.innerHTML = "Description: " + description;
             } else {
-                descField.innerHTML = "There was no description provided";
+                giftDescription.innerHTML = "There was no description provided";
             }
-            titleField.innerHTML = title;
+            giftTitle.innerHTML = title;
             if(where != "") {
-                whereField.innerHTML = "This can be found at: " + where;
+                giftWhere.innerHTML = "This can be found at: " + where;
             } else {
-                whereField.innerHTML = "There was no location provided";
+                giftWhere.innerHTML = "There was no location provided";
             }
             if(date != undefined) {
                 if (date != "") {
@@ -519,27 +522,27 @@ window.onload = function instantiate() {
             } else {
                 giftCreationDate.innerHTML = "Creation date not available";
             }
-            updateBtn.onclick = function(){
+            giftUpdate.onclick = function(){
                 updateMaintenanceLog("home", "Attempting to update gift: " + title + " " + key + " " + user.userName);
                 updateGiftElement(uid);
             };
-            deleteBtn.onclick = function(){
+            giftDelete.onclick = function(){
                 updateMaintenanceLog("home", "Attempting to delete gift: " + title + " " + key + " " + user.userName);
                 deleteGiftElement(key, title, uid, buyer);
             };
 
             //show modal
-            openModal(modal, uid);
+            openModal(giftModal, uid);
 
             //close on close
-            spanGift.onclick = function() {
-                closeModal(modal);
+            closeGiftModal.onclick = function() {
+                closeModal(giftModal);
             };
 
             //close on click
             window.onclick = function(event) {
-                if (event.target == modal) {
-                    closeModal(modal);
+                if (event.target == giftModal) {
+                    closeModal(giftModal);
                 }
             }
         };
@@ -592,21 +595,21 @@ window.onload = function instantiate() {
                 giftList: giftArr
             });
 
-            closeModal(modal);
+            closeModal(giftModal);
 
-            noteInfoField.innerHTML = "Gift Deleted";
-            noteTitleField.innerHTML = "Gift " + title + " successfully deleted!";
-            openModal(noteModal, "noteModal");
+            notificationInfo.innerHTML = "Gift Deleted";
+            notificationTitle.innerHTML = "Gift " + title + " successfully deleted!";
+            openModal(notificationModal, "noteModal");
 
             //close on close
             noteSpan.onclick = function() {
-                closeModal(noteModal);
+                closeModal(notificationModal);
             };
 
             //close on click
             window.onclick = function(event) {
-                if (event.target == noteModal) {
-                    closeModal(noteModal);
+                if (event.target == notificationModal) {
+                    closeModal(notificationModal);
                 }
             };
 
@@ -614,7 +617,7 @@ window.onload = function instantiate() {
             var j = setInterval(function(){
                 nowJ = nowJ + 1000;
                 if(nowJ >= 3000){
-                    closeModal(noteModal);
+                    closeModal(notificationModal);
                     clearInterval(j);
                 }
             }, 1000);
@@ -697,15 +700,15 @@ function updateMaintenanceLog(locationData, detailsData) {
 
 function deployGiftListEmptyNotification(){
     try{
-        document.getElementById("TestGift").innerHTML = "No Gifts Found! Add Some Gifts With The Button Below!";
+        testGift.innerHTML = "No Gifts Found! Add Some Gifts With The Button Below!";
     } catch(err){
         console.log("Loading Element Missing, Creating A New One");
         var liItem = document.createElement("LI");
-        liItem.id = "TestGift";
+        liItem.id = "testGift";
         liItem.className = "gift";
         var textNode = document.createTextNode("No Gifts Found! Add Some Gifts With The Button Below!");
         liItem.appendChild(textNode);
-        giftList.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+        dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     }
 
     clearInterval(offlineTimer);

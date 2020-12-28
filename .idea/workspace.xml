@@ -13,11 +13,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/index.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="154">
               <caret line="33" column="6" selection-start-line="33" selection-start-column="6" selection-end-line="33" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="514">
+              <caret line="715" lean-forward="true" selection-start-line="715" selection-end-line="715" />
             </state>
           </provider>
         </entry>
@@ -91,7 +100,6 @@
         <option value="$PROJECT_DIR$/src/css/login.css" />
         <option value="$PROJECT_DIR$/src/index.html" />
         <option value="$PROJECT_DIR$/src/userAddUpdate.html" />
-        <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
         <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
         <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
@@ -124,6 +132,7 @@
         <option value="$PROJECT_DIR$/src/giftAddUpdate.html" />
         <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/home.html" />
+        <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
       </list>
     </option>
   </component>
@@ -374,12 +383,12 @@
       <workItem from="1605141037397" duration="3434000" />
       <workItem from="1605245165155" duration="22869000" />
       <workItem from="1607499276904" duration="14043000" />
-      <workItem from="1608836450154" duration="2152000" />
+      <workItem from="1608836450154" duration="3429000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="514470000" />
+    <option name="totallyTimeSpent" value="515747000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1" y="29" width="1280" height="716" extended-state="6" />
@@ -600,13 +609,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="503">
-          <caret line="712" selection-start-line="712" selection-end-line="712" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/familyUpdate.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2013">
@@ -747,6 +749,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="154">
           <caret line="33" column="6" selection-start-line="33" selection-start-column="6" selection-end-line="33" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="514">
+          <caret line="715" lean-forward="true" selection-start-line="715" selection-end-line="715" />
         </state>
       </provider>
     </entry>
