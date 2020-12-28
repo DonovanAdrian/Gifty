@@ -1,3 +1,4 @@
+var giftAddUpdateElements = [];
 var listeningFirebaseRefs = [];
 var giftArr = [];
 
@@ -16,17 +17,19 @@ var offlineSpan;
 var offlineModal;
 var user;
 var privateUser;
-var descField;
-var titleField;
-var whereField;
-var linkField;
-var spanUpdate;
+var giftDescriptionInp;
+var giftTitleInp;
+var giftWhereInp;
+var giftLinkInp;
+var updateGift;
+var homeNote;
+var listNote;
 var inviteNote;
 var currentGift;
 var userGifts;
-var noteModal;
-var noteInfoField;
-var noteTitleField;
+var notificationModal;
+var notificationInfo;
+var notificationTitle;
 var noteSpan;
 
 
@@ -40,8 +43,8 @@ function getCurrentUser(){
             console.log("User: " + user.userName + " loaded in");
         } else {
             privateUser = JSON.parse(sessionStorage.validPrivateUser);
-            document.getElementById('homeNote').className = "";
-            document.getElementById('listNote').className = "active";
+            homeNote.className = "";
+            listNote.className = "active";
             console.log("User: " + privateUser.userName + " loaded in");
             console.log("Friend: " + user.userName + " loaded in");
         }
@@ -79,27 +82,32 @@ window.onload = function instantiate() {
 
     offlineModal = document.getElementById('offlineModal');
     offlineSpan = document.getElementById("closeOffline");
-    descField = document.getElementById('giftDescriptionInp');
-    titleField = document.getElementById('giftTitleInp');
-    whereField = document.getElementById('giftWhereInp');
-    linkField = document.getElementById('giftLinkInp');
-    spanUpdate = document.getElementById('updateGift');
+    giftDescriptionInp = document.getElementById('giftDescriptionInp');
+    giftTitleInp = document.getElementById('giftTitleInp');
+    giftWhereInp = document.getElementById('giftWhereInp');
+    giftLinkInp = document.getElementById('giftLinkInp');
+    updateGift = document.getElementById('updateGift');
+    homeNote = document.getElementById('homeNote');
+    listNote = document.getElementById('listNote');
     inviteNote = document.getElementById('inviteNote');
-    noteModal = document.getElementById('notificationModal');
-    noteTitleField = document.getElementById('notificationTitle');
-    noteInfoField = document.getElementById('notificationInfo');
+    notificationModal = document.getElementById('notificationModal');
+    notificationTitle = document.getElementById('notificationTitle');
+    notificationInfo = document.getElementById('notificationInfo');
     noteSpan = document.getElementById('closeNotification');
+    giftAddUpdateElements = [offlineModal, offlineSpan, giftDescriptionInp, giftTitleInp, giftWhereInp, giftLinkInp,
+        updateGift, homeNote, listNote, inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan];
+    verifyElementIntegrity(giftAddUpdateElements);
     getCurrentUser();
     commonInitialization();
 
     if(giftPresent) {
-        spanUpdate.innerHTML = "Update Gift";
-        spanUpdate.onclick = function() {
+        updateGift.innerHTML = "Update Gift";
+        updateGift.onclick = function() {
             updateGiftToDB();
         }
     } else {
-        spanUpdate.innerHTML = "Add New Gift";
-        spanUpdate.onclick = function() {
+        updateGift.innerHTML = "Add New Gift";
+        updateGift.onclick = function() {
             addGiftToDB();
         }
     }
@@ -158,19 +166,19 @@ window.onload = function instantiate() {
         if(giftPresent) {
             getGift();
 
-            titleField.value = currentGift.title;
+            giftTitleInp.value = currentGift.title;
             if (currentGift.link == "")
-                linkField.placeholder = "No Link Was Provided";
+                giftLinkInp.placeholder = "No Link Was Provided";
             else
-                linkField.value = currentGift.link;
+                giftLinkInp.value = currentGift.link;
             if (currentGift.where == "")
-                whereField.placeholder = "No Location Was Provided";
+                giftWhereInp.placeholder = "No Location Was Provided";
             else
-                whereField.value = currentGift.where;
+                giftWhereInp.value = currentGift.where;
             if (currentGift.description == "")
-                descField.placeholder = "No Description Was Provided";
+                giftDescriptionInp.placeholder = "No Description Was Provided";
             else
-                descField.value = currentGift.description;
+                giftDescriptionInp.value = currentGift.description;
         }
     }
 
@@ -193,9 +201,9 @@ window.onload = function instantiate() {
     }
 
     function updateGiftToDB(){
-        var newURL = verifyURLString(linkField.value);
+        var newURL = verifyURLString(giftLinkInp.value);
 
-        if(titleField.value === "")
+        if(giftTitleInp.value === "")
             alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
                 "you!");
         else if (invalidURLBool)
@@ -204,13 +212,13 @@ window.onload = function instantiate() {
             if(giftUID != -1) {
                 if (!privateListBool) {
                     firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
-                        title: titleField.value,
+                        title: giftTitleInp.value,
                         link: newURL,
-                        where: whereField.value,
+                        where: giftWhereInp.value,
                         received: currentGift.received,
                         uid: giftStorage,
                         buyer: currentGift.buyer,
-                        description: descField.value,
+                        description: giftDescriptionInp.value,
                         creationDate: ""
                     });
                     if (currentGift.creationDate != undefined) {
@@ -224,13 +232,13 @@ window.onload = function instantiate() {
                     newNavigation(2);//Home
                 } else {
                     firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
-                        title: titleField.value,
+                        title: giftTitleInp.value,
                         link: newURL,
-                        where: whereField.value,
+                        where: giftWhereInp.value,
                         received: currentGift.received,
                         uid: giftStorage,
                         buyer: currentGift.buyer,
-                        description: descField.value
+                        description: giftDescriptionInp.value
                     });
                     if (currentGift.creationDate != undefined) {
                         if (currentGift.creationDate != "") {
@@ -328,11 +336,11 @@ window.onload = function instantiate() {
         var mm = today.getMonth()+1;
         var yy = today.getFullYear();
         var creationDate = mm + "/" + dd + "/" + yy;
-        var newURL = verifyURLString(linkField.value);
+        var newURL = verifyURLString(giftLinkInp.value);
 
         if(invalidURL != newURL)
             invalidURLOverride = false;
-        if(titleField.value === "")
+        if(giftTitleInp.value === "")
             alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
                 "you!");
         else if (invalidURLBool && !invalidURLOverride) {
@@ -346,13 +354,13 @@ window.onload = function instantiate() {
                 newUid = newUid.toString();
                 newUid = newUid.substr(77, 96);
                 firebase.database().ref("users/" + user.uid + "/giftList/" + uid).set({
-                    title: titleField.value,
+                    title: giftTitleInp.value,
                     link: newURL,
-                    where: whereField.value,
+                    where: giftWhereInp.value,
                     received: 0,
                     uid: newUid,
                     buyer: "",
-                    description: descField.value,
+                    description: giftDescriptionInp.value,
                     creationDate: creationDate
                 });
 
@@ -363,13 +371,13 @@ window.onload = function instantiate() {
                 newUid = newUid.toString();
                 newUid = newUid.substr(80, 96);
                 firebase.database().ref("users/" + user.uid + "/privateList/" + uid).set({
-                    title: titleField.value,
+                    title: giftTitleInp.value,
                     link: newURL,
-                    where: whereField.value,
+                    where: giftWhereInp.value,
                     received: 0,
                     uid: newUid,
                     buyer: "",
-                    description: descField.value,
+                    description: giftDescriptionInp.value,
                     creationDate: creationDate,
                     creator: privateUser.userName
                 });
