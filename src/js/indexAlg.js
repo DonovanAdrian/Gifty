@@ -1,3 +1,4 @@
+var indexElements = [];
 var listeningFirebaseRefs = [];
 var userArr = [];
 
@@ -8,6 +9,7 @@ var loginBool = false;
 var userInitial;
 var username;
 var pin;
+var loginInfo;
 var offlineSpan;
 var offlineModal;
 var validUser;
@@ -136,10 +138,13 @@ window.onload = function instantiate() {
 
     username = document.getElementById("username");
     pin = document.getElementById("pin");
+    loginBtn = document.getElementById('loginBtn');
+    loginInfo = document.getElementById('loginInfo');
+    signUpFld = document.getElementById("signUpFld");
     offlineModal = document.getElementById("offlineModal");
     offlineSpan = document.getElementById("closeOffline");
-    loginBtn = document.getElementById('loginBtn');
-    signUpFld = document.getElementById("signUpFld");
+    indexElements = [username, pin, loginBtn, loginInfo, signUpFld, offlineModal, offlineSpan];
+    verifyElementIntegrity(indexElements);
 
     loginBtn.innerHTML = "Please Wait...";
     fetchConfigFile();
@@ -223,28 +228,24 @@ function login() {
                     loginBool = true;
                     validUserInt = i;
                     break;
-                } else {
-
                 }
             } catch (err) {
                 if(userArr[i].pin == pin.value){
                     loginBool = true;
                     validUserInt = i;
                     break;
-                } else {
-
                 }
             }
         }
     }
     if (loginBool === true){
-        document.getElementById("loginInfo").innerHTML = "User " + userArr[validUserInt].userName + " Authenticated";
+        loginInfo.innerHTML = "User " + userArr[validUserInt].userName + " Authenticated";
         validUser = userArr[validUserInt];
         sessionStorage.setItem("validUser", JSON.stringify(validUser));
         sessionStorage.setItem("userArr", JSON.stringify(userArr));
         window.location.href = "home.html";
     } else if (loginBool === false) {
-        document.getElementById("loginInfo").innerHTML = "Username or Password Incorrect";
+        loginInfo.innerHTML = "Username or Password Incorrect";
         updateMaintenanceLog("index", "Invalid Login: " + username.value.toLowerCase() + " " + pin.value.toString());
     }
 }
