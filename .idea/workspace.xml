@@ -87,7 +87,6 @@
         <option value="$PROJECT_DIR$/test/file_existence.js" />
         <option value="$PROJECT_DIR$/src/humans.txt" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/src/invites.html" />
         <option value="$PROJECT_DIR$/src/notifications.html" />
         <option value="$PROJECT_DIR$/src/txt/config.txt" />
         <option value="$PROJECT_DIR$/src/404.html" />
@@ -127,6 +126,7 @@
         <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
         <option value="$PROJECT_DIR$/src/index.html" />
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
+        <option value="$PROJECT_DIR$/src/invites.html" />
       </list>
     </option>
   </component>
@@ -377,12 +377,12 @@
       <workItem from="1605141037397" duration="3434000" />
       <workItem from="1605245165155" duration="22869000" />
       <workItem from="1607499276904" duration="14043000" />
-      <workItem from="1608836450154" duration="4262000" />
+      <workItem from="1608836450154" duration="4710000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="516580000" />
+    <option name="totallyTimeSpent" value="517028000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1" y="29" width="1280" height="716" extended-state="6" />
@@ -456,13 +456,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="518">
           <caret line="114" selection-start-line="114" selection-end-line="114" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/invites.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1170">
-          <caret line="78" column="29" lean-forward="true" selection-start-line="78" selection-start-column="29" selection-end-line="78" selection-end-column="29" />
         </state>
       </provider>
     </entry>
@@ -743,6 +736,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="169">
           <caret line="253" column="27" lean-forward="true" selection-start-line="253" selection-start-column="27" selection-end-line="253" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/invites.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="454">
+          <caret line="170" selection-start-line="170" selection-end-line="170" />
         </state>
       </provider>
     </entry>
