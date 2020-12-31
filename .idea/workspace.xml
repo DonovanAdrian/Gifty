@@ -13,14 +13,32 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="454">
-              <caret line="51" lean-forward="true" selection-start-line="51" selection-end-line="51" />
+            <state relative-caret-position="765">
+              <caret line="51" selection-start-line="51" selection-end-line="51" />
               <folding>
                 <element signature="n#style#0;n#p#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/js/invitesAlg.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="514">
+              <caret line="744" selection-start-line="744" selection-end-line="744" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/lists.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="514">
+              <caret line="127" lean-forward="true" selection-start-line="127" selection-end-line="127" />
             </state>
           </provider>
         </entry>
@@ -92,7 +110,6 @@
         <option value="$PROJECT_DIR$/src/404.html" />
         <option value="$PROJECT_DIR$/src/css/login.css" />
         <option value="$PROJECT_DIR$/src/userAddUpdate.html" />
-        <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
         <option value="$PROJECT_DIR$/src/js/moderationAlg.js" />
         <option value="$PROJECT_DIR$/src/js/notificationsAlg.js" />
         <option value="$PROJECT_DIR$/src/js/passOp.js" />
@@ -108,7 +125,6 @@
         <option value="$PROJECT_DIR$/src/js/userAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/css/main.css" />
         <option value="$PROJECT_DIR$/src/privateFriendList.html" />
-        <option value="$PROJECT_DIR$/src/lists.html" />
         <option value="$PROJECT_DIR$/src/boughtGifts.html" />
         <option value="$PROJECT_DIR$/src/js/boughtGiftsAlg.js" />
         <option value="$PROJECT_DIR$/src/family.html" />
@@ -127,6 +143,8 @@
         <option value="$PROJECT_DIR$/src/index.html" />
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
         <option value="$PROJECT_DIR$/src/invites.html" />
+        <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
+        <option value="$PROJECT_DIR$/src/lists.html" />
       </list>
     </option>
   </component>
@@ -137,10 +155,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1" />
-    <option name="y" value="29" />
+    <option name="y" value="25" />
     <option name="width" value="1280" />
-    <option name="height" value="716" />
+    <option name="height" value="720" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -377,15 +394,17 @@
       <workItem from="1605141037397" duration="3434000" />
       <workItem from="1605245165155" duration="22869000" />
       <workItem from="1607499276904" duration="14043000" />
-      <workItem from="1608836450154" duration="4837000" />
+      <workItem from="1608836450154" duration="5203000" />
+      <workItem from="1609388033016" duration="211000" />
+      <workItem from="1609455868251" duration="341000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="517155000" />
+    <option name="totallyTimeSpent" value="518073000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1" y="29" width="1280" height="716" extended-state="6" />
+    <frame x="0" y="25" width="1280" height="720" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19301033" />
@@ -505,13 +524,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/invitesAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="481">
-          <caret line="739" selection-start-line="739" selection-end-line="739" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/moderationAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="481">
@@ -617,13 +629,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lists.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="514">
-          <caret line="127" lean-forward="true" selection-start-line="127" selection-end-line="127" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/boughtGifts.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="514">
@@ -719,9 +724,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="514">
           <caret line="105" selection-start-line="105" selection-end-line="105" />
-          <folding>
-            <element signature="n#style#0;n#h3#0;n#div#2;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -748,11 +750,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="51" lean-forward="true" selection-start-line="51" selection-end-line="51" />
+        <state relative-caret-position="765">
+          <caret line="51" selection-start-line="51" selection-end-line="51" />
           <folding>
             <element signature="n#style#0;n#p#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/invitesAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="514">
+          <caret line="744" selection-start-line="744" selection-end-line="744" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lists.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="514">
+          <caret line="127" lean-forward="true" selection-start-line="127" selection-end-line="127" />
         </state>
       </provider>
     </entry>

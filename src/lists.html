@@ -20,7 +20,7 @@
       <li><div class="cropIcon"><img class="imgIcon" src="img/giftyicon.png"></div></li>
       <div class="break"></div>
       <li><a onclick="newNavigation(2)">Home</a></li>
-      <li><a class="active" onclick="newNavigation(3)" id="listNote">Lists</a></li>
+      <li><a class="active" onclick="newNavigation(3)">Lists</a></li>
       <li><a onclick="newNavigation(4)" id="inviteNote">Invites</a></li>
       <li><a onclick="newNavigation(5)">Settings</a></li>
       <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
@@ -30,7 +30,7 @@
 <body>
 
 <ul id="dataListContainer" class="giftList">
-  <li class="gift" id="TestGift">Loading...</li>
+  <li class="gift" id="testGift">Loading...</li>
 </ul>
 
 <div class="centeredImage">
@@ -39,12 +39,12 @@
 
 <span class="addBtn" id="secretSanta">Loading... Please Wait</span>
 
-<div id="myModal" class="modal">
+<div id="userModal" class="modal">
   <div class="modal-content">
 
     <!--Modal Header-->
     <div class="modal-header">
-      <span class="close" id="closeModal">&times;</span>
+      <span class="close" id="closeUserModal">&times;</span>
       <h2 id="userTitle">Loading Title...</h2>
     </div>
 
@@ -67,26 +67,26 @@
   </div>
 </div>
 
-<div id="userModal" class="modal">
+<div id="privateMessageModal" class="modal">
   <div class="modal-content">
 
     <!--Modal Header-->
     <div class="modal-header">
-      <span id="privateNoteSpan" class="close">&times;</span>
-      <h2 id="privateNoteTitle">Send Private Message Below</h2>
+      <span class="close" id="closePrivateMessageModal">&times;</span>
+      <h2>Send Private Message Below</h2>
     </div>
 
     <!--Modal Body-->
     <div class="modal-body">
       <p></p>
-      <input type="text" id="privateNoteInp" placeholder="Hey! Just wanted to let you know..." class="giftInp">
+      <input type="text" id="privateMessageInp" placeholder="Hey! Just wanted to let you know..." class="giftInp">
       <p></p>
     </div>
 
     <!--Modal Footer-->
     <div class="modal-footer">
-      <h3 style="float: left;padding-left: 10px" id="sendNote">Send</h3>
-      <h3 style="float: right;padding-right: 10px" id="cancelNote">Cancel</h3>
+      <h3 style="float: left;padding-left: 10px" id="sendMsg">Send</h3>
+      <h3 style="float: right;padding-right: 10px" id="cancelMsg">Cancel</h3>
     </div>
   </div>
 </div>
