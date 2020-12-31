@@ -1,3 +1,4 @@
+var inviteElements = [];
 var inviteArr = [];
 var friendArr = [];
 var listeningFirebaseRefs = [];
@@ -10,28 +11,47 @@ var friendListEmptyBool = false;
 var friendCount = 0;
 var loadingTimerInt = 0;
 
-var userList;
+var dataListContainer;
 var offlineSpan;
 var offlineModal;
 var userInviteModal;
-var confirmUserModal;
-var addUserBtn;
+var confirmModal;
+var addUser;
 var user;
-var newInvite;
+var newInviteIcon;
 var inviteNote;
-var userInput;
+var userNameInp;
 var offlineTimer;
 var loadingTimer;
 var userInitial;
 var userFriends;
 var userInvites;
-var addGlobalMsgModal;
-var noteModal;
-var noteInfoField;
-var noteTitleField;
+var privateMessageModal;
+var notificationModal;
+var notificationInfo;
+var notificationTitle;
 var noteSpan;
 var notificationBtn;
-var modal;
+var inviteModal;
+var closeInviteModal;
+var testGift;
+var userName;
+var userUName;
+var userShareCode;
+var sendPrivateMessage;
+var userInviteRemove;
+var closePrivateMessageModal;
+var privateMessageInp;
+var sendMsg;
+var cancelMsg;
+var closeConfirmModal;
+var confUserName;
+var inviteConfirm;
+var inviteDeny;
+var closeUserInviteModal;
+var inviteInfo;
+var addInvite;
+var cancelInvite;
 
 
 
@@ -43,7 +63,7 @@ function getCurrentUser(){
             console.log("Invites Not Found");
         } else if (user.invites != undefined) {
             if (user.invites.length > 0) {
-                newInvite.style.display = "block";
+                newInviteIcon.style.display = "block";
                 inviteNote.style.background = "#ff3923";
                 invitesFound = true;
             }
@@ -96,31 +116,56 @@ function getCurrentUser(){
 window.onload = function instantiate() {
 
     notificationBtn = document.getElementById('notificationButton');
-    userList = document.getElementById("dataListContainer");
+    dataListContainer = document.getElementById("dataListContainer");
     offlineModal = document.getElementById('offlineModal');
     offlineSpan = document.getElementById("closeOffline");
     userInviteModal = document.getElementById('userInviteModal');
-    confirmUserModal = document.getElementById('confirmModal');
+    closeUserInviteModal = document.getElementById('closeUserInviteModal');
+    userNameInp = document.getElementById('userNameInp');
+    inviteInfo = document.getElementById('inviteInfo');
+    addInvite = document.getElementById('addInvite');
+    cancelInvite = document.getElementById('cancelInvite');
+    confirmModal = document.getElementById('confirmModal');
+    closeConfirmModal = document.getElementById('closeConfirmModal');
+    confUserName = document.getElementById('confUserName');
+    inviteConfirm = document.getElementById('inviteConfirm');
+    inviteDeny = document.getElementById('inviteDeny');
     inviteNote = document.getElementById('inviteNote');
-    newInvite = document.getElementById('newInviteIcon');
-    addUserBtn = document.getElementById('addUser');
-    noteModal = document.getElementById('notificationModal');
-    noteTitleField = document.getElementById('notificationTitle');
-    noteInfoField = document.getElementById('notificationInfo');
+    newInviteIcon = document.getElementById('newInviteIcon');
+    addUser = document.getElementById('addUser');
+    notificationModal = document.getElementById('notificationModal');
+    notificationTitle = document.getElementById('notificationTitle');
+    notificationInfo = document.getElementById('notificationInfo');
     noteSpan = document.getElementById('closeNotification');
-    addGlobalMsgModal = document.getElementById('userModal');
-    modal = document.getElementById('myModal');
+    privateMessageModal = document.getElementById('privateMessageModal');
+    closePrivateMessageModal = document.getElementById('closePrivateMessageModal');
+    privateMessageInp = document.getElementById('privateMessageInp');
+    sendMsg = document.getElementById('sendMsg');
+    cancelMsg = document.getElementById('cancelMsg');
+    inviteModal = document.getElementById('inviteModal');
+    closeInviteModal = document.getElementById('closeInviteModal');
+    userName = document.getElementById('userName');
+    userUName = document.getElementById('userUName');
+    userShareCode = document.getElementById('userShareCode');
+    sendPrivateMessage = document.getElementById('sendPrivateMessage');
+    userInviteRemove = document.getElementById('userInviteRemove');
+    testGift = document.getElementById('testGift');
+    inviteElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, userInviteModal,
+        closeUserInviteModal, userNameInp, inviteInfo, addInvite, cancelInvite, confirmModal, closeConfirmModal,
+        confUserName, inviteConfirm, inviteDeny, inviteNote, newInviteIcon, addUser, notificationModal, notificationTitle,
+        notificationInfo, noteSpan, privateMessageModal, closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg,
+        inviteModal, closeInviteModal, userName, userUName, userShareCode, sendPrivateMessage, userInviteRemove, testGift];
+    verifyElementIntegrity(inviteElements);
     getCurrentUser();
     commonInitialization();
 
-    newInvite.onclick = function() {
+    newInviteIcon.onclick = function() {
         newNavigation(11);//Confirmation
     };
 
     loadingTimer = setInterval(function(){
         loadingTimerInt = loadingTimerInt + 1000;
         if(loadingTimerInt >= 2000){
-            var testGift = document.getElementById("TestGift");
             if (testGift == undefined){
                 //console.log("TestGift Missing. Loading Properly.");
             } else if (!friendListEmptyBool) {
@@ -130,7 +175,7 @@ window.onload = function instantiate() {
         }
     }, 1000);
 
-    addUserBtn.innerHTML = "Invite User";
+    addUser.innerHTML = "Invite User";
     generateAddUserBtn();
 
     databaseQuery();
@@ -212,7 +257,7 @@ window.onload = function instantiate() {
 
                 if (inviteArr.length == 0) {
                     console.log("Invite List Removed");
-                    newInvite.style.display = "none";
+                    newInviteIcon.style.display = "none";
                     inviteNote.style.background = "#008222";
                 }
             });
@@ -239,16 +284,15 @@ window.onload = function instantiate() {
 
     function createFriendElement(friendKey){
         var friendData;
-        for (var i = 0; i < userArr.length; i++){
+        for (var i = 0; i < userArr.length; i++)
             if(friendKey == userArr[i].uid){
                 friendData = userArr[i];
                 break;
             }
-        }
 
         if(friendData != null) {
             try{
-                document.getElementById("TestGift").remove();
+                testGift.remove();
             } catch (err) {}
 
             var userUid = friendData.uid;
@@ -259,49 +303,40 @@ window.onload = function instantiate() {
             liItem.id = "user" + userUid;
             liItem.className = "gift";
             liItem.onclick = function () {
-                var span = document.getElementsByClassName("close")[0];
-                var friendSendMessage = document.getElementById('sendPrivateMessage');
-                var friendInviteRemove = document.getElementById('userInviteRemove');
-                var friendNameField = document.getElementById('userName');
-                var friendUserNameField = document.getElementById('userUName');
-                var friendShareCodeField = document.getElementById('userShareCode');
-
-                if (friendShareCode == undefined || friendShareCode == "") {
+                if (friendShareCode == undefined || friendShareCode == "")
                     friendShareCode = "This User Does Not Have A Share Code";
-                }
 
-                friendNameField.innerHTML = friendName;
-                friendUserNameField.innerHTML = "User Name: " + friendUserName;
-                friendShareCodeField.innerHTML = "Share Code: " + friendShareCode;
+                userName.innerHTML = friendName;
+                userUName.innerHTML = "User Name: " + friendUserName;
+                userShareCode.innerHTML = "Share Code: " + friendShareCode;
 
-                friendSendMessage.onclick = function() {
+                sendPrivateMessage.onclick = function() {
                     generatePrivateMessageDialog(friendData);
                 };
 
-                friendInviteRemove.onclick = function () {
-                    closeModal(modal);
+                userInviteRemove.onclick = function () {
+                    closeModal(inviteModal);
                     deleteFriend(userUid);
                 };
 
                 //show modal
-                openModal(modal, userUid);
+                openModal(inviteModal, userUid);
 
                 //close on close
-                span.onclick = function () {
-                    closeModal(modal);
+                closeInviteModal.onclick = function () {
+                    closeModal(inviteModal);
                 };
 
                 //close on click
                 window.onclick = function (event) {
-                    if (event.target == modal) {
-                        closeModal(modal);
-                    }
+                    if (event.target == inviteModal)
+                        closeModal(inviteModal);
                 };
             };
             var textNode = document.createTextNode(friendName);
             liItem.appendChild(textNode);
 
-            userList.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+            dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
 
             friendCount++;
         }
@@ -309,12 +344,11 @@ window.onload = function instantiate() {
 
     function changeFriendElement(friendKey){
         var friendData;
-        for (var i = 0; i < userArr.length; i++){
+        for (var i = 0; i < userArr.length; i++)
             if(friendKey == userArr[i].uid){
                 friendData = userArr[i];
                 break;
             }
-        }
 
         if(friendData != null) {
             var userUid = friendData.uid;
@@ -325,81 +359,66 @@ window.onload = function instantiate() {
             liItemUpdate.innerHTML = friendName;
             liItemUpdate.className = "gift";
             liItemUpdate.onclick = function () {
-                var span = document.getElementsByClassName("close")[0];
-                var friendSendMessage = document.getElementById('sendPrivateMessage');
-                var friendInviteRemove = document.getElementById('userInviteRemove');
-                var friendNameField = document.getElementById('userName');
-                var friendUserNameField = document.getElementById('userUName');
-                var friendShareCodeField = document.getElementById('userShareCode');
-
-                if (friendShareCode == undefined) {
+                if (friendShareCode == undefined)
                     friendShareCode = "This User Does Not Have A Share Code";
-                }
 
-                friendNameField.innerHTML = friendName;
-                friendUserNameField.innerHTML = "User Name: " + friendUserName;
-                friendShareCodeField.innerHTML = "Share Code: " + friendShareCode;
+                userName.innerHTML = friendName;
+                userUName.innerHTML = "User Name: " + friendUserName;
+                userShareCode.innerHTML = "Share Code: " + friendShareCode;
 
-                friendSendMessage.onclick = function() {
+                sendPrivateMessage.onclick = function() {
                     generatePrivateMessageDialog(friendData);
                 };
 
-                friendInviteRemove.onclick = function () {
-                    closeModal(modal);
+                userInviteRemove.onclick = function () {
+                    closeModal(inviteModal);
                     deleteFriend(userUid);
                 };
 
                 //show modal
-                openModal(modal, userUid);
+                openModal(inviteModal, userUid);
 
                 //close on close
-                span.onclick = function () {
-                    closeModal(modal);
+                closeInviteModal.onclick = function () {
+                    closeModal(inviteModal);
                 };
 
                 //close on click
                 window.onclick = function (event) {
-                    if (event.target == modal) {
-                        closeModal(modal);
-                    }
+                    if (event.target == inviteModal)
+                        closeModal(inviteModal);
                 }
             };
         }
     }
 
     function generatePrivateMessageDialog(userData) {
-        var sendNote = document.getElementById('sendNote');
-        var cancelNote = document.getElementById('cancelNote');
-        var privateNoteInp = document.getElementById('privateNoteInp');
-        var spanNote = document.getElementById('privateNoteSpan');
-        var globalNoteTitle = document.getElementById('privateNoteTitle');
         var message = "";
 
-        globalNoteTitle.innerHTML = "Send A Private Message Below";
-        privateNoteInp.placeholder = "Hey! Just to let you know...";
+        privateMessageInp.placeholder = "Hey! Just to let you know...";
 
-        sendNote.onclick = function (){
-            message = generatePrivateMessage(user.uid, privateNoteInp.value);
+        sendMsg.onclick = function (){
+            message = generatePrivateMessage(user.uid, privateMessageInp.value);
             addPrivateMessageToDB(userData, message);
-            privateNoteInp.value = "";
-            closeModal(addGlobalMsgModal);
+            privateMessageInp.value = "";
+            closeModal(privateMessageModal);
         };
-        cancelNote.onclick = function (){
-            privateNoteInp.value = "";
-            closeModal(addGlobalMsgModal);
+        cancelMsg.onclick = function (){
+            privateMessageInp.value = "";
+            closeModal(privateMessageModal);
         };
 
-        openModal(addGlobalMsgModal, "addGlobalMsgModal");
+        openModal(privateMessageModal, "addGlobalMsgModal");
 
         //close on close
-        spanNote.onclick = function() {
-            closeModal(addGlobalMsgModal);
+        closePrivateMessageModal.onclick = function() {
+            closeModal(privateMessageModal);
         };
 
         //close on click
         window.onclick = function(event) {
-            if (event.target == addGlobalMsgModal) {
-                closeModal(addGlobalMsgModal);
+            if (event.target == privateMessageModal) {
+                closeModal(privateMessageModal);
             }
         };
     }
@@ -535,32 +554,25 @@ window.onload = function instantiate() {
             upperCaseUserArr.push(userArr[b].userName.toUpperCase());
         }
 
-        addUserBtn.onclick = function() {
-            var addSpan = document.getElementsByClassName("close")[1];
-            var addBtn = document.getElementById('addInvite');
-            var cancelBtn = document.getElementById('cancelInvite');
-            var inviteInfo = document.getElementById('inviteInfo');
-            userInput = document.getElementById('userNameInp');
-
-
+        addUser.onclick = function() {
             openModal(userInviteModal, "userInviteModal");
-            addBtn.innerHTML = "Send Invite";
+            addInvite.innerHTML = "Send Invite";
 
-            addBtn.onclick = function() {
+            addInvite.onclick = function() {
                 var userLocation = -1;
                 for (var i = 0; i < upperCaseUserArr.length; i++) {
-                    if (upperCaseUserArr[i] == userInput.value.toUpperCase()) {
+                    if (upperCaseUserArr[i] == userNameInp.value.toUpperCase()) {
                         userLocation = i;
                         break;
                     }
                 }
 
                 inviteInfo.innerHTML = "";
-                if(userInput.value == ""){
+                if(userNameInp.value == ""){
                     inviteInfo.innerHTML = "User Name Field Empty, Please Try Again!";
-                } else if (friendUserNameList.includes(userInput.value.toUpperCase())) {
+                } else if (friendUserNameList.includes(userNameInp.value.toUpperCase())) {
                     inviteInfo.innerHTML = "That User Is Already Your Friend, Please Try Again!";
-                } else if (user.userName.toUpperCase() == userInput.value.toUpperCase()){
+                } else if (user.userName.toUpperCase() == userNameInp.value.toUpperCase()){
                     inviteInfo.innerHTML = "You Cannot Invite Yourself, Please Try Again!";
                 } else if (userLocation != -1) {
                     try {
@@ -582,26 +594,26 @@ window.onload = function instantiate() {
                             generateConfirmDialog(userLocation);
                         }
                     }
-                } else if (userInput.value.toUpperCase() == "USER NAME BELOW"){
+                } else if (userNameInp.value.toUpperCase() == "USER NAME BELOW"){
                     inviteInfo.innerHTML = "Very Funny, Please Enter A User Name";
-                } else if (userInput.value.toUpperCase() == "A USER NAME"){
+                } else if (userNameInp.value.toUpperCase() == "A USER NAME"){
                     inviteInfo.innerHTML = "Listen Here, Please Input Something Serious";
-                } else if (userInput.value.toUpperCase() == "SOMETHING SERIOUS"){
+                } else if (userNameInp.value.toUpperCase() == "SOMETHING SERIOUS"){
                     inviteInfo.innerHTML = "You're Just Mocking Me At This Point";
                 } else {
                     inviteInfo.innerHTML = "That User Name Does Not Exist, Please Try Again!";
                 }
             };
 
-            cancelBtn.onclick = function() {
+            cancelInvite.onclick = function() {
                 closeModal(userInviteModal);
-                userInput.value = "";
+                userNameInp.value = "";
                 inviteInfo.innerHTML = "";
             };
 
-            addSpan.onclick = function() {
+            closeUserInviteModal.onclick = function() {
                 closeModal(userInviteModal);
-                userInput.value = "";
+                userNameInp.value = "";
                 inviteInfo.innerHTML = "";
             };
 
@@ -615,46 +627,39 @@ window.onload = function instantiate() {
     }
 
     function generateConfirmDialog(userLocation) {
-        var confirmSpan = document.getElementsByClassName("close")[2];
-        var inviteConfirm = document.getElementById('inviteConfirm');
-        var inviteDeny = document.getElementById('inviteDeny');
-        var confUserName = document.getElementById('confUserName');
-        var inviteInfo = document.getElementById('inviteInfo');
-        userInput = document.getElementById('userNameInp');
-
         //console.log(userLocation);
         //console.log(userArr[userLocation].userName);
         if (userLocation != -1) {
             confUserName.innerHTML = "Did you mean to add \"" + userArr[userLocation].name + "\"?";
             closeModal(userInviteModal);
-            openModal(confirmUserModal, "confirmUserModal");
+            openModal(confirmModal, "confirmUserModal");
 
             inviteConfirm.onclick = function () {
                 inviteUserDB(userArr[userLocation]);
-                closeModal(confirmUserModal);
-                userInput.value = "";
+                closeModal(confirmModal);
+                userNameInp.value = "";
                 inviteInfo.innerHTML = "";
             };
 
             inviteDeny.onclick = function () {
-                closeModal(confirmUserModal);
+                closeModal(confirmModal);
                 openModal(userInviteModal, "userInviteModal");
-                userInput.value = "";
+                userNameInp.value = "";
                 inviteInfo.innerHTML = "";
             };
 
             //close on close
-            confirmSpan.onclick = function () {
-                closeModal(confirmUserModal);
-                userInput.value = "";
+            closeConfirmModal.onclick = function () {
+                closeModal(confirmModal);
+                userNameInp.value = "";
                 inviteInfo.innerHTML = "";
             };
 
             //close on click
             window.onclick = function (event) {
-                if (event.target == confirmUserModal) {
-                    closeModal(confirmUserModal);
-                    userInput.value = "";
+                if (event.target == confirmModal) {
+                    closeModal(confirmModal);
+                    userNameInp.value = "";
                     inviteInfo.innerHTML = "";
                 }
             }
@@ -717,14 +722,14 @@ window.onload = function instantiate() {
 function deployFriendListEmptyNotification(){
     try{
         if (invitesFound) {
-            document.getElementById("TestGift").innerHTML = "No Friends Found, But You Have Some Pending Invites!";
+            testGift.innerHTML = "No Friends Found, But You Have Some Pending Invites!";
         } else {
-            document.getElementById("TestGift").innerHTML = "No Friends Found! Invite Some Friends With The Button Below!";
+            testGift.innerHTML = "No Friends Found! Invite Some Friends With The Button Below!";
         }
     } catch(err){
         console.log("Loading Element Missing, Creating A New One");
         var liItem = document.createElement("LI");
-        liItem.id = "TestGift";
+        liItem.id = "testGift";
         liItem.className = "gift";
         if (invitesFound) {
             var textNode = document.createTextNode("No Friends Found, But You Have Some Pending Invites!");
@@ -732,7 +737,7 @@ function deployFriendListEmptyNotification(){
             var textNode = document.createTextNode("No Friends Found! Invite Some Friends With The Button Below!");
         }
         liItem.appendChild(textNode);
-        userList.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+        dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     }
 
     clearInterval(offlineTimer);
