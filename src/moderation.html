@@ -31,19 +31,19 @@
 <body>
 
 <ul id="dataListContainer" class="giftList">
-  <li class="gift" id="TestGift">Loading...</li>
+  <li class="gift" id="testGift">Loading...</li>
 </ul>
 
 <span class="boughtBtn" id="activateSecretSanta">Loading... Please Wait</span>
 
 <span class="addBtn" id="sendGlobalNotification">Loading... Please Wait</span>
 
-<div id="giftModal" class="modal">
+<div id="userModal" class="modal">
   <div class="modal-content">
 
     <!--Modal Header-->
     <div class="modal-header">
-      <span class="close">&times;</span>
+      <span class="close" id="closeUserModal">&times;</span>
       <h2 id="userName">Loading Name...</h2>
     </div>
 
@@ -68,26 +68,26 @@
   </div>
 </div>
 
-<div id="userModal" class="modal">
+<div id="privateMessageModal" class="modal">
   <div class="modal-content">
 
     <!--Modal Header-->
     <div class="modal-header">
-      <span id="globalNoteSpan" class="close">&times;</span>
-      <h2 id="globalNoteTitle">Loading Title...</h2>
+      <span class="close" id="closePrivateMessageModal">&times;</span>
+      <h2 id="globalMsgTitle">Loading Title...</h2>
     </div>
 
     <!--Modal Body-->
     <div class="modal-body">
       <p></p>
-      <input type="text" id="globalNoteInp" placeholder="Loading Placeholder..." class="giftInp">
+      <input type="text" id="globalMsgInp" placeholder="Loading Placeholder..." class="giftInp">
       <p></p>
     </div>
 
     <!--Modal Footer-->
     <div class="modal-footer">
-      <h3 style="float: left;padding-left: 10px" id="sendNote">Send</h3>
-      <h3 style="float: right;padding-right: 10px" id="cancelNote">Cancel</h3>
+      <h3 style="float: left;padding-left: 10px" id="sendMsg">Send</h3>
+      <h3 style="float: right;padding-right: 10px" id="cancelMsg">Cancel</h3>
     </div>
   </div>
 </div>
@@ -96,7 +96,7 @@
   <div class="modal-content">
     <!--Modal Header-->
     <div class="modal-header">
-      <span id="secretSantaSpan" class="close">&times;</span>
+      <span class="close" id="secretSantaSpan">&times;</span>
       <h2>Secret Santa Options</h2>
     </div>
 
