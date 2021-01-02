@@ -1,3 +1,4 @@
+var listsElements = [];
 var inviteArr = [];
 var friendArr = [];
 var listeningFirebaseRefs = [];
@@ -5,13 +6,14 @@ var userArr = [];
 
 var readNotificationsBool = false;
 var friendListEmptyBool = false;
+var secretSantaNameBool = false;
 
 var moderationSet = 0;
 var onlineInt = 0;
 var friendCount = 0;
 var loadingTimerInt = 0;
 
-var userList;
+var dataListContainer;
 var userBase;
 var userFriends;
 var userInvites;
@@ -21,17 +23,27 @@ var offlineTimer;
 var loadingTimer;
 var user;
 var inviteNote;
-var noteModal;
-var noteInfoField;
-var noteTitleField;
+var notificationModal;
+var notificationInfo;
+var notificationTitle;
 var noteSpan;
 var notificationBtn;
-var addGlobalMsgModal;
-var modalSpan;
-var modal;
+var privateMessageModal;
+var closeUserModal;
+var userModal;
 var secretSantaSignUp;
 var secretSantaData;
-var secretSantaNameBool = false;
+var testGift;
+var userTitle;
+var publicListCount;
+var publicList;
+var privateListCount;
+var privateList;
+var sendPrivateMessage;
+var closePrivateMessageModal;
+var privateMessageInp;
+var sendMsg;
+var cancelMsg;
 
 
 
@@ -93,26 +105,40 @@ function getCurrentUser(){
 window.onload = function instantiate() {
 
     notificationBtn = document.getElementById('notificationButton');
-    userList = document.getElementById("dataListContainer");
+    dataListContainer = document.getElementById("dataListContainer");
     offlineModal = document.getElementById('offlineModal');
     offlineSpan = document.getElementById("closeOffline");
-    listNote = document.getElementById('listNote');
     inviteNote = document.getElementById('inviteNote');
-    noteModal = document.getElementById('notificationModal');
-    noteTitleField = document.getElementById('notificationTitle');
-    noteInfoField = document.getElementById('notificationInfo');
+    notificationModal = document.getElementById('notificationModal');
+    notificationTitle = document.getElementById('notificationTitle');
+    notificationInfo = document.getElementById('notificationInfo');
     noteSpan = document.getElementById('closeNotification');
-    addGlobalMsgModal = document.getElementById('userModal');
-    modalSpan = document.getElementById('closeModal');
-    modal = document.getElementById('myModal');
+    privateMessageModal = document.getElementById('privateMessageModal');
+    closeUserModal = document.getElementById('closeUserModal');
+    userModal = document.getElementById('userModal');
     secretSantaSignUp = document.getElementById('secretSanta');
+    testGift = document.getElementById('testGift');
+    userTitle = document.getElementById('userTitle');
+    publicListCount = document.getElementById('publicListCount');
+    publicList = document.getElementById('publicList');
+    privateListCount = document.getElementById('privateListCount');
+    privateList = document.getElementById('privateList');
+    sendPrivateMessage = document.getElementById('sendPrivateMessage');
+    closePrivateMessageModal = document.getElementById('closePrivateMessageModal');
+    privateMessageInp = document.getElementById('privateMessageInp');
+    sendMsg = document.getElementById('sendMsg');
+    cancelMsg = document.getElementById('cancelMsg');
+    listsElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
+        notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, secretSantaSignUp,
+        testGift, userTitle, publicListCount, publicList, privateListCount, privateList, sendPrivateMessage,
+        closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg];
+    verifyElementIntegrity(listsElements);
     getCurrentUser();
     commonInitialization();
 
     loadingTimer = setInterval(function(){
         loadingTimerInt = loadingTimerInt + 1000;
         if(loadingTimerInt >= 2000){
-            var testGift = document.getElementById("TestGift");
             if (testGift == undefined){
                 //console.log("TestGift Missing. Loading Properly.");
             } else if (!friendListEmptyBool) {
@@ -185,12 +211,6 @@ window.onload = function instantiate() {
 
     function generateSecretSantaModal(){
         if(secretSantaData != null){
-            var userTitle = document.getElementById('userTitle');
-            var publicListCount = document.getElementById('publicListCount');
-            var publicList = document.getElementById('publicList');
-            var privateListCount = document.getElementById('privateListCount');
-            var privateListHTML = document.getElementById('privateList');
-            var friendSendMessage = document.getElementById('sendPrivateMessage');
             userTitle.innerHTML = secretSantaData.name;
             if(secretSantaData.giftList != undefined){
                 if(secretSantaData.giftList.length > 0) {
@@ -225,30 +245,30 @@ window.onload = function instantiate() {
             } else {
                 privateListCount.innerHTML = secretSantaData.name + " has 0 gifts on their private list";
             }
-            privateListHTML.innerHTML = "Click on me to access " + secretSantaData.name + "\'s private gift list!";
-            privateListHTML.onclick = function() {
+            privateList.innerHTML = "Click on me to access " + secretSantaData.name + "\'s private gift list!";
+            privateList.onclick = function() {
                 sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));//Friend's User Data
                 newNavigation(10);//PrivateFriendList
             };
 
-            friendSendMessage.onclick = function() {
+            sendPrivateMessage.onclick = function() {
                 generatePrivateMessageDialog(secretSantaData);
             };
 
             //close on close
-            modalSpan.onclick = function() {
-                closeModal(modal);
+            closeUserModal.onclick = function() {
+                closeModal(userModal);
             };
 
             //close on click
             window.onclick = function(event) {
-                if (event.target == modal) {
-                    closeModal(modal);
+                if (event.target == userModal) {
+                    closeModal(userModal);
                 }
             };
 
             //show modal
-            openModal(modal, secretSantaData.uid);
+            openModal(userModal, secretSantaData.uid);
 
             clearInterval(offlineTimer);
         }
@@ -378,7 +398,7 @@ window.onload = function instantiate() {
 
         if(friendData != null){
             try {
-                document.getElementById("TestGift").remove();
+                testGift.remove();
             } catch (err) {}
 
             var userUid = friendData.uid;
@@ -387,12 +407,6 @@ window.onload = function instantiate() {
             liItem.id = "user" + userUid;
             liItem.className = "gift";
             liItem.onclick = function () {
-                var userTitle = document.getElementById('userTitle');
-                var publicListCount = document.getElementById('publicListCount');
-                var publicList = document.getElementById('publicList');
-                var privateListCount = document.getElementById('privateListCount');
-                var privateListHTML = document.getElementById('privateList');
-                var friendSendMessage = document.getElementById('sendPrivateMessage');
                 userTitle.innerHTML = friendData.name;
                 if(friendData.giftList != undefined){
                     if(friendData.giftList.length > 0) {
@@ -426,33 +440,33 @@ window.onload = function instantiate() {
                 } else {
                     privateListCount.innerHTML = friendData.name + " has 0 gifts on their private list";
                 }
-                privateListHTML.onclick = function() {
+                privateList.onclick = function() {
                     sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
                     newNavigation(10);//PrivateFriendList
                 };
 
-                friendSendMessage.onclick = function() {
+                sendPrivateMessage.onclick = function() {
                     generatePrivateMessageDialog(friendData);
                 };
 
                 //show modal
-                openModal(modal, userUid);
+                openModal(userModal, userUid);
 
                 //close on close
-                modalSpan.onclick = function() {
-                    closeModal(modal);
+                closeUserModal.onclick = function() {
+                    closeModal(userModal);
                 };
 
                 //close on click
                 window.onclick = function(event) {
-                    if (event.target == modal) {
-                        closeModal(modal);
+                    if (event.target == userModal) {
+                        closeModal(userModal);
                     }
                 };
             };
             var textNode = document.createTextNode(friendName);
             liItem.appendChild(textNode);
-            userList.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+            dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
             clearInterval(offlineTimer);
 
             friendCount++;
@@ -474,12 +488,6 @@ window.onload = function instantiate() {
             editItem.innerHTML = friendName;
             editItem.className = "gift";
             editItem.onclick = function () {
-                var userTitle = document.getElementById('userTitle');
-                var publicListCount = document.getElementById('publicListCount');
-                var publicList = document.getElementById('publicList');
-                var privateListCount = document.getElementById('privateListCount');
-                var privateListHTML = document.getElementById('privateList');
-                var friendSendMessage = document.getElementById('sendPrivateMessage');
                 userTitle.innerHTML = friendData.name;
                 if(friendData.giftList != undefined){
                     if(friendData.giftList.length > 0) {
@@ -513,27 +521,27 @@ window.onload = function instantiate() {
                 } else {
                     privateListCount.innerHTML = friendData.name + " has 0 gifts on their private list";
                 }
-                privateListHTML.onclick = function() {
+                privateList.onclick = function() {
                     sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
                     newNavigation(10);//PrivateFriendList
                 };
 
-                friendSendMessage.onclick = function() {
+                sendPrivateMessage.onclick = function() {
                     generatePrivateMessageDialog(friendData);
                 };
 
                 //show modal
-                openModal(modal, friendData.uid);
+                openModal(userModal, friendData.uid);
 
                 //close on close
-                modalSpan.onclick = function() {
-                    closeModal(modal);
+                closeUserModal.onclick = function() {
+                    closeModal(userModal);
                 };
 
                 //close on click
                 window.onclick = function(event) {
-                    if (event.target == modal) {
-                        closeModal(modal);
+                    if (event.target == userModal) {
+                        closeModal(userModal);
                     }
                 }
             };
@@ -541,39 +549,33 @@ window.onload = function instantiate() {
     }
 
     function generatePrivateMessageDialog(userData) {
-        var sendNote = document.getElementById('sendNote');
-        var cancelNote = document.getElementById('cancelNote');
-        var privateNoteInp = document.getElementById('privateNoteInp');
-        var spanNote = document.getElementById('privateNoteSpan');
-        var globalNoteTitle = document.getElementById('privateNoteTitle');
         var message = "";
 
-        globalNoteTitle.innerHTML = "Send A Private Message Below";
-        privateNoteInp.placeholder = "Hey! Just to let you know...";
+        privateMessageInp.placeholder = "Hey! Just to let you know...";
 
-        sendNote.onclick = function (){
-            message = generatePrivateMessage(user.uid, privateNoteInp.value);
+        sendMsg.onclick = function (){
+            message = generatePrivateMessage(user.uid, privateMessageInp.value);
             addPrivateMessageToDB(userData, message);
-            privateNoteInp.value = "";
-            closeModal(addGlobalMsgModal);
+            privateMessageInp.value = "";
+            closeModal(privateMessageModal);
             alert("The Message Has Been Sent!");
         };
-        cancelNote.onclick = function (){
-            privateNoteInp.value = "";
-            closeModal(addGlobalMsgModal);
+        cancelMsg.onclick = function (){
+            privateMessageInp.value = "";
+            closeModal(privateMessageModal);
         };
 
-        openModal(addGlobalMsgModal, "add");
+        openModal(privateMessageModal, "add");
 
         //close on close
-        spanNote.onclick = function() {
-            closeModal(addGlobalMsgModal);
+        closePrivateMessageModal.onclick = function() {
+            closeModal(privateMessageModal);
         };
 
         //close on click
         window.onclick = function(event) {
-            if (event.target == addGlobalMsgModal) {
-                closeModal(addGlobalMsgModal);
+            if (event.target == privateMessageModal) {
+                closeModal(privateMessageModal);
             }
         };
     }
@@ -612,15 +614,15 @@ window.onload = function instantiate() {
 
 function deployFriendListEmptyNotification(){
     try{
-        document.getElementById("TestGift").innerHTML = "No Friends Found! Invite Some Friends In The \"Invite\" Tab!";
+        testGift.innerHTML = "No Friends Found! Invite Some Friends In The \"Invite\" Tab!";
     } catch(err){
         console.log("Loading Element Missing, Creating A New One");
         var liItem = document.createElement("LI");
-        liItem.id = "TestGift";
+        liItem.id = "testGift";
         liItem.className = "gift";
         var textNode = document.createTextNode("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
         liItem.appendChild(textNode);
-        userList.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+        dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     }
 
     clearInterval(offlineTimer);
