@@ -20,7 +20,7 @@
       <li><div class="cropIcon"><img class="imgIcon" src="img/giftyicon.png"></div></li>
       <div class="break"></div>
       <li><a onclick="newNavigation(2)">Home</a></li>
-      <li><a onclick="newNavigation(3)" id="listNote">Lists</a></li>
+      <li><a onclick="newNavigation(3)">Lists</a></li>
       <li><a onclick="newNavigation(4)" id="inviteNote">Invites</a></li>
       <li><a onclick="newNavigation(5)">Settings</a></li>
       <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
@@ -30,51 +30,51 @@
 <body>
 
 <ul id="dataListContainer" class="giftList">
-  <li class="gift" id="TestGift">Loading...</li>
+  <li class="gift" id="testGift">Loading...</li>
 </ul>
 
-<div id="myModal" class="modal">
+<div id="noteViewModal" class="modal">
   <div class="modal-content">
 
     <!--Modal Header-->
     <div class="modal-header">
-      <span class="close">&times;</span>
-      <h2 id="userNotificationTitle">Loading Title...</h2>
+      <span class="close" id="closeNoteViewModal">&times;</span>
+      <h2 id="notificationViewTitle">Loading Title...</h2>
     </div>
 
     <!--Modal Body-->
     <div class="modal-body">
-      <p id="notificationDetails">Loading Notification...</p>
-      <p id="notificationPage">Loading Destination Page...</p>
+      <p id="notificationViewDetails">Loading Notification...</p>
+      <p id="notificationViewPage">Loading Destination Page...</p>
     </div>
 
     <!--Modal Footer-->
     <div class="modal-footer">
-      <h3 style="float: right;padding-right: 10px" id="notificationDelete">Delete Notification</h3>
+      <h3 style="float: right;padding-right: 10px" id="notificationViewDelete">Delete Notification</h3>
     </div>
   </div>
 </div>
 
-<div id="userModal" class="modal">
+<div id="privateMessageModal" class="modal">
   <div class="modal-content">
 
     <!--Modal Header-->
     <div class="modal-header">
-      <span id="privateNoteSpan" class="close">&times;</span>
-      <h2 id="privateNoteTitle">Send Private Message Below</h2>
+      <span id="privateMessageSpan" class="close">&times;</span>
+      <h2>Send Private Message Below</h2>
     </div>
 
     <!--Modal Body-->
     <div class="modal-body">
       <p></p>
-      <input type="text" id="privateNoteInp" placeholder="Hey! Just wanted to let you know..." class="giftInp">
+      <input type="text" id="privateMessageInp" placeholder="Hey! Just wanted to let you know..." class="giftInp">
       <p></p>
     </div>
 
     <!--Modal Footer-->
     <div class="modal-footer">
-      <h3 style="float: left;padding-left: 10px" id="sendNote">Send</h3>
-      <h3 style="float: right;padding-right: 10px" id="cancelNote">Cancel</h3>
+      <h3 style="float: left;padding-left: 10px" id="sendMsg">Send</h3>
+      <h3 style="float: right;padding-right: 10px" id="cancelMsg">Cancel</h3>
     </div>
   </div>
 </div>
