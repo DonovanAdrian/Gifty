@@ -17,6 +17,14 @@ var verifiedElements;
 function verifyElementIntegrity(arr){
     verifiedElements = [];
 
+    try {
+        if (arr.length < 1)
+            console.log("Element List Empty!");
+    } catch (err) {
+        console.log("Element List Empty!");
+        arr = [];
+    }
+
     console.log("Checking " + arr.length + " Elements...");
 
     for(var i = 0; i < arr.length; i++){
