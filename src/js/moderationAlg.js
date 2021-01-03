@@ -1,3 +1,4 @@
+var moderationElements = [];
 var listeningFirebaseRefs = [];
 var inviteArr = [];
 var userArr = [];
@@ -13,19 +14,18 @@ var userCounter = 0;
 var onlineInt = 0;
 var loadingTimerInt = 0;
 
-var giftList;
+var dataListContainer;
 var offlineSpan;
 var offlineModal;
-var addGlobalMsgModal;
-var addGlobalMsgBtn;
-var sendPrivateMessage;
+var privateMessageModal;
+var sendGlobalNotification;
 var user;
 var offlineTimer;
 var loadingTimer;
-var modal;
-var noteModal;
-var noteInfoField;
-var noteTitleField;
+var userModal;
+var notificationModal;
+var notificationInfo;
+var notificationTitle;
 var noteSpan;
 var inviteNote;
 var userInitial;
@@ -35,6 +35,26 @@ var secretSantaModal;
 var santaModalSpan;
 var secretSantaShuffle;
 var secretSantaBtn;
+var settingsNote;
+var testGift;
+var closeUserModal;
+var userName;
+var userUID;
+var userUserName;
+var userGifts;
+var userPrivateGifts;
+var userFriends;
+var userPassword;
+var userSecretSanta;
+var moderatorOp;
+var sendPrivateMessage;
+var warnUser;
+var banUser;
+var closePrivateMessageModal;
+var globalMsgTitle;
+var globalMsgInp;
+var sendMsg;
+var cancelMsg;
 
 
 
@@ -63,30 +83,56 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
-    giftList = document.getElementById('dataListContainer');
+    dataListContainer = document.getElementById('dataListContainer');
     offlineModal = document.getElementById('offlineModal');
     offlineSpan = document.getElementById('closeOffline');
     inviteNote = document.getElementById('inviteNote');
-    noteModal = document.getElementById('notificationModal');
-    noteTitleField = document.getElementById('notificationTitle');
-    noteInfoField = document.getElementById('notificationInfo');
+    notificationModal = document.getElementById('notificationModal');
+    notificationTitle = document.getElementById('notificationTitle');
+    notificationInfo = document.getElementById('notificationInfo');
     noteSpan = document.getElementById('closeNotification');
-    addGlobalMsgModal = document.getElementById('userModal');
-    addGlobalMsgBtn = document.getElementById('sendGlobalNotification');
+    privateMessageModal = document.getElementById('privateMessageModal');
+    sendGlobalNotification = document.getElementById('sendGlobalNotification');
     sendPrivateMessage = document.getElementById('sendPrivateMessage');
-    modal = document.getElementById('giftModal');
+    userModal = document.getElementById('userModal');
     activateSecretSanta = document.getElementById('activateSecretSanta');
     secretSantaModal = document.getElementById('santaModal');
     santaModalSpan = document.getElementById('secretSantaSpan');
     secretSantaShuffle = document.getElementById('secretSantaShuffle');
     secretSantaBtn = document.getElementById('secretSantaBtn');
+    settingsNote = document.getElementById('settingsNote');
+    testGift = document.getElementById('testGift');
+    closeUserModal = document.getElementById('closeUserModal');
+    userName = document.getElementById('userName');
+    userUID = document.getElementById('userUID');
+    userUserName = document.getElementById('userUserName');
+    userGifts = document.getElementById('userGifts');
+    userPrivateGifts = document.getElementById('userPrivateGifts');
+    userFriends = document.getElementById('userFriends');
+    userPassword = document.getElementById('userPassword');
+    userSecretSanta = document.getElementById('userSecretSanta');
+    moderatorOp = document.getElementById('moderatorOp');
+    sendPrivateMessage = document.getElementById('sendPrivateMessage');
+    warnUser = document.getElementById('warnUser');
+    banUser = document.getElementById('banUser');
+    closePrivateMessageModal = document.getElementById('closePrivateMessageModal');
+    globalMsgTitle = document.getElementById('globalMsgTitle');
+    globalMsgInp = document.getElementById('globalMsgInp');
+    sendMsg = document.getElementById('sendMsg');
+    cancelMsg = document.getElementById('cancelMsg');
+    moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal, notificationTitle,
+        notificationInfo, noteSpan, privateMessageModal, sendGlobalNotification, sendPrivateMessage, userModal,
+        activateSecretSanta, secretSantaModal, santaModalSpan, secretSantaShuffle, secretSantaBtn, settingsNote, testGift,
+        closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends, userPassword,
+        userSecretSanta, moderatorOp, sendPrivateMessage, warnUser, banUser, closePrivateMessageModal, globalMsgTitle,
+        globalMsgInp, sendMsg, cancelMsg];
+    verifyElementIntegrity(moderationElements);
     getCurrentUser();
     commonInitialization();
 
     loadingTimer = setInterval(function(){
         loadingTimerInt = loadingTimerInt + 1000;
         if(loadingTimerInt >= 2000){
-            var testGift = document.getElementById("TestGift");
             if (testGift == undefined){
                 //console.log("TestGift Missing. Loading Properly.");
             } else {
@@ -296,11 +342,11 @@ window.onload = function instantiate() {
                 nowConfirm = 0;
                 if(alternator == 0) {
                     alternator++;
-                    document.getElementById("settingsNote").innerHTML = "Settings";
+                    settingsNote.innerHTML = "Settings";
                     settingsNote.style.background = "#00c606";
                 } else {
                     alternator--;
-                    document.getElementById("settingsNote").innerHTML = "Moderation";
+                    settingsNote.innerHTML = "Moderation";
                     settingsNote.style.background = "#00ad05";
                 }
             }
@@ -308,41 +354,35 @@ window.onload = function instantiate() {
     }
 
     function generatePrivateMessageDialog(userData) {
-        var sendNote = document.getElementById('sendNote');
-        var cancelNote = document.getElementById('cancelNote');
-        var privateNoteInp = document.getElementById('globalNoteInp');
-        var spanNote = document.getElementById('globalNoteSpan');
-        var globalNoteTitle = document.getElementById('globalNoteTitle');
+        globalMsgTitle.innerHTML = "Send A Private Message Below";
+        globalMsgInp.placeholder = "Hey! Just to let you know...";
 
-        globalNoteTitle.innerHTML = "Send A Private Message Below";
-        privateNoteInp.placeholder = "Hey! Just to let you know...";
-
-        sendNote.onclick = function (){
-            if(privateNoteInp.value.includes(",")){
+        sendMsg.onclick = function (){
+            if(globalMsgInp.value.includes(",")){
                 alert("Please do not use commas in the message. Thank you!");
             } else {
-                addPrivateMessageToDB(userData, privateNoteInp.value);
-                privateNoteInp.value = "";
-                closeModal(addGlobalMsgModal);
+                addPrivateMessageToDB(userData, globalMsgInp.value);
+                globalMsgInp.value = "";
+                closeModal(privateMessageModal);
                 alert("The Private Message Has Been Sent!");
             }
         };
-        cancelNote.onclick = function (){
-            privateNoteInp.value = "";
-            closeModal(addGlobalMsgModal);
+        cancelMsg.onclick = function (){
+            globalMsgInp.value = "";
+            closeModal(privateMessageModal);
         };
 
-        openModal(addGlobalMsgModal, "addGlobalMsgModal");
+        openModal(privateMessageModal, "addGlobalMsgModal");
 
         //close on close
-        spanNote.onclick = function() {
-            closeModal(addGlobalMsgModal);
+        closePrivateMessageModal.onclick = function() {
+            closeModal(privateMessageModal);
         };
 
         //close on click
         window.onclick = function(event) {
-            if (event.target == addGlobalMsgModal) {
-                closeModal(addGlobalMsgModal);
+            if (event.target == privateMessageModal) {
+                closeModal(privateMessageModal);
             }
         };
     }
@@ -366,43 +406,37 @@ window.onload = function instantiate() {
     }
 
     function initializeGlobalNotification() {
-        addGlobalMsgBtn.innerHTML = "Send Global Message";
-        addGlobalMsgBtn.onclick = function (){
-            var sendNote = document.getElementById('sendNote');
-            var cancelNote = document.getElementById('cancelNote');
-            var globalNoteInp = document.getElementById('globalNoteInp');
-            var spanNote = document.getElementById('globalNoteSpan');
-            var globalNoteTitle = document.getElementById('globalNoteTitle');
+        sendGlobalNotification.innerHTML = "Send Global Message";
+        sendGlobalNotification.onclick = function (){
+            globalMsgInp.placeholder = "WARNING: An Important Message...";
+            globalMsgTitle.innerHTML = "Enter Global Notification Below";
 
-            globalNoteInp.placeholder = "WARNING: An Important Message...";
-            globalNoteTitle.innerHTML = "Enter Global Notification Below";
-
-            sendNote.onclick = function (){
-                if(globalNoteInp.value.includes(",")){
+            sendMsg.onclick = function (){
+                if(globalMsgInp.value.includes(",")){
                     alert("Please do not use commas in the notification. Thank you!");
                 } else {
-                    addGlobalMessageToDB(globalNoteInp.value);
-                    globalNoteInp.value = "";
-                    closeModal(addGlobalMsgModal);
+                    addGlobalMessageToDB(globalMsgInp.value);
+                    globalMsgInp.value = "";
+                    closeModal(privateMessageModal);
                     alert("The Global Message Has Been Sent!");
                 }
             };
-            cancelNote.onclick = function (){
-                globalNoteInp.value = "";
-                closeModal(addGlobalMsgModal);
+            cancelMsg.onclick = function (){
+                globalMsgInp.value = "";
+                closeModal(privateMessageModal);
             };
 
-            openModal(addGlobalMsgModal, "addGlobalMsgModal");
+            openModal(privateMessageModal, "addGlobalMsgModal");
 
             //close on close
-            spanNote.onclick = function() {
-                closeModal(addGlobalMsgModal);
+            closePrivateMessageModal.onclick = function() {
+                closeModal(privateMessageModal);
             };
 
             //close on click
             window.onclick = function(event) {
-                if (event.target == addGlobalMsgModal) {
-                    closeModal(addGlobalMsgModal);
+                if (event.target == privateMessageModal) {
+                    closeModal(privateMessageModal);
                 }
             };
         };
@@ -469,7 +503,7 @@ window.onload = function instantiate() {
                 }
 
                 if(currentModalOpen == data.key) {//Moved currentModalOpen reference to common.js
-                    closeModal(modal);
+                    closeModal(userModal);
                 }
             });
 
@@ -483,7 +517,7 @@ window.onload = function instantiate() {
                 }
 
                 if(currentModalOpen == data.key) {//Moved currentModalOpen reference to common.js
-                    closeModal(modal);
+                    closeModal(userModal);
                 }
             });
         };
@@ -532,7 +566,7 @@ window.onload = function instantiate() {
 
     function createUserElement(userData){
         try{
-            document.getElementById("TestGift").remove();
+            testGift.remove();
         } catch (err) {}
 
         var liItem = document.createElement("LI");
@@ -542,19 +576,6 @@ window.onload = function instantiate() {
             if (userData.secretSanta == 1)
                 liItem.className += " santa";
         liItem.onclick = function (){
-            var spanGift = document.getElementsByClassName("close")[0];
-            var warnBtn = document.getElementById('warnUser');
-            var banBtn = document.getElementById('banUser');
-            var userName = document.getElementById('userName');
-            var userUID = document.getElementById('userUID');
-            var userUserName = document.getElementById('userUserName');
-            var userGifts = document.getElementById('userGifts');
-            var userPrivateGifts = document.getElementById('userPrivateGifts');
-            var userFriends = document.getElementById('userFriends');
-            var userPassword = document.getElementById('userPassword');
-            var userSecretSanta = document.getElementById('userSecretSanta');
-            var moderatorOp = document.getElementById('moderatorOp');
-
             userName.innerHTML = userData.name;
             userUID.innerHTML = userData.uid;
             userUserName.innerHTML = userData.userName;
@@ -611,11 +632,11 @@ window.onload = function instantiate() {
                     userPassword.innerHTML = userData.pin;
                 }
             };
-            warnBtn.onclick = function(){
+            warnUser.onclick = function(){
                 alert("This will eventually warn the user of a certain offense");
                 //warn function
             };
-            banBtn.onclick = function(){
+            banUser.onclick = function(){
                 alert("This will eventually ban the user for a certain offense");
                 //ban function
             };
@@ -634,7 +655,7 @@ window.onload = function instantiate() {
                         firebase.database().ref("users/" + userData.uid).update({
                             moderatorInt: 0
                         });
-                        closeModal(modal);
+                        closeModal(userModal);
                     }
                 };
             } else {
@@ -648,7 +669,7 @@ window.onload = function instantiate() {
                         firebase.database().ref("users/" + userData.uid).update({
                             moderatorInt: 1
                         });
-                        closeModal(modal);
+                        closeModal(userModal);
                     }
                 };
             }
@@ -659,24 +680,24 @@ window.onload = function instantiate() {
             };
 
             //show modal
-            openModal(modal, userData.uid);
+            openModal(userModal, userData.uid);
 
             //close on close
-            spanGift.onclick = function() {
-                closeModal(modal);
+            closeUserModal.onclick = function() {
+                closeModal(userModal);
             };
 
             //close on click
             window.onclick = function(event) {
-                if (event.target == modal) {
-                    closeModal(modal);
+                if (event.target == userModal) {
+                    closeModal(userModal);
                 }
             };
         };
         var textNode = document.createTextNode(userData.name);
         liItem.appendChild(textNode);
 
-        giftList.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+        dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
         clearInterval(offlineTimer);
 
         userCounter++;
@@ -693,19 +714,6 @@ window.onload = function instantiate() {
             if (userData.secretSanta == 1)
                 editGift.className += " santa";
         editGift.onclick = function (){
-            var spanGift = document.getElementsByClassName("close")[0];
-            var warnBtn = document.getElementById('warnUser');
-            var banBtn = document.getElementById('banUser');
-            var userName = document.getElementById('userName');
-            var userUID = document.getElementById('userUID');
-            var userUserName = document.getElementById('userUserName');
-            var userGifts = document.getElementById('userGifts');
-            var userPrivateGifts = document.getElementById('userPrivateGifts');
-            var userFriends = document.getElementById('userFriends');
-            var userPassword = document.getElementById('userPassword');
-            var userSecretSanta = document.getElementById('userSecretSanta');
-            var moderatorOp = document.getElementById('moderatorOp');
-
             userName.innerHTML = userData.name;
             userUID.innerHTML = userData.uid;
             userUserName.innerHTML = userData.userName;
@@ -758,11 +766,11 @@ window.onload = function instantiate() {
             userPassword.onclick = function() {
                 userPassword.innerHTML = decode(userData.encodeStr);
             };
-            warnBtn.onclick = function(){
+            warnUser.onclick = function(){
                 alert("This will eventually warn the user of a certain offense");
                 //warn function
             };
-            banBtn.onclick = function(){
+            banUser.onclick = function(){
                 alert("This will eventually ban the user for a certain offense");
                 //ban function
             };
@@ -781,7 +789,7 @@ window.onload = function instantiate() {
                         firebase.database().ref("users/" + userData.uid).update({
                             moderatorInt: 0
                         });
-                        closeModal(modal);
+                        closeModal(userModal);
                     }
                 };
             } else {
@@ -795,7 +803,7 @@ window.onload = function instantiate() {
                         firebase.database().ref("users/" + userData.uid).update({
                             moderatorInt: 1
                         });
-                        closeModal(modal);
+                        closeModal(userModal);
                     }
                 };
             }
@@ -806,17 +814,17 @@ window.onload = function instantiate() {
             };
 
             //show modal
-            openModal(modal, userData.uid);
+            openModal(userModal, userData.uid);
 
             //close on close
-            spanGift.onclick = function() {
-                closeModal(modal);
+            closeUserModal.onclick = function() {
+                closeModal(userModal);
             };
 
             //close on click
             window.onclick = function(event) {
-                if (event.target == modal) {
-                    closeModal(modal);
+                if (event.target == userModal) {
+                    closeModal(userModal);
                 }
             };
         };
@@ -855,7 +863,7 @@ function manuallyOptInOut(userData){
 
 function deployUserListEmptyNotification(){
     try{
-        document.getElementById("TestGift").innerHTML = "No Users Found!";
+        testGift.innerHTML = "No Users Found!";
     } catch(err){
         console.log("Loading Element Missing, Creating A New One");
         var liItem = document.createElement("LI");
@@ -863,7 +871,7 @@ function deployUserListEmptyNotification(){
         liItem.className = "gift";
         var textNode = document.createTextNode("No Users Found!");
         liItem.appendChild(textNode);
-        giftList.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+        dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     }
 
     clearInterval(offlineTimer);
