@@ -104,7 +104,7 @@ window.onload = function instantiate() {
         notificationTitle, notificationInfo, noteSpan, privateMessageModal, noteViewModal, testGift, closeNoteViewModal,
         notificationViewTitle, notificationViewDetails, notificationViewPage, notificationViewDelete, privateMessageSpan,
         privateMessageInp, sendMsg, cancelMsg];
-    verifyElementIntegrity();
+    verifyElementIntegrity(notificationsElements);
     getCurrentUser();
     commonInitialization();
 
