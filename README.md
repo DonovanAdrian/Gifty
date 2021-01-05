@@ -8,6 +8,7 @@
 - [ ] Add Moderation Support Queue
   -  This will be put on the backburner for the time being, as it is a very minor feature.
 - [ ] Touch Up Work/Testing **\(in progress)**
+- [ ] Add Family Pages
 
 ## Website Structure
 - index
@@ -24,6 +25,8 @@
         - email form
       - moderation *\(Moderator Role Only)*
         - friendList
+      - family *\(Moderator Role Only)*
+    - notifications
 
 ## Welcome!
 This website is meant to be a gift list registry that 
