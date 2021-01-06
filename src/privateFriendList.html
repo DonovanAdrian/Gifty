@@ -22,7 +22,7 @@
       <li><a onclick="newNavigation(2)">Home</a></li>
       <li><a class="active" onclick="newNavigation(3)" id="listNote">Lists</a></li>
       <li><a onclick="newNavigation(4)" id="inviteNote">Invites</a></li>
-      <li><a onclick="newNavigation(5)" id="settingsNote">Settings</a></li>
+      <li><a onclick="newNavigation(5)">Settings</a></li>
       <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
     </ul>
   </div>
@@ -30,7 +30,7 @@
 <body>
 
 <ul id="dataListContainer" class="giftList">
-  <li class="gift" id="TestGift">Loading...</li>
+  <li class="gift" id="testGift">Loading...</li>
 </ul>
 
 <span class="addBtn" id="addGift">Loading... Please Wait</span>
@@ -44,7 +44,7 @@
 
     <!--Modal Header-->
     <div class="modal-header">
-      <span class="close">&times;</span>
+      <span class="close" id="closeGiftModal">&times;</span>
       <h2 id="giftTitle">Loading Title...</h2>
     </div>
 
