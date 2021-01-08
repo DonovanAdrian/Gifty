@@ -92,8 +92,6 @@
         <option value="$PROJECT_DIR$/src/css/login.css" />
         <option value="$PROJECT_DIR$/src/userAddUpdate.html" />
         <option value="$PROJECT_DIR$/src/js/passOp.js" />
-        <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
-        <option value="$PROJECT_DIR$/src/settings.html" />
         <option value="$PROJECT_DIR$/src/js/settingsAlg.js" />
         <option value="$PROJECT_DIR$/../RasPi_Gifty_Backup/html/js/giftAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/../RasPi_Gifty_Backup/html/css/main.css" />
@@ -127,6 +125,8 @@
         <option value="$PROJECT_DIR$/src/js/common.js" />
         <option value="$PROJECT_DIR$/src/js/notificationsAlg.js" />
         <option value="$PROJECT_DIR$/src/privateFriendList.html" />
+        <option value="$PROJECT_DIR$/src/js/privateFriendListAlg.js" />
+        <option value="$PROJECT_DIR$/src/settings.html" />
       </list>
     </option>
   </component>
@@ -379,12 +379,12 @@
       <workItem from="1608836450154" duration="5203000" />
       <workItem from="1609388033016" duration="211000" />
       <workItem from="1609455868251" duration="3830000" />
-      <workItem from="1609714157417" duration="460000" />
+      <workItem from="1609714157417" duration="796000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="522022000" />
+    <option name="totallyTimeSpent" value="522358000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1280" height="721" extended-state="6" />
@@ -497,20 +497,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="11" column="61" lean-forward="true" selection-start-line="11" selection-start-column="61" selection-end-line="11" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/privateFriendListAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="776" selection-start-line="776" selection-end-line="776" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/settings.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="514">
-          <caret line="98" lean-forward="true" selection-start-line="98" selection-end-line="98" />
         </state>
       </provider>
     </entry>
@@ -742,6 +728,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="514">
           <caret line="113" selection-start-line="113" selection-end-line="113" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/privateFriendListAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="750" column="35" lean-forward="true" selection-start-line="750" selection-start-column="35" selection-end-line="750" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/settings.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="514">
+          <caret line="74" selection-start-line="74" selection-end-line="74" />
         </state>
       </provider>
     </entry>
