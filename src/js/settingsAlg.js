@@ -1,3 +1,4 @@
+var settingsElements = [];
 var userArr = [];
 
 var editBtn;
@@ -9,11 +10,10 @@ var offlineSpan;
 var offlineModal;
 var inviteNote;
 var user;
-var noteModal;
-var noteInfoField;
-var noteTitleField;
+var notificationModal;
+var notificationInfo;
+var notificationTitle;
 var noteSpan;
-var modal;
 
 
 
@@ -55,11 +55,13 @@ window.onload = function instantiate() {
     faqBtn = document.getElementById("faq");
     modBtn = document.getElementById("mod");
     familyBtn = document.getElementById("family");
-    noteModal = document.getElementById('notificationModal');
-    noteTitleField = document.getElementById('notificationTitle');
-    noteInfoField = document.getElementById('notificationInfo');
+    notificationModal = document.getElementById('notificationModal');
+    notificationTitle = document.getElementById('notificationTitle');
+    notificationInfo = document.getElementById('notificationInfo');
     noteSpan = document.getElementById('closeNotification');
-    modal = document.getElementById('myModal');
+    settingsElements = [offlineModal, offlineSpan, inviteNote, editBtn, faqBtn, modBtn, familyBtn, notificationModal,
+        notificationTitle, notificationInfo, noteSpan];
+    verifyElementIntegrity(settingsElements);
     getCurrentUser();
     commonInitialization();
 
