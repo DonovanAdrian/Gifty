@@ -1,3 +1,9 @@
+/*
+ * This project was created by Donovan Adrian and any
+ * edits or changes must be confirmed as valid by Donovan
+ * with written consent under any circumstance.
+ */
+
 var confirmationElements = [];
 var userArr = [];
 var friendArr = [];
@@ -37,448 +43,448 @@ var userDeleteBtn;
 
 
 function getCurrentUser(){
-    try {
-        user = JSON.parse(sessionStorage.validUser);
-        console.log("User: " + user.userName + " loaded in");
-        if (user.invites == undefined) {
-            console.log("Invites Not Found");
-            deployInviteListEmptyNotification();
-            inviteListEmptyBool = true;
-        } else if (user.invites != undefined) {
-            if (user.invites.length > 0) {
-                inviteNote.style.background = "#ff3923";
-            }
-        }
-
-        if (user.readNotifications == undefined) {
-            console.log("Read Notifications Not Found");
-        } else {
-            readNotificationsBool = true;
-        }
-
-        if (user.notifications == undefined) {
-            console.log("Notifications Not Found");
-        } else if (user.notifications != undefined) {
-            if (readNotificationsBool){
-                if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
-                    notificationBtn.src = "img/bellNotificationOn.png";
-                    notificationBtn.onclick = function() {
-                        newNavigation(6);//Notifications
-                    }
-                } else {
-                    notificationBtn.src = "img/bellNotificationOff.png";
-                    notificationBtn.onclick = function() {
-                        newNavigation(6);//Notifications
-                    }
-                }
-            } else if (user.notifications.length > 0) {
-                notificationBtn.src = "img/bellNotificationOn.png";
-                notificationBtn.onclick = function() {
-                    newNavigation(6);//Notifications
-                }
-            }
-        }
-        userArr = JSON.parse(sessionStorage.userArr);
-    } catch (err) {
-        console.log(err.toString());
-        window.location.href = "index.html";
+  try {
+    user = JSON.parse(sessionStorage.validUser);
+    console.log("User: " + user.userName + " loaded in");
+    if (user.invites == undefined) {
+      console.log("Invites Not Found");
+      deployInviteListEmptyNotification();
+      inviteListEmptyBool = true;
+    } else if (user.invites != undefined) {
+      if (user.invites.length > 0) {
+        inviteNote.style.background = "#ff3923";
+      }
     }
+
+    if (user.readNotifications == undefined) {
+      console.log("Read Notifications Not Found");
+    } else {
+      readNotificationsBool = true;
+    }
+
+    if (user.notifications == undefined) {
+      console.log("Notifications Not Found");
+    } else if (user.notifications != undefined) {
+      if (readNotificationsBool){
+        if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
+          notificationBtn.src = "img/bellNotificationOn.png";
+          notificationBtn.onclick = function() {
+            newNavigation(6);//Notifications
+          }
+        } else {
+          notificationBtn.src = "img/bellNotificationOff.png";
+          notificationBtn.onclick = function() {
+            newNavigation(6);//Notifications
+          }
+        }
+      } else if (user.notifications.length > 0) {
+        notificationBtn.src = "img/bellNotificationOn.png";
+        notificationBtn.onclick = function() {
+          newNavigation(6);//Notifications
+        }
+      }
+    }
+    userArr = JSON.parse(sessionStorage.userArr);
+  } catch (err) {
+    console.log(err.toString());
+    window.location.href = "index.html";
+  }
 }
 
 window.onload = function instantiate() {
 
-    testGift = document.getElementById('testGift');
-    notificationBtn = document.getElementById('notificationButton');
-    dataListContainer = document.getElementById("dataListContainer");
-    offlineModal = document.getElementById('offlineModal');
-    offlineSpan = document.getElementById("closeOffline");
-    inviteNote = document.getElementById('inviteNote');
-    notificationModal = document.getElementById('notificationModal');
-    notificationTitle = document.getElementById('notificationTitle');
-    notificationInfo = document.getElementById('notificationInfo');
-    noteSpan = document.getElementById('closeNotification');
-    inviteModal = document.getElementById('inviteModal');
-    closeInviteModal = document.getElementById('closeInviteModal');
-    userNameFld = document.getElementById('userNameFld');
-    userUNameFld = document.getElementById('userUNameFld');
-    userShareCodeFld = document.getElementById('userShareCodeFld');
-    userAcceptBtn = document.getElementById('userAcceptBtn');
-    userDeleteBtn = document.getElementById('userDeleteBtn');
-    confirmationElements = [testGift, notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote,
-        notificationModal, notificationTitle, notificationInfo, noteSpan, inviteModal, closeInviteModal, userNameFld,
-        userUNameFld, userShareCodeFld, userAcceptBtn, userDeleteBtn];
-    verifyElementIntegrity(confirmationElements);
-    getCurrentUser();
-    commonInitialization();
+  testGift = document.getElementById('testGift');
+  notificationBtn = document.getElementById('notificationButton');
+  dataListContainer = document.getElementById("dataListContainer");
+  offlineModal = document.getElementById('offlineModal');
+  offlineSpan = document.getElementById("closeOffline");
+  inviteNote = document.getElementById('inviteNote');
+  notificationModal = document.getElementById('notificationModal');
+  notificationTitle = document.getElementById('notificationTitle');
+  notificationInfo = document.getElementById('notificationInfo');
+  noteSpan = document.getElementById('closeNotification');
+  inviteModal = document.getElementById('inviteModal');
+  closeInviteModal = document.getElementById('closeInviteModal');
+  userNameFld = document.getElementById('userNameFld');
+  userUNameFld = document.getElementById('userUNameFld');
+  userShareCodeFld = document.getElementById('userShareCodeFld');
+  userAcceptBtn = document.getElementById('userAcceptBtn');
+  userDeleteBtn = document.getElementById('userDeleteBtn');
+  confirmationElements = [testGift, notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote,
+    notificationModal, notificationTitle, notificationInfo, noteSpan, inviteModal, closeInviteModal, userNameFld,
+    userUNameFld, userShareCodeFld, userAcceptBtn, userDeleteBtn];
+  verifyElementIntegrity(confirmationElements);
+  getCurrentUser();
+  commonInitialization();
 
-    loadingTimer = setInterval(function(){
-        loadingTimerInt = loadingTimerInt + 1000;
-        if(loadingTimerInt >= 2000){
-            if (testGift == undefined){
-                //console.log("TestGift Missing. Loading Properly.");
-            } else if (!inviteListEmptyBool) {
-                testGift.innerHTML = "Loading... Please Wait...";
-            }
-            clearInterval(loadingTimer);
+  loadingTimer = setInterval(function(){
+    loadingTimerInt = loadingTimerInt + 1000;
+    if(loadingTimerInt >= 2000){
+      if (testGift == undefined){
+        //console.log("TestGift Missing. Loading Properly.");
+      } else if (!inviteListEmptyBool) {
+        testGift.innerHTML = "Loading... Please Wait...";
+      }
+      clearInterval(loadingTimer);
+    }
+  }, 1000);
+
+  databaseQuery();
+
+  inviteConfirmButton();
+
+  function inviteConfirmButton(){
+    var nowConfirm = 0;
+    var alternator = 0;
+    console.log("Invite Button Feature Active");
+    setInterval(function(){
+      nowConfirm = nowConfirm + 1000;
+      if(nowConfirm >= 3000){
+        nowConfirm = 0;
+        if(alternator == 0) {
+          alternator++;
+          document.getElementById("inviteNote").innerHTML = "Confirm";
+          inviteNote.style.background = "#00c606";
+        } else {
+          alternator--;
+          document.getElementById("inviteNote").innerHTML = "Invites";
+          inviteNote.style.background = "#00ad05";
         }
+      }
     }, 1000);
+  }
 
-    databaseQuery();
+  function databaseQuery() {
 
-    inviteConfirmButton();
+    userInitial = firebase.database().ref("users/");
+    userFriends = firebase.database().ref("users/" + user.uid + "/friends");
+    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
-    function inviteConfirmButton(){
-        var nowConfirm = 0;
-        var alternator = 0;
-        console.log("Invite Button Feature Active");
-        setInterval(function(){
-            nowConfirm = nowConfirm + 1000;
-            if(nowConfirm >= 3000){
-                nowConfirm = 0;
-                if(alternator == 0) {
-                    alternator++;
-                    document.getElementById("inviteNote").innerHTML = "Confirm";
-                    inviteNote.style.background = "#00c606";
-                } else {
-                    alternator--;
-                    document.getElementById("inviteNote").innerHTML = "Invites";
-                    inviteNote.style.background = "#00ad05";
-                }
-            }
-        }, 1000);
-    }
+    var fetchData = function (postRef) {
+      postRef.on('child_added', function (data) {
+        onlineInt = 1;
 
-    function databaseQuery() {
-
-        userInitial = firebase.database().ref("users/");
-        userFriends = firebase.database().ref("users/" + user.uid + "/friends");
-        userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-
-        var fetchData = function (postRef) {
-            postRef.on('child_added', function (data) {
-                onlineInt = 1;
-
-                var i = findUIDItemInArr(data.key, userArr);
-                if(userArr[i] != data.val() && i != -1){
-                    //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
-                    userArr[i] = data.val();
-                }
-
-                if(data.key == user.uid){
-                    user = data.val();
-                    console.log("User Updated: 1");
-                }
-            });
-
-            postRef.on('child_changed', function (data) {
-                var i = findUIDItemInArr(data.key, userArr);
-                if(userArr[i] != data.val() && i != -1){
-                    console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
-                    userArr[i] = data.val();
-                }
-
-                if(data.key == currentModalOpen) {//Moved currentModalOpen reference to common.js
-                    closeModal(inviteModal);
-                }
-
-                if(data.key == user.uid){
-                    user = data.val();
-                    console.log("User Updated: 2");
-                }
-            });
-
-            postRef.on('child_removed', function (data) {
-                var i = findUIDItemInArr(data.key, userArr);
-                if(userArr[i] != data.val() && i != -1){
-                    console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
-                    userArr.splice(i, 1);
-                }
-            });
-        };
-
-        var fetchFriends = function (postRef) {
-            postRef.on('child_added', function (data) {
-                if (!friendArr.includes(data.val()))
-                    friendArr.push(data.val());
-            });
-
-            postRef.on('child_changed', function (data) {
-                console.log(friendArr);
-                friendArr[data.key] = data.val();
-                console.log(friendArr);
-            });
-
-            postRef.on('child_removed', function (data) {
-                console.log(friendArr);
-                friendArr.splice(data.key, 1);
-                console.log(friendArr);
-            });
-        };
-
-        var fetchInvites = function (postRef) {
-            postRef.on('child_added', function (data) {
-                inviteArr.push(data.val());
-
-                createInviteElement(data.val());
-                inviteNote.style.background = "#ff3923";
-            });
-
-            postRef.on('child_changed', function (data) {
-                inviteArr[data.key] = data.val();
-
-                changeInviteElement(data.val());
-            });
-
-            postRef.on('child_removed', function (data) {
-                sessionStorage.setItem("validUser", JSON.stringify(user));
-                location.reload();
-            });
-        };
-
-        fetchData(userInitial);
-        fetchFriends(userFriends);
-        fetchInvites(userInvites);
-
-        listeningFirebaseRefs.push(userInitial);
-        listeningFirebaseRefs.push(userFriends);
-        listeningFirebaseRefs.push(userInvites);
-    }
-
-    function findUIDItemInArr(item, userArray){
-        for(var i = 0; i < userArray.length; i++){
-            if(userArray[i].uid == item){
-                //console.log("Found item: " + item);
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    function createInviteElement(inviteKey){
-        try{
-            testGift.remove();
-        } catch (err) {}
-
-        var inviteData;
-        for (var i = 0; i < userArr.length; i++){
-            if(inviteKey == userArr[i].uid){
-                inviteData = userArr[i];
-                break;
-            }
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() && i != -1){
+          //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          userArr[i] = data.val();
         }
 
-        var userUid = inviteData.uid;
-        var inviteName = inviteData.name;
-        var inviteUserName = inviteData.userName;
-        var inviteShareCode = inviteData.shareCode;
-        var liItem = document.createElement("LI");
-        liItem.id = "user" + userUid;
-        liItem.className = "gift";
-        liItem.onclick = function (){
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 1");
+        }
+      });
 
-            if(inviteShareCode == undefined) {
-                inviteShareCode = "This User Does Not Have A Share Code";
-            }
-
-            userNameFld.innerHTML = inviteName;
-            userUNameFld.innerHTML = "User Name: " + inviteUserName;
-            userShareCodeFld.innerHTML = "Share Code: " + inviteShareCode;
-
-            userAcceptBtn.onclick = function(){
-                addInvite(inviteData);
-                closeModal(inviteModal);
-            };
-
-            userDeleteBtn.onclick = function(){
-                deleteInvite(userUid);
-                closeModal(inviteModal);
-            };
-
-            //show modal
-            openModal(inviteModal, userUid);
-
-            //close on close
-            closeInviteModal.onclick = function() {
-                closeModal(inviteModal);
-            };
-
-            //close on click
-            window.onclick = function(event) {
-                if (event.target == inviteModal) {
-                    closeModal(inviteModal);
-                }
-            }
-        };
-        var textNode = document.createTextNode(inviteName);
-        liItem.appendChild(textNode);
-
-        dataListContainer.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
-
-        inviteCount++;
-    }
-
-    function changeInviteElement(inviteKey){
-        var inviteData;
-        for (var i = 0; i < userArr.length; i++){
-            if(inviteKey == userArr[i].uid){
-                inviteData = userArr[i];
-                break;
-            }
+      postRef.on('child_changed', function (data) {
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() && i != -1){
+          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          userArr[i] = data.val();
         }
 
-        var userUid = inviteData.uid;
-        var inviteName = inviteData.name;
-        var inviteUserName = inviteData.userName;
-        var inviteShareCode = inviteData.shareCode;
-        var liItemUpdate = document.getElementById("user" + inviteData.uid);
-        liItemUpdate.innerHTML = inviteName;
-        liItemUpdate.className = "gift";
-        liItemUpdate.onclick = function (){
+        if(data.key == currentModalOpen) {//Moved currentModalOpen reference to common.js
+          closeModal(inviteModal);
+        }
 
-            if(inviteShareCode == undefined) {
-                inviteShareCode = "This User Does Not Have A Share Code";
-            }
+        if(data.key == user.uid){
+          user = data.val();
+          console.log("User Updated: 2");
+        }
+      });
 
-            userNameFld.innerHTML = inviteName;
-            userUNameFld.innerHTML = "User Name: " + inviteUserName;
-            userShareCodeFld.innerHTML = "Share Code: " + inviteShareCode;
+      postRef.on('child_removed', function (data) {
+        var i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() && i != -1){
+          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          userArr.splice(i, 1);
+        }
+      });
+    };
 
-            userAcceptBtn.onclick = function(){
-                addInvite(inviteData);
-                closeModal(inviteModal);
-            };
+    var fetchFriends = function (postRef) {
+      postRef.on('child_added', function (data) {
+        if (!friendArr.includes(data.val()))
+          friendArr.push(data.val());
+      });
 
-            userDeleteBtn.onclick = function(){
-                deleteInvite(userUid);
-                closeModal(inviteModal);
-            };
-
-            //show modal
-            openModal(inviteModal, userUid);
-
-            //close on close
-            closeInviteModal.onclick = function() {
-                closeModal(inviteModal);
-            };
-
-            //close on click
-            window.onclick = function(event) {
-                if (event.target == inviteModal) {
-                    closeModal(inviteModal);
-                }
-            }
-        };
-    }
-
-    function addInvite(inviteData){
-        console.log("Adding " + inviteData.uid);
+      postRef.on('child_changed', function (data) {
         console.log(friendArr);
+        friendArr[data.key] = data.val();
+        console.log(friendArr);
+      });
 
-        var friendFriendArr;
-        if(inviteData.friends == undefined || inviteData.friends == null) {
-            friendFriendArr = [];
-        } else {
-            friendFriendArr = inviteData.friends;
+      postRef.on('child_removed', function (data) {
+        console.log(friendArr);
+        friendArr.splice(data.key, 1);
+        console.log(friendArr);
+      });
+    };
+
+    var fetchInvites = function (postRef) {
+      postRef.on('child_added', function (data) {
+        inviteArr.push(data.val());
+
+        createInviteElement(data.val());
+        inviteNote.style.background = "#ff3923";
+      });
+
+      postRef.on('child_changed', function (data) {
+        inviteArr[data.key] = data.val();
+
+        changeInviteElement(data.val());
+      });
+
+      postRef.on('child_removed', function (data) {
+        sessionStorage.setItem("validUser", JSON.stringify(user));
+        location.reload();
+      });
+    };
+
+    fetchData(userInitial);
+    fetchFriends(userFriends);
+    fetchInvites(userInvites);
+
+    listeningFirebaseRefs.push(userInitial);
+    listeningFirebaseRefs.push(userFriends);
+    listeningFirebaseRefs.push(userInvites);
+  }
+
+  function findUIDItemInArr(item, userArray){
+    for(var i = 0; i < userArray.length; i++){
+      if(userArray[i].uid == item){
+        //console.log("Found item: " + item);
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  function createInviteElement(inviteKey){
+    try{
+      testGift.remove();
+    } catch (err) {}
+
+    var inviteData;
+    for (var i = 0; i < userArr.length; i++){
+      if(inviteKey == userArr[i].uid){
+        inviteData = userArr[i];
+        break;
+      }
+    }
+
+    var userUid = inviteData.uid;
+    var inviteName = inviteData.name;
+    var inviteUserName = inviteData.userName;
+    var inviteShareCode = inviteData.shareCode;
+    var liItem = document.createElement("LI");
+    liItem.id = "user" + userUid;
+    liItem.className = "gift";
+    liItem.onclick = function (){
+
+      if(inviteShareCode == undefined) {
+        inviteShareCode = "This User Does Not Have A Share Code";
+      }
+
+      userNameFld.innerHTML = inviteName;
+      userUNameFld.innerHTML = "User Name: " + inviteUserName;
+      userShareCodeFld.innerHTML = "Share Code: " + inviteShareCode;
+
+      userAcceptBtn.onclick = function(){
+        addInvite(inviteData);
+        closeModal(inviteModal);
+      };
+
+      userDeleteBtn.onclick = function(){
+        deleteInvite(userUid);
+        closeModal(inviteModal);
+      };
+
+      //show modal
+      openModal(inviteModal, userUid);
+
+      //close on close
+      closeInviteModal.onclick = function() {
+        closeModal(inviteModal);
+      };
+
+      //close on click
+      window.onclick = function(event) {
+        if (event.target == inviteModal) {
+          closeModal(inviteModal);
         }
+      }
+    };
+    var textNode = document.createTextNode(inviteName);
+    liItem.appendChild(textNode);
 
-        friendFriendArr.push(user.uid);
-        firebase.database().ref("users/" + inviteData.uid).update({
-            friends: friendFriendArr
-        });
+    dataListContainer.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
 
+    inviteCount++;
+  }
 
-        if (friendArr == undefined || friendArr == null || friendArr.length == 0){
-            friendArr = [];
-            friendArr.push(inviteData.uid);
-            user.friends = [];
-            user.friends.push(inviteData.uid);
-        } else {
-            friendArr.push(inviteData.uid);
-            user.friends.push(inviteData.uid);
+  function changeInviteElement(inviteKey){
+    var inviteData;
+    for (var i = 0; i < userArr.length; i++){
+      if(inviteKey == userArr[i].uid){
+        inviteData = userArr[i];
+        break;
+      }
+    }
+
+    var userUid = inviteData.uid;
+    var inviteName = inviteData.name;
+    var inviteUserName = inviteData.userName;
+    var inviteShareCode = inviteData.shareCode;
+    var liItemUpdate = document.getElementById("user" + inviteData.uid);
+    liItemUpdate.innerHTML = inviteName;
+    liItemUpdate.className = "gift";
+    liItemUpdate.onclick = function (){
+
+      if(inviteShareCode == undefined) {
+        inviteShareCode = "This User Does Not Have A Share Code";
+      }
+
+      userNameFld.innerHTML = inviteName;
+      userUNameFld.innerHTML = "User Name: " + inviteUserName;
+      userShareCodeFld.innerHTML = "Share Code: " + inviteShareCode;
+
+      userAcceptBtn.onclick = function(){
+        addInvite(inviteData);
+        closeModal(inviteModal);
+      };
+
+      userDeleteBtn.onclick = function(){
+        deleteInvite(userUid);
+        closeModal(inviteModal);
+      };
+
+      //show modal
+      openModal(inviteModal, userUid);
+
+      //close on close
+      closeInviteModal.onclick = function() {
+        closeModal(inviteModal);
+      };
+
+      //close on click
+      window.onclick = function(event) {
+        if (event.target == inviteModal) {
+          closeModal(inviteModal);
         }
+      }
+    };
+  }
+
+  function addInvite(inviteData){
+    console.log("Adding " + inviteData.uid);
+    console.log(friendArr);
+
+    var friendFriendArr;
+    if(inviteData.friends == undefined || inviteData.friends == null) {
+      friendFriendArr = [];
+    } else {
+      friendFriendArr = inviteData.friends;
+    }
+
+    friendFriendArr.push(user.uid);
+    firebase.database().ref("users/" + inviteData.uid).update({
+      friends: friendFriendArr
+    });
+
+
+    if (friendArr == undefined || friendArr == null || friendArr.length == 0){
+      friendArr = [];
+      friendArr.push(inviteData.uid);
+      user.friends = [];
+      user.friends.push(inviteData.uid);
+    } else {
+      friendArr.push(inviteData.uid);
+      user.friends.push(inviteData.uid);
+    }
+    firebase.database().ref("users/" + user.uid).update({
+      friends: friendArr
+    });
+
+    console.log(friendArr);
+
+    deleteInvite(inviteData.uid);
+  }
+
+  function deleteInvite(uid) {
+    var verifyDeleteBool = true;
+    var toDelete = -1;
+
+    console.log("Deleting Invite " + uid);
+    for (var i = 0; i < inviteArr.length; i++){
+      if(inviteArr[i] == uid) {
+        toDelete = i;
+        break;
+      }
+    }
+
+    if(toDelete != -1) {
+      inviteArr.splice(toDelete, 1);
+
+      for (var i = 0; i < inviteArr.length; i++) {
+        if (inviteArr[i] == uid) {
+          verifyDeleteBool = false;
+          break;
+        }
+      }
+    } else {
+      verifyDeleteBool = false;
+    }
+
+    if(verifyDeleteBool){
+      var note = findUIDItemInArr(uid, userArr);
+      if(user.notifications != undefined)
+        for(var x = 0; i < user.notifications.length; x++)
+          if(user.notifications[x].includes(userArr[note].name))
+            if(user.notifications[x].split(",").length == 2)
+              setReadNotification(x);
+
+      user.invites = inviteArr;
+      firebase.database().ref("users/" + user.uid).update({
+        invites: inviteArr
+      });
+
+      if(inviteArr.length == 0)
+        newNavigation(4);//Invites
+    }
+  }
+
+  function setReadNotification(uid) {
+    var readNotificationArr = user.readNotifications;
+
+    if (readNotificationArr != undefined) {
+      var toSet = readNotificationArr.indexOf(user.notifications[uid]);
+      if(toSet == -1){
+        readNotificationArr.push(user.notifications[uid]);
         firebase.database().ref("users/" + user.uid).update({
-            friends: friendArr
+          readNotifications: readNotificationArr
         });
-
-        console.log(friendArr);
-
-        deleteInvite(inviteData.uid);
+      }
+    } else {
+      readNotificationArr = [];
+      readNotificationArr.push(user.notifications[uid]);
+      firebase.database().ref("users/" + user.uid).update({readNotifications:{0:readNotificationArr}});
     }
-
-    function deleteInvite(uid) {
-        var verifyDeleteBool = true;
-        var toDelete = -1;
-
-        console.log("Deleting Invite " + uid);
-        for (var i = 0; i < inviteArr.length; i++){
-            if(inviteArr[i] == uid) {
-                toDelete = i;
-                break;
-            }
-        }
-
-        if(toDelete != -1) {
-            inviteArr.splice(toDelete, 1);
-
-            for (var i = 0; i < inviteArr.length; i++) {
-                if (inviteArr[i] == uid) {
-                    verifyDeleteBool = false;
-                    break;
-                }
-            }
-        } else {
-            verifyDeleteBool = false;
-        }
-
-        if(verifyDeleteBool){
-            var note = findUIDItemInArr(uid, userArr);
-            if(user.notifications != undefined)
-                for(var x = 0; i < user.notifications.length; x++)
-                    if(user.notifications[x].includes(userArr[note].name))
-                        if(user.notifications[x].split(",").length == 2)
-                            setReadNotification(x);
-
-            user.invites = inviteArr;
-            firebase.database().ref("users/" + user.uid).update({
-                invites: inviteArr
-            });
-
-            if(inviteArr.length == 0)
-                newNavigation(4);//Invites
-        }
-    }
-
-    function setReadNotification(uid) {
-        var readNotificationArr = user.readNotifications;
-
-        if (readNotificationArr != undefined) {
-            var toSet = readNotificationArr.indexOf(user.notifications[uid]);
-            if(toSet == -1){
-                readNotificationArr.push(user.notifications[uid]);
-                firebase.database().ref("users/" + user.uid).update({
-                    readNotifications: readNotificationArr
-                });
-            }
-        } else {
-            readNotificationArr = [];
-            readNotificationArr.push(user.notifications[uid]);
-            firebase.database().ref("users/" + user.uid).update({readNotifications:{0:readNotificationArr}});
-        }
-    }
+  }
 };
 
 function deployInviteListEmptyNotification(){
-    try{
-        testGift.innerHTML = "No Invites Found! You Already Accepted All Your Invites!";
-    } catch(err){
-        console.log("Loading Element Missing, Creating A New One");
-        var liItem = document.createElement("LI");
-        liItem.id = "testGift";
-        liItem.className = "gift";
-        var textNode = document.createTextNode("No Invites Found! Invite Some Friends On The Invites Page!");
-        liItem.appendChild(textNode);
-        dataListContainer.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
-    }
+  try{
+    testGift.innerHTML = "No Invites Found! You Already Accepted All Your Invites!";
+  } catch(err){
+    console.log("Loading Element Missing, Creating A New One");
+    var liItem = document.createElement("LI");
+    liItem.id = "testGift";
+    liItem.className = "gift";
+    var textNode = document.createTextNode("No Invites Found! Invite Some Friends On The Invites Page!");
+    liItem.appendChild(textNode);
+    dataListContainer.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+  }
 
-    clearInterval(offlineTimer);
+  clearInterval(offlineTimer);
 }
