@@ -1,3 +1,4 @@
+var userAddUpdateElements = [];
 var listeningFirebaseRefs = [];
 var userNameArr = [];
 var userKeyArr = [];
@@ -17,14 +18,14 @@ var deleteDeny;
 var nameField;
 var userNameField;
 var pinField;
-var pinconfField;
+var pinConfField;
 var btnUpdate;
 var btnDelete;
 var userInitial;
 var user;
-var noteModal;
-var noteInfoField;
-var noteTitleField;
+var notificationModal;
+var notificationInfo;
+var notificationTitle;
 var noteSpan;
 
 
@@ -56,10 +57,10 @@ function getCurrentUser(){
 //Instantiates all data upon loading the webpage
 window.onload = function instantiate() {
 
-    nameField = document.getElementById('name');
-    userNameField = document.getElementById('username');
-    pinField = document.getElementById('pin');
-    pinconfField = document.getElementById('pinconf');
+    nameField = document.getElementById('nameField');
+    userNameField = document.getElementById('userNameField');
+    pinField = document.getElementById('pinField');
+    pinConfField = document.getElementById('pinConfField');
     btnUpdate = document.getElementById('updateUser');
     btnDelete = document.getElementById('deleteUser');
     offlineModal = document.getElementById('offlineModal');
@@ -68,17 +69,21 @@ window.onload = function instantiate() {
     confirmSpan = document.getElementsByClassName('closeConfirm');
     deleteConfirm = document.getElementById('deleteConfirm');
     deleteDeny = document.getElementById('deleteDeny');
-    noteModal = document.getElementById('notificationModal');
-    noteTitleField = document.getElementById('notificationTitle');
-    noteInfoField = document.getElementById('notificationInfo');
+    notificationModal = document.getElementById('notificationModal');
+    notificationTitle = document.getElementById('notificationTitle');
+    notificationInfo = document.getElementById('notificationInfo');
     noteSpan = document.getElementById('closeNotification');
+    userAddUpdateElements = [nameField, userNameField, pinField, pinConfField, btnUpdate, btnDelete, offlineModal,
+        offlineSpan, confirmModal, confirmSpan, deleteConfirm, deleteDeny, notificationModal, notificationTitle,
+        notificationInfo, noteSpan];
+    verifyElementIntegrity(userAddUpdateElements);
     getCurrentUser();
     commonInitialization();
 
     pinField.onclick = function() {
         if(pinClearedInt == 0) {
             pinField.value = "";
-            pinconfField.value = "";
+            pinConfField.value = "";
             pinClearedInt++;
         }
     };
@@ -101,7 +106,7 @@ window.onload = function instantiate() {
                         nameField.value = user.name;
                         userNameField.value = user.userName;
                         pinField.value = user.pin;
-                        pinconfField.placeholder = "Please Confirm Pin To Continue";
+                        pinConfField.placeholder = "Please Confirm Pin To Continue";
                         btnUpdate.innerHTML = "Update User Profile";
                         btnDelete.innerHTML = "Delete User Profile";
                         console.log("User Updated: 1");
@@ -211,10 +216,10 @@ function updateUserToDB(){
 
     checkUserNames(userNameField.value);
 
-    if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinconfField.value === ""){
+    if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
         alert("It looks like you left some fields blank. Make sure you have your full name, username, a pin, and " +
             "a confirmed pin below.");
-    } else if (pinconfField.value !== pinField.value){
+    } else if (pinConfField.value !== pinField.value){
         alert("It looks like the pins you entered are not the same");
     } else if (!isNaN(pinField.value) == false) {
         alert("It looks like the pins you entered are not numeric, please make sure that they are numbers only");
@@ -299,10 +304,10 @@ function addUserToDB(){
 
     checkUserNames(userNameField.value);
 
-    if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinconfField.value === ""){
+    if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
         alert("It looks like you left some fields blank. Make sure you have your full name, username, a pin, and " +
             "a confirmed pin below.");
-    } else if (pinconfField.value !== pinField.value){
+    } else if (pinConfField.value !== pinField.value){
         alert("It looks like the pins you entered are not the same");
     } else if (!isNaN(pinField.value) == false) {
         alert("It looks like the pins you entered are not numeric, please make sure that they are numbers only");
