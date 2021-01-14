@@ -26,10 +26,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+        <entry file="file://$PROJECT_DIR$/src/js/indexAlg.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="519">
-              <caret line="721" lean-forward="true" selection-start-line="721" selection-end-line="721" />
+              <caret line="282" selection-start-line="282" selection-end-line="282" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -116,7 +116,6 @@
         <option value="$PROJECT_DIR$/src/giftAddUpdate.html" />
         <option value="$PROJECT_DIR$/src/home.html" />
         <option value="$PROJECT_DIR$/src/index.html" />
-        <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
         <option value="$PROJECT_DIR$/src/invites.html" />
         <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
         <option value="$PROJECT_DIR$/src/lists.html" />
@@ -139,6 +138,7 @@
         <option value="$PROJECT_DIR$/src/js/friendListAlg.js" />
         <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
       </list>
     </option>
   </component>
@@ -391,12 +391,12 @@
       <workItem from="1608836450154" duration="5203000" />
       <workItem from="1609388033016" duration="211000" />
       <workItem from="1609455868251" duration="3830000" />
-      <workItem from="1609714157417" duration="4935000" />
+      <workItem from="1609714157417" duration="5683000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="526497000" />
+    <option name="totallyTimeSpent" value="527245000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="26" width="1280" height="721" extended-state="6" />
@@ -589,13 +589,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/indexAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="169">
-          <caret line="253" column="27" lean-forward="true" selection-start-line="253" selection-start-column="27" selection-end-line="253" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/invites.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="507">
@@ -771,6 +764,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="519">
+          <caret line="721" lean-forward="true" selection-start-line="721" selection-end-line="721" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="495">
@@ -781,10 +784,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/homeAlg.js">
+    <entry file="file://$PROJECT_DIR$/src/js/indexAlg.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="519">
-          <caret line="721" lean-forward="true" selection-start-line="721" selection-end-line="721" />
+          <caret line="282" selection-start-line="282" selection-end-line="282" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
