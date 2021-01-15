@@ -26,10 +26,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/js/indexAlg.js">
+        <entry file="file://$PROJECT_DIR$/src/js/invitesAlg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="519">
-              <caret line="282" selection-start-line="282" selection-end-line="282" />
+            <state relative-caret-position="189">
+              <caret line="728" column="8" lean-forward="true" selection-start-line="728" selection-start-column="8" selection-end-line="728" selection-end-column="8" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -117,7 +117,6 @@
         <option value="$PROJECT_DIR$/src/home.html" />
         <option value="$PROJECT_DIR$/src/index.html" />
         <option value="$PROJECT_DIR$/src/invites.html" />
-        <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
         <option value="$PROJECT_DIR$/src/lists.html" />
         <option value="$PROJECT_DIR$/src/js/listsAlg.js" />
         <option value="$PROJECT_DIR$/src/moderation.html" />
@@ -139,6 +138,7 @@
         <option value="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" />
         <option value="$PROJECT_DIR$/src/js/homeAlg.js" />
         <option value="$PROJECT_DIR$/src/js/indexAlg.js" />
+        <option value="$PROJECT_DIR$/src/js/invitesAlg.js" />
       </list>
     </option>
   </component>
@@ -391,16 +391,15 @@
       <workItem from="1608836450154" duration="5203000" />
       <workItem from="1609388033016" duration="211000" />
       <workItem from="1609455868251" duration="3830000" />
-      <workItem from="1609714157417" duration="5683000" />
+      <workItem from="1609714157417" duration="5981000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="527245000" />
+    <option name="totallyTimeSpent" value="527543000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="26" width="1280" height="721" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19301033" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -596,13 +595,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/invitesAlg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="514">
-          <caret line="744" selection-start-line="744" selection-end-line="744" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lists.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="139">
@@ -774,6 +766,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/indexAlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="519">
+          <caret line="282" selection-start-line="282" selection-end-line="282" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="495">
@@ -784,10 +786,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/indexAlg.js">
+    <entry file="file://$PROJECT_DIR$/src/js/invitesAlg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="282" selection-start-line="282" selection-end-line="282" />
+        <state relative-caret-position="189">
+          <caret line="728" column="8" lean-forward="true" selection-start-line="728" selection-start-column="8" selection-end-line="728" selection-end-column="8" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
