@@ -241,10 +241,10 @@
     </option>
   </component>
   <component name="RunManager" selected="JavaScript Debug.index.html">
-    <configuration name="index.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/Gifty/src/index.html">
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/Gifty/src/index.html">
       <method v="2" />
     </configuration>
-    <configuration name="template.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/Gifty/src/template.html">
+    <configuration name="template.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/Gifty/src/template.html">
       <method v="2" />
     </configuration>
     <list>
