@@ -4,22 +4,22 @@
  * with written consent under any circumstance.
  */
 
-var settingsElements = [];
-var userArr = [];
+let settingsElements = [];
+let userArr = [];
 
-var editBtn;
-var faqBtn;
-var modBtn;
-var familyBtn;
-var offlineTimer;
-var offlineSpan;
-var offlineModal;
-var inviteNote;
-var user;
-var notificationModal;
-var notificationInfo;
-var notificationTitle;
-var noteSpan;
+let editBtn;
+let faqBtn;
+let modBtn;
+let familyBtn;
+let offlineTimer;
+let offlineSpan;
+let offlineModal;
+let inviteNote;
+let user;
+let notificationModal;
+let notificationInfo;
+let notificationTitle;
+let noteSpan;
 
 
 
@@ -55,12 +55,12 @@ function getCurrentUser(){
 window.onload = function instantiate() {
 
   offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById("closeOffline");
+  offlineSpan = document.getElementById('closeOffline');
   inviteNote = document.getElementById('inviteNote');
-  editBtn = document.getElementById("edit");
-  faqBtn = document.getElementById("faq");
-  modBtn = document.getElementById("mod");
-  familyBtn = document.getElementById("family");
+  editBtn = document.getElementById('edit');
+  faqBtn = document.getElementById('faq');
+  modBtn = document.getElementById('mod');
+  familyBtn = document.getElementById('family');
   notificationModal = document.getElementById('notificationModal');
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
