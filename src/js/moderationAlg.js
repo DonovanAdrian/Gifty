@@ -4,63 +4,63 @@
  * with written consent under any circumstance.
  */
 
-var moderationElements = [];
-var listeningFirebaseRefs = [];
-var inviteArr = [];
-var userArr = [];
-var userUIDArr = [];
-var tempUserArr = [];
-var optInUserArr = [];
+let moderationElements = [];
+let listeningFirebaseRefs = [];
+let inviteArr = [];
+let userArr = [];
+let userUIDArr = [];
+let tempUserArr = [];
+let optInUserArr = [];
 
-var secretSantaIntBool = false;
-var secretSantaNameBool = false;
+let secretSantaIntBool = false;
+let secretSantaNameBool = false;
 
-var moderationSet = 1;
-var userCounter = 0;
-var onlineInt = 0;
-var loadingTimerInt = 0;
+let moderationSet = 1;
+let userCounter = 0;
+let onlineInt = 0;
+let loadingTimerInt = 0;
 
-var dataListContainer;
-var offlineSpan;
-var offlineModal;
-var privateMessageModal;
-var sendGlobalNotification;
-var user;
-var offlineTimer;
-var loadingTimer;
-var userModal;
-var notificationModal;
-var notificationInfo;
-var notificationTitle;
-var noteSpan;
-var inviteNote;
-var userInitial;
-var userInvites;
-var activateSecretSanta;
-var secretSantaModal;
-var santaModalSpan;
-var secretSantaShuffle;
-var secretSantaBtn;
-var settingsNote;
-var testGift;
-var closeUserModal;
-var userName;
-var userUID;
-var userUserName;
-var userGifts;
-var userPrivateGifts;
-var userFriends;
-var userPassword;
-var userSecretSanta;
-var moderatorOp;
-var sendPrivateMessage;
-var warnUser;
-var banUser;
-var closePrivateMessageModal;
-var globalMsgTitle;
-var globalMsgInp;
-var sendMsg;
-var cancelMsg;
+let dataListContainer;
+let offlineSpan;
+let offlineModal;
+let privateMessageModal;
+let sendGlobalNotification;
+let user;
+let offlineTimer;
+let loadingTimer;
+let userModal;
+let notificationModal;
+let notificationInfo;
+let notificationTitle;
+let noteSpan;
+let inviteNote;
+let userInitial;
+let userInvites;
+let activateSecretSanta;
+let secretSantaModal;
+let santaModalSpan;
+let secretSantaShuffle;
+let secretSantaBtn;
+let settingsNote;
+let testGift;
+let closeUserModal;
+let userName;
+let userUID;
+let userUserName;
+let userGifts;
+let userPrivateGifts;
+let userFriends;
+let userPassword;
+let userSecretSanta;
+let moderatorOp;
+let sendPrivateMessage;
+let warnUser;
+let banUser;
+let closePrivateMessageModal;
+let globalMsgTitle;
+let globalMsgInp;
+let sendMsg;
+let cancelMsg;
 
 
 
@@ -158,7 +158,7 @@ window.onload = function instantiate() {
     tempUserArr = [];
     optInUserArr = [];
 
-    for (var i = 0; i < userArr.length; i++) {
+    for (let i = 0; i < userArr.length; i++) {
       if (userArr[i].secretSantaName != null)
         if (userArr[i].secretSantaName != "")
           secretSantaNameBool = true;
@@ -247,11 +247,11 @@ window.onload = function instantiate() {
   }
 
   function createSecretSantaNames(){
-    var selector;
-    var userIndex;
-    var retryCount = 0;
+    let selector;
+    let userIndex;
+    let retryCount = 0;
 
-    for (var i = 0; i < optInUserArr.length; i++) {
+    for (let i = 0; i < optInUserArr.length; i++) {
       selector = Math.floor((Math.random() * tempUserArr.length));
       if (!userUIDArr.includes(tempUserArr[selector].uid)) {
         if (tempUserArr[selector].name != optInUserArr[i].name) {
@@ -301,21 +301,21 @@ window.onload = function instantiate() {
   }
 
   function removeSecretSantaNames(){
-    for (var i = 0; i < userArr.length; i++)
+    for (let i = 0; i < userArr.length; i++)
       userArr[i].secretSantaName = "";
 
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
   }
 
   function removeSecretSantaNums(){
-    for (var i = 0; i < userArr.length; i++)
+    for (let i = 0; i < userArr.length; i++)
       userArr[i].secretSanta = 0;
 
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
   }
 
   function updateAllUsersToDBSantaNums(){
-    for(var i = 0; i < userArr.length; i++){
+    for(let i = 0; i < userArr.length; i++){
       if (userArr[i].secretSanta != undefined) {
         firebase.database().ref("users/" + userArr[i].uid).update({
           secretSanta: userArr[i].secretSanta
@@ -327,7 +327,7 @@ window.onload = function instantiate() {
   }
 
   function updateAllUsersToDBSantaNames(){
-    for(var i = 0; i < userArr.length; i++) {
+    for(let i = 0; i < userArr.length; i++) {
       if (userArr[i].secretSantaName != undefined) {
         firebase.database().ref("users/" + userArr[i].uid).update({
           secretSantaName: userArr[i].secretSantaName
@@ -339,8 +339,8 @@ window.onload = function instantiate() {
   }
 
   function settingsModerateButton(){
-    var nowConfirm = 0;
-    var alternator = 0;
+    let nowConfirm = 0;
+    let alternator = 0;
     console.log("Settings Button Feature Active");
     setInterval(function(){
       nowConfirm = nowConfirm + 1000;
@@ -394,7 +394,7 @@ window.onload = function instantiate() {
   }
 
   function addPrivateMessageToDB(userData, message) {
-    var userNotificationArr = [];
+    let userNotificationArr = [];
     if(userData.notifications == undefined){
       userNotificationArr = [];
     } else {
@@ -449,8 +449,8 @@ window.onload = function instantiate() {
   }
 
   function addGlobalMessageToDB(message) {
-    var userNotificationArr = [];
-    for (var i = 0; i < userArr.length; i++){
+    let userNotificationArr = [];
+    for (let i = 0; i < userArr.length; i++){
       if(userArr[i].notifications == undefined){
         userNotificationArr = [];
       } else {
@@ -473,7 +473,7 @@ window.onload = function instantiate() {
     userInitial = firebase.database().ref("users/");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
-    var fetchData = function (postRef) {
+    let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         createUserElement(data.val());
 
@@ -482,7 +482,7 @@ window.onload = function instantiate() {
           initializeGlobalNotification();
         }
 
-        var i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
@@ -497,7 +497,7 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         changeUserElement(data.val());
 
-        var i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
@@ -516,7 +516,7 @@ window.onload = function instantiate() {
       postRef.on('child_removed', function (data) {
         removeUserElement(data.val().uid);
 
-        var i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           //console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
@@ -528,7 +528,7 @@ window.onload = function instantiate() {
       });
     };
 
-    var fetchInvites = function (postRef) {
+    let fetchInvites = function (postRef) {
       postRef.on('child_added', function (data) {
         inviteArr.push(data.val());
 
@@ -561,7 +561,7 @@ window.onload = function instantiate() {
   }
 
   function findUIDItemInArr(item, userArray){
-    for(var i = 0; i < userArray.length; i++){
+    for(let i = 0; i < userArray.length; i++){
       if(userArray[i].uid == item){
         //console.log("Found item: " + item);
         return i;
@@ -575,7 +575,7 @@ window.onload = function instantiate() {
       testGift.remove();
     } catch (err) {}
 
-    var liItem = document.createElement("LI");
+    let liItem = document.createElement("LI");
     liItem.id = "user" + userData.uid;
     liItem.className = "gift";
     if (userData.secretSanta != null)
@@ -700,7 +700,7 @@ window.onload = function instantiate() {
         }
       };
     };
-    var textNode = document.createTextNode(userData.name);
+    let textNode = document.createTextNode(userData.name);
     liItem.appendChild(textNode);
 
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
@@ -713,7 +713,7 @@ window.onload = function instantiate() {
   }
 
   function changeUserElement(userData) {
-    var editGift = document.getElementById("user" + userData.uid);
+    let editGift = document.getElementById('user' + userData.uid);
     editGift.innerHTML = userData.name;
     editGift.className = "gift";
     if (userData.secretSanta != null)
@@ -837,7 +837,7 @@ window.onload = function instantiate() {
   }
 
   function removeUserElement(uid) {
-    document.getElementById("user" + uid).remove();
+    document.getElementById('user' + uid).remove();
 
     userCounter--;
     if (userCounter == 0){
@@ -872,10 +872,10 @@ function deployUserListEmptyNotification(){
     testGift.innerHTML = "No Users Found!";
   } catch(err){
     console.log("Loading Element Missing, Creating A New One");
-    var liItem = document.createElement("LI");
+    let liItem = document.createElement("LI");
     liItem.id = "TestGift";
     liItem.className = "gift";
-    var textNode = document.createTextNode("No Users Found!");
+    let textNode = document.createTextNode("No Users Found!");
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
   }
