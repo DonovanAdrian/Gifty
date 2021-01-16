@@ -4,52 +4,52 @@
  * with written consent under any circumstance.
  */
 
-var listsElements = [];
-var inviteArr = [];
-var friendArr = [];
-var listeningFirebaseRefs = [];
-var userArr = [];
+let listsElements = [];
+let inviteArr = [];
+let friendArr = [];
+let listeningFirebaseRefs = [];
+let userArr = [];
 
-var readNotificationsBool = false;
-var friendListEmptyBool = false;
-var secretSantaNameBool = false;
+let readNotificationsBool = false;
+let friendListEmptyBool = false;
+let secretSantaNameBool = false;
 
-var moderationSet = 0;
-var onlineInt = 0;
-var friendCount = 0;
-var loadingTimerInt = 0;
+let moderationSet = 0;
+let onlineInt = 0;
+let friendCount = 0;
+let loadingTimerInt = 0;
 
-var dataListContainer;
-var userBase;
-var userFriends;
-var userInvites;
-var offlineSpan;
-var offlineModal;
-var offlineTimer;
-var loadingTimer;
-var user;
-var inviteNote;
-var notificationModal;
-var notificationInfo;
-var notificationTitle;
-var noteSpan;
-var notificationBtn;
-var privateMessageModal;
-var closeUserModal;
-var userModal;
-var secretSantaSignUp;
-var secretSantaData;
-var testGift;
-var userTitle;
-var publicListCount;
-var publicList;
-var privateListCount;
-var privateList;
-var sendPrivateMessage;
-var closePrivateMessageModal;
-var privateMessageInp;
-var sendMsg;
-var cancelMsg;
+let dataListContainer;
+let userBase;
+let userFriends;
+let userInvites;
+let offlineSpan;
+let offlineModal;
+let offlineTimer;
+let loadingTimer;
+let user;
+let inviteNote;
+let notificationModal;
+let notificationInfo;
+let notificationTitle;
+let noteSpan;
+let notificationBtn;
+let privateMessageModal;
+let closeUserModal;
+let userModal;
+let secretSantaSignUp;
+let secretSantaData;
+let testGift;
+let userTitle;
+let publicListCount;
+let publicList;
+let privateListCount;
+let privateList;
+let sendPrivateMessage;
+let closePrivateMessageModal;
+let privateMessageInp;
+let sendMsg;
+let cancelMsg;
 
 
 
@@ -111,9 +111,9 @@ function getCurrentUser(){
 window.onload = function instantiate() {
 
   notificationBtn = document.getElementById('notificationButton');
-  dataListContainer = document.getElementById("dataListContainer");
+  dataListContainer = document.getElementById('dataListContainer');
   offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById("closeOffline");
+  offlineSpan = document.getElementById('closeOffline');
   inviteNote = document.getElementById('inviteNote');
   notificationModal = document.getElementById('notificationModal');
   notificationTitle = document.getElementById('notificationTitle');
@@ -166,7 +166,7 @@ window.onload = function instantiate() {
       secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
   else {
     if (user.secretSantaName != "") {
-      var i = findUIDItemInArr(user.secretSantaName, userArr);
+      let i = findUIDItemInArr(user.secretSantaName, userArr);
       secretSantaData = userArr[i];
       secretSantaSignUp.innerHTML = userArr[i].name;
       secretSantaNameBool = true;
@@ -192,7 +192,7 @@ window.onload = function instantiate() {
           });
           user.secretSanta = 1;
           alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
-            " Santa Recipient!");
+              " Santa Recipient!");
           secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
         } else {
           firebase.database().ref("users/" + user.uid).update({
@@ -208,7 +208,7 @@ window.onload = function instantiate() {
         });
         user.secretSanta = 1;
         alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
-          " Santa Recipient!");
+            " Santa Recipient!");
         secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
       }
       sessionStorage.setItem("validUser", JSON.stringify(user));
@@ -286,11 +286,11 @@ window.onload = function instantiate() {
     userFriends = firebase.database().ref("users/" + user.uid + "/friends");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
-    var fetchData = function (postRef) {
+    let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         onlineInt = 1;
 
-        var i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
@@ -303,7 +303,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        var i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
@@ -320,7 +320,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_removed', function (data) {
-        var i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
@@ -328,7 +328,7 @@ window.onload = function instantiate() {
       });
     };
 
-    var fetchFriends = function (postRef) {
+    let fetchFriends = function (postRef) {
       postRef.on('child_added', function (data) {
         friendArr.push(data.val());
 
@@ -349,7 +349,7 @@ window.onload = function instantiate() {
       });
     };
 
-    var fetchInvites = function (postRef) {
+    let fetchInvites = function (postRef) {
       postRef.on('child_added', function (data) {
         inviteArr.push(data.val());
 
@@ -384,7 +384,7 @@ window.onload = function instantiate() {
   }
 
   function findUIDItemInArr(item, userArray){
-    for(var i = 0; i < userArray.length; i++){
+    for(let i = 0; i < userArray.length; i++){
       if(userArray[i].uid == item){
         //console.log("Found item: " + item);
         return i;
@@ -394,8 +394,8 @@ window.onload = function instantiate() {
   }
 
   function createFriendElement(friendKey) {
-    var friendData;
-    for (var i = 0; i < userArr.length; i++) {
+    let friendData;
+    for (let i = 0; i < userArr.length; i++) {
       if (friendKey == userArr[i].uid) {
         friendData = userArr[i];
         break;
@@ -407,9 +407,9 @@ window.onload = function instantiate() {
         testGift.remove();
       } catch (err) {}
 
-      var userUid = friendData.uid;
-      var friendName = friendData.name;
-      var liItem = document.createElement("LI");
+      let userUid = friendData.uid;
+      let friendName = friendData.name;
+      let liItem = document.createElement("LI");
       liItem.id = "user" + userUid;
       liItem.className = "gift";
       liItem.onclick = function () {
@@ -470,7 +470,7 @@ window.onload = function instantiate() {
           }
         };
       };
-      var textNode = document.createTextNode(friendName);
+      let textNode = document.createTextNode(friendName);
       liItem.appendChild(textNode);
       dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
       clearInterval(offlineTimer);
@@ -480,8 +480,8 @@ window.onload = function instantiate() {
   }
 
   function changeFriendElement(friendKey){
-    var friendData;
-    for (var i = 0; i < userArr.length; i++){
+    let friendData;
+    for (let i = 0; i < userArr.length; i++){
       if(friendKey == userArr[i].uid){
         friendData = userArr[i];
         break;
@@ -489,8 +489,8 @@ window.onload = function instantiate() {
     }
 
     if (friendData != null) {
-      var friendName = friendData.name;
-      var editItem = document.createElement("LI");
+      let friendName = friendData.name;
+      let editItem = document.createElement("LI");
       editItem.innerHTML = friendName;
       editItem.className = "gift";
       editItem.onclick = function () {
@@ -555,7 +555,7 @@ window.onload = function instantiate() {
   }
 
   function generatePrivateMessageDialog(userData) {
-    var message = "";
+    let message = "";
 
     privateMessageInp.placeholder = "Hey! Just to let you know...";
 
@@ -591,7 +591,7 @@ window.onload = function instantiate() {
   }
 
   function addPrivateMessageToDB(userData, message) {
-    var userNotificationArr = [];
+    let userNotificationArr = [];
     if(userData.notifications == undefined){
       userNotificationArr = [];
     } else {
@@ -609,7 +609,7 @@ window.onload = function instantiate() {
   }
 
   function removeFriendElement(uid){
-    document.getElementById("user" + uid).remove();
+    document.getElementById('user' + uid).remove();
 
     friendCount--;
     if(friendCount == 0) {
@@ -623,10 +623,10 @@ function deployFriendListEmptyNotification(){
     testGift.innerHTML = "No Friends Found! Invite Some Friends In The \"Invite\" Tab!";
   } catch(err){
     console.log("Loading Element Missing, Creating A New One");
-    var liItem = document.createElement("LI");
+    let liItem = document.createElement("LI");
     liItem.id = "testGift";
     liItem.className = "gift";
-    var textNode = document.createTextNode("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
+    let textNode = document.createTextNode("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
   }
