@@ -4,35 +4,35 @@
  * with written consent under any circumstance.
  */
 
-var userAddUpdateElements = [];
-var listeningFirebaseRefs = [];
-var userNameArr = [];
-var userKeyArr = [];
-var userData = [];
-var userArr = [];
+let userAddUpdateElements = [];
+let listeningFirebaseRefs = [];
+let userNameArr = [];
+let userKeyArr = [];
+let userData = [];
+let userArr = [];
 
-var userNameBool = true;
+let userNameBool = true;
 
-var pinClearedInt = 0;
+let pinClearedInt = 0;
 
-var offlineSpan;
-var offlineModal;
-var confirmSpan;
-var confirmModal;
-var deleteConfirm;
-var deleteDeny;
-var nameField;
-var userNameField;
-var pinField;
-var pinConfField;
-var btnUpdate;
-var btnDelete;
-var userInitial;
-var user;
-var notificationModal;
-var notificationInfo;
-var notificationTitle;
-var noteSpan;
+let offlineSpan;
+let offlineModal;
+let confirmSpan;
+let confirmModal;
+let deleteConfirm;
+let deleteDeny;
+let nameField;
+let userNameField;
+let pinField;
+let pinConfField;
+let btnUpdate;
+let btnDelete;
+let userInitial;
+let user;
+let notificationModal;
+let notificationInfo;
+let notificationTitle;
+let noteSpan;
 
 
 
@@ -45,7 +45,7 @@ function getCurrentUser(){
   if(user == null){//newUser
     btnUpdate.innerHTML = "Create User Profile";
     alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely," +
-      "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
+        "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
   } else {//returningUser
     btnUpdate.innerHTML = "Loading...";
     btnDelete.style.display = "block";
@@ -56,7 +56,7 @@ function getCurrentUser(){
     userArr = JSON.parse(sessionStorage.userArr);
 
     alert("Please note that you will be required to input your confirmation pin to continue. If you would like to " +
-      "cancel, please click the back button on the browser.");
+        "cancel, please click the back button on the browser.");
   }
 }
 
@@ -100,7 +100,7 @@ window.onload = function instantiate() {
 
     userInitial = firebase.database().ref("users/");
 
-    var fetchData = function (postRef) {
+    let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         userData.push(data.val());
         userNameArr.push(data.val().userName);
@@ -121,7 +121,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        var i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
@@ -138,7 +138,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_removed', function (data) {
-        var i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr);
         userArr.splice(i, 1);
         userNameArr.splice(i, 1);
       });
@@ -150,7 +150,7 @@ window.onload = function instantiate() {
   }
 
   function findUIDItemInArr(item, userArray){
-    for(var i = 0; i < userArray.length; i++){
+    for(let i = 0; i < userArray.length; i++){
       if(userArray[i].uid == item){
         console.log("Found item: " + item);
         return i;
@@ -161,15 +161,15 @@ window.onload = function instantiate() {
 };
 
 function updateMaintenanceLog(locationData, detailsData) {
-  var today = new Date();
-  var UTChh = today.getUTCHours();
-  var UTCmm = today.getUTCMinutes();
-  var UTCss = today.getUTCSeconds();
-  var dd = today.getUTCDate();
-  var mm = today.getMonth()+1;
-  var yy = today.getFullYear();
-  var timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
-  var newUid = firebase.database().ref("maintenance").push();
+  let today = new Date();
+  let UTChh = today.getUTCHours();
+  let UTCmm = today.getUTCMinutes();
+  let UTCss = today.getUTCSeconds();
+  let dd = today.getUTCDate();
+  let mm = today.getMonth()+1;
+  let yy = today.getFullYear();
+  let timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
+  let newUid = firebase.database().ref("maintenance").push();
   newUid = newUid.toString();
   newUid = newUid.substr(51, 70);
 
@@ -224,7 +224,7 @@ function updateUserToDB(){
 
   if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
     alert("It looks like you left some fields blank. Make sure you have your full name, username, a pin, and " +
-      "a confirmed pin below.");
+        "a confirmed pin below.");
   } else if (pinConfField.value !== pinField.value){
     alert("It looks like the pins you entered are not the same");
   } else if (!isNaN(pinField.value) == false) {
@@ -233,9 +233,9 @@ function updateUserToDB(){
     alert("It looks like the User Name you chose is already taken, please choose another.");
     userNameBool = true;
   } else {
-    var newPin = parseInt(pinField.value);
+    let newPin = parseInt(pinField.value);
     injectUserArr(userArr);
-    var encodeKey = encode(pinField.value);
+    let encodeKey = encode(pinField.value);
     firebase.database().ref("users/" + user.uid).update({
       name: nameField.value,
       pin: newPin,
@@ -312,7 +312,7 @@ function addUserToDB(){
 
   if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
     alert("It looks like you left some fields blank. Make sure you have your full name, username, a pin, and " +
-      "a confirmed pin below.");
+        "a confirmed pin below.");
   } else if (pinConfField.value !== pinField.value){
     alert("It looks like the pins you entered are not the same");
   } else if (!isNaN(pinField.value) == false) {
@@ -321,11 +321,11 @@ function addUserToDB(){
     alert("It looks like the User Name you chose is already taken, please choose another.");
     userNameBool = true;
   } else {
-    var newUid = firebase.database().ref("users").push();
-    var newPin = parseInt(pinField.value);
+    let newUid = firebase.database().ref("users").push();
+    let newPin = parseInt(pinField.value);
     injectUserArr(userArr);
-    var encodeKey = encode(pinField.value);
-    var shareCodeNew = genShareCode();
+    let encodeKey = encode(pinField.value);
+    let shareCodeNew = genShareCode();
     console.log(shareCodeNew);
     newUid = newUid.toString();
     newUid = newUid.substr(45, 64);
@@ -355,8 +355,8 @@ function addUserToDB(){
 }
 
 function genShareCode(){
-  var tempShareCode = "";
-  for(var i = 1; i < 17; i++){
+  let tempShareCode = "";
+  for(let i = 1; i < 17; i++){
     tempShareCode = tempShareCode + getRandomAlphabet();
     if((i % 4) == 0 && i < 16){
       tempShareCode = tempShareCode + "-";
@@ -366,14 +366,14 @@ function genShareCode(){
 }
 
 function getRandomAlphabet(){
-  var alphabet = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
-  var selector = Math.floor((Math.random() * alphabet.length));
-  var charSelect = alphabet.charAt(selector);
+  let alphabet = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
+  let selector = Math.floor((Math.random() * alphabet.length));
+  let charSelect = alphabet.charAt(selector);
   return charSelect;
 }
 
 function checkUserNames(userName){
-  for(var i = 0; i < userNameArr.length; i++){
+  for(let i = 0; i < userNameArr.length; i++){
     if(userName == userNameArr[i]){
       userNameBool = false;
     }
