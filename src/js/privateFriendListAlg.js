@@ -4,54 +4,54 @@
  * with written consent under any circumstance.
  */
 
-var privateFriendListElements = [];
-var listeningFirebaseRefs = [];
-var giftArr = [];
-var inviteArr = [];
-var userUserNames = [];
-var instantiatedNodes = [];
+let privateFriendListElements = [];
+let listeningFirebaseRefs = [];
+let giftArr = [];
+let inviteArr = [];
+let userUserNames = [];
+let instantiatedNodes = [];
 
-var readNotificationsBool = false;
-var updateGiftToDBBool = false;
-var giftListEmptyBool = false;
+let readNotificationsBool = false;
+let updateGiftToDBBool = false;
+let giftListEmptyBool = false;
 
-var giftCounter = 0;
-var onlineInt = 0;
-var loadingTimerInt = 0;
+let giftCounter = 0;
+let onlineInt = 0;
+let loadingTimerInt = 0;
 
-var giftCreationDate;
-var dataListContainer;
-var giftStorage;
-var user;
-var addGift;
-var offlineSpan;
-var offlineModal;
-var giftUser;
-var userInvites;
-var offlineTimer;
-var loadingTimer;
-var giftModal;
-var notificationModal;
-var notificationInfo;
-var notificationTitle;
-var noteSpan;
-var listNote;
-var inviteNote;
-var notificationBtn;
-var userBase;
-var userGifts;
-var testGift;
-var closeGiftModal;
-var giftTitle;
-var giftLink;
-var giftWhere;
-var giftDescription;
-var giftCreator;
-var giftBought;
-var giftBuy;
-var giftDontBuy;
-var giftEdit;
-var giftDelete;
+let giftCreationDate;
+let dataListContainer;
+let giftStorage;
+let user;
+let addGift;
+let offlineSpan;
+let offlineModal;
+let giftUser;
+let userInvites;
+let offlineTimer;
+let loadingTimer;
+let giftModal;
+let notificationModal;
+let notificationInfo;
+let notificationTitle;
+let noteSpan;
+let listNote;
+let inviteNote;
+let notificationBtn;
+let userBase;
+let userGifts;
+let testGift;
+let closeGiftModal;
+let giftTitle;
+let giftLink;
+let giftWhere;
+let giftDescription;
+let giftCreator;
+let giftBought;
+let giftBuy;
+let giftDontBuy;
+let giftEdit;
+let giftDelete;
 
 
 
@@ -150,7 +150,7 @@ window.onload = function instantiate() {
   getCurrentUser();
   commonInitialization();
 
-  for(var i = 0; i < userArr.length; i++){
+  for(let i = 0; i < userArr.length; i++){
     userUserNames.push(userArr[i].userName);
   }
 
@@ -182,8 +182,8 @@ window.onload = function instantiate() {
   privateFriendListButton();
 
   function privateFriendListButton(){
-    var nowConfirm = 0;
-    var alternator = 0;
+    let nowConfirm = 0;
+    let alternator = 0;
     console.log("Friend List Button Feature Active");
     setInterval(function(){
       nowConfirm = nowConfirm + 1000;
@@ -208,11 +208,11 @@ window.onload = function instantiate() {
     userGifts = firebase.database().ref("users/" + giftUser.uid + "/privateList/");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
-    var fetchData = function (postRef) {
+    let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         onlineInt = 1;
 
-        var i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
@@ -225,7 +225,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        var i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
@@ -238,7 +238,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_removed', function (data) {
-        var i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
@@ -246,7 +246,7 @@ window.onload = function instantiate() {
       });
     };
 
-    var fetchGifts = function (postRef) {
+    let fetchGifts = function (postRef) {
       postRef.on('child_added', function (data) {
         giftArr.push(data.val());
 
@@ -256,8 +256,8 @@ window.onload = function instantiate() {
         }
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
-          data.val().creator);
+            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
+            data.val().creator);
         instantiatedNodes.push(data.val());
 
         if(updateGiftToDBBool){
@@ -276,8 +276,8 @@ window.onload = function instantiate() {
         }
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
-          data.val().creator);
+            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
+            data.val().creator);
       });
 
       postRef.on('child_removed', function(data) {
@@ -287,7 +287,7 @@ window.onload = function instantiate() {
       });
     };
 
-    var fetchInvites = function (postRef) {
+    let fetchInvites = function (postRef) {
       postRef.on('child_added', function (data) {
         inviteArr.push(data.val());
 
@@ -322,7 +322,7 @@ window.onload = function instantiate() {
   }
 
   function findUIDItemInArr(item, userArray){
-    for(var i = 0; i < userArray.length; i++){
+    for(let i = 0; i < userArray.length; i++){
       if(userArray[i].uid == item){
         //console.log("Found item: " + item);
         return i;
@@ -332,7 +332,7 @@ window.onload = function instantiate() {
   }
 
   function checkGiftBuyer(buyer){
-    var updateGiftToDB = true;
+    let updateGiftToDB = true;
 
     //console.log("Checking for buyer error...");
 
@@ -358,7 +358,7 @@ window.onload = function instantiate() {
       testGift.remove();
     } catch (err) {}
 
-    var liItem = document.createElement("LI");
+    let liItem = document.createElement("LI");
     liItem.id = "gift" + uid;
     liItem.className = "gift";
     if(received == 1) {
@@ -369,7 +369,7 @@ window.onload = function instantiate() {
       if (link != ""){
         giftLink.innerHTML = "Click me to go to the webpage!";
         giftLink.onclick = function() {
-          var newGiftLink = "http://";
+          let newGiftLink = "http://";
           if(link.includes("https://")){
             link = link.slice(8, link.length);
           } else if (link.includes("http://")){
@@ -438,7 +438,7 @@ window.onload = function instantiate() {
           } else {
             updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
             alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
-              "if it needs to be removed.");
+                "if it needs to be removed.");
           }
         }
       };
@@ -469,7 +469,7 @@ window.onload = function instantiate() {
               });
             } else {
               alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-                "if this has been done in error.");
+                  "if this has been done in error.");
             }
           }
         } else {
@@ -492,7 +492,7 @@ window.onload = function instantiate() {
         }
       };
     };
-    var textNode = document.createTextNode(title);
+    let textNode = document.createTextNode(title);
     liItem.appendChild(textNode);
 
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
@@ -502,7 +502,7 @@ window.onload = function instantiate() {
   }
 
   function changeGiftElement(description, link, received, title, key, where, uid, date, buyer, creator) {
-    var editGift = document.getElementById("gift" + uid);
+    let editGift = document.getElementById('gift' + uid);
     editGift.innerHTML = title;
     editGift.className = "gift";
     if (received == 1) {
@@ -513,7 +513,7 @@ window.onload = function instantiate() {
       if (link != "") {
         giftLink.innerHTML = "Click me to go to the webpage!";
         giftLink.onclick = function () {
-          var newGiftLink = "http://";
+          let newGiftLink = "http://";
           if (link.includes("https://")) {
             link = link.slice(8, link.length);
           } else if (link.includes("http://")) {
@@ -582,7 +582,7 @@ window.onload = function instantiate() {
           } else {
             updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
             alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
-              "if it needs to be removed.");
+                "if it needs to be removed.");
           }
         }
       };
@@ -613,7 +613,7 @@ window.onload = function instantiate() {
               });
             } else {
               alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-                "if this has been done in error.");
+                  "if this has been done in error.");
             }
           }
         } else {
@@ -639,7 +639,7 @@ window.onload = function instantiate() {
   }
 
   function removeGiftElement(uid) {
-    document.getElementById("gift" + uid).remove();
+    document.getElementById('gift' + uid).remove();
 
     giftCounter--;
     if (giftCounter == 0){
@@ -658,10 +658,10 @@ window.onload = function instantiate() {
   }
 
   function deleteGiftElement(key, title, buyer) {
-    var verifyDeleteBool = true;
-    var toDelete = -1;
+    let verifyDeleteBool = true;
+    let toDelete = -1;
 
-    for (var i = 0; i < giftArr.length; i++){
+    for (let i = 0; i < giftArr.length; i++){
       if(title == giftArr[i].title) {
         toDelete = i;
         break;
@@ -672,7 +672,7 @@ window.onload = function instantiate() {
       alert("Attempting to delete " + giftArr[toDelete].title + "! If this is successful, the page will reload.");
       giftArr.splice(toDelete, 1);
 
-      for (var i = 0; i < giftArr.length; i++) {
+      for (let i = 0; i < giftArr.length; i++) {
         if (title == giftArr[i].title) {
           verifyDeleteBool = false;
           break;
@@ -688,7 +688,7 @@ window.onload = function instantiate() {
       });
 
       if(buyer != ""){
-        var userFound = findUserNameItemInArr(buyer, userArr);
+        let userFound = findUserNameItemInArr(buyer, userArr);
         if(userFound != -1){
           if(userArr[userFound].uid != user.uid) {
             addNotificationToDB(userArr[userFound], user.name, title);
@@ -705,7 +705,7 @@ window.onload = function instantiate() {
   }
 
   function findUserNameItemInArr(item, userArray){
-    for(var i = 0; i < userArray.length; i++){
+    for(let i = 0; i < userArray.length; i++){
       if(userArray[i].userName == item){
         console.log("Found item: " + item);
         return i;
@@ -715,10 +715,10 @@ window.onload = function instantiate() {
   }
 
   function addNotificationToDB(buyerUserData, giftDeleter, giftTitle){
-    var pageName = "deleteGiftPrivate";
-    var giftOwner = giftUser.uid;
-    var notificationString = generateNotificationString(giftOwner, giftDeleter, giftTitle, pageName);
-    var buyerUserNotifications;
+    let pageName = "deleteGiftPrivate";
+    let giftOwner = giftUser.uid;
+    let notificationString = generateNotificationString(giftOwner, giftDeleter, giftTitle, pageName);
+    let buyerUserNotifications;
     if(buyerUserData.notifications == undefined || buyerUserData.notifications == null){
       buyerUserNotifications = [];
     } else {
@@ -744,15 +744,15 @@ window.onload = function instantiate() {
 };
 
 function updateMaintenanceLog(locationData, detailsData) {
-  var today = new Date();
-  var UTChh = today.getUTCHours();
-  var UTCmm = today.getUTCMinutes();
-  var UTCss = today.getUTCSeconds();
-  var dd = today.getUTCDate();
-  var mm = today.getMonth()+1;
-  var yy = today.getFullYear();
-  var timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
-  var newUid = firebase.database().ref("maintenance").push();
+  let today = new Date();
+  let UTChh = today.getUTCHours();
+  let UTCmm = today.getUTCMinutes();
+  let UTCss = today.getUTCSeconds();
+  let dd = today.getUTCDate();
+  let mm = today.getMonth()+1;
+  let yy = today.getFullYear();
+  let timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
+  let newUid = firebase.database().ref("maintenance").push();
   newUid = newUid.toString();
   newUid = newUid.substr(51, 70);
 
@@ -769,10 +769,10 @@ function deployGiftListEmptyNotification(){
     testGift.innerHTML = "No Gifts Found! Add Some Gifts With The Button Below!";
   } catch(err){
     console.log("Loading Element Missing, Creating A New One");
-    var liItem = document.createElement("LI");
+    let liItem = document.createElement("LI");
     liItem.id = "testGift";
     liItem.className = "gift";
-    var textNode = document.createTextNode("No Gifts Found! Add Some Gifts With The Button Below!");
+    let textNode = document.createTextNode("No Gifts Found! Add Some Gifts With The Button Below!");
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
   }
