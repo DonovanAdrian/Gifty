@@ -384,10 +384,10 @@ window.onload = function instantiate() {
     }
 
     function changeFamilyElement(familyData) {
-        let editGift = document.getElementById('family' + familyData.uid);
-        editGift.innerHTML = familyData.name;
-        editGift.className = "gift";
-        editGift.onclick = function (){
+        let editFamily = document.getElementById('family' + familyData.uid);
+        editFamily.innerHTML = familyData.name;
+        editFamily.className = "gift";
+        editFamily.onclick = function (){
             familyConnectionArr = familyData.connections;
             familyMemberArr = familyData.members;
 
