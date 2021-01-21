@@ -11,6 +11,10 @@ let editBtn;
 let faqBtn;
 let modBtn;
 let familyBtn;
+let moderationModal;
+let moderationSpan;
+let moderationQueueBtn;
+let userListBtn;
 let offlineTimer;
 let offlineSpan;
 let offlineModal;
@@ -37,7 +41,7 @@ function getCurrentUser(){
     if (user.moderatorInt == 1) {
       modBtn.style.display = "block";
       modBtn.onclick = function () {
-        newNavigation(14);//Moderation
+        generateModerationModal();
       };
 
       familyBtn.style.display = "block";
@@ -61,12 +65,16 @@ window.onload = function instantiate() {
   faqBtn = document.getElementById('faq');
   modBtn = document.getElementById('mod');
   familyBtn = document.getElementById('family');
+  moderationModal = document.getElementById('moderationModal');
+  moderationSpan = document.getElementById('moderationSpan');
+  moderationQueueBtn = document.getElementById('moderationQueueBtn');
+  userListBtn = document.getElementById('userListBtn');
   notificationModal = document.getElementById('notificationModal');
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
-  settingsElements = [offlineModal, offlineSpan, inviteNote, editBtn, faqBtn, modBtn, familyBtn, notificationModal,
-    notificationTitle, notificationInfo, noteSpan];
+  settingsElements = [offlineModal, offlineSpan, inviteNote, editBtn, faqBtn, modBtn, familyBtn, moderationModal,
+    moderationSpan, moderationQueueBtn, userListBtn, notificationModal, notificationTitle, notificationInfo, noteSpan];
   verifyElementIntegrity(settingsElements);
   getCurrentUser();
   commonInitialization();
@@ -79,3 +87,25 @@ window.onload = function instantiate() {
     newNavigation(12);//FAQ
   };
 };
+
+function generateModerationModal(){
+  userListBtn.onclick = function(){
+    newNavigation(14);//Moderation
+  };
+
+  moderationQueueBtn.onclick = function(){
+    alert("This will eventually open a page for a Moderation Support Queue");
+  };
+
+  moderationSpan.onclick = function(){
+    closeModal(moderationModal);
+  };
+
+  window.onclick = function(event) {
+    if (event.target == moderationModal) {
+      closeModal(moderationModal);
+    }
+  };
+
+  openModal(moderationModal, "moderationModal");
+}
