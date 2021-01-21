@@ -46,6 +46,29 @@
 
 <span class="boughtBtn" id="familySettings">Loading... Please Wait</span>
 
+<div id="familyMemberViewModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeFamilyMemberViewModal">&times;</span>
+      <h2 id="familyMemberName">Loading Title...</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p id="familyMemberUserName">Loading User Name...</p>
+      <p id="familyMemberUID">Loading UID...</p>
+      <p></p>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3 style="float: right;padding-right: 10px" id="removeFamilyMember">Cancel</h3>
+    </div>
+  </div>
+</div>
+
 <div id="familyAddModal" class="modal">
   <div class="modal-content">
 
@@ -125,17 +148,19 @@
     <!--Modal Header-->
     <div class="modal-header">
       <span class="close" id="closeFamilySettings">&times;</span>
-      <h2>Family Settings</h2>
+      <h2 id="familySettingsTitle">Family Settings</h2>
     </div>
 
     <!--Modal Body-->
     <div class="modal-body">
+      <br/>
       <span class="basicBtn" id="changeFamilyName">Change Family Name</span>
-      <p style="color: white">If you can see this, let me know!</p>
-      <p style="color: white">If you can see this, let me know!</p>
+      <br/>
+      <br/>
       <span class="basicBtn" id="linkFamilies">Link Families</span>
-      <p style="color: white">If you can see this, let me know!</p>
-      <p style="color: white">If you can see this, let me know!</p>
+      <br/>
+      <br/>
+      <br/>
     </div>
   </div>
 </div>
