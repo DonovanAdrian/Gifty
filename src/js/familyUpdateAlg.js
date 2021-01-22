@@ -17,6 +17,7 @@ let onlineInt = 0;
 let familyCounter = 0;
 let loadingTimerInt = 0;
 
+let familyData;
 let inviteNote;
 let settingsNote;
 let dataListContainer;
@@ -80,6 +81,7 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
     sessionStorage.setItem("moderationSet", moderationSet);
+    familyData = JSON.parse(sessionStorage.familyData);
   } catch (err) {
     console.log(err.toString());
     window.location.href = "index.html";
@@ -179,6 +181,8 @@ window.onload = function instantiate() {
   };
 
   function generateAddMemberModal() {//-----------------------**************************************ToDo
+    //Initialize Data On Modal?
+
     addFamilyMember.onclick = function() {//-----------------------**************************************ToDo
       if(familyMemberInp.value != "" || (familyMemberInp.value.includes(" ") && isAlph(familyMemberInp.value.charAt(0))))
         console.log("Placeholder!!!");
@@ -204,14 +208,16 @@ window.onload = function instantiate() {
   }
 
   function generateFamilySettingsModal() {//-----------------------**************************************ToDo
+    //Initialize Data On Modal
+
     changeFamilyName.onclick = function() {
       closeModal(familySettingsModal);
-      //generateFamilyNameModal();//-----------------------**************************************ToDo
+      generateFamilyNameModal();
     };
 
     linkFamilies.onclick = function() {
       closeModal(familySettingsModal);
-      //generateFamilyLinkModal();//-----------------------**************************************ToDo
+      generateFamilyLinkModal();
     };
 
     openModal(familySettingsModal, "familySettingsModal");
@@ -223,6 +229,40 @@ window.onload = function instantiate() {
     window.onclick = function(event) {
       if (event.target == familySettingsModal) {
         closeModal(familySettingsModal);
+      }
+    };
+  }
+
+  function generateFamilyNameModal() {//-----------------------**************************************ToDo
+    //Initialize Data On Modal
+    //Extra functions
+
+    openModal(familyNameModal, "familyNameModal");
+
+    closeFamilyNameModal.onclick = function() {
+      closeModal(familyNameModal);
+    };
+
+    window.onclick = function(event) {
+      if (event.target == familyNameModal) {
+        closeModal(familyNameModal);
+      }
+    };
+  }
+
+  function generateFamilyLinkModal() {//-----------------------**************************************ToDo
+    //Initialize Data On Modal
+    //Extra functions
+
+    openModal(familyLinkModal, "familyLinkModal");
+
+    closeFamilyLinkModal.onclick = function() {
+      closeModal(familyLinkModal);
+    };
+
+    window.onclick = function(event) {
+      if (event.target == familyLinkModal) {
+        closeModal(familyLinkModal);
       }
     };
   }
