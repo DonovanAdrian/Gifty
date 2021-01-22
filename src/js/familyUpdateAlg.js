@@ -23,6 +23,12 @@ let dataListContainer;
 let testData;
 let addMember;
 let familySettings;
+let familyMemberViewModal;
+let closeFamilyMemberViewModal;
+let familyMemberName;
+let familyMemberUserName;
+let familyMemberUID;
+let removeFamilyMember;
 let familyAddModal;
 let closeFamilyAddModal;
 let familyMemberInp;
@@ -39,6 +45,7 @@ let familyLinkInp;
 let addFamilyLink;
 let cancelFamilyLink;
 let familySettingsModal;
+let familySettingsTitle;
 let closeFamilySettings;
 let changeFamilyName;
 let linkFamilies;
@@ -53,7 +60,6 @@ let loadingTimer;
 let userInitial;
 let userInvites;
 let familyInitial;
-//-----------------------**************************************ToDo
 
 
 
@@ -86,10 +92,48 @@ window.onload = function instantiate() {
   settingsNote = document.getElementById('settingsNote');
   dataListContainer = document.getElementById('dataListContainer');
   testData = document.getElementById('testData');
-  //-----------------------**************************************ToDo
-  familyUpdateElements = [
-
-  ];
+  addMember = document.getElementById('addMember');
+  familySettings = document.getElementById('familySettings');
+  familyMemberViewModal = document.getElementById('');
+  closeFamilyMemberViewModal = document.getElementById('');
+  familyMemberName = document.getElementById('');
+  familyMemberUserName = document.getElementById('');
+  familyMemberUID = document.getElementById('');
+  removeFamilyMember = document.getElementById('');
+  familyAddModal = document.getElementById('familyAddModal');
+  closeFamilyAddModal = document.getElementById('closeFamilyAddModal');
+  familyMemberInp = document.getElementById('familyMemberInp');
+  addFamilyMember = document.getElementById('addFamilyMember');
+  cancelFamilyMember = document.getElementById('cancelFamilyMember');
+  familyNameModal = document.getElementById('familyNameModal');
+  closeFamilyNameModal = document.getElementById('closeFamilyNameModal');
+  familyNameInp = document.getElementById('familyNameInp');
+  updateFamilyName = document.getElementById('updateFamilyName');
+  cancelFamilyName = document.getElementById('cancelFamilyName');
+  familyLinkModal = document.getElementById('familyLinkModal');
+  closeFamilyLinkModal = document.getElementById('closeFamilyLinkModal');
+  familyLinkInp = document.getElementById('familyLinkInp');
+  addFamilyLink = document.getElementById('addFamilyLink');
+  cancelFamilyLink = document.getElementById('cancelFamilyLink');
+  familySettingsModal = document.getElementById('familySettingsModal');
+  familySettingsTitle = document.getElementById('');
+  closeFamilySettings = document.getElementById('closeFamilySettings');
+  changeFamilyName = document.getElementById('changeFamilyName');
+  linkFamilies = document.getElementById('linkFamilies');
+  offlineModal = document.getElementById('offlineModal');
+  offlineSpan = document.getElementById('closeOffline');
+  notificationModal = document.getElementById('notificationModal');
+  noteSpan = document.getElementById('closeNotification');
+  notificationTitle = document.getElementById('notificationTitle');
+  notificationInfo = document.getElementById('notificationInfo');
+  familyUpdateElements = [inviteNote, settingsNote, dataListContainer, testData, addMember, familySettings,
+    familyMemberViewModal, closeFamilyMemberViewModal, familyMemberName, familyMemberUserName, familyMemberUID,
+    removeFamilyMember, familyAddModal, closeFamilyAddModal, familyMemberInp, addFamilyMember, cancelFamilyMember,
+    familyNameModal, closeFamilyNameModal, familyNameInp, updateFamilyName, cancelFamilyName, familyLinkModal,
+    closeFamilyLinkModal, familyNameInp, updateFamilyName, cancelFamilyName, familyLinkModal, closeFamilyLinkModal,
+    familyLinkInp, addFamilyLink, cancelFamilyLink, familySettingsModal, familySettingsTitle, closeFamilySettings,
+    changeFamilyName, linkFamilies, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle,
+    notificationInfo];
   verifyElementIntegrity(familyUpdateElements);
   getCurrentUser();
   commonInitialization();
@@ -122,20 +166,27 @@ window.onload = function instantiate() {
 
   familyModerateButton();
 
-  createFamilyBtn.innerHTML = "Create Family";
+  addMember.innerHTML = "Add Member";
 
-  createFamilyBtn.onclick = function() {
-    generateAddFamilyModal();//-----------------------**************************************ToDo
+  addMember.onclick = function() {
+    generateAddMemberModal();
   };
 
-  function generateAddFamilyModal(){
-    addFamily.onclick = function() {
-      if(familyNameInp.value != "" || (familyNameInp.value.includes(" ") && isAlph(familyNameInp.value.charAt(0))))
-        addFamilyMemberToDB(familyNameInp.value);
+  familySettings.innerHTML = "Family Settings";
+
+  familySettings.onclick = function() {
+    generateFamilySettingsModal();
+  };
+
+  function generateAddMemberModal() {//-----------------------**************************************ToDo
+    addFamilyMember.onclick = function() {//-----------------------**************************************ToDo
+      if(familyMemberInp.value != "" || (familyMemberInp.value.includes(" ") && isAlph(familyMemberInp.value.charAt(0))))
+        console.log("Placeholder!!!");
+      //Add Family Member to list and DB if valid, refresh?
     };
 
-    cancelFamily.onclick = function() {
-      familyNameInp.value = "";
+    cancelFamilyMember.onclick = function() {
+      familyMemberInp.value = "";
       closeModal(familyAddModal);
     };
 
@@ -148,6 +199,30 @@ window.onload = function instantiate() {
     window.onclick = function(event) {
       if (event.target == familyAddModal) {
         closeModal(familyAddModal);
+      }
+    };
+  }
+
+  function generateFamilySettingsModal() {//-----------------------**************************************ToDo
+    changeFamilyName.onclick = function() {
+      closeModal(familySettingsModal);
+      //generateFamilyNameModal();//-----------------------**************************************ToDo
+    };
+
+    linkFamilies.onclick = function() {
+      closeModal(familySettingsModal);
+      //generateFamilyLinkModal();//-----------------------**************************************ToDo
+    };
+
+    openModal(familySettingsModal, "familySettingsModal");
+
+    closeFamilySettings.onclick = function() {
+      closeModal(familySettingsModal);
+    };
+
+    window.onclick = function(event) {
+      if (event.target == familySettingsModal) {
+        closeModal(familySettingsModal);
       }
     };
   }
@@ -261,14 +336,14 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         familyArr.push(data.val());
 
-        createFamilyElement(data.val());
+        //createFamilyElement(data.val());//-----------------------**************************************ToDo
       });
 
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, familyArr);
         if(familyArr[i] != data.val() && i != -1) {
           familyArr[i] = data.val();
-          changeFamilyElement(data.val());
+          //changeFamilyElement(data.val());//-----------------------**************************************ToDo
         }
       });
 
@@ -276,7 +351,7 @@ window.onload = function instantiate() {
         let i = findUIDItemInArr(data.key, familyArr);
         if(familyArr[i] != data.val() && i != -1) {
           familyArr.splice(i, 1);
-          removeFamilyMemberElement(data.key);
+          //removeFamilyMemberElement(data.key);//-----------------------**************************************ToDo
         }
       });
     };
@@ -297,7 +372,7 @@ window.onload = function instantiate() {
     return -1;
   }
 
-  function createFamilyElement(familyData){
+  function createFamilyMemberElement(familyData){//-----------------------**************************************ToDo
     try{
       testData.remove();
     } catch (err) {}
@@ -369,7 +444,7 @@ window.onload = function instantiate() {
     familyCounter++;
   }
 
-  function changeFamilyElement(familyData) {
+  function changeFamilyMemberElement(familyData) {//-----------------------**************************************ToDo
     let editGift = document.getElementById('family' + familyData.uid);
     editGift.innerHTML = familyData.name;
     editGift.className = "gift";
@@ -431,7 +506,7 @@ window.onload = function instantiate() {
     };
   }
 
-  function removeFamilyMemberFromDB(uid) {
+  function removeFamilyMemberFromDB(uid) {//-----------------------**************************************ToDo
     alert("This will eventually remove the family data from the database");
     //confirm
     //firebase.database().ref("family/").child(uid).remove();
@@ -443,11 +518,11 @@ window.onload = function instantiate() {
 
     familyCounter--;
     if (familyCounter == 0){
-      deployFamilyListEmptyNotification();
+      //deployFamilyListEmptyNotification();//-----------------------**************************************ToDo
     }
   }
 
-  function addFamilyMemberToDB(familyName){
+  function addFamilyMemberToDB(familyName){//-----------------------**************************************ToDo
     let newUid = firebase.database().ref("family").push();
     newUid = newUid.toString();
     //newUid = newUid.substr(51, 70);
@@ -463,7 +538,7 @@ window.onload = function instantiate() {
   }
 };
 
-function deployFamilyListEmptyNotification(){
+function deployFamilyListEmptyNotification(){//-----------------------**************************************ToDo
   try{
     testData.innerHTML = "No Families Found!";
   } catch(err){
