@@ -338,7 +338,7 @@ window.onload = function instantiate() {
                     liItem.className = "gift";
                     let textNode = document.createTextNode(userArr[familyMember].name);
                     liItem.appendChild(textNode);
-                    dataListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+                    familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
                 }
             } else {
                 familyMemberCount.innerHTML = 0;
@@ -347,13 +347,13 @@ window.onload = function instantiate() {
                 liItem.className = "gift";
                 let textNode = document.createTextNode("No Family Members Found!");
                 liItem.appendChild(textNode);
-                dataListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+                familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
             }
 
 
             familyEdit.onclick = function (){
                 sessionStorage.setItem("familyData", JSON.stringify(familyData));
-                newNavigation(16);
+                newNavigation(16);//familyUpdate
             };
 
             familyRemove.onclick = function (){
@@ -406,7 +406,7 @@ window.onload = function instantiate() {
                     liItem.className = "gift";
                     let textNode = document.createTextNode(userArr[familyMember].name);
                     liItem.appendChild(textNode);
-                    dataListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+                    familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
                 }
             } else {
                 familyMemberCount.innerHTML = 0;
@@ -415,13 +415,13 @@ window.onload = function instantiate() {
                 liItem.className = "gift";
                 let textNode = document.createTextNode("No Family Members Found!");
                 liItem.appendChild(textNode);
-                dataListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+                familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
             }
 
 
             familyEdit.onclick = function (){
                 sessionStorage.setItem("familyData", JSON.stringify(familyData));
-                newNavigation(16);
+                newNavigation(16);//familyUpdate
             };
 
             familyRemove.onclick = function (){
