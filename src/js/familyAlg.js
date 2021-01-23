@@ -25,6 +25,7 @@ let createFamilyBtn;
 let familyModal;
 let closeFamilyModal;
 let familyTitle;
+let familyUID;
 let familyMemberCount;
 let familyListContainer;
 let testFamily;
@@ -83,6 +84,7 @@ window.onload = function instantiate() {
     familyModal = document.getElementById('familyModal');
     closeFamilyModal = document.getElementById('closeFamilyModal');
     familyTitle = document.getElementById('familyTitle');
+    familyUID = document.getElementById('familyUID');
     familyMemberCount = document.getElementById('familyMemberCount');
     familyListContainer = document.getElementById('familyListContainer');
     testFamily = document.getElementById('testFamily');
@@ -101,7 +103,7 @@ window.onload = function instantiate() {
     notificationTitle = document.getElementById('notificationTitle');
     notificationInfo = document.getElementById('notificationInfo');
     familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, familyModal,
-        closeFamilyModal, familyTitle, familyMemberCount, familyListContainer, testFamily, familyConnectionCount,
+        closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily, familyConnectionCount,
         familyEdit, familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
         offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
     verifyElementIntegrity(familyElements);
@@ -322,6 +324,7 @@ window.onload = function instantiate() {
         liItem.onclick = function (){
             familyConnectionArr = familyData.connections;
             familyMemberArr = familyData.members;
+            familyUID = familyData.uid;
 
             if(familyConnectionArr != null)
                 familyConnectionCount.innerHTML = familyConnectionArr.length;
@@ -390,6 +393,7 @@ window.onload = function instantiate() {
         editFamily.onclick = function (){
             familyConnectionArr = familyData.connections;
             familyMemberArr = familyData.members;
+            familyUID = familyData.uid;
 
             if(familyConnectionArr != null)
                 familyConnectionCount.innerHTML = familyConnectionArr.length;
