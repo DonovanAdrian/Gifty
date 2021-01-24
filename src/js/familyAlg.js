@@ -453,6 +453,7 @@ window.onload = function instantiate() {
         alert("This will eventually remove the family data from the database");
         //confirm
         //firebase.database().ref("family/").child(uid).remove();
+        //reload page or remove family element?
     }
 
 
@@ -487,7 +488,7 @@ function deployFamilyListEmptyNotification(){
     } catch(err){
         console.log("Loading Element Missing, Creating A New One");
         let liItem = document.createElement("LI");
-        liItem.id = "testGift";
+        liItem.id = "testData";
         liItem.className = "gift";
         let textNode = document.createTextNode("No Families Found!");
         liItem.appendChild(textNode);
