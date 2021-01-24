@@ -95,6 +95,7 @@ function generateModerationModal(){
 
   moderationQueueBtn.onclick = function(){
     alert("This will eventually open a page for a Moderation Support Queue");
+    //newNavigation(17);//moderationQueue ***DOESN'T EXIST YET***
   };
 
   moderationSpan.onclick = function(){
