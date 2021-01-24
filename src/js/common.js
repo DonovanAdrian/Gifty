@@ -237,7 +237,8 @@ function newNavigation(navNum) {
         "userAddUpdate.html",//13
         "moderation.html",//14
         "family.html",//15
-        "familyUpdate.html"];//16
+        "familyUpdate.html",//16
+        "moderationQueue.html"];//17
 
     if (navNum >= navLocations.length)
         navNum = 0;
