@@ -180,13 +180,14 @@ window.onload = function instantiate() {
     generateFamilySettingsModal();
   };
 
-  function generateAddMemberModal() {//-----------------------**************************************ToDo
-    //Initialize Data On Modal?
-
-    addFamilyMember.onclick = function() {//-----------------------**************************************ToDo
-      if(familyMemberInp.value != "" || (familyMemberInp.value.includes(" ") && isAlph(familyMemberInp.value.charAt(0))))
-        console.log("Placeholder!!!");
-      //Add Family Member to list and DB if valid, refresh?
+  function generateAddMemberModal() {
+    addFamilyMember.onclick = function() {
+      if(familyMemberInp.value != "" || (familyMemberInp.value.includes(" ") &&
+          isAlph(familyMemberInp.value.charAt(0)))) {
+        addFamilyMemberToDB(familyMemberInp.value);
+        familyMemberInp.value = "";
+        closeModal(familyAddModal);
+      }
     };
 
     cancelFamilyMember.onclick = function() {
@@ -207,8 +208,8 @@ window.onload = function instantiate() {
     };
   }
 
-  function generateFamilySettingsModal() {//-----------------------**************************************ToDo
-    //Initialize Data On Modal
+  function generateFamilySettingsModal() {
+    familySettingsTitle = familyData.name + " Settings";
 
     changeFamilyName.onclick = function() {
       closeModal(familySettingsModal);
@@ -233,9 +234,20 @@ window.onload = function instantiate() {
     };
   }
 
-  function generateFamilyNameModal() {//-----------------------**************************************ToDo
-    //Initialize Data On Modal
-    //Extra functions
+  function generateFamilyNameModal() {
+    updateFamilyName.onclick = function() {
+      if(familyNameInp.value != "" || (familyNameInp.value.includes(" ") &&
+          isAlph(familyNameInp.value.charAt(0)))) {
+        changeFamilyNameInDB(familyNameInp);
+        familyNameInp = "";
+        closeModal(familyNameModal);
+      }
+    };
+
+    cancelFamilyName.onclick = function() {
+      familyNameInp = "";
+      closeModal(familyNameModal);
+    };
 
     openModal(familyNameModal, "familyNameModal");
 
@@ -250,9 +262,18 @@ window.onload = function instantiate() {
     };
   }
 
-  function generateFamilyLinkModal() {//-----------------------**************************************ToDo
-    //Initialize Data On Modal
-    //Extra functions
+  function generateFamilyLinkModal() {
+    addFamilyLink.onclick = function() {
+      if(findFamilyInDB(familyLinkInp.value)) {
+        familyLinkInp.value = "";
+        closeModal(familyLinkModal);
+      }
+    };
+
+    cancelFamilyLink.onclick = function() {
+      familyLinkInp.value = "";
+      closeModal(familyLinkModal);
+    };
 
     openModal(familyLinkModal, "familyLinkModal");
 
@@ -562,18 +583,30 @@ window.onload = function instantiate() {
     }
   }
 
-  function addFamilyMemberToDB(familyName){//-----------------------**************************************ToDo
-    let newUid = firebase.database().ref("family").push();
-    newUid = newUid.toString();
-    //newUid = newUid.substr(51, 70);
-    console.log(newUid);
-    console.log(familyName);
+  function findFamilyInDB(familyLinkData){
+    //Determine whether the familyLinkData is a uid or a family name
+    alert("This will eventually link the current family to the input data: " + familyLinkData);
+  }
 
+  function changeFamilyNameInDB(newFamilyName){//-----------------------**************************************ToDo
+    alert("This will eventually change the family name to " + newFamilyName);
+  }
+
+  function addFamilyMemberToDB(memberUserName){//-----------------------**************************************ToDo
+    console.log(memberUserName);
+
+    familyMemberArr.push(memberUserName);
+
+    console.log(familyMemberArr);
     /*
-    firebase.database().ref("family/" + newUid).set({
-      uid: newUid,
-      name: familyName
-    });
+    if (familyMemberArr.length == 0)
+      firebase.database().ref("family/" + familyData.uid).update({
+        members:{0:memberUserName}
+      });
+    else
+      firebase.database().ref("family/" + familyData.uid).update({
+        members: familyMemberArr
+      });
     */
   }
 };
