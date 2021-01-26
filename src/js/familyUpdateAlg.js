@@ -45,11 +45,16 @@ let closeFamilyLinkModal;
 let familyLinkInp;
 let addFamilyLink;
 let cancelFamilyLink;
+let familyLinkViewModal;
+let closeFamilyLinkViewModal;
+let familyLinkViewTitle;
+let familyLinkViewContainer;
 let familySettingsModal;
 let familySettingsTitle;
 let closeFamilySettings;
 let changeFamilyName;
 let linkFamilies;
+let existingLinks;
 let offlineModal;
 let offlineSpan;
 let notificationModal;
@@ -117,11 +122,16 @@ window.onload = function instantiate() {
   familyLinkInp = document.getElementById('familyLinkInp');
   addFamilyLink = document.getElementById('addFamilyLink');
   cancelFamilyLink = document.getElementById('cancelFamilyLink');
+  familyLinkViewModal = document.getElementById('familyLinkViewModal');
+  closeFamilyLinkViewModal = document.getElementById('closeFamilyLinkViewModal');
+  familyLinkViewTitle = document.getElementById('familyLinkViewTitle');
+  familyLinkViewContainer = document.getElementById('familyLinkViewContainer');
   familySettingsModal = document.getElementById('familySettingsModal');
   familySettingsTitle = document.getElementById('');
   closeFamilySettings = document.getElementById('closeFamilySettings');
   changeFamilyName = document.getElementById('changeFamilyName');
   linkFamilies = document.getElementById('linkFamilies');
+  existingLinks = document.getElementById('existingLinks');
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
   notificationModal = document.getElementById('notificationModal');
@@ -133,8 +143,9 @@ window.onload = function instantiate() {
     removeFamilyMember, familyAddModal, closeFamilyAddModal, familyMemberInp, addFamilyMember, cancelFamilyMember,
     familyNameModal, closeFamilyNameModal, familyNameInp, updateFamilyName, cancelFamilyName, familyLinkModal,
     closeFamilyLinkModal, familyNameInp, updateFamilyName, cancelFamilyName, familyLinkModal, closeFamilyLinkModal,
-    familyLinkInp, addFamilyLink, cancelFamilyLink, familySettingsModal, familySettingsTitle, closeFamilySettings,
-    changeFamilyName, linkFamilies, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle,
+    familyLinkInp, addFamilyLink, cancelFamilyLink, familyLinkViewModal, closeFamilyLinkViewModal, familyLinkViewTitle,
+    familyLinkViewContainer, familySettingsModal, familySettingsTitle, closeFamilySettings, changeFamilyName,
+    linkFamilies, existingLinks, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle,
     notificationInfo];
   verifyElementIntegrity(familyUpdateElements);
   getCurrentUser();
@@ -221,6 +232,11 @@ window.onload = function instantiate() {
       generateFamilyLinkModal();
     };
 
+    existingLinks.onclick = function() {
+      closeModal(familySettingsModal);
+      generateFamilyLinkViewModal();
+    };
+
     openModal(familySettingsModal, "familySettingsModal");
 
     closeFamilySettings.onclick = function() {
@@ -284,6 +300,25 @@ window.onload = function instantiate() {
     window.onclick = function(event) {
       if (event.target == familyLinkModal) {
         closeModal(familyLinkModal);
+      }
+    };
+  }
+
+  function generateFamilyLinkViewModal() {//-----------------------**************************************ToDo
+    //Load familyLinks with separate function createFamilyLinks
+    //Repurpose familyMemberViewModal for viewing or removing links
+    //change each element's name and function
+    //change them back to the originals (if needed) when closed
+
+    openModal(familyLinkViewModal, "familyLinkViewModal");
+
+    closeFamilyLinkViewModal.onclick = function() {
+      closeModal(familyLinkViewModal);
+    };
+
+    window.onclick = function(event) {
+      if (event.target == familyLinkViewModal) {
+        closeModal(familyLinkViewModal);
       }
     };
   }
@@ -396,23 +431,27 @@ window.onload = function instantiate() {
     let fetchFamilies = function (postRef){
       postRef.on('child_added', function (data) {
         familyArr.push(data.val());
-
-        //createFamilyElement(data.val());//-----------------------**************************************ToDo
       });
 
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, familyArr);
         if(familyArr[i] != data.val() && i != -1) {
           familyArr[i] = data.val();
-          //changeFamilyElement(data.val());//-----------------------**************************************ToDo
+          //----------------------------------********************************************ToDo
+          //check to see what changed.
+          //if name, update name references
+          //if members, create/update/remove members
+          //etc...
         }
       });
 
       postRef.on('child_removed', function (data) {
+        if(data.key == familyData.uid)
+          newNavigation(15);//family.html
+
         let i = findUIDItemInArr(data.key, familyArr);
         if(familyArr[i] != data.val() && i != -1) {
           familyArr.splice(i, 1);
-          //removeFamilyMemberElement(data.key);//-----------------------**************************************ToDo
         }
       });
     };
@@ -567,10 +606,19 @@ window.onload = function instantiate() {
     };
   }
 
-  function removeFamilyMemberFromDB(uid) {//-----------------------**************************************ToDo
-    alert("This will eventually remove the family data from the database");
-    //confirm
-    //firebase.database().ref("family/").child(uid).remove();
+  function removeFamilyMemberFromDB(uid) {
+    alert("This will eventually remove the family member from the database");
+    //confirm//-----------------------**************************************ToDo
+
+    for (let i = 0; i < familyMemberArr.length; i++)
+      if (uid == familyMemberArr[i])
+        familyMemberArr.splice(i, 1);
+
+    firebase.database().ref("family/" + familyData.uid).update({
+      members: familyMemberArr
+    });
+
+    location.reload();
   }
 
 
@@ -579,17 +627,20 @@ window.onload = function instantiate() {
 
     familyCounter--;
     if (familyCounter == 0){
-      //deployFamilyListEmptyNotification();//-----------------------**************************************ToDo
+      deployFamilyListEmptyNotification();
     }
   }
 
-  function findFamilyInDB(familyLinkData){
+  function findFamilyInDB(familyLinkData){//-----------------------**************************************ToDo
     //Determine whether the familyLinkData is a uid or a family name
     alert("This will eventually link the current family to the input data: " + familyLinkData);
   }
 
-  function changeFamilyNameInDB(newFamilyName){//-----------------------**************************************ToDo
-    alert("This will eventually change the family name to " + newFamilyName);
+  function changeFamilyNameInDB(newFamilyName){
+    firebase.database().ref("family/" + familyData.uid).update({
+      name:newFamilyName
+    });
+    newNavigation(15);//family.html
   }
 
   function addFamilyMemberToDB(memberUserName){//-----------------------**************************************ToDo
@@ -598,7 +649,6 @@ window.onload = function instantiate() {
     familyMemberArr.push(memberUserName);
 
     console.log(familyMemberArr);
-    /*
     if (familyMemberArr.length == 0)
       firebase.database().ref("family/" + familyData.uid).update({
         members:{0:memberUserName}
@@ -607,19 +657,18 @@ window.onload = function instantiate() {
       firebase.database().ref("family/" + familyData.uid).update({
         members: familyMemberArr
       });
-    */
   }
 };
 
-function deployFamilyListEmptyNotification(){//-----------------------**************************************ToDo
+function deployFamilyListEmptyNotification(){
   try{
-    testData.innerHTML = "No Families Found!";
+    testData.innerHTML = "No Family Members Found!";
   } catch(err){
     console.log("Loading Element Missing, Creating A New One");
     let liItem = document.createElement("LI");
-    liItem.id = "testGift";
+    liItem.id = "testData";
     liItem.className = "gift";
-    let textNode = document.createTextNode("No Families Found!");
+    let textNode = document.createTextNode("No Family Members Found!");
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
   }
