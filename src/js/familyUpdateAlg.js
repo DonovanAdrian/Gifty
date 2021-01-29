@@ -11,12 +11,14 @@ let userArr = [];
 let familyArr = [];
 let familyMemberArr = [];
 let oldFamilyMemberArr = [];
-let familyConnectionArr = [];
+let oldFamilyLinksArr = [];
 
 let moderationSet = 1;
 let onlineInt = 0;
 let familyCounter = 0;
 let loadingTimerInt = 0;
+
+let oldFamilyName = "";
 
 let familyData;
 let inviteNote;
@@ -56,6 +58,11 @@ let closeFamilySettings;
 let changeFamilyName;
 let linkFamilies;
 let existingLinks;
+let confirmMemberModal;
+let closeConfirmMemberModal;
+let confMemberUserName;
+let addMemberConfirm;
+let addMemberDeny;
 let offlineModal;
 let offlineSpan;
 let notificationModal;
@@ -133,6 +140,11 @@ window.onload = function instantiate() {
   changeFamilyName = document.getElementById('changeFamilyName');
   linkFamilies = document.getElementById('linkFamilies');
   existingLinks = document.getElementById('existingLinks');
+  confirmMemberModal = document.getElementById('confirmMemberModal');
+  closeConfirmMemberModal = document.getElementById('closeConfirmMemberModal');
+  confMemberUserName = document.getElementById('confMemberUserName');
+  addMemberConfirm = document.getElementById('addMemberConfirm');
+  addMemberDeny = document.getElementById('addMemberDeny');
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
   notificationModal = document.getElementById('notificationModal');
@@ -146,8 +158,8 @@ window.onload = function instantiate() {
     closeFamilyLinkModal, familyNameInp, updateFamilyName, cancelFamilyName, familyLinkModal, closeFamilyLinkModal,
     familyLinkInp, addFamilyLink, cancelFamilyLink, familyLinkViewModal, closeFamilyLinkViewModal, familyLinkViewTitle,
     familyLinkViewContainer, familySettingsModal, familySettingsTitle, closeFamilySettings, changeFamilyName,
-    linkFamilies, existingLinks, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle,
-    notificationInfo];
+    linkFamilies, existingLinks, confirmMemberModal, closeConfirmMemberModal, confMemberUserName, addMemberConfirm,
+    addMemberDeny, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
   verifyElementIntegrity(familyUpdateElements);
   getCurrentUser();
   commonInitialization();
@@ -204,11 +216,11 @@ window.onload = function instantiate() {
     addFamilyMember.onclick = function() {
       if(familyMemberInp.value != "" || (familyMemberInp.value.includes(" ") &&
           isAlph(familyMemberInp.value.charAt(0)))) {
+        familyMemberInp.value = "";
+        closeModal(familyAddModal);
         //use confirm invite from inviteAlg to verify correct user
         //send UID instead of username
         //addFamilyMemberToDB(newMemberUID);//---------------------*****************************ToDo
-        familyMemberInp.value = "";
-        closeModal(familyAddModal);
       }
     };
 
@@ -334,6 +346,137 @@ window.onload = function instantiate() {
     };
   }
 
+  function generateAddUserBtn(){//------------*******************************ToDo
+    let friendUserNameList = [];
+    let upperCaseUserArr = [];
+    if(user.friends != undefined || user.friends != null) {
+      for (let i = 0; i < user.friends.length; i++) {
+        for (let a = 0; a < userArr.length; a++) {
+          if (userArr[a].uid == user.friends[i]) {
+            friendUserNameList.push(userArr[a].userName.toUpperCase());
+            break;
+          }
+        }
+      }
+    }
+    for (let b = 0; b < userArr.length; b++){
+      upperCaseUserArr.push(userArr[b].userName.toUpperCase());
+    }
+
+    addUser.onclick = function() {
+      openModal(userInviteModal, "userInviteModal");
+      addInvite.innerHTML = "Send Invite";
+
+      addInvite.onclick = function() {
+        let userLocation = -1;
+        for (let i = 0; i < upperCaseUserArr.length; i++) {
+          if (upperCaseUserArr[i] == userNameInp.value.toUpperCase()) {
+            userLocation = i;
+            break;
+          }
+        }
+
+        inviteInfo.innerHTML = "";
+        if(userNameInp.value == ""){
+          inviteInfo.innerHTML = "User Name Field Empty, Please Try Again!";
+        } else if (friendUserNameList.includes(userNameInp.value.toUpperCase())) {
+          inviteInfo.innerHTML = "That User Is Already Your Friend, Please Try Again!";
+        } else if (user.userName.toUpperCase() == userNameInp.value.toUpperCase()){
+          inviteInfo.innerHTML = "You Cannot Invite Yourself, Please Try Again!";
+        } else if (userLocation != -1) {
+          try {
+            if (user.invites.includes(userArr[userLocation].uid)) {
+              inviteInfo.innerHTML = "This User Already Sent You An Invite, Please Try Again!";
+            } else if (userArr[userLocation].invites.includes(user.uid)) {
+              inviteInfo.innerHTML = "You Already Sent This User An Invite, Please Try Again!";
+            } else {
+              generateConfirmDialog(userLocation);
+            }
+          } catch (err) {
+            try {
+              if (userArr[userLocation].invites.includes(user.uid)) {
+                inviteInfo.innerHTML = "You Already Sent This User An Invite, Please Try Again!";
+              } else {
+                generateConfirmDialog(userLocation);
+              }
+            } catch (err) {
+              generateConfirmDialog(userLocation);
+            }
+          }
+        } else if (userNameInp.value.toUpperCase() == "USER NAME BELOW"){
+          inviteInfo.innerHTML = "Very Funny, Please Enter A User Name";
+        } else if (userNameInp.value.toUpperCase() == "A USER NAME"){
+          inviteInfo.innerHTML = "Listen Here, Please Input Something Serious";
+        } else if (userNameInp.value.toUpperCase() == "SOMETHING SERIOUS"){
+          inviteInfo.innerHTML = "You're Just Mocking Me At This Point";
+        } else {
+          inviteInfo.innerHTML = "That User Name Does Not Exist, Please Try Again!";
+        }
+      };
+
+      cancelInvite.onclick = function() {
+        closeModal(userInviteModal);
+        userNameInp.value = "";
+        inviteInfo.innerHTML = "";
+      };
+
+      closeUserInviteModal.onclick = function() {
+        closeModal(userInviteModal);
+        userNameInp.value = "";
+        inviteInfo.innerHTML = "";
+      };
+
+      window.onclick = function(event) {
+        if (event.target == userInviteModal) {
+          closeModal(userInviteModal);
+        }
+      }
+    };
+    console.log("Add Button Generated");
+  }
+
+  function generateConfirmDialog(userLocation) {//------------*******************************ToDo
+    //console.log(userLocation);
+    //console.log(userArr[userLocation].userName);
+    if (userLocation != -1) {
+      confUserName.innerHTML = "Did you mean to add \"" + userArr[userLocation].name + "\"?";
+      closeModal(userInviteModal);
+      openModal(confirmModal, "confirmUserModal");
+
+      inviteConfirm.onclick = function () {
+        inviteUserDB(userArr[userLocation]);
+        closeModal(confirmModal);
+        userNameInp.value = "";
+        inviteInfo.innerHTML = "";
+      };
+
+      inviteDeny.onclick = function () {
+        closeModal(confirmModal);
+        openModal(userInviteModal, "userInviteModal");
+        userNameInp.value = "";
+        inviteInfo.innerHTML = "";
+      };
+
+      //close on close
+      closeConfirmModal.onclick = function () {
+        closeModal(confirmModal);
+        userNameInp.value = "";
+        inviteInfo.innerHTML = "";
+      };
+
+      //close on click
+      window.onclick = function (event) {
+        if (event.target == confirmModal) {
+          closeModal(confirmModal);
+          userNameInp.value = "";
+          inviteInfo.innerHTML = "";
+        }
+      }
+    } else {
+      alert("Error finding user, please contact the developer for assistance!");
+    }
+  }
+
   function isAlph(rChar){
     rChar = rChar.toUpperCase();
     switch (rChar){
@@ -448,28 +591,33 @@ window.onload = function instantiate() {
         familyArr.push(data.val());
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on('child_changed', function (data) {//------------*******************************ToDo
         oldFamilyMemberArr = familyData.members;
-        //save oldFamilyName
-        //save oldFamilyLinks
+        oldFamilyLinksArr = familyData.connections;
 
-        if(familyData.uid == data.key)
+        if(familyData.uid == data.key) {
           familyData = data.val();
+
+          if(oldFamilyMemberArr.length != familyData.members.length) {
+            console.log("Something Changed! (FamilyMemberArr)");
+            if (oldFamilyMemberArr.length > familyData.members.length) {
+              //Remove old member ... better find it (and remove it)!
+            } else {
+              createFamilyMemberElement(familyData.members[familyData.members.length]);//Prolly wrong, might need -1
+            }
+          }
+
+          if(oldFamilyLinksArr.length != familyData.connections.length) {
+            console.log("Something Changed! (FamilyConnectionsArr)");
+            if (oldFamilyLinksArr.length > familyData.connections.length) {
+              //Remove old member ... better find it (and remove it)!
+            }
+          }
+        }
 
         let i = findUIDItemInArr(data.key, familyArr);
         if(familyArr[i] != data.val() && i != -1) {
           familyArr[i] = data.val();
-
-          if(oldFamilyMemberArr.length != familyData.members.length) {
-            console.log("Something Changed!");
-            //Add new member (presumably at the top of the array)
-          }
-
-          //check oldFamilyName with newFamilyName
-
-          //check oldFamilyLinks with newFamilyLinks
-
-          //----------------------------------********************************************ToDo
         }
       });
 
@@ -562,7 +710,7 @@ window.onload = function instantiate() {
 
   function removeFamilyMemberFromDB(uid) {
     alert("This will eventually remove the family member from the database");
-    //confirm//--------------------------------**********************************************ToDo
+    //confirm//--------------------------------**********************************************ToDo (Later)
 
     for (let i = 0; i < familyMemberArr.length; i++)
       if (uid == familyMemberArr[i])
