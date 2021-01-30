@@ -36,6 +36,7 @@ let removeFamilyMember;
 let familyAddModal;
 let closeFamilyAddModal;
 let familyMemberInp;
+let addMemberInfo;
 let addFamilyMember;
 let cancelFamilyMember;
 let familyNameModal;
@@ -60,6 +61,7 @@ let linkFamilies;
 let existingLinks;
 let confirmMemberModal;
 let closeConfirmMemberModal;
+let confirmMemberTitle;
 let confMemberUserName;
 let addMemberConfirm;
 let addMemberDeny;
@@ -118,6 +120,7 @@ window.onload = function instantiate() {
   familyAddModal = document.getElementById('familyAddModal');
   closeFamilyAddModal = document.getElementById('closeFamilyAddModal');
   familyMemberInp = document.getElementById('familyMemberInp');
+  addMemberInfo = document.getElementById('addMemberInfo');
   addFamilyMember = document.getElementById('addFamilyMember');
   cancelFamilyMember = document.getElementById('cancelFamilyMember');
   familyNameModal = document.getElementById('familyNameModal');
@@ -142,6 +145,7 @@ window.onload = function instantiate() {
   existingLinks = document.getElementById('existingLinks');
   confirmMemberModal = document.getElementById('confirmMemberModal');
   closeConfirmMemberModal = document.getElementById('closeConfirmMemberModal');
+  confirmMemberTitle = document.getElementById('confirmMemberTitle');
   confMemberUserName = document.getElementById('confMemberUserName');
   addMemberConfirm = document.getElementById('addMemberConfirm');
   addMemberDeny = document.getElementById('addMemberDeny');
@@ -153,13 +157,14 @@ window.onload = function instantiate() {
   notificationInfo = document.getElementById('notificationInfo');
   familyUpdateElements = [inviteNote, settingsNote, dataListContainer, testData, addMember, familySettings,
     familyMemberViewModal, closeFamilyMemberViewModal, familyMemberName, familyMemberUserName, familyMemberUID,
-    removeFamilyMember, familyAddModal, closeFamilyAddModal, familyMemberInp, addFamilyMember, cancelFamilyMember,
-    familyNameModal, closeFamilyNameModal, familyNameInp, updateFamilyName, cancelFamilyName, familyLinkModal,
-    closeFamilyLinkModal, familyNameInp, updateFamilyName, cancelFamilyName, familyLinkModal, closeFamilyLinkModal,
-    familyLinkInp, addFamilyLink, cancelFamilyLink, familyLinkViewModal, closeFamilyLinkViewModal, familyLinkViewTitle,
-    familyLinkViewContainer, familySettingsModal, familySettingsTitle, closeFamilySettings, changeFamilyName,
-    linkFamilies, existingLinks, confirmMemberModal, closeConfirmMemberModal, confMemberUserName, addMemberConfirm,
-    addMemberDeny, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
+    removeFamilyMember, familyAddModal, closeFamilyAddModal, familyMemberInp, addMemberInfo, addFamilyMember,
+    cancelFamilyMember, familyNameModal, closeFamilyNameModal, familyNameInp, updateFamilyName, cancelFamilyName,
+    familyLinkModal, closeFamilyLinkModal, familyNameInp, updateFamilyName, cancelFamilyName, familyLinkModal,
+    closeFamilyLinkModal, familyLinkInp, addFamilyLink, cancelFamilyLink, familyLinkViewModal,
+    closeFamilyLinkViewModal, familyLinkViewTitle, familyLinkViewContainer, familySettingsModal, familySettingsTitle,
+    closeFamilySettings, changeFamilyName, linkFamilies, existingLinks, confirmMemberModal, closeConfirmMemberModal,
+    confirmMemberTitle, confMemberUserName, addMemberConfirm, addMemberDeny, offlineModal, offlineSpan,
+    notificationModal, noteSpan, notificationTitle, notificationInfo];
   verifyElementIntegrity(familyUpdateElements);
   getCurrentUser();
   commonInitialization();
@@ -213,18 +218,29 @@ window.onload = function instantiate() {
     deployFamilyListEmptyNotification();
 
   function generateAddMemberModal() {
+    let familyMemberFound = false;
+
     addFamilyMember.onclick = function() {
       if(familyMemberInp.value != "" || (familyMemberInp.value.includes(" ") &&
           isAlph(familyMemberInp.value.charAt(0)))) {
-        familyMemberInp.value = "";
-        closeModal(familyAddModal);
-        //use confirm invite from inviteAlg to verify correct user
-        //send UID instead of username
-        //addFamilyMemberToDB(newMemberUID);//---------------------*****************************ToDo
+        for (let i = 0; i < userArr.length; i++)
+          if(familyMemberInp.value.toLowerCase() == userArr[i].userName.toLowerCase()) {
+            if(generateConfirmFamilyMember(userArr[i].userName)) {
+              closeModal(familyAddModal);
+              addMemberInfo = "";
+              familyMemberInp.value = "";
+              addFamilyMemberToDB(userArr[i].uid);
+            }
+            break;
+          }
+        if(!familyMemberFound) {
+          addMemberInfo.innerHTML = "That user name does not exist, please try again!";
+        }
       }
     };
 
     cancelFamilyMember.onclick = function() {
+      addMemberInfo = "";
       familyMemberInp.value = "";
       closeModal(familyAddModal);
     };
@@ -232,12 +248,44 @@ window.onload = function instantiate() {
     openModal(familyAddModal, "familyAddModal");
 
     closeFamilyAddModal.onclick = function() {
+      addMemberInfo = "";
       closeModal(familyAddModal);
     };
 
     window.onclick = function(event) {
       if (event.target == familyAddModal) {
+        addMemberInfo = "";
         closeModal(familyAddModal);
+      }
+    };
+  }
+
+  function generateConfirmFamilyMember(confUserName){
+    confirmMemberTitle.innerHTML = "Confirm User Name Below";
+
+    confMemberUserName.innerHTML = "Did you mean " + confUserName + "?";
+
+    addMemberConfirm.onclick = function() {
+      return true;
+    };
+
+    addMemberDeny.onclick = function() {
+      return false;
+    }
+
+    closeConfirmMemberModal.onclick = function() {
+      closeModal(confirmMemberModal);
+    };
+
+    openModal(confirmMemberModal, "confirmMemberModal");
+
+    closeConfirmMemberModal.onclick = function() {
+      closeModal(confirmMemberModal);
+    };
+
+    window.onclick = function(event) {
+      if (event.target == confirmMemberModal) {
+        closeModal(confirmMemberModal);
       }
     };
   }
