@@ -734,7 +734,12 @@ window.onload = function instantiate() {
   }
 
   function findFamilyInDB(familyLinkData){//-----------------------**************************************ToDo
-    //Determine whether the familyLinkData is a uid or a family name
+    if (familyLinkData.length > 15 && familyLinkData.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+$")) {
+      console.log("This is a UID! " + familyLinkData);
+    } else {
+      console.log("This is a family name! " + familyLinkData);
+    }
+    //repurpose confirm dialog for this case
     alert("This will eventually link the current family to the input data: " + familyLinkData);
   }
 
