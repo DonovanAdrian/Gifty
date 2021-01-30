@@ -11,6 +11,7 @@ let userArr = [];
 let familyArr = [];
 let familyMemberArr = [];
 let familyConnectionArr = [];
+let loadedFamilyMembersArr = [];
 
 let moderationSet = 1;
 let onlineInt = 0;
@@ -322,7 +323,6 @@ window.onload = function instantiate() {
         liItem.id = "family" + familyData.uid;
         liItem.className = "gift";
         liItem.onclick = function (){
-            familyConnectionArr = familyData.connections;
             familyMemberArr = familyData.members;
             familyUID = familyData.uid;
 
@@ -334,6 +334,11 @@ window.onload = function instantiate() {
                 try{
                     testFamily.remove();
                 } catch (err) {}
+
+                if(loadedFamilyMembersArr.length != 0)
+                    for(let a = 0; a < loadedFamilyMembersArr.length; a++)
+                        document.getElementById(loadedFamilyMembersArr[a]).remove();
+
                 for(let i = 0; i < familyMemberArr.length; i++){
                     let liItem = document.createElement("LI");
                     let familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
@@ -342,6 +347,8 @@ window.onload = function instantiate() {
                     let textNode = document.createTextNode(userArr[familyMember].name);
                     liItem.appendChild(textNode);
                     familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+
+                    loadedFamilyMembersArr.push(familyMemberArr[i]);
                 }
             } else {
                 familyMemberCount.innerHTML = 0;
@@ -367,7 +374,7 @@ window.onload = function instantiate() {
             openModal(familyModal, familyData.uid);
 
             //close on close
-            spanGift.onclick = function() {
+            closeFamilyModal.onclick = function() {
                 closeModal(familyModal);
             };
 
@@ -403,6 +410,11 @@ window.onload = function instantiate() {
                 try{
                     testFamily.remove();
                 } catch (err) {}
+
+                if(loadedFamilyMembersArr.length != 0)
+                    for(let a = 0; a < loadedFamilyMembersArr.length; a++)
+                        document.getElementById(loadedFamilyMembersArr[a]).remove();
+
                 for(let i = 0; i < familyMemberArr.length; i++){
                     let liItem = document.createElement("LI");
                     let familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
@@ -411,6 +423,8 @@ window.onload = function instantiate() {
                     let textNode = document.createTextNode(userArr[familyMember].name);
                     liItem.appendChild(textNode);
                     familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+
+                    loadedFamilyMembersArr.push(familyMemberArr[i]);
                 }
             } else {
                 familyMemberCount.innerHTML = 0;
@@ -436,7 +450,7 @@ window.onload = function instantiate() {
             openModal(familyModal, familyData.uid);
 
             //close on close
-            spanGift.onclick = function() {
+            closeFamilyModal.onclick = function() {
                 closeModal(familyModal);
             };
 
