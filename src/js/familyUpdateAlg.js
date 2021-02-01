@@ -10,6 +10,7 @@ let inviteArr = [];
 let userArr = [];
 let familyArr = [];
 let familyMemberArr = [];
+let loadedFamilyLinksArr = [];
 let oldFamilyMemberArr = [];
 let oldFamilyLinksArr = [];
 
@@ -18,7 +19,7 @@ let onlineInt = 0;
 let familyCounter = 0;
 let loadingTimerInt = 0;
 
-let oldFamilyName = "";
+let foundFamilyToLinkUID = "";
 
 let familyData;
 let inviteNote;
@@ -47,6 +48,7 @@ let cancelFamilyName;
 let familyLinkModal;
 let closeFamilyLinkModal;
 let familyLinkInp;
+let familyLinkInfo;
 let addFamilyLink;
 let cancelFamilyLink;
 let familyLinkViewModal;
@@ -131,6 +133,7 @@ window.onload = function instantiate() {
   familyLinkModal = document.getElementById('familyLinkModal');
   closeFamilyLinkModal = document.getElementById('closeFamilyLinkModal');
   familyLinkInp = document.getElementById('familyLinkInp');
+  familyLinkInfo = document.getElementById('familyLinkInfo');
   addFamilyLink = document.getElementById('addFamilyLink');
   cancelFamilyLink = document.getElementById('cancelFamilyLink');
   familyLinkViewModal = document.getElementById('familyLinkViewModal');
@@ -158,9 +161,9 @@ window.onload = function instantiate() {
   familyUpdateElements = [inviteNote, settingsNote, dataListContainer, testData, addMember, familySettings,
     familyMemberViewModal, closeFamilyMemberViewModal, familyMemberName, familyMemberUserName, familyMemberUID,
     removeFamilyMember, familyAddModal, closeFamilyAddModal, familyMemberInp, addMemberInfo, addFamilyMember,
-    cancelFamilyMember, familyNameModal, closeFamilyNameModal, familyNameInp, updateFamilyName, cancelFamilyName,
-    familyLinkModal, closeFamilyLinkModal, familyNameInp, updateFamilyName, cancelFamilyName, familyLinkModal,
-    closeFamilyLinkModal, familyLinkInp, addFamilyLink, cancelFamilyLink, familyLinkViewModal,
+    cancelFamilyMember, familyNameModal, closeFamilyNameModal, familyNameInp, familyLinkInfo, updateFamilyName,
+    cancelFamilyName, familyLinkModal, closeFamilyLinkModal, familyNameInp, updateFamilyName, cancelFamilyName,
+    familyLinkModal, closeFamilyLinkModal, familyLinkInp, addFamilyLink, cancelFamilyLink, familyLinkViewModal,
     closeFamilyLinkViewModal, familyLinkViewTitle, familyLinkViewContainer, familySettingsModal, familySettingsTitle,
     closeFamilySettings, changeFamilyName, linkFamilies, existingLinks, confirmMemberModal, closeConfirmMemberModal,
     confirmMemberTitle, confMemberUserName, addMemberConfirm, addMemberDeny, offlineModal, offlineSpan,
@@ -225,7 +228,7 @@ window.onload = function instantiate() {
           isAlph(familyMemberInp.value.charAt(0)))) {
         for (let i = 0; i < userArr.length; i++)
           if(familyMemberInp.value.toLowerCase() == userArr[i].userName.toLowerCase()) {
-            if(generateConfirmFamilyMember(userArr[i].userName)) {
+            if(generateConfirmDataModal(userArr[i].userName, "Confirm User Name Below")) {
               closeModal(familyAddModal);
               addMemberInfo = "";
               familyMemberInp.value = "";
@@ -260,10 +263,10 @@ window.onload = function instantiate() {
     };
   }
 
-  function generateConfirmFamilyMember(confUserName){
-    confirmMemberTitle.innerHTML = "Confirm User Name Below";
+  function generateConfirmDataModal(dataToConfirm, confirmString){
+    confirmMemberTitle.innerHTML = confirmString;
 
-    confMemberUserName.innerHTML = "Did you mean " + confUserName + "?";
+    confMemberUserName.innerHTML = "Did you mean " + dataToConfirm + "?";
 
     addMemberConfirm.onclick = function() {
       return true;
@@ -352,34 +355,61 @@ window.onload = function instantiate() {
   function generateFamilyLinkModal() {
     addFamilyLink.onclick = function() {
       if(findFamilyInDB(familyLinkInp.value)) {
-        familyLinkInp.value = "";
         closeModal(familyLinkModal);
+        familyLinkInfo.innerHTML = "";
+        if (generateConfirmFamilyLink(foundFamilyToLinkUID)) {//--------------****************ToDo
+          familyLinkInp.value = "";
+          addFamilyLinkToDB(foundFamilyToLinkUID);
+        } else {
+          openModal(familyLinkModal, "familyLinkModal");
+        }
+      } else {
+        familyLinkInfo.innerHTML = "Family does not exist, please try again!";
       }
     };
 
     cancelFamilyLink.onclick = function() {
       familyLinkInp.value = "";
+      familyLinkInfo.innerHTML = "";
       closeModal(familyLinkModal);
     };
 
     openModal(familyLinkModal, "familyLinkModal");
 
     closeFamilyLinkModal.onclick = function() {
+      familyLinkInfo.innerHTML = "";
       closeModal(familyLinkModal);
     };
 
     window.onclick = function(event) {
       if (event.target == familyLinkModal) {
+        familyLinkInfo.innerHTML = "";
         closeModal(familyLinkModal);
       }
     };
   }
 
-  function generateFamilyLinkViewModal() {//-----------------------**************************************ToDo
-    //Load familyLinks with separate function createFamilyLinks
-    //Repurpose familyMemberViewModal for viewing or removing links
-    //change each element's name and function
-    //change them back to the originals (if needed) when closed
+  function generateConfirmFamilyLink(familyToLinkUID) {
+    let familyName = "";
+
+    for(let i = 0; i < familyArr.length; i++)
+      if(familyArr[i].uid == familyToLinkUID) {
+        familyName = familyArr[i].name;
+        if(generateConfirmDataModal(familyName, "Confirm Family Name Below"))
+          return true;
+      }
+    return false;
+  }
+
+  function addFamilyLinkToDB(uidToLink){
+    //add family uid to each family's DB section
+    alert("This will eventually add " + uidToLink + " to " + familyData.uid + " and vis versa!");
+  }
+
+  function generateFamilyLinkViewModal() {
+    familyLinkViewTitle.innerHTML = familyData.name + " Links";
+
+    initializeFamilyLinks();
 
     openModal(familyLinkViewModal, "familyLinkViewModal");
 
@@ -394,135 +424,51 @@ window.onload = function instantiate() {
     };
   }
 
-  function generateAddUserBtn(){//------------*******************************ToDo
-    let friendUserNameList = [];
-    let upperCaseUserArr = [];
-    if(user.friends != undefined || user.friends != null) {
-      for (let i = 0; i < user.friends.length; i++) {
-        for (let a = 0; a < userArr.length; a++) {
-          if (userArr[a].uid == user.friends[i]) {
-            friendUserNameList.push(userArr[a].userName.toUpperCase());
-            break;
-          }
-        }
+  function initializeFamilyLinks() {
+    try{
+      testFamily.remove();
+    } catch(err) {}
+
+    for(let i = 0; i < familyData.connections.length; i++) {
+      if (!loadedFamilyLinksArr.includes(familyData.connections[i])) {
+        for(let a = 0; a < familyArr.length; a++)
+          if (familyData.connections[i] == familyArr[i].uid)
+            createFamilyLink(familyArr[i]);
+
+        loadedFamilyLinksArr.push(familyData.connections[i]);
       }
     }
-    for (let b = 0; b < userArr.length; b++){
-      upperCaseUserArr.push(userArr[b].userName.toUpperCase());
-    }
-
-    addUser.onclick = function() {
-      openModal(userInviteModal, "userInviteModal");
-      addInvite.innerHTML = "Send Invite";
-
-      addInvite.onclick = function() {
-        let userLocation = -1;
-        for (let i = 0; i < upperCaseUserArr.length; i++) {
-          if (upperCaseUserArr[i] == userNameInp.value.toUpperCase()) {
-            userLocation = i;
-            break;
-          }
-        }
-
-        inviteInfo.innerHTML = "";
-        if(userNameInp.value == ""){
-          inviteInfo.innerHTML = "User Name Field Empty, Please Try Again!";
-        } else if (friendUserNameList.includes(userNameInp.value.toUpperCase())) {
-          inviteInfo.innerHTML = "That User Is Already Your Friend, Please Try Again!";
-        } else if (user.userName.toUpperCase() == userNameInp.value.toUpperCase()){
-          inviteInfo.innerHTML = "You Cannot Invite Yourself, Please Try Again!";
-        } else if (userLocation != -1) {
-          try {
-            if (user.invites.includes(userArr[userLocation].uid)) {
-              inviteInfo.innerHTML = "This User Already Sent You An Invite, Please Try Again!";
-            } else if (userArr[userLocation].invites.includes(user.uid)) {
-              inviteInfo.innerHTML = "You Already Sent This User An Invite, Please Try Again!";
-            } else {
-              generateConfirmDialog(userLocation);
-            }
-          } catch (err) {
-            try {
-              if (userArr[userLocation].invites.includes(user.uid)) {
-                inviteInfo.innerHTML = "You Already Sent This User An Invite, Please Try Again!";
-              } else {
-                generateConfirmDialog(userLocation);
-              }
-            } catch (err) {
-              generateConfirmDialog(userLocation);
-            }
-          }
-        } else if (userNameInp.value.toUpperCase() == "USER NAME BELOW"){
-          inviteInfo.innerHTML = "Very Funny, Please Enter A User Name";
-        } else if (userNameInp.value.toUpperCase() == "A USER NAME"){
-          inviteInfo.innerHTML = "Listen Here, Please Input Something Serious";
-        } else if (userNameInp.value.toUpperCase() == "SOMETHING SERIOUS"){
-          inviteInfo.innerHTML = "You're Just Mocking Me At This Point";
-        } else {
-          inviteInfo.innerHTML = "That User Name Does Not Exist, Please Try Again!";
-        }
-      };
-
-      cancelInvite.onclick = function() {
-        closeModal(userInviteModal);
-        userNameInp.value = "";
-        inviteInfo.innerHTML = "";
-      };
-
-      closeUserInviteModal.onclick = function() {
-        closeModal(userInviteModal);
-        userNameInp.value = "";
-        inviteInfo.innerHTML = "";
-      };
-
-      window.onclick = function(event) {
-        if (event.target == userInviteModal) {
-          closeModal(userInviteModal);
-        }
-      }
-    };
-    console.log("Add Button Generated");
   }
 
-  function generateConfirmDialog(userLocation) {//------------*******************************ToDo
-    //console.log(userLocation);
-    //console.log(userArr[userLocation].userName);
-    if (userLocation != -1) {
-      confUserName.innerHTML = "Did you mean to add \"" + userArr[userLocation].name + "\"?";
-      closeModal(userInviteModal);
-      openModal(confirmModal, "confirmUserModal");
+  function createFamilyLink(linkedFamilyData) {
+    let liItem = document.createElement("LI");
+    liItem.id = "link" + linkedFamilyData.uid;
+    liItem.className = "gift";
+    liItem.onclick = function (){
+      //initialize familyMemberViewModal data
+      //----------------------------------------*********************************************ToDo
+      //Repurpose familyMemberViewModal for viewing or removing links
+      //change each element's name and function
 
-      inviteConfirm.onclick = function () {
-        inviteUserDB(userArr[userLocation]);
-        closeModal(confirmModal);
-        userNameInp.value = "";
-        inviteInfo.innerHTML = "";
-      };
-
-      inviteDeny.onclick = function () {
-        closeModal(confirmModal);
-        openModal(userInviteModal, "userInviteModal");
-        userNameInp.value = "";
-        inviteInfo.innerHTML = "";
-      };
+      //show modal
+      openModal(familyMemberViewModal, linkedFamilyData.uid);
 
       //close on close
-      closeConfirmModal.onclick = function () {
-        closeModal(confirmModal);
-        userNameInp.value = "";
-        inviteInfo.innerHTML = "";
+      closeFamilyMemberViewModal.onclick = function() {
+        closeModal(familyMemberViewModal);
       };
 
       //close on click
-      window.onclick = function (event) {
-        if (event.target == confirmModal) {
-          closeModal(confirmModal);
-          userNameInp.value = "";
-          inviteInfo.innerHTML = "";
+      window.onclick = function(event) {
+        if (event.target == familyMemberViewModal) {
+          closeModal(familyMemberViewModal);
         }
-      }
-    } else {
-      alert("Error finding user, please contact the developer for assistance!");
-    }
+      };
+    };
+    let textNode = document.createTextNode(linkedFamilyData.name);
+    liItem.appendChild(textNode);
+
+    familyLinkViewContainer.insertBefore(liItem, familyLinkViewContainer.childNodes[0]);
   }
 
   function isAlph(rChar){
@@ -639,7 +585,7 @@ window.onload = function instantiate() {
         familyArr.push(data.val());
       });
 
-      postRef.on('child_changed', function (data) {//------------*******************************ToDo
+      postRef.on('child_changed', function (data) {
         oldFamilyMemberArr = familyData.members;
         oldFamilyLinksArr = familyData.connections;
 
@@ -649,7 +595,7 @@ window.onload = function instantiate() {
           if(oldFamilyMemberArr.length != familyData.members.length) {
             console.log("Something Changed! (FamilyMemberArr)");
             if (oldFamilyMemberArr.length > familyData.members.length) {
-              //Remove old member ... better find it (and remove it)!
+              location.reload();
             } else {
               createFamilyMemberElement(familyData.members[familyData.members.length]);//Prolly wrong, might need -1
             }
@@ -658,7 +604,7 @@ window.onload = function instantiate() {
           if(oldFamilyLinksArr.length != familyData.connections.length) {
             console.log("Something Changed! (FamilyConnectionsArr)");
             if (oldFamilyLinksArr.length > familyData.connections.length) {
-              //Remove old member ... better find it (and remove it)!
+              location.reload();
             }
           }
         }
@@ -707,6 +653,7 @@ window.onload = function instantiate() {
     liItem.onclick = function (){
       //initialize familyMemberViewModal data
       //----------------------------------------*********************************************ToDo
+      //change each element's name and function
 
       //show modal
       openModal(familyMemberViewModal, familyMemberData.uid);
@@ -738,6 +685,7 @@ window.onload = function instantiate() {
     editGift.onclick = function (){
       //initialize familyMemberViewModal data
       //----------------------------------------*********************************************ToDo
+      //change each element's name and function
 
       //show modal
       openModal(familyMemberViewModal, familyMemberData.uid);
@@ -758,8 +706,8 @@ window.onload = function instantiate() {
 
   function removeFamilyMemberFromDB(uid) {
     alert("This will eventually remove the family member from the database");
-    //confirm//--------------------------------**********************************************ToDo (Later)
 
+    /*
     for (let i = 0; i < familyMemberArr.length; i++)
       if (uid == familyMemberArr[i])
         familyMemberArr.splice(i, 1);
@@ -769,6 +717,7 @@ window.onload = function instantiate() {
     });
 
     location.reload();
+     */
   }
 
 
@@ -782,13 +731,24 @@ window.onload = function instantiate() {
   }
 
   function findFamilyInDB(familyLinkData){//-----------------------**************************************ToDo
+    let foundFamilyToLink = false;
+
     if (familyLinkData.length > 15 && familyLinkData.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+$")) {
       console.log("This is a UID! " + familyLinkData);
+      foundFamilyToLink = true;
+      foundFamilyToLinkUID = familyLinkData;
     } else {
-      console.log("This is a family name! " + familyLinkData);
+      console.log("This is (potentially) a family name! " + familyLinkData);
+      for (let i = 0; i < familyArr.length; i++)
+        if (familyArr[i].name.toLowerCase() == familyLinkData.toLowerCase()) {
+          console.log("It is a family name!");
+          foundFamilyToLink = true;
+          foundFamilyToLinkUID = familyArr[i].uid;
+          break;
+        }
     }
-    //repurpose confirm dialog for this case
-    alert("This will eventually link the current family to the input data: " + familyLinkData);
+
+    return foundFamilyToLinkUID;
   }
 
   function changeFamilyNameInDB(newFamilyName){
