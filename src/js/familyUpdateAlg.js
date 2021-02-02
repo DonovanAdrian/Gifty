@@ -357,7 +357,7 @@ window.onload = function instantiate() {
       if(findFamilyInDB(familyLinkInp.value)) {
         closeModal(familyLinkModal);
         familyLinkInfo.innerHTML = "";
-        if (generateConfirmFamilyLink(foundFamilyToLinkUID)) {//--------------****************ToDo
+        if (generateConfirmFamilyLink(foundFamilyToLinkUID)) {
           familyLinkInp.value = "";
           addFamilyLinkToDB(foundFamilyToLinkUID);
         } else {
@@ -401,7 +401,7 @@ window.onload = function instantiate() {
     return false;
   }
 
-  function addFamilyLinkToDB(uidToLink){
+  function addFamilyLinkToDB(uidToLink){//--------------------------*********************************ToDo
     //add family uid to each family's DB section
     alert("This will eventually add " + uidToLink + " to " + familyData.uid + " and vis versa!");
   }
@@ -440,15 +440,34 @@ window.onload = function instantiate() {
     }
   }
 
+  function removeFamilyLinkFromDB() {//--------------------------------************************************ToDo
+    alert("This will eventually remove the family link from the database");
+
+    /*THIS CODE NEEDS TO BE ADJUSTED LATER TO WORK WITH LINKS AND NOT MEMBERS
+    for (let i = 0; i < familyMemberArr.length; i++)
+      if (uid == familyMemberArr[i])
+        familyMemberArr.splice(i, 1);
+
+    firebase.database().ref("family/" + familyData.uid).update({
+      members: familyMemberArr
+    });
+
+    location.reload();
+     */
+  }
+
   function createFamilyLink(linkedFamilyData) {
     let liItem = document.createElement("LI");
     liItem.id = "link" + linkedFamilyData.uid;
     liItem.className = "gift";
     liItem.onclick = function (){
-      //initialize familyMemberViewModal data
-      //----------------------------------------*********************************************ToDo
-      //Repurpose familyMemberViewModal for viewing or removing links
-      //change each element's name and function
+      familyMemberName.innerHTML = linkedFamilyData.name;
+      familyMemberUserName.innerHTML = "# Members: " + linkedFamilyData.members.length;
+      familyMemberUID.innerHTML = linkedFamilyData.uid;
+
+      removeFamilyMember.onclick = function() {
+        removeFamilyLinkFromDB(linkedFamilyData.uid);
+      };
 
       //show modal
       openModal(familyMemberViewModal, linkedFamilyData.uid);
@@ -651,9 +670,13 @@ window.onload = function instantiate() {
     liItem.id = "family" + familyMemberData.uid;
     liItem.className = "gift";
     liItem.onclick = function (){
-      //initialize familyMemberViewModal data
-      //----------------------------------------*********************************************ToDo
-      //change each element's name and function
+      familyMemberName.innerHTML = familyMemberData.name;
+      familyMemberUserName.innerHTML = familyMemberData.userName;
+      familyMemberUID.innerHTML = familyMemberData.uid;
+
+      removeFamilyMember.onclick = function() {
+        removeFamilyMemberFromDB(familyMemberData.uid);
+      };
 
       //show modal
       openModal(familyMemberViewModal, familyMemberData.uid);
@@ -683,9 +706,13 @@ window.onload = function instantiate() {
     editGift.innerHTML = familyMemberData.name;
     editGift.className = "gift";
     editGift.onclick = function (){
-      //initialize familyMemberViewModal data
-      //----------------------------------------*********************************************ToDo
-      //change each element's name and function
+      familyMemberName.innerHTML = familyMemberData.name;
+      familyMemberUserName.innerHTML = familyMemberData.userName;
+      familyMemberUID.innerHTML = familyMemberData.uid;
+
+      removeFamilyMember.onclick = function() {
+        removeFamilyMemberFromDB(familyMemberData.uid);
+      };
 
       //show modal
       openModal(familyMemberViewModal, familyMemberData.uid);
@@ -704,7 +731,7 @@ window.onload = function instantiate() {
     };
   }
 
-  function removeFamilyMemberFromDB(uid) {
+  function removeFamilyMemberFromDB(uid) {//-----------------------**************************************ToDo
     alert("This will eventually remove the family member from the database");
 
     /*
@@ -722,6 +749,8 @@ window.onload = function instantiate() {
 
 
   function removeFamilyMemberElement(uid) {
+    //For now this function has been deprecated because I opped for a page reload instead of
+    //finding what was different between two arrays
     document.getElementById('family' + uid).remove();
 
     familyCounter--;
@@ -730,7 +759,7 @@ window.onload = function instantiate() {
     }
   }
 
-  function findFamilyInDB(familyLinkData){//-----------------------**************************************ToDo
+  function findFamilyInDB(familyLinkData){
     let foundFamilyToLink = false;
 
     if (familyLinkData.length > 15 && familyLinkData.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+$")) {
@@ -748,7 +777,7 @@ window.onload = function instantiate() {
         }
     }
 
-    return foundFamilyToLinkUID;
+    return foundFamilyToLink;
   }
 
   function changeFamilyNameInDB(newFamilyName){
@@ -762,16 +791,22 @@ window.onload = function instantiate() {
     console.log(memberUID);
 
     console.log(familyMemberArr);
-    if (familyMemberArr.length == 0)
+    if (familyMemberArr.length == 0) {
+      console.log("Create new array");
+      /*
       firebase.database().ref("family/" + familyData.uid).update({
-        members:{0:memberUID}
+        members: {0: memberUID}
       });
-    else {
+      */
+    } else {
       familyMemberArr.push(memberUID);
+      console.log("Add to existing array");
       console.log(familyMemberArr);
+      /*
       firebase.database().ref("family/" + familyData.uid).update({
         members: familyMemberArr
       });
+       */
     }
   }
 };
