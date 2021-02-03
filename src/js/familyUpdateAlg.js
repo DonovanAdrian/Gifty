@@ -228,6 +228,7 @@ window.onload = function instantiate() {
           isAlph(familyMemberInp.value.charAt(0)))) {
         for (let i = 0; i < userArr.length; i++)
           if(familyMemberInp.value.toLowerCase() == userArr[i].userName.toLowerCase()) {
+            //check if user is already in family!!!--------------------------****************************ToDo
             if(generateConfirmDataModal(userArr[i].userName, "Confirm User Name Below")) {
               closeModal(familyAddModal);
               addMemberInfo = "";
@@ -402,8 +403,29 @@ window.onload = function instantiate() {
   }
 
   function addFamilyLinkToDB(uidToLink){//--------------------------*********************************ToDo
-    //add family uid to each family's DB section
+    let familyLinksArr = familyData.connections;
     alert("This will eventually add " + uidToLink + " to " + familyData.uid + " and vis versa!");
+
+    console.log("UID to add: " + uidToLink);
+
+    console.log(familyLinksArr);
+    if (familyLinksArr.length == 0) {
+      console.log("Create new array");
+      /*
+      firebase.database().ref("family/" + familyData.uid).update({
+        connections: {0: uidToLink}
+      });
+      */
+    } else {
+      familyMemberArr.push(uidToLink);
+      console.log("Add to existing array");
+      console.log(familyLinksArr);
+      /*
+      firebase.database().ref("family/" + familyData.uid).update({
+        connections: familyLinksArr
+      });
+      */
+    }
   }
 
   function generateFamilyLinkViewModal() {
@@ -429,15 +451,20 @@ window.onload = function instantiate() {
       testFamily.remove();
     } catch(err) {}
 
-    for(let i = 0; i < familyData.connections.length; i++) {
-      if (!loadedFamilyLinksArr.includes(familyData.connections[i])) {
-        for(let a = 0; a < familyArr.length; a++)
-          if (familyData.connections[i] == familyArr[i].uid)
-            createFamilyLink(familyArr[i]);
+    if(familyData.connections != null)
+      for(let i = 0; i < familyData.connections.length; i++) {
+        if (!loadedFamilyLinksArr.includes(familyData.connections[i])) {
+          for(let a = 0; a < familyArr.length; a++)
+            if (familyData.connections[i] == familyArr[i].uid)
+              createFamilyLink(familyArr[i]);
 
-        loadedFamilyLinksArr.push(familyData.connections[i]);
+          loadedFamilyLinksArr.push(familyData.connections[i]);
+        }
       }
+    else {//-------------------------------------***********************************************ToDo
+      //Create a "No Links Found!" li item
     }
+
   }
 
   function removeFamilyLinkFromDB() {//--------------------------------************************************ToDo
@@ -613,18 +640,12 @@ window.onload = function instantiate() {
 
           if(oldFamilyMemberArr.length != familyData.members.length) {
             console.log("Something Changed! (FamilyMemberArr)");
-            if (oldFamilyMemberArr.length > familyData.members.length) {
-              location.reload();
-            } else {
-              createFamilyMemberElement(familyData.members[familyData.members.length]);//Prolly wrong, might need -1
-            }
+            location.reload();
           }
 
           if(oldFamilyLinksArr.length != familyData.connections.length) {
             console.log("Something Changed! (FamilyConnectionsArr)");
-            if (oldFamilyLinksArr.length > familyData.connections.length) {
-              location.reload();
-            }
+            location.reload();
           }
         }
 
@@ -788,7 +809,7 @@ window.onload = function instantiate() {
   }
 
   function addFamilyMemberToDB(memberUID){//-----------------------**************************************ToDo
-    console.log(memberUID);
+    console.log("UID to add: " + memberUID);
 
     console.log(familyMemberArr);
     if (familyMemberArr.length == 0) {
