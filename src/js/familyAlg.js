@@ -334,7 +334,7 @@ window.onload = function instantiate() {
             else
                 familyConnectionCount.innerHTML = "# Connections: " + 0;
             if (!loadedFamilyModalsArr.includes(familyData.uid)) {
-                if (familyMemberArr != null) {
+                if (familyMemberArr != null) {//This may need to be an entirely separate function--------*********ToDo
                     try {
                         testFamily.remove();
                     } catch (err) {
@@ -342,29 +342,32 @@ window.onload = function instantiate() {
                     familyMemberCount.innerHTML = "# Members: " + familyMemberArr.length;
                     try {
                         testFamily.remove();
-                    } catch (err) {
-                    }
+                    } catch (err) {}
 
-                    if (loadedFamilyMembersArr.length != 0)
-                        for (let a = 0; a < loadedFamilyMembersArr.length; a++)
+                    if (loadedFamilyMembersArr.length != 0) {
+                        console.log("Clearing...");
+                        for (let a = 0; a < loadedFamilyMembersArr.length; a++) {
                             document.getElementById(loadedFamilyMembersArr[a]).remove();
+                            console.log("Removed " + loadedFamilyMembersArr[a]);
+                        }
+                        loadedFamilyMembersArr = [];
+                    } else
+                        for (let i = 0; i < familyMemberArr.length; i++) {
+                            let liItem = document.createElement("LI");
+                            let familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
+                            liItem.id = familyMemberArr[i];
+                            liItem.className = "gift";
+                            let textNode = document.createTextNode(userArr[familyMember].name);
+                            liItem.appendChild(textNode);
+                            familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
 
-                    for (let i = 0; i < familyMemberArr.length; i++) {
-                        let liItem = document.createElement("LI");
-                        let familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
-                        liItem.id = familyMemberArr[i];
-                        liItem.className = "gift";
-                        let textNode = document.createTextNode(userArr[familyMember].name);
-                        liItem.appendChild(textNode);
-                        familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
-
-                        loadedFamilyMembersArr.push(familyMemberArr[i]);
-                    }
+                            console.log("Loaded " + familyMemberArr[i]);
+                            loadedFamilyMembersArr.push(familyMemberArr[i]);
+                        }
                 } else {
                     try {
                         testFamily.remove();
-                    } catch (err) {
-                    }
+                    } catch (err) {}
                     familyMemberCount.innerHTML = "# Members: " + 0;
                     let liItem = document.createElement("LI");
                     liItem.id = "testFamily";
@@ -427,34 +430,35 @@ window.onload = function instantiate() {
                 if (familyMemberArr != null) {
                     try {
                         testFamily.remove();
-                    } catch (err) {
-                    }
+                    } catch (err) {}
                     familyMemberCount.innerHTML = "# Members: " + familyMemberArr.length;
                     try {
                         testFamily.remove();
-                    } catch (err) {
-                    }
+                    } catch (err) {}
 
-                    if (loadedFamilyMembersArr.length != 0)
-                        for (let a = 0; a < loadedFamilyMembersArr.length; a++)
+                    if (loadedFamilyMembersArr.length != 0) {
+                        for (let a = 0; a < loadedFamilyMembersArr.length; a++) {
                             document.getElementById(loadedFamilyMembersArr[a]).remove();
+                            console.log("Removed " + loadedFamilyMembersArr[a]);
+                        }
+                        loadedFamilyMembersArr = [];
+                    } else
+                        for (let i = 0; i < familyMemberArr.length; i++) {
+                            let liItem = document.createElement("LI");
+                            let familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
+                            liItem.id = familyMemberArr[i];
+                            liItem.className = "gift";
+                            let textNode = document.createTextNode(userArr[familyMember].name);
+                            liItem.appendChild(textNode);
+                            familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
 
-                    for (let i = 0; i < familyMemberArr.length; i++) {
-                        let liItem = document.createElement("LI");
-                        let familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
-                        liItem.id = familyMemberArr[i];
-                        liItem.className = "gift";
-                        let textNode = document.createTextNode(userArr[familyMember].name);
-                        liItem.appendChild(textNode);
-                        familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
-
-                        loadedFamilyMembersArr.push(familyMemberArr[i]);
-                    }
+                            console.log("Loaded " + familyMemberArr[i]);
+                            loadedFamilyMembersArr.push(familyMemberArr[i]);
+                        }
                 } else {
                     try {
                         testFamily.remove();
-                    } catch (err) {
-                    }
+                    } catch (err) {}
                     familyMemberCount.innerHTML = "# Members: " + 0;
                     let liItem = document.createElement("LI");
                     liItem.id = "testFamily";
