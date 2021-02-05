@@ -403,29 +403,52 @@ window.onload = function instantiate() {
             "link", familyArr[i].uid);
   }
 
-  function addFamilyLinkToDB(uidToLink){//--------------------------*********************************ToDo
-    let familyLinksArr = familyData.connections;
+  function addFamilyLinkToDB(uidToLink){
+    let familyLinksArr = [];
+    let otherFamilyLinksArr = [];
+    if(familyData.connections != null)
+      familyLinksArr = familyData.connections;
     alert("This will eventually add " + uidToLink + " to " + familyData.uid + " and vis versa!");
 
     console.log("UID to add: " + uidToLink);
 
+    //add other family to current family
     console.log(familyLinksArr);
     if (familyLinksArr.length == 0) {
       console.log("Create new array");
-      /*
       firebase.database().ref("family/" + familyData.uid).update({
         connections: {0: uidToLink}
       });
-      */
     } else {
       familyLinksArr.push(uidToLink);
       console.log("Add to existing array");
       console.log(familyLinksArr);
-      /*
       firebase.database().ref("family/" + familyData.uid).update({
         connections: familyLinksArr
       });
-      */
+    }
+
+    //Add current family to other family
+    for(let i = 0; i < familyArr.length; i++)
+      if(uidToLink == familyArr[i].uid) {
+        if(familyArr[i].connections != null)
+          otherFamilyLinksArr = familyArr[i].connections;
+        break;
+      }
+
+    console.log(otherFamilyLinksArr);
+    if (otherFamilyLinksArr.length == 0) {
+      console.log("Create new array");
+      firebase.database().ref("family/" + uidToLink).update({
+        connections: {0: familyData.uid}
+      });
+    } else {
+      otherFamilyLinksArr.push(familyData.uid);
+      console.log("Add to existing array");
+      console.log(otherFamilyLinksArr);
+      firebase.database().ref("family/" + uidToLink).update({
+        connections: otherFamilyLinksArr
+      });
     }
   }
 
@@ -453,18 +476,18 @@ window.onload = function instantiate() {
     } catch(err) {}
 
     if(familyData.connections != null)
-      for(let i = 0; i < familyData.connections.length; i++) {
+      for(let i = 0; i < familyData.connections.length; i++)
         if (!loadedFamilyLinksArr.includes(familyData.connections[i])) {
-          for(let a = 0; a < familyArr.length; a++)
-            if (familyData.connections[i] == familyArr[i].uid)
+          for(let a = 0; a < familyArr.length; a++) {
+            if (familyData.connections[i] == familyArr[a].uid)
               createFamilyLink(familyArr[i]);
+          }
 
           loadedFamilyLinksArr.push(familyData.connections[i]);
         }
-      }
-    else {//-------------------------------------***********************************************ToDo
-      //Create a "No Links Found!" li item
-    }
+        else {
+          deployFamilyListEmptyNotification();
+        }
 
   }
 
@@ -490,7 +513,10 @@ window.onload = function instantiate() {
     liItem.className = "gift";
     liItem.onclick = function (){
       familyMemberName.innerHTML = linkedFamilyData.name;
-      familyMemberUserName.innerHTML = "# Members: " + linkedFamilyData.members.length;
+      if(linkedFamilyData.members != null)
+        familyMemberUserName.innerHTML = "# Members: " + linkedFamilyData.members.length;
+      else
+        familyMemberUserName.innerHTML = "# Members: 0";
       familyMemberUID.innerHTML = linkedFamilyData.uid;
 
       removeFamilyMember.onclick = function() {
@@ -498,11 +524,13 @@ window.onload = function instantiate() {
       };
 
       //show modal
+      closeModal(familyLinkViewModal);
       openModal(familyMemberViewModal, linkedFamilyData.uid);
 
       //close on close
       closeFamilyMemberViewModal.onclick = function() {
         closeModal(familyMemberViewModal);
+        openModal(familyLinkViewModal, "familyLinkViewModal");
       };
 
       //close on click
@@ -789,7 +817,10 @@ window.onload = function instantiate() {
     let foundFamilyToLink = false;
     let foundFamilyToLinkUID = "";
 
-    if (familyLinkData.length > 15 && familyLinkData.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+$")) {
+    console.log(familyLinkData);
+    console.log(typeof(familyLinkData));
+
+    if (familyLinkData.length > 15 && familyLinkData.match("^(?=.*[a-zA-Z]+)(?=.*[0-9]+)[-]+[a-zA-Z0-9]+$")) {
       console.log("This is a UID! " + familyLinkData);
       foundFamilyToLink = true;
       foundFamilyToLinkUID = familyLinkData;
@@ -805,9 +836,13 @@ window.onload = function instantiate() {
     }
 
     if(foundFamilyToLink) {
-      closeModal(familyLinkModal);
-      familyLinkInfo.innerHTML = "";
-      generateConfirmFamilyLink(foundFamilyToLinkUID);
+      if(!familyData.connections.includes(foundFamilyToLink)) {
+        closeModal(familyLinkModal);
+        familyLinkInfo.innerHTML = "";
+        generateConfirmFamilyLink(foundFamilyToLinkUID);
+      } else {
+        familyLinkInfo.innerHTML = "This family has already been linked, please try another!";
+      }
     } else {
       familyLinkInfo.innerHTML = "Family does not exist, please try again!";
     }
@@ -853,6 +888,22 @@ window.onload = function instantiate() {
     }
   }
 };
+
+function deployConnectionListEmptyNotification(){
+  try{
+    testData.innerHTML = "No Family Connections Found!";
+  } catch(err){
+    console.log("Loading Element Missing, Creating A New One");
+    let liItem = document.createElement("LI");
+    liItem.id = "testFamily";
+    liItem.className = "gift";
+    let textNode = document.createTextNode("No Family Connections Found!");
+    liItem.appendChild(textNode);
+    familyLinkViewContainer.insertBefore(liItem, familyLinkViewContainer.childNodes[0]);
+  }
+
+  clearInterval(offlineTimer);
+}
 
 function deployFamilyListEmptyNotification(){
   clearInterval(loadingTimer);
