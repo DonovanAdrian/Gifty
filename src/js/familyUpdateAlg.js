@@ -408,7 +408,6 @@ window.onload = function instantiate() {
     let otherFamilyLinksArr = [];
     if(familyData.connections != null)
       familyLinksArr = familyData.connections;
-    alert("This will eventually add " + uidToLink + " to " + familyData.uid + " and vis versa!");
 
     console.log("UID to add: " + uidToLink);
 
@@ -495,6 +494,8 @@ window.onload = function instantiate() {
     alert("This will eventually remove the family link from the database");
 
     /*THIS CODE NEEDS TO BE ADJUSTED LATER TO WORK WITH LINKS AND NOT MEMBERS
+    MAKE SURE TO REMOVE FROM **BOTH** FAMILIES
+
     for (let i = 0; i < familyData.members.length; i++)
       if (uid == familyData.members[i])
         familyData.members.splice(i, 1);
@@ -785,20 +786,19 @@ window.onload = function instantiate() {
     };
   }
 
-  function removeFamilyMemberFromDB(uid) {//-----------------------**************************************ToDo
-    alert("This will eventually remove the family member from the database");
+  function removeFamilyMemberFromDB(uid) {
 
-    /*
     for (let i = 0; i < familyData.members.length; i++)
       if (uid == familyData.members[i])
         familyData.members.splice(i, 1);
+
+    sessionStorage.setItem("familyData", JSON.stringify(familyData));
 
     firebase.database().ref("family/" + familyData.uid).update({
       members: familyData.members
     });
 
     location.reload();
-     */
   }
 
 
@@ -820,7 +820,8 @@ window.onload = function instantiate() {
     console.log(familyLinkData);
     console.log(typeof(familyLinkData));
 
-    if (familyLinkData.length > 15 && familyLinkData.match("^(?=.*[a-zA-Z]+)(?=.*[0-9]+)[-]+[a-zA-Z0-9]+$")) {
+    if (familyLinkData.length > 15 && familyLinkData.match(
+        "^(?=.*[a-zA-Z]+)(?=.*[0-9]+)[-]+[a-zA-Z0-9]+$")) {
       console.log("This is a UID! " + familyLinkData);
       foundFamilyToLink = true;
       foundFamilyToLinkUID = familyLinkData;
