@@ -333,50 +333,65 @@ window.onload = function instantiate() {
                 familyConnectionCount.innerHTML = "# Connections: " + familyConnectionArr.length;
             else
                 familyConnectionCount.innerHTML = "# Connections: " + 0;
-            if (!loadedFamilyModalsArr.includes(familyData.uid)) {
-                if (familyMemberArr != null) {//This may need to be an entirely separate function--------*********ToDo
-                    try {
-                        testFamily.remove();
-                    } catch (err) {
+
+            if (familyMemberArr != null) {
+                try {
+                    testFamily.remove();
+                } catch (err) {}
+                familyMemberCount.innerHTML = "# Members: " + familyMemberArr.length;
+                try {
+                    testFamily.remove();
+                } catch (err) {}
+
+                if (loadedFamilyMembersArr.length != 0) {
+                    for (let a = 0; a < loadedFamilyMembersArr.length; a++) {
+                        document.getElementById(loadedFamilyMembersArr[a]).remove();
                     }
-                    familyMemberCount.innerHTML = "# Members: " + familyMemberArr.length;
-                    try {
-                        testFamily.remove();
-                    } catch (err) {}
+                    loadedFamilyMembersArr = [];
 
-                    if (loadedFamilyMembersArr.length != 0) {
-                        console.log("Clearing...");
-                        for (let a = 0; a < loadedFamilyMembersArr.length; a++) {
-                            document.getElementById(loadedFamilyMembersArr[a]).remove();
-                            console.log("Removed " + loadedFamilyMembersArr[a]);
-                        }
-                        loadedFamilyMembersArr = [];
-                    } else
-                        for (let i = 0; i < familyMemberArr.length; i++) {
-                            let liItem = document.createElement("LI");
-                            let familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
-                            liItem.id = familyMemberArr[i];
-                            liItem.className = "gift";
-                            let textNode = document.createTextNode(userArr[familyMember].name);
-                            liItem.appendChild(textNode);
-                            familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+                    for (let i = 0; i < familyMemberArr.length; i++) {
+                        let liItem = document.createElement("LI");
+                        let familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
+                        liItem.id = familyMemberArr[i];
+                        liItem.className = "gift";
+                        let textNode = document.createTextNode(userArr[familyMember].name);
+                        liItem.appendChild(textNode);
+                        familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
 
-                            console.log("Loaded " + familyMemberArr[i]);
-                            loadedFamilyMembersArr.push(familyMemberArr[i]);
-                        }
-                } else {
-                    try {
-                        testFamily.remove();
-                    } catch (err) {}
-                    familyMemberCount.innerHTML = "# Members: " + 0;
-                    let liItem = document.createElement("LI");
-                    liItem.id = "testFamily";
-                    liItem.className = "gift";
-                    let textNode = document.createTextNode("No Family Members Found!");
-                    liItem.appendChild(textNode);
-                    familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+                        loadedFamilyMembersArr.push(familyMemberArr[i]);
+                    }
+                } else
+                    for (let i = 0; i < familyMemberArr.length; i++) {
+                        let liItem = document.createElement("LI");
+                        let familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
+                        liItem.id = familyMemberArr[i];
+                        liItem.className = "gift";
+                        let textNode = document.createTextNode(userArr[familyMember].name);
+                        liItem.appendChild(textNode);
+                        familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+
+                        loadedFamilyMembersArr.push(familyMemberArr[i]);
+                    }
+            } else {
+                if (loadedFamilyMembersArr.length != 0) {
+                    for (let a = 0; a < loadedFamilyMembersArr.length; a++) {
+                        document.getElementById(loadedFamilyMembersArr[a]).remove();
+                    }
+                    loadedFamilyMembersArr = [];
                 }
-                loadedFamilyModalsArr.push(familyData.uid);
+
+                try {
+                    testFamily.remove();
+                } catch (err) {}
+                familyMemberCount.innerHTML = "# Members: " + 0;
+                let liItem = document.createElement("LI");
+                liItem.id = "testFamily";
+                liItem.className = "gift";
+                let textNode = document.createTextNode("No Family Members Found!");
+                liItem.appendChild(textNode);
+                familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+
+                loadedFamilyMembersArr.push("testFamily");
             }
 
             familyEdit.onclick = function (){
@@ -385,6 +400,7 @@ window.onload = function instantiate() {
             };
 
             familyRemove.onclick = function (){
+                closeModal(familyModal);
                 removeFamilyFromDB(familyData.uid);
             };
 
@@ -476,6 +492,7 @@ window.onload = function instantiate() {
             };
 
             familyRemove.onclick = function (){
+                closeModal(familyModal);
                 removeFamilyFromDB(familyData.uid);
             };
 
@@ -499,10 +516,22 @@ window.onload = function instantiate() {
     }
 
     function removeFamilyFromDB(uid) {
-        alert("This will eventually remove the family data from the database");
-        //confirm
-        //firebase.database().ref("family/").child(uid).remove();
-        //reload page or remove family element?
+        let familyConnectionsToRemoveArr = [];
+
+        for(let i = 0; i < familyArr.length; i++)
+            if(familyArr[i].connections != null) {
+                familyConnectionsToRemoveArr = familyArr[i].connections;
+                for (let a = 0; a < familyConnectionsToRemoveArr.length; a++)
+                    if (familyConnectionsToRemoveArr[a] == uid) {
+                        familyConnectionsToRemoveArr.splice(a, 1);
+
+                        firebase.database().ref("family/" + familyArr[i].uid).update({
+                            connections: familyConnectionsToRemoveArr
+                        });
+                    }
+            }
+
+        firebase.database().ref("family/").child(uid).remove();
     }
 
 
