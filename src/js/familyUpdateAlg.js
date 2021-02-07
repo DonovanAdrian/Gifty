@@ -232,24 +232,26 @@ window.onload = function instantiate() {
             familyMemberFound = true;
             if(familyData.members != null)
               if (!familyData.members.includes(userArr[i].uid)) {
-                generateConfirmDataModal(userArr[i].userName, "Confirm User Name Below",
+                generateConfirmDataModal(userArr[i].name, "Confirm Member Name Below",
                     "user", userArr[i].uid);
               } else {
+                console.log("User is already in this family!");
                 addMemberInfo.innerHTML = "That user is already added to this family, please try another!";
               }
             else
-              generateConfirmDataModal(userArr[i].userName, "Confirm User Name Below",
+              generateConfirmDataModal(userArr[i].name, "Confirm Member Name Below",
                   "user", userArr[i].uid);
             break;
           }
         if(!familyMemberFound) {
+          console.log("UserName Doesn't Exist!");
           addMemberInfo.innerHTML = "That user name does not exist, please try again!";
         }
       }
     };
 
     cancelFamilyMember.onclick = function() {
-      addMemberInfo = "";
+      addMemberInfo.innerHTML = "";
       familyMemberInp.value = "";
       closeModal(familyAddModal);
     };
@@ -257,13 +259,13 @@ window.onload = function instantiate() {
     openModal(familyAddModal, "familyAddModal");
 
     closeFamilyAddModal.onclick = function() {
-      addMemberInfo = "";
+      addMemberInfo.innerHTML = "";
       closeModal(familyAddModal);
     };
 
     window.onclick = function(event) {
       if (event.target == familyAddModal) {
-        addMemberInfo = "";
+        addMemberInfo.innerHTML = "";
         closeModal(familyAddModal);
       }
     };
@@ -277,7 +279,7 @@ window.onload = function instantiate() {
 
     addMemberConfirm.onclick = function() {
       if (confirmType == "user"){
-        addMemberInfo = "";
+        addMemberInfo.innerHTML = "";
         familyMemberInp.value = "";
         addFamilyMemberToDB(dataUID);
       } else if (confirmType == "link") {
@@ -829,7 +831,7 @@ window.onload = function instantiate() {
       console.log("This is (potentially) a family name! " + familyLinkData);
       for (let i = 0; i < familyArr.length; i++)
         if (familyArr[i].name.toLowerCase() == familyLinkData.toLowerCase()) {
-          console.log("It is a family name!");
+          console.log("It is a family name!" + familyArr[i].uid);
           foundFamilyToLink = true;
           foundFamilyToLinkUID = familyArr[i].uid;
           break;
@@ -837,12 +839,18 @@ window.onload = function instantiate() {
     }
 
     if(foundFamilyToLink) {
-      if(!familyData.connections.includes(foundFamilyToLink)) {
+      if(familyData.connections != null)
+        if(!familyData.connections.includes(foundFamilyToLinkUID)) {
+          closeModal(familyLinkModal);
+          familyLinkInfo.innerHTML = "";
+          generateConfirmFamilyLink(foundFamilyToLinkUID);
+        } else {
+          familyLinkInfo.innerHTML = "This family has already been linked, please try another!";
+        }
+      else {
         closeModal(familyLinkModal);
         familyLinkInfo.innerHTML = "";
         generateConfirmFamilyLink(foundFamilyToLinkUID);
-      } else {
-        familyLinkInfo.innerHTML = "This family has already been linked, please try another!";
       }
     } else {
       familyLinkInfo.innerHTML = "Family does not exist, please try again!";
