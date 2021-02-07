@@ -472,42 +472,67 @@ window.onload = function instantiate() {
   }
 
   function initializeFamilyLinks() {
-    try{
+    let familyDataConnections = familyData.connections;
+    try {
       testFamily.remove();
-    } catch(err) {}
+    } catch (err) {}
 
-    if(familyData.connections != null)
-      for(let i = 0; i < familyData.connections.length; i++)
-        if (!loadedFamilyLinksArr.includes(familyData.connections[i])) {
-          for(let a = 0; a < familyArr.length; a++) {
-            if (familyData.connections[i] == familyArr[a].uid)
-              createFamilyLink(familyArr[i]);
-          }
-
+    if (familyDataConnections != null)
+      for (let i = 0; i < familyDataConnections.length; i++)
+        if (!loadedFamilyLinksArr.includes(familyDataConnections[i])) {
+          for (let a = 0; a < familyArr.length; a++)
+            if (familyDataConnections[i] == familyArr[a].uid)
+              createFamilyLink(familyArr[a]);
           loadedFamilyLinksArr.push(familyData.connections[i]);
-        }
-        else {
-          deployFamilyListEmptyNotification();
-        }
+        } else
+          deployConnectionListEmptyNotification();
+
+    if(loadedFamilyLinksArr.length == 0)
+      deployConnectionListEmptyNotification();
 
   }
 
-  function removeFamilyLinkFromDB() {//--------------------------------************************************ToDo
-    alert("This will eventually remove the family link from the database");
+  function removeFamilyLinkFromDB(uidToRemove) {
+    let familyConnectionsToRemoveArr = familyData.connections;
+    let otherFamilyConnectionsToRemoveArr = [];
+    let uidToRemoveLocation = 0
 
-    /*THIS CODE NEEDS TO BE ADJUSTED LATER TO WORK WITH LINKS AND NOT MEMBERS
-    MAKE SURE TO REMOVE FROM **BOTH** FAMILIES
+    //Remove link from current family
+    for(let i = 0; i < familyConnectionsToRemoveArr.length; i++)
+      if(familyConnectionsToRemoveArr[i] == uidToRemove) {
+        console.log("Remove " + familyConnectionsToRemoveArr[i]);
+        familyConnectionsToRemoveArr.splice(i, 1);
 
-    for (let i = 0; i < familyData.members.length; i++)
-      if (uid == familyData.members[i])
-        familyData.members.splice(i, 1);
+        firebase.database().ref("family/" + familyData.uid).update({
+          connections: familyConnectionsToRemoveArr
+        });
+      }
 
-    firebase.database().ref("family/" + familyData.uid).update({
-      members: familyData.members
-    });
+    try {
+      document.getElementById("link" + uidToRemove).remove();
 
-    location.reload();
-     */
+      uidToRemoveLocation = findUIDItemInArr(uidToRemove, loadedFamilyLinksArr);
+      loadedFamilyLinksArr.splice(uidToRemoveLocation, 1);
+
+      if(loadedFamilyLinksArr.length == 0)
+        deployConnectionListEmptyNotification();
+    } catch (err) {}
+    familyData.connections = familyConnectionsToRemoveArr;
+
+    //Remove link from other family
+    for(let i = 0; i < familyArr.length; i++)
+      if(familyArr[i].uid == uidToRemove) {
+        otherFamilyConnectionsToRemoveArr = familyArr[i].connections;
+        for (let a = 0; a < otherFamilyConnectionsToRemoveArr.length; a++)
+          if (otherFamilyConnectionsToRemoveArr[a] == familyData.uid) {
+            console.log("Remove " + otherFamilyConnectionsToRemoveArr[a]);
+            otherFamilyConnectionsToRemoveArr.splice(a, 1);
+
+            firebase.database().ref("family/" + uidToRemove).update({
+              connections: otherFamilyConnectionsToRemoveArr
+            });
+          }
+      }
   }
 
   function createFamilyLink(linkedFamilyData) {
@@ -524,6 +549,8 @@ window.onload = function instantiate() {
 
       removeFamilyMember.onclick = function() {
         removeFamilyLinkFromDB(linkedFamilyData.uid);
+        closeModal(familyMemberViewModal);
+        openModal(familyLinkViewModal, "familyLinkViewModal");
       };
 
       //show modal
@@ -900,7 +927,7 @@ window.onload = function instantiate() {
 
 function deployConnectionListEmptyNotification(){
   try{
-    testData.innerHTML = "No Family Connections Found!";
+    testFamily.innerHTML = "No Family Connections Found!";
   } catch(err){
     console.log("Loading Element Missing, Creating A New One");
     let liItem = document.createElement("LI");
