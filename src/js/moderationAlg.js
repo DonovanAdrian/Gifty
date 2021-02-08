@@ -16,7 +16,7 @@ let secretSantaIntBool = false;
 let secretSantaNameBool = false;
 
 let moderationSet = 1;
-let userCounter = 0;
+let dataCounter = 0;
 let onlineInt = 0;
 let loadingTimerInt = 0;
 
@@ -706,8 +706,8 @@ window.onload = function instantiate() {
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     clearInterval(offlineTimer);
 
-    userCounter++;
-    if (userCounter > 5) {
+    dataCounter++;
+    if (dataCounter > 5) {
       activateSecretSanta.style.opacity = ".75";
     }
   }
@@ -839,8 +839,8 @@ window.onload = function instantiate() {
   function removeUserElement(uid) {
     document.getElementById('user' + uid).remove();
 
-    userCounter--;
-    if (userCounter == 0){
+    dataCounter--;
+    if (dataCounter == 0){
       deployUserListEmptyNotification();
     }
   }

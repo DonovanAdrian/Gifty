@@ -13,7 +13,7 @@ let listeningFirebaseRefs = [];
 
 let notificationListEmptyBool = false;
 
-let notificationCount = 0;
+let dataCounter = 0;
 let onlineInt = 0;
 let loadingTimerInt = 0;
 
@@ -306,7 +306,7 @@ window.onload = function instantiate() {
         };
       } else if (notificationPage == "globalNotification"){
         notificationViewPage.innerHTML = "As always, if you need any other information, send me a support email that can" +
-            " be found in the Help/FAQ under settings! Thank you!";
+          " be found in the Help/FAQ under settings! Thank you!";
         notificationViewPage.onclick = function(){};
       } else if (notificationPage == "invites.html"){
         notificationViewPage.innerHTML = "Click here to access your invites!";
@@ -330,7 +330,7 @@ window.onload = function instantiate() {
         notificationViewPage.onclick = function(){};
       } else if (notificationPage == "deleteGiftPrivate") {
         notificationViewPage.innerHTML = "If this has been done in error, please contact the person who deleted " +
-            "the gift.";
+          "the gift.";
         notificationViewPage.onclick = function(){};
       } else {
         console.log("Notification Page Error, 2");
@@ -370,7 +370,7 @@ window.onload = function instantiate() {
 
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
 
-    notificationCount++;
+    dataCounter++;
   }
 
   function changeNotificationElement(notificationString, notificationKey){
@@ -474,7 +474,7 @@ window.onload = function instantiate() {
           };
         } else if (notificationPage == "globalNotification"){
           notificationViewPage.innerHTML = "As always, if you need any other information, send me a support email that can" +
-              " be found in the Help/FAQ under settings! Thank you!";
+            " be found in the Help/FAQ under settings! Thank you!";
           notificationViewPage.onclick = function(){};
         } else if (notificationPage == "invites.html") {
           notificationViewPage.innerHTML = "Click here to access your invites!";
@@ -499,7 +499,7 @@ window.onload = function instantiate() {
           };
         } else if (notificationPage == "deleteGiftPrivate") {
           notificationViewPage.innerHTML = "If this has been done in error, please contact the person who deleted " +
-              "the gift.";
+            "the gift.";
           notificationViewPage.onclick = function () {
           };
         } else {
@@ -648,8 +648,8 @@ window.onload = function instantiate() {
   function removeNotificationElement(uid) {
     document.getElementById('notification' + uid).remove();
 
-    notificationCount--;
-    if (notificationCount == 0){
+    dataCounter--;
+    if (dataCounter == 0){
       deployNotificationListEmptyNotification();
     }
   }

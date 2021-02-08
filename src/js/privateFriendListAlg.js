@@ -15,7 +15,7 @@ let readNotificationsBool = false;
 let updateGiftToDBBool = false;
 let giftListEmptyBool = false;
 
-let giftCounter = 0;
+let dataCounter = 0;
 let onlineInt = 0;
 let loadingTimerInt = 0;
 
@@ -256,8 +256,8 @@ window.onload = function instantiate() {
         }
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
-            data.val().creator);
+          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
+          data.val().creator);
         instantiatedNodes.push(data.val());
 
         if(updateGiftToDBBool){
@@ -276,8 +276,8 @@ window.onload = function instantiate() {
         }
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
-            data.val().creator);
+          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
+          data.val().creator);
       });
 
       postRef.on('child_removed', function(data) {
@@ -438,7 +438,7 @@ window.onload = function instantiate() {
           } else {
             updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
             alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
-                "if it needs to be removed.");
+              "if it needs to be removed.");
           }
         }
       };
@@ -469,7 +469,7 @@ window.onload = function instantiate() {
               });
             } else {
               alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-                  "if this has been done in error.");
+                "if this has been done in error.");
             }
           }
         } else {
@@ -498,7 +498,7 @@ window.onload = function instantiate() {
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     clearInterval(offlineTimer);
 
-    giftCounter++;
+    dataCounter++;
   }
 
   function changeGiftElement(description, link, received, title, key, where, uid, date, buyer, creator) {
@@ -582,7 +582,7 @@ window.onload = function instantiate() {
           } else {
             updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
             alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
-                "if it needs to be removed.");
+              "if it needs to be removed.");
           }
         }
       };
@@ -613,7 +613,7 @@ window.onload = function instantiate() {
               });
             } else {
               alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-                  "if this has been done in error.");
+                "if this has been done in error.");
             }
           }
         } else {
@@ -641,8 +641,8 @@ window.onload = function instantiate() {
   function removeGiftElement(uid) {
     document.getElementById('gift' + uid).remove();
 
-    giftCounter--;
-    if (giftCounter == 0){
+    dataCounter--;
+    if (dataCounter == 0){
       deployGiftListEmptyNotification();
     }
   }

@@ -16,7 +16,7 @@ let secretSantaNameBool = false;
 
 let moderationSet = 0;
 let onlineInt = 0;
-let friendCount = 0;
+let dataCounter = 0;
 let loadingTimerInt = 0;
 
 let dataListContainer;
@@ -192,7 +192,7 @@ window.onload = function instantiate() {
           });
           user.secretSanta = 1;
           alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
-              " Santa Recipient!");
+            " Santa Recipient!");
           secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
         } else {
           firebase.database().ref("users/" + user.uid).update({
@@ -208,7 +208,7 @@ window.onload = function instantiate() {
         });
         user.secretSanta = 1;
         alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
-            " Santa Recipient!");
+          " Santa Recipient!");
         secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
       }
       sessionStorage.setItem("validUser", JSON.stringify(user));
@@ -475,7 +475,7 @@ window.onload = function instantiate() {
       dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
       clearInterval(offlineTimer);
 
-      friendCount++;
+      dataCounter++;
     }
   }
 
@@ -611,8 +611,8 @@ window.onload = function instantiate() {
   function removeFriendElement(uid){
     document.getElementById('user' + uid).remove();
 
-    friendCount--;
-    if(friendCount == 0) {
+    dataCounter--;
+    if(dataCounter == 0) {
       deployFriendListEmptyNotification();
     }
   }

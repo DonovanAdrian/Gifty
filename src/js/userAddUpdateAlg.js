@@ -45,7 +45,7 @@ function getCurrentUser(){
   if(user == null){//newUser
     btnUpdate.innerHTML = "Create User Profile";
     alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely," +
-        "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
+      "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
   } else {//returningUser
     btnUpdate.innerHTML = "Loading...";
     btnDelete.style.display = "block";
@@ -56,7 +56,7 @@ function getCurrentUser(){
     userArr = JSON.parse(sessionStorage.userArr);
 
     alert("Please note that you will be required to input your confirmation pin to continue. If you would like to " +
-        "cancel, please click the back button on the browser.");
+      "cancel, please click the back button on the browser.");
   }
 }
 
@@ -224,7 +224,7 @@ function updateUserToDB(){
 
   if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
     alert("It looks like you left some fields blank. Make sure you have your full name, username, a pin, and " +
-        "a confirmed pin below.");
+      "a confirmed pin below.");
   } else if (pinConfField.value !== pinField.value){
     alert("It looks like the pins you entered are not the same");
   } else if (!isNaN(pinField.value) == false) {
@@ -312,7 +312,7 @@ function addUserToDB(){
 
   if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
     alert("It looks like you left some fields blank. Make sure you have your full name, username, a pin, and " +
-        "a confirmed pin below.");
+      "a confirmed pin below.");
   } else if (pinConfField.value !== pinField.value){
     alert("It looks like the pins you entered are not the same");
   } else if (!isNaN(pinField.value) == false) {

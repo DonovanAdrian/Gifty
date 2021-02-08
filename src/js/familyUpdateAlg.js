@@ -16,7 +16,7 @@ let oldFamilyLinksArr = [];
 
 let moderationSet = 1;
 let onlineInt = 0;
-let familyCounter = 0;
+let dataCounter = 0;
 let loadingTimerInt = 0;
 
 let familyData;
@@ -233,14 +233,14 @@ window.onload = function instantiate() {
             if(familyData.members != null)
               if (!familyData.members.includes(userArr[i].uid)) {
                 generateConfirmDataModal(userArr[i].name, "Confirm Member Name Below",
-                    "user", userArr[i].uid);
+                  "user", userArr[i].uid);
               } else {
                 console.log("User is already in this family!");
                 addMemberInfo.innerHTML = "That user is already added to this family, please try another!";
               }
             else
               generateConfirmDataModal(userArr[i].name, "Confirm Member Name Below",
-                  "user", userArr[i].uid);
+                "user", userArr[i].uid);
             break;
           }
         if(!familyMemberFound) {
@@ -402,7 +402,7 @@ window.onload = function instantiate() {
     for(let i = 0; i < familyArr.length; i++)
       if(familyArr[i].uid == familyToLinkUID)
         generateConfirmDataModal(familyArr[i].name, "Confirm Family Name Below",
-            "link", familyArr[i].uid);
+          "link", familyArr[i].uid);
   }
 
   function addFamilyLinkToDB(uidToLink){
@@ -782,7 +782,7 @@ window.onload = function instantiate() {
 
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     clearInterval(offlineTimer);
-    familyCounter++;
+    dataCounter++;
   }
 
   function changeFamilyMemberElement(familyMemberData) {
@@ -836,8 +836,8 @@ window.onload = function instantiate() {
     //finding what was different between two arrays
     document.getElementById('family' + uid).remove();
 
-    familyCounter--;
-    if (familyCounter == 0){
+    dataCounter--;
+    if (dataCounter == 0){
       deployFamilyListEmptyNotification();
     }
   }
@@ -850,7 +850,7 @@ window.onload = function instantiate() {
     console.log(typeof(familyLinkData));
 
     if (familyLinkData.length > 15 && familyLinkData.match(
-        "^(?=.*[a-zA-Z]+)(?=.*[0-9]+)[-]+[a-zA-Z0-9]+$")) {
+            "^(?=.*[a-zA-Z]+)(?=.*[0-9]+)[-]+[a-zA-Z0-9]+$")) {
       console.log("This is a UID! " + familyLinkData);
       foundFamilyToLink = true;
       foundFamilyToLinkUID = familyLinkData;
