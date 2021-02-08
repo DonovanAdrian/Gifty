@@ -11,6 +11,7 @@ let currentModalOpen = "";
 
 let logoutReminder = 300;
 let logoutLimit = 900;
+let consoleOutput = false;
 
 let currentModalOpenObj = null;
 
@@ -25,33 +26,42 @@ function verifyElementIntegrity(arr){
 
   try {
     if (arr.length < 1)
-      console.log("Element List Empty!");
+      if(consoleOutput)
+        console.log("Element List Empty!");
   } catch (err) {
-    console.log("Element List Empty!");
+    if(consoleOutput)
+      console.log("Element List Empty!");
     arr = [];
   }
 
-  console.log("Checking " + arr.length + " Elements...");
+  if(consoleOutput)
+    console.log("Checking " + arr.length + " Elements...");
 
   for(let i = 0; i < arr.length; i++){
     try {
       if (arr[i].innerHTML == undefined)
-        console.log("WARNING: " + i + " UNDEFINED!");
-      else if (arr[i].innerHTML == null)
-        console.log("WARNING: " + i + " NULL!");
-      else
-        verifiedElements.push(arr[i]);
+        if(consoleOutput)
+          console.log("WARNING: " + i + " UNDEFINED!");
+        else if (arr[i].innerHTML == null)
+          if(consoleOutput)
+            console.log("WARNING: " + i + " NULL!");
+          else
+            verifiedElements.push(arr[i]);
     } catch (err) {
-      console.log("ERROR: Element " + i + " " + err.toString());
+      if(consoleOutput)
+        console.log("ERROR: Element " + i + " " + err.toString());
     }
   }
 
-  console.log("Verified " + verifiedElements.length + " Elements!");
+  if(consoleOutput)
+    console.log("Verified " + verifiedElements.length + " Elements!");
 }
 
 function instantiateCommon(){
   try {
     userChecker = JSON.parse(sessionStorage.validUser);
+    if(userChecker.moderatorInt == 1)
+      consoleOutput = true;
   } catch (err) {
     //console.log("No User Logged In...");
   }
@@ -91,19 +101,20 @@ function commonInitialization(){
       now = now + 1000;
       if(now >= 5000){
         if(dataListChecker.innerHTML != null)
-        try{
-          document.getElementById('testGift').innerHTML = "Loading Failed, Please Connect To Internet";
-        } catch(err){
-          if(dataCounter == 0) {
-            console.log("Loading Element Missing, Creating A New One");
-            let liItem = document.createElement("LI");
-            liItem.id = "testGift";
-            liItem.className = "gift";
-            let textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
-            liItem.appendChild(textNode);
-            dataListContainer.insertBefore(liItem, dataListChecker.childNodes[0]);
+          try{
+            document.getElementById('testGift').innerHTML = "Loading Failed, Please Connect To Internet";
+          } catch(err){
+            if(dataCounter == 0) {
+              if(consoleOutput)
+                console.log("Loading Element Missing, Creating A New One");
+              let liItem = document.createElement("LI");
+              liItem.id = "testGift";
+              liItem.className = "gift";
+              let textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
+              liItem.appendChild(textNode);
+              dataListContainer.insertBefore(liItem, dataListChecker.childNodes[0]);
+            }
           }
-        }
         try{
           closeModal(currentModalOpen);
         } catch (err) {}
@@ -134,7 +145,8 @@ function loginTimer(){
   let loginNum = 0;
   if (user.moderatorInt == 1)
     logoutLimit = 1800;
-  console.log("Login Timer Started");
+  if(consoleOutput)
+    console.log("Login Timer Started");
   setInterval(function(){ //900 15 mins, 600 10 mins
     document.onmousemove = resetTimer;
     document.onkeypress = resetTimer;
@@ -147,16 +159,19 @@ function loginTimer(){
     document.onkeypress = resetTimer;
     loginNum = loginNum + 1;
     if (loginNum >= logoutLimit){//default 900
-      console.log("User Timed Out");
+      if(consoleOutput)
+        console.log("User Timed Out");
       signOut();
     } else if (loginNum > logoutReminder){//default 600
-      //console.log("User Inactive");
+      if(consoleOutput)
+        console.log("User Inactive");
       areYouStillThereNote(loginNum);
       areYouStillThereBool = true;
     }
     function resetTimer() {
       if (areYouStillThereBool) {
-        //console.log("User Active");
+        if(consoleOutput)
+          console.log("User Active");
         ohThereYouAre();
       }
       loginNum = 0;
@@ -179,7 +194,7 @@ function areYouStillThereNote(timeElapsed){
     areYouStillThereInit = true;
   }
   notificationInfo.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
-    + ":" + timeSecs + "!";
+      + ":" + timeSecs + "!";
   notificationTitle.innerHTML = "Are You Still There?";
 
   //close on close
@@ -246,7 +261,8 @@ function newNavigation(navNum) {
   if (navNum >= navLocations.length)
     navNum = 0;
 
-  console.log("Navigating to " + navLocations[navNum]);
+  if(consoleOutput)
+    console.log("Navigating to " + navLocations[navNum]);
   window.location.href = navLocations[navNum];
 }
 
@@ -254,7 +270,8 @@ function openModal(openThisModal, modalName){
   currentModalOpenObj = openThisModal;
   currentModalOpen = modalName;
   openThisModal.style.display = "block";
-  console.log("Modal Opened: " + modalName);
+  if(consoleOutput)
+    console.log("Modal Opened: " + modalName);
 }
 
 function closeModal(closeThisModal){
@@ -262,8 +279,10 @@ function closeModal(closeThisModal){
     currentModalOpenObj = null;
     currentModalOpen = "";
     closeThisModal.style.display = "none";
-    console.log("Modal Closed");
+    if(consoleOutput)
+      console.log("Modal Closed");
   } catch (err) {
-    console.log("Modal Not Open");
+    if(consoleOutput)
+      console.log("Modal Not Open");
   }
 }
