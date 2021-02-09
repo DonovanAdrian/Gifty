@@ -25,7 +25,7 @@ let signUpFld;
 
 
 function fetchConfigFile(){
-  console.log("Fetching Config");
+  //console.log("Fetching Config");
   let file = "txt/config.txt";
 
   $.ajax({
@@ -108,9 +108,9 @@ function fetchConfigFile(){
 
       if(configInitializeInt == 8){
         if (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
-        storageBucketString == "" || messagingSenderIdString == "" || appIdString == "" || measurementIdString == "") {
+            storageBucketString == "" || messagingSenderIdString == "" || appIdString == "" || measurementIdString == "") {
           alert("Config not properly initialized! Please contact an administrator!");
-          console.log("Config Not Initialized! Are You Using The Default Config File?");
+          //console.log("Config Not Initialized! Are You Using The Default Config File?");
         } else {
           config = {
             apiKey: apiKeyString,
@@ -122,7 +122,7 @@ function fetchConfigFile(){
             appId: appIdString,
             measurementId: measurementIdString
           };
-          console.log("Config Successfully Initialized!");
+          //console.log("Config Successfully Initialized!");
 
           sessionStorage.setItem("config", JSON.stringify(config));
           commonInitialization();
@@ -159,7 +159,7 @@ window.onload = function instantiate() {
   function backgroundAlternator(){
     let nowBackground = 0;
     let alternator = 0;
-    console.log("Background Alternator Feature Active");
+    //console.log("Background Alternator Feature Active");
     setInterval(function(){
       nowBackground = nowBackground + 1000;
       if(nowBackground >= 15000){
@@ -187,7 +187,7 @@ window.onload = function instantiate() {
 
 function databaseQuery() {
 
-  console.log("Fetching Data From Database");
+  //console.log("Fetching Data From Database");
   userInitial = firebase.database().ref("users/");
 
   let fetchPosts = function (postRef) {
@@ -217,7 +217,7 @@ function databaseQuery() {
 function findUIDItemInArr(item, userArray){
   for(let i = 0; i < userArray.length; i++){
     if(userArray[i].uid == item){
-      console.log("Found item: " + item);
+      //console.log("Found item: " + item);
       return i;
     }
   }
