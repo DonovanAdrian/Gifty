@@ -287,7 +287,8 @@ window.onload = function instantiate() {
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
       if (testGift == undefined){
-        //console.log("TestGift Missing. Loading Properly.");
+        if(consoleOutput)
+          console.log("TestGift Missing. Loading Properly.");
       } else if (!giftListEmptyBool) {
         testGift.innerHTML = "Loading... Please Wait...";
       }
