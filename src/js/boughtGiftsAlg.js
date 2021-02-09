@@ -48,9 +48,11 @@ let userInvites;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    console.log("User: " + user.userName + " loaded in");
+    if(consoleOutput)
+      console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      console.log("Invites Not Found");
+      if(consoleOutput)
+        console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
         inviteNote.style.background = "#ff3923";
@@ -58,19 +60,22 @@ function getCurrentUser(){
     }
 
     if (user.readNotifications == undefined) {
-      console.log("Read Notifications Not Found");
+      if(consoleOutput)
+        console.log("Read Notifications Not Found");
     } else {
       readNotificationsBool = true;
     }
 
     if (user.readNotifications == undefined) {
-      console.log("Read Notifications Not Found");
+      if(consoleOutput)
+        console.log("Read Notifications Not Found");
     } else {
       readNotificationsBool = true;
     }
 
     if (user.notifications == undefined) {
-      console.log("Notifications Not Found");
+      if(consoleOutput)
+        console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
         if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
@@ -95,7 +100,8 @@ function getCurrentUser(){
     userBoughtGiftsArr = JSON.parse(sessionStorage.boughtGifts);
     userBoughtGiftsUsersArr = JSON.parse(sessionStorage.boughtGiftsUsers);
   } catch (err) {
-    console.log(err.toString());
+    if(consoleOutput)
+      console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -141,7 +147,8 @@ window.onload = function instantiate() {
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
       if (testGift == undefined){
-        //console.log("TestGift Missing. Loading Properly.");
+        if(consoleOutput)
+          console.log("TestGift Missing. Loading Properly.");
       } else {
         testGift.innerHTML = "Loading... Please Wait...";
       }
@@ -171,7 +178,8 @@ window.onload = function instantiate() {
   function homeButton(){
     let nowConfirm = 0;
     let alternator = 0;
-    console.log("Home Button Feature Active");
+    if(consoleOutput)
+      console.log("Home Button Feature Active");
     setInterval(function(){
       nowConfirm = nowConfirm + 1000;
       if(nowConfirm >= 3000){
@@ -206,7 +214,8 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
-          console.log("User Updated: 1");
+          if(consoleOutput)
+            console.log("User Updated: 1");
         }
       });
 
@@ -215,20 +224,23 @@ window.onload = function instantiate() {
         if(userArr[i] != data.val() && i != -1){
           checkGiftLists(data.val());
 
-          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == user.uid){
           user = data.val();
-          console.log("User Updated: 2");
+          if(consoleOutput)
+            console.log("User Updated: 2");
         }
       });
 
       postRef.on('child_removed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          if(consoleOutput)
+            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
       });
@@ -242,18 +254,23 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
         inviteArr[data.key] = data.val();
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
       });
 
       postRef.on('child_removed', function (data) {
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
 
         if (inviteArr.length == 0) {
-          console.log("Invite List Removed");
+          if(consoleOutput)
+            console.log("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -410,7 +427,8 @@ window.onload = function instantiate() {
     let uid = giftData.uid;
     let date = giftData.creationDate;
 
-    console.log("Updating " + uid);
+    if(consoleOutput)
+      console.log("Updating " + uid);
     let editGift = document.getElementById('gift' + uid);
     editGift.innerHTML = title;
     editGift.className = "gift";
