@@ -57,7 +57,8 @@ let testGift;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    console.log("User: " + user.userName + " loaded in");
+    if(consoleOutput)
+      console.log("User: " + user.userName + " loaded in");
     if (user.giftList == undefined) {
       deployGiftListEmptyNotification();
       giftListEmptyBool = true;
@@ -66,7 +67,8 @@ function getCurrentUser(){
       giftListEmptyBool = true;
     }
     if (user.invites == undefined) {
-      console.log("Invites Not Found");
+      if(consoleOutput)
+        console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
         invitesValidBool = true;
@@ -74,7 +76,8 @@ function getCurrentUser(){
     }
 
     if (user.friends == undefined) {
-      console.log("Friends Not Found");
+      if(consoleOutput)
+        console.log("Friends Not Found");
     } else if (user.friends != undefined) {
       if (user.friends.length > 0) {
         friendsValidBool = true;
@@ -82,13 +85,15 @@ function getCurrentUser(){
     }
 
     if (user.readNotifications == undefined) {
-      console.log("Read Notifications Not Found");
+      if(consoleOutput)
+        console.log("Read Notifications Not Found");
     } else {
       readNotificationsBool = true;
     }
 
     if (user.notifications == undefined) {
-      console.log("Notifications Not Found");
+      if(consoleOutput)
+        console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
         if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
@@ -111,7 +116,8 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    console.log(err.toString());
+    if(consoleOutput)
+      console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -126,7 +132,8 @@ function checkUserErrors(){
     userUIDs.push(userArr[i].uid);
   }
 
-  console.log("Checking for errors...");
+  if(consoleOutput)
+    console.log("Checking for errors...");
 
   //check invites for users that no longer exist
   if(invitesValidBool){
@@ -139,7 +146,8 @@ function checkUserErrors(){
 
     if(inviteEditInt > 0){
       updateUserBool = true;
-      console.log("Update to DB required: 1...");
+      if(consoleOutput)
+        console.log("Update to DB required: 1...");
     }
 
     if(user.invites.length > 0) {
@@ -158,16 +166,19 @@ function checkUserErrors(){
 
     if(friendEditInt > 0){
       updateUserBool = true;
-      console.log("Update to DB required: 2...");
+      if(consoleOutput)
+        console.log("Update to DB required: 2...");
     }
   }
 
   if(updateUserBool){
-    console.log("Updates needed! Computing...");
+    if(consoleOutput)
+      console.log("Updates needed! Computing...");
     totalErrors = friendEditInt + inviteEditInt;
     updateUserToDB(totalErrors, friendEditInt, inviteEditInt);
   } else {
-    console.log("No updates needed!");
+    if(consoleOutput)
+      console.log("No updates needed!");
   }
 }
 
@@ -186,7 +197,8 @@ function updateUserToDB(totalErrors, friendEditInt, inviteEditInt){
     });
     user.friends = supplementaryFriendsArr;
   }
-  console.log("Updates pushed!");
+  if(consoleOutput)
+    console.log("Updates pushed!");
 }
 
 function collectUserBoughtGifts(){
@@ -297,7 +309,8 @@ window.onload = function instantiate() {
 
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
@@ -307,35 +320,41 @@ window.onload = function instantiate() {
             notificationBtn.src = "img/bellNotificationOff.png";
             notificationBtn.onclick = function () {}
           } else if (data.val().readNotifications == undefined){
-            //console.log("No Read Notifications");
+            if(consoleOutput)
+              console.log("No Read Notifications");
           } else if (data.val().readNotifications.length == data.val().notifications.length) {
             notificationBtn.src = "img/bellNotificationOff.png";
             notificationBtn.onclick = function() {
               newNavigation(6);//Notifications
             }
           }
-          console.log("User Updated: 1");
+          if(consoleOutput)
+            console.log("User Updated: 1");
         }
       });
 
       postRef.on('child_changed', function (data) {
-        console.log("User Updated: " + data.val().userName);
+        if(consoleOutput)
+          console.log("User Updated: " + data.val().userName);
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == user.uid){
           user = data.val();
-          console.log("User Updated: 2");
+          if(consoleOutput)
+            console.log("User Updated: 2");
         }
       });
 
       postRef.on('child_removed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          if(consoleOutput)
+            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
       });
@@ -346,14 +365,14 @@ window.onload = function instantiate() {
         giftArr.push(data.val());
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
+            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
       });
 
       postRef.on('child_changed', function(data) {
         giftArr[data.key] = data.val();
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
+            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
       });
 
       postRef.on('child_removed', function(data) {
@@ -370,18 +389,23 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
         inviteArr[data.key] = data.val();
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
       });
 
       postRef.on('child_removed', function (data) {
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
 
         if (inviteArr.length == 0) {
-          console.log("Invite List Removed");
+          if(consoleOutput)
+            console.log("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -399,7 +423,8 @@ window.onload = function instantiate() {
   function findUIDItemInArr(item, userArray){
     for(let i = 0; i < userArray.length; i++){
       if(userArray[i].uid == item){
-        //console.log("Found item: " + item);
+        if(consoleOutput)
+          console.log("Found item: " + item);
         return i;
       }
     }
@@ -633,10 +658,12 @@ window.onload = function instantiate() {
         if(userFound != -1){
           addNotificationToDB(userArr[userFound], title);
         } else {
-          console.log("User not found");
+          if(consoleOutput)
+            console.log("User not found");
         }
       } else {
-        console.log("No buyer, no notification needed");
+        if(consoleOutput)
+          console.log("No buyer, no notification needed");
       }
 
     } else {
@@ -647,7 +674,8 @@ window.onload = function instantiate() {
   function findUserNameItemInArr(item, userArray){
     for(let i = 0; i < userArray.length; i++){
       if(userArray[i].userName == item){
-        console.log("Found item: " + item);
+        if(consoleOutput)
+          console.log("Found item: " + item);
         return i;
       }
     }
@@ -671,14 +699,17 @@ window.onload = function instantiate() {
         notifications: buyerUserNotifications
       });
     } else {
-      console.log("New Notifications List");
+      if(consoleOutput)
+        console.log("New Notifications List");
       firebase.database().ref("users/" + buyerUserData.uid).update({notifications:{0:notificationString}});
     }
-    console.log("Added Notification To DB");
+    if(consoleOutput)
+      console.log("Added Notification To DB");
   }
 
   function generateNotificationString(giftOwner, giftTitle, pageName){
-    console.log("Generating Notification");
+    if(consoleOutput)
+      console.log("Generating Notification");
     return (giftOwner + "," + giftTitle + "," + pageName);
   }
 };
@@ -708,7 +739,8 @@ function deployGiftListEmptyNotification(){
   try{
     testGift.innerHTML = "No Gifts Found! Add Some Gifts With The Button Below!";
   } catch(err){
-    console.log("Loading Element Missing, Creating A New One");
+    if(consoleOutput)
+      console.log("Loading Element Missing, Creating A New One");
     let liItem = document.createElement("LI");
     liItem.id = "testGift";
     liItem.className = "gift";
