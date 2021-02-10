@@ -24,9 +24,11 @@ let noteSpan;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    console.log("User: " + user.userName + " loaded in");
+    if(consoleOutput)
+      console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      console.log("Invites Not Found");
+      if(consoleOutput)
+        console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
         inviteNote.style.background = "#ff3923";
@@ -34,7 +36,8 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    console.log(err.toString());
+    if(consoleOutput)
+      console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -59,7 +62,7 @@ window.onload = function instantiate() {
   emailBtn.onclick = function () {
     let supportStr = genSupport();
     window.open('mailto:gifty.application@gmail.com?subject=Gifty Support #' + supportStr +
-      '&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, ' + user.userName);
+        '&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, ' + user.userName);
   };
 
   function genSupport() {
@@ -78,8 +81,10 @@ window.onload = function instantiate() {
     } catch (err) {
 
     }
-    console.log(supportCode);
-    console.log(supportCount);
+    if(consoleOutput) {
+      console.log(supportCode);
+      console.log(supportCount);
+    }
     firebase.database().ref("users/" + user.uid + "/support/" + supportCount).push();
     firebase.database().ref("users/" + user.uid + "/support/" + supportCount).set({
       supportCount: supportCount,
@@ -99,7 +104,8 @@ window.onload = function instantiate() {
   function settingsFAQButton(){
     let nowConfirm = 0;
     let alternator = 0;
-    console.log("Settings Button Feature Active");
+    if(consoleOutput)
+      console.log("Settings Button Feature Active");
     setInterval(function(){
       nowConfirm = nowConfirm + 1000;
       if(nowConfirm >= 3000){
