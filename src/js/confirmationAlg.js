@@ -45,9 +45,11 @@ let userDeleteBtn;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    console.log("User: " + user.userName + " loaded in");
+    if(consoleOutput)
+      console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      console.log("Invites Not Found");
+      if(consoleOutput)
+        console.log("Invites Not Found");
       deployInviteListEmptyNotification();
       inviteListEmptyBool = true;
     } else if (user.invites != undefined) {
@@ -57,13 +59,15 @@ function getCurrentUser(){
     }
 
     if (user.readNotifications == undefined) {
-      console.log("Read Notifications Not Found");
+      if(consoleOutput)
+        console.log("Read Notifications Not Found");
     } else {
       readNotificationsBool = true;
     }
 
     if (user.notifications == undefined) {
-      console.log("Notifications Not Found");
+      if(consoleOutput)
+        console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
         if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
@@ -86,7 +90,8 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    console.log(err.toString());
+    if(consoleOutput)
+      console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -121,7 +126,8 @@ window.onload = function instantiate() {
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
       if (testGift == undefined){
-        //console.log("TestGift Missing. Loading Properly.");
+        if(consoleOutput)
+          console.log("TestGift Missing. Loading Properly.");
       } else if (!inviteListEmptyBool) {
         testGift.innerHTML = "Loading... Please Wait...";
       }
@@ -136,7 +142,8 @@ window.onload = function instantiate() {
   function inviteConfirmButton(){
     let nowConfirm = 0;
     let alternator = 0;
-    console.log("Invite Button Feature Active");
+    if(consoleOutput)
+      console.log("Invite Button Feature Active");
     setInterval(function(){
       nowConfirm = nowConfirm + 1000;
       if(nowConfirm >= 3000){
@@ -166,20 +173,23 @@ window.onload = function instantiate() {
 
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == user.uid){
           user = data.val();
-          console.log("User Updated: 1");
+          if(consoleOutput)
+            console.log("User Updated: 1");
         }
       });
 
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
@@ -189,14 +199,16 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
-          console.log("User Updated: 2");
+          if(consoleOutput)
+            console.log("User Updated: 2");
         }
       });
 
       postRef.on('child_removed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          if(consoleOutput)
+            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
       });
@@ -209,15 +221,19 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        console.log(friendArr);
+        if(consoleOutput)
+          console.log(friendArr);
         friendArr[data.key] = data.val();
-        console.log(friendArr);
+        if(consoleOutput)
+          console.log(friendArr);
       });
 
       postRef.on('child_removed', function (data) {
-        console.log(friendArr);
+        if(consoleOutput)
+          console.log(friendArr);
         friendArr.splice(data.key, 1);
-        console.log(friendArr);
+        if(consoleOutput)
+          console.log(friendArr);
       });
     };
 
@@ -253,7 +269,8 @@ window.onload = function instantiate() {
   function findUIDItemInArr(item, userArray){
     for(let i = 0; i < userArray.length; i++){
       if(userArray[i].uid == item){
-        //console.log("Found item: " + item);
+        if(consoleOutput)
+          console.log("Found item: " + item);
         return i;
       }
     }
@@ -377,8 +394,10 @@ window.onload = function instantiate() {
   }
 
   function addInvite(inviteData){
-    console.log("Adding " + inviteData.uid);
-    console.log(friendArr);
+    if(consoleOutput) {
+      console.log("Adding " + inviteData.uid);
+      console.log(friendArr);
+    }
 
     let friendFriendArr;
     if(inviteData.friends == undefined || inviteData.friends == null) {
@@ -406,7 +425,8 @@ window.onload = function instantiate() {
       friends: friendArr
     });
 
-    console.log(friendArr);
+    if(consoleOutput)
+      console.log(friendArr);
 
     deleteInvite(inviteData.uid);
   }
@@ -415,7 +435,8 @@ window.onload = function instantiate() {
     let verifyDeleteBool = true;
     let toDelete = -1;
 
-    console.log("Deleting Invite " + uid);
+    if(consoleOutput)
+      console.log("Deleting Invite " + uid);
     for (let i = 0; i < inviteArr.length; i++){
       if(inviteArr[i] == uid) {
         toDelete = i;
@@ -477,7 +498,8 @@ function deployInviteListEmptyNotification(){
   try{
     testGift.innerHTML = "No Invites Found! You Already Accepted All Your Invites!";
   } catch(err){
-    console.log("Loading Element Missing, Creating A New One");
+    if(consoleOutput)
+      console.log("Loading Element Missing, Creating A New One");
     let liItem = document.createElement("LI");
     liItem.id = "testGift";
     liItem.className = "gift";
