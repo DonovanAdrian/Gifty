@@ -46,31 +46,37 @@ function getCurrentUser(){
     privateList = JSON.parse(sessionStorage.privateList);
     if(privateList == null || privateList == undefined || privateList == "") {
       privateListBool = false;
-      console.log("User: " + user.userName + " loaded in");
+      if(consoleOutput)
+        console.log("User: " + user.userName + " loaded in");
     } else {
       privateUser = JSON.parse(sessionStorage.validPrivateUser);
       homeNote.className = "";
       listNote.className = "active";
-      console.log("User: " + privateUser.userName + " loaded in");
-      console.log("Friend: " + user.userName + " loaded in");
+      if(consoleOutput) {
+        console.log("User: " + privateUser.userName + " loaded in");
+        console.log("Friend: " + user.userName + " loaded in");
+      }
     }
     giftStorage = JSON.parse(sessionStorage.giftStorage);
     if (giftStorage == null || giftStorage == undefined || giftStorage == "") {
       giftPresent = false;
     } else {
-      console.log("Gift: " + giftStorage + " found");
+      if(consoleOutput)
+        console.log("Gift: " + giftStorage + " found");
     }
     if (!privateListBool)
       if (user.invites == undefined) {
-        console.log("Invites Not Found");
+        if(consoleOutput)
+          console.log("Invites Not Found");
       } else if (user.invites != undefined) {
         if (user.invites.length > 0) {
           inviteNote.style.background = "#ff3923";
         }
       }
-    else
+      else
       if (user.invites == undefined) {
-        console.log("Invites Not Found");
+        if(consoleOutput)
+          console.log("Invites Not Found");
       } else if (user.invites != undefined) {
         if (user.invites.length > 0) {
           inviteNote.style.background = "#ff3923";
@@ -78,7 +84,8 @@ function getCurrentUser(){
       }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    console.log(err.toString());
+    if(consoleOutput)
+      console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -128,7 +135,8 @@ window.onload = function instantiate() {
       try{
         userGifts = firebase.database().ref("users/" + privateList.uid + "/privateList/");
       } catch (err) {
-        console.log("Unable to connect to private list");
+        if(consoleOutput)
+          console.log("Unable to connect to private list");
       }
     }
 
@@ -211,7 +219,7 @@ window.onload = function instantiate() {
 
     if(giftTitleInp.value === "")
       alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
-        "you!");
+          "you!");
     else if (invalidURLBool)
       alert("It looks like you entered an invalid URL, please enter a valid URL or leave the field blank.");
     else {
@@ -273,20 +281,24 @@ window.onload = function instantiate() {
                 addNotificationToDB(userArr[userFound], currentGift.title);
               }
             } else {
-              console.log(user.uid);
+              if(consoleOutput)
+                console.log(user.uid);
               if (userArr[userFound].uid != user.uid) {
                 addNotificationToDB(userArr[userFound], currentGift.title);
               }
             }
           } else {
-            console.log("User not found");
+            if(consoleOutput)
+              console.log("User not found");
           }
         } else {
-          console.log("No buyer, no notification needed");
+          if(consoleOutput)
+            console.log("No buyer, no notification needed");
         }
       } else {
         alert("There was an error updating the gift, please try again!");
-        console.log(giftUID);
+        if(consoleOutput)
+          console.log(giftUID);
       }
     }
     invalidURLBool = false;
@@ -295,7 +307,8 @@ window.onload = function instantiate() {
   function findUserNameItemInArr(item, userArray){
     for(let i = 0; i < userArray.length; i++){
       if(userArray[i].userName == item){
-        console.log("Found item: " + item);
+        if(consoleOutput)
+          console.log("Found item: " + item);
         return i;
       }
     }
@@ -322,16 +335,20 @@ window.onload = function instantiate() {
       firebase.database().ref("users/" + buyerUserData.uid).update({
         notifications: buyerUserNotifications
       });
-      console.log("Added New Notification To DB");
+      if(consoleOutput)
+        console.log("Added New Notification To DB");
     } else {
-      console.log("New Notifications List");
+      if(consoleOutput)
+        console.log("New Notifications List");
       firebase.database().ref("users/" + buyerUserData.uid).update({notifications:{0:notificationString}});
-      console.log("Added Notification To DB");
+      if(consoleOutput)
+        console.log("Added Notification To DB");
     }
   }
 
   function generateNotificationString(giftOwner, giftTitle, pageName){
-    console.log("Generating Notification");
+    if(consoleOutput)
+      console.log("Generating Notification");
     return (giftOwner + "," + giftTitle + "," + pageName);
   }
 
@@ -348,10 +365,10 @@ window.onload = function instantiate() {
       invalidURLOverride = false;
     if(giftTitleInp.value === "")
       alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
-        "you!");
+          "you!");
     else if (invalidURLBool && !invalidURLOverride) {
       alert("It looks like you might have entered an invalid URL, double check to see if your url is valid and " +
-        "try again.");
+          "try again.");
       invalidURLOverride = true;
       invalidURL = newURL;
     } else {
@@ -461,6 +478,7 @@ window.onload = function instantiate() {
     else if (invalidChar)
       invalidURLBool = true;
     else
+    if(consoleOutput)
       console.log("Valid URL! " + tempURL);
 
     return tempURL;
