@@ -64,9 +64,11 @@ let cancelInvite;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    console.log("User: " + user.userName + " loaded in");
+    if(consoleOutput)
+      console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      console.log("Invites Not Found");
+      if(consoleOutput)
+        console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
         newInviteIcon.style.display = "block";
@@ -81,40 +83,43 @@ function getCurrentUser(){
       deployFriendListEmptyNotification();
       friendListEmptyBool = true;
     } else {
-      //console.log(user.friends);
+      if(consoleOutput)
+        console.log(user.friends);
     }
 
-    if (user.readNotifications == undefined) {
-      console.log("Read Notifications Not Found");
-    } else {
-      readNotificationsBool = true;
-    }
+    if (user.readNotifications == undefined)
+      if(consoleOutput)
+        console.log("Read Notifications Not Found");
+      else
+        readNotificationsBool = true;
 
-    if (user.notifications == undefined) {
-      console.log("Notifications Not Found");
-    } else if (user.notifications != undefined) {
-      if (readNotificationsBool){
-        if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
+    if (user.notifications == undefined)
+      if(consoleOutput)
+        console.log("Notifications Not Found");
+      else if (user.notifications != undefined) {
+        if (readNotificationsBool){
+          if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
+            notificationBtn.src = "img/bellNotificationOn.png";
+            notificationBtn.onclick = function() {
+              newNavigation(6);//Notifications
+            }
+          } else {
+            notificationBtn.src = "img/bellNotificationOff.png";
+            notificationBtn.onclick = function() {
+              newNavigation(6);//Notifications
+            }
+          }
+        } else if (user.notifications.length > 0) {
           notificationBtn.src = "img/bellNotificationOn.png";
           notificationBtn.onclick = function() {
             newNavigation(6);//Notifications
           }
-        } else {
-          notificationBtn.src = "img/bellNotificationOff.png";
-          notificationBtn.onclick = function() {
-            newNavigation(6);//Notifications
-          }
-        }
-      } else if (user.notifications.length > 0) {
-        notificationBtn.src = "img/bellNotificationOn.png";
-        notificationBtn.onclick = function() {
-          newNavigation(6);//Notifications
         }
       }
-    }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    console.log(err.toString());
+    if(consoleOutput)
+      console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -173,7 +178,8 @@ window.onload = function instantiate() {
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
       if (testGift == undefined){
-        //console.log("TestGift Missing. Loading Properly.");
+        if(consoleOutput)
+          console.log("TestGift Missing. Loading Properly.");
       } else if (!friendListEmptyBool) {
         testGift.innerHTML = "Loading... Please Wait...";
       }
@@ -198,33 +204,38 @@ window.onload = function instantiate() {
 
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == user.uid){
           user = data.val();
-          console.log("User Updated: 1");
+          if(consoleOutput)
+            console.log("User Updated: 1");
         }
       });
 
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == user.uid){
           user = data.val();
-          console.log("User Updated: 2");
+          if(consoleOutput)
+            console.log("User Updated: 2");
         }
       });
 
       postRef.on('child_removed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          if(consoleOutput)
+            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
       });
@@ -233,13 +244,15 @@ window.onload = function instantiate() {
     let fetchFriends = function (postRef) {
       postRef.on('child_added', function (data) {
         friendArr.push(data.val());
-        //console.log("Creating " + data.val());
+        if(consoleOutput)
+          console.log("Creating " + data.val());
         createFriendElement(data.val());
       });
 
       postRef.on('child_changed', function (data) {
         friendArr[data.key] = data.val();
-        //console.log("Changing " + data.val());
+        if(consoleOutput)
+          console.log("Changing " + data.val());
         changeFriendElement(data.val());
       });
 
@@ -262,7 +275,8 @@ window.onload = function instantiate() {
         inviteArr.splice(data.key, 1);
 
         if (inviteArr.length == 0) {
-          console.log("Invite List Removed");
+          if(consoleOutput)
+            console.log("Invite List Removed");
           newInviteIcon.style.display = "none";
           inviteNote.style.background = "#008222";
         }
@@ -281,7 +295,8 @@ window.onload = function instantiate() {
   function findUIDItemInArr(item, userArray){
     for(let i = 0; i < userArray.length; i++){
       if(userArray[i].uid == item){
-        //console.log("Found item: " + item);
+        if(consoleOutput)
+          console.log("Found item: " + item);
         return i;
       }
     }
@@ -629,12 +644,15 @@ window.onload = function instantiate() {
         }
       }
     };
-    console.log("Add Button Generated");
+    if(consoleOutput)
+      console.log("Add Button Generated");
   }
 
   function generateConfirmDialog(userLocation) {
-    //console.log(userLocation);
-    //console.log(userArr[userLocation].userName);
+    if(consoleOutput) {
+      console.log(userLocation);
+      console.log(userArr[userLocation].userName);
+    }
     if (userLocation != -1) {
       confUserName.innerHTML = "Did you mean to add \"" + userArr[userLocation].name + "\"?";
       closeModal(userInviteModal);
@@ -697,7 +715,8 @@ window.onload = function instantiate() {
         invites: invitedUserInvites
       });
     } else {
-      //console.log("New Invite List");
+      if(consoleOutput)
+        console.log("New Invite List");
       firebase.database().ref("users/" + invitedUser.uid).update({invites:{0:user.uid}});
     }
 
@@ -715,7 +734,8 @@ window.onload = function instantiate() {
         notifications: invitedUserNotificiations
       });
     } else {
-      console.log("New Notifications List");
+      if(consoleOutput)
+        console.log("New Notifications List");
       firebase.database().ref("users/" + invitedUser.uid).update({notifications:{0:notificationString}});
     }
   }
@@ -733,7 +753,8 @@ function deployFriendListEmptyNotification(){
       testGift.innerHTML = "No Friends Found! Invite Some Friends With The Button Below!";
     }
   } catch(err){
-    console.log("Loading Element Missing, Creating A New One");
+    if(consoleOutput)
+      console.log("Loading Element Missing, Creating A New One");
     let liItem = document.createElement("LI");
     liItem.id = "testGift";
     liItem.className = "gift";
