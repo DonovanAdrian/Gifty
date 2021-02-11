@@ -57,8 +57,10 @@ function getCurrentUser(){
     moderationSet = sessionStorage.getItem("moderationSet");
     giftUser = JSON.parse(sessionStorage.validGiftUser);
     user = JSON.parse(sessionStorage.validUser);
-    console.log("User: " + user.userName + " loaded in");
-    console.log("Friend: " + giftUser.userName + " loaded in");
+    if(consoleOutput) {
+      console.log("User: " + user.userName + " loaded in");
+      console.log("Friend: " + giftUser.userName + " loaded in");
+    }
     if (giftUser.giftList == undefined) {
       deployGiftListEmptyNotification();
       giftListEmptyBool = true;
@@ -67,7 +69,8 @@ function getCurrentUser(){
       giftListEmptyBool = true;
     }
     if (user.invites == undefined) {
-      console.log("Invites Not Found");
+      if(consoleOutput)
+        console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
         inviteNote.style.background = "#ff3923";
@@ -75,13 +78,15 @@ function getCurrentUser(){
     }
 
     if (user.readNotifications == undefined) {
-      console.log("Read Notifications Not Found");
+      if(consoleOutput)
+        console.log("Read Notifications Not Found");
     } else {
       readNotificationsBool = true;
     }
 
     if (user.notifications == undefined) {
-      console.log("Notifications Not Found");
+      if(consoleOutput)
+        console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
         if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
@@ -104,7 +109,8 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    console.log(err.toString());
+    if(consoleOutput)
+      console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -159,7 +165,8 @@ window.onload = function instantiate() {
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
       if (testGift == undefined){
-        //console.log("TestGift Missing. Loading Properly.");
+        if(consoleOutput)
+          console.log("TestGift Missing. Loading Properly.");
       } else if (!giftListEmptyBool) {
         testGift.innerHTML = "Loading... Please Wait...";
       }
@@ -174,7 +181,8 @@ window.onload = function instantiate() {
   function friendListButton(){
     let nowConfirm = 0;
     let alternator = 0;
-    console.log("Friend List Button Feature Active");
+    if(consoleOutput)
+      console.log("Friend List Button Feature Active");
     setInterval(function(){
       nowConfirm = nowConfirm + 1000;
       if(nowConfirm >= 3000){
@@ -204,33 +212,38 @@ window.onload = function instantiate() {
 
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == giftUser.uid){
           giftUser = data.val();
-          console.log("User Updated: 1");
+          if(consoleOutput)
+            console.log("User Updated: 1");
         }
       });
 
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == giftUser.uid){
           giftUser = data.val();
-          console.log("User Updated: 2");
+          if(consoleOutput)
+            console.log("User Updated: 2");
         }
       });
 
       postRef.on('child_removed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          if(consoleOutput)
+            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
       });
@@ -246,7 +259,7 @@ window.onload = function instantiate() {
         }
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate);
+            data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate);
 
         if(updateGiftToDBBool){
           updateGiftError(data, data.key);
@@ -262,7 +275,7 @@ window.onload = function instantiate() {
         }
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate);
+            data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate);
       });
 
       postRef.on('child_removed', function(data) {
@@ -280,18 +293,23 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
         inviteArr[data.key] = data.val();
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
       });
 
       postRef.on('child_removed', function (data) {
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
 
         if (inviteArr.length == 0) {
-          console.log("Invite List Removed");
+          if(consoleOutput)
+            console.log("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -309,7 +327,8 @@ window.onload = function instantiate() {
   function findUIDItemInArr(item, userArray){
     for(let i = 0; i < userArray.length; i++){
       if(userArray[i].uid == item){
-        //console.log("Found item: " + item);
+        if(consoleOutput)
+          console.log("Found item: " + item);
         return i;
       }
     }
@@ -319,13 +338,16 @@ window.onload = function instantiate() {
   function checkGiftBuyer(buyer){
     let updateGiftToDB = true;
 
-    //console.log("Checking for buyer error...");
+    if(consoleOutput)
+      console.log("Checking for buyer error...");
 
     if(buyer == "" || buyer == null || buyer == undefined || userUserNames.includes(buyer)){
       updateGiftToDB = false;
-      //console.log("No buyer error");
+      if(consoleOutput)
+        console.log("No buyer error");
     } else {
-      console.log("Buyer error found!");
+      if(consoleOutput)
+        console.log("Buyer error found!");
     }
 
     return updateGiftToDB;
@@ -340,7 +362,8 @@ window.onload = function instantiate() {
 
   function createGiftElement(giftDescription, giftLink, giftReceived, giftTitle, giftKey, giftWhere, giftBuyer, giftUid,
                              giftDate){
-    console.log("Creating " + giftUid);
+    if(consoleOutput)
+      console.log("Creating " + giftUid);
     try{
       testGift.remove();
     } catch (err) {}
@@ -352,7 +375,8 @@ window.onload = function instantiate() {
     liItem.className = "gift";
     if(giftReceived == 1) {
       liItem.className += " checked";
-      //console.log("Checked, created");
+      if(consoleOutput)
+        console.log("Checked, created");
     }
     liItem.onclick = function (){
       if (giftLink != ""){
@@ -420,7 +444,7 @@ window.onload = function instantiate() {
             });
           } else {
             alert("Only the buyer, " + giftBuyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-              "if this has been done in error.");
+                "if this has been done in error.");
           }
         } else {
           alert("This gift has already been marked as \"Un-Bought\"!");
@@ -455,7 +479,8 @@ window.onload = function instantiate() {
     editGift.className = "gift";
     if(received == 1) {
       editGift.className += " checked";
-      //console.log("Checked, changed");
+      if(consoleOutput)
+        console.log("Checked, changed");
     }
     editGift.onclick = function (){
       if (link != ""){
@@ -523,7 +548,7 @@ window.onload = function instantiate() {
             });
           } else {
             alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-              "if this has been done in error.");
+                "if this has been done in error.");
           }
         } else {
           alert("This gift has already been marked as \"Un-Bought\"!");
@@ -561,7 +586,8 @@ function deployGiftListEmptyNotification(){
   try{
     testGift.innerHTML = "No Gifts Found! Your Friend Must Not Have Any Gifts!";
   } catch(err){
-    console.log("Loading Element Missing, Creating A New One");
+    if(consoleOutput)
+      console.log("Loading Element Missing, Creating A New One");
     let liItem = document.createElement("LI");
     liItem.id = "testGift";
     liItem.className = "gift";
