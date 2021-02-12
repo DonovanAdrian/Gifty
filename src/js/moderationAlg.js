@@ -67,9 +67,11 @@ let cancelMsg;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    console.log("User: " + user.userName + " loaded in");
+    if(consoleOutput)
+      console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      console.log("Invites Not Found");
+      if(consoleOutput)
+        console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
         inviteNote.style.background = "#ff3923";
@@ -82,7 +84,8 @@ function getCurrentUser(){
     userArr = JSON.parse(sessionStorage.userArr);
     sessionStorage.setItem("moderationSet", moderationSet);
   } catch (err) {
-    console.log(err.toString());
+    if(consoleOutput)
+      console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -140,7 +143,8 @@ window.onload = function instantiate() {
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
       if (testGift == undefined){
-        //console.log("TestGift Missing. Loading Properly.");
+        if(consoleOutput)
+          console.log("TestGift Missing. Loading Properly.");
       } else {
         testGift.innerHTML = "Loading... Please Wait...";
       }
@@ -256,28 +260,32 @@ window.onload = function instantiate() {
       if (!userUIDArr.includes(tempUserArr[selector].uid)) {
         if (tempUserArr[selector].name != optInUserArr[i].name) {
           if (optInUserArr[i].friends.includes(tempUserArr[selector].uid)) {
-            console.log("Matched " + tempUserArr[selector].name + " to " + optInUserArr[i].name);
+            if(consoleOutput)
+              console.log("Matched " + tempUserArr[selector].name + " to " + optInUserArr[i].name);
             userUIDArr.push(tempUserArr[selector].uid);
             userIndex = findUIDItemInArr(optInUserArr[i].uid, userArr);
             userArr[userIndex].secretSantaName = tempUserArr[selector].uid;
             tempUserArr.splice(selector, 1);
             retryCount = 0;
           } else {
-            //console.log("These Users Aren't Friends :(");
+            if(consoleOutput)
+              console.log("These Users Aren't Friends :(");
             retryCount++;
             if(retryCount >= 10)
               break;
             i--;
           }
         } else {
-          //console.log("These Are The Same Users :(");
+          if(consoleOutput)
+            console.log("These Are The Same Users :(");
           retryCount++;
           if(retryCount >= 10)
             break;
           i--;
         }
       } else {
-        //console.log("User Has Already Been Picked");
+        if(consoleOutput)
+          console.log("User Has Already Been Picked");
         retryCount++;
         if(retryCount >= 10)
           break;
@@ -286,10 +294,12 @@ window.onload = function instantiate() {
     }
 
     if (optInUserArr.length != userUIDArr.length) {
-      console.log("USERUIDARR:");
-      console.log(userUIDArr);
-      console.log("TEMPUSERARR:");
-      console.log(tempUserArr);
+      if(consoleOutput) {
+        console.log("USERUIDARR:");
+        console.log(userUIDArr);
+        console.log("TEMPUSERARR:");
+        console.log(tempUserArr);
+      }
       userUIDArr = [];
       removeSecretSantaNames();
       alert("Secret Santa System Was Unable To Properly Initialize Secret Santa Names. Please Try Again");
@@ -321,7 +331,8 @@ window.onload = function instantiate() {
           secretSanta: userArr[i].secretSanta
         });
       } else {
-        console.log("Failed To Update Num " + userArr[i].name);
+        if(consoleOutput)
+          console.log("Failed To Update Num " + userArr[i].name);
       }
     }
   }
@@ -333,7 +344,8 @@ window.onload = function instantiate() {
           secretSantaName: userArr[i].secretSantaName
         });
       } else {
-        console.log("Failed To Update Name " + userArr[i].name);
+        if(consoleOutput)
+          console.log("Failed To Update Name " + userArr[i].name);
       }
     }
   }
@@ -341,7 +353,8 @@ window.onload = function instantiate() {
   function settingsModerateButton(){
     let nowConfirm = 0;
     let alternator = 0;
-    console.log("Settings Button Feature Active");
+    if(consoleOutput)
+      console.log("Settings Button Feature Active");
     setInterval(function(){
       nowConfirm = nowConfirm + 1000;
       if(nowConfirm >= 3000){
@@ -484,13 +497,15 @@ window.onload = function instantiate() {
 
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == user.uid){
           user = data.val();
-          //console.log("User Updated: 1");
+          if(consoleOutput)
+            console.log("User Updated: 1");
         }
       });
 
@@ -499,13 +514,15 @@ window.onload = function instantiate() {
 
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == user.uid){
           user = data.val();
-          //console.log("User Updated: 2");
+          if(consoleOutput)
+            console.log("User Updated: 2");
         }
 
         if(currentModalOpen == data.key) {//Moved currentModalOpen reference to common.js
@@ -518,7 +535,8 @@ window.onload = function instantiate() {
 
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          //console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          if(consoleOutput)
+            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
 
@@ -536,18 +554,23 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
         inviteArr[data.key] = data.val();
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
       });
 
       postRef.on('child_removed', function (data) {
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
 
         if (inviteArr.length == 0) {
-          console.log("Invite List Removed");
+          if(consoleOutput)
+            console.log("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -563,7 +586,8 @@ window.onload = function instantiate() {
   function findUIDItemInArr(item, userArray){
     for(let i = 0; i < userArray.length; i++){
       if(userArray[i].uid == item){
-        //console.log("Found item: " + item);
+        if(consoleOutput)
+          console.log("Found item: " + item);
         return i;
       }
     }
@@ -669,7 +693,8 @@ window.onload = function instantiate() {
         moderatorOp.onclick = function() {
           if(userData.userName == user.userName){
             alert("You cannot adjust your own role");
-            console.log("...How'd you get here...?");
+            if(consoleOutput)
+              console.log("...How'd you get here...?");
           } else {
             alert("Granted role for: " + userData.userName);
             firebase.database().ref("users/" + userData.uid).update({
@@ -803,7 +828,8 @@ window.onload = function instantiate() {
         moderatorOp.onclick = function() {
           if(userData.userName == user.userName){
             alert("You cannot adjust your own role");
-            console.log("...How'd you get here...?");
+            if(consoleOutput)
+              console.log("...How'd you get here...?");
           } else {
             alert("Granted role for: " + userData.userName);
             firebase.database().ref("users/" + userData.uid).update({
@@ -871,7 +897,8 @@ function deployUserListEmptyNotification(){
   try{
     testGift.innerHTML = "No Users Found!";
   } catch(err){
-    console.log("Loading Element Missing, Creating A New One");
+    if(consoleOutput)
+      console.log("Loading Element Missing, Creating A New One");
     let liItem = document.createElement("LI");
     liItem.id = "TestGift";
     liItem.className = "gift";
