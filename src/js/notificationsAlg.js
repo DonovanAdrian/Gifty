@@ -49,37 +49,45 @@ let cancelMsg;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    console.log("User: " + user.userName + " loaded in");
+    if(consoleOutput)
+      console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      console.log("Invites Not Found");
+      if(consoleOutput)
+        console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
         inviteNote.style.background = "#ff3923";
       }
     }
 
-    //console.log(user.notifications);
+    if(consoleOutput)
+      console.log(user.notifications);
     if(user.notifications == undefined) {
-      console.log("Notifications Not Found");
+      if(consoleOutput)
+        console.log("Notifications Not Found");
       deployNotificationListEmptyNotification();
       notificationListEmptyBool = true;
     } else {
       let notificationOverride = sessionStorage.getItem("notificationOverride");
       if (notificationOverride == undefined) {
-        console.log("Notifications Found");
+        if(consoleOutput)
+          console.log("Notifications Found");
       } else {
         if (notificationOverride == "notificationArrEmpty") {
-          console.log("Notifications Empty");
+          if(consoleOutput)
+            console.log("Notifications Empty");
           deployNotificationListEmptyNotification();
           notificationListEmptyBool = true;
         } else {
-          console.log("Notifications Found");
+          if(consoleOutput)
+            console.log("Notifications Found");
         }
       }
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    console.log(err.toString());
+    if(consoleOutput)
+      console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -118,9 +126,11 @@ window.onload = function instantiate() {
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
       if (testGift == undefined){
-        //console.log("TestGift Missing. Loading Properly.");
+        if(consoleOutput)
+          console.log("TestGift Missing. Loading Properly.");
       } else if (testGift.innerHTML == "No Notifications Found!"){
-        //console.log("No Notifications Found");
+        if(consoleOutput)
+          console.log("No Notifications Found");
       } else if (!notificationListEmptyBool) {
         testGift.innerHTML = "Loading... Please Wait...";
       }
@@ -186,12 +196,15 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_removed', function (data) {
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
 
         if (inviteArr.length == 0) {
-          console.log("Invite List Removed");
+          if(consoleOutput)
+            console.log("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -233,7 +246,8 @@ window.onload = function instantiate() {
       } else if (notificationSplit.length == 2) {
         let invitedName = notificationSplit[0];
         let pageName = notificationSplit[1];
-        //console.log(invitedName + " " + pageName);
+        if(consoleOutput)
+          console.log(invitedName + " " + pageName);
 
         notificationTitle = "You received an invite!";
         notificationDetails = invitedName + " has sent you an invite!";
@@ -242,7 +256,8 @@ window.onload = function instantiate() {
         let giftOwner = notificationSplit[0];
         let giftTitle = notificationSplit[1];
         let pageName = notificationSplit[2];
-        //console.log(giftOwner + " " + giftTitle + " " + pageName);
+        if(consoleOutput)
+          console.log(giftOwner + " " + giftTitle + " " + pageName);
 
         friendUserData = findFriendUserData(giftOwner);
         notificationPage = pageName;
@@ -266,7 +281,8 @@ window.onload = function instantiate() {
             notificationTitle = "A gift you bought was deleted!";
           notificationDetails = "The gift, " + giftTitle + ", was deleted...";
         } else {
-          console.log("Notification Page Error, 1");
+          if(consoleOutput)
+            console.log("Notification Page Error, 1");
         }
       } else if (notificationSplit.length == 4) {
         let giftOwner = notificationSplit[0];
@@ -284,7 +300,8 @@ window.onload = function instantiate() {
           notificationTitle = giftDeleter + " deleted a gift that you bought!";
         notificationDetails = "The gift, " + giftTitle + ", was deleted by " + giftDeleter + "...";
       } else {
-        console.log("Unknown Notification String Received...");
+        if(consoleOutput)
+          console.log("Unknown Notification String Received...");
       }
     }
 
@@ -293,7 +310,8 @@ window.onload = function instantiate() {
     liItem.className = "gift";
     if(readNotificationArr.includes(notificationString)) {
       liItem.className += " checked";
-      //console.log("Checked, created");
+      if(consoleOutput)
+        console.log("Checked, created");
     }
     liItem.onclick = function (){
       notificationViewTitle.innerHTML = notificationTitle;
@@ -306,7 +324,7 @@ window.onload = function instantiate() {
         };
       } else if (notificationPage == "globalNotification"){
         notificationViewPage.innerHTML = "As always, if you need any other information, send me a support email that can" +
-          " be found in the Help/FAQ under settings! Thank you!";
+            " be found in the Help/FAQ under settings! Thank you!";
         notificationViewPage.onclick = function(){};
       } else if (notificationPage == "invites.html"){
         notificationViewPage.innerHTML = "Click here to access your invites!";
@@ -330,10 +348,11 @@ window.onload = function instantiate() {
         notificationViewPage.onclick = function(){};
       } else if (notificationPage == "deleteGiftPrivate") {
         notificationViewPage.innerHTML = "If this has been done in error, please contact the person who deleted " +
-          "the gift.";
+            "the gift.";
         notificationViewPage.onclick = function(){};
       } else {
-        console.log("Notification Page Error, 2");
+        if(consoleOutput)
+          console.log("Notification Page Error, 2");
         notificationViewPage.innerHTML = "There was an error loading this link, contact an administrator.";
         notificationViewPage.onclick = function(){};
       }
@@ -400,7 +419,8 @@ window.onload = function instantiate() {
       } else if (notificationSplit.length == 2) {
         let invitedName = notificationSplit[0];
         let pageName = notificationSplit[1];
-        console.log(invitedName + " " + pageName);
+        if(consoleOutput)
+          console.log(invitedName + " " + pageName);
 
         notificationTitle = "You received an invite!";
         notificationDetails = invitedName + " has sent you an invite!";
@@ -409,7 +429,8 @@ window.onload = function instantiate() {
         let giftOwner = notificationSplit[0];
         let giftTitle = notificationSplit[1];
         let pageName = notificationSplit[2];
-        console.log(giftOwner + " " + giftTitle + " " + pageName);
+        if(consoleOutput)
+          console.log(giftOwner + " " + giftTitle + " " + pageName);
 
         friendUserData = findFriendUserData(giftOwner);
         notificationPage = pageName;
@@ -433,7 +454,8 @@ window.onload = function instantiate() {
             notificationTitle = "A gift you bought was deleted!";
           notificationDetails = "The gift, " + giftTitle + ", was deleted...";
         } else {
-          console.log("Notification Page Error, 1");
+          if(consoleOutput)
+            console.log("Notification Page Error, 1");
         }
       } else if (notificationSplit.length == 4) {
         let giftOwner = notificationSplit[0];
@@ -451,7 +473,8 @@ window.onload = function instantiate() {
           notificationTitle = giftDeleter + " deleted a gift that you bought!";
         notificationDetails = "The gift, " + giftTitle + ", was deleted by " + giftDeleter + "...";
       } else {
-        console.log("Unknown Notification String Received...");
+        if(consoleOutput)
+          console.log("Unknown Notification String Received...");
       }
     }
 
@@ -461,7 +484,8 @@ window.onload = function instantiate() {
       liItemUpdate.className = "gift";
       if(readNotificationArr.includes(notificationString)) {
         liItemUpdate.className += " checked";
-        //console.log("Checked, created");
+        if(consoleOutput)
+          console.log("Checked, created");
       }
       liItemUpdate.onclick = function () {
         notificationViewTitle.innerHTML = notificationTitle;
@@ -474,7 +498,7 @@ window.onload = function instantiate() {
           };
         } else if (notificationPage == "globalNotification"){
           notificationViewPage.innerHTML = "As always, if you need any other information, send me a support email that can" +
-            " be found in the Help/FAQ under settings! Thank you!";
+              " be found in the Help/FAQ under settings! Thank you!";
           notificationViewPage.onclick = function(){};
         } else if (notificationPage == "invites.html") {
           notificationViewPage.innerHTML = "Click here to access your invites!";
@@ -499,11 +523,12 @@ window.onload = function instantiate() {
           };
         } else if (notificationPage == "deleteGiftPrivate") {
           notificationViewPage.innerHTML = "If this has been done in error, please contact the person who deleted " +
-            "the gift.";
+              "the gift.";
           notificationViewPage.onclick = function () {
           };
         } else {
-          console.log("Notification Page Error, 2");
+          if(consoleOutput)
+            console.log("Notification Page Error, 2");
           notificationViewPage.innerHTML = "There was an error loading this link, contact an administrator.";
           notificationViewPage.onclick = function () {
           };
@@ -594,7 +619,8 @@ window.onload = function instantiate() {
 
   function findFriendUserData(giftOwnerUID) {
     let i = findUIDItemInArr(giftOwnerUID, userArr);
-    //console.log(i + " " + userArr[i].name);
+    if(consoleOutput)
+      console.log(i + " " + userArr[i].name);
     if (i != -1){
       return userArr[i];
     }
@@ -604,7 +630,8 @@ window.onload = function instantiate() {
   function findUIDItemInArr(item, userArray){
     for(let i = 0; i < userArray.length; i++){
       if(userArray[i].uid == item){
-        //console.log("Found item: " + item);
+        if(consoleOutput)
+          console.log("Found item: " + item);
         return i;
       }
     }
@@ -613,7 +640,8 @@ window.onload = function instantiate() {
 
   function deleteNotification(uid) {
     let deleteNotificationBool = true;
-    console.log("Deleting " + uid);
+    if(consoleOutput)
+      console.log("Deleting " + uid);
 
     let toDelete = readNotificationArr.indexOf(notificationArr[uid]);
     readNotificationArr.splice(toDelete, 1);
@@ -655,13 +683,15 @@ window.onload = function instantiate() {
   }
 
   function updateReadNotificationToDB(){
-    //console.log(readNotificationArr);
+    if(consoleOutput)
+      console.log(readNotificationArr);
     if (user.readNotifications != undefined) {
       firebase.database().ref("users/" + user.uid).update({
         readNotifications: readNotificationArr
       });
     } else {
-      console.log("New Read Notifications List");
+      if(consoleOutput)
+        console.log("New Read Notifications List");
       firebase.database().ref("users/" + user.uid).update({readNotifications:{0:readNotificationArr}});
     }
   }
@@ -671,7 +701,8 @@ function deployNotificationListEmptyNotification(){
   try{
     testGift.innerHTML = "No Notifications Found!";
   } catch(err){
-    console.log("Loading Element Missing, Creating A New One");
+    if(consoleOutput)
+      console.log("Loading Element Missing, Creating A New One");
     let liItem = document.createElement("LI");
     liItem.id = "testGift";
     liItem.className = "gift";
