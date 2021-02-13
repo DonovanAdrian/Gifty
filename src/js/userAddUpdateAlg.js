@@ -40,12 +40,12 @@ function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
   } catch (err) {
-    console.log("Welcome new user!");
+    //console.log("Welcome new user!");
   }
   if(user == null){//newUser
     btnUpdate.innerHTML = "Create User Profile";
     alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely," +
-      "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
+        "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
   } else {//returningUser
     btnUpdate.innerHTML = "Loading...";
     btnDelete.style.display = "block";
@@ -56,7 +56,7 @@ function getCurrentUser(){
     userArr = JSON.parse(sessionStorage.userArr);
 
     alert("Please note that you will be required to input your confirmation pin to continue. If you would like to " +
-      "cancel, please click the back button on the browser.");
+        "cancel, please click the back button on the browser.");
   }
 }
 
@@ -115,7 +115,8 @@ window.onload = function instantiate() {
             pinConfField.placeholder = "Please Confirm Pin To Continue";
             btnUpdate.innerHTML = "Update User Profile";
             btnDelete.innerHTML = "Delete User Profile";
-            console.log("User Updated: 1");
+            if(consoleOutput)
+              console.log("User Updated: 1");
           }
         }
       });
@@ -123,7 +124,8 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
 
           userNameArr[i] = data.val().userName;
@@ -132,7 +134,8 @@ window.onload = function instantiate() {
         if(user != null) {
           if (data.key == user.uid) {
             user = data.val();
-            console.log("User Updated: 2");
+            if(consoleOutput)
+              console.log("User Updated: 2");
           }
         }
       });
@@ -152,7 +155,8 @@ window.onload = function instantiate() {
   function findUIDItemInArr(item, userArray){
     for(let i = 0; i < userArray.length; i++){
       if(userArray[i].uid == item){
-        console.log("Found item: " + item);
+        if(consoleOutput)
+          console.log("Found item: " + item);
         return i;
       }
     }
@@ -184,11 +188,13 @@ function updateMaintenanceLog(locationData, detailsData) {
 function deleteCheck(){
   updateMaintenanceLog("userAddUpdate", "Attempting to delete user: " + user.userName);
 
-  console.log(user.uid + " will be deleted. Are you sure?");
+  if(consoleOutput)
+    console.log(user.uid + " will be deleted. Are you sure?");
   openModal(confirmModal, "confirmModal");
 
   deleteConfirm.onclick = function () {
-    console.log("Confirmed to delete user " + user.uid);
+    if(consoleOutput)
+      console.log("Confirmed to delete user " + user.uid);
     firebase.database().ref("users/").child(user.uid).remove();
     closeModal(confirmModal);
 
@@ -199,20 +205,23 @@ function deleteCheck(){
   };
 
   deleteDeny.onclick = function () {
-    console.log("Denied to delete user " + user.uid);
+    if(consoleOutput)
+      console.log("Denied to delete user " + user.uid);
     closeModal(confirmModal);
   };
 
   //close on close
   confirmSpan.onclick = function () {
-    console.log("Closed window, user " + user.uid + " not deleted");
+    if(consoleOutput)
+      console.log("Closed window, user " + user.uid + " not deleted");
     closeModal(confirmModal);
   };
 
   //close on click
   window.onclick = function (event) {
     if (event.target == confirmModal) {
-      console.log("Clicked outside window, user " + user.uid + " not deleted");
+      if(consoleOutput)
+        console.log("Clicked outside window, user " + user.uid + " not deleted");
       closeModal(confirmModal);
     }
   }
@@ -224,7 +233,7 @@ function updateUserToDB(){
 
   if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
     alert("It looks like you left some fields blank. Make sure you have your full name, username, a pin, and " +
-      "a confirmed pin below.");
+        "a confirmed pin below.");
   } else if (pinConfField.value !== pinField.value){
     alert("It looks like the pins you entered are not the same");
   } else if (!isNaN(pinField.value) == false) {
@@ -312,7 +321,7 @@ function addUserToDB(){
 
   if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
     alert("It looks like you left some fields blank. Make sure you have your full name, username, a pin, and " +
-      "a confirmed pin below.");
+        "a confirmed pin below.");
   } else if (pinConfField.value !== pinField.value){
     alert("It looks like the pins you entered are not the same");
   } else if (!isNaN(pinField.value) == false) {
@@ -326,7 +335,7 @@ function addUserToDB(){
     injectUserArr(userArr);
     let encodeKey = encode(pinField.value);
     let shareCodeNew = genShareCode();
-    console.log(shareCodeNew);
+    //console.log(shareCodeNew);
     newUid = newUid.toString();
     newUid = newUid.substr(45, 64);
     firebase.database().ref("users/" + newUid).set({
