@@ -61,11 +61,14 @@ function getCurrentUser(){
     giftUser = JSON.parse(sessionStorage.validGiftUser);
     user = JSON.parse(sessionStorage.validUser);
     if(user.uid == giftUser.uid){
-      console.log("HOW'D YOU GET HERE???");
+      if(consoleOutput)
+        console.log("HOW'D YOU GET HERE???");
       newNavigation(2);//Home
     }
-    console.log("User: " + user.userName + " loaded in");
-    console.log("Friend: " + giftUser.userName + " loaded in");
+    if(consoleOutput) {
+      console.log("User: " + user.userName + " loaded in");
+      console.log("Friend: " + giftUser.userName + " loaded in");
+    }
     if (giftUser.privateList == undefined) {
       deployGiftListEmptyNotification();
       giftListEmptyBool = true;
@@ -74,7 +77,8 @@ function getCurrentUser(){
       giftListEmptyBool = true;
     }
     if (user.invites == undefined) {
-      console.log("Invites Not Found");
+      if(consoleOutput)
+        console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
         inviteNote.style.background = "#ff3923";
@@ -82,13 +86,15 @@ function getCurrentUser(){
     }
 
     if (user.readNotifications == undefined) {
-      console.log("Read Notifications Not Found");
+      if(consoleOutput)
+        console.log("Read Notifications Not Found");
     } else {
       readNotificationsBool = true;
     }
 
     if (user.notifications == undefined) {
-      console.log("Notifications Not Found");
+      if(consoleOutput)
+        console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
         if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
@@ -111,7 +117,8 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    console.log(err.toString());
+    if(consoleOutput)
+      console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -169,7 +176,8 @@ window.onload = function instantiate() {
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
       if (testGift == undefined){
-        //console.log("TestGift Missing. Loading Properly.");
+        if(consoleOutput)
+          console.log("TestGift Missing. Loading Properly.");
       } else if (!giftListEmptyBool) {
         testGift.innerHTML = "Loading... Please Wait...";
       }
@@ -184,7 +192,8 @@ window.onload = function instantiate() {
   function privateFriendListButton(){
     let nowConfirm = 0;
     let alternator = 0;
-    console.log("Friend List Button Feature Active");
+    if(consoleOutput)
+      console.log("Friend List Button Feature Active");
     setInterval(function(){
       nowConfirm = nowConfirm + 1000;
       if(nowConfirm >= 3000){
@@ -214,33 +223,38 @@ window.onload = function instantiate() {
 
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          //console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == giftUser.uid){
           giftUser = data.val();
-          console.log("User Updated: 1");
+          if(consoleOutput)
+            console.log("User Updated: 1");
         }
       });
 
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          if(consoleOutput)
+            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == giftUser.uid){
           giftUser = data.val();
-          console.log("User Updated: 2");
+          if(consoleOutput)
+            console.log("User Updated: 2");
         }
       });
 
       postRef.on('child_removed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          if(consoleOutput)
+            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
       });
@@ -256,8 +270,8 @@ window.onload = function instantiate() {
         }
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
-          data.val().creator);
+            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
+            data.val().creator);
         instantiatedNodes.push(data.val());
 
         if(updateGiftToDBBool){
@@ -267,7 +281,8 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function(data) {
-        //console.log("Changing " + data.val().uid);
+        if(consoleOutput)
+          console.log("Changing " + data.val().uid);
         giftArr[data.key] = data.val();
         instantiatedNodes[data.key] = data.val();
 
@@ -276,8 +291,8 @@ window.onload = function instantiate() {
         }
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
-          data.val().creator);
+            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
+            data.val().creator);
       });
 
       postRef.on('child_removed', function(data) {
@@ -295,18 +310,23 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
         inviteArr[data.key] = data.val();
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
       });
 
       postRef.on('child_removed', function (data) {
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        console.log(inviteArr);
+        if(consoleOutput)
+          console.log(inviteArr);
 
         if (inviteArr.length == 0) {
-          console.log("Invite List Removed");
+          if(consoleOutput)
+            console.log("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -324,7 +344,8 @@ window.onload = function instantiate() {
   function findUIDItemInArr(item, userArray){
     for(let i = 0; i < userArray.length; i++){
       if(userArray[i].uid == item){
-        //console.log("Found item: " + item);
+        if(consoleOutput)
+          console.log("Found item: " + item);
         return i;
       }
     }
@@ -334,13 +355,16 @@ window.onload = function instantiate() {
   function checkGiftBuyer(buyer){
     let updateGiftToDB = true;
 
-    //console.log("Checking for buyer error...");
+    if(consoleOutput)
+      console.log("Checking for buyer error...");
 
     if(buyer == "" || buyer == null || buyer == undefined || userUserNames.includes(buyer)){
       updateGiftToDB = false;
-      //console.log("No buyer error");
+      if(consoleOutput)
+        console.log("No buyer error");
     } else {
-      console.log("Buyer error found!");
+      if(consoleOutput)
+        console.log("Buyer error found!");
     }
 
     return updateGiftToDB;
@@ -363,7 +387,8 @@ window.onload = function instantiate() {
     liItem.className = "gift";
     if(received == 1) {
       liItem.className += " checked";
-      //console.log("Checked, created");
+      if(consoleOutput)
+        console.log("Checked, created");
     }
     liItem.onclick = function (){
       if (link != ""){
@@ -438,7 +463,7 @@ window.onload = function instantiate() {
           } else {
             updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
             alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
-              "if it needs to be removed.");
+                "if it needs to be removed.");
           }
         }
       };
@@ -469,7 +494,7 @@ window.onload = function instantiate() {
               });
             } else {
               alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-                "if this has been done in error.");
+                  "if this has been done in error.");
             }
           }
         } else {
@@ -507,7 +532,8 @@ window.onload = function instantiate() {
     editGift.className = "gift";
     if (received == 1) {
       editGift.className += " checked";
-      //console.log("Checked, changed");
+      if(consoleOutput)
+        console.log("Checked, changed");
     }
     editGift.onclick = function () {
       if (link != "") {
@@ -582,7 +608,7 @@ window.onload = function instantiate() {
           } else {
             updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
             alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
-              "if it needs to be removed.");
+                "if it needs to be removed.");
           }
         }
       };
@@ -613,7 +639,7 @@ window.onload = function instantiate() {
               });
             } else {
               alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-                "if this has been done in error.");
+                  "if this has been done in error.");
             }
           }
         } else {
@@ -694,10 +720,12 @@ window.onload = function instantiate() {
             addNotificationToDB(userArr[userFound], user.name, title);
           }
         } else {
-          console.log("User not found");
+          if(consoleOutput)
+            console.log("User not found");
         }
       } else {
-        console.log("No buyer, no notification needed");
+        if(consoleOutput)
+          console.log("No buyer, no notification needed");
       }
     } else {
       alert("Delete failed, please try again later!");
@@ -707,7 +735,8 @@ window.onload = function instantiate() {
   function findUserNameItemInArr(item, userArray){
     for(let i = 0; i < userArray.length; i++){
       if(userArray[i].userName == item){
-        console.log("Found item: " + item);
+        if(consoleOutput)
+          console.log("Found item: " + item);
         return i;
       }
     }
@@ -731,14 +760,17 @@ window.onload = function instantiate() {
         notifications: buyerUserNotifications
       });
     } else {
-      console.log("New Notifications List");
+      if(consoleOutput)
+        console.log("New Notifications List");
       firebase.database().ref("users/" + buyerUserData.uid).update({notifications:{0:notificationString}});
     }
-    console.log("Added Notification To DB");
+    if(consoleOutput)
+      console.log("Added Notification To DB");
   }
 
   function generateNotificationString(giftOwner, giftDeleter, giftTitle, pageName){
-    console.log("Generating Notification");
+    if(consoleOutput)
+      console.log("Generating Notification");
     return (giftOwner + "," + giftDeleter + "," + giftTitle + "," + pageName);
   }
 };
@@ -768,7 +800,8 @@ function deployGiftListEmptyNotification(){
   try{
     testGift.innerHTML = "No Gifts Found! Add Some Gifts With The Button Below!";
   } catch(err){
-    console.log("Loading Element Missing, Creating A New One");
+    if(consoleOutput)
+      console.log("Loading Element Missing, Creating A New One");
     let liItem = document.createElement("LI");
     liItem.id = "testGift";
     liItem.className = "gift";
