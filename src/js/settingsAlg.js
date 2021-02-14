@@ -7,6 +7,8 @@
 let settingsElements = [];
 let userArr = [];
 
+let allowLogin = false;
+
 let editBtn;
 let faqBtn;
 let modBtn;
@@ -15,6 +17,7 @@ let moderationModal;
 let moderationSpan;
 let moderationQueueBtn;
 let userListBtn;
+let loginFxnBtn;
 let offlineTimer;
 let offlineSpan;
 let offlineModal;
@@ -30,9 +33,12 @@ let noteSpan;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    console.log("User: " + user.userName + " loaded in");
+    allowLogin = JSON.parse(sessionStorage.allowLogin);
+    if(consoleOutput)
+      console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      console.log("Invites Not Found");
+      if(consoleOutput)
+        console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
         inviteNote.style.background = "#ff3923";
@@ -51,7 +57,8 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    console.log(err.toString());
+    if(consoleOutput)
+      console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -69,12 +76,14 @@ window.onload = function instantiate() {
   moderationSpan = document.getElementById('moderationSpan');
   moderationQueueBtn = document.getElementById('moderationQueueBtn');
   userListBtn = document.getElementById('userListBtn');
+  loginFxnBtn = document.getElementById('loginFxnBtn');
   notificationModal = document.getElementById('notificationModal');
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
   settingsElements = [offlineModal, offlineSpan, inviteNote, editBtn, faqBtn, modBtn, familyBtn, moderationModal,
-    moderationSpan, moderationQueueBtn, userListBtn, notificationModal, notificationTitle, notificationInfo, noteSpan];
+    moderationSpan, moderationQueueBtn, userListBtn, loginFxnBtn, notificationModal, notificationTitle,
+    notificationInfo, noteSpan];
   verifyElementIntegrity(settingsElements);
   getCurrentUser();
   commonInitialization();
@@ -89,13 +98,35 @@ window.onload = function instantiate() {
 };
 
 function generateModerationModal(){
+  if(allowLogin)
+    loginFxnBtn.innerHTML = "Disable Login Function";
+  else
+    loginFxnBtn.innerHTML = "Enable Login Function";
+
   userListBtn.onclick = function(){
     newNavigation(14);//Moderation
   };
 
   moderationQueueBtn.onclick = function(){
-    alert("This will eventually open a page for a Moderation Support Queue");
-    //newNavigation(17);//moderationQueue ***DOESN'T EXIST YET***
+    //newNavigation(17);//ModerationQueue
+  };
+
+  loginFxnBtn.onclick = function(){
+    if(allowLogin) {
+      loginFxnBtn.innerHTML = "Enable Login Function";
+      firebase.database().ref("login/").update({
+        allowLogin: false,
+        loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
+            "maintenance before logging in. Thank you for your patience!"
+      });
+    } else {
+      loginFxnBtn.innerHTML = "Disable Login Function";
+      firebase.database().ref("login/").update({
+        allowLogin: true,
+        loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
+            "maintenance before logging in. Thank you for your patience!"
+      });
+    }
   };
 
   moderationSpan.onclick = function(){
