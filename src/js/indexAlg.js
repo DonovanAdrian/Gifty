@@ -10,8 +10,12 @@ let userArr = [];
 
 let config = {};
 
-let loginBool = false;
+let loginDisabledMsg = "";
 
+let loginBool = false;
+let allowLogin = true;
+
+let loginInitial;
 let userInitial;
 let username;
 let pin;
@@ -126,14 +130,7 @@ function fetchConfigFile(){
 
           sessionStorage.setItem("config", JSON.stringify(config));
           commonInitialization();
-          databaseQuery();
-          loginBtn.innerHTML = "Log In";
-          loginBtn.onclick = function(){
-            login();
-          };
-          signUpFld.onclick = function(){
-            signUp();
-          };
+          loginQuery();
         }
       }
     }
@@ -185,6 +182,75 @@ window.onload = function instantiate() {
   }
 };
 
+function loginQuery() {
+  loginInitial = firebase.database().ref("login/");
+
+  let fetchLogin = function (postRef) {
+    postRef.once("value").then(function(snapshot) {
+      if(snapshot.exists()) {
+        //console.log("Login Snapshot Exists!");
+        postRef.on('child_added', function (data) {
+          if(data.key == "allowLogin") {
+            if (data.val()) {
+              loginBtn.innerHTML = "Log In";
+              allowLogin = true;
+            } else {
+              loginBtn.innerHTML = "Log In Disabled";
+              allowLogin = false;
+            }
+            sessionStorage.setItem("allowLogin", JSON.stringify(allowLogin));
+          } else if (data.key == "loginDisabledMsg")
+            loginDisabledMsg = data.val();
+        });
+
+        postRef.on('child_changed', function (data) {
+          if(data.key == "allowLogin") {
+            if (data.val()) {
+              loginBtn.innerHTML = "Log In";
+              allowLogin = true;
+            } else {
+              loginBtn.innerHTML = "Log In Disabled";
+              allowLogin = false;
+            }
+            sessionStorage.setItem("allowLogin", JSON.stringify(allowLogin));
+          } else if (data.key == "loginDisabledMsg")
+            loginDisabledMsg = data.val();
+        });
+
+        postRef.on('child_removed', function (data) {
+          console.log(data.key + " removed");
+        });
+
+        initializeLoginBtns();
+      } else {
+        console.log("Initializing Login In DB");
+
+        firebase.database().ref("login/").update({
+          allowLogin: true,
+          loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
+              "maintenance before logging in. Thank you for your patience!"
+        });
+
+        initializeLoginBtns();
+      }
+    });
+  };
+
+  fetchLogin(loginInitial);
+
+  listeningFirebaseRefs.push(loginInitial);
+}
+
+function initializeLoginBtns() {
+  databaseQuery();
+  loginBtn.onclick = function(){
+    login();
+  };
+  signUpFld.onclick = function(){
+    signUp();
+  };
+}
+
 function databaseQuery() {
 
   //console.log("Fetching Data From Database");
@@ -192,7 +258,9 @@ function databaseQuery() {
 
   let fetchPosts = function (postRef) {
     postRef.on('child_added', function (data) {
-      userArr.push(data.val());
+      //console.log("Adding " + data.val().userName);
+      if(!userArr.includes(data.val()))
+        userArr.push(data.val());
     });
 
     postRef.on('child_changed', function (data) {
@@ -226,20 +294,43 @@ function findUIDItemInArr(item, userArray){
 
 function login() {
   let validUserInt = 0;
+  let showLoginAlert = 0;
 
   for(let i = 0; i < userArr.length; i++){
     if(userArr[i].userName.toLowerCase() == username.value.toLowerCase()){
       try {
         if(decode(userArr[i].encodeStr) == pin.value){
-          loginBool = true;
-          validUserInt = i;
-          break;
+          if(allowLogin) {
+            loginBool = true;
+            validUserInt = i;
+            break;
+          } else {
+            if(userArr[i].moderatorInt == 1) {
+              loginBool = true;
+              validUserInt = i;
+              break;
+            } else {
+              showLoginAlert++;
+              alert(loginDisabledMsg);
+            }
+          }
         }
       } catch (err) {
         if(userArr[i].pin == pin.value){
-          loginBool = true;
-          validUserInt = i;
-          break;
+          if(allowLogin) {
+            loginBool = true;
+            validUserInt = i;
+            break;
+          } else {
+            if(userArr[i].moderatorInt == 1) {
+              loginBool = true;
+              validUserInt = i;
+              break;
+            } else {
+              showLoginAlert++;
+              alert(loginDisabledMsg);
+            }
+          }
         }
       }
     }
@@ -251,8 +342,14 @@ function login() {
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
     window.location.href = "home.html";
   } else if (loginBool === false) {
-    loginInfo.innerHTML = "Username or Password Incorrect";
-    updateMaintenanceLog("index", "Invalid Login: " + username.value.toLowerCase() + " " + pin.value.toString());
+    if (allowLogin)
+      loginInfo.innerHTML = "Username or Password Incorrect";
+    else {
+      if(showLoginAlert == 0)
+        alert(loginDisabledMsg);
+    }
+    if (username.value != "" && pin.value != "")
+      updateMaintenanceLog("index", "Invalid Login: " + username.value.toLowerCase() + " " + pin.value.toString());
   }
 }
 
@@ -278,5 +375,8 @@ function updateMaintenanceLog(locationData, detailsData) {
 }
 
 function signUp(){
-  window.location.href = "userAddUpdate.html";
+  if(allowLogin)
+    window.location.href = "userAddUpdate.html";
+  else
+    alert(loginDisabledMsg);
 }
