@@ -270,39 +270,15 @@ div.topnav ul li.right {float: right;}
   }
 
   span.boughtBtn {
-    position: fixed;
     left: 5px;
     bottom: 5px;
     padding: 5px;
-    font-family: Verdana;
-    background: #ff8e8e;
-    color: #FFF;
-    cursor: pointer;
-    transition: 0.3s;
-    border-radius: 0;
   }
 
   span.addBtn {
-    position: fixed;
     right: 5px;
     bottom: 5px;
     padding: 5px;
-    font-family: Verdana;
-    background: #ff8e8e;
-    color: #FFF;
-    cursor: pointer;
-    transition: 0.3s;
-    border-radius: 0;
-  }
-
-  span.basicBtn {
-    padding: 5px;
-    font-family: Verdana;
-    background: #ff8e8e;
-    color: #FFF;
-    cursor: pointer;
-    transition: 0.3s;
-    border-radius: 0;
   }
 
   input.giftInp {
@@ -348,31 +324,22 @@ div.topnav ul li.right {float: right;}
   }
 
   span.boughtBtn {
-    position: fixed;
     left: 5px;
     bottom: 5px;
     padding: 5px;
-    font-family: Verdana;
-    background: #ff8e8e;
-    color: #FFF;
     font-size: 13px;
-    cursor: pointer;
-    transition: 0.3s;
-    border-radius: 0;
   }
 
   span.addBtn {
-    position: fixed;
     right: 5px;
     bottom: 5px;
     padding: 5px;
-    font-family: Verdana;
-    background: #ff8e8e;
-    color: #FFF;
     font-size: 13px;
-    cursor: pointer;
-    transition: 0.3s;
-    border-radius: 0;
+  }
+
+  span.basicBtn {
+    padding: 5px;
+    font-size: 14px;
   }
 
   input.giftInp {
@@ -410,14 +377,14 @@ div.topnav ul li.right {float: right;}
 
 @media screen and (max-height: 600px) {
   .modal {
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 50px; /* Location of the box */
+    position: fixed;
+    z-index: 1;
+    padding-top: 50px;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
     max-height: 75%;
   }
 }
@@ -435,8 +402,6 @@ ul li.gift {
   background: #eee;
   font-size: 18px;
   transition: 0.2s;
-
-  /* make the list items unselectable */
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -487,15 +452,15 @@ ul li.santa::before {
 }
 
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 50px; /* Location of the box */
+  display: none;
+  position: fixed;=
+z-index: 1;
+  padding-top: 50px;
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
 
 .modal-content {
