@@ -316,6 +316,10 @@ function updateUserToDB(){
 }
 
 function addUserToDB(){
+  let moderatorSetter = 0;
+
+  if(userArr.length == 0)
+    moderatorSetter = 1;
 
   checkUserNames(userNameField.value);
 
@@ -345,7 +349,7 @@ function addUserToDB(){
       userName: userNameField.value,
       ban: 0,
       firstLogin: 0,
-      moderatorInt: 0,
+      moderatorInt: moderatorSetter,
       organize: 0,
       strike: 0,
       theme: 0,
