@@ -56,11 +56,9 @@ let familyInitial;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if(consoleOutput)
-      console.log("User: " + user.userName + " loaded in");
+    console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      if(consoleOutput)
-        console.log("Invites Not Found");
+      console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
         inviteNote.style.background = "#ff3923";
@@ -73,8 +71,7 @@ function getCurrentUser(){
     userArr = JSON.parse(sessionStorage.userArr);
     sessionStorage.setItem("moderationSet", moderationSet);
   } catch (err) {
-    if(consoleOutput)
-      console.log(err.toString());
+    console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -125,15 +122,13 @@ window.onload = function instantiate() {
       if(loadingTimerInt >= 5000){
         clearInterval(loadingTimer);
         if (testData == undefined) {
-          if(consoleOutput)
-            console.log("testGift Missing. Loading Properly.");
+          console.log("testGift Missing. Loading Properly.");
         } else {
           deployFamilyListEmptyNotification();
         }
       } else {
         if (testData == undefined) {
-          if(consoleOutput)
-            console.log("testGift Missing. Loading Properly.");
+          console.log("testGift Missing. Loading Properly.");
         } else {
           testData.innerHTML = "Loading... Please Wait...";
         }
@@ -213,8 +208,7 @@ window.onload = function instantiate() {
   function familyModerateButton(){
     let nowConfirm = 0;
     let alternator = 0;
-    if(consoleOutput)
-      console.log("Settings Button Feature Active");
+    console.log("Settings Button Feature Active");
     setInterval(function(){
       nowConfirm = nowConfirm + 1000;
       if(nowConfirm >= 3000){
@@ -275,8 +269,7 @@ window.onload = function instantiate() {
         inviteArr.splice(data.key, 1);
 
         if (inviteArr.length == 0) {
-          if(consoleOutput)
-            console.log("Invite List Removed");
+          console.log("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -462,8 +455,7 @@ window.onload = function instantiate() {
           if (loadedFamilyMembersArr.length != 0) {
             for (let a = 0; a < loadedFamilyMembersArr.length; a++) {
               document.getElementById(loadedFamilyMembersArr[a]).remove();
-              if(consoleOutput)
-                console.log("Removed " + loadedFamilyMembersArr[a]);
+              console.log("Removed " + loadedFamilyMembersArr[a]);
             }
             loadedFamilyMembersArr = [];
           } else
@@ -476,8 +468,7 @@ window.onload = function instantiate() {
               liItem.appendChild(textNode);
               familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
 
-              if(consoleOutput)
-                console.log("Loaded " + familyMemberArr[i]);
+              console.log("Loaded " + familyMemberArr[i]);
               loadedFamilyMembersArr.push(familyMemberArr[i]);
             }
         } else {
@@ -557,10 +548,8 @@ window.onload = function instantiate() {
     let newUid = firebase.database().ref("family").push();
     newUid = newUid.toString();
     newUid = newUid.substr(46, 70);
-    if(consoleOutput) {
-      console.log(newUid);
-      console.log(familyName);
-    }
+    console.log(newUid);
+    console.log(familyName);
 
     firebase.database().ref("family/" + newUid).set({
       uid: newUid,
@@ -575,8 +564,7 @@ function deployFamilyListEmptyNotification(){
   try{
     testData.innerHTML = "No Families Found!";
   } catch(err){
-    if(consoleOutput)
-      console.log("Loading Element Missing, Creating A New One");
+    console.log("Loading Element Missing, Creating A New One");
     let liItem = document.createElement("LI");
     liItem.id = "testData";
     liItem.className = "gift";
