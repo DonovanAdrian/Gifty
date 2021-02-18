@@ -108,7 +108,7 @@ function generateModerationModal(){
   };
 
   moderationQueueBtn.onclick = function(){
-    //newNavigation(17);//ModerationQueue
+    newNavigation(17);//ModerationQueue
   };
 
   loginFxnBtn.onclick = function(){
