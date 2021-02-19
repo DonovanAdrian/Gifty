@@ -218,12 +218,12 @@ function loginQuery() {
         });
 
         postRef.on('child_removed', function (data) {
-          console.log(data.key + " removed");
+          //console.log(data.key + " removed");
         });
 
         initializeLoginBtns();
       } else {
-        console.log("Initializing Login In DB");
+        //console.log("Initializing Login In DB");
 
         firebase.database().ref("login/").update({
           allowLogin: true,
