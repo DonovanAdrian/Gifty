@@ -156,6 +156,59 @@ window.onload = function instantiate() {
 
   settingsModerateButton();
 
+  //Secret Santa Functions Go Here!
+  //Yes, I'm completely remodeling this section.
+  //Also yes, I'm using pseudo code this time. I feel it's necessary to build out a good plan with all the cool
+  //upcoming ideas I have... Read on for some interesting new stuff! ...Kinda
+
+  //***Activate Secret Santa Fxn*** (Alternates Between Below Deactivate Fxn)
+  //fetch all families
+  //put linked families into a multi-dimensional array if possible...
+  //if at least one set of linked families has enough users, enable secret santa CONDITIONALLY
+  //ARE YOU SURE???? Not all families have signed up, would you like to wait?
+  //collect validLinkedFamilies into a separate array
+  //if all families have appropriately signed up, continue normally
+  //collect all families into the validLinkedFamilies array
+  //using validLinkedFamilies, randomly pick each family member.
+  //Restart for a certain linked family if needed
+  //build in consideration for familial relations (i.e., babies) and adjust accordingly
+  //If it fails four times, prompt user to try again
+  //If successful, save each user's new secret santa to their user data in DB
+
+  //***Deactivate Secret Santa Fxn*** (Alternates Between Above Activate Fxn)
+  //fetch all users
+  //Send all users who signed up a "Thank you for participating in this year's Secret Santa"
+  //remove all secret santa sign up numbers
+  //update all users to DB
+  //remove all secret santa names
+  //update all users to DB
+  //These two processes are done separately to ensure that they are properly completed as needed
+  //In past iterations of the Secret Santa function, doing both actions (remove #'s AND names) caused problems...
+
+  //***Shuffle Secret Santa Fxn*** (Only available if Secret Santa is detected to be active)
+  //NOTE: This will capture any new sign ups and include them in the Secret Santa
+  //Dev Note: Make sure this is properly displayed on Lists Page
+  //fetch all families
+  //put linked families into a multi-dimensional array if possible...
+  //if at least one set of linked families has enough users, enable secret santa CONDITIONALLY
+  //ARE YOU SURE???? Not all families have signed up, would you like to wait?
+  //collect validLinkedFamilies into a separate array
+  //if all families have appropriately signed up, continue normally
+  //collect all families into the validLinkedFamilies array
+  //using validLinkedFamilies, randomly pick each family member.
+  //Restart for a certain linked family if needed
+  //build in consideration for familial relations (i.e., babies) and adjust accordingly
+  //If it fails four times, prompt user to try again
+  //If successful, save each user's new secret santa to their user data in DB
+
+  //***Automatic Enabling/Disabling Switch Fxn (If this is enabled, append "Manually" to front of above btn)***
+  //Automatically show Secret Santa button if a user lands on Lists page on a set date (~Mid October)
+  //Will be used to start the sign up process
+  //Automatically trigger above activation function if a user lands on Lists page on a set date (~Mid November)
+  //Dev Note: Go to Lists Page and adjust
+  //Automatically trigger above deactivation function if a user lands on Lists page on a set date (~Mid January)
+  //Send all users who signed up a thank you for participating and hide Secret Santa button
+
   initializeSecretSantaArrs();
 
   function initializeSecretSantaArrs(){
