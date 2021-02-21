@@ -13,6 +13,7 @@ let userArr = [];
 let readNotificationsBool = false;
 let friendListEmptyBool = false;
 let secretSantaNameBool = false;
+let secretSantaAutoUpdate = false;
 
 let moderationSet = 0;
 let onlineInt = 0;
@@ -23,6 +24,7 @@ let dataListContainer;
 let userBase;
 let userFriends;
 let userInvites;
+let autoSecretSanta;
 let offlineSpan;
 let offlineModal;
 let offlineTimer;
@@ -162,135 +164,53 @@ window.onload = function instantiate() {
 
   databaseQuery();
 
-  if (user.secretSantaName == null)
-    if (user.secretSanta != null)
-      if (user.secretSanta == 0)
-        secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
-      else
-        secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
-    else
-      secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
-  else {
-    if (user.secretSantaName != "") {
-      let i = findUIDItemInArr(user.secretSantaName, userArr);
-      secretSantaData = userArr[i];
-      secretSantaSignUp.innerHTML = userArr[i].name;
-      secretSantaNameBool = true;
-    } else {
-      if (user.secretSanta != null)
-        if (user.secretSanta == 0)
-          secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
-        else
-          secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
-      else
-        secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
-    }
-  }
-
-  secretSantaSignUp.onclick = function() {
-    if (secretSantaNameBool) {
-      generateSecretSantaModal();
-    } else {
-      if (user.secretSanta != null) {
-        if (user.secretSanta == 0) {
-          firebase.database().ref("users/" + user.uid).update({
-            secretSanta: 1
-          });
-          user.secretSanta = 1;
-          alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
-              " Santa Recipient!");
-          secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
-        } else {
-          firebase.database().ref("users/" + user.uid).update({
-            secretSanta: 0
-          });
-          user.secretSanta = 0;
-          alert("You Have Opted Out Of Secret Santa.");
-          secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
-        }
-      } else {
-        firebase.database().ref("users/" + user.uid).update({
-          secretSanta: 1
-        });
-        user.secretSanta = 1;
-        alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
-            " Santa Recipient!");
-        secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
-      }
-      sessionStorage.setItem("validUser", JSON.stringify(user));
-    }
-  };
-
-  function generateSecretSantaModal(){
-    if(secretSantaData != null){
-      userTitle.innerHTML = secretSantaData.name;
-      if(secretSantaData.giftList != undefined){
-        if(secretSantaData.giftList.length > 0) {
-          publicList.innerHTML = "Click on me to access " + secretSantaData.name + "\'s public list!";
-          publicList.onclick = function () {
-            sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));//Friend's User Data
-            newNavigation(9);//FriendList
-          };
-          if (secretSantaData.giftList.length == 1)
-            publicListCount.innerHTML = secretSantaData.name + " has 1 gift on their public list";
-          else
-            publicListCount.innerHTML = secretSantaData.name + " has " + secretSantaData.giftList.length + " gifts on their public list";
-        } else {
-          publicList.innerHTML = secretSantaData.name + "\'s public gift list is empty, please check back later!";
-          publicList.onclick = function () {};
-          publicListCount.innerHTML = secretSantaData.name + " has 0 gifts on their public list";
-        }
-      } else {
-        publicList.innerHTML = secretSantaData.name + "\'s public gift list is empty, please check back later!";
-        publicList.onclick = function () {};
-        publicListCount.innerHTML = secretSantaData.name + " has 0 gifts on their public list";
-      }
-      if(secretSantaData.privateList != undefined){
-        if(secretSantaData.privateList.length > 0) {
-          if (secretSantaData.privateList.length == 1)
-            privateListCount.innerHTML = secretSantaData.name + " has 1 gift on their private list";
-          else
-            privateListCount.innerHTML = secretSantaData.name + " has " + secretSantaData.privateList.length + " gifts on their private list";
-        } else {
-          privateListCount.innerHTML = secretSantaData.name + " has 0 gifts on their private list";
-        }
-      } else {
-        privateListCount.innerHTML = secretSantaData.name + " has 0 gifts on their private list";
-      }
-      privateList.innerHTML = "Click on me to access " + secretSantaData.name + "\'s private gift list!";
-      privateList.onclick = function() {
-        sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));//Friend's User Data
-        newNavigation(10);//PrivateFriendList
-      };
-
-      sendPrivateMessage.onclick = function() {
-        generatePrivateMessageDialog(secretSantaData);
-      };
-
-      //close on close
-      closeUserModal.onclick = function() {
-        closeModal(userModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == userModal) {
-          closeModal(userModal);
-        }
-      };
-
-      //show modal
-      openModal(userModal, secretSantaData.uid);
-
-      clearInterval(offlineTimer);
-    }
-  }
-
   function databaseQuery() {
 
     userBase = firebase.database().ref("users/");
     userFriends = firebase.database().ref("users/" + user.uid + "/friends");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+    autoSecretSanta = firebase.database().ref("secretSanta/");
+
+    let fetchSecretSanta = function (postRef) {
+      postRef.once("value").then(function(snapshot) {
+        if(snapshot.exists()) {
+          if(consoleOutput)
+            console.log("Secret Santa Snapshot Exists!");
+          postRef.on('child_added', function (data) {
+            if(consoleOutput)
+              console.log(data.key + " added");
+            if(data.key == "automaticUpdates")
+              if(data.val())
+                checkSecretSanta(data.val());
+            if(data.key == "manuallyEnable")
+              if(data.val())
+                showSecretSanta();
+          });
+
+          postRef.on('child_changed', function (data) {
+            if(consoleOutput)
+              console.log(data.key + " changed");
+            if(data.key == "automaticUpdates")
+              checkSecretSanta(data.val());
+          });
+
+          postRef.on('child_removed', function (data) {
+            if(consoleOutput)
+              console.log(data.key + " removed");
+            if(data.key == "automaticUpdates")
+              checkSecretSanta(false);
+          });
+        } else {
+          if(consoleOutput)
+            console.log("Initializing Secret Santa In DB");
+
+          firebase.database().ref("secretSanta/").update({
+            automaticUpdates: false,
+            manuallyEnable: false
+          });
+        }
+      });
+    };
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
@@ -395,10 +315,12 @@ window.onload = function instantiate() {
     fetchData(userBase);
     fetchFriends(userFriends);
     fetchInvites(userInvites);
+    fetchSecretSanta(autoSecretSanta);
 
     listeningFirebaseRefs.push(userBase);
     listeningFirebaseRefs.push(userFriends);
     listeningFirebaseRefs.push(userInvites);
+    listeningFirebaseRefs.push(autoSecretSanta);
   }
 
   function findUIDItemInArr(item, userArray){
