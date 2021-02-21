@@ -162,246 +162,20 @@ window.onload = function instantiate() {
   //upcoming ideas I have... Read on for some interesting new stuff! ...Kinda
 
   //***Activate Secret Santa Fxn*** (Alternates Between Below Deactivate Fxn)
-  //fetch all families
-  //put linked families into a multi-dimensional array if possible...
-  //if at least one set of linked families has enough users, enable secret santa CONDITIONALLY
-  //ARE YOU SURE???? Not all families have signed up, would you like to wait?
-  //collect validLinkedFamilies into a separate array
-  //if all families have appropriately signed up, continue normally
-  //collect all families into the validLinkedFamilies array
-  //using validLinkedFamilies, randomly pick each family member.
-  //Restart for a certain linked family if needed
-  //build in consideration for familial relations (i.e., babies) and adjust accordingly
-  //If it fails four times, prompt user to try again
-  //If successful, save each user's new secret santa to their user data in DB
+  //***NOTIFY MODERATOR*** All Users Can Now Sign Up For Secret Santa! Click On "Shuffle Secret Santa" To Assign Users
+  //Check if automatic switch is enabled, if so, append "Manually" to front of this btn
 
   //***Deactivate Secret Santa Fxn*** (Alternates Between Above Activate Fxn)
-  //fetch all users
-  //Send all users who signed up a "Thank you for participating in this year's Secret Santa"
-  //remove all secret santa sign up numbers
-  //update all users to DB
-  //remove all secret santa names
-  //update all users to DB
-  //These two processes are done separately to ensure that they are properly completed as needed
-  //In past iterations of the Secret Santa function, doing both actions (remove #'s AND names) caused problems...
+  //Check if automatic switch is enabled, if so, append "Manually" to front of this btn
 
   //***Shuffle Secret Santa Fxn*** (Only available if Secret Santa is detected to be active)
   //NOTE: This will capture any new sign ups and include them in the Secret Santa
   //Dev Note: Make sure this is properly displayed on Lists Page
-  //fetch all families
-  //put linked families into a multi-dimensional array if possible...
-  //if at least one set of linked families has enough users, enable secret santa CONDITIONALLY
-  //ARE YOU SURE???? Not all families have signed up, would you like to wait?
-  //collect validLinkedFamilies into a separate array
-  //if all families have appropriately signed up, continue normally
-  //collect all families into the validLinkedFamilies array
-  //using validLinkedFamilies, randomly pick each family member.
-  //Restart for a certain linked family if needed
-  //build in consideration for familial relations (i.e., babies) and adjust accordingly
-  //If it fails four times, prompt user to try again
-  //If successful, save each user's new secret santa to their user data in DB
+  //Check and gray out if Secret Santa names are not assigned
+  //alert if pressed while gray
 
-  //***Automatic Enabling/Disabling Switch Fxn (If this is enabled, append "Manually" to front of above btn)***
-  //Automatically show Secret Santa button if a user lands on Lists page on a set date (~Mid October)
-  //Will be used to start the sign up process
-  //Automatically trigger above activation function if a user lands on Lists page on a set date (~Mid November)
-  //Dev Note: Go to Lists Page and adjust
-  //Automatically trigger above deactivation function if a user lands on Lists page on a set date (~Mid January)
-  //Send all users who signed up a thank you for participating and hide Secret Santa button
-
-  initializeSecretSantaArrs();
-
-  function initializeSecretSantaArrs(){
-    tempUserArr = [];
-    optInUserArr = [];
-
-    for (let i = 0; i < userArr.length; i++) {
-      if (userArr[i].secretSantaName != null)
-        if (userArr[i].secretSantaName != "")
-          secretSantaNameBool = true;
-      if (userArr[i].secretSanta != null)
-        if (userArr[i].secretSanta == 1) {
-          tempUserArr.push(userArr[i]);
-          optInUserArr.push(userArr[i]);
-          if (optInUserArr.length > 2)
-            secretSantaIntBool = true;
-        }
-    }
-  }
-
-  generateSecretSantaModal();
-
-  function generateSecretSantaModal(){
-    activateSecretSanta.onclick = function() {
-      if (secretSantaNameBool && secretSantaIntBool) {
-        secretSantaBtn.onclick = function () {
-          secretSantaBtn.innerHTML = "Click On Me To Deactivate Secret Santa";
-          removeSecretSantaNames();
-          updateAllUsersToDBSantaNames();
-          alert("The Secret Santa Has Been Deactivated!");
-          removeSecretSantaNums();
-          updateAllUsersToDBSantaNums();
-          secretSantaNameBool = false;
-          closeModal(secretSantaModal);
-          generateSecretSantaModal();
-        };
-
-        secretSantaShuffle.onclick = function () {
-          initializeSecretSantaArrs();
-          removeSecretSantaNames();
-          createSecretSantaNames();
-          secretSantaNameBool = true;
-          alert("The Secret Santa has been shuffled!");
-        };
-
-        secretSantaBtn.innerHTML = "Click On Me To Deactivate Secret Santa";
-        secretSantaShuffle.innerHTML = "Click Me To Shuffle Secret Santa Names!";
-
-      } else if (secretSantaIntBool) {
-        secretSantaBtn.onclick = function () {
-          secretSantaBtn.innerHTML = "Click On Me To Activate Secret Santa";
-          createSecretSantaNames();
-          alert("Secret Santa System Has Been Initialized. Enjoy!");
-          secretSantaNameBool = true;
-          closeModal(secretSantaModal);
-          generateSecretSantaModal();
-        };
-
-        secretSantaShuffle.onclick = function(){
-          alert("Shuffle Button Not Available Until Secret Santa Is Active");
-        };
-
-        secretSantaBtn.innerHTML = "Click On Me To Activate Secret Santa";
-        secretSantaShuffle.innerHTML = "Shuffle Button Not Available!";
-
-      } else {
-        secretSantaBtn.onclick = function () {
-          alert("Secret Santa Button Is Not Available Until 3 Or More Users Have Signed Up");
-        };
-
-        secretSantaShuffle.onclick = function(){
-          alert("Shuffle Button Not Available Until Secret Santa Is Active");
-        };
-
-        secretSantaBtn.innerHTML = "Secret Santa Not Available! Click Me For More Info!";
-        secretSantaShuffle.innerHTML = "Shuffle Button Not Available!";
-      }
-
-      santaModalSpan.onclick = function(){
-        closeModal(secretSantaModal);
-      };
-
-      window.onclick = function(event) {
-        if (event.target == secretSantaModal) {
-          closeModal(secretSantaModal);
-        }
-      };
-
-      openModal(secretSantaModal, "secretSantaModal");
-    };
-
-    activateSecretSanta.innerHTML = "Secret Santa";
-  }
-
-  function createSecretSantaNames(){
-    let selector;
-    let userIndex;
-    let retryCount = 0;
-
-    for (let i = 0; i < optInUserArr.length; i++) {
-      selector = Math.floor((Math.random() * tempUserArr.length));
-      if (!userUIDArr.includes(tempUserArr[selector].uid)) {
-        if (tempUserArr[selector].name != optInUserArr[i].name) {
-          if (optInUserArr[i].friends.includes(tempUserArr[selector].uid)) {
-            if(consoleOutput)
-              console.log("Matched " + tempUserArr[selector].name + " to " + optInUserArr[i].name);
-            userUIDArr.push(tempUserArr[selector].uid);
-            userIndex = findUIDItemInArr(optInUserArr[i].uid, userArr);
-            userArr[userIndex].secretSantaName = tempUserArr[selector].uid;
-            tempUserArr.splice(selector, 1);
-            retryCount = 0;
-          } else {
-            if(consoleOutput)
-              console.log("These Users Aren't Friends :(");
-            retryCount++;
-            if(retryCount >= 10)
-              break;
-            i--;
-          }
-        } else {
-          if(consoleOutput)
-            console.log("These Are The Same Users :(");
-          retryCount++;
-          if(retryCount >= 10)
-            break;
-          i--;
-        }
-      } else {
-        if(consoleOutput)
-          console.log("User Has Already Been Picked");
-        retryCount++;
-        if(retryCount >= 10)
-          break;
-        i--;
-      }
-    }
-
-    if (optInUserArr.length != userUIDArr.length) {
-      if(consoleOutput) {
-        console.log("USERUIDARR:");
-        console.log(userUIDArr);
-        console.log("TEMPUSERARR:");
-        console.log(tempUserArr);
-      }
-      userUIDArr = [];
-      removeSecretSantaNames();
-      alert("Secret Santa System Was Unable To Properly Initialize Secret Santa Names. Please Try Again");
-    } else {
-      sessionStorage.setItem("userArr", JSON.stringify(userArr));
-      updateAllUsersToDBSantaNames();
-      userUIDArr = [];
-    }
-  }
-
-  function removeSecretSantaNames(){
-    for (let i = 0; i < userArr.length; i++)
-      userArr[i].secretSantaName = "";
-
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-  }
-
-  function removeSecretSantaNums(){
-    for (let i = 0; i < userArr.length; i++)
-      userArr[i].secretSanta = 0;
-
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-  }
-
-  function updateAllUsersToDBSantaNums(){
-    for(let i = 0; i < userArr.length; i++){
-      if (userArr[i].secretSanta != undefined) {
-        firebase.database().ref("users/" + userArr[i].uid).update({
-          secretSanta: userArr[i].secretSanta
-        });
-      } else {
-        if(consoleOutput)
-          console.log("Failed To Update Num " + userArr[i].name);
-      }
-    }
-  }
-
-  function updateAllUsersToDBSantaNames(){
-    for(let i = 0; i < userArr.length; i++) {
-      if (userArr[i].secretSantaName != undefined) {
-        firebase.database().ref("users/" + userArr[i].uid).update({
-          secretSantaName: userArr[i].secretSantaName
-        });
-      } else {
-        if(consoleOutput)
-          console.log("Failed To Update Name " + userArr[i].name);
-      }
-    }
-  }
+  //***Automatic Enabling/Disabling Switch Fxn***
+  //Check if enabled/disabled, change text accordingly
 
   function settingsModerateButton(){
     let nowConfirm = 0;
@@ -538,6 +312,45 @@ window.onload = function instantiate() {
 
     userInitial = firebase.database().ref("users/");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+    autoSecretSanta = firebase.database().ref("secretSanta/");
+
+    let fetchSecretSanta = function (postRef) {
+      postRef.once("value").then(function(snapshot) {
+        if(snapshot.exists()) {
+          console.log("Secret Santa Snapshot Exists!");
+          postRef.on('child_added', function (data) {
+            console.log(data.key + " added");
+            if(data.key == "automaticUpdates")
+              console.log();
+            if(data.key == "manuallyEnable")
+              console.log();
+          });
+
+          postRef.on('child_changed', function (data) {
+            console.log(data.key + " changed");
+            if(data.key == "automaticUpdates")
+              console.log();
+            if(data.key == "manuallyEnable")
+              console.log();
+          });
+
+          postRef.on('child_removed', function (data) {
+            console.log(data.key + " removed");
+            if(data.key == "automaticUpdates")
+              console.log();
+            if(data.key == "manuallyEnable")
+              console.log();
+          });
+        } else {
+          console.log("Initializing Secret Santa In DB");
+
+          firebase.database().ref("secretSanta/").update({
+            automaticUpdates: false,
+            manuallyEnable: false
+          });
+        }
+      });
+    };
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
@@ -631,9 +444,11 @@ window.onload = function instantiate() {
 
     fetchData(userInitial);
     fetchInvites(userInvites);
+    fetchSecretSanta(autoSecretSanta);
 
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
+    listeningFirebaseRefs.push(autoSecretSanta);
   }
 
   function findUIDItemInArr(item, userArray){
