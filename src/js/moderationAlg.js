@@ -39,8 +39,9 @@ let userInvites;
 let activateSecretSanta;
 let secretSantaModal;
 let santaModalSpan;
-let secretSantaShuffle;
 let secretSantaBtn;
+let secretSantaShuffle;
+let secretSantaAutoBtn;
 let settingsNote;
 let testGift;
 let closeUserModal;
@@ -107,8 +108,9 @@ window.onload = function instantiate() {
   activateSecretSanta = document.getElementById('activateSecretSanta');
   secretSantaModal = document.getElementById('santaModal');
   santaModalSpan = document.getElementById('secretSantaSpan');
-  secretSantaShuffle = document.getElementById('secretSantaShuffle');
   secretSantaBtn = document.getElementById('secretSantaBtn');
+  secretSantaShuffle = document.getElementById('secretSantaShuffle');
+  secretSantaAutoBtn = document.getElementById('secretSantaAutoBtn');
   settingsNote = document.getElementById('settingsNote');
   testGift = document.getElementById('testGift');
   closeUserModal = document.getElementById('closeUserModal');
@@ -131,10 +133,10 @@ window.onload = function instantiate() {
   cancelMsg = document.getElementById('cancelMsg');
   moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal, notificationTitle,
     notificationInfo, noteSpan, privateMessageModal, sendGlobalNotification, sendPrivateMessage, userModal,
-    activateSecretSanta, secretSantaModal, santaModalSpan, secretSantaShuffle, secretSantaBtn, settingsNote, testGift,
-    closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends, userPassword,
-    userSecretSanta, moderatorOp, sendPrivateMessage, warnUser, banUser, closePrivateMessageModal, globalMsgTitle,
-    globalMsgInp, sendMsg, cancelMsg];
+    activateSecretSanta, secretSantaModal, santaModalSpan, secretSantaBtn, secretSantaShuffle, secretSantaAutoBtn,
+    settingsNote, testGift, closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends,
+    userPassword, userSecretSanta, moderatorOp, sendPrivateMessage, warnUser, banUser, closePrivateMessageModal,
+    globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
   verifyElementIntegrity(moderationElements);
   getCurrentUser();
   commonInitialization();
@@ -156,26 +158,9 @@ window.onload = function instantiate() {
 
   settingsModerateButton();
 
-  //Secret Santa Functions Go Here!
-  //Yes, I'm completely remodeling this section.
-  //Also yes, I'm using pseudo code this time. I feel it's necessary to build out a good plan with all the cool
-  //upcoming ideas I have... Read on for some interesting new stuff! ...Kinda
+  initializeSecretSantaArrs();
 
-  //***Activate Secret Santa Fxn*** (Alternates Between Below Deactivate Fxn)
-  //***NOTIFY MODERATOR*** All Users Can Now Sign Up For Secret Santa! Click On "Shuffle Secret Santa" To Assign Users
-  //Check if automatic switch is enabled, if so, append "Manually" to front of this btn
-
-  //***Deactivate Secret Santa Fxn*** (Alternates Between Above Activate Fxn)
-  //Check if automatic switch is enabled, if so, append "Manually" to front of this btn
-
-  //***Shuffle Secret Santa Fxn*** (Only available if Secret Santa is detected to be active)
-  //NOTE: This will capture any new sign ups and include them in the Secret Santa
-  //Dev Note: Make sure this is properly displayed on Lists Page
-  //Check and gray out if Secret Santa names are not assigned
-  //alert if pressed while gray
-
-  //***Automatic Enabling/Disabling Switch Fxn***
-  //Check if enabled/disabled, change text accordingly
+  generateSecretSantaModal();
 
   function settingsModerateButton(){
     let nowConfirm = 0;
@@ -321,25 +306,25 @@ window.onload = function instantiate() {
           postRef.on('child_added', function (data) {
             console.log(data.key + " added");
             if(data.key == "automaticUpdates")
-              console.log();
+              secretBtnStates[2] = data.val();
             if(data.key == "manuallyEnable")
-              console.log();
+              secretBtnStates[0] = data.val();
           });
 
           postRef.on('child_changed', function (data) {
             console.log(data.key + " changed");
             if(data.key == "automaticUpdates")
-              console.log();
+              secretBtnStates[2] = data.val();
             if(data.key == "manuallyEnable")
-              console.log();
+              secretBtnStates[0] = data.val();
           });
 
           postRef.on('child_removed', function (data) {
             console.log(data.key + " removed");
             if(data.key == "automaticUpdates")
-              console.log();
+              secretBtnStates[2] = data.val();
             if(data.key == "manuallyEnable")
-              console.log();
+              secretBtnStates[0] = data.val();
           });
         } else {
           console.log("Initializing Secret Santa In DB");

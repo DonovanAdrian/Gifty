@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="77ae722c-e8b2-463c-8bb6-522420418add" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/moderation.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/moderation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/moderationAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/moderationAlg.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -363,7 +363,7 @@
       <workItem from="1610779622960" duration="1144000" />
       <workItem from="1610780847199" duration="140000" />
       <workItem from="1610825595354" duration="14490000" />
-      <workItem from="1612041325954" duration="40490000" />
+      <workItem from="1612041325954" duration="40828000" />
     </task>
     <servers />
   </component>
