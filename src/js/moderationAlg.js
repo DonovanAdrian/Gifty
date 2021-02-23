@@ -11,6 +11,7 @@ let userArr = [];
 let userUIDArr = [];
 let tempUserArr = [];
 let optInUserArr = [];
+let familyArr = [];
 
 let secretSantaIntBool = false;
 let secretSantaNameBool = false;
@@ -298,6 +299,27 @@ window.onload = function instantiate() {
     userInitial = firebase.database().ref("users/");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
     autoSecretSanta = firebase.database().ref("secretSanta/");
+    familyInitial = firebase.database().ref("family/");
+
+    let fetchFamilies = function (postRef){
+      postRef.on('child_added', function (data) {
+        familyArr.push(data.val());
+      });
+
+      postRef.on('child_changed', function (data) {
+        let i = findUIDItemInArr(data.key, familyArr);
+        if(familyArr[i] != data.val() && i != -1) {
+          familyArr[i] = data.val();
+        }
+      });
+
+      postRef.on('child_removed', function (data) {
+        let i = findUIDItemInArr(data.key, familyArr);
+        if(familyArr[i] != data.val() && i != -1) {
+          familyArr.splice(i, 1);
+        }
+      });
+    };
 
     let fetchSecretSanta = function (postRef) {
       postRef.once("value").then(function(snapshot) {
@@ -430,10 +452,12 @@ window.onload = function instantiate() {
     fetchData(userInitial);
     fetchInvites(userInvites);
     fetchSecretSanta(autoSecretSanta);
+    fetchFamilies(familyInitial);
 
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(autoSecretSanta);
+    listeningFirebaseRefs.push(familyInitial);
   }
 
   function findUIDItemInArr(item, userArray){
