@@ -5,6 +5,7 @@
  */
 
 let secretBtnStates = [false, false, false];
+let optInFamilyArr = [];
 
 let currentDate = "";
 let showDate = "";//Oct 1st
@@ -292,7 +293,7 @@ function generateSecretSantaModal(){
 //Automatically trigger above deactivation function if a user lands on Lists page on a set date (~Mid January)
 //Send all users who signed up a thank you for participating and hide Secret Santa button
 
-function initializeSecretSantaArrs(){
+function initializeSecretSantaArrs(){//----------------------------*****************************ToDo
   tempUserArr = [];
   optInUserArr = [];
   for (let i = 0; i < userArr.length; i++) {
@@ -301,10 +302,21 @@ function initializeSecretSantaArrs(){
         secretSantaNameBool = true;
         secretBtnStates[1] = true;
       }
+
+    //This needs to be re-keyed to apply to being family-centric and not user-centric
     if (userArr[i].secretSanta != null)
       if (userArr[i].secretSanta == 1) {
         tempUserArr.push(userArr[i]);
         optInUserArr.push(userArr[i]);
+        for (let i = 0; i < familyArr.length; i++) {
+          if(familyArr[i].members != null)
+            if(familyArr[i].members.includes(userArr[i].uid)) {
+              if(!optInFamilyArr.includes(familyArr[i].uid)) {
+                console.log("Adding " + familyArr[i].uid);
+                optInFamilyArr.push(familyArr[i]);
+              }
+            }
+        }
         if (optInUserArr.length > 2)
           secretSantaIntBool = true;
       }
@@ -313,70 +325,61 @@ function initializeSecretSantaArrs(){
   initializeSecretSantaBtns();
 }
 
-function generateSecretSantaModal(){//----------------------------*****************************ToDo
+function generateSecretSantaModal(){
   activateSecretSanta.onclick = function() {
-    if (secretSantaNameBool && secretSantaIntBool) {
-      secretSantaBtn.onclick = function () {
-        secretSantaBtn.innerHTML = "Click On Me To Deactivate Secret Santa";
-        removeSecretSantaNames();
-        updateAllUsersToDBSantaNames();
-        alert("The Secret Santa Has Been Deactivated!");
-        removeSecretSantaNums();
-        updateAllUsersToDBSantaNums();
-        secretSantaNameBool = false;
-        closeModal(secretSantaModal);
-        generateSecretSantaModal();
-      };
-      secretSantaShuffle.onclick = function () {
-        initializeSecretSantaArrs();
-        removeSecretSantaNames();
-        createSecretSantaNames();
-        secretSantaNameBool = true;
-        alert("The Secret Santa has been shuffled!");
-      };
-      secretSantaBtn.innerHTML = "Click On Me To Deactivate Secret Santa";
-      secretSantaShuffle.innerHTML = "Click Me To Shuffle Secret Santa Names!";
-    } else if (secretSantaIntBool) {
-      secretSantaBtn.onclick = function () {
-        secretSantaBtn.innerHTML = "Click On Me To Activate Secret Santa";
-        createSecretSantaNames();
-        alert("Secret Santa System Has Been Initialized. Enjoy!");
-        secretSantaNameBool = true;
-        closeModal(secretSantaModal);
-        generateSecretSantaModal();
-      };
-      secretSantaShuffle.onclick = function(){
-        alert("Shuffle Button Not Available Until Secret Santa Is Active");
-      };
-      secretSantaBtn.innerHTML = "Click On Me To Activate Secret Santa";
-      secretSantaShuffle.innerHTML = "Shuffle Button Not Available!";
-    } else {
-      secretSantaBtn.onclick = function () {
-        alert("Secret Santa Button Is Not Available Until 3 Or More Users Have Signed Up");
-      };
-      secretSantaShuffle.onclick = function(){
-        alert("Shuffle Button Not Available Until Secret Santa Is Active");
-      };
-      secretSantaBtn.innerHTML = "Secret Santa Not Available! Click Me For More Info!";
-      secretSantaShuffle.innerHTML = "Shuffle Button Not Available!";
-    }
     santaModalSpan.onclick = function(){
       closeModal(secretSantaModal);
     };
+
     window.onclick = function(event) {
       if (event.target == secretSantaModal) {
         closeModal(secretSantaModal);
       }
     };
+
     openModal(secretSantaModal, "secretSantaModal");
   };
   activateSecretSanta.innerHTML = "Secret Santa";
 }
 
 function createSecretSantaNames(){//----------------------------*****************************ToDo
+  let optInPerFamilyArr = [];
+  let assignedFamiliesArr = [];
+  let optInFamilyIndex = 0;
   let selector;
   let userIndex;
   let retryCount = 0;
+
+  //be aware of members that may be in multiple families... just in case (if already assigned a secret santa, cancel)
+
+  for (let i = 0; i < optInFamilyArr.length; i++) {
+    if (!assignedFamiliesArr.includes(optInFamilyArr[i].uid))
+      if (optInFamilyArr[i].connections != null) {
+        for (let y = 0; y < optInFamilyArr[i].connections.length; y++)
+          optInFamilyIndex = findUIDItemInArr(optInFamilyArr[i].connections[y], optInFamilyArr);
+        if (optInFamilyIndex != -1 &&
+            !assignedFamiliesArr.includes(optInFamilyArr[i]).connections[y]) {
+          for (let x = 0; x < optInFamilyArr[optInFamilyIndex].members; x++)
+            if (optInUserArr.includes(optInFamilyArr[optInFamilyIndex].members[x]))
+              optInPerFamilyArr.push(optInUserArr[optInUserArr.indexOf(optInFamilyArr[optInFamilyIndex].members[x])]);
+          assignedFamiliesArr.push(optInFamilyArr[optInFamilyIndex].uid);
+        }
+      }
+    for (let z = 0; z < optInFamilyArr[i].members.length; i++) {
+      if (optInUserArr.includes(optInFamilyArr[i].members[z])) {
+        optInPerFamilyArr.push(optInUserArr[optInUserArr.indexOf(optInFamilyArr[i].members[z])]);
+      }
+    }
+
+
+    console.log("The following users will be assigned secret santas");
+    console.log(optInPerFamilyArr);
+    //CHECK IF OPT IN PER FAMILY ARR IS THE CORRECT SIZE OF 3 or more
+    //ASSIGN SECRET SANTA NAMES WITH optInPerFamilyArr
+    assignedFamiliesArr.push(optInFamilyArr[i].uid);
+  }
+
+  /*
   for (let i = 0; i < optInUserArr.length; i++) {
     selector = Math.floor((Math.random() * tempUserArr.length));
     if (!userUIDArr.includes(tempUserArr[selector].uid)) {
@@ -389,21 +392,21 @@ function createSecretSantaNames(){//----------------------------****************
           tempUserArr.splice(selector, 1);
           retryCount = 0;
         } else {
-          //console.log("These Users Aren't Friends :(");
+          console.log("These Users Aren't Friends :(");
           retryCount++;
           if(retryCount >= 10)
             break;
           i--;
         }
       } else {
-        //console.log("These Are The Same Users :(");
+        console.log("These Are The Same Users :(");
         retryCount++;
         if(retryCount >= 10)
           break;
         i--;
       }
     } else {
-      //console.log("User Has Already Been Picked");
+      console.log("User Has Already Been Picked");
       retryCount++;
       if(retryCount >= 10)
         break;
@@ -423,6 +426,7 @@ function createSecretSantaNames(){//----------------------------****************
     updateAllUsersToDBSantaNames();
     userUIDArr = [];
   }
+   */
 }
 
 function removeSecretSantaNames(){
