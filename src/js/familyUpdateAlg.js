@@ -222,24 +222,37 @@ window.onload = function instantiate() {
 
   function generateAddMemberModal() {
     let familyMemberFound = false;
+    let familyMemberDuplicate = false;
 
     addFamilyMember.onclick = function() {
       if(familyMemberInp.value != "" || (familyMemberInp.value.includes(" ") &&
           isAlph(familyMemberInp.value.charAt(0)))) {
         for (let i = 0; i < userArr.length; i++)
           if(familyMemberInp.value.toLowerCase() == userArr[i].userName.toLowerCase()) {
-            familyMemberFound = true;
-            if(familyData.members != null)
-              if (!familyData.members.includes(userArr[i].uid)) {
+            for(let z = 0; z < familyArr.length; z++) {
+              for(let y = 0; y < familyArr[z].members.length; y++)
+                if (familyArr[z].members[y] == userArr[i].uid)
+                  familyMemberDuplicate = true;
+            }
+
+            if(!familyMemberDuplicate) {
+              familyMemberFound = true;
+              if (familyData.members != null)
+                if (!familyData.members.includes(userArr[i].uid)) {
+                  generateConfirmDataModal(userArr[i].name, "Confirm Member Name Below",
+                      "user", userArr[i].uid);
+                } else {
+                  console.log("User is already in this family!");
+                  addMemberInfo.innerHTML = "That user is already added to this family, please try another!";
+                }
+              else
                 generateConfirmDataModal(userArr[i].name, "Confirm Member Name Below",
                     "user", userArr[i].uid);
-              } else {
-                console.log("User is already in this family!");
-                addMemberInfo.innerHTML = "That user is already added to this family, please try another!";
-              }
-            else
-              generateConfirmDataModal(userArr[i].name, "Confirm Member Name Below",
-                  "user", userArr[i].uid);
+            } else {
+              console.log("User is already in another family!");
+              addMemberInfo.innerHTML = "A user can only be in one family at a time! " +
+                  "Link the two families OR remove this user from the other family first.";
+            }
             break;
           }
         if(!familyMemberFound) {
@@ -247,6 +260,8 @@ window.onload = function instantiate() {
           addMemberInfo.innerHTML = "That user name does not exist, please try again!";
         }
       }
+      familyMemberDuplicate = false;
+      familyMemberFound = false;
     };
 
     cancelFamilyMember.onclick = function() {
@@ -450,6 +465,9 @@ window.onload = function instantiate() {
         connections: otherFamilyLinksArr
       });
     }
+
+    let ignoreAlert = true;
+    sessionStorage.setItem("ignoreAlert", JSON.stringify(ignoreAlert));
   }
 
   function generateFamilyLinkViewModal() {
@@ -863,6 +881,9 @@ window.onload = function instantiate() {
           break;
         }
     }
+
+    //Draw out family links on notepad
+    //find possible link errors, how to solve the problem of daisy-chaining family links
 
     if(foundFamilyToLink) {
       if(familyData.connections != null)
