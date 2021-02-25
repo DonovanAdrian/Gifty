@@ -9,9 +9,9 @@ let listeningFirebaseRefs = [];
 let inviteArr = [];
 let userArr = [];
 let familyArr = [];
+let connectionsArr = [];
 let loadedFamilyLinksArr = [];
 let oldFamilyMemberArr = [];
-let oldFamilyLinksArr = [];
 
 let moderationSet = 1;
 let onlineInt = 0;
@@ -75,6 +75,7 @@ let loadingTimer;
 let userInitial;
 let userInvites;
 let familyInitial;
+let connectionsInitial;
 
 
 
@@ -172,6 +173,7 @@ window.onload = function instantiate() {
   userInitial = firebase.database().ref("users/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
   familyInitial = firebase.database().ref("family/");
+  connectionsInitial = firebase.database().ref("connections/");
 
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
@@ -419,55 +421,12 @@ window.onload = function instantiate() {
             "link", familyArr[i].uid);
   }
 
-  function addFamilyLinkToDB(uidToLink){
-    let familyLinksArr = [];
-    let otherFamilyLinksArr = [];
-    if(familyData.connections != null)
-      familyLinksArr = familyData.connections;
-
-    console.log("UID to add: " + uidToLink);
-
-    //add other family to current family
-    console.log(familyLinksArr);
-    if (familyLinksArr.length == 0) {
-      console.log("Create new array");
-      firebase.database().ref("family/" + familyData.uid).update({
-        connections: {0: uidToLink}
-      });
-    } else {
-      familyLinksArr.push(uidToLink);
-      console.log("Add to existing array");
-      console.log(familyLinksArr);
-      firebase.database().ref("family/" + familyData.uid).update({
-        connections: familyLinksArr
-      });
-    }
-
-    //Add current family to other family
-    for(let i = 0; i < familyArr.length; i++)
-      if(uidToLink == familyArr[i].uid) {
-        if(familyArr[i].connections != null)
-          otherFamilyLinksArr = familyArr[i].connections;
-        break;
-      }
-
-    console.log(otherFamilyLinksArr);
-    if (otherFamilyLinksArr.length == 0) {
-      console.log("Create new array");
-      firebase.database().ref("family/" + uidToLink).update({
-        connections: {0: familyData.uid}
-      });
-    } else {
-      otherFamilyLinksArr.push(familyData.uid);
-      console.log("Add to existing array");
-      console.log(otherFamilyLinksArr);
-      firebase.database().ref("family/" + uidToLink).update({
-        connections: otherFamilyLinksArr
-      });
-    }
-
-    let ignoreAlert = true;
-    sessionStorage.setItem("ignoreAlert", JSON.stringify(ignoreAlert));
+  function addFamilyLinkToDB(uidToLink){//--------------------***********************ToDo
+    //Check to see if the current family has a connectionID
+    //if not, create a new connectionID (uid) and add current family and uidToLink to list in DB
+    //update other family's connectionID to new connectionID
+    //if so, use current fam's connectionID to find list and add uidToLink to list in DB
+    //update other family's connectionID to current fam's connectionID
   }
 
   function generateFamilyLinkViewModal() {
@@ -488,13 +447,14 @@ window.onload = function instantiate() {
     };
   }
 
-  function initializeFamilyLinks() {
+  function initializeFamilyLinks() {//-------------------*******************ToDo
     let familyDataConnections = familyData.connections;
     try {
       testFamily.remove();
     } catch (err) {}
 
     if (familyDataConnections != null)
+        //Find connectionsID in connectionsArr and createFamilyLink(familyArr[indexFound]) like below
       for (let i = 0; i < familyDataConnections.length; i++)
         if (!loadedFamilyLinksArr.includes(familyDataConnections[i])) {
           for (let a = 0; a < familyArr.length; a++)
@@ -509,47 +469,11 @@ window.onload = function instantiate() {
 
   }
 
-  function removeFamilyLinkFromDB(uidToRemove) {
+  function removeFamilyLinkFromDB(uidToRemove) {//----------------------**************ToDo
     let familyConnectionsToRemoveArr = familyData.connections;
-    let otherFamilyConnectionsToRemoveArr = [];
-    let uidToRemoveLocation = 0
 
-    //Remove link from current family
-    for(let i = 0; i < familyConnectionsToRemoveArr.length; i++)
-      if(familyConnectionsToRemoveArr[i] == uidToRemove) {
-        console.log("Remove " + familyConnectionsToRemoveArr[i]);
-        familyConnectionsToRemoveArr.splice(i, 1);
-
-        firebase.database().ref("family/" + familyData.uid).update({
-          connections: familyConnectionsToRemoveArr
-        });
-      }
-
-    try {
-      document.getElementById("link" + uidToRemove).remove();
-
-      uidToRemoveLocation = findUIDItemInArr(uidToRemove, loadedFamilyLinksArr);
-      loadedFamilyLinksArr.splice(uidToRemoveLocation, 1);
-
-      if(loadedFamilyLinksArr.length == 0)
-        deployConnectionListEmptyNotification();
-    } catch (err) {}
-    familyData.connections = familyConnectionsToRemoveArr;
-
-    //Remove link from other family
-    for(let i = 0; i < familyArr.length; i++)
-      if(familyArr[i].uid == uidToRemove) {
-        otherFamilyConnectionsToRemoveArr = familyArr[i].connections;
-        for (let a = 0; a < otherFamilyConnectionsToRemoveArr.length; a++)
-          if (otherFamilyConnectionsToRemoveArr[a] == familyData.uid) {
-            console.log("Remove " + otherFamilyConnectionsToRemoveArr[a]);
-            otherFamilyConnectionsToRemoveArr.splice(a, 1);
-
-            firebase.database().ref("family/" + uidToRemove).update({
-              connections: otherFamilyConnectionsToRemoveArr
-            });
-          }
-      }
+    //Find connectionID in list and remove family from list, update to DB
+    //Clear uidToRemove's connectionID and update to DB
   }
 
   function createFamilyLink(linkedFamilyData) {
@@ -565,7 +489,7 @@ window.onload = function instantiate() {
       familyMemberUID.innerHTML = linkedFamilyData.uid;
 
       removeFamilyMember.onclick = function() {
-        removeFamilyLinkFromDB(linkedFamilyData.uid);
+        removeFamilyLinkFromDB(linkedFamilyData);
         closeModal(familyMemberViewModal);
         openModal(familyLinkViewModal, "familyLinkViewModal");
       };
@@ -719,14 +643,6 @@ window.onload = function instantiate() {
               location.reload();
             }
           }
-
-          if(familyData.connections != null) {
-            oldFamilyLinksArr = familyData.connections;
-            if (oldFamilyLinksArr.length != familyData.connections.length) {
-              console.log("Something Changed! (FamilyConnectionsArr)");
-              location.reload();
-            }
-          }
         }
 
         let i = findUIDItemInArr(data.key, familyArr);
@@ -746,13 +662,33 @@ window.onload = function instantiate() {
       });
     };
 
+    let fetchConnections = function (postRef){
+      postRef.on('child_added', function (data) {
+        connectionsArr.push(data.val());
+      });
+
+      postRef.on('child_changed', function (data) {
+        let i = findUIDItemInArr(data.key, connectionsArr);
+        if(connectionsArr[i] != data.val() && i != -1)
+          connectionsArr[i] = data.val();
+      });
+
+      postRef.on('child_removed', function (data) {
+        let i = findUIDItemInArr(data.key, connectionsArr);
+        if(connectionsArr[i] != data.val() && i != -1)
+          connectionsArr.splice(i, 1);
+      });
+    }
+
     fetchData(userInitial);
     fetchInvites(userInvites);
     fetchFamilies(familyInitial);
+    fetchConnections(connectionsInitial);
 
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(familyInitial);
+    listeningFirebaseRefs.push(connectionsInitial);
   }
 
   function findUIDItemInArr(item, userArray){
@@ -859,7 +795,7 @@ window.onload = function instantiate() {
     }
   }
 
-  function findFamilyInDB(familyLinkData){
+  function findFamilyInDB(familyLinkData){//---------------------********************ToDo
     let foundFamilyToLink = false;
     let foundFamilyToLinkUID = "";
 
@@ -882,11 +818,9 @@ window.onload = function instantiate() {
         }
     }
 
-    //Draw out family links on notepad
-    //find possible link errors, how to solve the problem of daisy-chaining family links
-
     if(foundFamilyToLink) {
       if(familyData.connections != null)
+          //Find connectionID and check to see if this family is in that list
         if(!familyData.connections.includes(foundFamilyToLinkUID)) {
           closeModal(familyLinkModal);
           familyLinkInfo.innerHTML = "";
