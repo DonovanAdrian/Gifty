@@ -12,6 +12,7 @@ let userUIDArr = [];
 let tempUserArr = [];
 let optInUserArr = [];
 let familyArr = [];
+let connectionsArr = [];
 
 let secretSantaIntBool = false;
 let secretSantaNameBool = false;
@@ -37,6 +38,9 @@ let noteSpan;
 let inviteNote;
 let userInitial;
 let userInvites;
+let autoSecretSanta;
+let familyInitial;
+let connectionsInitial;
 let activateSecretSanta;
 let secretSantaModal;
 let santaModalSpan;
@@ -300,6 +304,25 @@ window.onload = function instantiate() {
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
     autoSecretSanta = firebase.database().ref("secretSanta/");
     familyInitial = firebase.database().ref("family/");
+    connectionsInitial = firebase.database().ref("connections/");
+
+    let fetchConnections = function (postRef){
+      postRef.on('child_added', function (data) {
+        connectionsArr.push(data.val());
+      });
+
+      postRef.on('child_changed', function (data) {
+        let i = findUIDItemInArr(data.key, connectionsArr);
+        if(connectionsArr[i] != data.val() && i != -1)
+          connectionsArr[i] = data.val();
+      });
+
+      postRef.on('child_removed', function (data) {
+        let i = findUIDItemInArr(data.key, connectionsArr);
+        if(connectionsArr[i] != data.val() && i != -1)
+          connectionsArr.splice(i, 1);
+      });
+    }
 
     let fetchFamilies = function (postRef){
       postRef.on('child_added', function (data) {
@@ -308,16 +331,14 @@ window.onload = function instantiate() {
 
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, familyArr);
-        if(familyArr[i] != data.val() && i != -1) {
+        if(familyArr[i] != data.val() && i != -1)
           familyArr[i] = data.val();
-        }
       });
 
       postRef.on('child_removed', function (data) {
         let i = findUIDItemInArr(data.key, familyArr);
-        if(familyArr[i] != data.val() && i != -1) {
+        if(familyArr[i] != data.val() && i != -1)
           familyArr.splice(i, 1);
-        }
       });
     };
 
@@ -453,11 +474,13 @@ window.onload = function instantiate() {
     fetchInvites(userInvites);
     fetchSecretSanta(autoSecretSanta);
     fetchFamilies(familyInitial);
+    fetchConnections(connectionsInitial);
 
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(autoSecretSanta);
     listeningFirebaseRefs.push(familyInitial);
+    listeningFirebaseRefs.push(connectionsInitial);
   }
 
   function findUIDItemInArr(item, userArray){
