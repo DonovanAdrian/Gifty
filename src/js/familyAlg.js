@@ -13,6 +13,7 @@ let familyMemberArr = [];
 let familyConnectionArr = [];
 let loadedFamilyMembersArr = [];
 let loadedFamilyModalsArr = [];
+let connectionsArr = [];
 
 let moderationSet = 1;
 let onlineInt = 0;
@@ -50,6 +51,7 @@ let loadingTimer;
 let userInitial;
 let userInvites;
 let familyInitial;
+let connectionsInitial;
 
 
 
@@ -115,6 +117,7 @@ window.onload = function instantiate() {
   userInitial = firebase.database().ref("users/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
   familyInitial = firebase.database().ref("family/");
+  connectionsInitial = firebase.database().ref("connections/");
 
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
@@ -299,13 +302,33 @@ window.onload = function instantiate() {
       });
     };
 
+    let fetchConnections = function (postRef){
+      postRef.on('child_added', function (data) {
+        connectionsArr.push(data.val());
+      });
+
+      postRef.on('child_changed', function (data) {
+        let i = findUIDItemInArr(data.key, connectionsArr);
+        if(connectionsArr[i] != data.val() && i != -1)
+          connectionsArr[i] = data.val();
+      });
+
+      postRef.on('child_removed', function (data) {
+        let i = findUIDItemInArr(data.key, connectionsArr);
+        if(connectionsArr[i] != data.val() && i != -1)
+          connectionsArr.splice(i, 1);
+      });
+    }
+
     fetchData(userInitial);
     fetchInvites(userInvites);
     fetchFamilies(familyInitial);
+    fetchConnections(connectionsInitial);
 
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(familyInitial);
+    listeningFirebaseRefs.push(connectionsInitial);
   }
 
   function findUIDItemInArr(item, userArray){
@@ -315,7 +338,7 @@ window.onload = function instantiate() {
     return -1;
   }
 
-  function createFamilyElement(familyData){
+  function createFamilyElement(familyData){//-----------------*****************ToDo
     try{
       testData.remove();
     } catch (err) {}
@@ -324,6 +347,7 @@ window.onload = function instantiate() {
     liItem.id = "family" + familyData.uid;
     liItem.className = "gift";
     liItem.onclick = function (){
+      //Use familyData.connections to find connectionID and set as below array
       familyConnectionArr = familyData.connections;
       familyMemberArr = familyData.members;
       familyTitle.innerHTML = familyData.name;
@@ -427,11 +451,12 @@ window.onload = function instantiate() {
     dataCounter++;
   }
 
-  function changeFamilyElement(familyData) {
+  function changeFamilyElement(familyData) {//----------------*********************ToDo
     let editFamily = document.getElementById('family' + familyData.uid);
     editFamily.innerHTML = familyData.name;
     editFamily.className = "gift";
     editFamily.onclick = function (){
+      //Use familyData.connections to find connectionID and set as below array
       familyConnectionArr = familyData.connections;
       familyMemberArr = familyData.members;
       familyTitle.innerHTML = familyData.name;
@@ -515,23 +540,17 @@ window.onload = function instantiate() {
     };
   }
 
-  function removeFamilyFromDB(uid) {
+  function removeFamilyFromDB(uid) {//-------------------***************ToDo
     let familyConnectionsToRemoveArr = [];
 
     for(let i = 0; i < familyArr.length; i++)
       if(familyArr[i].connections != null) {
+        //Find connectionID using familyArr[i].connections and remove uid from list
         familyConnectionsToRemoveArr = familyArr[i].connections;
-        for (let a = 0; a < familyConnectionsToRemoveArr.length; a++)
-          if (familyConnectionsToRemoveArr[a] == uid) {
-            familyConnectionsToRemoveArr.splice(a, 1);
-
-            firebase.database().ref("family/" + familyArr[i].uid).update({
-              connections: familyConnectionsToRemoveArr
-            });
-          }
+        break;
       }
 
-    firebase.database().ref("family/").child(uid).remove();
+    //firebase.database().ref("family/").child(uid).remove();
   }
 
 
