@@ -338,17 +338,22 @@ window.onload = function instantiate() {
     return -1;
   }
 
-  function createFamilyElement(familyData){//-----------------*****************ToDo
+  function createFamilyElement(familyData){
     try{
       testData.remove();
     } catch (err) {}
+
+    familyConnectionArr = null;
 
     let liItem = document.createElement("LI");
     liItem.id = "family" + familyData.uid;
     liItem.className = "gift";
     liItem.onclick = function (){
-      //Use familyData.connections to find connectionID and set as below array
-      familyConnectionArr = familyData.connections;
+      for (let i = 0; i < connectionsArr.length; i++)
+        if (connectionsArr[i][0] == familyData.connections) {
+          familyConnectionArr = connectionsArr[i];
+          break;
+        }
       familyMemberArr = familyData.members;
       familyTitle.innerHTML = familyData.name;
       familyUID.innerHTML = "UID: " + familyData.uid;
@@ -451,19 +456,23 @@ window.onload = function instantiate() {
     dataCounter++;
   }
 
-  function changeFamilyElement(familyData) {//----------------*********************ToDo
+  function changeFamilyElement(familyData) {
+    familyConnectionArr = null;
     let editFamily = document.getElementById('family' + familyData.uid);
     editFamily.innerHTML = familyData.name;
     editFamily.className = "gift";
     editFamily.onclick = function (){
-      //Use familyData.connections to find connectionID and set as below array
-      familyConnectionArr = familyData.connections;
+      for (let i = 0; i < connectionsArr.length; i++)
+        if (connectionsArr[i][0] == familyData.connections) {
+          familyConnectionArr = connectionsArr[i];
+          break;
+        }
       familyMemberArr = familyData.members;
       familyTitle.innerHTML = familyData.name;
       familyUID.innerHTML = "UID: " + familyData.uid;
 
       if(familyConnectionArr != null)
-        familyConnectionCount.innerHTML = "# Connections: " + familyConnectionArr.length;
+        familyConnectionCount.innerHTML = "# Connections: " + (familyConnectionArr.length - 1);
       else
         familyConnectionCount.innerHTML = "# Connections: " + 0;
 
@@ -540,17 +549,19 @@ window.onload = function instantiate() {
     };
   }
 
-  function removeFamilyFromDB(uid) {//-------------------***************ToDo
-    let familyConnectionsToRemoveArr = [];
+  function removeFamilyFromDB(uid) {
 
     for(let i = 0; i < familyArr.length; i++)
       if(familyArr[i].connections != null) {
-        //Find connectionID using familyArr[i].connections and remove uid from list
-        familyConnectionsToRemoveArr = familyArr[i].connections;
+        for (let z = 0; z < connectionsArr.length; z++)
+          if(connectionsArr[z][0] == familyArr[i].connections) {
+            connectionsArr[z].splice(connectionsArr[z].indexOf(familyArr[i].uid));
+            break;
+          }
         break;
       }
 
-    //firebase.database().ref("family/").child(uid).remove();
+    firebase.database().ref("family/").child(uid).remove();
   }
 
 
