@@ -470,10 +470,19 @@ window.onload = function instantiate() {
   }
 
   function removeFamilyLinkFromDB(uidToRemove) {//----------------------**************ToDo
-    let familyConnectionsToRemoveArr = familyData.connections;
 
-    //Find connectionID in list and remove family from list, update to DB
-    //Clear uidToRemove's connectionID and update to DB
+    for (let i = 0; i < connectionsArr.length; i++)
+      if (connectionsArr[i][0] == familyData.connections) {
+        connectionsArr[i].splice(connectionsArr[i].indexOf(uidToRemove), 1);
+        break;
+      }
+
+    //Update connectionsArr to DB
+
+    let i = findUIDItemInArr(uidToRemove, familyArr);
+    familyArr[i].connections = "";
+
+    //Update family to DB
   }
 
   function createFamilyLink(linkedFamilyData) {
