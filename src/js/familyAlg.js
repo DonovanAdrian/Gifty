@@ -350,8 +350,8 @@ window.onload = function instantiate() {
     liItem.className = "gift";
     liItem.onclick = function (){
       for (let i = 0; i < connectionsArr.length; i++)
-        if (connectionsArr[i][0] == familyData.connections) {
-          familyConnectionArr = connectionsArr[i];
+        if (connectionsArr[i].uid == familyData.connections) {
+          familyConnectionArr = connectionsArr[i].families;
           break;
         }
       familyMemberArr = familyData.members;
@@ -463,8 +463,8 @@ window.onload = function instantiate() {
     editFamily.className = "gift";
     editFamily.onclick = function (){
       for (let i = 0; i < connectionsArr.length; i++)
-        if (connectionsArr[i][0] == familyData.connections) {
-          familyConnectionArr = connectionsArr[i];
+        if (connectionsArr[i].uid == familyData.connections) {
+          familyConnectionArr = connectionsArr[i].families;
           break;
         }
       familyMemberArr = familyData.members;
@@ -549,19 +549,24 @@ window.onload = function instantiate() {
     };
   }
 
-  function removeFamilyFromDB(uid) {
+  function removeFamilyFromDB(uidToRemove) {
 
-    for(let i = 0; i < familyArr.length; i++)
-      if(familyArr[i].connections != null) {
-        for (let z = 0; z < connectionsArr.length; z++)
-          if(connectionsArr[z][0] == familyArr[i].connections) {
-            connectionsArr[z].splice(connectionsArr[z].indexOf(familyArr[i].uid));
-            break;
-          }
-        break;
-      }
+    for (let i = 0; i < familyArr.length; i++)
+      if(familyArr[i].uid == uidToRemove)
+        if(familyArr[i].connections != null) {
+          for (let z = 0; z < connectionsArr.length; z++)
+            if(connectionsArr[z].uid == familyArr[i].connections) {
+              connectionsArr[z].families.splice(connectionsArr[z].families.indexOf(uidToRemove), 1);
 
-    firebase.database().ref("family/").child(uid).remove();
+              firebase.database().ref("connections/" + connectionsArr[z].uid).update({
+                families: connectionsArr[z].families
+              });
+              break;
+            }
+          break;
+        }
+
+    firebase.database().ref("family/").child(uidToRemove).remove();
   }
 
 
