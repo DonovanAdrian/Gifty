@@ -447,42 +447,45 @@ window.onload = function instantiate() {
     };
   }
 
-  function initializeFamilyLinks() {//-------------------*******************ToDo
-    let familyDataConnections = familyData.connections;
+  function initializeFamilyLinks() {
     try {
       testFamily.remove();
     } catch (err) {}
 
-    if (familyDataConnections != null)
-        //Find connectionsID in connectionsArr and createFamilyLink(familyArr[indexFound]) like below
-      for (let i = 0; i < familyDataConnections.length; i++)
-        if (!loadedFamilyLinksArr.includes(familyDataConnections[i])) {
-          for (let a = 0; a < familyArr.length; a++)
-            if (familyDataConnections[i] == familyArr[a].uid)
-              createFamilyLink(familyArr[a]);
-          loadedFamilyLinksArr.push(familyData.connections[i]);
-        } else
-          deployConnectionListEmptyNotification();
-
-    if(loadedFamilyLinksArr.length == 0)
+    if (familyData.connections != null)
+      for (let i = 0; i < connectionsArr.length; i++) {
+        if (connectionsArr[i].uid == familyData.connections) {
+          for (let z = 0; z < connectionsArr[i].families.length; z++) {
+            let familyIndex = findUIDItemInArr(connectionsArr[i].families[z], familyArr);
+            if (!loadedFamilyLinksArr.includes(familyArr[familyIndex].uid)) {
+              createFamilyLink(familyArr[familyIndex].uid);
+              loadedFamilyLinksArr.push(familyArr[familyIndex].uid);
+            }
+          }
+          break;
+        }
+      }
+    else
       deployConnectionListEmptyNotification();
-
   }
 
-  function removeFamilyLinkFromDB(uidToRemove) {//----------------------**************ToDo
-
+  function removeFamilyLinkFromDB(uidToRemove) {
     for (let i = 0; i < connectionsArr.length; i++)
-      if (connectionsArr[i][0] == familyData.connections) {
-        connectionsArr[i].splice(connectionsArr[i].indexOf(uidToRemove), 1);
+      if (connectionsArr[i].uid == familyData.connections) {
+        connectionsArr[i].families.splice(connectionsArr[i].families.indexOf(uidToRemove), 1);
+
+        firebase.database().ref("connections/" + connectionsArr[i].uid).update({
+          families: connectionsArr[i].families
+        });
         break;
       }
-
-    //Update connectionsArr to DB
 
     let i = findUIDItemInArr(uidToRemove, familyArr);
     familyArr[i].connections = "";
 
-    //Update family to DB
+    firebase.database().ref("family/" + uidToRemove).update({
+      connections: ""
+    });
   }
 
   function createFamilyLink(linkedFamilyData) {
@@ -804,7 +807,7 @@ window.onload = function instantiate() {
     }
   }
 
-  function findFamilyInDB(familyLinkData){//---------------------********************ToDo
+  function findFamilyInDB(familyLinkData){
     let foundFamilyToLink = false;
     let foundFamilyToLinkUID = "";
 
@@ -829,19 +832,22 @@ window.onload = function instantiate() {
 
     if(foundFamilyToLink) {
       if(familyData.connections != null)
-          //Find connectionID and check to see if this family is in that list
-        if(!familyData.connections.includes(foundFamilyToLinkUID)) {
-          closeModal(familyLinkModal);
-          familyLinkInfo.innerHTML = "";
-          generateConfirmFamilyLink(foundFamilyToLinkUID);
-        } else {
-          familyLinkInfo.innerHTML = "This family has already been linked, please try another!";
-        }
-      else {
-        closeModal(familyLinkModal);
-        familyLinkInfo.innerHTML = "";
-        generateConfirmFamilyLink(foundFamilyToLinkUID);
-      }
+        for (let i = 0; i < connectionsArr.length; i++)
+          if(familyData.connections == connectionsArr[i].uid) {
+            if (!connectionsArr[i].families.includes(foundFamilyToLinkUID)) {
+              closeModal(familyLinkModal);
+              familyLinkInfo.innerHTML = "";
+              generateConfirmFamilyLink(foundFamilyToLinkUID);
+            } else {
+              familyLinkInfo.innerHTML = "This family has already been linked, please try another!";
+            }
+            break;
+          }
+          else {
+            closeModal(familyLinkModal);
+            familyLinkInfo.innerHTML = "";
+            generateConfirmFamilyLink(foundFamilyToLinkUID);
+          }
     } else {
       familyLinkInfo.innerHTML = "Family does not exist, please try again!";
     }
