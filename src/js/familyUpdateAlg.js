@@ -422,11 +422,53 @@ window.onload = function instantiate() {
   }
 
   function addFamilyLinkToDB(uidToLink){//--------------------***********************ToDo
-    //Check to see if the current family has a connectionID
-    //if not, create a new connectionID (uid) and add current family and uidToLink to list in DB
-    //update other family's connectionID to new connectionID
-    //if so, use current fam's connectionID to find list and add uidToLink to list in DB
-    //update other family's connectionID to current fam's connectionID
+
+    if (familyData.connections != null) {
+      console.log(familyArr[i].connections);
+
+      familyArr[i].connections = familyData.connections;
+
+      console.log(familyArr[i].connections);
+      //Update familyArr[i].connections to DB
+      /*
+      firebase.database().ref("family/" + familyArr[i].uid).update({
+        connections: familyArr[i].connections
+      });
+       */
+
+      for (let z = 0; z < connectionsArr.length; z++)
+        if (connectionsArr[z].uid == familyData.connections) {
+          console.log(connectionsArr[z].families);
+
+          connectionsArr[z].families.push(uidToLink);
+
+          console.log(connectionsArr[z].families);
+          //Update connectionsArr[z].families to DB
+          /*
+          firebase.database().ref("connections/" + connectionsArr[z].uid).update({
+            families: connectionsArr[z].families
+          });
+           */
+          break;
+        }
+    } else {
+      let newUid = firebase.database().ref("connections").push();
+      newUid = newUid.toString();
+      //newUid = newUid.substr(46, 70);
+      console.log(newUid);
+
+      /*
+      firebase.database().ref("family/" + newUid).set({
+        uid: newUid,
+        families: [familyData.uid, uidToLink]
+      });
+
+      familyData.connections = newUid;
+      //Update to DB
+      familyArr[i].connections = newUid;
+      //Update to DB
+       */
+    }
   }
 
   function generateFamilyLinkViewModal() {
@@ -831,23 +873,20 @@ window.onload = function instantiate() {
     }
 
     if(foundFamilyToLink) {
-      if(familyData.connections != null)
-        for (let i = 0; i < connectionsArr.length; i++)
-          if(familyData.connections == connectionsArr[i].uid) {
-            if (!connectionsArr[i].families.includes(foundFamilyToLinkUID)) {
-              closeModal(familyLinkModal);
-              familyLinkInfo.innerHTML = "";
-              generateConfirmFamilyLink(foundFamilyToLinkUID);
-            } else {
-              familyLinkInfo.innerHTML = "This family has already been linked, please try another!";
-            }
-            break;
-          }
-          else {
-            closeModal(familyLinkModal);
-            familyLinkInfo.innerHTML = "";
-            generateConfirmFamilyLink(foundFamilyToLinkUID);
-          }
+      let i = findUIDItemInArr(foundFamilyToLink, familyArr);
+      if (familyArr[i].connections != null)
+        if (familyArr[i].connections == familyData.connections) {
+          console.log("You have already linked this family!");
+          familyLinkInfo.innerHTML = "This family has already been linked, please try another!";
+        } else {
+          console.log("You cannot link this family more than once!");
+          familyLinkInfo.innerHTML = "This family cannot be linked more than once!";
+        }
+      else {
+        closeModal(familyLinkModal);
+        familyLinkInfo.innerHTML = "";
+        generateConfirmFamilyLink(foundFamilyToLinkUID);
+      }
     } else {
       familyLinkInfo.innerHTML = "Family does not exist, please try again!";
     }
