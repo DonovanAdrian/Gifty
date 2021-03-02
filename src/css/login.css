@@ -17,7 +17,7 @@ body {
 .centeredLogin {
   position: fixed;
   display: block;
-  top: 250px;
+  top: 340px;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -108,7 +108,7 @@ button {
   border-radius: 0;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (min-width: 0px) and (max-width: 600px) {
   .centeredLogin {
     top: 375px;
   }
@@ -122,5 +122,80 @@ button {
     width: 300px;
     height: 300px;
     transition: 0.3s;
+  }
+}
+
+@media screen and (min-width: 1000px) and (max-width: 1500px) {
+  .centeredLogin {
+    top: 375px;
+  }
+  input {
+    width: 500px;
+  }
+  button {
+    width: 520px;
+  }
+  img.imgIcon {
+    width: 550px;
+    height: 550px;
+    transition: 0.3s;
+  }
+}
+
+@media screen and (min-width: 1500px) and (max-width: 2000px) {
+  .centeredLogin {
+    top: 475px;
+  }
+  input {
+    width: 700px;
+  }
+  button {
+    width: 720px;
+  }
+  img.imgIcon {
+    width: 750px;
+    height: 750px;
+    transition: 0.3s;
+  }
+  input {
+    font-size: 25px;
+  }
+  button {
+    font-size: 25px;
+  }
+  p {
+    font-size: 25px;
+  }
+  a {
+    font-size: 25px;
+  }
+}
+
+@media screen and (min-width: 2000px) {
+  .centeredLogin {
+    top: 600px;
+  }
+  input {
+    width: 850px;
+  }
+  button {
+    width: 870px;
+  }
+  img.imgIcon {
+    width: 950px;
+    height: 950px;
+    transition: 0.3s;
+  }
+  input {
+    font-size: 30px;
+  }
+  button {
+    font-size: 30px;
+  }
+  p {
+    font-size: 30px;
+  }
+  a {
+    font-size: 30px;
   }
 }
