@@ -58,6 +58,14 @@ let closeFamilySettings;
 let changeFamilyName;
 let linkFamilies;
 let existingLinks;
+let familySettingsRemoveModal;
+let familySettingsTitleR;
+let closeFamilySettingsR;
+let changeFamilyNameR;
+let linkFamiliesR;
+let existingLinksR;
+let removeLinkFamilies;
+let removeEntireLinkFamilies;
 let confirmMemberModal;
 let closeConfirmMemberModal;
 let confirmMemberTitle;
@@ -144,6 +152,14 @@ window.onload = function instantiate() {
   changeFamilyName = document.getElementById('changeFamilyName');
   linkFamilies = document.getElementById('linkFamilies');
   existingLinks = document.getElementById('existingLinks');
+  familySettingsRemoveModal = document.getElementById('familySettingsRemoveModal');
+  familySettingsTitleR = document.getElementById('familySettingsTitleR');
+  closeFamilySettingsR = document.getElementById('closeFamilySettingsR');
+  changeFamilyNameR = document.getElementById('changeFamilyNameR');
+  linkFamiliesR = document.getElementById('linkFamiliesR');
+  existingLinksR = document.getElementById('existingLinksR');
+  removeLinkFamilies = document.getElementById('removeLinkFamilies');
+  removeEntireLinkFamilies = document.getElementById('removeEntireLinkFamilies');
   confirmMemberModal = document.getElementById('confirmMemberModal');
   closeConfirmMemberModal = document.getElementById('closeConfirmMemberModal');
   confirmMemberTitle = document.getElementById('confirmMemberTitle');
@@ -163,9 +179,11 @@ window.onload = function instantiate() {
     cancelFamilyName, familyLinkModal, closeFamilyLinkModal, familyNameInp, updateFamilyName, cancelFamilyName,
     familyLinkModal, closeFamilyLinkModal, familyLinkInp, addFamilyLink, cancelFamilyLink, familyLinkViewModal,
     closeFamilyLinkViewModal, familyLinkViewTitle, familyLinkViewContainer, familySettingsModal, familySettingsTitle,
-    closeFamilySettings, changeFamilyName, linkFamilies, existingLinks, confirmMemberModal, closeConfirmMemberModal,
-    confirmMemberTitle, confMemberUserName, addMemberConfirm, addMemberDeny, offlineModal, offlineSpan,
-    notificationModal, noteSpan, notificationTitle, notificationInfo];
+    closeFamilySettings, changeFamilyName, linkFamilies, existingLinks, familySettingsRemoveModal, familySettingsTitleR,
+    closeFamilySettingsR, changeFamilyNameR, linkFamiliesR, existingLinksR, removeLinkFamilies,
+    removeEntireLinkFamilies, confirmMemberModal, closeConfirmMemberModal, confirmMemberTitle, confMemberUserName,
+    addMemberConfirm, addMemberDeny, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle,
+    notificationInfo];
   verifyElementIntegrity(familyUpdateElements);
   getCurrentUser();
   commonInitialization();
@@ -208,7 +226,13 @@ window.onload = function instantiate() {
   familySettings.innerHTML = "Family Settings";
 
   familySettings.onclick = function() {
-    generateFamilySettingsModal();
+    if (familyData.connections != null)
+      if (familyData.connections != "")
+        generateFamilySettingsRemoveModal();
+      else
+        generateFamilySettingsModal();
+    else
+      generateFamilySettingsModal();
   };
 
   if(familyData.members != null)
@@ -326,6 +350,47 @@ window.onload = function instantiate() {
     window.onclick = function(event) {
       if (event.target == confirmMemberModal) {
         closeModal(confirmMemberModal);
+      }
+    };
+  }
+
+  function generateFamilySettingsRemoveModal() {
+    familySettingsTitleR.innerHTML = familyData.name + " Settings";
+
+    changeFamilyNameR.onclick = function() {
+      closeModal(familySettingsRemoveModal);
+      generateFamilyNameModal();
+    };
+
+    linkFamiliesR.onclick = function() {
+      closeModal(familySettingsRemoveModal);
+      generateFamilyLinkModal();
+    };
+
+    existingLinksR.onclick = function() {
+      closeModal(familySettingsRemoveModal);
+      generateFamilyLinkViewModal();
+    };
+
+    removeLinkFamilies.onclick = function () {
+      closeModal(familySettingsRemoveModal);
+      alert("This will eventually remove the family from the connection");
+    };
+
+    removeEntireLinkFamilies.onclick = function () {
+      closeModal(familySettingsRemoveModal);
+      alert("This will eventually remove the entire connection");
+    };
+
+    openModal(familySettingsRemoveModal, "familySettingsRemoveModal");
+
+    closeFamilySettingsR.onclick = function() {
+      closeModal(familySettingsRemoveModal);
+    };
+
+    window.onclick = function(event) {
+      if (event.target == familySettingsRemoveModal) {
+        closeModal(familySettingsRemoveModal);
       }
     };
   }
