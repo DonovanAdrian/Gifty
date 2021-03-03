@@ -349,17 +349,18 @@ window.onload = function instantiate() {
     liItem.id = "family" + familyData.uid;
     liItem.className = "gift";
     liItem.onclick = function (){
-      for (let i = 0; i < connectionsArr.length; i++)
-        if (connectionsArr[i].uid == familyData.connections) {
-          familyConnectionArr = connectionsArr[i].families;
-          break;
-        }
+      if (familyData.connections != "")
+        for (let i = 0; i < connectionsArr.length; i++)
+          if (connectionsArr[i].uid == familyData.connections) {
+            familyConnectionArr = connectionsArr[i].families;
+            break;
+          }
       familyMemberArr = familyData.members;
       familyTitle.innerHTML = familyData.name;
       familyUID.innerHTML = "UID: " + familyData.uid;
 
       if(familyConnectionArr != null)
-        familyConnectionCount.innerHTML = "# Connections: " + familyConnectionArr.length;
+        familyConnectionCount.innerHTML = "# Connections: " + (familyConnectionArr.length - 1);
       else
         familyConnectionCount.innerHTML = "# Connections: " + 0;
 
