@@ -287,6 +287,27 @@ function closeModal(closeThisModal){
   }
 }
 
+function alternateButtonLabel(button, parentLabel, childLabel){
+  let nowConfirm = 0;
+  let alternator = 0;
+  console.log(childLabel + " Button Feature Active");
+  setInterval(function(){
+    nowConfirm = nowConfirm + 1000;
+    if(nowConfirm >= 3000){
+      nowConfirm = 0;
+      if(alternator == 0) {
+        alternator++;
+        button.innerHTML = parentLabel;
+        button.style.background = "#00c606";
+      } else {
+        alternator--;
+        button.innerHTML = childLabel;
+        button.style.background = "#00ad05";
+      }
+    }
+  }, 1000);
+}
+
 function isAlph(rChar){
   rChar = rChar.toUpperCase();
   switch (rChar){
