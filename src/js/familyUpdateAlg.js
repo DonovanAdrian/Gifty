@@ -213,7 +213,7 @@ window.onload = function instantiate() {
 
   databaseQuery();
 
-  familyModerateButton();
+  alternateButtonLabel(settingsNote, "Settings", "Family");
 
   addMember.innerHTML = "Add Member";
 
@@ -490,7 +490,7 @@ window.onload = function instantiate() {
             "link", familyArr[i].uid);
   }
 
-  function addFamilyLinkToDB(uidToLink){//--------------------***********************ToDo
+  function addFamilyLinkToDB(uidToLink){
     let familyIndex = findUIDItemInArr(uidToLink, familyArr);
     let familyDataToUse;
     let otherFamilyData;
@@ -643,6 +643,8 @@ window.onload = function instantiate() {
       removeFamilyMember.onclick = function() {
         removeFamilyLinkFromDB(linkedFamilyData.uid);
         document.getElementById("link" + linkedFamilyData.uid).remove();
+        let loadedIndex = loadedFamilyLinksArr.indexOf(linkedFamilyData.uid);
+        loadedFamilyLinksArr.splice(loadedIndex, 1);
         closeModal(familyMemberViewModal);
         openModal(familyLinkViewModal, "familyLinkViewModal");
       };
@@ -668,27 +670,6 @@ window.onload = function instantiate() {
     liItem.appendChild(textNode);
 
     familyLinkViewContainer.insertBefore(liItem, familyLinkViewContainer.childNodes[0]);
-  }
-
-  function familyModerateButton(){
-    let nowConfirm = 0;
-    let alternator = 0;
-    console.log("Settings Button Feature Active");
-    setInterval(function(){
-      nowConfirm = nowConfirm + 1000;
-      if(nowConfirm >= 3000){
-        nowConfirm = 0;
-        if(alternator == 0) {
-          alternator++;
-          settingsNote.innerHTML = "Settings";
-          settingsNote.style.background = "#00c606";
-        } else {
-          alternator--;
-          settingsNote.innerHTML = "Family";
-          settingsNote.style.background = "#00ad05";
-        }
-      }
-    }, 1000);
   }
 
   function databaseQuery() {
