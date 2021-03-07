@@ -141,7 +141,7 @@ window.onload = function instantiate() {
 
   databaseQuery();
 
-  familyModerateButton();
+  alternateButtonLabel(settingsNote, "Settings", "Family");
 
   createFamilyBtn.innerHTML = "Create Family";
 
@@ -171,27 +171,6 @@ window.onload = function instantiate() {
         closeModal(familyAddModal);
       }
     };
-  }
-
-  function familyModerateButton(){
-    let nowConfirm = 0;
-    let alternator = 0;
-    console.log("Settings Button Feature Active");
-    setInterval(function(){
-      nowConfirm = nowConfirm + 1000;
-      if(nowConfirm >= 3000){
-        nowConfirm = 0;
-        if(alternator == 0) {
-          alternator++;
-          settingsNote.innerHTML = "Settings";
-          settingsNote.style.background = "#00c606";
-        } else {
-          alternator--;
-          settingsNote.innerHTML = "Family";
-          settingsNote.style.background = "#00ad05";
-        }
-      }
-    }, 1000);
   }
 
   function databaseQuery() {
