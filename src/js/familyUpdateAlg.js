@@ -376,18 +376,17 @@ window.onload = function instantiate() {
     };
 
     removeEntireLinkFamilies.onclick = function () {
-      closeModal(familySettingsRemoveModal);
+      let connectionIDToRemove = familyData.connections;
       let connectionsIndex = findUIDItemInArr(familyData.connections, connectionsArr);
+
       for (let i = 0; i < connectionsArr[connectionsIndex].families.length; i++)
         firebase.database().ref("family/" + connectionsArr[connectionsIndex].families[i]).update({
           connections: ""
         });
 
-      firebase.database().ref("connections/").child(familyData.connections).remove();
-      alert("Dev Note: Check to see if the connection was removed from the DB and the families no longer have" +
-          " connections");
-      //ToDo
-      //Check to see if proper modal appears now as well
+      firebase.database().ref("connections/").child(connectionIDToRemove).remove();
+
+      closeModal(familySettingsRemoveModal);
     };
 
     openModal(familySettingsRemoveModal, "familySettingsRemoveModal");
@@ -600,20 +599,32 @@ window.onload = function instantiate() {
   }
 
   function removeFamilyLinkFromDB(uidToRemove) {
+    let removalIndex = -1;
+    console.log("Removing " + uidToRemove + "...");
     for (let i = 0; i < connectionsArr.length; i++)
       if (connectionsArr[i].uid == familyData.connections) {
         if (connectionsArr[i].families.length > 2) {
-          let removalIndex = findUIDItemInArr(uidToRemove, connectionsArr[i].families)
-          connectionsArr[i].families.splice(removalIndex, 1);
+          for (let y = 0; y < connectionsArr[i].families.length; y++)
+            if (uidToRemove == connectionsArr[i].families[y])
+              removalIndex = y;
+          console.log("Removing " + removalIndex + ": " + connectionsArr[i].families[removalIndex]);
 
-          firebase.database().ref("connections/" + connectionsArr[i].uid).update({
-            families: connectionsArr[i].families
-          });
+          if (removalIndex != -1) {
 
-          firebase.database().ref("family/" + uidToRemove).update({
-            connections: ""
-          });
+            connectionsArr[i].families.splice(removalIndex, 1);
+
+            firebase.database().ref("connections/" + connectionsArr[i].uid).update({
+              families: connectionsArr[i].families
+            });
+
+            firebase.database().ref("family/" + uidToRemove).update({
+              connections: ""
+            });
+          } else {
+            alert("The family could not be removed from the Database! Please refresh the page and try again.");
+          }
         } else {
+          console.log("Removing connection item from DB");
           for(let z = 0; z < familyArr.length; z++)
             if(familyArr[z].connections == connectionsArr[i].uid)
               firebase.database().ref("family/" + familyArr[z].uid).update({
@@ -626,9 +637,10 @@ window.onload = function instantiate() {
       }
   }
 
-  function createFamilyLink(linkedFamilyData) {//The wrong family got removed from the link set //ToDo
-    //Keep an eye on making sure that all the references are correct in the inspect element tab
-    //Are elements properly being removed from the list?
+  function createFamilyLink(linkedFamilyData) {
+    let textNode;
+
+    console.log(linkedFamilyData.name + " open");
     let liItem = document.createElement("LI");
     liItem.id = "link" + linkedFamilyData.uid;
     liItem.className = "gift";
@@ -641,12 +653,17 @@ window.onload = function instantiate() {
       familyMemberUID.innerHTML = linkedFamilyData.uid;
 
       removeFamilyMember.onclick = function() {
-        removeFamilyLinkFromDB(linkedFamilyData.uid);
+        let connectionIDChecker = findUIDItemInArr(linkedFamilyData.connections, connectionsArr);
+        console.log("Checking " + connectionIDChecker);
+
         document.getElementById("link" + linkedFamilyData.uid).remove();
         let loadedIndex = loadedFamilyLinksArr.indexOf(linkedFamilyData.uid);
         loadedFamilyLinksArr.splice(loadedIndex, 1);
         closeModal(familyMemberViewModal);
-        openModal(familyLinkViewModal, "familyLinkViewModal");
+        if(linkedFamilyData.uid != familyData.uid && connectionsArr[connectionIDChecker].families.length > 2)
+          openModal(familyLinkViewModal, "familyLinkViewModal");
+
+        removeFamilyLinkFromDB(linkedFamilyData.uid);
       };
 
       //show modal
@@ -666,7 +683,10 @@ window.onload = function instantiate() {
         }
       };
     };
-    let textNode = document.createTextNode(linkedFamilyData.name);
+    if (linkedFamilyData.uid == familyData.uid)
+      textNode = document.createTextNode(linkedFamilyData.name + " (Current Family)");
+    else
+      textNode = document.createTextNode(linkedFamilyData.name);
     liItem.appendChild(textNode);
 
     familyLinkViewContainer.insertBefore(liItem, familyLinkViewContainer.childNodes[0]);
