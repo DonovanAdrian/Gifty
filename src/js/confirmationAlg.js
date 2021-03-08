@@ -137,29 +137,7 @@ window.onload = function instantiate() {
 
   databaseQuery();
 
-  inviteConfirmButton();
-
-  function inviteConfirmButton(){
-    let nowConfirm = 0;
-    let alternator = 0;
-    if(consoleOutput)
-      console.log("Invite Button Feature Active");
-    setInterval(function(){
-      nowConfirm = nowConfirm + 1000;
-      if(nowConfirm >= 3000){
-        nowConfirm = 0;
-        if(alternator == 0) {
-          alternator++;
-          inviteNote.innerHTML = "Confirm";
-          inviteNote.style.background = "#00c606";
-        } else {
-          alternator--;
-          inviteNote.innerHTML = "Invites";
-          inviteNote.style.background = "#00ad05";
-        }
-      }
-    }, 1000);
-  }
+  alternateButtonLabel(inviteNote, "Invites", "Confirm");
 
   function databaseQuery() {
 
