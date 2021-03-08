@@ -99,27 +99,5 @@ window.onload = function instantiate() {
     return charSelect;
   }
 
-  settingsFAQButton();
-
-  function settingsFAQButton(){
-    let nowConfirm = 0;
-    let alternator = 0;
-    if(consoleOutput)
-      console.log("Settings Button Feature Active");
-    setInterval(function(){
-      nowConfirm = nowConfirm + 1000;
-      if(nowConfirm >= 3000){
-        nowConfirm = 0;
-        if(alternator == 0) {
-          alternator++;
-          settingsNote.innerHTML = "Settings";
-          settingsNote.style.background = "#00c606";
-        } else {
-          alternator--;
-          settingsNote.innerHTML = "FAQ";
-          settingsNote.style.background = "#00ad05";
-        }
-      }
-    }, 1000);
-  }
+  alternateButtonLabel(settingsNote, "Settings", "FAQ");
 };
