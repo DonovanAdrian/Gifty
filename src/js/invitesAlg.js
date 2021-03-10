@@ -87,35 +87,36 @@ function getCurrentUser(){
         console.log(user.friends);
     }
 
-    if (user.readNotifications == undefined)
+    if (user.readNotifications == undefined) {
       if(consoleOutput)
         console.log("Read Notifications Not Found");
-      else
-        readNotificationsBool = true;
+    } else {
+      readNotificationsBool = true;
+    }
 
-    if (user.notifications == undefined)
+    if (user.notifications == undefined) {
       if(consoleOutput)
         console.log("Notifications Not Found");
-      else if (user.notifications != undefined) {
-        if (readNotificationsBool){
-          if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
-            notificationBtn.src = "img/bellNotificationOn.png";
-            notificationBtn.onclick = function() {
-              newNavigation(6);//Notifications
-            }
-          } else {
-            notificationBtn.src = "img/bellNotificationOff.png";
-            notificationBtn.onclick = function() {
-              newNavigation(6);//Notifications
-            }
-          }
-        } else if (user.notifications.length > 0) {
+    } else if (user.notifications != undefined) {
+      if (readNotificationsBool){
+        if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
           notificationBtn.src = "img/bellNotificationOn.png";
           notificationBtn.onclick = function() {
             newNavigation(6);//Notifications
           }
+        } else {
+          notificationBtn.src = "img/bellNotificationOff.png";
+          notificationBtn.onclick = function() {
+            newNavigation(6);//Notifications
+          }
+        }
+      } else if (user.notifications.length > 0) {
+        notificationBtn.src = "img/bellNotificationOn.png";
+        notificationBtn.onclick = function() {
+          newNavigation(6);//Notifications
         }
       }
+    }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
     if(consoleOutput)
