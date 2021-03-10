@@ -18,11 +18,6 @@ div.faqContainer {
   text-align: center;
 }
 
-img.notificationIcon {
-  width: 40px;
-  height: 40px;
-}
-
 div.centeredImage {
   position: fixed;
   display: block;
@@ -36,6 +31,7 @@ p.faqInf {
   font-family: Verdana;
   text-decoration: underline;
 }
+
 p.faqInfSpec {
   margin: 10px;
   font-size: 15px;
@@ -52,18 +48,14 @@ p.giftInf {
 
 input.giftInp {
   margin: 0;
-  width: 500px;
   padding-left: 10px;
-  font-size: 16px;
 }
 
 span.basicBtn {
   position: relative;
-  padding: 10px;
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
@@ -76,13 +68,9 @@ span.basicBtn:hover {
 
 span.boughtBtn {
   position: fixed;
-  left: 10px;
-  bottom: 10px;
-  padding: 10px;
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
@@ -95,13 +83,9 @@ span.boughtBtn:hover {
 
 span.addBtn {
   position: fixed;
-  right: 10px;
-  bottom: 10px;
-  padding: 10px;
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
@@ -114,12 +98,9 @@ span.addBtn:hover {
 
 span.settingsBtn {
   margin: 50px;
-  padding: 10px;
-  width: 500px;
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
@@ -132,12 +113,9 @@ span.settingsBtn:hover {
 
 span.faqBtn {
   margin: 50px;
-  padding: 10px;
-  width: 500px;
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
@@ -151,13 +129,9 @@ span.faqBtn:hover {
 span.modBtn {
   display: none;
   position: fixed;
-  right: 10px;
-  bottom: 10px;
-  padding: 10px;
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
@@ -171,13 +145,9 @@ span.modBtn:hover {
 span.familyBtn {
   display:none;
   position: fixed;
-  left: 10px;
-  bottom: 10px;
-  padding: 10px;
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
@@ -192,19 +162,14 @@ img.newInvite {
   position: fixed;
   left: 10px;
   bottom: 10px;
-  width: 50px;
-  height: 50px;
   display: none;
   transition: 0.3s;
 }
 
 span.updateBtn {
   font-family: Verdana;
-  padding: 10px;
-  width: 500px;
   background: #d9d9d9;
   color: #555;
-  font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
@@ -215,9 +180,11 @@ span.updateBtn:hover {
 }
 
 img.imgIcon {
-  width: 40px;
-  height: 40px;
-  padding: 5px;
+  display: block;
+  padding: 0px;
+  width: 300px;
+  height: 300px;
+  margin: -75px auto -175px auto;
 }
 
 div.topnav ul{
@@ -229,16 +196,11 @@ div.topnav ul{
   background-color: #008222;
 }
 
-div.topnav ul li {
-  padding-top: 5px;
-  float: left;
-}
-
 div.topnav ul li a {
+  background-color: #008222;
   display: block;
   color: white;
   text-align: center;
-  padding: 14px 16px;
   text-decoration: none;
   transition: 0.6s;
 }
@@ -260,133 +222,11 @@ div.topnav ul li a.signOut:hover:not(.active) {
   background-color: #f96554;
 }
 
-
-div.topnav ul li.right {float: right;}
-
-@media screen and (max-width: 600px) {
-  img.notificationIcon {
-    width: 25px;
-    height: 25px;
-  }
-
-  span.boughtBtn {
-    left: 5px;
-    bottom: 5px;
-    padding: 5px;
-  }
-
-  span.addBtn {
-    right: 5px;
-    bottom: 5px;
-    padding: 5px;
-  }
-
-  input.giftInp {
-    width: 300px;
-  }
-
-  .cropIcon {
-    overflow: hidden;
-    max-width: 600px;
-  }
-  img.imgIcon {
-    display: block;
-    padding: 0px;
-    width: 300px;
-    height: 300px;
-    margin: -75px auto -175px auto;
-  }
-  .break{
-    clear: both;
-  }
-  img.newInvite {
-    width: 40px;
-    height: 40px;
-  }
-  div.topnav ul li.right,
-  div.topnav ul li {
-    font-size: 8pt;
-    padding: 0px;
-  }
-  .modal-header {
-    font-size: 8pt;
-  }
-
-  .modal-body {
-    font-size: 10pt;
-  }
-}
-
-@media screen and (max-width: 342px) {
-  img.notificationIcon {
-    width: 20px;
-    height: 20px;
-  }
-
-  span.boughtBtn {
-    left: 5px;
-    bottom: 5px;
-    padding: 5px;
-    font-size: 13px;
-  }
-
-  span.addBtn {
-    right: 5px;
-    bottom: 5px;
-    padding: 5px;
-    font-size: 13px;
-  }
-
-  span.basicBtn {
-    padding: 5px;
-    font-size: 14px;
-  }
-
-  input.giftInp {
-    width: 200px;
-  }
-
-  div.cropIcon {
-    overflow: hidden;
-    max-width: 600px;
-  }
-  img.imgIcon {
-    display: block;
-    padding: 0px;
-    width: 300px;
-    height: 300px;
-    margin: -75px auto -175px auto;
-  }
-  img.newInvite {
-    width: 30px;
-    height: 30px;
-  }
-  div.topnav ul li.right,
-  div.topnav ul li {
-    float: none;
-    padding: 0;
-  }
-  .modal-header {
-    font-size: 6pt;
-  }
-
-  .modal-body {
-    font-size: 8pt;
-  }
-}
-
-@media screen and (max-height: 600px) {
-  .modal {
-    position: fixed;
-    z-index: 1;
-    padding-top: 50px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    max-height: 75%;
-  }
+div.topnav ul li.right,
+div.topnav ul li{
+  float: left;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 ul.giftList {
@@ -397,10 +237,9 @@ ul.giftList {
 ul li.gift {
   cursor: pointer;
   position: relative;
-  padding: 12px 8px 12px 40px;
+  font-family: Verdana;
   list-style-type: none;
   background: #eee;
-  font-size: 18px;
   transition: 0.2s;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -453,8 +292,8 @@ ul li.santa::before {
 
 .modal {
   display: none;
-  position: fixed;=
-z-index: 1;
+  position: fixed;
+  z-index: 1;
   padding-top: 50px;
   left: 0;
   top: 0;
@@ -503,14 +342,12 @@ z-index: 1;
 }
 
 .modal-header {
-  font-size: 10pt;
   padding: 2px 16px;
   background-color: #5cb85c;
   color: white;
 }
 
 .modal-body {
-  font-size: 12pt;
   padding: 2px 16px;
 }
 
@@ -518,4 +355,607 @@ z-index: 1;
   padding-bottom: 50px;
   background-color: #5cb85c;
   color: white;
+}
+
+@media screen and (min-width: 0px) and (max-width: 400px) {
+  span.boughtBtn {
+    left: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.addBtn {
+    right: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.basicBtn {
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.settingsBtn {
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.modBtn {
+    right: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.familyBtn {
+    left: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.updateBtn {
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  p {
+    font-size: 14px;
+  }
+
+  input.giftInp {
+    width: 200px;
+    font-size: 13px;
+  }
+
+  div.cropIcon {
+    overflow: hidden;
+    max-width: 600px;
+  }
+
+  img.notificationIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  img.newInvite {
+    width: 30px;
+    height: 30px;
+  }
+
+  div.topnav ul li.right,
+  div.topnav ul li {
+    float: none;
+    padding: 0;
+  }
+
+  div.topnav ul li a {
+    font-size: 13px;
+    padding: 5px;
+  }
+
+  .modal-header {
+    font-size: 11px;
+  }
+
+  .modal-body {
+    font-size: 13px;
+  }
+
+  .modal-footer {
+    font-size: 13px;
+  }
+
+  ul li.gift {
+    padding: 10px 6px 10px 30px;
+    font-size: 13px;
+  }
+}
+
+@media screen and (min-width: 400px) and (max-width: 750px) {
+  span.basicBtn {
+    padding: 7px;
+    font-size: 15px;
+  }
+
+  span.settingsBtn {
+    padding: 7px;
+    font-size: 15px;
+  }
+
+  span.modBtn {
+    right: 7px;
+    bottom: 7px;
+    padding: 7px;
+    font-size: 15px;
+  }
+
+  span.familyBtn {
+    left: 7px;
+    bottom: 7px;
+    padding: 7px;
+    font-size: 15px;
+  }
+
+  span.boughtBtn {
+    left: 7px;
+    bottom: 7px;
+    padding: 7px;
+    font-size: 15px;
+  }
+
+  span.addBtn {
+    right: 7px;
+    bottom: 7px;
+    padding: 7px;
+    font-size: 15px;
+  }
+
+  span.updateBtn {
+    padding: 7px;
+    font-size: 15px;
+  }
+
+  input.giftInp {
+    width: 300px;
+    font-size: 15px;
+  }
+
+  p {
+    font-size: 15px;
+  }
+
+  img.notificationIcon {
+    width: 30px;
+    height: 30px;
+  }
+
+  img.newInvite {
+    width: 40px;
+    height: 40px;
+  }
+
+  .break{
+    clear: both;
+  }
+
+  .modal-header {
+    font-size: 12px;
+  }
+
+  .modal-body {
+    font-size: 10px;
+  }
+
+  .modal-footer {
+    font-size: 13px;
+  }
+
+  div.topnav ul li.right,
+  div.topnav ul li {
+    font-size: 10px;
+    padding: 0px;
+  }
+
+  div.topnav ul li a {
+    font-size: 14px;
+    padding: 14px 16px;
+  }
+
+  ul li.gift {
+    padding: 10px 6px 10px 30px;
+    font-size: 15px;
+  }
+}
+
+@media screen and (min-width: 750px) and (max-width: 1500px) {
+  span.basicBtn {
+    padding: 9px;
+    font-size: 17px;
+  }
+
+  span.settingsBtn {
+    padding: 9px;
+    font-size: 17px;
+  }
+
+  span.modBtn {
+    right: 9px;
+    bottom: 9px;
+    padding: 9px;
+    font-size: 17px;
+  }
+
+  span.familyBtn {
+    left: 9px;
+    bottom: 9px;
+    padding: 9px;
+    font-size: 17px;
+  }
+
+  span.boughtBtn {
+    left: 9px;
+    bottom: 9px;
+    padding: 9px;
+    font-size: 17px;
+  }
+
+  span.addBtn {
+    right: 9px;
+    bottom: 9px;
+    padding: 9px;
+    font-size: 17px;
+  }
+
+  span.updateBtn {
+    padding: 9px;
+    font-size: 17px;
+  }
+
+  input.giftInp {
+    width: 550px;
+    font-size: 17px;
+  }
+
+  p {
+    font-size: 17px;
+  }
+
+  img.notificationIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  img.newInvite {
+    width: 50px;
+    height: 50px;
+  }
+
+  .modal-header {
+    font-size: 14px;
+  }
+
+  .modal-body {
+    font-size: 12px;
+  }
+
+  .modal-footer {
+    font-size: 15px;
+  }
+
+  div.topnav ul li.right,
+  div.topnav ul li {
+    font-size: 12px;
+    padding: 0px;
+  }
+
+  div.topnav ul li a {
+    font-size: 16px;
+    padding: 15.5px 16px;
+  }
+
+  ul li.gift {
+    padding: 12px 8px 12px 40px;
+    font-size: 17px;
+  }
+}
+
+@media screen and (min-width: 1500px) and (max-width: 2000px) {
+  span.basicBtn {
+    padding: 11px;
+    font-size: 21px;
+  }
+
+  span.settingsBtn {
+    padding: 11px;
+    font-size: 21px;
+  }
+
+  span.modBtn {
+    right: 11px;
+    bottom: 11px;
+    padding: 11px;
+    font-size: 21px;
+  }
+
+  span.familyBtn {
+    left: 11px;
+    bottom: 11px;
+    padding: 11px;
+    font-size: 21px;
+  }
+
+  span.boughtBtn {
+    left: 11px;
+    bottom: 11px;
+    padding: 11px;
+    font-size: 21px;
+  }
+
+  span.addBtn {
+    right: 11px;
+    bottom: 11px;
+    padding: 11px;
+    font-size: 21px;
+  }
+
+  span.updateBtn {
+    padding: 11px;
+    font-size: 21px;
+  }
+
+  input.giftInp {
+    width: 700px;
+    font-size: 21px;
+  }
+
+  p {
+    font-size: 21px;
+  }
+
+  img.imgIcon {
+    display: block;
+    padding: 0px;
+    width: 305px;
+    height: 305px;
+    margin: -75px auto -175px auto;
+  }
+
+  img.notificationIcon {
+    width: 50px;
+    height: 50px;
+  }
+
+  img.newInvite {
+    width: 65px;
+    height: 65px;
+  }
+
+  .modal-header {
+    font-size: 18px;
+  }
+
+  .modal-body {
+    font-size: 16px;
+  }
+
+  .modal-footer {
+    font-size: 19px;
+    padding-bottom: 60px;
+  }
+
+  div.topnav ul li.right,
+  div.topnav ul li {
+    font-size: 18px;
+    padding: 0px;
+  }
+
+  div.topnav ul li a {
+    font-size: 20px;
+    padding: 15.5px 16px;
+  }
+
+  ul li.gift {
+    padding: 12px 8px 12px 40px;
+    font-size: 22px;
+  }
+}
+
+@media screen and (min-width: 2000px) and (max-width: 2700px) {
+  span.basicBtn {
+    padding: 13px;
+    font-size: 23px;
+  }
+
+  span.settingsBtn {
+    padding: 13px;
+    font-size: 23px;
+  }
+
+  span.modBtn {
+    right: 13px;
+    bottom: 13px;
+    padding: 13px;
+    font-size: 23px;
+  }
+
+  span.familyBtn {
+    left: 13px;
+    bottom: 13px;
+    padding: 13px;
+    font-size: 23px;
+  }
+
+  span.boughtBtn {
+    left: 13px;
+    bottom: 13px;
+    padding: 13px;
+    font-size: 23px;
+  }
+
+  span.addBtn {
+    right: 13px;
+    bottom: 13px;
+    padding: 13px;
+    font-size: 23px;
+  }
+
+  span.updateBtn {
+    padding: 13px;
+    font-size: 23px;
+  }
+
+  input.giftInp {
+    width: 1200px;
+    font-size: 23px;
+  }
+
+  p {
+    font-size: 23px;
+  }
+
+  img.imgIcon {
+    display: block;
+    padding: 0px;
+    width: 311px;
+    height: 311px;
+    margin: -75px auto -175px auto;
+  }
+
+  img.notificationIcon {
+    width: 55px;
+    height: 55px;
+  }
+
+  img.newInvite {
+    width: 75px;
+    height: 75px;
+  }
+
+  .modal-header {
+    font-size: 20px;
+  }
+
+  .modal-body {
+    font-size: 18px;
+  }
+
+  .modal-footer {
+    font-size: 21px;
+    padding-bottom: 70px;
+  }
+
+  div.topnav ul li.right,
+  div.topnav ul li {
+    font-size: 20px;
+    padding: 0px;
+  }
+
+  div.topnav ul li a {
+    font-size: 22px;
+    padding: 15.5px 16px;
+  }
+
+  ul li.gift {
+    padding: 12px 8px 12px 40px;
+    font-size: 24px;
+  }
+}
+
+@media screen and (min-width: 2700px) {
+  span.basicBtn {
+    padding: 13px;
+    font-size: 26px;
+  }
+
+  span.settingsBtn {
+    padding: 13px;
+    font-size: 26px;
+  }
+
+  span.modBtn {
+    right: 13px;
+    bottom: 13px;
+    padding: 13px;
+    font-size: 26px;
+  }
+
+  span.familyBtn {
+    left: 13px;
+    bottom: 13px;
+    padding: 13px;
+    font-size: 26px;
+  }
+
+  span.boughtBtn {
+    left: 13px;
+    bottom: 13px;
+    padding: 13px;
+    font-size: 26px;
+  }
+
+  span.addBtn {
+    right: 13px;
+    bottom: 13px;
+    padding: 13px;
+    font-size: 26px;
+  }
+
+  span.updateBtn {
+    padding: 13px;
+    font-size: 26px;
+  }
+
+  input.giftInp {
+    width: 1200px;
+    font-size: 26px;
+  }
+
+  p {
+    font-size: 26px;
+  }
+
+  img.imgIcon {
+    display: block;
+    padding: 0px;
+    width: 311px;
+    height: 311px;
+    margin: -75px auto -175px auto;
+  }
+
+  img.notificationIcon {
+    width: 60px;
+    height: 60px;
+  }
+
+  img.newInvite {
+    width: 80px;
+    height: 80px;
+  }
+
+  .modal-header {
+    font-size: 23px;
+  }
+
+  .modal-body {
+    font-size: 21px;
+  }
+
+  .modal-footer {
+    font-size: 24px;
+    padding-bottom: 80px;
+  }
+
+  div.topnav ul li.right,
+  div.topnav ul li {
+    font-size: 23px;
+    padding: 0px;
+  }
+
+  div.topnav ul li a {
+    font-size: 25px;
+    padding: 15.5px 16px;
+  }
+
+  ul li.gift {
+    padding: 12px 8px 12px 40px;
+    font-size: 27px;
+  }
+}
+
+/*This is meant to solve the issue with modals going off the screen on shorter displays*/
+@media screen and (max-height: 600px) {
+  .modal {
+    position: fixed;
+    z-index: 1;
+    padding-top: 50px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    max-height: 75%;
+  }
 }
