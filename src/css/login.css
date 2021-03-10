@@ -123,6 +123,18 @@ button {
     height: 300px;
     transition: 0.3s;
   }
+  input {
+    font-size: 15px;
+  }
+  button {
+    font-size: 15px;
+  }
+  p {
+    font-size: 15px;
+  }
+  a {
+    font-size: 15px;
+  }
 }
 
 @media screen and (min-width: 1000px) and (max-width: 1500px) {
@@ -139,6 +151,18 @@ button {
     width: 550px;
     height: 550px;
     transition: 0.3s;
+  }
+  input {
+    font-size: 17px;
+  }
+  button {
+    font-size: 17px;
+  }
+  p {
+    font-size: 17px;
+  }
+  a {
+    font-size: 17px;
   }
 }
 
@@ -158,16 +182,16 @@ button {
     transition: 0.3s;
   }
   input {
-    font-size: 25px;
+    font-size: 21px;
   }
   button {
-    font-size: 25px;
+    font-size: 21px;
   }
   p {
-    font-size: 25px;
+    font-size: 21px;
   }
   a {
-    font-size: 25px;
+    font-size: 21px;
   }
 }
 
@@ -187,15 +211,15 @@ button {
     transition: 0.3s;
   }
   input {
-    font-size: 30px;
+    font-size: 25px;
   }
   button {
-    font-size: 30px;
+    font-size: 25px;
   }
   p {
-    font-size: 30px;
+    font-size: 25px;
   }
   a {
-    font-size: 30px;
+    font-size: 25px;
   }
 }
