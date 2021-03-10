@@ -85,28 +85,7 @@ window.onload = function instantiate() {
 
   databaseQuery();
 
-  settingsModerateButton();
-
-  function settingsModerateButton(){
-    let nowConfirm = 0;
-    let alternator = 0;
-    console.log("Settings Button Feature Active");
-    setInterval(function(){
-      nowConfirm = nowConfirm + 1000;
-      if(nowConfirm >= 3000){
-        nowConfirm = 0;
-        if(alternator == 0) {
-          alternator++;
-          settingsNote.innerHTML = "Settings";
-          settingsNote.style.background = "#00c606";
-        } else {
-          alternator--;
-          settingsNote.innerHTML = "Moderation";
-          settingsNote.style.background = "#00ad05";
-        }
-      }
-    }, 1000);
-  }
+  alternateButtonLabel(settingsNote, "Settings", "Moderation");
 
   //Needs to be updated to apply to this page---------------------**************ToDo
   /*
