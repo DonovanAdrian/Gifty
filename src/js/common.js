@@ -39,14 +39,17 @@ function verifyElementIntegrity(arr){
 
   for(let i = 0; i < arr.length; i++){
     try {
-      if (arr[i].innerHTML == undefined)
-        if(consoleOutput)
+      if (arr[i].innerHTML == undefined) {
+        if (consoleOutput)
           console.log("WARNING: " + i + " UNDEFINED!");
-        else if (arr[i].innerHTML == null)
-          if(consoleOutput)
-            console.log("WARNING: " + i + " NULL!");
-          else
-            verifiedElements.push(arr[i]);
+      } else if (arr[i].innerHTML == null) {
+        if (consoleOutput)
+          console.log("WARNING: " + i + " NULL!");
+      } else {
+        verifiedElements.push(arr[i]);
+        if (consoleOutput)
+          console.log("Verified Element!");
+      }
     } catch (err) {
       if(consoleOutput)
         console.log("ERROR: Element " + i + " " + err.toString());
@@ -341,4 +344,34 @@ function isAlph(rChar){
     default:
       return false;
   }
+}
+
+function findUIDInString(input){
+  let beginSearch = true;
+  let skipThisChar = true;
+  let uidBuilder = "";
+  let potentialUID = "";
+
+  for (let i = 0; i < input.length; i++) {
+    if (input.charAt(i) == "/") {
+      if (beginSearch) {
+        potentialUID = uidBuilder;
+        if (consoleOutput)
+          console.log("PotentialUID Updated: " + potentialUID);
+        uidBuilder = "";
+        skipThisChar = true;
+      } else {
+        beginSearch = true;
+      }
+    }
+    if (beginSearch && !skipThisChar) {
+      uidBuilder = uidBuilder + input.charAt(i);
+      if (consoleOutput)
+        console.log("Building PotentialUID... " + uidBuilder);
+    }
+    skipThisChar = false;
+  }
+  if (consoleOutput)
+    console.log("Is this your card? " + potentialUID);
+  return potentialUID;
 }
