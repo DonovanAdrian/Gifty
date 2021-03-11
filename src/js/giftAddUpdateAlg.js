@@ -41,18 +41,22 @@ let noteSpan;
 
 
 function getCurrentUser(){
+  let localConsoleOutput = false;
+
   try {
     user = JSON.parse(sessionStorage.validUser);
+    if(user.moderatorInt == 1)
+      localConsoleOutput = true;
     privateList = JSON.parse(sessionStorage.privateList);
     if(privateList == null || privateList == undefined || privateList == "") {
       privateListBool = false;
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("User: " + user.userName + " loaded in");
     } else {
       privateUser = JSON.parse(sessionStorage.validPrivateUser);
       homeNote.className = "";
       listNote.className = "active";
-      if(consoleOutput) {
+      if(localConsoleOutput) {
         console.log("User: " + privateUser.userName + " loaded in");
         console.log("Friend: " + user.userName + " loaded in");
       }
@@ -61,12 +65,12 @@ function getCurrentUser(){
     if (giftStorage == null || giftStorage == undefined || giftStorage == "") {
       giftPresent = false;
     } else {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Gift: " + giftStorage + " found");
     }
     if (!privateListBool)
       if (user.invites == undefined) {
-        if(consoleOutput)
+        if(localConsoleOutput)
           console.log("Invites Not Found");
       } else if (user.invites != undefined) {
         if (user.invites.length > 0) {
@@ -75,7 +79,7 @@ function getCurrentUser(){
       }
       else
       if (user.invites == undefined) {
-        if(consoleOutput)
+        if(localConsoleOutput)
           console.log("Invites Not Found");
       } else if (user.invites != undefined) {
         if (user.invites.length > 0) {
@@ -84,7 +88,7 @@ function getCurrentUser(){
       }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    if(consoleOutput)
+    if(localConsoleOutput)
       console.log(err.toString());
     window.location.href = "index.html";
   }
@@ -109,9 +113,9 @@ window.onload = function instantiate() {
   noteSpan = document.getElementById('closeNotification');
   giftAddUpdateElements = [offlineModal, offlineSpan, giftDescriptionInp, giftTitleInp, giftWhereInp, giftLinkInp,
     updateGift, homeNote, listNote, inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan];
-  verifyElementIntegrity(giftAddUpdateElements);
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(giftAddUpdateElements);
 
   if(giftPresent) {
     updateGift.innerHTML = "Update Gift";
@@ -375,7 +379,7 @@ window.onload = function instantiate() {
       if(!privateListBool) {
         let newUid = firebase.database().ref("users/" + user.uid + "/giftList/" + uid).push();
         newUid = newUid.toString();
-        newUid = newUid.substr(77, 96);
+        newUid = findUIDInString(newUid);
         firebase.database().ref("users/" + user.uid + "/giftList/" + uid).set({
           title: giftTitleInp.value,
           link: newURL,
@@ -392,7 +396,7 @@ window.onload = function instantiate() {
 
         let newUid = firebase.database().ref("users/" + user.uid + "/privateList/" + uid).push();
         newUid = newUid.toString();
-        newUid = newUid.substr(80, 96);
+        newUid = findUIDInString(newUid);
         firebase.database().ref("users/" + user.uid + "/privateList/" + uid).set({
           title: giftTitleInp.value,
           link: newURL,
