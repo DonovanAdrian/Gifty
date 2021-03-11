@@ -2,19 +2,16 @@
 > made by Donovan Adrian in JavaScript, HTML, and CSS
 
 ## ***Task List***
-- [x] Add Global Notifications
-- [x] Add Moderator Private Messages
-- [x] Add Private Messages (User to User)
-- [ ] Add Moderation Support Queue
-  -  This will be put on the backburner for the time being, as it is a very minor feature.
-- [ ] Touch Up Work/Testing **\(in progress)**
-- [ ] Add Family Pages
+- Check out a list of tasks on the "Projects" section of my 
+  profile! You can also find planned release content there
+  as well.
 
 ## Website Structure
 - index
-  - userAddUpdate
+  - userAddUpdate *\(The first user on the database is given the moderator role)*
   - *USER LOGGED IN*
     - home
+      - boughtGifts
       - giftAddUpdate
     - lists
       - friendList
@@ -23,10 +20,12 @@
     - settings
       - faq
         - email form
+      - moderationQueue *\(Moderator Role Only)*
       - moderation *\(Moderator Role Only)*
         - friendList
       - family *\(Moderator Role Only)*
-    - notifications
+        - familyUpdate *\(Moderator Role Only)*
+    - notifications *\(Accessible from almost all pages)*
 
 ## Welcome!
 This website is meant to be a gift list registry that 

@@ -364,7 +364,7 @@ function updateMaintenanceLog(locationData, detailsData) {
   let timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
   let newUid = firebase.database().ref("maintenance").push();
   newUid = newUid.toString();
-  newUid = newUid.substr(51, 70);
+  newUid = findUIDInString(newUid);
 
   firebase.database().ref("maintenance/" + newUid).set({
     uid: newUid,
