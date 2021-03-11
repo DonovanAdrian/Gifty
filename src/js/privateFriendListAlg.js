@@ -56,16 +56,20 @@ let giftDelete;
 
 
 function getCurrentUser(){
+  let localConsoleOutput = false;
+
   try {
     moderationSet = sessionStorage.getItem("moderationSet");
     giftUser = JSON.parse(sessionStorage.validGiftUser);
     user = JSON.parse(sessionStorage.validUser);
+    if(user.moderatorInt == 1)
+      localConsoleOutput = true;
     if(user.uid == giftUser.uid){
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("HOW'D YOU GET HERE???");
       newNavigation(2);//Home
     }
-    if(consoleOutput) {
+    if(localConsoleOutput) {
       console.log("User: " + user.userName + " loaded in");
       console.log("Friend: " + giftUser.userName + " loaded in");
     }
@@ -77,7 +81,7 @@ function getCurrentUser(){
       giftListEmptyBool = true;
     }
     if (user.invites == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
@@ -86,14 +90,14 @@ function getCurrentUser(){
     }
 
     if (user.readNotifications == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Read Notifications Not Found");
     } else {
       readNotificationsBool = true;
     }
 
     if (user.notifications == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
@@ -117,7 +121,7 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    if(consoleOutput)
+    if(localConsoleOutput)
       console.log(err.toString());
     window.location.href = "index.html";
   }
@@ -150,12 +154,13 @@ window.onload = function instantiate() {
   giftDontBuy = document.getElementById('giftDontBuy');
   giftEdit = document.getElementById('giftEdit');
   giftDelete = document.getElementById('giftDelete');
-  privateFriendListElements = [
-
-  ];
-  verifyElementIntegrity(privateFriendListElements);
+  privateFriendListElements = [notificationBtn, giftCreationDate, dataListContainer, offlineModal, offlineSpan,
+    notificationModal, notificationTitle, notificationInfo, noteSpan, inviteNote, listNote, addGift, giftModal,
+    testGift, closeGiftModal, giftTitle, giftLink, giftWhere, giftDescription, giftCreator, giftBought, giftBuy,
+    giftDontBuy, giftEdit, giftDelete];
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(privateFriendListElements);
 
   for(let i = 0; i < userArr.length; i++){
     userUserNames.push(userArr[i].userName);
@@ -764,7 +769,7 @@ function updateMaintenanceLog(locationData, detailsData) {
   let timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
   let newUid = firebase.database().ref("maintenance").push();
   newUid = newUid.toString();
-  newUid = newUid.substr(51, 70);
+  newUid = findUIDInString(newUid);
 
   firebase.database().ref("maintenance/" + newUid).set({
     uid: newUid,
