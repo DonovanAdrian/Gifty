@@ -82,9 +82,9 @@ window.onload = function instantiate() {
   userAddUpdateElements = [nameField, userNameField, pinField, pinConfField, btnUpdate, btnDelete, offlineModal,
     offlineSpan, confirmModal, confirmSpan, deleteConfirm, deleteDeny, notificationModal, notificationTitle,
     notificationInfo, noteSpan];
-  verifyElementIntegrity(userAddUpdateElements);
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(userAddUpdateElements);
 
   pinField.onclick = function() {
     if(pinClearedInt == 0) {
@@ -175,7 +175,7 @@ function updateMaintenanceLog(locationData, detailsData) {
   let timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
   let newUid = firebase.database().ref("maintenance").push();
   newUid = newUid.toString();
-  newUid = newUid.substr(51, 70);
+  newUid = findUIDInString(newUid);
 
   firebase.database().ref("maintenance/" + newUid).set({
     uid: newUid,
@@ -341,7 +341,7 @@ function addUserToDB(){
     let shareCodeNew = genShareCode();
     //console.log(shareCodeNew);
     newUid = newUid.toString();
-    newUid = newUid.substr(45, 64);
+    newUid = findUIDInString(newUid);
     firebase.database().ref("users/" + newUid).set({
       name: nameField.value,
       pin: newPin,
