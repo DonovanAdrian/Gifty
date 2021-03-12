@@ -182,9 +182,9 @@ window.onload = function instantiate() {
     removeEntireLinkFamilies, confirmMemberModal, closeConfirmMemberModal, confirmMemberTitle, confMemberUserName,
     addMemberConfirm, addMemberDeny, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle,
     notificationInfo];
-  verifyElementIntegrity(familyUpdateElements);
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(familyUpdateElements);
 
   userInitial = firebase.database().ref("users/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
@@ -539,7 +539,7 @@ window.onload = function instantiate() {
   function initializeNewConnectionInDB(uidToLink, familyIndex){
     let newUid = firebase.database().ref("connections").push();
     newUid = newUid.toString();
-    newUid = newUid.substr(51, newUid.length);
+    newUid = findUIDInString(newUid);
     console.log(newUid);
 
     firebase.database().ref("connections/" + newUid).set({
