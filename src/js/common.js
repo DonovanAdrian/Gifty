@@ -355,13 +355,11 @@ function findUIDInString(input){
   for (let i = 0; i < input.length; i++) {
     if (input.charAt(i) == "/") {
       if (beginSearch) {
-        potentialUID = uidBuilder;
-        if (consoleOutput)
-          console.log("PotentialUID Updated: " + potentialUID);
         uidBuilder = "";
         skipThisChar = true;
       } else {
         beginSearch = true;
+        uidBuilder = uidBuilder + input.charAt(i);
       }
     }
     if (beginSearch && !skipThisChar) {
@@ -371,6 +369,7 @@ function findUIDInString(input){
     }
     skipThisChar = false;
   }
+  potentialUID = uidBuilder;
   if (consoleOutput)
     console.log("Is this your card? " + potentialUID);
   return potentialUID;
