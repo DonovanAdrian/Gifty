@@ -110,9 +110,9 @@ window.onload = function instantiate() {
     closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily, familyConnectionCount,
     familyEdit, familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
     offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
-  verifyElementIntegrity(familyElements);
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(familyElements);
 
   userInitial = firebase.database().ref("users/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
@@ -527,7 +527,7 @@ window.onload = function instantiate() {
   function addFamilyToDB(familyName){
     let newUid = firebase.database().ref("family").push();
     newUid = newUid.toString();
-    newUid = newUid.substr(46, 70);
+    newUid = findUIDInString(newUid);
     console.log(newUid);
     console.log(familyName);
 
