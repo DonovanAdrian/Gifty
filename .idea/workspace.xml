@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="77ae722c-e8b2-463c-8bb6-522420418add" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/confirmationAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/confirmationAlg.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,6 +184,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/DoughnutVan/OneDrive/Documents/Personal Programming/HTML Programming/Gifty/src/lists.html" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -363,7 +365,7 @@
       <workItem from="1610779622960" duration="1144000" />
       <workItem from="1610780847199" duration="140000" />
       <workItem from="1610825595354" duration="14490000" />
-      <workItem from="1612041325954" duration="70238000" />
+      <workItem from="1612041325954" duration="71761000" />
     </task>
     <servers />
   </component>

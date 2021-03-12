@@ -43,12 +43,16 @@ let userDeleteBtn;
 
 
 function getCurrentUser(){
+  let localConsoleOutput = false;
+
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if(consoleOutput)
+    if(user.moderatorInt == 1)
+      localConsoleOutput = true;
+    if(localConsoleOutput)
       console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Invites Not Found");
       deployInviteListEmptyNotification();
       inviteListEmptyBool = true;
@@ -59,14 +63,14 @@ function getCurrentUser(){
     }
 
     if (user.readNotifications == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Read Notifications Not Found");
     } else {
       readNotificationsBool = true;
     }
 
     if (user.notifications == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
@@ -90,7 +94,7 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    if(consoleOutput)
+    if(localConsoleOutput)
       console.log(err.toString());
     window.location.href = "index.html";
   }
@@ -118,9 +122,9 @@ window.onload = function instantiate() {
   confirmationElements = [testGift, notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, inviteModal, closeInviteModal, userNameFld,
     userUNameFld, userShareCodeFld, userAcceptBtn, userDeleteBtn];
-  verifyElementIntegrity(confirmationElements);
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(confirmationElements);
 
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
