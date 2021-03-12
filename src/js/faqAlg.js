@@ -22,12 +22,16 @@ let noteSpan;
 
 
 function getCurrentUser(){
+  let localConsoleOutput = false;
+
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if(consoleOutput)
+    if(user.moderatorInt == 1)
+      localConsoleOutput = true;
+    if(localConsoleOutput)
       console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
@@ -36,7 +40,7 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    if(consoleOutput)
+    if(localConsoleOutput)
       console.log(err.toString());
     window.location.href = "index.html";
   }
@@ -55,9 +59,9 @@ window.onload = function instantiate() {
   noteSpan = document.getElementById('closeNotification');
   faqElements = [emailBtn, offlineModal, offlineSpan, inviteNote, settingsNote, notificationModal, notificationTitle,
     notificationInfo, noteSpan];
-  verifyElementIntegrity(faqElements);
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(faqElements);
 
   emailBtn.onclick = function () {
     let supportStr = genSupport();
