@@ -73,11 +73,9 @@ let cancelMsg;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if(consoleOutput)
-      console.log("User: " + user.userName + " loaded in");
+    console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      if(consoleOutput)
-        console.log("Invites Not Found");
+      console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
         inviteNote.style.background = "#ff3923";
@@ -90,8 +88,7 @@ function getCurrentUser(){
     userArr = JSON.parse(sessionStorage.userArr);
     sessionStorage.setItem("moderationSet", moderationSet);
   } catch (err) {
-    if(consoleOutput)
-      console.log(err.toString());
+    console.log(err.toString());
     window.location.href = "index.html";
   }
 }
@@ -142,9 +139,9 @@ window.onload = function instantiate() {
     settingsNote, testGift, closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends,
     userPassword, userSecretSanta, moderatorOp, sendPrivateMessage, warnUser, banUser, closePrivateMessageModal,
     globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
-  verifyElementIntegrity(moderationElements);
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(moderationElements);
 
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
