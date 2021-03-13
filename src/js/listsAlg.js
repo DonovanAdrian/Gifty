@@ -56,9 +56,13 @@ let cancelMsg;
 
 
 function getCurrentUser(){
+  let localConsoleOutput = false;
+
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if(consoleOutput)
+    if(user.moderatorInt == 1)
+      localConsoleOutput = true;
+    if(localConsoleOutput)
       console.log("User: " + user.userName + " loaded in");
     if (user.friends == undefined) {
       deployFriendListEmptyNotification();
@@ -68,7 +72,7 @@ function getCurrentUser(){
       friendListEmptyBool = true;
     }
     if (user.invites == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
@@ -77,14 +81,14 @@ function getCurrentUser(){
     }
 
     if (user.readNotifications == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Read Notifications Not Found");
     } else {
       readNotificationsBool = true;
     }
 
     if (user.notifications == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
@@ -109,7 +113,7 @@ function getCurrentUser(){
     userArr = JSON.parse(sessionStorage.userArr);
     sessionStorage.setItem("moderationSet", moderationSet);
   } catch (err) {
-    if(consoleOutput)
+    if(localConsoleOutput)
       console.log(err.toString());
     window.location.href = "index.html";
   }
@@ -145,9 +149,9 @@ window.onload = function instantiate() {
     notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, secretSantaSignUp,
     testGift, userTitle, publicListCount, publicList, privateListCount, privateList, sendPrivateMessage,
     closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg];
-  verifyElementIntegrity(listsElements);
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(listsElements);
 
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
