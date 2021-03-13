@@ -65,11 +65,11 @@ window.onload = function instantiate() {
   notificationInfo = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
   testGift = document.getElementById('testGift');
-  moderationQueueElements = [];
-
-  verifyElementIntegrity(moderationQueueElements);
+  moderationQueueElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
+    notificationTitle, notificationInfo, noteSpan, testGift];
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(moderationQueueElements);
 
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
