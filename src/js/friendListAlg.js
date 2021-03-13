@@ -53,11 +53,15 @@ let closeGiftModal;
 
 
 function getCurrentUser(){
+  let localConsoleOutput = false;
+
   try {
     moderationSet = sessionStorage.getItem("moderationSet");
     giftUser = JSON.parse(sessionStorage.validGiftUser);
     user = JSON.parse(sessionStorage.validUser);
-    if(consoleOutput) {
+    if(user.moderatorInt == 1)
+      localConsoleOutput = true;
+    if(localConsoleOutput) {
       console.log("User: " + user.userName + " loaded in");
       console.log("Friend: " + giftUser.userName + " loaded in");
     }
@@ -69,7 +73,7 @@ function getCurrentUser(){
       giftListEmptyBool = true;
     }
     if (user.invites == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
@@ -78,14 +82,14 @@ function getCurrentUser(){
     }
 
     if (user.readNotifications == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Read Notifications Not Found");
     } else {
       readNotificationsBool = true;
     }
 
     if (user.notifications == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
@@ -109,7 +113,7 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    if(consoleOutput)
+    if(localConsoleOutput)
       console.log(err.toString());
     window.location.href = "index.html";
   }
@@ -143,9 +147,9 @@ window.onload = function instantiate() {
   friendListElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, noteSpan, backBtn, listNote,
     inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan, giftModal, closeGiftModal, giftTitle,
     giftLink, giftWhere, giftDescription, giftBought, giftCreationDate, giftBuy, giftDontBuy, testGift];
-  verifyElementIntegrity(friendListElements);
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(friendListElements);
 
   for(let i = 0; i < userArr.length; i++){
     userUserNames.push(userArr[i].userName);
