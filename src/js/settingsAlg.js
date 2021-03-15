@@ -31,13 +31,17 @@ let noteSpan;
 
 
 function getCurrentUser(){
+  let localConsoleOutput = false;
+
   try {
     user = JSON.parse(sessionStorage.validUser);
+    if(user.moderatorInt == 1)
+      localConsoleOutput = true;
     allowLogin = JSON.parse(sessionStorage.allowLogin);
-    if(consoleOutput)
+    if(localConsoleOutput)
       console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
@@ -57,7 +61,7 @@ function getCurrentUser(){
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    if(consoleOutput)
+    if(localConsoleOutput)
       console.log(err.toString());
     window.location.href = "index.html";
   }
@@ -84,9 +88,9 @@ window.onload = function instantiate() {
   settingsElements = [offlineModal, offlineSpan, inviteNote, editBtn, faqBtn, modBtn, familyBtn, moderationModal,
     moderationSpan, moderationQueueBtn, userListBtn, loginFxnBtn, notificationModal, notificationTitle,
     notificationInfo, noteSpan];
-  verifyElementIntegrity(settingsElements);
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(settingsElements);
 
   editBtn.onclick = function (){
     newNavigation(13);//UserAddUpdate
