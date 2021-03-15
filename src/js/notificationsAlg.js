@@ -47,12 +47,16 @@ let cancelMsg;
 
 
 function getCurrentUser(){
+  let localConsoleOutput = false;
+
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if(consoleOutput)
+    if(user.moderatorInt == 1)
+      localConsoleOutput = true;
+    if(localConsoleOutput)
       console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
@@ -60,33 +64,33 @@ function getCurrentUser(){
       }
     }
 
-    if(consoleOutput)
+    if(localConsoleOutput)
       console.log(user.notifications);
     if(user.notifications == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Notifications Not Found");
       deployNotificationListEmptyNotification();
       notificationListEmptyBool = true;
     } else {
       let notificationOverride = sessionStorage.getItem("notificationOverride");
       if (notificationOverride == undefined) {
-        if(consoleOutput)
+        if(localConsoleOutput)
           console.log("Notifications Found");
       } else {
         if (notificationOverride == "notificationArrEmpty") {
-          if(consoleOutput)
+          if(localConsoleOutput)
             console.log("Notifications Empty");
           deployNotificationListEmptyNotification();
           notificationListEmptyBool = true;
         } else {
-          if(consoleOutput)
+          if(localConsoleOutput)
             console.log("Notifications Found");
         }
       }
     }
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    if(consoleOutput)
+    if(localConsoleOutput)
       console.log(err.toString());
     window.location.href = "index.html";
   }
@@ -118,9 +122,9 @@ window.onload = function instantiate() {
     notificationTitle, notificationInfo, noteSpan, privateMessageModal, noteViewModal, testGift, closeNoteViewModal,
     notificationViewTitle, notificationViewDetails, notificationViewPage, notificationViewDelete, privateMessageSpan,
     privateMessageInp, sendMsg, cancelMsg];
-  verifyElementIntegrity(notificationsElements);
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(notificationsElements);
 
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
