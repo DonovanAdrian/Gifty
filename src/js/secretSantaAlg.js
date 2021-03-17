@@ -7,20 +7,28 @@
 let secretBtnStates = [false, false, false];
 let optInFamilyArr = [];
 
-let currentDate = "";
-let showDate = "";//Oct 1st
-let assignDate = "";//Nov 1st
-let hideDate = "";//Jan 1st
+let currentDate = new Date();
+let currentYear = currentDate.getFullYear();
+let showDate = new Date(currentYear, 10, 1, 0, 0, 0, 0);//Oct 1st
+let assignDate = new Date(currentYear, 11, 1, 0, 0, 0, 0);//Nov 1st
+let hideDateMin = 1; //Jan
+let hideDateMax = 9; //Sept
+
+let globalThanks = "Thank you for participating in the Secret Santa! See you next year!";
+let globalApology = "Unfortunately the Secret Santa for this year has come to an early end! Please contact" +
+    " a moderator for assistance";
 
 function checkSecretSanta(autoUpdateBool){
   if(autoUpdateBool) {
-    //Check current date
-    //If (after show date)
-    //show btn
-    //If (after assign date)
-    //shuffle!
-    //if (after hide date)
-    //hide
+    if (currentDate >= showDate && currentDate <= assignDate)
+      showSecretSanta();
+    if (currentDate >= assignDate && currentDate.getMonth() <= hideDateMin) {
+      showSecretSanta();
+      if(checkIfSantaActive())
+        createSecretSantaNames();
+    }
+    if (currentDate.getMonth() >= hideDateMin && currentDate.getMonth() <= hideDateMax)
+      hideSecretSanta();
   } else
     hideSecretSanta();
 }
@@ -88,45 +96,98 @@ function showSecretSanta(){
   };
 }
 
-function hideSecretSanta(){//----------------------------*****************************ToDo
+function hideSecretSanta(){
   secretSantaSignUp.style.display = "none";
   secretSantaSignUp.onclick = function(){};
+  let clearSecretSantasBool = false;
+  let globalSecretSantaMessage = "";
 
-  //if before assign date but after show date and some users have signed up, OR after assign date but before hide date
-  //check if already set to 0 (if a 1 is found, follow through)
-  //set to 0 and issue "apology" notifications
-  //if after hide date
-  //check if already set to 0 (if a 1 is found, follow through)
-  //set to 0 and issue "thanks" notifications
+  if (currentDate >= showDate && currentDate.getMonth() < hideDateMin && checkIfSantaSignUp()) {
+    clearSecretSantasBool = true;
+    globalSecretSantaMessage = globalApology;
+  } else if (currentDate.getMonth() >= hideDateMin && currentDate.getMonth() <= hideDateMax && checkIfSantaActive()) {
+    clearSecretSantasBool = true;
+    globalSecretSantaMessage = globalThanks;
+  }
+
+  if (clearSecretSantasBool) {
+    removeSecretSantaNames();
+    if(consoleOutput)
+      console.log("Removed Secret Santa Names!");
+
+    if(checkForGlobalMessage()) {
+      addGlobalMessageToDB(globalSecretSantaMessage);
+      if(consoleOutput)
+        console.log("Sent A Global Message!");
+    }
+
+    removeSecretSantaNums();
+    if(consoleOutput)
+      console.log("Removed Secret Santa Nums!");
+  }
+}
+
+function checkIfSantaSignUp() {
+  for (let i = 0; i < userArr.length; i++)
+    if(userArr[i].secretSanta != null)
+      if(userArr[i].secretSanta > 0) {
+        return true;
+      }
+  return false;
+}
+
+function checkIfSantaActive() {
+  for (let i = 0; i < userArr.length; i++)
+    if(userArr[i].secretSantaName != null)
+      if(userArr[i].secretSantaName != "") {
+        return true;
+      }
+  return false;
+}
+
+function checkForGlobalMessage() {
+  for (let i = 0; i < userArr.length; i++)
+    if(userArr[i].notifications.includes(globalThanks) ||
+        userArr[i].notifications.includes(globalApology))
+      if(userArr[i].readNotifications.includes(globalThanks) ||
+          userArr[i].readNotifications.includes(globalApology))
+        return true;
+  return false;
+}
+
+function addGlobalMessageToDB(message) {
+  let userNotificationArr = [];
+  for (let i = 0; i < userArr.length; i++){
+    if(userArr[i].notifications == undefined){
+      userNotificationArr = [];
+    } else {
+      userNotificationArr = userArr[i].notifications;
+    }
+    userNotificationArr.push(message);
+
+    if(userArr[i].notifications == undefined) {
+      firebase.database().ref("users/" + userArr[i].uid).update({notifications:{0:message}});
+    } else {
+      firebase.database().ref("users/" + userArr[i].uid).update({
+        notifications: userNotificationArr
+      });
+    }
+  }
 }
 
 function initializeSecretSantaBtns() {//----------------------------*****************************ToDo
-  //shuffle btn [1]
-  //true/false (enabled/disabled)
-  //check if sSA is enabled (prior fxn)
 
-  //***Activate Secret Santa Fxn*** (Alternates Between Below Deactivate Fxn)
-  //***NOTIFY MODERATOR*** All Users Can Now Sign Up For Secret Santa! Click On "Shuffle Secret Santa" To Assign Users
-  //Check if automatic switch is enabled, if so, append "Manually" to front of this btn
-  //Check if already enabled/disabled, if so, change to appropriate name
-  //Check if MANUALLY enabled, if so, change to "Activate Secret Santa"
+
   secretSantaBtn.innerHTML = "Enable Secret Santa";
   secretSantaBtn.onclick = function() {
     secretSantaButtonManager("main");
   };
-  //***Deactivate Secret Santa Fxn*** (Alternates Between Above Activate Fxn)
-  //Check if automatic switch is enabled, if so, append "Manually" to front of this btn
 
-  //***Shuffle Secret Santa Fxn*** (Only available if Secret Santa is detected to be active)
-  //Check and change text if Secret Santa names are not assigned yet and alert user if pressed
   secretSantaShuffle.innerHTML = "Shuffle Secret Santa";
   secretSantaShuffle.onclick = function() {
     secretSantaButtonManager("shuffle");
   };
 
-  //***Automatic Enabling/Disabling Switch Fxn***
-  //Check if enabled/disabled, change text accordingly
-  //Check if MANUALLY enabled, if so, change to "Function Not Available" and alert user if pressed
   secretSantaAutoBtn.innerHTML = "Enable Auto Control";
   secretSantaAutoBtn.onclick = function () {
     secretSantaButtonManager("auto");
@@ -136,44 +197,13 @@ function initializeSecretSantaBtns() {//----------------------------************
 function secretSantaButtonManager(buttonPressed) {//----------------------------*****************************ToDo
   switch(buttonPressed) {
     case "main":
-      if (secretBtnStates[0])//main true
-        console.log();
-      else if (secretBtnStates[1])//shuffle true
-        console.log();
-      else//main false
-        console.log();
-      //if main false
-      //change text (from enable to activate), change to true, change manually enable in db, run FXN?, update btns
-      //change text in auto, alert if pressed
-      //if auto true
-      //alert user that auto is no longer enabled
-      //if main true
-      //change text (from activate to disable), change shuffle to true, run FXN, update btns
-      //change text in shuffle, run FXN
-      //if shuffle true
-      //change text (from disable to enable), change sSA to false/main to false, change manually enable in db,
-      //      run fxn, update btns
-      //change text in shuffle, alert if pressed
-      //change text in auto, run FXN
       break;
     case "shuffle":
-      if (secretBtnStates[1])
-        console.log("Run Shuffle Function");
-      else
-        alert("This function is not available unless Secret Santa is active!");
       break;
     case "auto":
-      if (secretBtnStates[2])//auto true
-        console.log();
-      else//auto false
-        console.log();
-      //if auto false
-      //change text, change to true, change automatic in db
-      //if auto true
-      //change text, change to false, change automatic in db
       break;
     default:
-      console.log("Hmmm... This wasn't supposed to happen!");
+      console.log("Unrecognized Button!");
       break;
   }
 }
@@ -296,6 +326,7 @@ function generateSecretSantaModal(){
 function initializeSecretSantaArrs(){//----------------------------*****************************ToDo
   tempUserArr = [];
   optInUserArr = [];
+
   for (let i = 0; i < userArr.length; i++) {
     if (userArr[i].secretSantaName != null)
       if (userArr[i].secretSantaName != "") {
@@ -350,31 +381,16 @@ function createSecretSantaNames(){//----------------------------****************
   let userIndex;
   let retryCount = 0;
 
-  //be aware of members that may be in multiple families... just in case (if already assigned a secret santa, cancel)
-
   for (let i = 0; i < optInFamilyArr.length; i++) {
-    if (!assignedFamiliesArr.includes(optInFamilyArr[i].uid))
-      if (optInFamilyArr[i].connections != null) {
-        for (let y = 0; y < optInFamilyArr[i].connections.length; y++)
-          optInFamilyIndex = findUIDItemInArr(optInFamilyArr[i].connections[y], optInFamilyArr);
-        if (optInFamilyIndex != -1 &&
-            !assignedFamiliesArr.includes(optInFamilyArr[i]).connections[y]) {
-          for (let x = 0; x < optInFamilyArr[optInFamilyIndex].members; x++)
-            if (optInUserArr.includes(optInFamilyArr[optInFamilyIndex].members[x]))
-              optInPerFamilyArr.push(optInUserArr[optInUserArr.indexOf(optInFamilyArr[optInFamilyIndex].members[x])]);
-          assignedFamiliesArr.push(optInFamilyArr[optInFamilyIndex].uid);
-        }
-      }
-    for (let z = 0; z < optInFamilyArr[i].members.length; i++) {
-      if (optInUserArr.includes(optInFamilyArr[i].members[z])) {
+    for (let z = 0; z < optInFamilyArr[i].members.length; i++)
+      if (optInUserArr.includes(optInFamilyArr[i].members[z]))
         optInPerFamilyArr.push(optInUserArr[optInUserArr.indexOf(optInFamilyArr[i].members[z])]);
-      }
-    }
-
 
     console.log("The following users will be assigned secret santas");
     console.log(optInPerFamilyArr);
     //CHECK IF OPT IN PER FAMILY ARR IS THE CORRECT SIZE OF 3 or more
+    //If an arr does not have the correct amount, give warning and give alert to try again if the user wishes
+    //Allow it to pass through a second time if pressed again
     //ASSIGN SECRET SANTA NAMES WITH optInPerFamilyArr
     assignedFamiliesArr.push(optInFamilyArr[i].uid);
   }
