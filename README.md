@@ -3,7 +3,7 @@
 
 ## ***Task List***
 - Check out a list of tasks on the "Projects" section of my 
-  profile! You can also find planned release content there
+  profile! You can find planned release content there
   as well.
 
 ## Website Structure
@@ -76,7 +76,8 @@ whether it be through GitHub or some other way.
 
 ## Do You Have Any Other Plans For This Program?
 At this time, I am in the process of adding various functions 
-that will improve the user experience on multiple levels. 
-Some of the planned features are listed in the Task List, 
-which will be posted as they are created.
+that will improve the user experience for moderators and normal 
+users alike. Some of the planned features are listed in the 
+"Projects" section of my GitHub profile, which will be posted 
+as they are created/planned.
     

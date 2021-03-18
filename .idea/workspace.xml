@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="77ae722c-e8b2-463c-8bb6-522420418add" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/js/settingsAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/settingsAlg.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -366,6 +366,7 @@
       <workItem from="1610780847199" duration="140000" />
       <workItem from="1610825595354" duration="14490000" />
       <workItem from="1612041325954" duration="76599000" />
+      <workItem from="1615948107385" duration="936000" />
     </task>
     <servers />
   </component>
@@ -411,9 +412,6 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
     <ignored-roots>
