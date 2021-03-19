@@ -4,7 +4,7 @@
  * with written consent under any circumstance.
  */
 
-let secretBtnStates = [false, false, false];
+let secretBtnStates = [false, false];
 let optInFamilyArr = [];
 
 let currentDate = new Date();
@@ -175,32 +175,109 @@ function addGlobalMessageToDB(message) {
   }
 }
 
-function initializeSecretSantaBtns() {//----------------------------*****************************ToDo
+function initializeSecretSantaBtns() {
+  let secretSantaBtnTxtEnable = "Enable Secret Santa";
+  let secretSantaBtnTxtTrigger = "Assign Secret Santa Names";
+  let secretSantaBtnTxtDisable = "Disable Secret Santa";
 
+  secretSantaShuffle.innerHTML = "Button Disabled";
+  secretSantaShuffle.onclick = function() {};
 
-  secretSantaBtn.innerHTML = "Enable Secret Santa";
-  secretSantaBtn.onclick = function() {
-    secretSantaButtonManager("main");
-  };
+  if (!secretBtnStates[0]) {
+    secretSantaBtn.innerHTML = secretSantaBtnTxtEnable;
+    secretSantaBtn.onclick = function () {
+      secretSantaButtonManager("mainT");
+    };
+  } else {
+    if(checkIfSantaActive()) {
+      secretSantaBtn.innerHTML = secretSantaBtnTxtDisable;
+      secretSantaBtn.onclick = function () {
+        secretSantaButtonManager("mainF");
+      };
+      secretSantaShuffle.innerHTML = "Shuffle Secret Santa";
+      secretSantaShuffle.onclick = function() {
+        secretSantaButtonManager("shuffle");
+      };
+    } else {
+      secretSantaBtn.innerHTML = secretSantaBtnTxtTrigger;
+      secretSantaBtn.onclick = function () {
+        secretSantaButtonManager("mainB");
+      };
+    }
+  }
 
-  secretSantaShuffle.innerHTML = "Shuffle Secret Santa";
-  secretSantaShuffle.onclick = function() {
-    secretSantaButtonManager("shuffle");
-  };
+  if (!secretBtnStates[1]) {
+    secretSantaAutoBtn.innerHTML = "Enable Auto Control";
+    secretSantaAutoBtn.onclick = function () {
+      secretSantaButtonManager("autoT");
+    };
+  } else {
+    cycleSecretSantaAutoBtnTxt();
+    if (!secretBtnStates[0])
+      secretSantaBtn.innerHTML = "Manually " + secretSantaBtnTxtEnable;
+    else {
+      if (checkIfSantaActive())
+        secretSantaBtn.innerHTML = "Manually " + secretSantaBtnTxtDisable;
+      else
+        secretSantaBtn.innerHTML = "Manually" + secretSantaBtnTxtTrigger;
+    }
+    secretSantaAutoBtn.innerHTML = "Disable Auto Control";
+    secretSantaAutoBtn.onclick = function () {
+      secretSantaButtonManager("autoF");
+    };
+  }
+}
 
-  secretSantaAutoBtn.innerHTML = "Enable Auto Control";
-  secretSantaAutoBtn.onclick = function () {
-    secretSantaButtonManager("auto");
-  };
+function cycleSecretSantaAutoBtnTxt() {
+  let textCycler = 0;
+  let alternator = 0;
+  let upcomingDate = checkNextDate();
+
+  if (consoleOutput)
+    console.log("Text Cycle Feature Active");
+
+  setInterval(function(){
+    textCycler = textCycler + 1000;
+    if(textCycler >= 3000){
+      textCycler = 0;
+      if(alternator == 0) {
+        alternator++;
+        secretSantaAutoBtn.innerHTML = "Disable Auto Control";
+      } else if (alternator == 1){
+        alternator++;
+        secretSantaAutoBtn.innerHTML = "Next Trigger Date";
+      } else {
+        alternator = 0;
+        secretSantaAutoBtn.innerHTML = upcomingDate;
+      }
+    }
+  }, 1000);
+}
+
+function checkNextDate() {//----------------------------*****************************ToDo
+  if (currentDate >= showDate && currentDate <= assignDate)
+    return "secretSantaNotYet!";
+  if (currentDate >= assignDate && currentDate.getMonth() <= hideDateMin)
+    if(checkIfSantaActive()) {
+      return "secretSantaAssigned!";
+    }
+  if (currentDate.getMonth() >= hideDateMin && currentDate.getMonth() <= hideDateMax)
+    return "SecretSantaOver!";
 }
 
 function secretSantaButtonManager(buttonPressed) {//----------------------------*****************************ToDo
   switch(buttonPressed) {
-    case "main":
+    case "mainT"://enable
       break;
-    case "shuffle":
+    case "mainB"://begin name assignment
       break;
-    case "auto":
+    case "mainF"://disable
+      break;
+    case "shuffle"://shuffle
+      break;
+    case "autoT"://enable
+      break;
+    case "autoF"://disable
       break;
     default:
       console.log("Unrecognized Button!");
@@ -331,7 +408,6 @@ function initializeSecretSantaArrs(){//----------------------------*************
     if (userArr[i].secretSantaName != null)
       if (userArr[i].secretSantaName != "") {
         secretSantaNameBool = true;
-        secretBtnStates[1] = true;
       }
 
     //This needs to be re-keyed to apply to being family-centric and not user-centric
