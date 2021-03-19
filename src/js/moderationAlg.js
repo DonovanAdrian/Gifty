@@ -253,26 +253,6 @@ window.onload = function instantiate() {
     };
   }
 
-  function addGlobalMessageToDB(message) {
-    let userNotificationArr = [];
-    for (let i = 0; i < userArr.length; i++){
-      if(userArr[i].notifications == undefined){
-        userNotificationArr = [];
-      } else {
-        userNotificationArr = userArr[i].notifications;
-      }
-      userNotificationArr.push(message);
-
-      if(userArr[i].notifications == undefined) {
-        firebase.database().ref("users/" + userArr[i].uid).update({notifications:{0:message}});
-      } else {
-        firebase.database().ref("users/" + userArr[i].uid).update({
-          notifications: userNotificationArr
-        });
-      }
-    }
-  }
-
   function databaseQuery() {
 
     userInitial = firebase.database().ref("users/");
@@ -324,25 +304,28 @@ window.onload = function instantiate() {
           postRef.on('child_added', function (data) {
             console.log(data.key + " added");
             if(data.key == "automaticUpdates")
-              secretBtnStates[2] = data.val();
+              secretBtnStates[1] = data.val();
             if(data.key == "manuallyEnable")
               secretBtnStates[0] = data.val();
+            initializeSecretSantaBtns();
           });
 
           postRef.on('child_changed', function (data) {
             console.log(data.key + " changed");
             if(data.key == "automaticUpdates")
-              secretBtnStates[2] = data.val();
+              secretBtnStates[1] = data.val();
             if(data.key == "manuallyEnable")
               secretBtnStates[0] = data.val();
+            initializeSecretSantaBtns();
           });
 
           postRef.on('child_removed', function (data) {
             console.log(data.key + " removed");
             if(data.key == "automaticUpdates")
-              secretBtnStates[2] = data.val();
+              secretBtnStates[1] = data.val();
             if(data.key == "manuallyEnable")
               secretBtnStates[0] = data.val();
+            initializeSecretSantaBtns();
           });
         } else {
           console.log("Initializing Secret Santa In DB");
