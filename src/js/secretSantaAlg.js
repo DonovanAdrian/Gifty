@@ -111,19 +111,21 @@ function hideSecretSanta(){
   }
 
   if (clearSecretSantasBool) {
-    removeSecretSantaNames();
-    if(consoleOutput)
-      console.log("Removed Secret Santa Names!");
-
     if(checkForGlobalMessage()) {
       addGlobalMessageToDB(globalSecretSantaMessage);
       if(consoleOutput)
         console.log("Sent A Global Message!");
     }
 
+    removeSecretSantaNames();
+    if(consoleOutput)
+      console.log("Removed Secret Santa Names!");
+    updateAllUsersToDBSantaNames();
+
     removeSecretSantaNums();
     if(consoleOutput)
       console.log("Removed Secret Santa Nums!");
+    updateAllUsersToDBSantaNums();
   }
 }
 
@@ -254,15 +256,15 @@ function cycleSecretSantaAutoBtnTxt() {
   }, 1000);
 }
 
-function checkNextDate() {//----------------------------*****************************ToDo
+function checkNextDate() {
   if (currentDate >= showDate && currentDate <= assignDate)
-    return "secretSantaNotYet!";
+    return "Assigning " + assignDate.getMonth() + "/" + assignDate.getDay() + "/" + currentYear;
   if (currentDate >= assignDate && currentDate.getMonth() <= hideDateMin)
     if(checkIfSantaActive()) {
-      return "secretSantaAssigned!";
+      return "Ending " + hideDateMin + "/1/" + currentYear+1;
     }
   if (currentDate.getMonth() >= hideDateMin && currentDate.getMonth() <= hideDateMax)
-    return "SecretSantaOver!";
+    return "Starting " + showDate.getMonth() + "/" + showDate.getDay() + "/" + currentYear;
 }
 
 function secretSantaButtonManager(buttonPressed) {//----------------------------*****************************ToDo
