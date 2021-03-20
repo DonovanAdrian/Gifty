@@ -303,20 +303,28 @@ window.onload = function instantiate() {
           console.log("Secret Santa Snapshot Exists!");
           postRef.on('child_added', function (data) {
             console.log(data.key + " added");
-            if(data.key == "automaticUpdates")
+            if(data.key == "automaticUpdates" && secretBtnStates[1] != datal.val()) {
               secretBtnStates[1] = data.val();
-            if(data.key == "manuallyEnable")
+              initializeSecretSantaBtns();
+            }
+
+            if(data.key == "manuallyEnable" && secretBtnStates[0] != datal.val()) {
               secretBtnStates[0] = data.val();
-            initializeSecretSantaBtns();
+              initializeSecretSantaBtns();
+            }
           });
 
           postRef.on('child_changed', function (data) {
             console.log(data.key + " changed");
-            if(data.key == "automaticUpdates")
+            if(data.key == "automaticUpdates" && secretBtnStates[1] != datal.val()) {
               secretBtnStates[1] = data.val();
-            if(data.key == "manuallyEnable")
+              initializeSecretSantaBtns();
+            }
+
+            if(data.key == "manuallyEnable" && secretBtnStates[0] != datal.val()) {
               secretBtnStates[0] = data.val();
-            initializeSecretSantaBtns();
+              initializeSecretSantaBtns();
+            }
           });
 
           postRef.on('child_removed', function (data) {
