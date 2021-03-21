@@ -97,8 +97,11 @@ function showSecretSanta(){
 }
 
 function hideSecretSanta(){
-  secretSantaSignUp.style.display = "none";
-  secretSantaSignUp.onclick = function(){};
+  try {
+    secretSantaSignUp.style.display = "none";
+    secretSantaSignUp.onclick = function () {
+    };
+  } catch (err) {}
   let clearSecretSantasBool = false;
   let globalSecretSantaMessage = "";
 
@@ -108,6 +111,9 @@ function hideSecretSanta(){
   } else if (currentDate.getMonth() >= hideDateMin && currentDate.getMonth() <= hideDateMax && checkIfSantaActive()) {
     clearSecretSantasBool = true;
     globalSecretSantaMessage = globalThanks;
+  } else {
+    if (consoleOutput)
+      alert("It seems that the Secret Santa was cancelled out of cycle!");
   }
 
   if (clearSecretSantasBool) {
@@ -269,20 +275,46 @@ function checkNextDate() {
 
 function secretSantaButtonManager(buttonPressed) {//----------------------------*****************************ToDo
   switch(buttonPressed) {
-    case "mainT"://enable
+    case "mainT":
+      updateSecretSantaToDB("manual", true);
       break;
     case "mainB"://begin name assignment
+      //assign names
       break;
-    case "mainF"://disable
+    case "mainF":
+      updateSecretSantaToDB("manual", false);
       break;
     case "shuffle"://shuffle
+      //.....Shuffle
       break;
-    case "autoT"://enable
+    case "autoT":
+      updateSecretSantaToDB("auto", true);
       break;
-    case "autoF"://disable
+    case "autoF":
+      updateSecretSantaToDB("auto", false);
       break;
     default:
-      console.log("Unrecognized Button!");
+      if(consoleOutput)
+        console.log("Unrecognized Button!?!");
+      break;
+  }
+}
+
+function updateSecretSantaToDB(settingToUpdate, settingToBool) {
+  switch(settingToUpdate) {
+    case "auto":
+      firebase.database().ref("secretSanta/").update({
+        automaticUpdates: settingToBool
+      });
+      break;
+    case "manual":
+      firebase.database().ref("secretSanta/").update({
+        manuallyEnable: settingToBool
+      });
+      break;
+    default:
+      if(consoleOutput)
+        console.log("Unrecognized Input!?!");
       break;
   }
 }
