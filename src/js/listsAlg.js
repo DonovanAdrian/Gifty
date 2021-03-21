@@ -194,14 +194,14 @@ window.onload = function instantiate() {
           postRef.on('child_changed', function (data) {
             if(consoleOutput)
               console.log(data.key + " changed");
-            if(data.key == "automaticUpdates")
+            if(data.key == "automaticUpdates" || data.key == "manuallyEnable")
               checkSecretSanta(data.val());
           });
 
           postRef.on('child_removed', function (data) {
             if(consoleOutput)
               console.log(data.key + " removed");
-            if(data.key == "automaticUpdates")
+            if(data.key == "automaticUpdates" || data.key == "manuallyEnable")
               checkSecretSanta(false);
           });
         } else {
