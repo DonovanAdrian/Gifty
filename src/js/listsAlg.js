@@ -12,8 +12,6 @@ let userArr = [];
 
 let readNotificationsBool = false;
 let friendListEmptyBool = false;
-let secretSantaNameBool = false;
-let secretSantaAutoUpdate = false;
 
 let moderationSet = 0;
 let onlineInt = 0;
