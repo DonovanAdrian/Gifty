@@ -8,14 +8,10 @@ let moderationElements = [];
 let listeningFirebaseRefs = [];
 let inviteArr = [];
 let userArr = [];
-let userUIDArr = [];
-let tempUserArr = [];
-let optInUserArr = [];
 let familyArr = [];
 let connectionsArr = [];
 
 let secretSantaIntBool = false;
-let secretSantaNameBool = false;
 
 let moderationSet = 1;
 let dataCounter = 0;
@@ -160,9 +156,7 @@ window.onload = function instantiate() {
 
   alternateButtonLabel(settingsNote, "Settings", "Moderation");
 
-  initializeSecretSantaArrs();
-
-  generateSecretSantaModal();
+  generateActivateSecretSantaModal();
 
   function generatePrivateMessageDialog(userData) {
     globalMsgTitle.innerHTML = "Send A Private Message Below";
