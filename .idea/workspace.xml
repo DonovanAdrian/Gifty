@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="77ae722c-e8b2-463c-8bb6-522420418add" name="Default Changelist" comment="" />
+    <list default="true" id="77ae722c-e8b2-463c-8bb6-522420418add" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/secretSantaAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/secretSantaAlg.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -363,7 +366,7 @@
       <workItem from="1610780847199" duration="140000" />
       <workItem from="1610825595354" duration="14490000" />
       <workItem from="1612041325954" duration="76599000" />
-      <workItem from="1615948107385" duration="6933000" />
+      <workItem from="1615948107385" duration="7599000" />
     </task>
     <servers />
   </component>
