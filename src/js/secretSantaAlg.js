@@ -384,6 +384,7 @@ function createSecretSantaNames(){//----------------------------****************
   let assignedFamilies = [];
   let assignedUsers = [];
   let optInFamilyArr = [];
+  let connectionFamilySet = [];
   let optInUserCount = 0;
 
   for (let i = 0; i < userArr.length; i++) {
@@ -400,35 +401,52 @@ function createSecretSantaNames(){//----------------------------****************
               }
             }
         }
-        if (optInUserCount > 2)
-          secretSantaIntBool = true;
       }
   }
 
   for (let i = 0; i < connectionsArr.length; i++) {
     for (let a = 0; a < familyArr.length; i++) {
-      //push to optinfamilyarr if more than 2 users are signed up
+      //push to connectionFamilySet if more than 2 users are signed up
       //(check first to see if this family is contained in the catalog)
       //keep track of families that are used assignedFamilies;
     }
-    //if there is a family-connection with less than 3 users signed up, show an error
+    //if there is a family-connection with less than 3 users signed up, show an error.
+    //"There is a family that has less than three users signed up.
+    //"You have 10 seconds to confirm that this is okay. Those users will NOT be assigned names."
+    //waitForConfirmBool should get reset after 10 seconds
+    //If followed through, (use separate bool) ignore that family set
 
+    //if (ignoreFamilySet)
+    assignUsersSecretSantaNames();
 
-    for (let b = 0; b < optInFamilyArr.length; b++) {
-      //randomly select two users, assign user A to B (B's SecretSanta=A's Name)
-      //check to make sure they are friends first
-      //use tempUserArr to check this
-      //If not friends, reroll at max 3 times, if last is same as current, don't count reroll
-      //Set assignment to tempUserArr
-      //keep track of users that are used assignedUsers;
-    }
-    optInFamilyArr = [];
+    connectionFamilySet = [];
   }
+
+  //check to see if any families in optInFamilyArr were missed (compare to assignedFamilies)
+  //run above code (second for loop) once more if needed, consider making global
 
   //compare assignedUsers with optInUsers to verify that everyone has an assignment
   //if all users were properly assigned, update optInUsers to DB and run the function:
   initializeSecretSantaBtns();
   //if not, try again at max 3 times
+
+  tempUserArr = [];
+}
+
+function assignUsersSecretSantaNames() {
+  for (let b = 0; b < connectionFamilySet.length; b++) {
+    //randomly select two users, assign user A to B (B's SecretSanta=A's Name)
+    //check to make sure they are friends first
+    //use tempUserArr to check this
+    //If not friends, reroll at max 3 times, if last is same as current, don't count reroll
+    //Set assignment to tempUserArr
+    //keep track of users that are used assignedUsers;
+
+    //make global... dumb easy
+    //make connectionFamilySet global
+    //make tempUserArr global
+    //make assignedUsers global
+  }
 }
 
 function generateActivateSecretSantaModal(){
