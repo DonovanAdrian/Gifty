@@ -5,6 +5,8 @@
  */
 
 let secretBtnStates = [false, false];
+let tempUserArr = [];
+let assignedUsers = [];
 
 let currentDate = new Date();
 let currentYear = currentDate.getFullYear();
@@ -380,9 +382,7 @@ function generateSecretSantaModal(){
 }
 
 function createSecretSantaNames(){//----------------------------*****************************ToDo
-  let tempUserArr = [];
   let assignedFamilies = [];
-  let assignedUsers = [];
   let optInFamilyArr = [];
   let connectionFamilySet = [];
   let assignedFamilyBool = false;
@@ -417,7 +417,10 @@ function createSecretSantaNames(){//----------------------------****************
       }
     }
     if (connectionFamilySet.length > 2) {
-      assignUsersSecretSantaNames();//send connectionFamilySet as variable?*****************************
+      if(!assignUsersSecretSantaNames(connectionFamilySet)) {
+        alert("There was an error assigning Secret Santa names automatically. Please " + secretSantaAssignErrorMsg);
+        return;
+      }
     } else {
       //if (!ignoreFamilySet) {
       alert("There is a family with less than three users signed up!\n\n\nYou have 10 seconds to press the button again" +
@@ -431,6 +434,8 @@ function createSecretSantaNames(){//----------------------------****************
     connectionFamilySet = [];
   }
 
+  console.log(assignedUsers);
+
   //compare assignedUsers.length with tempUserArr.length
   //AND optInFamilyArr.length with assignedFamilies.length to verify that everyone has an assignment
   //if all users were properly assigned, update tempUserArr to DB and run the function:
@@ -440,20 +445,61 @@ function createSecretSantaNames(){//----------------------------****************
   tempUserArr = [];
 }
 
-function assignUsersSecretSantaNames() {//----------------------------*****************************ToDo
-  for (let b = 0; b < connectionFamilySet.length; b++) {
-    //randomly select two users, assign user A to B (B's SecretSanta=A's Name)
-    //check to make sure they are friends first
-    //use tempUserArr to check this
-    //If not friends, reroll at max 3 times, if last is same as current, don't count reroll
-    //Set assignment to tempUserArr
-    //keep track of users that are used assignedUsers;
+function assignUsersSecretSantaNames(usersToAssign) {
+  let selector;
+  let userIndex;
+  let retryCount = 0;
+  let tempAssignArr = [];
+  let assignActionSuccess = true;
 
-    //make global... dumb easy*****************************************
-    //make connectionFamilySet global, maybe
-    //make tempUserArr global
-    //make assignedUsers global
+  for (let i = 0; i < usersToAssign.length; i++)
+    tempAssignArr.push(usersToAssign[i]);
+
+  for (let i = 0; i < usersToAssign.length; i++) {
+    selector = Math.floor((Math.random() * tempAssignArr.length));
+    if (!assignedUsers.includes(tempAssignArr[selector].uid)) {
+      if (tempAssignArr[selector].uid != usersToAssign[i].uid) {
+        if (usersToAssign[i].friends.includes(tempAssignArr[selector].uid)) {
+          if(consoleOutput)
+            console.log("MATCHED!");
+          assignedUsers.push(tempAssignArr[selector].uid);
+          userIndex = findUIDItemInArr(usersToAssign[i].uid, tempUserArr);
+          tempUserArr[userIndex].secretSantaName = tempAssignArr[selector].uid;
+          tempAssignArr.splice(selector, 1);
+          retryCount = 0;
+        } else {
+          if(consoleOutput)
+            console.log("These users aren't friends!");
+          retryCount++;
+          if(retryCount >= 10) {
+            assignActionSuccess = false;
+            break;
+          }
+          i--;
+        }
+      } else {
+        if(consoleOutput)
+          console.log("These are the same users!");
+        retryCount++;
+        if(retryCount >= 10) {
+          assignActionSuccess = false;
+          break;
+        }
+        i--;
+      }
+    } else {
+      if(consoleOutput)
+        console.log("This user has already been assigned!");
+      retryCount++;
+      if(retryCount >= 10) {
+        assignActionSuccess = false;
+        break;
+      }
+      i--;
+    }
   }
+
+  return assignActionSuccess;
 }
 
 function generateActivateSecretSantaModal(){
