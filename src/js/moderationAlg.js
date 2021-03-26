@@ -13,6 +13,9 @@ let connectionsArr = [];
 
 let secretSantaIntBool = false;
 
+let secretSantaAssignErrorMsg = "try again!";
+let secretSantaPageName = "moderation";
+
 let moderationSet = 1;
 let dataCounter = 0;
 let onlineInt = 0;
@@ -451,17 +454,6 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(autoSecretSanta);
     listeningFirebaseRefs.push(familyInitial);
     listeningFirebaseRefs.push(connectionsInitial);
-  }
-
-  function findUIDItemInArr(item, userArray){
-    for(let i = 0; i < userArray.length; i++){
-      if(userArray[i].uid == item){
-        if(consoleOutput)
-          console.log("Found item: " + item);
-        return i;
-      }
-    }
-    return -1;
   }
 
   function createUserElement(userData){
