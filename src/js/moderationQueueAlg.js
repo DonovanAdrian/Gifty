@@ -182,16 +182,6 @@ window.onload = function instantiate() {
   }
    */
 
-  function findUIDItemInArr(item, userArray){
-    for(let i = 0; i < userArray.length; i++){
-      if(userArray[i].uid == item){
-        //console.log("Found item: " + item);
-        return i;
-      }
-    }
-    return -1;
-  }
-
   //Needs to be updated to apply to this page---------------------**************ToDo
   /*
   function createUserElement(userData){
