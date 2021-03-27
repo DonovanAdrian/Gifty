@@ -13,6 +13,9 @@ let userArr = [];
 let readNotificationsBool = false;
 let friendListEmptyBool = false;
 
+let secretSantaAssignErrorMsg = "refresh the page or ignore this message!";
+let secretSantaPageName = "lists";
+
 let moderationSet = 0;
 let onlineInt = 0;
 let dataCounter = 0;
@@ -323,17 +326,6 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userFriends);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(autoSecretSanta);
-  }
-
-  function findUIDItemInArr(item, userArray){
-    for(let i = 0; i < userArray.length; i++){
-      if(userArray[i].uid == item){
-        if(consoleOutput)
-          console.log("Found item: " + item);
-        return i;
-      }
-    }
-    return -1;
   }
 
   function createFriendElement(friendKey) {
