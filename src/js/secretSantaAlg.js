@@ -8,6 +8,8 @@ let secretBtnStates = [false, false];
 let tempUserArr = [];
 let assignedUsers = [];
 
+let ignoreFamilySet = false;
+
 let currentDate = new Date();
 let currentYear = currentDate.getFullYear();
 let showDate = new Date(currentYear, 10, 1, 0, 0, 0, 0);//Oct 1st
@@ -18,6 +20,8 @@ let hideDateMax = 9; //Sept
 let globalThanks = "Thank you for participating in the Secret Santa! See you next year!";
 let globalApology = "Unfortunately the Secret Santa for this year has come to an early end! Please contact" +
     " a moderator for assistance";
+
+let ignoreFamilySetTimer;
 
 function checkSecretSanta(autoUpdateBool){
   if(autoUpdateBool) {
@@ -34,30 +38,36 @@ function checkSecretSanta(autoUpdateBool){
     hideSecretSanta();
 }
 
-function showSecretSanta(){
+function showSecretSanta(){//----------------------------*****************************ToDo
   secretSantaSignUp.style.display = "block";
 
-  if (user.secretSantaName == null)
-    if (user.secretSanta != null)
-      if (user.secretSanta == 0)
+  //Re-key this to hide the button if the user missed sign ups for Secret Santa.
+
+  if (user.secretSantaName == null) {
+    if (user.secretSanta != null) {
+      if (user.secretSanta == 0) {
         secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
-      else
+      } else {
         secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
-    else
+      }
+    } else {
       secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
-  else {
+    }
+  } else {
     if (user.secretSantaName != "") {
       let i = findUIDItemInArr(user.secretSantaName, userArr);
       secretSantaData = userArr[i];
       secretSantaSignUp.innerHTML = userArr[i].name;
     } else {
-      if (user.secretSanta != null)
-        if (user.secretSanta == 0)
+      if (user.secretSanta != null) {
+        if (user.secretSanta == 0) {
           secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
-        else
+        } else {
           secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
-      else
+        }
+      } else {
         secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
+      }
     }
   }
 
@@ -382,6 +392,12 @@ function generateSecretSantaModal(){
 }
 
 function createSecretSantaNames(){//----------------------------*****************************ToDo
+  try {
+    clearInterval(ignoreFamilySetTimer);
+    if (consoleOutput)
+      console.log("Timer Stopped!");
+  } catch (err) {}
+
   let assignedFamilies = [];
   let optInFamilyArr = [];
   let connectionFamilySet = [];
@@ -417,18 +433,17 @@ function createSecretSantaNames(){//----------------------------****************
       }
     }
     if (connectionFamilySet.length > 2) {
-      if(!assignUsersSecretSantaNames(connectionFamilySet)) {
+      if(!assignUsersSecretSantaNames(connectionFamilySet) && secretSantaPageName == "moderation") {
         alert("There was an error assigning Secret Santa names automatically. Please " + secretSantaAssignErrorMsg);
+        startIgnoreFamilySetTimer();
         return;
       }
     } else {
-      //if (!ignoreFamilySet) {
-      alert("There is a family with less than three users signed up!\n\n\nYou have 10 seconds to press the button again" +
-          " if you are okay with this. The users in question will NOT be assigned names.");
-      //Trigger a timer here to reset ignoreFamilySet. It should get reset after 10 seconds.
-      //Make sure to place a try{}catch(err){} at the top of this fxn to stop the timer.
-      //}
-      return;
+      if (!ignoreFamilySet) {
+        alert("There is a family with less than three users signed up!\n\n\nYou have 10 seconds to press the button again" +
+            " if you are okay with this. The users in question will NOT be assigned names.");
+        return;
+      }
     }
 
     connectionFamilySet = [];
@@ -443,6 +458,35 @@ function createSecretSantaNames(){//----------------------------****************
   //if not, try again at max 3 times
 
   tempUserArr = [];
+}
+
+function startIgnoreFamilySetTimer() {
+  let nowIgnore = 0;
+  let alternatorIgnore = 0;
+
+  ignoreFamilySet = true;
+
+  if(consoleOutput)
+    console.log("Ignore Family Set Timer Active, 10 Seconds Remain!");
+  ignoreFamilySetTimer = setInterval(function(){
+    nowIgnore = nowIgnore + 1000;
+    if (alternatorIgnore == 0) {
+      alternatorIgnore = 1;
+      if(consoleOutput)
+        console.log("Tick!");
+    } else {
+      alternatorIgnore = 0;
+      if(consoleOutput)
+        console.log("Tock!");
+    }
+
+    if(nowIgnore >= 10000){
+      if(consoleOutput)
+        console.log("Times Up!");
+      ignoreFamilySet = false;
+      clearInterval(ignoreFamilySetTimer);
+    }
+  }, 1000);
 }
 
 function assignUsersSecretSantaNames(usersToAssign) {
