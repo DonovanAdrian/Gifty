@@ -427,15 +427,18 @@ function createSecretSantaNames(){//----------------------------****************
       }
     }
     if (connectionFamilySet.length > 2) {
-      if(!assignUsersSecretSantaNames(connectionFamilySet) && secretSantaPageName == "moderation") {
-        alert("There was an error assigning Secret Santa names automatically. Please " + secretSantaAssignErrorMsg);
-        startIgnoreFamilySetTimer();
+      if(!assignUsersSecretSantaNames(connectionFamilySet)) {
+        if (consoleOutput)
+          alert("There was an error assigning Secret Santa names automatically. Please " + secretSantaAssignErrorMsg);
+        tempUserArr = [];
         return;
       }
     } else {
-      if (!ignoreFamilySet) {
+      if (!ignoreFamilySet && secretSantaPageName == "moderation") {
         alert("There is a family with less than three users signed up!\n\n\nYou have 10 seconds to press the button again" +
             " if you are okay with this. The users in question will NOT be assigned names.");
+        startIgnoreFamilySetTimer();
+        tempUserArr = [];
         return;
       }
     }
@@ -443,13 +446,49 @@ function createSecretSantaNames(){//----------------------------****************
     connectionFamilySet = [];
   }
 
-  console.log(assignedUsers);
+  //Remove console logs once finished
+  console.log("Performing Secret Santa Checks...");
 
-  //compare assignedUsers.length with tempUserArr.length
-  //AND optInFamilyArr.length with assignedFamilies.length to verify that everyone has an assignment
-  //if all users were properly assigned, update tempUserArr to DB and run the function:
-  initializeSecretSantaBtns();
-  //if not, try again at max 3 times
+  console.log("assignedUsers: " + assignedUsers.length);
+  console.log(assignedUsers);
+  console.log("tempUserArr: " + tempUserArr.length);
+  console.log(tempUserArr);
+
+  console.log("optInFamilyArr: " + optInFamilyArr.length);
+  console.log(optInFamilyArr);
+  console.log("assignedFamilies: " + assignedFamilies.length);
+  console.log(assignedFamilies);
+
+  if (assignedUsers.length == tempUserArr.length) {
+    if (assignedFamilies.length == optInFamilyArr.length) {
+      let userIndex = 0;
+      for (let i = 0; i < tempUserArr.length; i++) {
+        userIndex = findUIDItemInArr(tempUserArr[i].uid, userArr);
+        userArr[userIndex].secretSantaName = tempUserArr[i].secretSantaName;
+      }
+
+      //Remove console logs once finished
+      console.log("Main User Arr:");
+      console.log(userArr);
+      console.log("Users That Were Assigned Names:");
+      console.log(tempUserArr);
+      //updateAllUsersToDBSantaNames();
+
+      if (consoleOutput)
+        console.log("Secret Santa Assignments Complete!");
+      if (secretSantaPageName == "moderation") {
+        initializeSecretSantaBtns();
+        alert("Did the buttons update?");
+      }
+      if (secretSantaPageName == "lists") {
+        showSecretSanta();
+        alert("Did the button update?");
+      }
+    }
+  } else {
+    if (consoleOutput)
+      alert("There was an error assigning Secret Santa names automatically. Please " + secretSantaAssignErrorMsg);
+  }
 
   tempUserArr = [];
 }
