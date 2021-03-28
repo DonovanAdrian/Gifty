@@ -11,8 +11,6 @@ let userArr = [];
 let familyArr = [];
 let connectionsArr = [];
 
-let secretSantaIntBool = false;
-
 let secretSantaAssignErrorMsg = "try again!";
 let secretSantaPageName = "moderation";
 
