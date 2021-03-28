@@ -38,35 +38,26 @@ function checkSecretSanta(autoUpdateBool){
     hideSecretSanta();
 }
 
-function showSecretSanta(){//----------------------------*****************************ToDo
-  secretSantaSignUp.style.display = "block";
-
-  //Re-key this to hide the button if the user missed sign ups for Secret Santa.
-
-  if (user.secretSantaName == null) {
-    if (user.secretSanta != null) {
-      if (user.secretSanta == 0) {
-        secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
-      } else {
-        secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
-      }
-    } else {
+function showSecretSanta(){
+  if (user.secretSanta == null) {
+    if (!checkIfSantaActive()) {
+      secretSantaSignUp.style.display = "block";
       secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
     }
   } else {
-    if (user.secretSantaName != "") {
-      let i = findUIDItemInArr(user.secretSantaName, userArr);
-      secretSantaData = userArr[i];
-      secretSantaSignUp.innerHTML = userArr[i].name;
-    } else {
-      if (user.secretSanta != null) {
-        if (user.secretSanta == 0) {
-          secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
-        } else {
-          secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
+    if (user.secretSanta == 0 && !checkIfSantaActive()) {
+      secretSantaSignUp.style.display = "block";
+      secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
+    } else if (user.secretSanta == 1 && !checkIfSantaActive()) {
+      secretSantaSignUp.style.display = "block";
+      secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
+    } else if (user.secretSanta == 1 && checkIfSantaActive()) {
+      if (user.secretSantaName != null) {
+        if (user.secretSantaName != "") {
+          let i = findUIDItemInArr(user.secretSantaName, userArr);
+          secretSantaData = userArr[i];
+          secretSantaSignUp.innerHTML = userArr[i].name;
         }
-      } else {
-        secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
       }
     }
   }
@@ -164,26 +155,29 @@ function checkIfSantaActive() {
 }
 
 function checkForGlobalMessage() {
-  for (let i = 0; i < userArr.length; i++)
-    if(userArr[i].notifications.includes(globalThanks) ||
-        userArr[i].notifications.includes(globalApology))
-      if(userArr[i].readNotifications.includes(globalThanks) ||
-          userArr[i].readNotifications.includes(globalApology))
+  for (let i = 0; i < userArr.length; i++) {
+    if (userArr[i].notifications.includes(globalThanks) ||
+        userArr[i].notifications.includes(globalApology)) {
+      if (userArr[i].readNotifications.includes(globalThanks) ||
+          userArr[i].readNotifications.includes(globalApology)) {
         return true;
+      }
+    }
+  }
   return false;
 }
 
 function addGlobalMessageToDB(message) {
   let userNotificationArr = [];
   for (let i = 0; i < userArr.length; i++){
-    if(userArr[i].notifications == undefined){
+    if(userArr[i].notifications == null){
       userNotificationArr = [];
     } else {
       userNotificationArr = userArr[i].notifications;
     }
     userNotificationArr.push(message);
 
-    if(userArr[i].notifications == undefined) {
+    if(userArr[i].notifications == null) {
       firebase.database().ref("users/" + userArr[i].uid).update({notifications:{0:message}});
     } else {
       firebase.database().ref("users/" + userArr[i].uid).update({
@@ -329,7 +323,7 @@ function updateSecretSantaToDB(settingToUpdate, settingToBool) {
 function generateSecretSantaModal(){
   if(secretSantaData != null){
     userTitle.innerHTML = secretSantaData.name;
-    if(secretSantaData.giftList != undefined){
+    if(secretSantaData.giftList != null){
       if(secretSantaData.giftList.length > 0) {
         publicList.innerHTML = "Click on me to access " + secretSantaData.name + "\'s public list!";
         publicList.onclick = function () {
@@ -350,7 +344,7 @@ function generateSecretSantaModal(){
       publicList.onclick = function () {};
       publicListCount.innerHTML = secretSantaData.name + " has 0 gifts on their public list";
     }
-    if(secretSantaData.privateList != undefined){
+    if(secretSantaData.privateList != null){
       if(secretSantaData.privateList.length > 0) {
         if (secretSantaData.privateList.length == 1)
           privateListCount.innerHTML = secretSantaData.name + " has 1 gift on their private list";
@@ -577,7 +571,7 @@ function removeSecretSantaNums(){
 
 function updateAllUsersToDBSantaNums(){
   for(let i = 0; i < userArr.length; i++){
-    if (userArr[i].secretSanta != undefined) {
+    if (userArr[i].secretSanta != null) {
       firebase.database().ref("users/" + userArr[i].uid).update({
         secretSanta: userArr[i].secretSanta
       });
@@ -589,7 +583,7 @@ function updateAllUsersToDBSantaNums(){
 
 function updateAllUsersToDBSantaNames(){
   for(let i = 0; i < userArr.length; i++) {
-    if (userArr[i].secretSantaName != undefined) {
+    if (userArr[i].secretSantaName != null) {
       firebase.database().ref("users/" + userArr[i].uid).update({
         secretSantaName: userArr[i].secretSantaName
       });
