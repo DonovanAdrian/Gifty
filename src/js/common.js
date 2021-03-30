@@ -375,9 +375,9 @@ function findUIDInString(input){
   return potentialUID;
 }
 
-function findUIDItemInArr(item, userArray){
-  for(let i = 0; i < userArray.length; i++){
-    if(userArray[i].uid == item){
+function findUIDItemInArr(item, array){
+  for(let i = 0; i < array.length; i++){
+    if(array[i].uid == item){
       if(consoleOutput)
         console.log("Found item: " + item);
       return i;
