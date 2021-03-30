@@ -46,12 +46,16 @@ let userInvites;
 
 
 function getCurrentUser(){
+  let localConsoleOutput = false;
+
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if(consoleOutput)
+    if(user.moderatorInt == 1)
+      localConsoleOutput = true;
+    if(localConsoleOutput)
       console.log("User: " + user.userName + " loaded in");
     if (user.invites == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Invites Not Found");
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
@@ -60,21 +64,21 @@ function getCurrentUser(){
     }
 
     if (user.readNotifications == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Read Notifications Not Found");
     } else {
       readNotificationsBool = true;
     }
 
     if (user.readNotifications == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Read Notifications Not Found");
     } else {
       readNotificationsBool = true;
     }
 
     if (user.notifications == undefined) {
-      if(consoleOutput)
+      if(localConsoleOutput)
         console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
@@ -100,7 +104,7 @@ function getCurrentUser(){
     userBoughtGiftsArr = JSON.parse(sessionStorage.boughtGifts);
     userBoughtGiftsUsersArr = JSON.parse(sessionStorage.boughtGiftsUsers);
   } catch (err) {
-    if(consoleOutput)
+    if(localConsoleOutput)
       console.log(err.toString());
     window.location.href = "index.html";
   }
@@ -129,9 +133,9 @@ window.onload = function instantiate() {
   boughtGiftElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, backBtn, inviteNote, homeNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, giftTitleFld, giftLinkFld, giftWhereFld,
     giftDescriptionFld, giftCreationDateFld, giftModal, testGift];
-  verifyElementIntegrity(boughtGiftElements);
   getCurrentUser();
   commonInitialization();
+  verifyElementIntegrity(boughtGiftElements);
 
   for(let i = 0; i < userArr.length; i++){
     userUserNames.push(userArr[i].userName);
@@ -307,15 +311,6 @@ window.onload = function instantiate() {
       }
       changeGiftElement(newGiftData, giftOwner);
     }
-  }
-
-  function findUIDItemInArr(item, itemArray){
-    for(let i = 0; i < itemArray.length; i++){
-      if(itemArray[i].uid == item){
-        return i;
-      }
-    }
-    return -1;
   }
 
   function createGiftElement(giftData, giftOwner){
