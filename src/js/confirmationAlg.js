@@ -248,17 +248,6 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 
-  function findUIDItemInArr(item, userArray){
-    for(let i = 0; i < userArray.length; i++){
-      if(userArray[i].uid == item){
-        if(consoleOutput)
-          console.log("Found item: " + item);
-        return i;
-      }
-    }
-    return -1;
-  }
-
   function createInviteElement(inviteKey){
     try{
       testGift.remove();
