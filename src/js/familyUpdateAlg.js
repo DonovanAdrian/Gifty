@@ -816,13 +816,6 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(connectionsInitial);
   }
 
-  function findUIDItemInArr(item, userArray){
-    for(let i = 0; i < userArray.length; i++)
-      if(userArray[i].uid == item)
-        return i;
-    return -1;
-  }
-
   function createFamilyMemberElement(familyMemberData){
     try{
       testData.remove();
