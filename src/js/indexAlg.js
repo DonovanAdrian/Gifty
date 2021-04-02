@@ -282,16 +282,6 @@ function databaseQuery() {
   listeningFirebaseRefs.push(userInitial);
 }
 
-function findUIDItemInArr(item, userArray){
-  for(let i = 0; i < userArray.length; i++){
-    if(userArray[i].uid == item){
-      //console.log("Found item: " + item);
-      return i;
-    }
-  }
-  return -1;
-}
-
 function login() {
   let validUserInt = 0;
   let showLoginAlert = 0;
