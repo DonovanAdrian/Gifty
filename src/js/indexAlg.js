@@ -132,6 +132,29 @@ function fetchConfigFile(){
           commonInitialization();
           loginQuery();
         }
+      } else {
+        if (configInitializeInt == 7 && (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
+            storageBucketString == "" || messagingSenderIdString == "" || appIdString == "")) {
+          alert("Config not properly initialized! Please contact an administrator!");
+          //console.log("Config Not Initialized! Are You Using The Default Config File?");
+        } else {
+          console.log("WARNING: Missing measurementId. This variable is optional. Disregard if this is on purpose.");
+
+          config = {
+            apiKey: apiKeyString,
+            authDomain: authDomainString,
+            databaseURL: databaseURLString,
+            projectId: projectIdString,
+            storageBucket: storageBucketString,
+            messagingSenderId: messagingSenderIdString,
+            appId: appIdString,
+          };
+          //console.log("Config Successfully Initialized!");
+
+          sessionStorage.setItem("config", JSON.stringify(config));
+          commonInitialization();
+          loginQuery();
+        }
       }
     }
   });
@@ -230,6 +253,9 @@ function loginQuery() {
           loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
               "maintenance before logging in. Thank you for your patience!"
         });
+        loginBtn.innerHTML = "Log In";
+        allowLogin = true;
+        sessionStorage.setItem("allowLogin", JSON.stringify(allowLogin));
 
         initializeLoginBtns();
       }
@@ -257,23 +283,32 @@ function databaseQuery() {
   userInitial = firebase.database().ref("users/");
 
   let fetchPosts = function (postRef) {
-    postRef.on('child_added', function (data) {
-      //console.log("Adding " + data.val().userName);
-      if(!userArr.includes(data.val()))
-        userArr.push(data.val());
-    });
+    postRef.once("value").then(function(snapshot) {
+      if (snapshot.exists()) {
+        postRef.on('child_added', function (data) {
+          //console.log("Adding " + data.val().userName);
+          if (!userArr.includes(data.val()))
+            userArr.push(data.val());
+        });
 
-    postRef.on('child_changed', function (data) {
-      let i = findUIDItemInArr(data.key, userArr);
-      if(userArr[i] != data.val() && i != -1){
-        //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
-        userArr[i] = data.val();
+        postRef.on('child_changed', function (data) {
+          let i = findUIDItemInArr(data.key, userArr);
+          if (userArr[i] != data.val() && i != -1) {
+            //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            userArr[i] = data.val();
+          }
+        });
+
+        postRef.on('child_removed', function (data) {
+          let i = findUIDItemInArr(data.key, userArr);
+          userArr.splice(i, 1);
+        });
+      } else {
+        loginBtn.innerHTML = "Create A New User First!";
+        allowLogin = false;
+        loginDisabledMsg = "Please create a new user before trying to log into Gifty! Click on the text below the " +
+            "login button and fill out the form to make a user.";
       }
-    });
-
-    postRef.on('child_removed', function (data) {
-      let i = findUIDItemInArr(data.key, userArr);
-      userArr.splice(i, 1);
     });
   };
 
