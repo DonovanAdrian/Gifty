@@ -39,7 +39,7 @@ let inviteNote;
 let homeNote;
 let offlineTimer;
 let loadingTimer;
-let testGift;
+let testData;
 let userInitial;
 let userInvites;
 
@@ -129,10 +129,10 @@ window.onload = function instantiate() {
   giftDescriptionFld = document.getElementById('giftDescriptionFld');
   giftCreationDateFld = document.getElementById('giftCreationDateFld');
   giftModal = document.getElementById('giftModal');
-  testGift = document.getElementById('testGift');
+  testData = document.getElementById('testData');
   boughtGiftElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, backBtn, inviteNote, homeNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, giftTitleFld, giftLinkFld, giftWhereFld,
-    giftDescriptionFld, giftCreationDateFld, giftModal, testGift];
+    giftDescriptionFld, giftCreationDateFld, giftModal, testData];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(boughtGiftElements);
@@ -150,11 +150,11 @@ window.onload = function instantiate() {
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
-      if (testGift == undefined){
+      if (testData == undefined){
         if(consoleOutput)
-          console.log("TestGift Missing. Loading Properly.");
+          console.log("TestData Missing. Loading Properly.");
       } else {
-        testGift.innerHTML = "Loading... Please Wait...";
+        testData.innerHTML = "Loading... Please Wait...";
       }
       clearInterval(loadingTimer);
     }
@@ -322,7 +322,7 @@ window.onload = function instantiate() {
     let giftDate = giftData.creationDate;
 
     try{
-      testGift.remove();
+      testData.remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
