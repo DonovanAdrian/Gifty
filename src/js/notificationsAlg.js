@@ -631,17 +631,6 @@ window.onload = function instantiate() {
     return i;
   }
 
-  function findUIDItemInArr(item, userArray){
-    for(let i = 0; i < userArray.length; i++){
-      if(userArray[i].uid == item){
-        if(consoleOutput)
-          console.log("Found item: " + item);
-        return i;
-      }
-    }
-    return -1;
-  }
-
   function deleteNotification(uid) {
     let deleteNotificationBool = true;
     if(consoleOutput)
