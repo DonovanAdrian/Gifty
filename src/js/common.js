@@ -105,13 +105,13 @@ function commonInitialization(){
       if(now >= 5000){
         if(dataListChecker.innerHTML != null)
           try{
-            document.getElementById('testGift').innerHTML = "Loading Failed, Please Connect To Internet";
+            document.getElementById('testData').innerHTML = "Loading Failed, Please Connect To Internet";
           } catch(err){
             if(dataCounter == 0) {
               if(consoleOutput)
                 console.log("Loading Element Missing, Creating A New One");
               let liItem = document.createElement("LI");
-              liItem.id = "testGift";
+              liItem.id = "testData";
               liItem.className = "gift";
               let textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
               liItem.appendChild(textNode);
@@ -384,4 +384,21 @@ function findUIDItemInArr(item, array){
     }
   }
   return -1;
+}
+
+function deployListEmptyNotification(dataItemText){
+  try{
+    testData.innerHTML = dataItemText;
+  } catch(err){
+    if(consoleOutput)
+      console.log("Loading Element Missing, Creating A New One");
+    let liItem = document.createElement("LI");
+    liItem.id = "testData";
+    liItem.className = "gift";
+    let textNode = document.createTextNode(dataItemText);
+    liItem.appendChild(textNode);
+    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+  }
+
+  clearInterval(offlineTimer);
 }
