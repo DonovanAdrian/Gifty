@@ -17,7 +17,7 @@ let dataCounter = 0;
 let onlineInt = 0;
 let loadingTimerInt = 0;
 
-let testGift;
+let testData;
 let dataListContainer;
 let offlineSpan;
 let offlineModal;
@@ -54,7 +54,7 @@ function getCurrentUser(){
     if (user.invites == undefined) {
       if(localConsoleOutput)
         console.log("Invites Not Found");
-      deployInviteListEmptyNotification();
+      deployListEmptyNotification("No Invites Found! You Already Accepted All Your Invites!");
       inviteListEmptyBool = true;
     } else if (user.invites != undefined) {
       if (user.invites.length > 0) {
@@ -102,7 +102,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
-  testGift = document.getElementById('testGift');
+  testData = document.getElementById('testData');
   notificationBtn = document.getElementById('notificationButton');
   dataListContainer = document.getElementById('dataListContainer');
   offlineModal = document.getElementById('offlineModal');
@@ -119,7 +119,7 @@ window.onload = function instantiate() {
   userShareCodeFld = document.getElementById('userShareCodeFld');
   userAcceptBtn = document.getElementById('userAcceptBtn');
   userDeleteBtn = document.getElementById('userDeleteBtn');
-  confirmationElements = [testGift, notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote,
+  confirmationElements = [testData, notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, inviteModal, closeInviteModal, userNameFld,
     userUNameFld, userShareCodeFld, userAcceptBtn, userDeleteBtn];
   getCurrentUser();
@@ -129,11 +129,11 @@ window.onload = function instantiate() {
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
-      if (testGift == undefined){
+      if (testData == undefined){
         if(consoleOutput)
-          console.log("TestGift Missing. Loading Properly.");
+          console.log("TestData Missing. Loading Properly.");
       } else if (!inviteListEmptyBool) {
-        testGift.innerHTML = "Loading... Please Wait...";
+        testData.innerHTML = "Loading... Please Wait...";
       }
       clearInterval(loadingTimer);
     }
@@ -250,7 +250,7 @@ window.onload = function instantiate() {
 
   function createInviteElement(inviteKey){
     try{
-      testGift.remove();
+      testData.remove();
     } catch (err) {}
 
     let inviteData;
@@ -464,20 +464,3 @@ window.onload = function instantiate() {
     }
   }
 };
-
-function deployInviteListEmptyNotification(){
-  try{
-    testGift.innerHTML = "No Invites Found! You Already Accepted All Your Invites!";
-  } catch(err){
-    if(consoleOutput)
-      console.log("Loading Element Missing, Creating A New One");
-    let liItem = document.createElement("LI");
-    liItem.id = "testGift";
-    liItem.className = "gift";
-    let textNode = document.createTextNode("No Invites Found! Invite Some Friends On The Invites Page!");
-    liItem.appendChild(textNode);
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-  }
-
-  clearInterval(offlineTimer);
-}
