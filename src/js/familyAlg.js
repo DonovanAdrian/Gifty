@@ -125,13 +125,13 @@ window.onload = function instantiate() {
       if(loadingTimerInt >= 5000){
         clearInterval(loadingTimer);
         if (testData == undefined) {
-          console.log("testGift Missing. Loading Properly.");
+          console.log("TestData Missing. Loading Properly.");
         } else {
-          deployFamilyListEmptyNotification();
+          deployListEmptyNotification("No Families Found!");
         }
       } else {
         if (testData == undefined) {
-          console.log("testGift Missing. Loading Properly.");
+          console.log("TestData Missing. Loading Properly.");
         } else {
           testData.innerHTML = "Loading... Please Wait...";
         }
@@ -513,7 +513,7 @@ window.onload = function instantiate() {
 
     dataCounter--;
     if (dataCounter == 0){
-      deployFamilyListEmptyNotification();
+      deployListEmptyNotification("No Families Found!");
     }
   }
 
@@ -532,19 +532,3 @@ window.onload = function instantiate() {
     closeModal(familyAddModal);
   }
 };
-
-function deployFamilyListEmptyNotification(){
-  try{
-    testData.innerHTML = "No Families Found!";
-  } catch(err){
-    console.log("Loading Element Missing, Creating A New One");
-    let liItem = document.createElement("LI");
-    liItem.id = "testData";
-    liItem.className = "gift";
-    let textNode = document.createTextNode("No Families Found!");
-    liItem.appendChild(textNode);
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-  }
-
-  clearInterval(offlineTimer);
-}
