@@ -197,13 +197,13 @@ window.onload = function instantiate() {
       if(loadingTimerInt >= 5000){
         clearInterval(loadingTimer);
         if (testData == undefined) {
-          console.log("testGift Missing. Loading Properly.");
+          console.log("TestData Missing. Loading Properly.");
         } else {
-          deployFamilyListEmptyNotification();
+          deployListEmptyNotification("No Family Members Found!");
         }
       } else {
         if (testData == undefined) {
-          console.log("testGift Missing. Loading Properly.");
+          console.log("TestData Missing. Loading Properly.");
         } else {
           testData.innerHTML = "Loading... Please Wait...";
         }
@@ -240,9 +240,9 @@ window.onload = function instantiate() {
         createFamilyMemberElement(userArr[a]);
       }
     else
-      deployFamilyListEmptyNotification();
+      deployListEmptyNotification("No Family Members Found!");
   else
-    deployFamilyListEmptyNotification();
+    deployListEmptyNotification("No Family Members Found!");
 
   function generateAddMemberModal() {
     let familyMemberFound = false;
@@ -595,7 +595,7 @@ window.onload = function instantiate() {
         }
       }
     else
-      deployConnectionListEmptyNotification();
+      deployListEmptyNotification("No Family Connections Found!");
   }
 
   function removeFamilyLinkFromDB(uidToRemove) {
@@ -909,7 +909,7 @@ window.onload = function instantiate() {
 
     dataCounter--;
     if (dataCounter == 0){
-      deployFamilyListEmptyNotification();
+      deployListEmptyNotification("No Family Members Found!");
     }
   }
 
@@ -1013,36 +1013,3 @@ window.onload = function instantiate() {
     }
   }
 };
-
-function deployConnectionListEmptyNotification(){
-  try{
-    testFamily.innerHTML = "No Family Connections Found!";
-  } catch(err){
-    console.log("Loading Element Missing, Creating A New One");
-    let liItem = document.createElement("LI");
-    liItem.id = "testFamily";
-    liItem.className = "gift";
-    let textNode = document.createTextNode("No Family Connections Found!");
-    liItem.appendChild(textNode);
-    familyLinkViewContainer.insertBefore(liItem, familyLinkViewContainer.childNodes[0]);
-  }
-
-  clearInterval(offlineTimer);
-}
-
-function deployFamilyListEmptyNotification(){
-  clearInterval(loadingTimer);
-  try{
-    testData.innerHTML = "No Family Members Found!";
-  } catch(err){
-    console.log("Loading Element Missing, Creating A New One");
-    let liItem = document.createElement("LI");
-    liItem.id = "testData";
-    liItem.className = "gift";
-    let textNode = document.createTextNode("No Family Members Found!");
-    liItem.appendChild(textNode);
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-  }
-
-  clearInterval(offlineTimer);
-}
