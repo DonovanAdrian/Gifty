@@ -47,7 +47,7 @@ let loadingTimer;
 let userBase;
 let userGifts;
 let userInvites;
-let testGift;
+let testData;
 let closeGiftModal;
 
 
@@ -66,10 +66,10 @@ function getCurrentUser(){
       console.log("Friend: " + giftUser.userName + " loaded in");
     }
     if (giftUser.giftList == undefined) {
-      deployGiftListEmptyNotification();
+      deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
       giftListEmptyBool = true;
     } else if (giftUser.giftList.length == 0) {
-      deployGiftListEmptyNotification();
+      deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
       giftListEmptyBool = true;
     }
     if (user.invites == undefined) {
@@ -143,10 +143,10 @@ window.onload = function instantiate() {
   giftCreationDate = document.getElementById('giftCreationDate');
   giftBuy = document.getElementById('giftBuy');
   giftDontBuy = document.getElementById('giftDontBuy');
-  testGift = document.getElementById('testGift');
+  testData = document.getElementById('testData');
   friendListElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, noteSpan, backBtn, listNote,
     inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan, giftModal, closeGiftModal, giftTitle,
-    giftLink, giftWhere, giftDescription, giftBought, giftCreationDate, giftBuy, giftDontBuy, testGift];
+    giftLink, giftWhere, giftDescription, giftBought, giftCreationDate, giftBuy, giftDontBuy, testData];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(friendListElements);
@@ -168,11 +168,11 @@ window.onload = function instantiate() {
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
-      if (testGift == undefined){
+      if (testData == undefined){
         if(consoleOutput)
-          console.log("TestGift Missing. Loading Properly.");
+          console.log("TestData Missing. Loading Properly.");
       } else if (!giftListEmptyBool) {
-        testGift.innerHTML = "Loading... Please Wait...";
+        testData.innerHTML = "Loading... Please Wait...";
       }
       clearInterval(loadingTimer);
     }
@@ -336,7 +336,7 @@ window.onload = function instantiate() {
     if(consoleOutput)
       console.log("Creating " + giftUid);
     try{
-      testGift.remove();
+      testData.remove();
     } catch (err) {}
 
     dataCounter++;
@@ -548,24 +548,7 @@ window.onload = function instantiate() {
 
     dataCounter--;
     if (dataCounter == 0){
-      deployGiftListEmptyNotification();
+      deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
     }
   }
 };
-
-function deployGiftListEmptyNotification(){
-  try{
-    testGift.innerHTML = "No Gifts Found! Your Friend Must Not Have Any Gifts!";
-  } catch(err){
-    if(consoleOutput)
-      console.log("Loading Element Missing, Creating A New One");
-    let liItem = document.createElement("LI");
-    liItem.id = "testGift";
-    liItem.className = "gift";
-    let textNode = document.createTextNode("No Gifts Found! Your Friend Must Not Have Any Gifts!");
-    liItem.appendChild(textNode);
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-  }
-
-  clearInterval(offlineTimer);
-}
