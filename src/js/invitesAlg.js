@@ -17,6 +17,8 @@ let friendListEmptyBool = false;
 let dataCounter = 0;
 let loadingTimerInt = 0;
 
+let inviteListEmptyText = "";
+
 let dataListContainer;
 let offlineSpan;
 let offlineModal;
@@ -40,7 +42,7 @@ let noteSpan;
 let notificationBtn;
 let inviteModal;
 let closeInviteModal;
-let testGift;
+let testData;
 let userName;
 let userUName;
 let userShareCode;
@@ -81,10 +83,18 @@ function getCurrentUser(){
       }
     }
     if (user.friends == undefined) {
-      deployFriendListEmptyNotification();
+      if (invitesFound)
+        inviteListEmptyText = "No Friends Found, But You Have Some Pending Invites!";
+      else
+        inviteListEmptyText = "No Friends Found! Invite Some Friends With The Button Below!";
+      deployListEmptyNotification(inviteListEmptyText);
       friendListEmptyBool = true;
     } else if (user.friends.length == 0) {
-      deployFriendListEmptyNotification();
+      if (invitesFound)
+        inviteListEmptyText = "No Friends Found, But You Have Some Pending Invites!";
+      else
+        inviteListEmptyText = "No Friends Found! Invite Some Friends With The Button Below!";
+      deployListEmptyNotification(inviteListEmptyText);
       friendListEmptyBool = true;
     } else {
       if(localConsoleOutput)
@@ -165,12 +175,12 @@ window.onload = function instantiate() {
   userShareCode = document.getElementById('userShareCode');
   sendPrivateMessage = document.getElementById('sendPrivateMessage');
   userInviteRemove = document.getElementById('userInviteRemove');
-  testGift = document.getElementById('testGift');
+  testData = document.getElementById('testData');
   inviteElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, userInviteModal,
     closeUserInviteModal, userNameInp, inviteInfo, addInvite, cancelInvite, confirmModal, closeConfirmModal,
     confUserName, inviteConfirm, inviteDeny, inviteNote, newInviteIcon, addUser, notificationModal, notificationTitle,
     notificationInfo, noteSpan, privateMessageModal, closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg,
-    inviteModal, closeInviteModal, userName, userUName, userShareCode, sendPrivateMessage, userInviteRemove, testGift];
+    inviteModal, closeInviteModal, userName, userUName, userShareCode, sendPrivateMessage, userInviteRemove, testData];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(inviteElements);
@@ -182,11 +192,11 @@ window.onload = function instantiate() {
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
-      if (testGift == undefined){
+      if (testData == undefined){
         if(consoleOutput)
-          console.log("TestGift Missing. Loading Properly.");
+          console.log("TestData Missing. Loading Properly.");
       } else if (!friendListEmptyBool) {
-        testGift.innerHTML = "Loading... Please Wait...";
+        testData.innerHTML = "Loading... Please Wait...";
       }
       clearInterval(loadingTimer);
     }
@@ -307,7 +317,7 @@ window.onload = function instantiate() {
 
     if(friendData != null) {
       try{
-        testGift.remove();
+        testData.remove();
       } catch (err) {}
 
       let userUid = friendData.uid;
@@ -691,7 +701,11 @@ window.onload = function instantiate() {
 
     dataCounter--;
     if(dataCounter == 0){
-      deployFriendListEmptyNotification();
+      if (invitesFound)
+        inviteListEmptyText = "No Friends Found, But You Have Some Pending Invites!";
+      else
+        inviteListEmptyText = "No Friends Found! Invite Some Friends With The Button Below!";
+      deployListEmptyNotification(inviteListEmptyText);
     }
   }
 
@@ -738,28 +752,3 @@ window.onload = function instantiate() {
     return (invitedName + "," + pageName);
   }
 };
-
-function deployFriendListEmptyNotification(){
-  try{
-    if (invitesFound) {
-      testGift.innerHTML = "No Friends Found, But You Have Some Pending Invites!";
-    } else {
-      testGift.innerHTML = "No Friends Found! Invite Some Friends With The Button Below!";
-    }
-  } catch(err){
-    if(consoleOutput)
-      console.log("Loading Element Missing, Creating A New One");
-    let liItem = document.createElement("LI");
-    liItem.id = "testGift";
-    liItem.className = "gift";
-    if (invitesFound) {
-      var textNode = document.createTextNode("No Friends Found, But You Have Some Pending Invites!");
-    } else {
-      var textNode = document.createTextNode("No Friends Found! Invite Some Friends With The Button Below!");
-    }
-    liItem.appendChild(textNode);
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-  }
-
-  clearInterval(offlineTimer);
-}
