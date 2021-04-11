@@ -45,7 +45,7 @@ let secretSantaBtn;
 let secretSantaShuffle;
 let secretSantaAutoBtn;
 let settingsNote;
-let testGift;
+let testData;
 let closeUserModal;
 let userName;
 let userUID;
@@ -111,7 +111,7 @@ window.onload = function instantiate() {
   secretSantaShuffle = document.getElementById('secretSantaShuffle');
   secretSantaAutoBtn = document.getElementById('secretSantaAutoBtn');
   settingsNote = document.getElementById('settingsNote');
-  testGift = document.getElementById('testGift');
+  testData = document.getElementById('testData');
   closeUserModal = document.getElementById('closeUserModal');
   userName = document.getElementById('userName');
   userUID = document.getElementById('userUID');
@@ -133,7 +133,7 @@ window.onload = function instantiate() {
   moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal, notificationTitle,
     notificationInfo, noteSpan, privateMessageModal, sendGlobalNotification, sendPrivateMessage, userModal,
     activateSecretSanta, secretSantaModal, santaModalSpan, secretSantaBtn, secretSantaShuffle, secretSantaAutoBtn,
-    settingsNote, testGift, closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends,
+    settingsNote, testData, closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends,
     userPassword, userSecretSanta, moderatorOp, sendPrivateMessage, warnUser, banUser, closePrivateMessageModal,
     globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
   getCurrentUser();
@@ -143,11 +143,11 @@ window.onload = function instantiate() {
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
-      if (testGift == undefined){
+      if (testData == undefined){
         if(consoleOutput)
-          console.log("TestGift Missing. Loading Properly.");
+          console.log("TestData Missing. Loading Properly.");
       } else {
-        testGift.innerHTML = "Loading... Please Wait...";
+        testData.innerHTML = "Loading... Please Wait...";
       }
       clearInterval(loadingTimer);
     }
@@ -456,7 +456,7 @@ window.onload = function instantiate() {
 
   function createUserElement(userData){
     try{
-      testGift.remove();
+      testData.remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
@@ -727,7 +727,7 @@ window.onload = function instantiate() {
 
     dataCounter--;
     if (dataCounter == 0){
-      deployUserListEmptyNotification();
+      deployListEmptyNotification("No Users Found!");
     }
   }
 };
@@ -751,21 +751,4 @@ function manuallyOptInOut(userData){
     });
     alert(userData.name + " has been manually opted out of the Secret Santa Program!");
   }
-}
-
-function deployUserListEmptyNotification(){
-  try{
-    testGift.innerHTML = "No Users Found!";
-  } catch(err){
-    if(consoleOutput)
-      console.log("Loading Element Missing, Creating A New One");
-    let liItem = document.createElement("LI");
-    liItem.id = "TestGift";
-    liItem.className = "gift";
-    let textNode = document.createTextNode("No Users Found!");
-    liItem.appendChild(textNode);
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-  }
-
-  clearInterval(offlineTimer);
 }
