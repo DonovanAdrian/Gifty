@@ -40,7 +40,7 @@ let inviteNote;
 let notificationBtn;
 let userBase;
 let userGifts;
-let testGift;
+let testData;
 let closeGiftModal;
 let giftTitle;
 let giftLink;
@@ -74,10 +74,10 @@ function getCurrentUser(){
       console.log("Friend: " + giftUser.userName + " loaded in");
     }
     if (giftUser.privateList == undefined) {
-      deployGiftListEmptyNotification();
+      deployListEmptyNotification("No Gifts Found! Add Some Gifts With The Button Below!");
       giftListEmptyBool = true;
     } else if (giftUser.privateList.length == 0) {
-      deployGiftListEmptyNotification();
+      deployListEmptyNotification("No Gifts Found! Add Some Gifts With The Button Below!");
       giftListEmptyBool = true;
     }
     if (user.invites == undefined) {
@@ -142,7 +142,7 @@ window.onload = function instantiate() {
   listNote = document.getElementById('listNote');
   addGift = document.getElementById('addGift');
   giftModal = document.getElementById('giftModal');
-  testGift = document.getElementById('testGift');
+  testData = document.getElementById('testData');
   closeGiftModal = document.getElementById('closeGiftModal');
   giftTitle = document.getElementById('giftTitle');
   giftLink = document.getElementById('giftLink');
@@ -156,7 +156,7 @@ window.onload = function instantiate() {
   giftDelete = document.getElementById('giftDelete');
   privateFriendListElements = [notificationBtn, giftCreationDate, dataListContainer, offlineModal, offlineSpan,
     notificationModal, notificationTitle, notificationInfo, noteSpan, inviteNote, listNote, addGift, giftModal,
-    testGift, closeGiftModal, giftTitle, giftLink, giftWhere, giftDescription, giftCreator, giftBought, giftBuy,
+    testData, closeGiftModal, giftTitle, giftLink, giftWhere, giftDescription, giftCreator, giftBought, giftBuy,
     giftDontBuy, giftEdit, giftDelete];
   getCurrentUser();
   commonInitialization();
@@ -180,11 +180,11 @@ window.onload = function instantiate() {
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
-      if (testGift == undefined){
+      if (testData == undefined){
         if(consoleOutput)
-          console.log("TestGift Missing. Loading Properly.");
+          console.log("TestData Missing. Loading Properly.");
       } else if (!giftListEmptyBool) {
-        testGift.innerHTML = "Loading... Please Wait...";
+        testData.innerHTML = "Loading... Please Wait...";
       }
       clearInterval(loadingTimer);
     }
@@ -351,7 +351,7 @@ window.onload = function instantiate() {
 
   function createGiftElement(description, link, received, title, key, where, uid, date, buyer, creator){
     try{
-      testGift.remove();
+      testData.remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
@@ -641,7 +641,7 @@ window.onload = function instantiate() {
 
     dataCounter--;
     if (dataCounter == 0){
-      deployGiftListEmptyNotification();
+      deployListEmptyNotification("No Gifts Found! Add Some Gifts With The Button Below!");
     }
   }
 
@@ -766,21 +766,4 @@ function updateMaintenanceLog(locationData, detailsData) {
     details: detailsData,
     time: timeData
   });
-}
-
-function deployGiftListEmptyNotification(){
-  try{
-    testGift.innerHTML = "No Gifts Found! Add Some Gifts With The Button Below!";
-  } catch(err){
-    if(consoleOutput)
-      console.log("Loading Element Missing, Creating A New One");
-    let liItem = document.createElement("LI");
-    liItem.id = "testGift";
-    liItem.className = "gift";
-    let textNode = document.createTextNode("No Gifts Found! Add Some Gifts With The Button Below!");
-    liItem.appendChild(textNode);
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-  }
-
-  clearInterval(offlineTimer);
 }
