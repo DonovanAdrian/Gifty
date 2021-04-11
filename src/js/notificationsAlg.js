@@ -33,7 +33,7 @@ let privateMessageModal;
 let notificationInfo;
 let notificationTitle;
 let noteSpan;
-let testGift;
+let testData;
 let closeNoteViewModal;
 let notificationViewTitle;
 let notificationViewDetails;
@@ -69,7 +69,7 @@ function getCurrentUser(){
     if(user.notifications == undefined) {
       if(localConsoleOutput)
         console.log("Notifications Not Found");
-      deployNotificationListEmptyNotification();
+      deployListEmptyNotification("No Notifications Found!");
       notificationListEmptyBool = true;
     } else {
       let notificationOverride = sessionStorage.getItem("notificationOverride");
@@ -80,7 +80,7 @@ function getCurrentUser(){
         if (notificationOverride == "notificationArrEmpty") {
           if(localConsoleOutput)
             console.log("Notifications Empty");
-          deployNotificationListEmptyNotification();
+          deployListEmptyNotification("No Notifications Found!");
           notificationListEmptyBool = true;
         } else {
           if(localConsoleOutput)
@@ -108,7 +108,7 @@ window.onload = function instantiate() {
   noteSpan = document.getElementById('closeNotification');
   privateMessageModal = document.getElementById('privateMessageModal');
   noteViewModal = document.getElementById('noteViewModal');
-  testGift = document.getElementById('testGift');
+  testData = document.getElementById('testData');
   closeNoteViewModal = document.getElementById('closeNoteViewModal');
   notificationViewTitle = document.getElementById('notificationViewTitle');
   notificationViewDetails = document.getElementById('notificationViewDetails');
@@ -119,7 +119,7 @@ window.onload = function instantiate() {
   sendMsg = document.getElementById('sendMsg');
   cancelMsg = document.getElementById('cancelMsg');
   notificationsElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
-    notificationTitle, notificationInfo, noteSpan, privateMessageModal, noteViewModal, testGift, closeNoteViewModal,
+    notificationTitle, notificationInfo, noteSpan, privateMessageModal, noteViewModal, testData, closeNoteViewModal,
     notificationViewTitle, notificationViewDetails, notificationViewPage, notificationViewDelete, privateMessageSpan,
     privateMessageInp, sendMsg, cancelMsg];
   getCurrentUser();
@@ -129,14 +129,14 @@ window.onload = function instantiate() {
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
-      if (testGift == undefined){
+      if (testData == undefined){
         if(consoleOutput)
-          console.log("TestGift Missing. Loading Properly.");
-      } else if (testGift.innerHTML == "No Notifications Found!"){
+          console.log("TestData Missing. Loading Properly.");
+      } else if (testData.innerHTML == "No Notifications Found!"){
         if(consoleOutput)
           console.log("No Notifications Found");
       } else if (!notificationListEmptyBool) {
-        testGift.innerHTML = "Loading... Please Wait...";
+        testData.innerHTML = "Loading... Please Wait...";
       }
       clearInterval(loadingTimer);
     }
@@ -225,7 +225,7 @@ window.onload = function instantiate() {
 
   function createNotificationElement(notificationString, notificationKey){
     try{
-      testGift.remove();
+      testData.remove();
     } catch (err) {}
 
     let friendUserData;
@@ -398,7 +398,7 @@ window.onload = function instantiate() {
 
   function changeNotificationElement(notificationString, notificationKey){
     try{
-      testGift.remove();
+      testData.remove();
     } catch (err) {}
 
     let friendUserData;
@@ -671,7 +671,7 @@ window.onload = function instantiate() {
 
     dataCounter--;
     if (dataCounter == 0){
-      deployNotificationListEmptyNotification();
+      deployListEmptyNotification("No Notifications Found!");
     }
   }
 
@@ -689,20 +689,3 @@ window.onload = function instantiate() {
     }
   }
 };
-
-function deployNotificationListEmptyNotification(){
-  try{
-    testGift.innerHTML = "No Notifications Found!";
-  } catch(err){
-    if(consoleOutput)
-      console.log("Loading Element Missing, Creating A New One");
-    let liItem = document.createElement("LI");
-    liItem.id = "testGift";
-    liItem.className = "gift";
-    let textNode = document.createTextNode("No Notifications Found!");
-    liItem.appendChild(textNode);
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-  }
-
-  clearInterval(offlineTimer);
-}
