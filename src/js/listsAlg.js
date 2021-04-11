@@ -42,7 +42,7 @@ let closeUserModal;
 let userModal;
 let secretSantaSignUp;
 let secretSantaData;
-let testGift;
+let testData;
 let userTitle;
 let publicListCount;
 let publicList;
@@ -66,10 +66,10 @@ function getCurrentUser(){
     if(localConsoleOutput)
       console.log("User: " + user.userName + " loaded in");
     if (user.friends == undefined) {
-      deployFriendListEmptyNotification();
+      deployListEmptyNotification("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
       friendListEmptyBool = true;
     } else if (user.friends.length == 0) {
-      deployFriendListEmptyNotification();
+      deployListEmptyNotification("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
       friendListEmptyBool = true;
     }
     if (user.invites == undefined) {
@@ -135,7 +135,7 @@ window.onload = function instantiate() {
   closeUserModal = document.getElementById('closeUserModal');
   userModal = document.getElementById('userModal');
   secretSantaSignUp = document.getElementById('secretSanta');
-  testGift = document.getElementById('testGift');
+  testData = document.getElementById('testData');
   userTitle = document.getElementById('userTitle');
   publicListCount = document.getElementById('publicListCount');
   publicList = document.getElementById('publicList');
@@ -148,7 +148,7 @@ window.onload = function instantiate() {
   cancelMsg = document.getElementById('cancelMsg');
   listsElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
     notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, secretSantaSignUp,
-    testGift, userTitle, publicListCount, publicList, privateListCount, privateList, sendPrivateMessage,
+    testData, userTitle, publicListCount, publicList, privateListCount, privateList, sendPrivateMessage,
     closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg];
   getCurrentUser();
   commonInitialization();
@@ -157,11 +157,11 @@ window.onload = function instantiate() {
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
-      if (testGift == undefined){
+      if (testData == undefined){
         if(consoleOutput)
-          console.log("TestGift Missing. Loading Properly.");
+          console.log("TestData Missing. Loading Properly.");
       } else if (!friendListEmptyBool) {
-        testGift.innerHTML = "Loading... Please Wait...";
+        testData.innerHTML = "Loading... Please Wait...";
       }
       clearInterval(loadingTimer);
     }
@@ -339,7 +339,7 @@ window.onload = function instantiate() {
 
     if(friendData != null){
       try {
-        testGift.remove();
+        testData.remove();
       } catch (err) {}
 
       let userUid = friendData.uid;
@@ -548,24 +548,7 @@ window.onload = function instantiate() {
 
     dataCounter--;
     if(dataCounter == 0) {
-      deployFriendListEmptyNotification();
+      deployListEmptyNotification("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
     }
   }
 };
-
-function deployFriendListEmptyNotification(){
-  try{
-    testGift.innerHTML = "No Friends Found! Invite Some Friends In The \"Invite\" Tab!";
-  } catch(err){
-    if(consoleOutput)
-      console.log("Loading Element Missing, Creating A New One");
-    let liItem = document.createElement("LI");
-    liItem.id = "testGift";
-    liItem.className = "gift";
-    let textNode = document.createTextNode("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
-    liItem.appendChild(textNode);
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-  }
-
-  clearInterval(offlineTimer);
-}
