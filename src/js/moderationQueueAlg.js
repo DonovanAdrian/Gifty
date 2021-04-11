@@ -27,7 +27,7 @@ let noteSpan;
 let inviteNote;
 let userInitial;
 let userInvites;
-let testGift;
+let testData;
 let userName;
 
 
@@ -64,9 +64,9 @@ window.onload = function instantiate() {
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
-  testGift = document.getElementById('testGift');
+  testData = document.getElementById('testData');
   moderationQueueElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
-    notificationTitle, notificationInfo, noteSpan, testGift];
+    notificationTitle, notificationInfo, noteSpan, testData];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(moderationQueueElements);
@@ -74,10 +74,10 @@ window.onload = function instantiate() {
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
-      if (testGift == undefined){
-        //console.log("TestGift Missing. Loading Properly.");
+      if (testData == undefined){
+        //console.log("TestData Missing. Loading Properly.");
       } else {
-        testGift.innerHTML = "Loading... Please Wait...";
+        testData.innerHTML = "Loading... Please Wait...";
       }
       clearInterval(loadingTimer);
     }
@@ -186,7 +186,7 @@ window.onload = function instantiate() {
   /*
   function createUserElement(userData){
     try{
-      testGift.remove();
+      testData.remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
@@ -455,24 +455,8 @@ window.onload = function instantiate() {
 
     dataCounter--;
     if (dataCounter == 0){
-      deployUserListEmptyNotification();
+      deployListEmptyNotification("No Queue Items Found!");
     }
   }
    */
 };
-
-function deployQueueListEmptyNotification(){
-  try{
-    testGift.innerHTML = "No Queue Items Found!";
-  } catch(err){
-    console.log("Loading Element Missing, Creating A New One");
-    let liItem = document.createElement("LI");
-    liItem.id = "TestGift";
-    liItem.className = "gift";
-    let textNode = document.createTextNode("No Queue Items Found!");
-    liItem.appendChild(textNode);
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-  }
-
-  clearInterval(offlineTimer);
-}
