@@ -8,7 +8,6 @@ let userAddUpdateElements = [];
 let listeningFirebaseRefs = [];
 let userNameArr = [];
 let userKeyArr = [];
-let userData = [];
 let userArr = [];
 
 let userNameBool = true;
@@ -102,7 +101,7 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-        userData.push(data.val());
+        userArr.push(data.val());
         userNameArr.push(data.val().userName);
         userKeyArr.push(data.key);
 
