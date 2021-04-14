@@ -11,6 +11,8 @@ let userArr = [];
 let config = {};
 
 let loginDisabledMsg = "";
+let newGiftyMessage = "Please create a new user before trying to log into Gifty! Click on the text below the login " +
+    "button and fill out the form to make a user.";
 
 let loginBool = false;
 let allowLogin = true;
@@ -306,8 +308,7 @@ function databaseQuery() {
       } else {
         loginBtn.innerHTML = "Create A New User First!";
         allowLogin = false;
-        loginDisabledMsg = "Please create a new user before trying to log into Gifty! Click on the text below the " +
-            "login button and fill out the form to make a user.";
+        loginDisabledMsg = newGiftyMessage;
       }
     });
   };
@@ -400,7 +401,7 @@ function updateMaintenanceLog(locationData, detailsData) {
 }
 
 function signUp(){
-  if(allowLogin)
+  if(allowLogin || loginDisabledMsg.includes(newGiftyMessage))
     window.location.href = "userAddUpdate.html";
   else
     alert(loginDisabledMsg);
