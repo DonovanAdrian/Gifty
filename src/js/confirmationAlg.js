@@ -74,7 +74,7 @@ function getCurrentUser(){
         console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
-        if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
+        if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
           notificationBtn.src = "img/bellNotificationOn.png";
           notificationBtn.onclick = function() {
             newNavigation(6);//Notifications
@@ -431,7 +431,7 @@ window.onload = function instantiate() {
     if(verifyDeleteBool){
       let note = findUIDItemInArr(uid, userArr);
       if(user.notifications != undefined)
-        for(let x = 0; i < user.notifications.length; x++)
+        for(let x = 0; x < user.notifications.length; x++)
           if(user.notifications[x].includes(userArr[note].name))
             if(user.notifications[x].split(",").length == 2)
               setReadNotification(x);
