@@ -113,7 +113,7 @@ function getCurrentUser(){
         console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
-        if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
+        if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
           notificationBtn.src = "img/bellNotificationOn.png";
           notificationBtn.onclick = function() {
             newNavigation(6);//Notifications
