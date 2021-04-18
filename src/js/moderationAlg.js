@@ -18,6 +18,7 @@ let moderationSet = 1;
 let dataCounter = 0;
 let onlineInt = 0;
 let loadingTimerInt = 0;
+let initialBtnInit = 0;
 
 let dataListContainer;
 let offlineSpan;
@@ -298,31 +299,37 @@ window.onload = function instantiate() {
           console.log("Secret Santa Snapshot Exists!");
           postRef.on('child_added', function (data) {
             console.log(data.key + " added");
-            if(data.key == "automaticUpdates" && secretBtnStates[1] != datal.val()) {
+            if(data.key == "automaticUpdates" && secretBtnStates[1] != data.val()) {
               secretBtnStates[1] = data.val();
               //closeModal(secretSantaModal);
               alert("Check to see if the buttons change");
               initializeSecretSantaBtns();
+            } else if (initialBtnInit <= 1) {
+              initializeSecretSantaBtns();
+              initialBtnInit++;
             }
 
-            if(data.key == "manuallyEnable" && secretBtnStates[0] != datal.val()) {
+            if(data.key == "manuallyEnable" && secretBtnStates[0] != data.val()) {
               secretBtnStates[0] = data.val();
               //closeModal(secretSantaModal);
               alert("Check to see if the buttons change");
               initializeSecretSantaBtns();
+            } else if (initialBtnInit <= 1) {
+              initializeSecretSantaBtns();
+              initialBtnInit++;
             }
           });
 
           postRef.on('child_changed', function (data) {
             console.log(data.key + " changed");
-            if(data.key == "automaticUpdates" && secretBtnStates[1] != datal.val()) {
+            if(data.key == "automaticUpdates" && secretBtnStates[1] != data.val()) {
               secretBtnStates[1] = data.val();
               //closeModal(secretSantaModal);
               alert("Check to see if the buttons change");
               initializeSecretSantaBtns();
             }
 
-            if(data.key == "manuallyEnable" && secretBtnStates[0] != datal.val()) {
+            if(data.key == "manuallyEnable" && secretBtnStates[0] != data.val()) {
               secretBtnStates[0] = data.val();
               //closeModal(secretSantaModal);
               alert("Check to see if the buttons change");
