@@ -202,7 +202,7 @@ window.onload = function instantiate() {
           deployListEmptyNotification("No Family Members Found!");
         }
       } else {
-        if (testData == undefined) {
+        if (testData == undefined || listEmptyNotified) {
           console.log("TestData Missing. Loading Properly.");
         } else {
           testData.innerHTML = "Loading... Please Wait...";
