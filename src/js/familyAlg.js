@@ -130,7 +130,7 @@ window.onload = function instantiate() {
           deployListEmptyNotification("No Families Found!");
         }
       } else {
-        if (testData == undefined) {
+        if (testData == undefined || listEmptyNotified) {
           console.log("TestData Missing. Loading Properly.");
         } else {
           testData.innerHTML = "Loading... Please Wait...";
@@ -223,25 +223,31 @@ window.onload = function instantiate() {
     };
 
     let fetchFamilies = function (postRef){
-      postRef.on('child_added', function (data) {
-        familyArr.push(data.val());
+      postRef.once("value").then(function(snapshot) {
+        if (snapshot.exists()) {
+          postRef.on('child_added', function (data) {
+            familyArr.push(data.val());
 
-        createFamilyElement(data.val());
-      });
+            createFamilyElement(data.val());
+          });
 
-      postRef.on('child_changed', function (data) {
-        let i = findUIDItemInArr(data.key, familyArr);
-        if(familyArr[i] != data.val() && i != -1) {
-          familyArr[i] = data.val();
-          changeFamilyElement(data.val());
-        }
-      });
+          postRef.on('child_changed', function (data) {
+            let i = findUIDItemInArr(data.key, familyArr);
+            if (familyArr[i] != data.val() && i != -1) {
+              familyArr[i] = data.val();
+              changeFamilyElement(data.val());
+            }
+          });
 
-      postRef.on('child_removed', function (data) {
-        let i = findUIDItemInArr(data.key, familyArr);
-        if(familyArr[i] != data.val() && i != -1) {
-          familyArr.splice(i, 1);
-          removeFamilyElement(data.key);
+          postRef.on('child_removed', function (data) {
+            let i = findUIDItemInArr(data.key, familyArr);
+            if (familyArr[i] != data.val() && i != -1) {
+              familyArr.splice(i, 1);
+              removeFamilyElement(data.key);
+            }
+          });
+        } else {
+          deployListEmptyNotification("No Families Found!");
         }
       });
     };
