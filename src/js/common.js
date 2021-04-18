@@ -6,12 +6,13 @@
 
 let areYouStillThereBool = false;
 let areYouStillThereInit = false;
+let consoleOutput = false;
+let listEmptyNotified = false;
 
 let currentModalOpen = "";
 
 let logoutReminder = 300;
 let logoutLimit = 900;
-let consoleOutput = false;
 
 let currentModalOpenObj = null;
 
@@ -399,6 +400,7 @@ function deployListEmptyNotification(dataItemText){
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
   }
+  listEmptyNotified = true;
 
   clearInterval(offlineTimer);
 }
