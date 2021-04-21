@@ -256,7 +256,7 @@ window.onload = function instantiate() {
             for(let z = 0; z < familyArr.length; z++) {
               if(familyArr[z].members != null)
                 for(let y = 0; y < familyArr[z].members.length; y++)
-                  if (familyArr[z].members[y] == userArr[i].uid)
+                  if (familyArr[z].members[y] == userArr[i].uid && familyArr[z].uid != familyData.uid)
                     familyMemberDuplicate = true;
             }
 
@@ -280,7 +280,7 @@ window.onload = function instantiate() {
             }
             break;
           }
-        if(!familyMemberFound) {
+        if(!familyMemberFound && !familyMemberDuplicate) {
           console.log("UserName Doesn't Exist!");
           addMemberInfo.innerHTML = "That user name does not exist, please try again!";
         }
