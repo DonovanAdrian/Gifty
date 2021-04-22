@@ -25,7 +25,7 @@
         - friendList
       - family *\(Moderator Role Only)*
         - familyUpdate *\(Moderator Role Only)*
-    - notifications *\(Accessible from almost all pages)*
+    - notifications *\(Accessible from **almost** all pages)*
 
 ## Welcome!
 This website is meant to be a gift list registry that 
