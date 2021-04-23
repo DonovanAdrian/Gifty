@@ -151,8 +151,10 @@ window.onload = function instantiate() {
 
   function generateAddFamilyModal(){
     addFamily.onclick = function() {
-      if(familyNameInp.value != "" || (familyNameInp.value.includes(" ") && isAlph(familyNameInp.value.charAt(0))))
+      if(familyNameInp.value != "" || (familyNameInp.value.includes(" ") && isAlph(familyNameInp.value.charAt(0)))) {
+        familyNameInp.value = "";
         addFamilyToDB(familyNameInp.value);
+      }
     };
 
     cancelFamily.onclick = function() {
