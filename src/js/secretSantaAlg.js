@@ -22,6 +22,7 @@ let globalApology = "Unfortunately the Secret Santa for this year has come to an
     " a moderator for assistance";
 
 let ignoreFamilySetTimer;
+let textCyclerInterval;
 
 function checkSecretSanta(autoUpdateBool){
   if(autoUpdateBool) {
@@ -248,7 +249,7 @@ function cycleSecretSantaAutoBtnTxt() {
   if (consoleOutput)
     console.log("Text Cycle Feature Active");
 
-  setInterval(function(){
+  textCyclerInterval = setInterval(function(){
     textCycler = textCycler + 1000;
     if(textCycler >= 3000){
       textCycler = 0;
@@ -293,6 +294,7 @@ function secretSantaButtonManager(buttonPressed) {
       break;
     case "autoF":
       updateSecretSantaToDB("auto", false);
+      clearInterval(textCyclerInterval);
       break;
     default:
       if(consoleOutput)
