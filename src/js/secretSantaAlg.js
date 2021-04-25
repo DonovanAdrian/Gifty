@@ -220,6 +220,7 @@ function initializeSecretSantaBtns() {
   }
 
   if (!secretBtnStates[1]) {
+    clearInterval(textCyclerInterval);
     secretSantaAutoBtn.innerHTML = "Enable Auto Control";
     secretSantaAutoBtn.onclick = function () {
       secretSantaButtonManager("autoT");
