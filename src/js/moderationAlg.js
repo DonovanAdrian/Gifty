@@ -301,8 +301,6 @@ window.onload = function instantiate() {
             console.log(data.key + " added");
             if(data.key == "automaticUpdates" && secretBtnStates[1] != data.val()) {
               secretBtnStates[1] = data.val();
-              //closeModal(secretSantaModal);
-              alert("Check to see if the buttons change");
               initializeSecretSantaBtns();
             } else if (initialBtnInit <= 1) {
               initializeSecretSantaBtns();
@@ -311,8 +309,6 @@ window.onload = function instantiate() {
 
             if(data.key == "manuallyEnable" && secretBtnStates[0] != data.val()) {
               secretBtnStates[0] = data.val();
-              //closeModal(secretSantaModal);
-              alert("Check to see if the buttons change");
               initializeSecretSantaBtns();
             } else if (initialBtnInit <= 1) {
               initializeSecretSantaBtns();
@@ -324,15 +320,11 @@ window.onload = function instantiate() {
             console.log(data.key + " changed");
             if(data.key == "automaticUpdates" && secretBtnStates[1] != data.val()) {
               secretBtnStates[1] = data.val();
-              //closeModal(secretSantaModal);
-              alert("Check to see if the buttons change");
               initializeSecretSantaBtns();
             }
 
             if(data.key == "manuallyEnable" && secretBtnStates[0] != data.val()) {
               secretBtnStates[0] = data.val();
-              //closeModal(secretSantaModal);
-              alert("Check to see if the buttons change");
               initializeSecretSantaBtns();
             }
           });
@@ -343,8 +335,6 @@ window.onload = function instantiate() {
               secretBtnStates[1] = data.val();
             if(data.key == "manuallyEnable")
               secretBtnStates[0] = data.val();
-            //closeModal(secretSantaModal);
-            alert("Check to see if the buttons change");
             initializeSecretSantaBtns();
           });
         } else {
