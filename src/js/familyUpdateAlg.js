@@ -267,21 +267,21 @@ window.onload = function instantiate() {
                   generateConfirmDataModal(userArr[i].name, "Confirm Member Name Below",
                       "user", userArr[i].uid);
                 } else {
-                  console.log("User is already in this family!");
+                  console.log("User is already in THIS family!");
                   addMemberInfo.innerHTML = "That user is already added to this family, please try another!";
                 }
               else
                 generateConfirmDataModal(userArr[i].name, "Confirm Member Name Below",
                     "user", userArr[i].uid);
             } else {
-              console.log("User is already in another family!");
+              console.log("User is already in ANOTHER family!");
               addMemberInfo.innerHTML = "A user can only be in one family at a time! " +
                   "Link the two families OR remove this user from the other family first.";
             }
             break;
           }
         if(!familyMemberFound && !familyMemberDuplicate) {
-          console.log("UserName Doesn't Exist!");
+          console.log("Username doesn't exist!");
           addMemberInfo.innerHTML = "That user name does not exist, please try again!";
         }
       }
