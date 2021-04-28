@@ -6,13 +6,13 @@
 
 let areYouStillThereBool = false;
 let areYouStillThereInit = false;
-let consoleOutput = false;
-let listEmptyNotified = false;
 
 let currentModalOpen = "";
+let currentTitle;
 
 let logoutReminder = 300;
 let logoutLimit = 900;
+let consoleOutput = false;
 
 let currentModalOpenObj = null;
 
@@ -147,6 +147,7 @@ function commonInitialization(){
 
 function loginTimer(){
   let loginNum = 0;
+  currentTitle = document.title;
   if (user.moderatorInt == 1)
     logoutLimit = 1800;
   if(consoleOutput)
@@ -171,12 +172,14 @@ function loginTimer(){
         console.log("User Inactive");
       areYouStillThereNote(loginNum);
       areYouStillThereBool = true;
+      document.title = "Where'd You Go?";
     }
     function resetTimer() {
       if (areYouStillThereBool) {
         if(consoleOutput)
           console.log("User Active");
         ohThereYouAre();
+        document.title = currentTitle;
       }
       loginNum = 0;
     }
@@ -206,12 +209,14 @@ function areYouStillThereNote(timeElapsed){
     closeModal(notificationModal);
     areYouStillThereBool = false;
     areYouStillThereInit = false;
+    document.title = currentTitle;
   };
 }
 
 function ohThereYouAre(){
   notificationInfo.innerHTML = "Welcome back, " + user.name;
   notificationTitle.innerHTML = "Oh, There You Are!";
+  document.title = "Oh, There You Are!";
 
   let nowJ = 0;
   let j = setInterval(function(){
@@ -220,6 +225,7 @@ function ohThereYouAre(){
       closeModal(notificationModal);
       areYouStillThereBool = false;
       areYouStillThereInit = false;
+      document.title = currentTitle;
       clearInterval(j);
     }
   }, 1000);
@@ -230,6 +236,8 @@ function ohThereYouAre(){
       closeModal(notificationModal);
       areYouStillThereBool = false;
       areYouStillThereInit = false;
+      document.title = currentTitle;
+      clearInterval(j);
     }
   };
 }
@@ -400,7 +408,6 @@ function deployListEmptyNotification(dataItemText){
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
   }
-  listEmptyNotified = true;
 
   clearInterval(offlineTimer);
 }
