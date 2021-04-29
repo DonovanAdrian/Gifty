@@ -373,14 +373,10 @@ function findUIDInString(input){
     }
     if (beginSearch && !skipThisChar) {
       uidBuilder = uidBuilder + input.charAt(i);
-      if (consoleOutput)
-        console.log("Building PotentialUID... " + uidBuilder);
     }
     skipThisChar = false;
   }
   potentialUID = uidBuilder;
-  if (consoleOutput)
-    console.log("Is this your card? " + potentialUID);
   return potentialUID;
 }
 
