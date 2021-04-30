@@ -251,16 +251,19 @@ window.onload = function instantiate() {
     addFamilyMember.onclick = function() {
       if(familyMemberInp.value != "" || (familyMemberInp.value.includes(" ") &&
           isAlph(familyMemberInp.value.charAt(0)))) {
-        for (let i = 0; i < userArr.length; i++)
-          if(familyMemberInp.value.toLowerCase() == userArr[i].userName.toLowerCase()) {
-            for(let z = 0; z < familyArr.length; z++) {
-              if(familyArr[z].members != null)
-                for(let y = 0; y < familyArr[z].members.length; y++)
-                  if (familyArr[z].members[y] == userArr[i].uid && familyArr[z].uid != familyData.uid)
+        for (let i = 0; i < userArr.length; i++) {
+          if (familyMemberInp.value.toLowerCase() == userArr[i].userName.toLowerCase()) {
+            for (let z = 0; z < familyArr.length; z++) {
+              if (familyArr[z].members != null) {
+                for (let y = 0; y < familyArr[z].members.length; y++) {
+                  if (familyArr[z].members[y] == userArr[i].uid && familyArr[z].uid != familyData.uid) {
                     familyMemberDuplicate = true;
+                  }
+                }
+              }
             }
 
-            if(!familyMemberDuplicate) {
+            if (!familyMemberDuplicate) {
               familyMemberFound = true;
               if (familyData.members != null)
                 if (!familyData.members.includes(userArr[i].uid)) {
@@ -280,6 +283,7 @@ window.onload = function instantiate() {
             }
             break;
           }
+        }
         if(!familyMemberFound && !familyMemberDuplicate) {
           console.log("Username doesn't exist!");
           addMemberInfo.innerHTML = "That user name does not exist, please try again!";
