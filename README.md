@@ -29,9 +29,23 @@
   
 ## Code Structure
 
-I plan to add a tree here that uses the above structure 
-tree to show which code is used in what page... Not sure how
-it'll turn out!
+- indexAlg, commonAlg, passOp
+  - userAddUpdateAlg, commonAlg, passOp
+    - homeAlg, commonAlg
+      - boughtGiftAlg, commonAlg
+      - giftAddUpdateAlg, commonAlg
+    - listsAlg, commonAlg, secretSantaAlg
+      - friendListAlg, commonAlg
+    - invitesAlg, commonAlg
+      - confirmationAlg, commonAlg
+    - settingsAlg, commonAlg
+      - faqAlg, commonAlg
+      - moderationQueueAlg, commonAlg
+      - moderationAlg, commonAlg, secretSantaAlg, passOp
+        - friendListAlg, commonAlg
+      - familyAlg, commonAlg
+          - familyUpdateAlg, commonAlg
+    - notificationAlg, commonAlg
 
 ## Welcome!
 This website is meant to be a gift list registry that 
