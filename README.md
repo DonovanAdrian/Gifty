@@ -26,6 +26,12 @@
       - family *\(Moderator Role Only)*
         - familyUpdate *\(Moderator Role Only)*
     - notifications *\(Accessible from **almost** all pages)*
+  
+## Code Structure
+
+I plan to add a tree here that uses the above structure 
+tree to show which code is used in what page... Not sure how
+it'll turn out!
 
 ## Welcome!
 This website is meant to be a gift list registry that 
