@@ -355,10 +355,13 @@ window.onload = function instantiate() {
               sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
               newNavigation(9);//FriendList
             };
-            if (friendData.giftList.length == 1)
+            if (friendData.giftList.length == 1) {
               publicListCount.innerHTML = friendData.name + " has 1 gift on their public list";
-            else
+              flashGiftNumbers(1, publicListCount);
+            } else {
               publicListCount.innerHTML = friendData.name + " has " + friendData.giftList.length + " gifts on their public list";
+              flashGiftNumbers(friendData.giftList.length, publicListCount);
+            }
           } else {
             publicList.innerHTML = "Public List Empty";
             publicList.onclick = function () {};
@@ -371,10 +374,13 @@ window.onload = function instantiate() {
         }
         if(friendData.privateList != undefined){
           if(friendData.privateList.length > 0) {
-            if (friendData.privateList.length == 1)
+            if (friendData.privateList.length == 1) {
               privateListCount.innerHTML = friendData.name + " has 1 gift on their private list";
-            else
+              flashGiftNumbers(1, privateListCount);
+            } else {
               privateListCount.innerHTML = friendData.name + " has " + friendData.privateList.length + " gifts on their private list";
+              flashGiftNumbers(friendData.privateList.length, privateListCount);
+            }
           } else {
             privateListCount.innerHTML = friendData.name + " has 0 gifts on their private list";
           }
@@ -436,10 +442,13 @@ window.onload = function instantiate() {
               sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
               newNavigation(9);//FriendList
             };
-            if (friendData.giftList.length == 1)
+            if (friendData.giftList.length == 1) {
               publicListCount.innerHTML = friendData.name + " has 1 gift on their public list";
-            else
+              flashGiftNumbers(1, publicListCount);
+            } else {
               publicListCount.innerHTML = friendData.name + " has " + friendData.giftList.length + " gifts on their public list";
+              flashGiftNumbers(friendData.giftList.length, publicListCount);
+            }
           } else {
             publicList.innerHTML = "Public List Empty";
             publicList.onclick = function () {};
@@ -452,10 +461,13 @@ window.onload = function instantiate() {
         }
         if(friendData.privateList != undefined){
           if(friendData.privateList.length > 0) {
-            if (friendData.privateList.length == 1)
+            if (friendData.privateList.length == 1) {
               privateListCount.innerHTML = friendData.name + " has 1 gift on their private list";
-            else
+              flashGiftNumbers(1, privateListCount);
+            } else {
               privateListCount.innerHTML = friendData.name + " has " + friendData.privateList.length + " gifts on their private list";
+              flashGiftNumbers(friendData.privateList.length, privateListCount);
+            }
           } else {
             privateListCount.innerHTML = friendData.name + " has 0 gifts on their private list";
           }
@@ -487,6 +499,10 @@ window.onload = function instantiate() {
         }
       };
     }
+  }
+
+  function flashGiftNumbers() {
+
   }
 
   function generatePrivateMessageDialog(userData) {
