@@ -9,6 +9,8 @@ let inviteArr = [];
 let friendArr = [];
 let listeningFirebaseRefs = [];
 let userArr = [];
+let giftButtonAlternatorsA = [0, 0];
+let giftButtonAlternatorsB = [0, 0];
 
 let readNotificationsBool = false;
 let friendListEmptyBool = false;
@@ -53,6 +55,8 @@ let closePrivateMessageModal;
 let privateMessageInp;
 let sendMsg;
 let cancelMsg;
+let publicListAlternator;
+let privateListAlternator;
 
 
 
@@ -348,6 +352,8 @@ window.onload = function instantiate() {
       liItem.id = "user" + userUid;
       liItem.className = "gift";
       liItem.onclick = function () {
+        clearInterval(privateListAlternator);
+        clearInterval(publicListAlternator);
         userTitle.innerHTML = friendData.name;
         if(friendData.giftList != undefined){
           if(friendData.giftList.length > 0) {
@@ -355,38 +361,21 @@ window.onload = function instantiate() {
               sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
               newNavigation(9);//FriendList
             };
-            if (friendData.giftList.length == 1) {
-              publicListCount.innerHTML = friendData.name + " has 1 gift on their public list";
-              flashGiftNumbers(1, publicListCount);
-            } else {
-              publicListCount.innerHTML = friendData.name + " has " + friendData.giftList.length + " gifts on their public list";
-              flashGiftNumbers(friendData.giftList.length, publicListCount);
-            }
+            flashGiftNumbers(friendData.giftList.length, publicList, "Public");
           } else {
             publicList.innerHTML = "Public List Empty";
             publicList.onclick = function () {};
-            publicListCount.innerHTML = friendData.name + " has 0 gifts on their public list";
           }
         } else {
           publicList.innerHTML = "Public List Empty";
           publicList.onclick = function () {};
-          publicListCount.innerHTML = friendData.name + " has 0 gifts on their public list";
         }
-        if(friendData.privateList != undefined){
-          if(friendData.privateList.length > 0) {
-            if (friendData.privateList.length == 1) {
-              privateListCount.innerHTML = friendData.name + " has 1 gift on their private list";
-              flashGiftNumbers(1, privateListCount);
-            } else {
-              privateListCount.innerHTML = friendData.name + " has " + friendData.privateList.length + " gifts on their private list";
-              flashGiftNumbers(friendData.privateList.length, privateListCount);
-            }
-          } else {
-            privateListCount.innerHTML = friendData.name + " has 0 gifts on their private list";
-          }
-        } else {
-          privateListCount.innerHTML = friendData.name + " has 0 gifts on their private list";
-        }
+
+        privateList.innerHTML = "View Private Gift List";
+        if(friendData.privateList != undefined)
+          flashGiftNumbers(friendData.privateList.length, privateList, "Private");
+        else
+          flashGiftNumbers(0, privateList, "Private");
         privateList.onclick = function() {
           sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
           newNavigation(10);//PrivateFriendList
@@ -435,6 +424,8 @@ window.onload = function instantiate() {
       editItem.innerHTML = friendName;
       editItem.className = "gift";
       editItem.onclick = function () {
+        clearInterval(privateListAlternator);
+        clearInterval(publicListAlternator);
         userTitle.innerHTML = friendData.name;
         if(friendData.giftList != undefined){
           if(friendData.giftList.length > 0) {
@@ -442,38 +433,21 @@ window.onload = function instantiate() {
               sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
               newNavigation(9);//FriendList
             };
-            if (friendData.giftList.length == 1) {
-              publicListCount.innerHTML = friendData.name + " has 1 gift on their public list";
-              flashGiftNumbers(1, publicListCount);
-            } else {
-              publicListCount.innerHTML = friendData.name + " has " + friendData.giftList.length + " gifts on their public list";
-              flashGiftNumbers(friendData.giftList.length, publicListCount);
-            }
+            flashGiftNumbers(friendData.giftList.length, publicListCount, "Public");
           } else {
             publicList.innerHTML = "Public List Empty";
             publicList.onclick = function () {};
-            publicListCount.innerHTML = friendData.name + " has 0 gifts on their public list";
           }
         } else {
           publicList.innerHTML = "Public List Empty";
           publicList.onclick = function () {};
-          publicListCount.innerHTML = friendData.name + " has 0 gifts on their public list";
         }
-        if(friendData.privateList != undefined){
-          if(friendData.privateList.length > 0) {
-            if (friendData.privateList.length == 1) {
-              privateListCount.innerHTML = friendData.name + " has 1 gift on their private list";
-              flashGiftNumbers(1, privateListCount);
-            } else {
-              privateListCount.innerHTML = friendData.name + " has " + friendData.privateList.length + " gifts on their private list";
-              flashGiftNumbers(friendData.privateList.length, privateListCount);
-            }
-          } else {
-            privateListCount.innerHTML = friendData.name + " has 0 gifts on their private list";
-          }
-        } else {
-          privateListCount.innerHTML = friendData.name + " has 0 gifts on their private list";
-        }
+
+        privateList.innerHTML = "View Private Gift List";
+        if(friendData.privateList != undefined)
+          flashGiftNumbers(friendData.privateList.length, privateList, "Private");
+        else
+          flashGiftNumbers(0, privateList, "Private");
         privateList.onclick = function() {
           sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
           newNavigation(10);//PrivateFriendList
@@ -489,20 +463,62 @@ window.onload = function instantiate() {
         //close on close
         closeUserModal.onclick = function() {
           closeModal(userModal);
+          clearInterval(privateListAlternator);
+          clearInterval(publicListAlternator);
         };
 
         //close on click
         window.onclick = function(event) {
           if (event.target == userModal) {
             closeModal(userModal);
+            clearInterval(privateListAlternator);
+            clearInterval(publicListAlternator);
           }
         }
       };
     }
   }
 
-  function flashGiftNumbers() {
+  function flashGiftNumbers(giftsNum, giftsBtn, giftsIndicator) {
+    let giftString;
+    let giftAlternateText = "View " + giftsIndicator + " Gift List";
 
+    if (giftsNum == 0)
+      giftsNum = "No"; //Absolutely glorious... No?
+
+    if (giftsNum == 1)
+      giftString = "There Is 1 " + giftsIndicator + " Gift";
+    else
+      giftString = "There Are " + giftsNum + " " + giftsIndicator + " Gifts";
+    switch (giftsIndicator) {
+      case "Private":
+        privateListAlternator = setInterval(function(){
+          setButtonText(giftString, giftsBtn, giftButtonAlternatorsA, giftAlternateText);
+        }, 1000);
+        break;
+      case "Public":
+        publicListAlternator = setInterval(function(){
+          setButtonText(giftString, giftsBtn, giftButtonAlternatorsB, giftAlternateText);
+        }, 1000);
+        break;
+      default:
+        console.log("Whoops!");
+        break;
+    }
+  }
+
+  function setButtonText(giftString, giftsBtn, alternator, altString) {
+    alternator[0] = alternator[0] + 1000;
+    if(alternator[0] >= 3000) {
+      alternator[0] = 0;
+      if (alternator[1] == 0) {
+        alternator[1]++;
+        giftsBtn.innerHTML = giftString;
+      } else {
+        alternator[1] = 0;
+        giftsBtn.innerHTML = altString;
+      }
+    }
   }
 
   function generatePrivateMessageDialog(userData) {
