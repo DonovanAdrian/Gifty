@@ -296,6 +296,10 @@ function secretSantaButtonManager(buttonPressed) {
     case "autoF":
       updateSecretSantaToDB("auto", false);
       clearInterval(textCyclerInterval);
+      secretSantaAutoBtn.innerHTML = "Enable Auto Control";
+      secretSantaAutoBtn.onclick = function () {
+        secretSantaButtonManager("autoT");
+      };
       break;
     default:
       if(consoleOutput)
