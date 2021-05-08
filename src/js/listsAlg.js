@@ -252,6 +252,14 @@ window.onload = function instantiate() {
         }
 
         if(data.key == user.uid){
+          if (user.secretSanta != data.val().secretSanta) {
+            if (data.val().secretSanta == 1) {
+              secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
+            } else {
+              secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
+            }
+          }
+
           user = data.val();
           if(consoleOutput)
             console.log("User Updated: 2");
