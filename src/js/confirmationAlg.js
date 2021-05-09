@@ -16,6 +16,7 @@ let inviteListEmptyBool = false;
 let dataCounter = 0;
 let onlineInt = 0;
 let loadingTimerInt = 0;
+let deleteInviteRun = 0;
 
 let testData;
 let dataListContainer;
@@ -198,8 +199,12 @@ window.onload = function instantiate() {
 
     let fetchFriends = function (postRef) {
       postRef.on('child_added', function (data) {
-        if (!friendArr.includes(data.val()))
+        if (!friendArr.includes(data.val())) {
           friendArr.push(data.val());
+        }
+        if (!user.friends.includes(data.val())) {
+          user.friends.push(data.val());
+        }
       });
 
       postRef.on('child_changed', function (data) {
@@ -208,6 +213,12 @@ window.onload = function instantiate() {
         friendArr[data.key] = data.val();
         if(consoleOutput)
           console.log(friendArr);
+
+        if(consoleOutput)
+          console.log(user.friends);
+        user.friends[data.key] = data.val();
+        if(consoleOutput)
+          console.log(user.friends);
       });
 
       postRef.on('child_removed', function (data) {
@@ -216,6 +227,12 @@ window.onload = function instantiate() {
         friendArr.splice(data.key, 1);
         if(consoleOutput)
           console.log(friendArr);
+
+        if(consoleOutput)
+          console.log(user.friends);
+        user.friends.splice(data.key, 1);
+        if(consoleOutput)
+          console.log(user.friends);
       });
     };
 
@@ -365,64 +382,65 @@ window.onload = function instantiate() {
   }
 
   function addInvite(inviteData){
+    let finalInviteData;
+    let friendFriendArr;
+    let userFriendArr;
+
     if(consoleOutput) {
       console.log("Adding " + inviteData.uid);
       console.log(friendArr);
     }
 
-    let friendFriendArr;
-    if(inviteData.friends == undefined || inviteData.friends == null) {
+    if(inviteData.friends == undefined || inviteData.friends == null || inviteData.friends.length == 0) {
       friendFriendArr = [];
     } else {
       friendFriendArr = inviteData.friends;
     }
 
     friendFriendArr.push(user.uid);
-    firebase.database().ref("users/" + inviteData.uid).update({
-      friends: friendFriendArr
-    });
 
-
-    if (friendArr == undefined || friendArr == null || friendArr.length == 0){
-      friendArr = [];
-      friendArr.push(inviteData.uid);
-      user.friends = [];
-      user.friends.push(inviteData.uid);
-    } else {
-      friendArr.push(inviteData.uid);
-      user.friends.push(inviteData.uid);
+    if (!friendFriendArr.includes(user.uid)) {
+      alert("The invite could not be added to your friend list! Please try again...");
+      return;
     }
-    firebase.database().ref("users/" + user.uid).update({
-      friends: friendArr
-    });
+
+    if (friendArr == undefined || friendArr == null || friendArr.length == 0) {
+      userFriendArr = [];
+    } else {
+      userFriendArr = friendArr;
+    }
+
+    userFriendArr.push(inviteData.uid);
+
+    if (!userFriendArr.includes(inviteData.uid)) {
+      alert("The invite could not be added to your friend list! Please try again...");
+      return;
+    }
 
     if(consoleOutput)
-      console.log(friendArr);
+      console.log(userFriendArr);
 
-    deleteInvite(inviteData.uid);
+    finalInviteData = [friendFriendArr, userFriendArr];
+
+    deleteInvite(inviteData.uid, finalInviteData);
   }
 
-  function deleteInvite(uid) {
+  function deleteInvite(uid, finalInviteData) {
     let verifyDeleteBool = true;
-    let toDelete = -1;
+    let toDelete;
 
     if(consoleOutput)
+      console.log(inviteArr);
+    if(consoleOutput)
       console.log("Deleting Invite " + uid);
-    for (let i = 0; i < inviteArr.length; i++){
-      if(inviteArr[i] == uid) {
-        toDelete = i;
-        break;
-      }
-    }
+
+    toDelete = findUIDItemInArr(uid, inviteArr);
 
     if(toDelete != -1) {
       inviteArr.splice(toDelete, 1);
 
-      for (let i = 0; i < inviteArr.length; i++) {
-        if (inviteArr[i] == uid) {
-          verifyDeleteBool = false;
-          break;
-        }
+      if (inviteArr.includes(uid)) {
+        verifyDeleteBool = false;
       }
     } else {
       verifyDeleteBool = false;
@@ -436,13 +454,41 @@ window.onload = function instantiate() {
             if(user.notifications[x].split(",").length == 2)
               setReadNotification(x);
 
-      user.invites = inviteArr;
+      if(consoleOutput) {
+        console.log(inviteArr);
+        console.log("Updating Invites To DB...");
+      }
       firebase.database().ref("users/" + user.uid).update({
         invites: inviteArr
       });
 
-      if(inviteArr.length == 0)
+      if(consoleOutput)
+        console.log("Updating Friend's Friend List To DB...");
+      firebase.database().ref("users/" + uid).update({
+        friends: finalInviteData[0]
+      });
+
+      if(consoleOutput)
+        console.log("Updating User's Friend List To DB...");
+      firebase.database().ref("users/" + user.uid).update({
+        friends: finalInviteData[1]
+      });
+
+      user.invites = inviteArr;
+      user.friends = finalInviteData[1];
+
+      if(inviteArr.length == 0) {
         newNavigation(4);//Invites
+      }
+    } else {
+      if (deleteInviteRun < 3) {
+        deleteInviteRun++;
+        deleteInvite(uid, finalInviteData);
+      } else {
+        deleteInviteRun = 0;
+
+        alert("The invite could not be added to your friend list! Please try again...");
+      }
     }
   }
 
