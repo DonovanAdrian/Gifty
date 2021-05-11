@@ -405,20 +405,25 @@ function createSecretSantaNames(){//----------------------------****************
   let assignedFamilyBool = false;
 
   for (let i = 0; i < userArr.length; i++) {
-    if (userArr[i].secretSanta != null)
+    if (userArr[i].secretSanta != null) {
       if (userArr[i].secretSanta == 1) {
         tempUserArr.push(userArr[i]);
         for (let i = 0; i < familyArr.length; i++) {
-          if(familyArr[i].members != null)
-            if(familyArr[i].members.includes(userArr[i].uid)) {
-              if(!optInFamilyArr.includes(familyArr[i].uid)) {
+          if (familyArr[i].members != null) {
+            if (familyArr[i].members.includes(userArr[i].uid)) {
+              if (!optInFamilyArr.includes(familyArr[i].uid)) {
                 console.log("Adding " + familyArr[i].uid);
-                optInFamilyArr.push(familyArr[i]);
+                optInFamilyArr.push(familyArr[i].uid);
               }
             }
+          }
         }
       }
+    }
   }
+
+  if (consoleOutput)
+    console.log("Secret Santa Families Initialized!");
 
   for (let i = 0; i < connectionsArr.length; i++) {
     for (let a = 0; a < familyArr.length; i++) {
@@ -452,6 +457,9 @@ function createSecretSantaNames(){//----------------------------****************
 
     connectionFamilySet = [];
   }
+
+  if (consoleOutput)
+    console.log("Secret Santa Names Assigned!");
 
   //Remove console logs once finished
   console.log("Performing Secret Santa Checks...");
