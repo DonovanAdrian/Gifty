@@ -16,7 +16,7 @@ let secretSantaPageName = "moderation";
 
 let moderationSet = 1;
 let dataCounter = 0;
-let onlineInt = 0;
+let globalNoteInt = 0;
 let loadingTimerInt = 0;
 let initialBtnInit = 0;
 
@@ -145,8 +145,7 @@ window.onload = function instantiate() {
     loadingTimerInt = loadingTimerInt + 1000;
     if(loadingTimerInt >= 2000){
       if (testData == undefined){
-        if(consoleOutput)
-          console.log("TestData Missing. Loading Properly.");
+        console.log("TestData Missing. Loading Properly.");
       } else {
         testData.innerHTML = "Loading... Please Wait...";
       }
@@ -352,22 +351,20 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         createUserElement(data.val());
 
-        if(onlineInt == 0) {
-          onlineInt = 1;
+        if(globalNoteInt == 0) {
+          globalNoteInt = 1;
           initializeGlobalNotification();
         }
 
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput)
-            console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == user.uid){
           user = data.val();
-          if(consoleOutput)
-            console.log("User Updated: 1");
+          console.log("User Updated: 1");
         }
       });
 
@@ -376,15 +373,13 @@ window.onload = function instantiate() {
 
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput)
-            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == user.uid){
           user = data.val();
-          if(consoleOutput)
-            console.log("User Updated: 2");
+          console.log("User Updated: 2");
         }
 
         if(currentModalOpen == data.key) {//Moved currentModalOpen reference to common.js
@@ -397,8 +392,7 @@ window.onload = function instantiate() {
 
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput)
-            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
 
@@ -416,23 +410,18 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        if(consoleOutput)
-          console.log(inviteArr);
+        console.log(inviteArr);
         inviteArr[data.key] = data.val();
-        if(consoleOutput)
-          console.log(inviteArr);
+        console.log(inviteArr);
       });
 
       postRef.on('child_removed', function (data) {
-        if(consoleOutput)
-          console.log(inviteArr);
+        console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        if(consoleOutput)
-          console.log(inviteArr);
+        console.log(inviteArr);
 
         if (inviteArr.length == 0) {
-          if(consoleOutput)
-            console.log("Invite List Removed");
+          console.log("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -484,10 +473,19 @@ window.onload = function instantiate() {
       userPassword.innerHTML = "Click On Me To View Password";
 
       if(userData.secretSanta != undefined) {
-        if (userData.secretSanta == 0)
+        if (userData.secretSanta == 0) {
           userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
-        else
+        } else {
           userSecretSanta.innerHTML = "This User Is Signed Up For Secret Santa";
+          if (userData.secretSantaName != undefined) {
+            if (userData.secretSantaName != "") {
+              userSecretSanta.innerHTML = "Click Here To View Secret Santa Assignment";
+              userSecretSanta.onclick = function(){
+                userSecretSanta.innerHTML = userData.secretSantaName;
+              }
+            }
+          }
+        }
       } else {
         userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
       }
@@ -550,8 +548,7 @@ window.onload = function instantiate() {
         moderatorOp.onclick = function() {
           if(userData.userName == user.userName){
             alert("You cannot adjust your own role");
-            if(consoleOutput)
-              console.log("...How'd you get here...?");
+            console.log("...How'd you get here...?");
           } else {
             alert("Granted role for: " + userData.userName);
             firebase.database().ref("users/" + userData.uid).update({
@@ -623,10 +620,19 @@ window.onload = function instantiate() {
       userPassword.innerHTML = "Click On Me To View Password";
 
       if(userData.secretSanta != undefined) {
-        if (userData.secretSanta == 0)
+        if (userData.secretSanta == 0) {
           userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
-        else
+        } else {
           userSecretSanta.innerHTML = "This User Is Signed Up For Secret Santa";
+          if (userData.secretSantaName != undefined) {
+            if (userData.secretSantaName != "") {
+              userSecretSanta.innerHTML = "Click Here To View Secret Santa Assignment";
+              userSecretSanta.onclick = function(){
+                userSecretSanta.innerHTML = userData.secretSantaName;
+              }
+            }
+          }
+        }
       } else {
         userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
       }
@@ -685,8 +691,7 @@ window.onload = function instantiate() {
         moderatorOp.onclick = function() {
           if(userData.userName == user.userName){
             alert("You cannot adjust your own role");
-            if(consoleOutput)
-              console.log("...How'd you get here...?");
+            console.log("...How'd you get here...?");
           } else {
             alert("Granted role for: " + userData.userName);
             firebase.database().ref("users/" + userData.uid).update({
