@@ -14,6 +14,14 @@ let dataCounter = 0;
 let loadingTimerInt = 0;
 
 let dataListContainer;
+let ticketModal;
+let closeTicketModal;
+let ticketTitle;
+let ticketUID;
+let ticketDetails;
+let ticketLocation;
+let ticketTime;
+let deleteTicket;
 let offlineSpan;
 let offlineModal;
 let user;
@@ -26,6 +34,7 @@ let noteSpan;
 let inviteNote;
 let userInitial;
 let userInvites;
+let moderationTickets;
 let testData;
 let userName;
 
@@ -56,6 +65,14 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   dataListContainer = document.getElementById('dataListContainer');
+  ticketModal = document.getElementById('ticketModal');
+  closeTicketModal = document.getElementById('closeTicketModal');
+  ticketTitle = document.getElementById('ticketTitle');
+  ticketUID = document.getElementById('ticketUID');
+  ticketDetails = document.getElementById('ticketDetails');
+  ticketLocation = document.getElementById('ticketLocation');
+  ticketTime = document.getElementById('ticketTime');
+  deleteTicket = document.getElementById('deleteTicket');
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
   inviteNote = document.getElementById('inviteNote');
@@ -90,6 +107,7 @@ window.onload = function instantiate() {
 
     userInitial = firebase.database().ref("users/");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+    moderationTickets = firebase.database().ref("maintenance/");
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
@@ -106,8 +124,6 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        changeUserElement(data.val());
-
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
@@ -118,23 +134,13 @@ window.onload = function instantiate() {
           user = data.val();
           console.log("User Updated: 2");
         }
-
-        if(currentModalOpen == data.key) {//Moved currentModalOpen reference to common.js
-          closeModal(userModal);
-        }
       });
 
       postRef.on('child_removed', function (data) {
-        removeUserElement(data.val().uid);
-
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
-        }
-
-        if(currentModalOpen == data.key) {//Moved currentModalOpen reference to common.js
-          closeModal(userModal);
         }
       });
     };
@@ -164,10 +170,97 @@ window.onload = function instantiate() {
       });
     };
 
+    let fetchModerationQueue = function (postRef) {
+      postRef.once("value").then(function(snapshot) {
+        if (snapshot.exists()) {
+          postRef.on("child_added", function (data) {
+            console.log(data.key + " Added!");
+            createModerationTicket(data.val());
+          });
+
+          postRef.on("child_changed", function (data) {
+            console.log(data.key + " Changed!");
+            changeModerationTicket(data.val());
+          });
+
+          postRef.on("child_removed", function (data) {
+            console.log(data.key + " Removed!");
+          });
+        } else {
+          deployListEmptyNotification("There Are No Items In The Moderation Queue!");
+        }
+      });
+    };
+
     fetchData(userInitial);
     fetchInvites(userInvites);
+    fetchModerationQueue(moderationTickets);
 
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
+    listeningFirebaseRefs.push(moderationTickets);
+  }
+
+  function createModerationTicket (ticketData) {
+    let ticketTitle = "";
+    try {
+      testData.remove();
+    } catch (err) {}
+
+    let liItem = document.createElement("LI");
+    liItem.id = "ticket" + ticketData.uid;
+    liItem.className = "gift";
+    if (ticketData.details.includes("Attempting to delete user")) {
+      liItem.className += " highSev";
+      ticketTitle = "Attempt To Delete User";
+    } else if (ticketData.details.includes("Invalid Login")) {
+      liItem.className += " highSev";
+      ticketTitle = "Invalid Login Attempt";
+    } else if (ticketData.details.includes("Attempting to delete gift")) {
+      liItem.className += " mediumSev";
+      ticketTitle = "Attempt To Delete Gift";
+    } else if (ticketData.details.includes("Attempting to update gift")) {
+      liItem.className += " lowSev";
+      ticketTitle = "Attempt To Update Gift";
+    } else {
+      liItem.className += " highSev";
+      ticketTitle = "No Data Available!";
+    }
+
+    liItem.onclick = function (){
+      ticketUID.innerHTML = ticketData.uid;
+      ticketDetails.innerHTML = ticketData.details;
+      ticketLocation.innerHTML = ticketData.location;
+      ticketTime.innerHTML = ticketData.time;
+
+      //show modal
+      openModal(ticketModal, ticketData.uid);
+
+      //close on close
+      closeTicketModal.onclick = function() {
+        closeModal(ticketModal);
+      };
+
+      //close on click
+      window.onclick = function(event) {
+        if (event.target == ticketModal) {
+          closeModal(ticketModal);
+        }
+      };
+    };
+    let textNode = document.createTextNode(ticketTitle);
+    liItem.appendChild(textNode);
+
+    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+    clearInterval(offlineTimer);
+
+    dataCounter++;
+    if (dataCounter > 5) {
+      //Add "Nuke" Button?
+    }
+  }
+
+  function changeModerationTicket (ticketData) {
+
   }
 };
