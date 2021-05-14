@@ -14,6 +14,7 @@ let dataCounter = 0;
 let loadingTimerInt = 0;
 
 let dataListContainer;
+let nukeTickets;
 let ticketModal;
 let closeTicketModal;
 let ticketTitle;
@@ -65,6 +66,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   dataListContainer = document.getElementById('dataListContainer');
+  nukeTickets = document.getElementById('nukeTickets');
   ticketModal = document.getElementById('ticketModal');
   closeTicketModal = document.getElementById('closeTicketModal');
   ticketTitle = document.getElementById('ticketTitle');
@@ -81,7 +83,8 @@ window.onload = function instantiate() {
   notificationInfo = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
   testData = document.getElementById('testData');
-  moderationQueueElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
+  moderationQueueElements = [dataListContainer, nukeTickets, ticketModal, closeTicketModal, ticketTitle, ticketUID,
+    ticketDetails, ticketLocation, ticketTime, deleteTicket, offlineModal, offlineSpan, inviteNote, notificationModal,
     notificationTitle, notificationInfo, noteSpan, testData];
   getCurrentUser();
   commonInitialization();
@@ -185,6 +188,7 @@ window.onload = function instantiate() {
 
           postRef.on("child_removed", function (data) {
             console.log(data.key + " Removed!");
+            removeModerationTicket(data.val());
           });
         } else {
           deployListEmptyNotification("There Are No Items In The Moderation Queue!");
@@ -202,7 +206,7 @@ window.onload = function instantiate() {
   }
 
   function createModerationTicket (ticketData) {
-    let ticketTitle = "";
+    let ticketTitleText = "";
     try {
       testData.remove();
     } catch (err) {}
@@ -212,26 +216,35 @@ window.onload = function instantiate() {
     liItem.className = "gift";
     if (ticketData.details.includes("Attempting to delete user")) {
       liItem.className += " highSev";
-      ticketTitle = "Attempt To Delete User";
+      ticketTitleText = "Attempt To Delete User";
     } else if (ticketData.details.includes("Invalid Login")) {
       liItem.className += " highSev";
-      ticketTitle = "Invalid Login Attempt";
+      ticketTitleText = "Invalid Login Attempt";
     } else if (ticketData.details.includes("Attempting to delete gift")) {
       liItem.className += " mediumSev";
-      ticketTitle = "Attempt To Delete Gift";
+      ticketTitleText = "Attempt To Delete Gift";
     } else if (ticketData.details.includes("Attempting to update gift")) {
       liItem.className += " lowSev";
-      ticketTitle = "Attempt To Update Gift";
+      ticketTitleText = "Attempt To Update Gift";
     } else {
       liItem.className += " highSev";
-      ticketTitle = "No Data Available!";
+      ticketTitleText = "No Data Available!";
     }
 
     liItem.onclick = function (){
-      ticketUID.innerHTML = ticketData.uid;
+      ticketTitle.innerHTML = ticketTitleText;
       ticketDetails.innerHTML = ticketData.details;
-      ticketLocation.innerHTML = ticketData.location;
-      ticketTime.innerHTML = ticketData.time;
+      ticketUID.innerHTML = "UID: " + ticketData.uid;
+      ticketTime.innerHTML = "Time: " + ticketData.time;
+      if (ticketData.location == "index") {
+        ticketLocation.innerHTML = "Location: login/index";
+      } else {
+        ticketLocation.innerHTML = "Location: " + ticketData.location;
+      }
+
+      deleteTicket.onclick = function () {
+        deleteModerationTicket(ticketData);
+      };
 
       //show modal
       openModal(ticketModal, ticketData.uid);
@@ -248,7 +261,7 @@ window.onload = function instantiate() {
         }
       };
     };
-    let textNode = document.createTextNode(ticketTitle);
+    let textNode = document.createTextNode(ticketTitleText);
     liItem.appendChild(textNode);
 
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
@@ -256,11 +269,147 @@ window.onload = function instantiate() {
 
     dataCounter++;
     if (dataCounter > 5) {
-      //Add "Nuke" Button?
+      nukeTickets.style.opacity = ".75";
     }
   }
 
   function changeModerationTicket (ticketData) {
+    let ticketTitleText = "";
+    let editTicket = document.getElementById('ticket' + ticketData.uid);
+    editTicket.className = "gift";
+    if (ticketData.details.includes("Attempting to delete user")) {
+      editTicket.className += " highSev";
+      ticketTitleText = "Attempt To Delete User";
+    } else if (ticketData.details.includes("Invalid Login")) {
+      editTicket.className += " highSev";
+      ticketTitleText = "Invalid Login Attempt";
+    } else if (ticketData.details.includes("Attempting to delete gift")) {
+      editTicket.className += " mediumSev";
+      ticketTitleText = "Attempt To Delete Gift";
+    } else if (ticketData.details.includes("Attempting to update gift")) {
+      editTicket.className += " lowSev";
+      ticketTitleText = "Attempt To Update Gift";
+    } else {
+      editTicket.className += " highSev";
+      ticketTitleText = "No Data Available!";
+    }
+    editTicket.innerHTML = ticketTitleText;
 
+    liItem.onclick = function (){
+      ticketTitle.innerHTML = ticketTitleText;
+      ticketDetails.innerHTML = ticketData.details;
+      ticketUID.innerHTML = "UID: " + ticketData.uid;
+      ticketTime.innerHTML = "Time: " + ticketData.time;
+      if (ticketData.location == "index") {
+        ticketLocation.innerHTML = "Location: login/index";
+      } else {
+        ticketLocation.innerHTML = "Location: " + ticketData.location;
+      }
+
+      deleteTicket.onclick = function () {
+        deleteModerationTicket(ticketData);
+      };
+
+      //show modal
+      openModal(ticketModal, ticketData.uid);
+
+      //close on close
+      closeTicketModal.onclick = function() {
+        closeModal(ticketModal);
+      };
+
+      //close on click
+      window.onclick = function(event) {
+        if (event.target == ticketModal) {
+          closeModal(ticketModal);
+        }
+      };
+    };
+  }
+
+  function deleteModerationTicket (ticketData) {
+    /*
+    let verifyDeleteBool = true;
+    let toDelete = -1;
+
+    for (let i = 0; i < giftArr.length; i++){
+      if(title == giftArr[i].title) {
+        toDelete = i;
+        break;
+      }
+    }
+
+    if(toDelete != -1) {
+      giftArr.splice(toDelete, 1);
+
+      for (let i = 0; i < giftArr.length; i++) {
+        if (title == giftArr[i].title) {
+          verifyDeleteBool = false;
+          break;
+        }
+      }
+    } else {
+      verifyDeleteBool = false;
+    }
+
+    if(verifyDeleteBool){
+      removeGiftElement(uid);
+      firebase.database().ref("users/" + user.uid).update({
+        giftList: giftArr
+      });
+
+      closeModal(giftModal);
+
+      notificationInfo.innerHTML = "Gift Deleted";
+      notificationTitle.innerHTML = "Gift " + title + " successfully deleted!";
+      openModal(notificationModal, "noteModal");
+
+      //close on close
+      noteSpan.onclick = function() {
+        closeModal(notificationModal);
+      };
+
+      //close on click
+      window.onclick = function(event) {
+        if (event.target == notificationModal) {
+          closeModal(notificationModal);
+        }
+      };
+
+      let nowJ = 0;
+      let j = setInterval(function(){
+        nowJ = nowJ + 1000;
+        if(nowJ >= 3000){
+          closeModal(notificationModal);
+          clearInterval(j);
+        }
+      }, 1000);
+
+      if(buyer != ""){
+        let userFound = findUserNameItemInArr(buyer, userArr);
+        if(userFound != -1){
+          addNotificationToDB(userArr[userFound], title);
+        } else {
+          if(consoleOutput)
+            console.log("User not found");
+        }
+      } else {
+        if(consoleOutput)
+          console.log("No buyer, no notification needed");
+      }
+
+    } else {
+      alert("Delete failed, please try again later!");
+    }
+     */
+  }
+
+  function removeModerationTicket (uid) {
+    document.getElementById('ticket' + uid).remove();
+
+    dataCounter--;
+    if (dataCounter == 0){
+      deployListEmptyNotification("There Are No Items In The Moderation Queue!");
+    }
   }
 };
