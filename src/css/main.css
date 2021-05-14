@@ -273,6 +273,18 @@ ul li.checked::before {
   width: 7px;
 }
 
+ul li.highSev {
+  color: #eb3434
+}
+
+ul li.mediumSev {
+  color: #ebcc34
+}
+
+ul li.lowSev {
+  color: #00d118;
+}
+
 ul li.santa {
   color: #00d118;
 }
