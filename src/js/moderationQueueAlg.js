@@ -8,6 +8,7 @@ let moderationQueueElements = [];
 let listeningFirebaseRefs = [];
 let inviteArr = [];
 let userArr = [];
+let ticketArr = [];
 
 let moderationSet = 1;
 let dataCounter = 0;
@@ -179,16 +180,29 @@ window.onload = function instantiate() {
           postRef.on("child_added", function (data) {
             console.log(data.key + " Added!");
             createModerationTicket(data.val());
+            ticketArr.push(data.val());
           });
 
           postRef.on("child_changed", function (data) {
             console.log(data.key + " Changed!");
             changeModerationTicket(data.val());
+
+            let i = findUIDItemInArr(data.key, ticketArr);
+            if(ticketArr[i] != data.val() && i != -1){
+              console.log("Removing " + ticketArr[i].uid);
+              ticketArr[i] = data.val();
+            }
           });
 
           postRef.on("child_removed", function (data) {
             console.log(data.key + " Removed!");
             removeModerationTicket(data.val());
+
+            let i = findUIDItemInArr(data.key, ticketArr);
+            if(ticketArr[i] != data.val() && i != -1){
+              console.log("Removing " + ticketArr[i].uid);
+              ticketArr.splice(i, 1);
+            }
           });
         } else {
           deployListEmptyNotification("There Are No Items In The Moderation Queue!");
@@ -328,30 +342,27 @@ window.onload = function instantiate() {
   }
 
   function deleteModerationTicket (ticketData) {
-    /*
     let verifyDeleteBool = true;
     let toDelete = -1;
 
-    for (let i = 0; i < giftArr.length; i++){
-      if(title == giftArr[i].title) {
-        toDelete = i;
-        break;
-      }
-    }
+    toDelete = findUIDItemInArr(ticketData.uid, ticketArr);
 
-    if(toDelete != -1) {
-      giftArr.splice(toDelete, 1);
+    if (toDelete != -1) {
+      ticketArr.splice(toDelete, 1);
 
-      for (let i = 0; i < giftArr.length; i++) {
-        if (title == giftArr[i].title) {
-          verifyDeleteBool = false;
-          break;
-        }
+      if (findUIDItemInArr(ticketData.uid, ticketArr) == -1) {
+        verifyDeleteBool = false;
       }
     } else {
       verifyDeleteBool = false;
     }
 
+    if (verifyDeleteBool) {
+      //Up Next!
+    } else {
+      alert("Delete failed, please try again later!");
+    }
+    /*
     if(verifyDeleteBool){
       removeGiftElement(uid);
       firebase.database().ref("users/" + user.uid).update({
@@ -398,8 +409,6 @@ window.onload = function instantiate() {
           console.log("No buyer, no notification needed");
       }
 
-    } else {
-      alert("Delete failed, please try again later!");
     }
      */
   }
