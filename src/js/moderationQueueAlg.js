@@ -91,18 +91,6 @@ window.onload = function instantiate() {
   commonInitialization();
   verifyElementIntegrity(moderationQueueElements);
 
-  loadingTimer = setInterval(function(){
-    loadingTimerInt = loadingTimerInt + 1000;
-    if(loadingTimerInt >= 2000){
-      if (testData == undefined){
-        console.log("TestData Missing. Loading Properly.");
-      } else {
-        testData.innerHTML = "Loading... Please Wait...";
-      }
-      clearInterval(loadingTimer);
-    }
-  }, 1000);
-
   databaseQuery();
 
   alternateButtonLabel(settingsNote, "Settings", "Moderation");
