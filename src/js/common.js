@@ -105,7 +105,7 @@ function commonInitialization(){
     offlineTimer = setInterval(function(){
       now = now + 1000;
       if(now >= 5000){
-        if(dataListChecker.innerHTML != null) {
+        if(dataListChecker != null) {
           try {
             document.getElementById('testData').innerHTML = "Loading Failed, Please Connect To Internet";
           } catch (err) {
@@ -142,7 +142,7 @@ function commonInitialization(){
     }
   };
 
-  if (dataListChecker.innerHTML != null) {
+  if (dataListChecker != null) {
     loadingTimer = setInterval(function(){
       loadingTimerInt = loadingTimerInt + 1000;
       if(loadingTimerInt >= 2000){
