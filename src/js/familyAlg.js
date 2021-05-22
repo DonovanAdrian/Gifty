@@ -16,7 +16,6 @@ let loadedFamilyModalsArr = [];
 let connectionsArr = [];
 
 let moderationSet = 1;
-let onlineInt = 0;
 let dataCounter = 0;
 let loadingTimerInt = 0;
 
