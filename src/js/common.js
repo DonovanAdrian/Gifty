@@ -10,6 +10,7 @@ let areYouStillThereInit = false;
 let currentModalOpen = "";
 let currentTitle;
 
+let buttonOpacLim = 7;
 let logoutReminder = 300;
 let logoutLimit = 900;
 let consoleOutput = false;
@@ -104,12 +105,12 @@ function commonInitialization(){
     offlineTimer = setInterval(function(){
       now = now + 1000;
       if(now >= 5000){
-        if(dataListChecker.innerHTML != null)
-          try{
+        if(dataListChecker.innerHTML != null) {
+          try {
             document.getElementById('testData').innerHTML = "Loading Failed, Please Connect To Internet";
-          } catch(err){
-            if(dataCounter == 0) {
-              if(consoleOutput)
+          } catch (err) {
+            if (dataCounter == 0) {
+              if (consoleOutput)
                 console.log("Loading Element Missing, Creating A New One");
               let liItem = document.createElement("LI");
               liItem.id = "testData";
@@ -119,6 +120,7 @@ function commonInitialization(){
               dataListContainer.insertBefore(liItem, dataListChecker.childNodes[0]);
             }
           }
+        }
         try{
           closeModal(currentModalOpen);
         } catch (err) {}
@@ -139,6 +141,20 @@ function commonInitialization(){
       closeModal(offlineModal);
     }
   };
+
+  if (dataListChecker.innerHTML != null) {
+    loadingTimer = setInterval(function(){
+      loadingTimerInt = loadingTimerInt + 1000;
+      if(loadingTimerInt >= 2000){
+        if (testData == undefined){
+          console.log("TestData Missing. Loading Properly.");
+        } else {
+          testData.innerHTML = "Loading... Please Wait...";
+        }
+        clearInterval(loadingTimer);
+      }
+    }, 1000);
+  }
 
   if (userChecker != null)
     loginTimer();
