@@ -141,18 +141,6 @@ window.onload = function instantiate() {
   commonInitialization();
   verifyElementIntegrity(moderationElements);
 
-  loadingTimer = setInterval(function(){
-    loadingTimerInt = loadingTimerInt + 1000;
-    if(loadingTimerInt >= 2000){
-      if (testData == undefined){
-        console.log("TestData Missing. Loading Properly.");
-      } else {
-        testData.innerHTML = "Loading... Please Wait...";
-      }
-      clearInterval(loadingTimer);
-    }
-  }, 1000);
-
   databaseQuery();
 
   alternateButtonLabel(settingsNote, "Settings", "Moderation");
@@ -586,7 +574,7 @@ window.onload = function instantiate() {
     clearInterval(offlineTimer);
 
     dataCounter++;
-    if (dataCounter > 5) {
+    if (dataCounter > buttonOpacLim) {
       activateSecretSanta.style.opacity = ".75";
     }
   }
