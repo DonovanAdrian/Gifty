@@ -19,7 +19,6 @@ let updateUserBool = false;
 let giftListEmptyBool = false;
 
 let dataCounter = 0;
-let onlineInt = 0;
 let loadingTimerInt = 0;
 
 let dataListContainer;
@@ -310,8 +309,6 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-        onlineInt = 1;
-
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           if(consoleOutput)
@@ -501,7 +498,7 @@ window.onload = function instantiate() {
     clearInterval(offlineTimer);
 
     dataCounter++;
-    if (dataCounter > 5)
+    if (dataCounter > buttonOpacLim)
       boughtGifts.style.opacity = ".75";
   }
 
