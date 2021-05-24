@@ -14,7 +14,6 @@ let initializedGiftsArr = [];
 
 let readNotificationsBool = false;
 
-let onlineInt = 0;
 let dataCounter = 0;
 let moderationSet = -1;
 let loadingTimerInt = 0;
@@ -82,7 +81,7 @@ function getCurrentUser(){
         console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
-        if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
+        if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
           notificationBtn.src = "img/bellNotificationOn.png";
           notificationBtn.onclick = function() {
             newNavigation(6);//Notifications
@@ -186,8 +185,6 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-        onlineInt = 1;
-
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           checkGiftLists(data.val());
