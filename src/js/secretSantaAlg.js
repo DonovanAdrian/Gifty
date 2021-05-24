@@ -332,40 +332,27 @@ function generateSecretSantaModal(){
     userTitle.innerHTML = secretSantaData.name;
     if(secretSantaData.giftList != null){
       if(secretSantaData.giftList.length > 0) {
-        publicList.innerHTML = "Click on me to access " + secretSantaData.name + "\'s public list!";
         publicList.onclick = function () {
           sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));//Friend's User Data
           newNavigation(9);//FriendList
         };
-        if (secretSantaData.giftList.length == 1)
-          publicListCount.innerHTML = secretSantaData.name + " has 1 gift on their public list";
-        else
-          publicListCount.innerHTML = secretSantaData.name + " has " + secretSantaData.giftList.length + " gifts on their public list";
+        flashGiftNumbers(secretSantaData.giftList.length, publicList, "Public");
       } else {
-        publicList.innerHTML = secretSantaData.name + "\'s public gift list is empty, please check back later!";
+        publicList.innerHTML = "Public List Empty";
         publicList.onclick = function () {};
-        publicListCount.innerHTML = secretSantaData.name + " has 0 gifts on their public list";
       }
     } else {
-      publicList.innerHTML = secretSantaData.name + "\'s public gift list is empty, please check back later!";
+      publicList.innerHTML = "Public List Empty";
       publicList.onclick = function () {};
-      publicListCount.innerHTML = secretSantaData.name + " has 0 gifts on their public list";
     }
-    if(secretSantaData.privateList != null){
-      if(secretSantaData.privateList.length > 0) {
-        if (secretSantaData.privateList.length == 1)
-          privateListCount.innerHTML = secretSantaData.name + " has 1 gift on their private list";
-        else
-          privateListCount.innerHTML = secretSantaData.name + " has " + secretSantaData.privateList.length + " gifts on their private list";
-      } else {
-        privateListCount.innerHTML = secretSantaData.name + " has 0 gifts on their private list";
-      }
-    } else {
-      privateListCount.innerHTML = secretSantaData.name + " has 0 gifts on their private list";
-    }
-    privateList.innerHTML = "Click on me to access " + secretSantaData.name + "\'s private gift list!";
+
+    privateList.innerHTML = "View Private Gift List";
+    if(friendData.privateList != undefined)
+      flashGiftNumbers(friendData.privateList.length, privateList, "Private");
+    else
+      flashGiftNumbers(0, privateList, "Private");
     privateList.onclick = function() {
-      sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));//Friend's User Data
+      sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
       newNavigation(10);//PrivateFriendList
     };
 
@@ -392,8 +379,133 @@ function generateSecretSantaModal(){
   }
 }
 
-function createSecretSantaNames(){//----------------------------*****************************ToDo
+function createSecretSantaNames(){//----------------------------*******************************ToDo
+// Remove unnecessary console logs once finished***************************************************
 
+  let assignedFamilies = [];
+  let optInFamilyArr = [];
+  let optInFamilyStatsArr = [];
+  let skippedFamilies = [];
+  let optInFamInt = 0;
+  let familySet = [];
+
+  try {
+    clearInterval(ignoreFamilySetTimer);
+    if (consoleOutput)
+      console.log("Timer Stopped!");
+  } catch (err) {}
+
+  for (let i = 0; i < userArr.length; i++) {
+    if (userArr[i].secretSanta != null) {
+      if (userArr[i].secretSanta == 1) {
+        tempUserArr.push(userArr[i]);
+        for (let a = 0; a < familyArr.length; a++) {
+          if (familyArr[a].members != null) {
+            if (familyArr[a].members.includes(userArr[i].uid)) {
+              if (findUIDItemInArr(familyArr[a].uid, optInFamilyArr) == -1) {
+                optInFamilyArr.push(familyArr[a]);
+                optInFamilyStatsArr.push(1);
+              } else {
+                optInFamInt = findUIDItemInArr(familyArr[a].uid, optInFamilyArr);
+                optInFamilyStatsArr[optInFamInt]++;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (consoleOutput)
+    console.log("Secret Santa Families Initialized!");
+
+  for (let i = 0; i < optInFamilyArr.length; i++) {
+    if (optInFamilyStatsArr[i] < 3) {//Skip if the family does not have <3 users signed up
+      if (!ignoreFamilySet && secretSantaPageName == "moderation") {
+        alert("There is a family with less than three users signed up!\n\n\nYou have 10 seconds to press the button again" +
+            " if you are okay with this. The users in question will NOT be assigned names.");
+        startIgnoreFamilySetTimer();
+        tempUserArr = [];
+        return;
+      } else {
+        skippedFamilies.push(optInFamilyArr[i].name);
+      }
+    } else {
+      for (let a = 0; a < optInFamilyArr[i].members.length; a++) {
+        let famSetUserIndex = findUIDItemInArr(optInFamilyArr[i].members[a], tempUserArr);
+        if (famSetUserIndex != -1)
+          familySet.push(tempUserArr[famSetUserIndex]);
+      }
+      if (!assignUsersSecretSantaNames(familySet)) {
+        if (consoleOutput)
+          alert("There was an error assigning Secret Santa names. Please " + secretSantaAssignErrorMsg);
+        tempUserArr = [];
+        return;
+      } else {
+        assignedFamilies.push(optInFamilyArr[i].name);
+        familySet = [];
+      }
+    }
+  }
+
+  if (consoleOutput)
+    console.log("Secret Santa Names Assigned!");
+
+  console.log("assignedFamilies: " + assignedFamilies.length);
+  console.log(assignedFamilies);
+
+  if (skippedFamilies.length > 0) {
+    if (consoleOutput) {
+      console.log("Skipped Families: ");
+      console.log(skippedFamilies);
+    }
+    assignedFamilies.push(skippedFamilies);
+  }
+
+  console.log("Performing Secret Santa Checks...");
+
+  console.log("assignedUsers: " + assignedUsers.length);
+  console.log(assignedUsers);
+  console.log("tempUserArr: " + tempUserArr.length);
+  console.log(tempUserArr);
+
+  console.log("optInFamilyArr: " + optInFamilyArr.length);
+  console.log(optInFamilyArr);
+  console.log("assignedFamilies: " + assignedFamilies.length);
+  console.log(assignedFamilies);
+
+  if (assignedUsers.length == tempUserArr.length &&
+      assignedFamilies.length == optInFamilyArr.length) {
+    let userIndex = 0;
+    for (let i = 0; i < tempUserArr.length; i++) {
+      userIndex = findUIDItemInArr(tempUserArr[i].uid, userArr);
+      userArr[userIndex].secretSantaName = tempUserArr[i].secretSantaName;
+    }
+
+    console.log("Main User Arr:");
+    console.log(userArr);
+    console.log("Users That Were Assigned Names:");
+    console.log(tempUserArr);
+    //updateAllUsersToDBSantaNames();
+
+    if (consoleOutput)
+      console.log("Secret Santa Assignments Complete!");
+    if (secretSantaPageName == "moderation") {
+      initializeSecretSantaBtns();
+      alert("Did the buttons update? Remove me when done!");
+    }
+    if (secretSantaPageName == "lists") {
+      showSecretSanta();
+      alert("Did the button update? Remove me when done!");
+    }
+  } else {
+    if (consoleOutput)
+      alert("There was an error assigning Secret Santa names automatically. Please " + secretSantaAssignErrorMsg);
+    for (let i = 0; i < userArr.length; i++) {
+      userArr[i].secretSantaName = "";
+    }
+    tempUserArr = [];
+  }
 }
 
 function startIgnoreFamilySetTimer() {
