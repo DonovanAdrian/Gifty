@@ -45,9 +45,7 @@ let secretSantaSignUp;
 let secretSantaData;
 let testData;
 let userTitle;
-let publicListCount;
 let publicList;
-let privateListCount;
 let privateList;
 let sendPrivateMessage;
 let closePrivateMessageModal;
@@ -140,9 +138,7 @@ window.onload = function instantiate() {
   secretSantaSignUp = document.getElementById('secretSanta');
   testData = document.getElementById('testData');
   userTitle = document.getElementById('userTitle');
-  publicListCount = document.getElementById('publicListCount');
   publicList = document.getElementById('publicList');
-  privateListCount = document.getElementById('privateListCount');
   privateList = document.getElementById('privateList');
   sendPrivateMessage = document.getElementById('sendPrivateMessage');
   closePrivateMessageModal = document.getElementById('closePrivateMessageModal');
@@ -151,8 +147,8 @@ window.onload = function instantiate() {
   cancelMsg = document.getElementById('cancelMsg');
   listsElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
     notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, secretSantaSignUp,
-    testData, userTitle, publicListCount, publicList, privateListCount, privateList, sendPrivateMessage,
-    closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg];
+    testData, userTitle, publicList, privateList, sendPrivateMessage, closePrivateMessageModal, privateMessageInp,
+    sendMsg, cancelMsg];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(listsElements);
@@ -438,7 +434,7 @@ window.onload = function instantiate() {
               sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
               newNavigation(9);//FriendList
             };
-            flashGiftNumbers(friendData.giftList.length, publicListCount, "Public");
+            flashGiftNumbers(friendData.giftList.length, publicList, "Public");
           } else {
             publicList.innerHTML = "Public List Empty";
             publicList.onclick = function () {};
