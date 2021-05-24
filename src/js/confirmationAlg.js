@@ -14,7 +14,6 @@ let readNotificationsBool = false;
 let inviteListEmptyBool = false;
 
 let dataCounter = 0;
-let onlineInt = 0;
 let loadingTimerInt = 0;
 let deleteInviteRun = 0;
 
@@ -152,8 +151,6 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-        onlineInt = 1;
-
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           if(consoleOutput)
