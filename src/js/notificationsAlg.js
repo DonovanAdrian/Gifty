@@ -14,7 +14,6 @@ let listeningFirebaseRefs = [];
 let notificationListEmptyBool = false;
 
 let dataCounter = 0;
-let onlineInt = 0;
 let loadingTimerInt = 0;
 
 let dataListContainer;
