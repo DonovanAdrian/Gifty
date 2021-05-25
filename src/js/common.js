@@ -397,11 +397,13 @@ function findUIDInString(input){
 }
 
 function findUIDItemInArr(item, array){
-  for(let i = 0; i < array.length; i++){
-    if(array[i].uid == item){
-      if(consoleOutput)
-        console.log("Found item: " + item);
-      return i;
+  if (array != null) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].uid == item) {
+        if (consoleOutput)
+          console.log("Found item: " + item);
+        return i;
+      }
     }
   }
   return -1;
