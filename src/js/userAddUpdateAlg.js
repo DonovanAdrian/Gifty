@@ -110,7 +110,7 @@ window.onload = function instantiate() {
             user = data.val();
             nameField.value = user.name;
             userNameField.value = user.userName;
-            pinField.value = user.pin;
+            pinField.value = decode(user.encodeStr);
             pinConfField.placeholder = "Please Confirm Pin To Continue";
             btnUpdate.innerHTML = "Update User Profile";
             btnDelete.innerHTML = "Delete User Profile";
@@ -230,12 +230,10 @@ function updateUserToDB(){
     alert("It looks like the User Name you chose is already taken, please choose another.");
     userNameBool = true;
   } else {
-    let newPin = parseInt(pinField.value);
     injectUserArr(userArr);
     let encodeKey = encode(pinField.value);
     firebase.database().ref("users/" + user.uid).update({
       name: nameField.value,
-      pin: newPin,
       encodeStr: encodeKey,
       userName: userNameField.value,
       ban: user.ban,
@@ -323,16 +321,13 @@ function addUserToDB(){
     userNameBool = true;
   } else {
     let newUid = firebase.database().ref("users").push();
-    let newPin = parseInt(pinField.value);
     injectUserArr(userArr);
     let encodeKey = encode(pinField.value);
     let shareCodeNew = genShareCode();
-    //console.log(shareCodeNew);
     newUid = newUid.toString();
     newUid = findUIDInString(newUid);
     firebase.database().ref("users/" + newUid).set({
       name: nameField.value,
-      pin: newPin,
       encodeStr: encodeKey,
       userName: userNameField.value,
       ban: 0,
