@@ -9,7 +9,6 @@ let listeningFirebaseRefs = [];
 let inviteArr = [];
 let userArr = [];
 let familyArr = [];
-let connectionsArr = [];
 
 let secretSantaAssignErrorMsg = "try again!";
 let secretSantaPageName = "moderation";
@@ -38,7 +37,6 @@ let userInitial;
 let userInvites;
 let autoSecretSanta;
 let familyInitial;
-let connectionsInitial;
 let activateSecretSanta;
 let secretSantaModal;
 let santaModalSpan;
@@ -242,25 +240,6 @@ window.onload = function instantiate() {
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
     autoSecretSanta = firebase.database().ref("secretSanta/");
     familyInitial = firebase.database().ref("family/");
-    connectionsInitial = firebase.database().ref("connections/");
-
-    let fetchConnections = function (postRef){
-      postRef.on('child_added', function (data) {
-        connectionsArr.push(data.val());
-      });
-
-      postRef.on('child_changed', function (data) {
-        let i = findUIDItemInArr(data.key, connectionsArr);
-        if(connectionsArr[i] != data.val() && i != -1)
-          connectionsArr[i] = data.val();
-      });
-
-      postRef.on('child_removed', function (data) {
-        let i = findUIDItemInArr(data.key, connectionsArr);
-        if(connectionsArr[i] != data.val() && i != -1)
-          connectionsArr.splice(i, 1);
-      });
-    }
 
     let fetchFamilies = function (postRef){
       postRef.on('child_added', function (data) {
@@ -419,13 +398,11 @@ window.onload = function instantiate() {
     fetchInvites(userInvites);
     fetchSecretSanta(autoSecretSanta);
     fetchFamilies(familyInitial);
-    fetchConnections(connectionsInitial);
 
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(autoSecretSanta);
     listeningFirebaseRefs.push(familyInitial);
-    listeningFirebaseRefs.push(connectionsInitial);
   }
 
   function createUserElement(userData){
