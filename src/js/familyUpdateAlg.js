@@ -9,12 +9,9 @@ let listeningFirebaseRefs = [];
 let inviteArr = [];
 let userArr = [];
 let familyArr = [];
-let connectionsArr = [];
-let loadedFamilyLinksArr = [];
 let oldFamilyMemberArr = [];
 
 let moderationSet = 1;
-let onlineInt = 0;
 let dataCounter = 0;
 let loadingTimerInt = 0;
 
@@ -42,29 +39,11 @@ let closeFamilyNameModal;
 let familyNameInp;
 let updateFamilyName;
 let cancelFamilyName;
-let familyLinkModal;
-let closeFamilyLinkModal;
-let familyLinkInp;
-let familyLinkInfo;
-let addFamilyLink;
-let cancelFamilyLink;
-let familyLinkViewModal;
-let closeFamilyLinkViewModal;
-let familyLinkViewTitle;
-let familyLinkViewContainer;
 let familySettingsModal;
 let familySettingsTitle;
 let closeFamilySettings;
 let changeFamilyName;
-let linkFamilies;
-let familySettingsRemoveModal;
-let familySettingsTitleR;
-let closeFamilySettingsR;
-let changeFamilyNameR;
-let linkFamiliesR;
-let existingLinksR;
-let removeLinkFamilies;
-let removeEntireLinkFamilies;
+let removeAllMembers;
 let confirmMemberModal;
 let closeConfirmMemberModal;
 let confirmMemberTitle;
@@ -82,7 +61,6 @@ let loadingTimer;
 let userInitial;
 let userInvites;
 let familyInitial;
-let connectionsInitial;
 
 
 
@@ -135,29 +113,11 @@ window.onload = function instantiate() {
   familyNameInp = document.getElementById('familyNameInp');
   updateFamilyName = document.getElementById('updateFamilyName');
   cancelFamilyName = document.getElementById('cancelFamilyName');
-  familyLinkModal = document.getElementById('familyLinkModal');
-  closeFamilyLinkModal = document.getElementById('closeFamilyLinkModal');
-  familyLinkInp = document.getElementById('familyLinkInp');
-  familyLinkInfo = document.getElementById('familyLinkInfo');
-  addFamilyLink = document.getElementById('addFamilyLink');
-  cancelFamilyLink = document.getElementById('cancelFamilyLink');
-  familyLinkViewModal = document.getElementById('familyLinkViewModal');
-  closeFamilyLinkViewModal = document.getElementById('closeFamilyLinkViewModal');
-  familyLinkViewTitle = document.getElementById('familyLinkViewTitle');
-  familyLinkViewContainer = document.getElementById('familyLinkViewContainer');
   familySettingsModal = document.getElementById('familySettingsModal');
   familySettingsTitle = document.getElementById('familySettingsTitle');
   closeFamilySettings = document.getElementById('closeFamilySettings');
   changeFamilyName = document.getElementById('changeFamilyName');
-  linkFamilies = document.getElementById('linkFamilies');
-  familySettingsRemoveModal = document.getElementById('familySettingsRemoveModal');
-  familySettingsTitleR = document.getElementById('familySettingsTitleR');
-  closeFamilySettingsR = document.getElementById('closeFamilySettingsR');
-  changeFamilyNameR = document.getElementById('changeFamilyNameR');
-  linkFamiliesR = document.getElementById('linkFamiliesR');
-  existingLinksR = document.getElementById('existingLinksR');
-  removeLinkFamilies = document.getElementById('removeLinkFamilies');
-  removeEntireLinkFamilies = document.getElementById('removeEntireLinkFamilies');
+  removeAllMembers = document.getElementById('removeAllMembers');
   confirmMemberModal = document.getElementById('confirmMemberModal');
   closeConfirmMemberModal = document.getElementById('closeConfirmMemberModal');
   confirmMemberTitle = document.getElementById('confirmMemberTitle');
@@ -173,15 +133,11 @@ window.onload = function instantiate() {
   familyUpdateElements = [inviteNote, settingsNote, dataListContainer, testData, addMember, familySettings,
     familyMemberViewModal, closeFamilyMemberViewModal, familyMemberName, familyMemberUserName, familyMemberUID,
     removeFamilyMember, familyAddModal, closeFamilyAddModal, familyMemberInp, addMemberInfo, addFamilyMember,
-    cancelFamilyMember, familyNameModal, closeFamilyNameModal, familyNameInp, familyLinkInfo, updateFamilyName,
-    cancelFamilyName, familyLinkModal, closeFamilyLinkModal, familyNameInp, updateFamilyName, cancelFamilyName,
-    familyLinkModal, closeFamilyLinkModal, familyLinkInp, addFamilyLink, cancelFamilyLink, familyLinkViewModal,
-    closeFamilyLinkViewModal, familyLinkViewTitle, familyLinkViewContainer, familySettingsModal, familySettingsTitle,
-    closeFamilySettings, changeFamilyName, linkFamilies, familySettingsRemoveModal, familySettingsTitleR,
-    closeFamilySettingsR, changeFamilyNameR, linkFamiliesR, existingLinksR, removeLinkFamilies,
-    removeEntireLinkFamilies, confirmMemberModal, closeConfirmMemberModal, confirmMemberTitle, confMemberUserName,
-    addMemberConfirm, addMemberDeny, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle,
-    notificationInfo];
+    cancelFamilyMember, familyNameModal, closeFamilyNameModal, familyNameInp, updateFamilyName, cancelFamilyName,
+    familyNameInp, updateFamilyName, cancelFamilyName, familySettingsModal, familySettingsTitle, closeFamilySettings,
+    changeFamilyName, removeAllMembers, confirmMemberModal, closeConfirmMemberModal, confirmMemberTitle,
+    confMemberUserName, addMemberConfirm, addMemberDeny, offlineModal, offlineSpan, notificationModal, noteSpan,
+    notificationTitle, notificationInfo];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(familyUpdateElements);
@@ -189,7 +145,6 @@ window.onload = function instantiate() {
   userInitial = firebase.database().ref("users/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
   familyInitial = firebase.database().ref("family/");
-  connectionsInitial = firebase.database().ref("connections/");
 
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
@@ -202,7 +157,7 @@ window.onload = function instantiate() {
           deployListEmptyNotification("No Family Members Found!");
         }
       } else {
-        if (testData == undefined || listEmptyNotified) {
+        if (testData == undefined) {
           console.log("TestData Missing. Loading Properly.");
         } else {
           testData.innerHTML = "Loading... Please Wait...";
@@ -224,13 +179,7 @@ window.onload = function instantiate() {
   familySettings.innerHTML = "Family Settings";
 
   familySettings.onclick = function() {
-    if (familyData.connections != null)
-      if (familyData.connections != "")
-        generateFamilySettingsRemoveModal();
-      else
-        generateFamilySettingsModal();
-    else
-      generateFamilySettingsModal();
+    generateFamilySettingsModal();
   };
 
   if(familyData.members != null)
@@ -278,8 +227,7 @@ window.onload = function instantiate() {
                     "user", userArr[i].uid);
             } else {
               console.log("User is already in ANOTHER family!");
-              addMemberInfo.innerHTML = "A user can only be in one family at a time! " +
-                  "Link the two families OR remove this user from the other family first.";
+              addMemberInfo.innerHTML = "A user can only be in one family at a time!";
             }
             break;
           }
@@ -325,9 +273,6 @@ window.onload = function instantiate() {
         addMemberInfo.innerHTML = "";
         familyMemberInp.value = "";
         addFamilyMemberToDB(dataUID);
-      } else if (confirmType == "link") {
-        familyLinkInp.value = "";
-        addFamilyLinkToDB(dataUID);
       }
       closeModal(confirmMemberModal);
       return true;
@@ -337,8 +282,6 @@ window.onload = function instantiate() {
       closeModal(confirmMemberModal);
       if (confirmType == "user")
         openModal(familyAddModal, "familyAddModal");
-      else if (confirmType == "link")
-        openModal(familyLinkModal, "familyLinkModal");
       return false;
     }
 
@@ -356,56 +299,6 @@ window.onload = function instantiate() {
     };
   }
 
-  function generateFamilySettingsRemoveModal() {
-    familySettingsTitleR.innerHTML = familyData.name + " Settings";
-
-    changeFamilyNameR.onclick = function() {
-      closeModal(familySettingsRemoveModal);
-      generateFamilyNameModal();
-    };
-
-    linkFamiliesR.onclick = function() {
-      closeModal(familySettingsRemoveModal);
-      generateFamilyLinkModal();
-    };
-
-    existingLinksR.onclick = function() {
-      closeModal(familySettingsRemoveModal);
-      generateFamilyLinkViewModal();
-    };
-
-    removeLinkFamilies.onclick = function () {
-      closeModal(familySettingsRemoveModal);
-      removeFamilyLinkFromDB(familyData.uid);
-    };
-
-    removeEntireLinkFamilies.onclick = function () {
-      let connectionIDToRemove = familyData.connections;
-      let connectionsIndex = findUIDItemInArr(familyData.connections, connectionsArr);
-
-      for (let i = 0; i < connectionsArr[connectionsIndex].families.length; i++)
-        firebase.database().ref("family/" + connectionsArr[connectionsIndex].families[i]).update({
-          connections: ""
-        });
-
-      firebase.database().ref("connections/").child(connectionIDToRemove).remove();
-
-      closeModal(familySettingsRemoveModal);
-    };
-
-    openModal(familySettingsRemoveModal, "familySettingsRemoveModal");
-
-    closeFamilySettingsR.onclick = function() {
-      closeModal(familySettingsRemoveModal);
-    };
-
-    window.onclick = function(event) {
-      if (event.target == familySettingsRemoveModal) {
-        closeModal(familySettingsRemoveModal);
-      }
-    };
-  }
-
   function generateFamilySettingsModal() {
     familySettingsTitle.innerHTML = familyData.name + " Settings";
 
@@ -414,9 +307,8 @@ window.onload = function instantiate() {
       generateFamilyNameModal();
     };
 
-    linkFamilies.onclick = function() {
-      closeModal(familySettingsModal);
-      generateFamilyLinkModal();
+    removeAllMembers.onclick = function() {
+      alert("This feature will be added soon!");
     };
 
     openModal(familySettingsModal, "familySettingsModal");
@@ -458,242 +350,6 @@ window.onload = function instantiate() {
         closeModal(familyNameModal);
       }
     };
-  }
-
-  function generateFamilyLinkModal() {
-    addFamilyLink.onclick = function() {
-      findFamilyInDB(familyLinkInp.value);
-    };
-
-    cancelFamilyLink.onclick = function() {
-      familyLinkInp.value = "";
-      familyLinkInfo.innerHTML = "";
-      closeModal(familyLinkModal);
-    };
-
-    openModal(familyLinkModal, "familyLinkModal");
-
-    closeFamilyLinkModal.onclick = function() {
-      familyLinkInfo.innerHTML = "";
-      closeModal(familyLinkModal);
-    };
-
-    window.onclick = function(event) {
-      if (event.target == familyLinkModal) {
-        familyLinkInfo.innerHTML = "";
-        closeModal(familyLinkModal);
-      }
-    };
-  }
-
-  function generateConfirmFamilyLink(familyToLinkUID) {
-    for(let i = 0; i < familyArr.length; i++)
-      if(familyArr[i].uid == familyToLinkUID)
-        generateConfirmDataModal(familyArr[i].name, "Confirm Family Name Below",
-            "link", familyArr[i].uid);
-  }
-
-  function addFamilyLinkToDB(uidToLink){
-    let familyIndex = findUIDItemInArr(uidToLink, familyArr);
-    let familyDataToUse;
-    let otherFamilyData;
-
-    if (familyData.connections != null || familyArr[familyIndex].connections != null)
-      if (familyData.connections != "" || familyArr[familyIndex].connections != "") {
-        if(familyData.connections != null)
-          if(familyData.connections != "") {
-            familyDataToUse = familyData;
-            otherFamilyData = familyArr[familyIndex];
-          }
-        if(familyArr[familyIndex].connections != null)
-          if(familyArr[familyIndex].connections != "") {
-            familyDataToUse = familyArr[familyIndex];
-            otherFamilyData = familyData;
-          }
-
-        console.log(otherFamilyData.connections);
-
-        otherFamilyData.connections = familyDataToUse.connections;
-
-        console.log(otherFamilyData.connections);
-        firebase.database().ref("family/" + otherFamilyData.uid).update({
-          connections: otherFamilyData.connections
-        });
-
-        for (let z = 0; z < connectionsArr.length; z++)
-          if (connectionsArr[z].uid == familyDataToUse.connections) {
-            console.log(connectionsArr[z].families);
-
-            connectionsArr[z].families.push(otherFamilyData.uid);
-
-            console.log(connectionsArr[z].families);
-            firebase.database().ref("connections/" + connectionsArr[z].uid).update({
-              families: connectionsArr[z].families
-            });
-            break;
-          }
-      } else {
-        initializeNewConnectionInDB(uidToLink, familyIndex);
-      }
-    else {
-      initializeNewConnectionInDB(uidToLink, familyIndex);
-    }
-  }
-
-  function initializeNewConnectionInDB(uidToLink, familyIndex){
-    let newUid = firebase.database().ref("connections").push();
-    newUid = newUid.toString();
-    newUid = findUIDInString(newUid);
-    console.log(newUid);
-
-    firebase.database().ref("connections/" + newUid).set({
-      uid: newUid,
-      families: [familyData.uid, uidToLink]
-    });
-
-    familyData.connections = newUid;
-    firebase.database().ref("family/" + familyData.uid).update({
-      connections: newUid,
-    });
-
-    familyArr[familyIndex].connections = newUid;
-    firebase.database().ref("family/" + uidToLink).update({
-      connections: newUid
-    });
-  }
-
-  function generateFamilyLinkViewModal() {
-    familyLinkViewTitle.innerHTML = familyData.name + " Links";
-
-    initializeFamilyLinks();
-
-    openModal(familyLinkViewModal, "familyLinkViewModal");
-
-    closeFamilyLinkViewModal.onclick = function() {
-      closeModal(familyLinkViewModal);
-    };
-
-    window.onclick = function(event) {
-      if (event.target == familyLinkViewModal) {
-        closeModal(familyLinkViewModal);
-      }
-    };
-  }
-
-  function initializeFamilyLinks() {
-    try {
-      testFamily.remove();
-    } catch (err) {}
-
-    if (familyData.connections != null)
-      for (let i = 0; i < connectionsArr.length; i++) {
-        if (connectionsArr[i].uid == familyData.connections) {
-          for (let z = 0; z < connectionsArr[i].families.length; z++) {
-            let familyIndex = findUIDItemInArr(connectionsArr[i].families[z], familyArr);
-            if (!loadedFamilyLinksArr.includes(familyArr[familyIndex].uid)) {
-              createFamilyLink(familyArr[familyIndex]);
-              loadedFamilyLinksArr.push(familyArr[familyIndex].uid);
-            }
-          }
-          break;
-        }
-      }
-    else
-      deployListEmptyNotification("No Family Connections Found!");
-  }
-
-  function removeFamilyLinkFromDB(uidToRemove) {
-    let removalIndex = -1;
-    console.log("Removing " + uidToRemove + "...");
-    for (let i = 0; i < connectionsArr.length; i++)
-      if (connectionsArr[i].uid == familyData.connections) {
-        if (connectionsArr[i].families.length > 2) {
-          for (let y = 0; y < connectionsArr[i].families.length; y++)
-            if (uidToRemove == connectionsArr[i].families[y])
-              removalIndex = y;
-          console.log("Removing " + removalIndex + ": " + connectionsArr[i].families[removalIndex]);
-
-          if (removalIndex != -1) {
-
-            connectionsArr[i].families.splice(removalIndex, 1);
-
-            firebase.database().ref("connections/" + connectionsArr[i].uid).update({
-              families: connectionsArr[i].families
-            });
-
-            firebase.database().ref("family/" + uidToRemove).update({
-              connections: ""
-            });
-          } else {
-            alert("The family could not be removed from the Database! Please refresh the page and try again.");
-          }
-        } else {
-          console.log("Removing connection item from DB");
-          for(let z = 0; z < familyArr.length; z++)
-            if(familyArr[z].connections == connectionsArr[i].uid)
-              firebase.database().ref("family/" + familyArr[z].uid).update({
-                connections: ""
-              });
-
-          firebase.database().ref("connections/").child(connectionsArr[i].uid).remove();
-        }
-        break;
-      }
-  }
-
-  function createFamilyLink(linkedFamilyData) {
-    let textNode;
-
-    console.log(linkedFamilyData.name + " open");
-    let liItem = document.createElement("LI");
-    liItem.id = "link" + linkedFamilyData.uid;
-    liItem.className = "gift";
-    liItem.onclick = function (){
-      familyMemberName.innerHTML = linkedFamilyData.name;
-      if(linkedFamilyData.members != null)
-        familyMemberUserName.innerHTML = "# Members: " + linkedFamilyData.members.length;
-      else
-        familyMemberUserName.innerHTML = "# Members: 0";
-      familyMemberUID.innerHTML = linkedFamilyData.uid;
-
-      removeFamilyMember.onclick = function() {
-        let connectionIDChecker = findUIDItemInArr(linkedFamilyData.connections, connectionsArr);
-        console.log("Checking " + connectionIDChecker);
-
-        document.getElementById("link" + linkedFamilyData.uid).remove();
-        let loadedIndex = loadedFamilyLinksArr.indexOf(linkedFamilyData.uid);
-        loadedFamilyLinksArr.splice(loadedIndex, 1);
-        closeModal(familyMemberViewModal);
-        if(linkedFamilyData.uid != familyData.uid && connectionsArr[connectionIDChecker].families.length > 2)
-          openModal(familyLinkViewModal, "familyLinkViewModal");
-
-        removeFamilyLinkFromDB(linkedFamilyData.uid);
-      };
-
-      //show modal
-      closeModal(familyLinkViewModal);
-      openModal(familyMemberViewModal, linkedFamilyData.uid);
-
-      //close on close
-      closeFamilyMemberViewModal.onclick = function() {
-        closeModal(familyMemberViewModal);
-        openModal(familyLinkViewModal, "familyLinkViewModal");
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == familyMemberViewModal) {
-          closeModal(familyMemberViewModal);
-        }
-      };
-    };
-    if (linkedFamilyData.uid == familyData.uid)
-      textNode = document.createTextNode(linkedFamilyData.name + " (Current Family)");
-    else
-      textNode = document.createTextNode(linkedFamilyData.name);
-    liItem.appendChild(textNode);
-
-    familyLinkViewContainer.insertBefore(liItem, familyLinkViewContainer.childNodes[0]);
   }
 
   function databaseQuery() {
@@ -759,12 +415,6 @@ window.onload = function instantiate() {
           familyData = data.val();
           sessionStorage.setItem("familyData", JSON.stringify(familyData));
 
-          if(familyData.connections == null && currentModalOpen == "familyLinkViewModal")
-            closeModal(familyLinkViewModal);
-          else
-          if(familyData.connections == "" && currentModalOpen == "familyLinkViewModal")
-            closeModal(familyLinkViewModal);
-
           if(familyData.members != null) {
             oldFamilyMemberArr = familyData.members;
             if (oldFamilyMemberArr.length != familyData.members.length) {
@@ -791,33 +441,13 @@ window.onload = function instantiate() {
       });
     };
 
-    let fetchConnections = function (postRef){
-      postRef.on('child_added', function (data) {
-        connectionsArr.push(data.val());
-      });
-
-      postRef.on('child_changed', function (data) {
-        let i = findUIDItemInArr(data.key, connectionsArr);
-        if(connectionsArr[i] != data.val() && i != -1)
-          connectionsArr[i] = data.val();
-      });
-
-      postRef.on('child_removed', function (data) {
-        let i = findUIDItemInArr(data.key, connectionsArr);
-        if(connectionsArr[i] != data.val() && i != -1)
-          connectionsArr.splice(i, 1);
-      });
-    }
-
     fetchData(userInitial);
     fetchInvites(userInvites);
     fetchFamilies(familyInitial);
-    fetchConnections(connectionsInitial);
 
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(familyInitial);
-    listeningFirebaseRefs.push(connectionsInitial);
   }
 
   function createFamilyMemberElement(familyMemberData){
@@ -905,78 +535,6 @@ window.onload = function instantiate() {
     location.reload();
   }
 
-
-  function removeFamilyMemberElement(uid) {
-    //For now this function has been deprecated because I opped for a page reload instead of
-    //finding what was different between two arrays
-    document.getElementById('family' + uid).remove();
-
-    dataCounter--;
-    if (dataCounter == 0){
-      deployListEmptyNotification("No Family Members Found!");
-    }
-  }
-
-  function findFamilyInDB(familyLinkData){
-    let foundFamilyToLink = false;
-    let foundFamilyToLinkUID = "";
-
-    console.log(familyLinkData);
-    console.log(typeof (familyLinkData));
-
-    if (familyLinkData.length > 15 && familyLinkData.match(
-        "^(?=.*[a-zA-Z]+)(?=.*[0-9]+)[-]+[a-zA-Z0-9]+$")) {
-      console.log("This is a UID! " + familyLinkData);
-      foundFamilyToLink = true;
-      foundFamilyToLinkUID = familyLinkData;
-    } else {
-      console.log("This is (potentially) a family name! " + familyLinkData);
-      for (let i = 0; i < familyArr.length; i++)
-        if (familyArr[i].name.toLowerCase() == familyLinkData.toLowerCase()) {
-          console.log("It is a family name!" + familyArr[i].uid);
-          foundFamilyToLink = true;
-          foundFamilyToLinkUID = familyArr[i].uid;
-          break;
-        }
-    }
-
-    if(foundFamilyToLink) {
-      let familyIndex = findUIDItemInArr(foundFamilyToLinkUID, familyArr);
-      if (familyArr[familyIndex].uid != familyData.uid)
-        if (familyArr[familyIndex].connections != null)
-          if (familyArr[familyIndex].connections != "")
-            if (familyData.connections != null)
-              if (familyArr[familyIndex].connections == familyData.connections) {
-                console.log("You have already linked this family!");
-                familyLinkInfo.innerHTML = "This family has already been linked, please try another!";
-              } else {
-                if (familyData.connections != "") {
-                  console.log("You cannot link this family more than once!");
-                  familyLinkInfo.innerHTML = "This family cannot be linked more than once!";
-                } else
-                  validFamilyToLink(foundFamilyToLinkUID);
-              }
-            else
-              validFamilyToLink(foundFamilyToLinkUID);
-          else
-            validFamilyToLink(foundFamilyToLinkUID);
-        else
-          validFamilyToLink(foundFamilyToLinkUID);
-      else {
-        console.log("You cannot link the current family!");
-        familyLinkInfo.innerHTML = "You cannot link the current family to itself!";
-      }
-    } else {
-      familyLinkInfo.innerHTML = "Family does not exist, please try again!";
-    }
-  }
-
-  function validFamilyToLink(foundFamilyToLinkUID) {
-    closeModal(familyLinkModal);
-    familyLinkInfo.innerHTML = "";
-    generateConfirmFamilyLink(foundFamilyToLinkUID);
-  }
-
   function changeFamilyNameInDB(newFamilyName){
     firebase.database().ref("family/" + familyData.uid).update({
       name:newFamilyName
@@ -995,7 +553,6 @@ window.onload = function instantiate() {
         firebase.database().ref("family/" + familyData.uid).update({
           members: {0: memberUID}
         });
-        create
       } else {
         familyData.members.push(memberUID);
         sessionStorage.setItem("familyData", JSON.stringify(familyData));
