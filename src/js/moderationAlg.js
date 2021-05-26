@@ -413,9 +413,13 @@ window.onload = function instantiate() {
     let liItem = document.createElement("LI");
     liItem.id = "user" + userData.uid;
     liItem.className = "gift";
-    if (userData.secretSanta != null)
-      if (userData.secretSanta == 1)
+    if (userData.secretSanta != null) {
+      if (userData.secretSanta == 1 && !checkIfSantaActive()) {
         liItem.className += " santa";
+      } else if (userData.secretSantaName != "") {
+        liItem.className += " santa";
+      }
+    }
     liItem.onclick = function (){
       userName.innerHTML = userData.name;
       userUID.innerHTML = userData.uid;
@@ -437,27 +441,32 @@ window.onload = function instantiate() {
       }
       userPassword.innerHTML = "Click On Me To View Password";
 
-      if(userData.secretSanta != undefined) {
-        if (userData.secretSanta == 0) {
-          userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
-        } else {
-          userSecretSanta.innerHTML = "This User Is Signed Up For Secret Santa";
-          if (userData.secretSantaName != undefined) {
-            if (userData.secretSantaName != "") {
-              userSecretSanta.innerHTML = "Click Here To View Secret Santa Assignment";
-              userSecretSanta.onclick = function(){
-                userSecretSanta.innerHTML = userData.secretSantaName;
-              }
-            }
+      if (checkIfSantaSignUp() && !checkIfSantaActive()) {
+        if(userData.secretSanta != undefined) {
+          if (userData.secretSanta == 0) {
+            userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
+          } else {
+            userSecretSanta.innerHTML = "This User Is Signed Up For Secret Santa";
           }
+        } else {
+          userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
         }
-      } else {
-        userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
+        userSecretSanta.onclick = function() {
+          manuallyOptInOut(userData);
+        };
+      } else if (checkIfSantaActive()) {
+        if (userData.secretSantaName == "") {
+          userSecretSanta.innerHTML = "This User Was Not Assigned A Name";
+          userSecretSanta.onclick = function(){};
+        } else {
+          userSecretSanta.innerHTML = "Click Here To View Secret Santa Assignment";
+          userSecretSanta.onclick = function(){
+            let userSecretIndex = findUIDItemInArr(userData.secretSantaName, userArr);
+            userSecretSanta.innerHTML = userArr[userSecretIndex].name;
+            userSecretSanta.onclick = function(){};
+          };
+        }
       }
-
-      userSecretSanta.onclick = function() {
-        manuallyOptInOut(userData);
-      };
 
       userGifts.onclick = function() {
         if(userData.uid == user.uid){
@@ -560,9 +569,14 @@ window.onload = function instantiate() {
     let editGift = document.getElementById('user' + userData.uid);
     editGift.innerHTML = userData.name;
     editGift.className = "gift";
-    if (userData.secretSanta != null)
-      if (userData.secretSanta == 1)
+    if (userData.secretSanta != null) {
+      if (userData.secretSanta == 1 && !checkIfSantaActive()) {
         editGift.className += " santa";
+      } else if (userData.secretSantaName != "") {
+        editGift.className += " santa";
+      }
+    }
+
     editGift.onclick = function (){
       userName.innerHTML = userData.name;
       userUID.innerHTML = userData.uid;
@@ -584,27 +598,32 @@ window.onload = function instantiate() {
       }
       userPassword.innerHTML = "Click On Me To View Password";
 
-      if(userData.secretSanta != undefined) {
-        if (userData.secretSanta == 0) {
-          userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
-        } else {
-          userSecretSanta.innerHTML = "This User Is Signed Up For Secret Santa";
-          if (userData.secretSantaName != undefined) {
-            if (userData.secretSantaName != "") {
-              userSecretSanta.innerHTML = "Click Here To View Secret Santa Assignment";
-              userSecretSanta.onclick = function(){
-                userSecretSanta.innerHTML = userData.secretSantaName;
-              }
-            }
+      if (checkIfSantaSignUp() && !checkIfSantaActive()) {
+        if(userData.secretSanta != undefined) {
+          if (userData.secretSanta == 0) {
+            userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
+          } else {
+            userSecretSanta.innerHTML = "This User Is Signed Up For Secret Santa";
           }
+        } else {
+          userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
         }
-      } else {
-        userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
+        userSecretSanta.onclick = function() {
+          manuallyOptInOut(userData);
+        };
+      } else if (checkIfSantaActive()) {
+        if (userData.secretSantaName == "") {
+          userSecretSanta.innerHTML = "This User Was Not Assigned A Name";
+          userSecretSanta.onclick = function(){};
+        } else {
+          userSecretSanta.innerHTML = "Click Here To View Secret Santa Assignment";
+          userSecretSanta.onclick = function(){
+            let userSecretIndex = findUIDItemInArr(userData.secretSantaName, userArr);
+            userSecretSanta.innerHTML = userArr[userSecretIndex].name;
+            userSecretSanta.onclick = function(){};
+          };
+        }
       }
-
-      userSecretSanta.onclick = function() {
-        manuallyOptInOut(userData);
-      };
 
       userGifts.onclick = function() {
         if(userData.uid == user.uid){
