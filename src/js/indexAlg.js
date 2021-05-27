@@ -342,22 +342,10 @@ function login() {
           }
         }
       } catch (err) {
-        if(userArr[i].pin == pin.value){
-          if(allowLogin) {
-            loginBool = true;
-            validUserInt = i;
-            break;
-          } else {
-            if(userArr[i].moderatorInt == 1) {
-              loginBool = true;
-              validUserInt = i;
-              break;
-            } else {
-              showLoginAlert++;
-              alert(loginDisabledMsg);
-            }
-          }
-        }
+        console.log("The following error occurred:");
+        console.log(err);
+        loginInfo.innerHTML = "Login Error Occurred. Please Contact A Moderator!";
+        updateMaintenanceLog("index", "Login Error: " + username.value.toLowerCase() + " " + pin.value.toString());
       }
     }
   }
