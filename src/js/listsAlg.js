@@ -187,7 +187,7 @@ window.onload = function instantiate() {
               if(data.val())
                 checkSecretSanta(data.val());
             if(data.key == "manuallyEnable")
-              if(data.val())
+              if (data.val())
                 showSecretSanta();
           });
 
@@ -477,102 +477,6 @@ window.onload = function instantiate() {
           }
         }
       };
-    }
-  }
-
-  function flashGiftNumbers(giftsNum, giftsBtn, giftsIndicator) {
-    let giftString;
-    let giftAlternateText = "View " + giftsIndicator + " Gift List";
-
-    if (giftsNum == 0)
-      giftsNum = "No"; //Absolutely glorious... No?
-
-    if (giftsNum == 1)
-      giftString = "There Is 1 " + giftsIndicator + " Gift";
-    else
-      giftString = "There Are " + giftsNum + " " + giftsIndicator + " Gifts";
-    switch (giftsIndicator) {
-      case "Private":
-        privateListAlternator = setInterval(function(){
-          setButtonText(giftString, giftsBtn, giftButtonAlternatorsA, giftAlternateText);
-        }, 1000);
-        break;
-      case "Public":
-        publicListAlternator = setInterval(function(){
-          setButtonText(giftString, giftsBtn, giftButtonAlternatorsB, giftAlternateText);
-        }, 1000);
-        break;
-      default:
-        console.log("Whoops!");
-        break;
-    }
-  }
-
-  function setButtonText(giftString, giftsBtn, alternator, altString) {
-    alternator[0] = alternator[0] + 1000;
-    if(alternator[0] >= 3000) {
-      alternator[0] = 0;
-      if (alternator[1] == 0) {
-        alternator[1]++;
-        giftsBtn.innerHTML = giftString;
-      } else {
-        alternator[1] = 0;
-        giftsBtn.innerHTML = altString;
-      }
-    }
-  }
-
-  function generatePrivateMessageDialog(userData) {
-    let message = "";
-
-    privateMessageInp.placeholder = "Hey! Just to let you know...";
-
-    sendMsg.onclick = function (){
-      message = generatePrivateMessage(user.uid, privateMessageInp.value);
-      addPrivateMessageToDB(userData, message);
-      privateMessageInp.value = "";
-      closeModal(privateMessageModal);
-      alert("The Message Has Been Sent!");
-    };
-    cancelMsg.onclick = function (){
-      privateMessageInp.value = "";
-      closeModal(privateMessageModal);
-    };
-
-    openModal(privateMessageModal, "add");
-
-    //close on close
-    closePrivateMessageModal.onclick = function() {
-      closeModal(privateMessageModal);
-    };
-
-    //close on click
-    window.onclick = function(event) {
-      if (event.target == privateMessageModal) {
-        closeModal(privateMessageModal);
-      }
-    };
-  }
-
-  function generatePrivateMessage(userUID, message){
-    return userUID + "@#$:" + message;
-  }
-
-  function addPrivateMessageToDB(userData, message) {
-    let userNotificationArr = [];
-    if(userData.notifications == undefined){
-      userNotificationArr = [];
-    } else {
-      userNotificationArr = userData.notifications;
-    }
-    userNotificationArr.push(message);
-
-    if(userData.notifications == undefined) {
-      firebase.database().ref("users/" + userData.uid).update({notifications:{0:message}});
-    } else {
-      firebase.database().ref("users/" + userData.uid).update({
-        notifications: userNotificationArr
-      });
     }
   }
 
