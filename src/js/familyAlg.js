@@ -10,10 +10,8 @@ let inviteArr = [];
 let userArr = [];
 let familyArr = [];
 let familyMemberArr = [];
-let familyConnectionArr = [];
 let loadedFamilyMembersArr = [];
 let loadedFamilyModalsArr = [];
-let connectionsArr = [];
 
 let moderationSet = 1;
 let dataCounter = 0;
@@ -31,7 +29,6 @@ let familyUID;
 let familyMemberCount;
 let familyListContainer;
 let testFamily;
-let familyConnectionCount;
 let familyEdit;
 let familyRemove;
 let familyAddModal;
@@ -50,7 +47,6 @@ let loadingTimer;
 let userInitial;
 let userInvites;
 let familyInitial;
-let connectionsInitial;
 
 
 
@@ -91,7 +87,6 @@ window.onload = function instantiate() {
   familyMemberCount = document.getElementById('familyMemberCount');
   familyListContainer = document.getElementById('familyListContainer');
   testFamily = document.getElementById('testFamily');
-  familyConnectionCount = document.getElementById('familyConnectionCount');
   familyEdit = document.getElementById('familyEdit');
   familyRemove = document.getElementById('familyRemove');
   familyAddModal = document.getElementById('familyAddModal');
@@ -106,8 +101,8 @@ window.onload = function instantiate() {
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
   familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, familyModal,
-    closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily, familyConnectionCount,
-    familyEdit, familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
+    closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily, familyEdit,
+    familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
     offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
   getCurrentUser();
   commonInitialization();
@@ -116,7 +111,6 @@ window.onload = function instantiate() {
   userInitial = firebase.database().ref("users/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
   familyInitial = firebase.database().ref("family/");
-  connectionsInitial = firebase.database().ref("connections/");
 
   loadingTimer = setInterval(function(){
     loadingTimerInt = loadingTimerInt + 1000;
@@ -129,7 +123,7 @@ window.onload = function instantiate() {
           deployListEmptyNotification("No Families Found!");
         }
       } else {
-        if (testData == undefined || listEmptyNotified) {
+        if (testData == undefined) {
           console.log("TestData Missing. Loading Properly.");
         } else {
           testData.innerHTML = "Loading... Please Wait...";
@@ -253,33 +247,13 @@ window.onload = function instantiate() {
       });
     };
 
-    let fetchConnections = function (postRef){
-      postRef.on('child_added', function (data) {
-        connectionsArr.push(data.val());
-      });
-
-      postRef.on('child_changed', function (data) {
-        let i = findUIDItemInArr(data.key, connectionsArr);
-        if(connectionsArr[i] != data.val() && i != -1)
-          connectionsArr[i] = data.val();
-      });
-
-      postRef.on('child_removed', function (data) {
-        let i = findUIDItemInArr(data.key, connectionsArr);
-        if(connectionsArr[i] != data.val() && i != -1)
-          connectionsArr.splice(i, 1);
-      });
-    }
-
     fetchData(userInitial);
     fetchInvites(userInvites);
     fetchFamilies(familyInitial);
-    fetchConnections(connectionsInitial);
 
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(familyInitial);
-    listeningFirebaseRefs.push(connectionsInitial);
   }
 
   function createFamilyElement(familyData){
@@ -287,26 +261,13 @@ window.onload = function instantiate() {
       testData.remove();
     } catch (err) {}
 
-    familyConnectionArr = null;
-
     let liItem = document.createElement("LI");
     liItem.id = "family" + familyData.uid;
     liItem.className = "gift";
     liItem.onclick = function (){
-      if (familyData.connections != "")
-        for (let i = 0; i < connectionsArr.length; i++)
-          if (connectionsArr[i].uid == familyData.connections) {
-            familyConnectionArr = connectionsArr[i].families;
-            break;
-          }
       familyMemberArr = familyData.members;
       familyTitle.innerHTML = familyData.name;
       familyUID.innerHTML = "UID: " + familyData.uid;
-
-      if(familyConnectionArr != null)
-        familyConnectionCount.innerHTML = "# Connections: " + (familyConnectionArr.length - 1);
-      else
-        familyConnectionCount.innerHTML = "# Connections: " + 0;
 
       if (familyMemberArr != null) {
         try {
@@ -402,24 +363,13 @@ window.onload = function instantiate() {
   }
 
   function changeFamilyElement(familyData) {
-    familyConnectionArr = null;
     let editFamily = document.getElementById('family' + familyData.uid);
     editFamily.innerHTML = familyData.name;
     editFamily.className = "gift";
     editFamily.onclick = function (){
-      for (let i = 0; i < connectionsArr.length; i++)
-        if (connectionsArr[i].uid == familyData.connections) {
-          familyConnectionArr = connectionsArr[i].families;
-          break;
-        }
       familyMemberArr = familyData.members;
       familyTitle.innerHTML = familyData.name;
       familyUID.innerHTML = "UID: " + familyData.uid;
-
-      if(familyConnectionArr != null)
-        familyConnectionCount.innerHTML = "# Connections: " + (familyConnectionArr.length - 1);
-      else
-        familyConnectionCount.innerHTML = "# Connections: " + 0;
 
       if (!loadedFamilyModalsArr.includes(familyData.uid)) {
         if (familyMemberArr != null) {
@@ -495,22 +445,6 @@ window.onload = function instantiate() {
   }
 
   function removeFamilyFromDB(uidToRemove) {
-
-    for (let i = 0; i < familyArr.length; i++)
-      if(familyArr[i].uid == uidToRemove)
-        if(familyArr[i].connections != null) {
-          for (let z = 0; z < connectionsArr.length; z++)
-            if(connectionsArr[z].uid == familyArr[i].connections) {
-              connectionsArr[z].families.splice(connectionsArr[z].families.indexOf(uidToRemove), 1);
-
-              firebase.database().ref("connections/" + connectionsArr[z].uid).update({
-                families: connectionsArr[z].families
-              });
-              break;
-            }
-          break;
-        }
-
     firebase.database().ref("family/").child(uidToRemove).remove();
   }
 
