@@ -308,7 +308,7 @@ window.onload = function instantiate() {
     };
 
     removeAllMembers.onclick = function() {
-      alert("This feature will be added soon!");
+      removeAllFamilyMembers(familyData);
     };
 
     openModal(familySettingsModal, "familySettingsModal");
@@ -322,6 +322,13 @@ window.onload = function instantiate() {
         closeModal(familySettingsModal);
       }
     };
+  }
+
+  function removeAllFamilyMembers(familyRemove) {
+    let i = findUIDItemInArr(familyRemove.uid, familyArr);
+    familyArr[i].members = [];
+
+    firebase.database().ref("family/" + familyRemove.uid).child("/members/").remove();
   }
 
   function generateFamilyNameModal() {
