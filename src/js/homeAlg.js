@@ -429,69 +429,9 @@ window.onload = function instantiate() {
 
     let liItem = document.createElement("LI");
     liItem.id = "gift" + uid;
-    liItem.className = "gift";
-    liItem.onclick = function (){
-      if (link != ""){
-        giftLink.innerHTML = "Click me to go to the webpage!";
-        giftLink.onclick = function() {
-          let newGiftLink = "http://";
-          if(link.includes("https://")){
-            giftLink = link.slice(8, link.length);
-          } else if (link.includes("http://")){
-            giftLink = link.slice(7, link.length);
-          }
-          newGiftLink += link;
-          window.open(newGiftLink, "_blank");
-        };
-      } else {
-        giftLink.innerHTML = "There was no link provided";
-        giftLink.onclick = function() {
-        };
-      }
-      if(description != "") {
-        giftDescription.innerHTML = "Description: " + description;
-      } else {
-        giftDescription.innerHTML = "There was no description provided";
-      }
-      giftTitle.innerHTML = title;
-      if(where != "") {
-        giftWhere.innerHTML = "This can be found at: " + where;
-      } else {
-        giftWhere.innerHTML = "There was no location provided";
-      }
-      if(date != undefined) {
-        if (date != "") {
-          giftCreationDate.innerHTML = "Created on: " + date;
-        } else {
-          giftCreationDate.innerHTML = "Creation date not available";
-        }
-      } else {
-        giftCreationDate.innerHTML = "Creation date not available";
-      }
-      giftUpdate.onclick = function(){
-        updateMaintenanceLog("home", "Attempting to update gift: " + title + " " + key + " " + user.userName);
-        updateGiftElement(uid);
-      };
-      giftDelete.onclick = function(){
-        updateMaintenanceLog("home", "Attempting to delete gift: " + title + " " + key + " " + user.userName);
-        deleteGiftElement(key, title, uid, buyer);
-      };
 
-      //show modal
-      openModal(giftModal, uid);
+    initGiftElement(liItem, description, link, received, title, key, where, uid, date, buyer);
 
-      //close on close
-      closeGiftModal.onclick = function() {
-        closeModal(giftModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == giftModal) {
-          closeModal(giftModal);
-        }
-      }
-    };
     let textNode = document.createTextNode(title);
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
@@ -505,16 +445,21 @@ window.onload = function instantiate() {
   function changeGiftElement(description, link, received, title, key, where, uid, date, buyer) {
     let editGift = document.getElementById('gift' + uid);
     editGift.innerHTML = title;
-    editGift.className = "gift";
-    editGift.onclick = function (){
+
+    initGiftElement(description, link, received, title, key, where, uid, date, buyer);
+  }
+
+  function initGiftElement(liItem, description, link, received, title, key, where, uid, date, buyer) {
+    liItem.className = "gift";
+    liItem.onclick = function (){
       if (link != ""){
         giftLink.innerHTML = "Click me to go to the webpage!";
         giftLink.onclick = function() {
           let newGiftLink = "http://";
           if(link.includes("https://")){
-            link = link.slice(8, link.length);
+            giftLink = link.slice(8, link.length);
           } else if (link.includes("http://")){
-            link = link.slice(7, link.length);
+            giftLink = link.slice(7, link.length);
           }
           newGiftLink += link;
           window.open(newGiftLink, "_blank");
