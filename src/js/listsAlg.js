@@ -351,56 +351,7 @@ window.onload = function instantiate() {
       let friendName = friendData.name;
       let liItem = document.createElement("LI");
       liItem.id = "user" + userUid;
-      liItem.className = "gift";
-      liItem.onclick = function () {
-        clearInterval(privateListAlternator);
-        clearInterval(publicListAlternator);
-        userTitle.innerHTML = friendData.name;
-        if(friendData.giftList != undefined){
-          if(friendData.giftList.length > 0) {
-            publicList.onclick = function () {
-              sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
-              newNavigation(9);//FriendList
-            };
-            flashGiftNumbers(friendData.giftList.length, publicList, "Public");
-          } else {
-            publicList.innerHTML = "Public List Empty";
-            publicList.onclick = function () {};
-          }
-        } else {
-          publicList.innerHTML = "Public List Empty";
-          publicList.onclick = function () {};
-        }
-
-        privateList.innerHTML = "View Private Gift List";
-        if(friendData.privateList != undefined)
-          flashGiftNumbers(friendData.privateList.length, privateList, "Private");
-        else
-          flashGiftNumbers(0, privateList, "Private");
-        privateList.onclick = function() {
-          sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
-          newNavigation(10);//PrivateFriendList
-        };
-
-        sendPrivateMessage.onclick = function() {
-          generatePrivateMessageDialog(friendData);
-        };
-
-        //show modal
-        openModal(userModal, userUid);
-
-        //close on close
-        closeUserModal.onclick = function() {
-          closeModal(userModal);
-        };
-
-        //close on click
-        window.onclick = function(event) {
-          if (event.target == userModal) {
-            closeModal(userModal);
-          }
-        };
-      };
+      initFriendElement(liItem, friendData);
       let textNode = document.createTextNode(friendName);
       liItem.appendChild(textNode);
       dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
@@ -423,61 +374,65 @@ window.onload = function instantiate() {
       let friendName = friendData.name;
       let editItem = document.createElement("LI");
       editItem.innerHTML = friendName;
-      editItem.className = "gift";
-      editItem.onclick = function () {
-        clearInterval(privateListAlternator);
-        clearInterval(publicListAlternator);
-        userTitle.innerHTML = friendData.name;
-        if(friendData.giftList != undefined){
-          if(friendData.giftList.length > 0) {
-            publicList.onclick = function () {
-              sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
-              newNavigation(9);//FriendList
-            };
-            flashGiftNumbers(friendData.giftList.length, publicList, "Public");
-          } else {
-            publicList.innerHTML = "Public List Empty";
-            publicList.onclick = function () {};
-          }
+      initFriendElement(editItem, friendData);
+    }
+  }
+
+  function initFriendElement(liItem, friendData) {
+    liItem.className = "gift";
+    liItem.onclick = function () {
+      clearInterval(privateListAlternator);
+      clearInterval(publicListAlternator);
+      userTitle.innerHTML = friendData.name;
+      if(friendData.giftList != undefined){
+        if(friendData.giftList.length > 0) {
+          publicList.onclick = function () {
+            sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
+            newNavigation(9);//FriendList
+          };
+          flashGiftNumbers(friendData.giftList.length, publicList, "Public");
         } else {
           publicList.innerHTML = "Public List Empty";
           publicList.onclick = function () {};
         }
+      } else {
+        publicList.innerHTML = "Public List Empty";
+        publicList.onclick = function () {};
+      }
 
-        privateList.innerHTML = "View Private Gift List";
-        if(friendData.privateList != undefined)
-          flashGiftNumbers(friendData.privateList.length, privateList, "Private");
-        else
-          flashGiftNumbers(0, privateList, "Private");
-        privateList.onclick = function() {
-          sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
-          newNavigation(10);//PrivateFriendList
-        };
+      privateList.innerHTML = "View Private Gift List";
+      if(friendData.privateList != undefined)
+        flashGiftNumbers(friendData.privateList.length, privateList, "Private");
+      else
+        flashGiftNumbers(0, privateList, "Private");
+      privateList.onclick = function() {
+        sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
+        newNavigation(10);//PrivateFriendList
+      };
 
-        sendPrivateMessage.onclick = function() {
-          generatePrivateMessageDialog(friendData);
-        };
+      sendPrivateMessage.onclick = function() {
+        generatePrivateMessageDialog(friendData);
+      };
 
-        //show modal
-        openModal(userModal, friendData.uid);
+      //show modal
+      openModal(userModal, friendData.uid);
 
-        //close on close
-        closeUserModal.onclick = function() {
+      //close on close
+      closeUserModal.onclick = function() {
+        closeModal(userModal);
+        clearInterval(privateListAlternator);
+        clearInterval(publicListAlternator);
+      };
+
+      //close on click
+      window.onclick = function(event) {
+        if (event.target == userModal) {
           closeModal(userModal);
           clearInterval(privateListAlternator);
           clearInterval(publicListAlternator);
-        };
-
-        //close on click
-        window.onclick = function(event) {
-          if (event.target == userModal) {
-            closeModal(userModal);
-            clearInterval(privateListAlternator);
-            clearInterval(publicListAlternator);
-          }
         }
-      };
-    }
+      }
+    };
   }
 
   function removeFriendElement(uid){
