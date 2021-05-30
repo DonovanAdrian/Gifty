@@ -113,7 +113,7 @@ function getCurrentUser(){
         console.log("Notifications Not Found");
     } else if (user.notifications != undefined) {
       if (readNotificationsBool){
-        if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
+        if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
           notificationBtn.src = "img/bellNotificationOn.png";
           notificationBtn.onclick = function() {
             newNavigation(6);//Notifications
@@ -215,7 +215,7 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-        onlineInt = 1;
+        globalNoteInt = 1;
 
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
@@ -320,45 +320,10 @@ window.onload = function instantiate() {
         testData.remove();
       } catch (err) {}
 
-      let userUid = friendData.uid;
-      let friendName = friendData.name;
-      let friendUserName = friendData.userName;
-      let friendShareCode = friendData.shareCode;
       let liItem = document.createElement("LI");
-      liItem.id = "user" + userUid;
-      liItem.className = "gift";
-      liItem.onclick = function () {
-        if (friendShareCode == undefined || friendShareCode == "")
-          friendShareCode = "This User Does Not Have A Share Code";
-
-        userName.innerHTML = friendName;
-        userUName.innerHTML = "User Name: " + friendUserName;
-        userShareCode.innerHTML = "Share Code: " + friendShareCode;
-
-        sendPrivateMessage.onclick = function() {
-          generatePrivateMessageDialog(friendData);
-        };
-
-        userInviteRemove.onclick = function () {
-          closeModal(inviteModal);
-          deleteFriend(userUid);
-        };
-
-        //show modal
-        openModal(inviteModal, userUid);
-
-        //close on close
-        closeInviteModal.onclick = function () {
-          closeModal(inviteModal);
-        };
-
-        //close on click
-        window.onclick = function (event) {
-          if (event.target == inviteModal)
-            closeModal(inviteModal);
-        };
-      };
-      let textNode = document.createTextNode(friendName);
+      liItem.id = "user" + friendData.uid;
+      initFriendElement(liItem, friendData);
+      let textNode = document.createTextNode(friendData.name);
       liItem.appendChild(textNode);
 
       dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
@@ -376,45 +341,45 @@ window.onload = function instantiate() {
       }
 
     if(friendData != null) {
-      let userUid = friendData.uid;
-      let friendName = friendData.name;
-      let friendUserName = friendData.userName;
-      let friendShareCode = friendData.shareCode;
-      let liItemUpdate = document.getElementById('user' + userUid);
-      liItemUpdate.innerHTML = friendName;
-      liItemUpdate.className = "gift";
-      liItemUpdate.onclick = function () {
-        if (friendShareCode == undefined)
-          friendShareCode = "This User Does Not Have A Share Code";
-
-        userName.innerHTML = friendName;
-        userUName.innerHTML = "User Name: " + friendUserName;
-        userShareCode.innerHTML = "Share Code: " + friendShareCode;
-
-        sendPrivateMessage.onclick = function() {
-          generatePrivateMessageDialog(friendData);
-        };
-
-        userInviteRemove.onclick = function () {
-          closeModal(inviteModal);
-          deleteFriend(userUid);
-        };
-
-        //show modal
-        openModal(inviteModal, userUid);
-
-        //close on close
-        closeInviteModal.onclick = function () {
-          closeModal(inviteModal);
-        };
-
-        //close on click
-        window.onclick = function (event) {
-          if (event.target == inviteModal)
-            closeModal(inviteModal);
-        }
-      };
+      let liItemUpdate = document.getElementById('user' + friendData.uid);
+      liItemUpdate.innerHTML = friendData.name;
+      initFriendElement(liItemUpdate, friendData);
     }
+  }
+
+  function initFriendElement(liItem, friendData) {
+    liItem.className = "gift";
+    liItem.onclick = function () {
+      if (friendData.shareCode == undefined || friendData.shareCode == "")
+        friendData.shareCode = "This User Does Not Have A Share Code";
+
+      userName.innerHTML = friendData.name;
+      userUName.innerHTML = "User Name: " + friendData.userName;
+      userShareCode.innerHTML = "Share Code: " + friendData.shareCode;
+
+      sendPrivateMessage.onclick = function() {
+        generatePrivateMessageDialog(friendData);
+      };
+
+      userInviteRemove.onclick = function () {
+        closeModal(inviteModal);
+        deleteFriend(friendData.uid);
+      };
+
+      //show modal
+      openModal(inviteModal, friendData.uid);
+
+      //close on close
+      closeInviteModal.onclick = function () {
+        closeModal(inviteModal);
+      };
+
+      //close on click
+      window.onclick = function (event) {
+        if (event.target == inviteModal)
+          closeModal(inviteModal);
+      };
+    };
   }
 
   function generatePrivateMessageDialog(userData) {
