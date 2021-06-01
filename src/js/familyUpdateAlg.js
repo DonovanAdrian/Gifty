@@ -464,44 +464,27 @@ window.onload = function instantiate() {
 
     let liItem = document.createElement("LI");
     liItem.id = "family" + familyMemberData.uid;
-    liItem.className = "gift";
-    liItem.onclick = function (){
-      familyMemberName.innerHTML = familyMemberData.name;
-      familyMemberUserName.innerHTML = familyMemberData.userName;
-      familyMemberUID.innerHTML = familyMemberData.uid;
-
-      removeFamilyMember.onclick = function() {
-        removeFamilyMemberFromDB(familyMemberData.uid);
-      };
-
-      //show modal
-      openModal(familyMemberViewModal, familyMemberData.uid);
-
-      //close on close
-      closeFamilyMemberViewModal.onclick = function() {
-        closeModal(familyMemberViewModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == familyMemberViewModal) {
-          closeModal(familyMemberViewModal);
-        }
-      };
-    };
+    initFamilyElement(liItem, familyMemberData);
     let textNode = document.createTextNode(familyMemberData.name);
     liItem.appendChild(textNode);
 
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     clearInterval(offlineTimer);
     dataCounter++;
+    if (dataCounter > buttonOpacLim) {
+      familySettings.style.opacity = ".75";
+    }
   }
 
   function changeFamilyMemberElement(familyMemberData) {
-    let editGift = document.getElementById('family' + familyMemberData.uid);
-    editGift.innerHTML = familyMemberData.name;
-    editGift.className = "gift";
-    editGift.onclick = function (){
+    let editFamily = document.getElementById('family' + familyMemberData.uid);
+    editFamily.innerHTML = familyMemberData.name;
+    initFamilyElement(editFamily, familyMemberData);
+  }
+
+  function initFamilyElement(liItem, familyMemberData) {
+    liItem.className = "gift";
+    liItem.onclick = function (){
       familyMemberName.innerHTML = familyMemberData.name;
       familyMemberUserName.innerHTML = familyMemberData.userName;
       familyMemberUID.innerHTML = familyMemberData.uid;
