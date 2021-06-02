@@ -263,6 +263,22 @@ window.onload = function instantiate() {
 
     let liItem = document.createElement("LI");
     liItem.id = "family" + familyData.uid;
+    initFamilyElement(liItem, familyData);
+    let textNode = document.createTextNode(familyData.name);
+    liItem.appendChild(textNode);
+
+    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+    clearInterval(offlineTimer);
+    dataCounter++;
+  }
+
+  function changeFamilyElement(familyData) {
+    let editFamily = document.getElementById('family' + familyData.uid);
+    editFamily.innerHTML = familyData.name;
+    initFamilyElement(editFamily, familyData);
+  }
+
+  function initFamilyElement(liItem, familyData) {
     liItem.className = "gift";
     liItem.onclick = function (){
       familyMemberArr = familyData.members;
@@ -353,94 +369,6 @@ window.onload = function instantiate() {
           closeModal(familyModal);
         }
       };
-    };
-    let textNode = document.createTextNode(familyData.name);
-    liItem.appendChild(textNode);
-
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-    clearInterval(offlineTimer);
-    dataCounter++;
-  }
-
-  function changeFamilyElement(familyData) {
-    let editFamily = document.getElementById('family' + familyData.uid);
-    editFamily.innerHTML = familyData.name;
-    editFamily.className = "gift";
-    editFamily.onclick = function (){
-      familyMemberArr = familyData.members;
-      familyTitle.innerHTML = familyData.name;
-      familyUID.innerHTML = "UID: " + familyData.uid;
-
-      if (!loadedFamilyModalsArr.includes(familyData.uid)) {
-        if (familyMemberArr != null) {
-          try {
-            testFamily.remove();
-          } catch (err) {}
-          familyMemberCount.innerHTML = "# Members: " + familyMemberArr.length;
-          try {
-            testFamily.remove();
-          } catch (err) {}
-
-          if (loadedFamilyMembersArr.length != 0) {
-            for (let a = 0; a < loadedFamilyMembersArr.length; a++) {
-              document.getElementById(loadedFamilyMembersArr[a]).remove();
-              console.log("Removed " + loadedFamilyMembersArr[a]);
-            }
-            loadedFamilyMembersArr = [];
-          } else
-            for (let i = 0; i < familyMemberArr.length; i++) {
-              let liItem = document.createElement("LI");
-              let familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
-              liItem.id = familyMemberArr[i];
-              liItem.className = "gift";
-              let textNode = document.createTextNode(userArr[familyMember].name);
-              liItem.appendChild(textNode);
-              familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
-
-              console.log("Loaded " + familyMemberArr[i]);
-              loadedFamilyMembersArr.push(familyMemberArr[i]);
-            }
-        } else {
-          try {
-            testFamily.remove();
-          } catch (err) {}
-          familyMemberCount.innerHTML = "# Members: " + 0;
-          let liItem = document.createElement("LI");
-          liItem.id = "testFamily";
-          liItem.className = "gift";
-          let textNode = document.createTextNode("No Family Members Found!");
-          liItem.appendChild(textNode);
-          familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
-        }
-        loadedFamilyModalsArr.push(familyData.uid);
-      }
-
-      familyEdit.onclick = function (){
-        sessionStorage.setItem("familyData", JSON.stringify(familyData));
-        newNavigation(16);//familyUpdate
-      };
-
-      familyRemove.onclick = function (){
-        closeModal(familyModal);
-        removeFamilyFromDB(familyData.uid);
-      };
-
-      //show modal
-      openModal(familyModal, familyData.uid);
-
-      //close on close
-      closeFamilyModal.onclick = function() {
-        closeModal(familyModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == familyModal) {
-          closeModal(familyModal);
-        }
-      };
-      if(!loadedFamilyModalsArr.includes(familyData.uid))
-        loadedFamilyModalsArr.push(familyData.uid);
     };
   }
 
