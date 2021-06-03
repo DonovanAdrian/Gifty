@@ -412,147 +412,7 @@ window.onload = function instantiate() {
 
     let liItem = document.createElement("LI");
     liItem.id = "user" + userData.uid;
-    liItem.className = "gift";
-    if (userData.secretSanta != null) {
-      if (userData.secretSanta == 1 && !checkIfSantaActive()) {
-        liItem.className += " santa";
-      } else if (userData.secretSantaName != "") {
-        liItem.className += " santa";
-      }
-    }
-    liItem.onclick = function (){
-      userName.innerHTML = userData.name;
-      userUID.innerHTML = userData.uid;
-      userUserName.innerHTML = userData.userName;
-      if(userData.giftList != undefined){
-        userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
-      } else {
-        userGifts.innerHTML = "This User Has No Gifts";
-      }
-      if(userData.privateList != undefined){
-        userPrivateGifts.innerHTML = "# Private Gifts: " + userData.privateList.length;
-      } else {
-        userPrivateGifts.innerHTML = "This User Has No Private Gifts";
-      }
-      if(userData.friends != undefined) {
-        userFriends.innerHTML = "# Friends: " + userData.friends.length;
-      } else {
-        userFriends.innerHTML = "This User Has No Friends";
-      }
-      userPassword.innerHTML = "Click On Me To View Password";
-
-      if (checkIfSantaSignUp() && !checkIfSantaActive()) {
-        if(userData.secretSanta != undefined) {
-          if (userData.secretSanta == 0) {
-            userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
-          } else {
-            userSecretSanta.innerHTML = "This User Is Signed Up For Secret Santa";
-          }
-        } else {
-          userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
-        }
-        userSecretSanta.onclick = function() {
-          manuallyOptInOut(userData);
-        };
-      } else if (checkIfSantaActive()) {
-        if (userData.secretSantaName == "") {
-          userSecretSanta.innerHTML = "This User Was Not Assigned A Name";
-          userSecretSanta.onclick = function(){};
-        } else {
-          userSecretSanta.innerHTML = "Click Here To View Secret Santa Assignment";
-          userSecretSanta.onclick = function(){
-            let userSecretIndex = findUIDItemInArr(userData.secretSantaName, userArr);
-            userSecretSanta.innerHTML = userArr[userSecretIndex].name;
-            userSecretSanta.onclick = function(){};
-          };
-        }
-      }
-
-      userGifts.onclick = function() {
-        if(userData.uid == user.uid){
-          alert("Navigate to the home page to see your gifts!");
-        } else {
-          sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
-          newNavigation(9);//FriendList
-        }
-      };
-      userPrivateGifts.onclick = function() {
-        if(userData.uid == user.uid){
-          alert("You aren't allowed to see these gifts, silly!");
-        } else {
-          sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
-          newNavigation(10);//PrivateFriendList
-        }
-      };
-      userPassword.onclick = function() {
-        try {
-          userPassword.innerHTML = decode(userData.encodeStr);
-        } catch (err) {
-          userPassword.innerHTML = userData.pin;
-        }
-      };
-      warnUser.onclick = function(){
-        alert("This will eventually warn the user of a certain offense");
-        //warn function
-      };
-      banUser.onclick = function(){
-        alert("This will eventually ban the user for a certain offense");
-        //ban function
-      };
-      if (userData.uid == "-L__dcUyFssV44G9stxY" && user.uid != "-L__dcUyFssV44G9stxY") {
-        moderatorOp.innerHTML = "Don't Even Think About It";
-        moderatorOp.onclick = function() {
-
-        }
-      } else if (userData.moderatorInt == 1) {
-        moderatorOp.innerHTML = "Revoke Moderator Role";
-        moderatorOp.onclick = function() {
-          if(userData.uid == user.uid){
-            alert("You cannot adjust your own role");
-          } else {
-            alert("Revoked role for: " + userData.userName);
-            firebase.database().ref("users/" + userData.uid).update({
-              moderatorInt: 0
-            });
-            closeModal(userModal);
-          }
-        };
-      } else {
-        moderatorOp.innerHTML = "Grant Moderator Role";
-        moderatorOp.onclick = function() {
-          if(userData.userName == user.userName){
-            alert("You cannot adjust your own role");
-            console.log("...How'd you get here...?");
-          } else {
-            alert("Granted role for: " + userData.userName);
-            firebase.database().ref("users/" + userData.uid).update({
-              moderatorInt: 1
-            });
-            closeModal(userModal);
-          }
-        };
-      }
-
-      sendPrivateMessage.innerHTML = "Send Message To " + userData.name;
-      sendPrivateMessage.onclick = function() {
-        generatePrivateMessageDialog(userData);
-      };
-
-      //show modal
-      openModal(userModal, userData.uid);
-
-      //close on close
-      closeUserModal.onclick = function() {
-        closeModal(userModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == userModal) {
-          closeModal(userModal);
-        }
-      };
-    };
+    initUserElement(liItem, userData);
     let textNode = document.createTextNode(userData.name);
     liItem.appendChild(textNode);
 
@@ -566,18 +426,21 @@ window.onload = function instantiate() {
   }
 
   function changeUserElement(userData) {
-    let editGift = document.getElementById('user' + userData.uid);
-    editGift.innerHTML = userData.name;
-    editGift.className = "gift";
+    let editUser = document.getElementById('user' + userData.uid);
+    editUser.innerHTML = userData.name;
+    initUserElement(editUser, userData);
+  }
+
+  function initUserElement(liItem, userData) {
+    liItem.className = "gift";
     if (userData.secretSanta != null) {
       if (userData.secretSanta == 1 && !checkIfSantaActive()) {
-        editGift.className += " santa";
+        liItem.className += " santa";
       } else if (userData.secretSantaName != "") {
-        editGift.className += " santa";
+        liItem.className += " santa";
       }
     }
-
-    editGift.onclick = function (){
+    liItem.onclick = function (){
       userName.innerHTML = userData.name;
       userUID.innerHTML = userData.uid;
       userUserName.innerHTML = userData.userName;
