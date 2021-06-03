@@ -275,54 +275,15 @@ window.onload = function instantiate() {
       }
     }
 
-    let userUid = inviteData.uid;
-    let inviteName = inviteData.name;
-    let inviteUserName = inviteData.userName;
-    let inviteShareCode = inviteData.shareCode;
-    let liItem = document.createElement("LI");
-    liItem.id = "user" + userUid;
-    liItem.className = "gift";
-    liItem.onclick = function (){
-
-      if(inviteShareCode == undefined) {
-        inviteShareCode = "This User Does Not Have A Share Code";
-      }
-
-      userNameFld.innerHTML = inviteName;
-      userUNameFld.innerHTML = "User Name: " + inviteUserName;
-      userShareCodeFld.innerHTML = "Share Code: " + inviteShareCode;
-
-      userAcceptBtn.onclick = function(){
-        addInvite(inviteData);
-        closeModal(inviteModal);
-      };
-
-      userDeleteBtn.onclick = function(){
-        deleteInvite(userUid);
-        closeModal(inviteModal);
-      };
-
-      //show modal
-      openModal(inviteModal, userUid);
-
-      //close on close
-      closeInviteModal.onclick = function() {
-        closeModal(inviteModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == inviteModal) {
-          closeModal(inviteModal);
-        }
-      }
-    };
-    let textNode = document.createTextNode(inviteName);
-    liItem.appendChild(textNode);
-
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-
-    dataCounter++;
+    if (inviteData != null) {
+      let liItem = document.createElement("LI");
+      liItem.id = "user" + inviteData.uid;
+      initInviteElement(liItem, inviteData);
+      let textNode = document.createTextNode(inviteData.name);
+      liItem.appendChild(textNode);
+      dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+      dataCounter++;
+    }
   }
 
   function changeInviteElement(inviteKey){
@@ -334,22 +295,24 @@ window.onload = function instantiate() {
       }
     }
 
-    let userUid = inviteData.uid;
-    let inviteName = inviteData.name;
-    let inviteUserName = inviteData.userName;
-    let inviteShareCode = inviteData.shareCode;
-    let liItemUpdate = document.getElementById('user' + inviteData.uid);
-    liItemUpdate.innerHTML = inviteName;
-    liItemUpdate.className = "gift";
-    liItemUpdate.onclick = function (){
+    if (inviteData != null) {
+      let liItemUpdate = document.getElementById('user' + inviteData.uid);
+      liItemUpdate.innerHTML = inviteData.name;
+      initInviteElement(liItemUpdate, inviteData);
+    }
+  }
 
-      if(inviteShareCode == undefined) {
-        inviteShareCode = "This User Does Not Have A Share Code";
+  function initInviteElement(liItem, inviteData) {
+    liItem.className = "gift";
+    liItem.onclick = function (){
+
+      if(inviteData.shareCode == undefined) {
+        inviteData.shareCode = "This User Does Not Have A Share Code";
       }
 
-      userNameFld.innerHTML = inviteName;
-      userUNameFld.innerHTML = "User Name: " + inviteUserName;
-      userShareCodeFld.innerHTML = "Share Code: " + inviteShareCode;
+      userNameFld.innerHTML = inviteData.name;
+      userUNameFld.innerHTML = "User Name: " + inviteData.userName;
+      userShareCodeFld.innerHTML = "Share Code: " + inviteData.shareCode;
 
       userAcceptBtn.onclick = function(){
         addInvite(inviteData);
@@ -357,12 +320,12 @@ window.onload = function instantiate() {
       };
 
       userDeleteBtn.onclick = function(){
-        deleteInvite(userUid);
+        deleteInvite(inviteData.uid);
         closeModal(inviteModal);
       };
 
       //show modal
-      openModal(inviteModal, userUid);
+      openModal(inviteModal, inviteData.uid);
 
       //close on close
       closeInviteModal.onclick = function() {
