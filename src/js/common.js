@@ -4,18 +4,18 @@
  * with written consent under any circumstance.
  */
 
-let areYouStillThereBool = false;
-let areYouStillThereInit = false;
-
-let currentModalOpen = "";
-let currentTitle;
-
 let buttonOpacLim = 7;
 let logoutReminder = 300;
 let logoutLimit = 900;
 let consoleOutput = false;
 
+let areYouStillThereBool = false;
+let areYouStillThereInit = false;
+
 let currentModalOpenObj = null;
+
+let currentModalOpen = "";
+let currentTitle;
 
 let userChecker;
 let dataListChecker;
@@ -424,4 +424,25 @@ function deployListEmptyNotification(dataItemText){
   }
 
   clearInterval(offlineTimer);
+}
+
+function updateMaintenanceLog(locationData, detailsData) {
+  let today = new Date();
+  let UTChh = today.getUTCHours();
+  let UTCmm = today.getUTCMinutes();
+  let UTCss = today.getUTCSeconds();
+  let dd = today.getUTCDate();
+  let mm = today.getMonth()+1;
+  let yy = today.getFullYear();
+  let timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
+  let newUid = firebase.database().ref("maintenance").push();
+  newUid = newUid.toString();
+  newUid = findUIDInString(newUid);
+
+  firebase.database().ref("maintenance/" + newUid).set({
+    uid: newUid,
+    location: locationData,
+    details: detailsData,
+    time: timeData
+  });
 }
