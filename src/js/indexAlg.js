@@ -12,7 +12,7 @@ let config = {};
 
 let loginDisabledMsg = "";
 let newGiftyMessage = "Please create a new user before trying to log into Gifty! Click on the text below the login " +
-    "button and fill out the form to make a user.";
+    "button and fill out the form to make a user account.";
 
 let loginBool = false;
 let allowLogin = true;
@@ -365,27 +365,6 @@ function login() {
     if (username.value != "" && pin.value != "")
       updateMaintenanceLog("index", "Invalid Login: " + username.value.toLowerCase() + " " + pin.value.toString());
   }
-}
-
-function updateMaintenanceLog(locationData, detailsData) {
-  let today = new Date();
-  let UTChh = today.getUTCHours();
-  let UTCmm = today.getUTCMinutes();
-  let UTCss = today.getUTCSeconds();
-  let dd = today.getUTCDate();
-  let mm = today.getMonth()+1;
-  let yy = today.getFullYear();
-  let timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
-  let newUid = firebase.database().ref("maintenance").push();
-  newUid = newUid.toString();
-  newUid = findUIDInString(newUid);
-
-  firebase.database().ref("maintenance/" + newUid).set({
-    uid: newUid,
-    location: locationData,
-    details: detailsData,
-    time: timeData
-  });
 }
 
 function signUp(){
