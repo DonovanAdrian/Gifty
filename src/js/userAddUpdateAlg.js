@@ -152,27 +152,6 @@ window.onload = function instantiate() {
   }
 };
 
-function updateMaintenanceLog(locationData, detailsData) {
-  let today = new Date();
-  let UTChh = today.getUTCHours();
-  let UTCmm = today.getUTCMinutes();
-  let UTCss = today.getUTCSeconds();
-  let dd = today.getUTCDate();
-  let mm = today.getMonth()+1;
-  let yy = today.getFullYear();
-  let timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
-  let newUid = firebase.database().ref("maintenance").push();
-  newUid = newUid.toString();
-  newUid = findUIDInString(newUid);
-
-  firebase.database().ref("maintenance/" + newUid).set({
-    uid: newUid,
-    location: locationData,
-    details: detailsData,
-    time: timeData
-  });
-}
-
 function deleteCheck(){
   updateMaintenanceLog("userAddUpdate", "Attempting to delete user: " + user.userName);
 
