@@ -9,23 +9,23 @@ body {
   transition: 3.5s;
 }
 
+.iconContainer {
+  position: relative;
+  text-align: center;
+  z-index: 0;
+  top: -150px;
+}
+
 .loginContainer {
   position: relative;
   text-align: center;
-}
-
-.centeredLogin {
-  position: fixed;
-  display: block;
-  top: 340px;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  z-index: 1;
 }
 
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 2; /* Sit on top */
   padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
@@ -109,8 +109,8 @@ button {
 }
 
 @media screen and (min-width: 0px) and (max-width: 600px) {
-  .centeredLogin {
-    top: 375px;
+  .loginContainer {
+    top: 175px;
   }
   input {
     width: 300px;
@@ -137,9 +137,9 @@ button {
   }
 }
 
-@media screen and (min-width: 1000px) and (max-width: 1500px) {
-  .centeredLogin {
-    top: 375px;
+@media screen and (min-width: 600px) and (max-width: 1000px) {
+  .loginContainer {
+    top: 275px;
   }
   input {
     width: 500px;
@@ -166,15 +166,15 @@ button {
   }
 }
 
-@media screen and (min-width: 1500px) and (max-width: 2000px) {
-  .centeredLogin {
-    top: 475px;
+@media screen and (min-width: 1000px) and (max-width: 2000px) {
+  .loginContainer {
+    top: 375px;
   }
   input {
-    width: 700px;
+    width: 900px;
   }
   button {
-    width: 720px;
+    width: 920px;
   }
   img.imgIcon {
     width: 750px;
@@ -195,15 +195,15 @@ button {
   }
 }
 
-@media screen and (min-width: 2000px) {
-  .centeredLogin {
-    top: 600px;
+@media screen and (min-width: 1800px){
+  .loginContainer {
+    top: 475px;
   }
   input {
-    width: 850px;
+    width: 1700px;
   }
   button {
-    width: 870px;
+    width: 1720px;
   }
   img.imgIcon {
     width: 950px;
