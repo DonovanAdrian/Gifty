@@ -13,7 +13,7 @@ let oldFamilyMemberArr = [];
 
 let moderationSet = 1;
 let dataCounter = 0;
-let loadingTimerInt = 0;
+let commonLoadingTimerInt = 0;
 
 let familyData;
 let inviteNote;
@@ -27,7 +27,15 @@ let closeFamilyMemberViewModal;
 let familyMemberName;
 let familyMemberUserName;
 let familyMemberUID;
+let familyMemberParent;
+let familyMemberChild;
 let removeFamilyMember;
+let familyPCModal;
+let closeFamilyPCModal;
+let familyPCTitle;
+let familyPCText;
+let familyPCListContainer;
+let testFamily;
 let familyAddModal;
 let closeFamilyAddModal;
 let familyMemberInp;
@@ -57,7 +65,7 @@ let noteSpan;
 let notificationTitle;
 let notificationInfo;
 let offlineTimer;
-let loadingTimer;
+let commonLoadingTimer;
 let userInitial;
 let userInvites;
 let familyInitial;
@@ -101,7 +109,15 @@ window.onload = function instantiate() {
   familyMemberName = document.getElementById('familyMemberName');
   familyMemberUserName = document.getElementById('familyMemberUserName');
   familyMemberUID = document.getElementById('familyMemberUID');
+  familyMemberParent = document.getElementById('familyMemberParent');
+  familyMemberChild = document.getElementById('familyMemberChild');
   removeFamilyMember = document.getElementById('removeFamilyMember');
+  familyPCModal = document.getElementById('familyPCModal');
+  closeFamilyPCModal = document.getElementById('closeFamilyPCModal');
+  familyPCTitle = document.getElementById('familyPCTitle');
+  familyPCText = document.getElementById('familyPCText');
+  familyPCListContainer = document.getElementById('familyPCListContainer');
+  testFamily = document.getElementById('testFamily');
   familyAddModal = document.getElementById('familyAddModal');
   closeFamilyAddModal = document.getElementById('closeFamilyAddModal');
   familyMemberInp = document.getElementById('familyMemberInp');
@@ -132,12 +148,13 @@ window.onload = function instantiate() {
   notificationInfo = document.getElementById('notificationInfo');
   familyUpdateElements = [inviteNote, settingsNote, dataListContainer, testData, addMember, familySettings,
     familyMemberViewModal, closeFamilyMemberViewModal, familyMemberName, familyMemberUserName, familyMemberUID,
-    removeFamilyMember, familyAddModal, closeFamilyAddModal, familyMemberInp, addMemberInfo, addFamilyMember,
-    cancelFamilyMember, familyNameModal, closeFamilyNameModal, familyNameInp, updateFamilyName, cancelFamilyName,
-    familyNameInp, updateFamilyName, cancelFamilyName, familySettingsModal, familySettingsTitle, closeFamilySettings,
-    changeFamilyName, removeAllMembers, confirmMemberModal, closeConfirmMemberModal, confirmMemberTitle,
-    confMemberUserName, addMemberConfirm, addMemberDeny, offlineModal, offlineSpan, notificationModal, noteSpan,
-    notificationTitle, notificationInfo];
+    familyMemberParent, familyMemberChild, removeFamilyMember, familyPCModal, closeFamilyPCModal, familyPCTitle,
+    familyPCText, familyPCListContainer, testFamily, familyAddModal, closeFamilyAddModal, familyMemberInp,
+    addMemberInfo, addFamilyMember, cancelFamilyMember, familyNameModal, closeFamilyNameModal, familyNameInp,
+    updateFamilyName, cancelFamilyName, familyNameInp, updateFamilyName, cancelFamilyName, familySettingsModal,
+    familySettingsTitle, closeFamilySettings, changeFamilyName, removeAllMembers, confirmMemberModal,
+    closeConfirmMemberModal, confirmMemberTitle, confMemberUserName, addMemberConfirm, addMemberDeny, offlineModal,
+    offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(familyUpdateElements);
@@ -145,26 +162,6 @@ window.onload = function instantiate() {
   userInitial = firebase.database().ref("users/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
   familyInitial = firebase.database().ref("family/");
-
-  loadingTimer = setInterval(function(){
-    loadingTimerInt = loadingTimerInt + 1000;
-    if(loadingTimerInt >= 2000){
-      if(loadingTimerInt >= 5000){
-        clearInterval(loadingTimer);
-        if (testData == undefined) {
-          console.log("TestData Missing. Loading Properly.");
-        } else {
-          deployListEmptyNotification("No Family Members Found!");
-        }
-      } else {
-        if (testData == undefined) {
-          console.log("TestData Missing. Loading Properly.");
-        } else {
-          testData.innerHTML = "Loading... Please Wait...";
-        }
-      }
-    }
-  }, 1000);
 
   databaseQuery();
 
@@ -182,16 +179,18 @@ window.onload = function instantiate() {
     generateFamilySettingsModal();
   };
 
-  if(familyData.members != null)
-    if(familyData.members.length > 0)
-      for(let i = 0; i < familyData.members.length; i++) {
+  if(familyData.members != null) {
+    if (familyData.members.length > 0) {
+      for (let i = 0; i < familyData.members.length; i++) {
         let a = findUIDItemInArr(familyData.members[i], userArr);
         createFamilyMemberElement(userArr[a]);
       }
-    else
+    } else {
       deployListEmptyNotification("No Family Members Found!");
-  else
+    }
+  } else {
     deployListEmptyNotification("No Family Members Found!");
+  }
 
   function generateAddMemberModal() {
     let familyMemberFound = false;
@@ -273,6 +272,8 @@ window.onload = function instantiate() {
         addMemberInfo.innerHTML = "";
         familyMemberInp.value = "";
         addFamilyMemberToDB(dataUID);
+      } else if (confirmType == "parentChild") {
+        updateFamilyRelationsToDB();
       }
       closeModal(confirmMemberModal);
       return true;
@@ -280,8 +281,11 @@ window.onload = function instantiate() {
 
     addMemberDeny.onclick = function() {
       closeModal(confirmMemberModal);
-      if (confirmType == "user")
+      if (confirmType == "user") {
         openModal(familyAddModal, "familyAddModal");
+      } else if (confirmType == "parentChild") {
+        openModal(familyPCModal, "familyPCModal");
+      }
       return false;
     }
 
@@ -289,7 +293,11 @@ window.onload = function instantiate() {
 
     closeConfirmMemberModal.onclick = function() {
       closeModal(confirmMemberModal);
-      openModal(familyAddModal, "familyAddModal");
+      if (confirmType == "user") {
+        openModal(familyAddModal, "familyAddModal");
+      } else if (confirmType == "parentChild") {
+        openModal(familyPCModal, "familyPCModal");
+      }
     };
 
     window.onclick = function(event) {
@@ -469,6 +477,7 @@ window.onload = function instantiate() {
     liItem.appendChild(textNode);
 
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+    clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
     dataCounter++;
     if (dataCounter > buttonOpacLim) {
@@ -488,6 +497,14 @@ window.onload = function instantiate() {
       familyMemberName.innerHTML = familyMemberData.name;
       familyMemberUserName.innerHTML = familyMemberData.userName;
       familyMemberUID.innerHTML = familyMemberData.uid;
+
+      familyMemberParent.onclick = function() {
+        generateFamilyPCModal("parent", familyMemberData);
+      };
+
+      familyMemberChild.onclick = function() {
+        generateFamilyPCModal("child", familyMemberData);
+      };
 
       removeFamilyMember.onclick = function() {
         removeFamilyMemberFromDB(familyMemberData.uid);
@@ -562,5 +579,27 @@ window.onload = function instantiate() {
         members: {0: memberUID}
       });
     }
+  }
+
+  function generateFamilyPCModal(parentChild, parentChildData) {//ToDo
+    //a "parent" input will result in the parent of the user being prompted.
+    //same applies for "child" input
+
+    //if/else
+    //set text
+
+    //generate list of users (all except current user)
+    //set global parent-child data and generate confirm user modal upon click:
+    //generateConfirmDataModal();
+    //clear global parent-child data if criteria not met
+  }
+
+  function updateFamilyRelationsToDB() {//ToDo
+    //use global parent-child data
+
+    //Update parent with parent-child.uid data on DB
+    //Update child with parent-child.uid data on DB
+
+    //clear global parent-child data
   }
 };
