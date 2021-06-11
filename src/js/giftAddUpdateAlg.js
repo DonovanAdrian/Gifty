@@ -45,17 +45,19 @@ function getCurrentUser(){
 
   try {
     user = JSON.parse(sessionStorage.validUser);
-    if(user.moderatorInt == 1)
-      localConsoleOutput = true;
     privateList = JSON.parse(sessionStorage.privateList);
     if(privateList == null || privateList == undefined || privateList == "") {
       privateListBool = false;
+      if(user.moderatorInt == 1)
+        localConsoleOutput = true;
       if(localConsoleOutput)
         console.log("User: " + user.userName + " loaded in");
     } else {
       privateUser = JSON.parse(sessionStorage.validPrivateUser);
       homeNote.className = "";
       listNote.className = "active";
+      if(privateUser.moderatorInt == 1)
+        localConsoleOutput = true;
       if(localConsoleOutput) {
         console.log("User: " + privateUser.userName + " loaded in");
         console.log("Friend: " + user.userName + " loaded in");
