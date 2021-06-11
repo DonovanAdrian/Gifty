@@ -14,7 +14,7 @@ let listeningFirebaseRefs = [];
 let notificationListEmptyBool = false;
 
 let dataCounter = 0;
-let loadingTimerInt = 0;
+let commonLoadingTimerInt = 0;
 
 let dataListContainer;
 let offlineSpan;
@@ -25,7 +25,7 @@ let userNotifications;
 let userInvites;
 let noteViewModal;
 let inviteNote;
-let loadingTimer;
+let commonLoadingTimer;
 let offlineTimer;
 let notificationModal;
 let privateMessageModal;
@@ -125,22 +125,6 @@ window.onload = function instantiate() {
   commonInitialization();
   verifyElementIntegrity(notificationsElements);
 
-  loadingTimer = setInterval(function(){
-    loadingTimerInt = loadingTimerInt + 1000;
-    if(loadingTimerInt >= 2000){
-      if (testData == undefined){
-        if(consoleOutput)
-          console.log("TestData Missing. Loading Properly.");
-      } else if (testData.innerHTML == "No Notifications Found!"){
-        if(consoleOutput)
-          console.log("No Notifications Found");
-      } else if (!notificationListEmptyBool) {
-        testData.innerHTML = "Loading... Please Wait...";
-      }
-      clearInterval(loadingTimer);
-    }
-  }, 1000);
-
   databaseQuery();
 
   function databaseQuery() {
@@ -223,7 +207,7 @@ window.onload = function instantiate() {
   }
 
   function createNotificationElement(notificationString, notificationKey){
-    try{
+    try {
       testData.remove();
     } catch (err) {}
 
@@ -310,93 +294,18 @@ window.onload = function instantiate() {
 
     let liItem = document.createElement("LI");
     liItem.id = "notification" + notificationKey;
-    liItem.className = "gift";
-    if(readNotificationArr.includes(notificationString)) {
-      liItem.className += " checked";
-      if(consoleOutput)
-        console.log("Checked, created");
-    }
-    liItem.onclick = function (){
-      notificationViewTitle.innerHTML = notificationTitle;
-      notificationViewDetails.innerHTML = notificationDetails;
-
-      if (notificationPage == "privateMessage") {
-        notificationViewPage.innerHTML = "To reply to this message, click here!";
-        notificationViewPage.onclick = function(){
-          generatePrivateMessageDialog(friendUserData);
-        };
-      } else if (notificationPage == "globalNotification"){
-        notificationViewPage.innerHTML = "As always, if you need any other information, send me a support email that can" +
-            " be found in the Help/FAQ under settings! Thank you!";
-        notificationViewPage.onclick = function(){};
-      } else if (notificationPage == "invites.html"){
-        notificationViewPage.innerHTML = "Click here to access your invites!";
-        notificationViewPage.onclick = function(){
-          newNavigation(11);//Confirmation
-        };
-      } else if (notificationPage == "friendList.html" && friendUserData != -1) {
-        notificationViewPage.innerHTML = "Click here to access their friend list!";
-        notificationViewPage.onclick = function(){
-          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
-          newNavigation(9);//FriendList
-        };
-      } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
-        notificationViewPage.innerHTML = "Click here to access their private friend list!";
-        notificationViewPage.onclick = function(){
-          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
-          newNavigation(10);//PrivateFriendList
-        };
-      } else if (notificationPage == "deleteGift") {
-        notificationViewPage.innerHTML = "If this has been done in error, please contact the gift owner.";
-        notificationViewPage.onclick = function(){};
-      } else if (notificationPage == "deleteGiftPrivate") {
-        notificationViewPage.innerHTML = "If this has been done in error, please contact the person who deleted " +
-            "the gift.";
-        notificationViewPage.onclick = function(){};
-      } else {
-        if(consoleOutput)
-          console.log("Notification Page Error, 2");
-        notificationViewPage.innerHTML = "There was an error loading this link, contact an administrator.";
-        notificationViewPage.onclick = function(){};
-      }
-
-      notificationViewDelete.onclick = function(){
-        deleteNotification(notificationKey);
-        closeModal(noteViewModal);
-      };
-
-      //show modal
-      openModal(noteViewModal, notificationKey);
-
-      //close on close
-      closeNoteViewModal.onclick = function() {
-        closeModal(noteViewModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == noteViewModal) {
-          closeModal(noteViewModal);
-        }
-      };
-
-      if (!readNotificationArr.includes(notificationString)) {
-        readNotificationArr.push(notificationString);
-
-        user.readNotifications = readNotificationArr;
-        updateReadNotificationToDB();
-      }
-    };
+    initNotificationElement(liItem, notificationString, notificationKey, notificationDetails, notificationPage,
+        friendUserData);
     let textNode = document.createTextNode(notificationTitle);
     liItem.appendChild(textNode);
-
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-
+    clearInterval(commonLoadingTimer);
+    clearInterval(offlineTimer);
     dataCounter++;
   }
 
   function changeNotificationElement(notificationString, notificationKey){
-    try{
+    try {
       testData.remove();
     } catch (err) {}
 
@@ -484,87 +393,93 @@ window.onload = function instantiate() {
     let liItemUpdate = document.getElementById('notification' + notificationKey);
     if (liItemUpdate == undefined) {
       liItemUpdate.innerHTML = notificationTitle;
-      liItemUpdate.className = "gift";
-      if(readNotificationArr.includes(notificationString)) {
-        liItemUpdate.className += " checked";
+      initNotificationElement(liItemUpdate, notificationString, notificationKey, notificationDetails, notificationPage,
+          friendUserData);
+    }
+  }
+
+  function initNotificationElement(liItem, notificationString, notificationKey, notificationDetails, notificationPage,
+                                   friendUserData) {
+    liItem.className = "gift";
+    if(readNotificationArr.includes(notificationString)) {
+      liItem.className += " checked";
+      if(consoleOutput)
+        console.log("Checked, created");
+    }
+    liItem.onclick = function () {
+      notificationViewTitle.innerHTML = notificationTitle;
+      notificationViewDetails.innerHTML = notificationDetails;
+
+      if (notificationPage == "privateMessage" && friendUserData != -1) {
+        notificationViewPage.innerHTML = "To reply to this message, click here!";
+        notificationViewPage.onclick = function(){
+          generatePrivateMessageDialog(friendUserData);
+        };
+      } else if (notificationPage == "globalNotification"){
+        notificationViewPage.innerHTML = "As always, if you need any other information, send me a support email that can" +
+            " be found in the Help/FAQ under settings! Thank you!";
+        notificationViewPage.onclick = function(){};
+      } else if (notificationPage == "invites.html") {
+        notificationViewPage.innerHTML = "Click here to access your invites!";
+        notificationViewPage.onclick = function () {
+          newNavigation(11);//Confirmation
+        };
+      } else if (notificationPage == "friendList.html" && friendUserData != -1) {
+        notificationViewPage.innerHTML = "Click here to access their friend list!";
+        notificationViewPage.onclick = function () {
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
+          newNavigation(9);//FriendList
+        };
+      } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
+        notificationViewPage.innerHTML = "Click here to access their private friend list!";
+        notificationViewPage.onclick = function () {
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
+          newNavigation(10);//PrivateFriendList
+        };
+      } else if (notificationPage == "deleteGift") {
+        notificationViewPage.innerHTML = "If this has been done in error, please contact the gift owner.";
+        notificationViewPage.onclick = function () {
+        };
+      } else if (notificationPage == "deleteGiftPrivate") {
+        notificationViewPage.innerHTML = "If this has been done in error, please contact the person who deleted " +
+            "the gift.";
+        notificationViewPage.onclick = function () {
+        };
+      } else {
         if(consoleOutput)
-          console.log("Checked, created");
+          console.log("Notification Page Error, 2");
+        notificationViewPage.innerHTML = "There was an error loading this link, contact an administrator.";
+        notificationViewPage.onclick = function () {
+        };
       }
-      liItemUpdate.onclick = function () {
-        notificationViewTitle.innerHTML = notificationTitle;
-        notificationViewDetails.innerHTML = notificationDetails;
 
-        if (notificationPage == "privateMessage" && friendUserData != -1) {
-          notificationViewPage.innerHTML = "To reply to this message, click here!";
-          notificationViewPage.onclick = function(){
-            generatePrivateMessageDialog(friendUserData);
-          };
-        } else if (notificationPage == "globalNotification"){
-          notificationViewPage.innerHTML = "As always, if you need any other information, send me a support email that can" +
-              " be found in the Help/FAQ under settings! Thank you!";
-          notificationViewPage.onclick = function(){};
-        } else if (notificationPage == "invites.html") {
-          notificationViewPage.innerHTML = "Click here to access your invites!";
-          notificationViewPage.onclick = function () {
-            newNavigation(11);//Confirmation
-          };
-        } else if (notificationPage == "friendList.html" && friendUserData != -1) {
-          notificationViewPage.innerHTML = "Click here to access their friend list!";
-          notificationViewPage.onclick = function () {
-            sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
-            newNavigation(9);//FriendList
-          };
-        } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
-          notificationViewPage.innerHTML = "Click here to access their private friend list!";
-          notificationViewPage.onclick = function () {
-            sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
-            newNavigation(10);//PrivateFriendList
-          };
-        } else if (notificationPage == "deleteGift") {
-          notificationViewPage.innerHTML = "If this has been done in error, please contact the gift owner.";
-          notificationViewPage.onclick = function () {
-          };
-        } else if (notificationPage == "deleteGiftPrivate") {
-          notificationViewPage.innerHTML = "If this has been done in error, please contact the person who deleted " +
-              "the gift.";
-          notificationViewPage.onclick = function () {
-          };
-        } else {
-          if(consoleOutput)
-            console.log("Notification Page Error, 2");
-          notificationViewPage.innerHTML = "There was an error loading this link, contact an administrator.";
-          notificationViewPage.onclick = function () {
-          };
-        }
+      notificationViewDelete.onclick = function () {
+        deleteNotification(notificationKey);
+        closeModal(noteViewModal);
+      };
 
-        notificationViewDelete.onclick = function () {
-          deleteNotification(notificationKey);
+      //show modal
+      openModal(noteViewModal, notificationKey);
+
+      //close on close
+      closeNoteViewModal.onclick = function () {
+        closeModal(noteViewModal);
+      };
+
+      //close on click
+      window.onclick = function (event) {
+        if (event.target == noteViewModal) {
           closeModal(noteViewModal);
-        };
-
-        //show modal
-        openModal(noteViewModal, notificationKey);
-
-        //close on close
-        closeNoteViewModal.onclick = function () {
-          closeModal(noteViewModal);
-        };
-
-        //close on click
-        window.onclick = function (event) {
-          if (event.target == noteViewModal) {
-            closeModal(noteViewModal);
-          }
-        };
-
-        if (!readNotificationArr.includes(notificationString)) {
-          readNotificationArr.push(notificationString);
-
-          user.readNotifications = readNotificationArr;
-          updateReadNotificationToDB();
         }
       };
-    }
+
+      if (!readNotificationArr.includes(notificationString)) {
+        readNotificationArr.push(notificationString);
+
+        user.readNotifications = readNotificationArr;
+        updateReadNotificationToDB();
+      }
+    };
   }
 
   function generatePrivateMessageDialog(userData) {
