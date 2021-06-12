@@ -9,6 +9,8 @@ let logoutReminder = 300;
 let logoutLimit = 900;
 let consoleOutput = false;
 
+let loadingTimerCancelled = false;
+
 let areYouStillThereBool = false;
 let areYouStillThereInit = false;
 
@@ -143,15 +145,17 @@ function commonInitialization(){
   };
 
   if (dataListChecker != null) {
-    loadingTimer = setInterval(function(){
-      loadingTimerInt = loadingTimerInt + 1000;
-      if(loadingTimerInt >= 2000){
+    commonLoadingTimer = setInterval(function(){
+      commonLoadingTimerInt = commonLoadingTimerInt + 1000;
+      if(commonLoadingTimerInt >= 2000){
         if (testData == undefined){
-          console.log("TestData Missing. Loading Properly.");
+          if(consoleOutput)
+            console.log("TestData Missing. Loading Properly.");
         } else {
-          testData.innerHTML = "Loading... Please Wait...";
+          if (!loadingTimerCancelled)
+            testData.innerHTML = "Loading... Please Wait...";
         }
-        clearInterval(loadingTimer);
+        clearInterval(commonLoadingTimer);
       }
     }, 1000);
   }
@@ -264,7 +268,19 @@ function signOut(){
 }
 
 function newNavigation(navNum) {
-  sessionStorage.setItem("validUser", JSON.stringify(user));
+  try {
+    if (privateUser != null) {
+      console.log("***Private***");
+      sessionStorage.setItem("validUser", JSON.stringify(privateUser));
+    } else {
+      console.log("***Public***");
+      sessionStorage.setItem("validUser", JSON.stringify(user));
+    }
+  } catch (err) {
+    console.log("***ERR***");
+    sessionStorage.setItem("validUser", JSON.stringify(user));
+  }
+
   sessionStorage.setItem("userArr", JSON.stringify(userArr));
   let navLocations = [
     "404.html",//0
@@ -423,7 +439,9 @@ function deployListEmptyNotification(dataItemText){
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
   }
 
+  clearInterval(commonLoadingTimer);
   clearInterval(offlineTimer);
+  loadingTimerCancelled = true;
 }
 
 function updateMaintenanceLog(locationData, detailsData) {
