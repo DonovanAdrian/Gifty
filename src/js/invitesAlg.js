@@ -15,7 +15,7 @@ let invitesFound = false;
 let friendListEmptyBool = false;
 
 let dataCounter = 0;
-let loadingTimerInt = 0;
+let commonLoadingTimerInt = 0;
 
 let inviteListEmptyText = "";
 
@@ -30,7 +30,7 @@ let newInviteIcon;
 let inviteNote;
 let userNameInp;
 let offlineTimer;
-let loadingTimer;
+let commonLoadingTimer;
 let userInitial;
 let userFriends;
 let userInvites;
@@ -189,19 +189,6 @@ window.onload = function instantiate() {
     newNavigation(11);//Confirmation
   };
 
-  loadingTimer = setInterval(function(){
-    loadingTimerInt = loadingTimerInt + 1000;
-    if(loadingTimerInt >= 2000){
-      if (testData == undefined){
-        if(consoleOutput)
-          console.log("TestData Missing. Loading Properly.");
-      } else if (!friendListEmptyBool) {
-        testData.innerHTML = "Loading... Please Wait...";
-      }
-      clearInterval(loadingTimer);
-    }
-  }, 1000);
-
   addUser.innerHTML = "Invite User";
   generateAddUserBtn();
 
@@ -325,9 +312,9 @@ window.onload = function instantiate() {
       initFriendElement(liItem, friendData);
       let textNode = document.createTextNode(friendData.name);
       liItem.appendChild(textNode);
-
       dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-
+      clearInterval(commonLoadingTimer);
+      clearInterval(offlineTimer);
       dataCounter++;
     }
   }
