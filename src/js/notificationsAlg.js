@@ -294,8 +294,9 @@ window.onload = function instantiate() {
 
     let liItem = document.createElement("LI");
     liItem.id = "notification" + notificationKey;
-    initNotificationElement(liItem, notificationString, notificationKey, notificationDetails, notificationPage,
-        friendUserData);
+
+    initNotificationElement(liItem, notificationTitle, notificationString, notificationKey, notificationDetails,
+        notificationPage, friendUserData);
     let textNode = document.createTextNode(notificationTitle);
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
@@ -393,13 +394,13 @@ window.onload = function instantiate() {
     let liItemUpdate = document.getElementById('notification' + notificationKey);
     if (liItemUpdate == undefined) {
       liItemUpdate.innerHTML = notificationTitle;
-      initNotificationElement(liItemUpdate, notificationString, notificationKey, notificationDetails, notificationPage,
-          friendUserData);
+      initNotificationElement(liItemUpdate, notificationTitle, notificationString, notificationKey, notificationDetails,
+          notificationPage, friendUserData);
     }
   }
 
-  function initNotificationElement(liItem, notificationString, notificationKey, notificationDetails, notificationPage,
-                                   friendUserData) {
+  function initNotificationElement(liItem, notificationTitle, notificationString, notificationKey, notificationDetails,
+                                   notificationPage, friendUserData) {
     liItem.className = "gift";
     if(readNotificationArr.includes(notificationString)) {
       liItem.className += " checked";
