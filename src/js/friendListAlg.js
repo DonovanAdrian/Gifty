@@ -16,7 +16,7 @@ let updateGiftToDBBool = false;
 let giftListEmptyBool = false;
 
 let dataCounter = 0;
-let loadingTimerInt = 0;
+let commonLoadingTimerInt = 0;
 let moderationSet = -1;
 
 let giftCreationDate;
@@ -42,7 +42,7 @@ let inviteNote;
 let notificationBtn;
 let user;
 let offlineTimer;
-let loadingTimer;
+let commonLoadingTimer;
 let userBase;
 let userGifts;
 let userInvites;
@@ -163,19 +163,6 @@ window.onload = function instantiate() {
       newNavigation(3);//Lists
     }
   };
-
-  loadingTimer = setInterval(function(){
-    loadingTimerInt = loadingTimerInt + 1000;
-    if(loadingTimerInt >= 2000){
-      if (testData == undefined){
-        if(consoleOutput)
-          console.log("TestData Missing. Loading Properly.");
-      } else if (!giftListEmptyBool) {
-        testData.innerHTML = "Loading... Please Wait...";
-      }
-      clearInterval(loadingTimer);
-    }
-  }, 1000);
 
   databaseQuery();
 
@@ -336,7 +323,6 @@ window.onload = function instantiate() {
       testData.remove();
     } catch (err) {}
 
-    dataCounter++;
 
     let liItem = document.createElement("LI");
     liItem.id = "gift" + giftUid;
@@ -344,9 +330,10 @@ window.onload = function instantiate() {
         giftDate);
     let textNode = document.createTextNode(giftTitle);
     liItem.appendChild(textNode);
-
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+    clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
+    dataCounter++;
   }
 
   function changeGiftElement(description, link, received, title, key, where, buyer, uid, date) {
