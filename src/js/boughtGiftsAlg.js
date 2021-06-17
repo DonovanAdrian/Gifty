@@ -16,7 +16,7 @@ let readNotificationsBool = false;
 
 let dataCounter = 0;
 let moderationSet = -1;
-let loadingTimerInt = 0;
+let commonLoadingTimerInt = 0;
 
 let dataListContainer;
 let backBtn;
@@ -38,7 +38,7 @@ let notificationBtn;
 let inviteNote;
 let homeNote;
 let offlineTimer;
-let loadingTimer;
+let commonLoadingTimer;
 let testData;
 let userInitial;
 let userInvites;
@@ -147,19 +147,6 @@ window.onload = function instantiate() {
   backBtn.onclick = function() {
     newNavigation(2);//Home
   };
-
-  loadingTimer = setInterval(function(){
-    loadingTimerInt = loadingTimerInt + 1000;
-    if(loadingTimerInt >= 2000){
-      if (testData == undefined){
-        if(consoleOutput)
-          console.log("TestData Missing. Loading Properly.");
-      } else {
-        testData.innerHTML = "Loading... Please Wait...";
-      }
-      clearInterval(loadingTimer);
-    }
-  }, 1000);
 
   initializeGifts();
 
@@ -325,6 +312,7 @@ window.onload = function instantiate() {
 
     dataListContainer.insertBefore(liItem, document.getElementById('dataListContainer').childNodes[0]);
     initializedGiftsArr.push(giftData.uid);
+    clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
   }
 
