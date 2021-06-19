@@ -15,7 +15,7 @@ let loadedFamilyModalsArr = [];
 
 let moderationSet = 1;
 let dataCounter = 0;
-let loadingTimerInt = 0;
+let commonLoadingTimerInt = 0;
 
 let inviteNote;
 let settingsNote;
@@ -43,7 +43,7 @@ let noteSpan;
 let notificationTitle;
 let notificationInfo;
 let offlineTimer;
-let loadingTimer;
+let commonLoadingTimer;
 let userInitial;
 let userInvites;
 let familyInitial;
@@ -112,26 +112,6 @@ window.onload = function instantiate() {
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
   familyInitial = firebase.database().ref("family/");
 
-  loadingTimer = setInterval(function(){
-    loadingTimerInt = loadingTimerInt + 1000;
-    if(loadingTimerInt >= 2000){
-      if(loadingTimerInt >= 5000){
-        clearInterval(loadingTimer);
-        if (testData == undefined) {
-          console.log("TestData Missing. Loading Properly.");
-        } else {
-          deployListEmptyNotification("No Families Found!");
-        }
-      } else {
-        if (testData == undefined) {
-          console.log("TestData Missing. Loading Properly.");
-        } else {
-          testData.innerHTML = "Loading... Please Wait...";
-        }
-      }
-    }
-  }, 1000);
-
   databaseQuery();
 
   alternateButtonLabel(settingsNote, "Settings", "Family");
@@ -145,8 +125,8 @@ window.onload = function instantiate() {
   function generateAddFamilyModal(){
     addFamily.onclick = function() {
       if(familyNameInp.value != "" || (familyNameInp.value.includes(" ") && isAlph(familyNameInp.value.charAt(0)))) {
-        familyNameInp.value = "";
         addFamilyToDB(familyNameInp.value);
+        familyNameInp.value = "";
       }
     };
 
@@ -268,6 +248,7 @@ window.onload = function instantiate() {
     liItem.appendChild(textNode);
 
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+    clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
     dataCounter++;
   }
