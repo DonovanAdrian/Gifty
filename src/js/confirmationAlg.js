@@ -14,7 +14,7 @@ let readNotificationsBool = false;
 let inviteListEmptyBool = false;
 
 let dataCounter = 0;
-let loadingTimerInt = 0;
+let commonLoadingTimerInt = 0;
 let deleteInviteRun = 0;
 
 let testData;
@@ -27,7 +27,7 @@ let userInvites;
 let userFriends;
 let inviteModal;
 let inviteNote;
-let loadingTimer;
+let commonLoadingTimer;
 let offlineTimer;
 let notificationModal;
 let notificationInfo;
@@ -125,19 +125,6 @@ window.onload = function instantiate() {
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(confirmationElements);
-
-  loadingTimer = setInterval(function(){
-    loadingTimerInt = loadingTimerInt + 1000;
-    if(loadingTimerInt >= 2000){
-      if (testData == undefined){
-        if(consoleOutput)
-          console.log("TestData Missing. Loading Properly.");
-      } else if (!inviteListEmptyBool) {
-        testData.innerHTML = "Loading... Please Wait...";
-      }
-      clearInterval(loadingTimer);
-    }
-  }, 1000);
 
   databaseQuery();
 
@@ -282,6 +269,8 @@ window.onload = function instantiate() {
       let textNode = document.createTextNode(inviteData.name);
       liItem.appendChild(textNode);
       dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+      clearInterval(commonLoadingTimer);
+      clearInterval(offlineTimer);
       dataCounter++;
     }
   }
