@@ -20,7 +20,7 @@ let secretSantaPageName = "lists";
 
 let moderationSet = 0;
 let dataCounter = 0;
-let loadingTimerInt = 0;
+let commonLoadingTimerInt = 0;
 
 let dataListContainer;
 let userBase;
@@ -30,7 +30,7 @@ let autoSecretSanta;
 let offlineSpan;
 let offlineModal;
 let offlineTimer;
-let loadingTimer;
+let commonLoadingTimer;
 let user;
 let inviteNote;
 let notificationModal;
@@ -152,19 +152,6 @@ window.onload = function instantiate() {
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(listsElements);
-
-  loadingTimer = setInterval(function(){
-    loadingTimerInt = loadingTimerInt + 1000;
-    if(loadingTimerInt >= 2000){
-      if (testData == undefined){
-        if(consoleOutput)
-          console.log("TestData Missing. Loading Properly.");
-      } else if (!friendListEmptyBool) {
-        testData.innerHTML = "Loading... Please Wait...";
-      }
-      clearInterval(loadingTimer);
-    }
-  }, 1000);
 
   databaseQuery();
 
@@ -355,8 +342,8 @@ window.onload = function instantiate() {
       let textNode = document.createTextNode(friendName);
       liItem.appendChild(textNode);
       dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+      clearInterval(commonLoadingTimer);
       clearInterval(offlineTimer);
-
       dataCounter++;
     }
   }
