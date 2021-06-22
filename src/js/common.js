@@ -270,16 +270,20 @@ function signOut(){
 function newNavigation(navNum) {
   try {
     if (privateUser != null) {
-      console.log("***Private***");
+      if (consoleOutput)
+        console.log("***Private***");
       sessionStorage.setItem("validUser", JSON.stringify(privateUser));
     } else {
-      console.log("***Public***");
+      if (consoleOutput)
+        console.log("***Normal***");
       sessionStorage.setItem("validUser", JSON.stringify(user));
     }
   } catch (err) {
-    console.log("***ERR***");
+    if (consoleOutput)
+      console.log("***Normal + Catch***");
     sessionStorage.setItem("validUser", JSON.stringify(user));
   }
+
 
   sessionStorage.setItem("userArr", JSON.stringify(userArr));
   let navLocations = [
