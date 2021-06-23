@@ -12,7 +12,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <link rel="icon" type="image/png" href="img/giftyiconweb.png">
+  <link rel="icon" type="image/png" href="img/giftySmol.png">
   <link href="css/login.css?v=2021-01-16" rel="stylesheet" type="text/css"/>
   <title>User Options</title>
 
@@ -28,18 +28,17 @@
 </head>
 <body>
 
-<div class="loginContainer cropIcon">
-  <img class="imgIcon" src="img/giftyicon.png">
+<div class="loginContainer">
+  <input type="text" placeholder="Full Name" id="nameField">
+  <input type="text" placeholder="User Name" id="userNameField">
+  <input type="number" placeholder="Enter Pin" id="pinField">
+  <input type="number" placeholder="Confirm Pin" id="pinConfField">
+  <button onclick="updateSuppressCheck()" id="updateUser">Loading...</button>
+  <button style="display: none" onclick="deleteCheck()" id="deleteUser">Loading...</button><p id="loginInfo" style="color:red"></p>
+</div>
 
-  <div class="centeredLogin">
-    <input type="text" placeholder="Full Name" id="nameField">
-    <input type="text" placeholder="User Name" id="userNameField">
-    <input type="number" placeholder="Enter Pin" id="pinField">
-    <input type="number" placeholder="Confirm Pin" id="pinConfField">
-    <button onclick="updateSuppressCheck()" id="updateUser">Loading...</button>
-    <button style="display: none" onclick="deleteCheck()" id="deleteUser">Loading...</button><p id="loginInfo" style="color:red"></p>
-  </div>
-
+<div class="iconContainer">
+  <img class="imgIcon" src="img/giftyIcon.png">
 </div>
 
 <div id="offlineModal" class="modal">
