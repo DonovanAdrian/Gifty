@@ -15,6 +15,8 @@ let moderationSet = 1;
 let dataCounter = 0;
 let commonLoadingTimerInt = 0;
 
+let globalParentData;
+let globalChildData;
 let familyData;
 let inviteNote;
 let settingsNote;
@@ -582,11 +584,16 @@ window.onload = function instantiate() {
   }
 
   function generateFamilyPCModal(parentChild, parentChildData) {//ToDo
-    //a "parent" input will result in the parent of the user being prompted.
-    //same applies for "child" input
+    if (parentChild == "child") {
+      familyPCTitle.innerHTML = "Choose A Child";
+    } else if (parentChild == "parent") {
+      familyPCTitle.innerHTML = "Choose A Parent";
+    }
+    familyPCText.innerHTML = "In order to prevent parents and their YOUNG children from being paired with" +
+        " each other during Secret Santa, please choose " + parentChildData.userName + "\'s " + parentChild +
+        " user from the list below.";
 
-    //if/else
-    //set text
+    generateFamilyPCUserList();
 
     //generate list of users (all except current user)
     //set global parent-child data and generate confirm user modal upon click:
@@ -594,7 +601,13 @@ window.onload = function instantiate() {
     //clear global parent-child data if criteria not met
   }
 
+  function generateFamilyPCUserList() {
+
+  }
+
   function updateFamilyRelationsToDB() {//ToDo
+    globalChildData;
+    globalParentData;
     //use global parent-child data
 
     //Update parent with parent-child.uid data on DB
