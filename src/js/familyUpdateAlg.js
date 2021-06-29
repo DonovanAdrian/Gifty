@@ -590,19 +590,27 @@ window.onload = function instantiate() {
       familyPCTitle.innerHTML = "Choose A Parent";
     }
     familyPCText.innerHTML = "In order to prevent parents and their YOUNG children from being paired with" +
-        " each other during Secret Santa, please choose " + parentChildData.userName + "\'s " + parentChild +
+        " each other during Secret Santa, please choose " + parentChildData.name + "\'s " + parentChild +
         " user from the list below.";
 
-    generateFamilyPCUserList();
+    generateFamilyPCUserList(parentChildData);
 
-    //generate list of users (all except current user)
-    //set global parent-child data and generate confirm user modal upon click:
-    //generateConfirmDataModal();
-    //clear global parent-child data if criteria not met
+    //basic modal functionality, show, close, etc
+    //clear global parent-child data on close
+    globalChildData;
+    globalParentData;
   }
 
-  function generateFamilyPCUserList() {
+  function generateFamilyPCUserList(parentChildOmit) {
+    //iterate through user list, show everyone except selected user
+    //generate liItem
+    //***keep in mind the issue with clearing the list once finished using it. familyAlg 269:~352
+    familyPCListContainer;
+    testFamily;
 
+    //when selected, set global parent-child data and generate confirm user modal upon click:
+    //generateConfirmDataModal();
+    //clear global parent-child data if criteria not met
   }
 
   function updateFamilyRelationsToDB() {//ToDo
