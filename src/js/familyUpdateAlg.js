@@ -595,18 +595,33 @@ window.onload = function instantiate() {
 
     generateFamilyPCUserList(parentChildData);
 
-    //basic modal functionality, show, close, etc
-    //clear global parent-child data on close
-    globalChildData;
-    globalParentData;
+    openModal(familyPCModal, parentChildData.uid);
+
+    closeFamilyPCModal.onclick = function() {
+      closeModal(familyPCModal);
+    }
+
+    window.onclick = function(event) {
+      if (event.target == familyPCModal) {
+        closeModal(familyPCModal);
+      }
+    };
   }
 
   function generateFamilyPCUserList(parentChildOmit) {
-    //iterate through user list, show everyone except selected user
-    //generate liItem
-    //***keep in mind the issue with clearing the list once finished using it. familyAlg 269:~352
-    familyPCListContainer;
-    testFamily;
+
+    if (userArr.length > 1) {
+      for (let i = 0; i < userArr.length; i++) {
+        //iterate through user list, show everyone except selected user
+        //generate liItem
+        //***keep in mind the issue with clearing the list once finished using it. familyAlg 269:~352
+        familyPCListContainer;
+        testFamily;
+
+      }
+    } else {
+      testFamily.innerHTML = "There is only one user in the database!";
+    }
 
     //when selected, set global parent-child data and generate confirm user modal upon click:
     //generateConfirmDataModal();
