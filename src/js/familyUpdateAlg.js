@@ -10,6 +10,7 @@ let inviteArr = [];
 let userArr = [];
 let familyArr = [];
 let oldFamilyMemberArr = [];
+let loadedPCUserArr = [];
 
 let moderationSet = 1;
 let dataCounter = 0;
@@ -263,7 +264,7 @@ window.onload = function instantiate() {
     };
   }
 
-  function generateConfirmDataModal(dataToConfirm, confirmString, confirmType, dataUID){
+  function generateConfirmDataModal(dataToConfirm, confirmString, confirmType, dataUID){//ToDo Add FamPC Options
     closeModal(familyAddModal);
     confirmMemberTitle.innerHTML = confirmString;
 
@@ -583,7 +584,7 @@ window.onload = function instantiate() {
     }
   }
 
-  function generateFamilyPCModal(parentChild, parentChildData) {//ToDo
+  function generateFamilyPCModal(parentChild, parentChildData) {
     if (parentChild == "child") {
       familyPCTitle.innerHTML = "Choose A Child";
     } else if (parentChild == "parent") {
@@ -608,16 +609,35 @@ window.onload = function instantiate() {
     };
   }
 
-  function generateFamilyPCUserList(parentChildOmit) {
+  function generateFamilyPCUserList(parentChildOmit) {//ToDo
+    try {
+      testFamily.remove();
+    } catch (err) {}
+
+    if (loadedPCUserArr.length != 0) {
+      for (let a = 0; a < loadedPCUserArr.length; a++) {
+        document.getElementById(loadedPCUserArr[a]).remove();
+      }
+      loadedPCUserArr = [];
+    }
 
     if (userArr.length > 1) {
       for (let i = 0; i < userArr.length; i++) {
-        //iterate through user list, show everyone except selected user
-        //generate liItem
-        //***keep in mind the issue with clearing the list once finished using it. familyAlg 269:~352
-        familyPCListContainer;
-        testFamily;
+        if (userArr[i].uid != parentChildOmit.uid && findUIDItemInArr(userArr[i].uid, loadedPCUserArr) != -1) {
+          let liItem = document.createElement("LI");
+          liItem.id = userArr[i].uid;
+          liItem.className = "gift";
+          let textNode = document.createTextNode(userArr[i].name);
 
+          //onclick functionality, set global PC data
+          globalChildData;
+          globalParentData;
+
+          liItem.appendChild(textNode);
+          familyPCListContainer.insertBefore(liItem, familyPCListContainer.childNodes[0]);
+
+          loadedPCUserArr.push(userArr[i].uid);
+        }
       }
     } else {
       testFamily.innerHTML = "There is only one user in the database!";
