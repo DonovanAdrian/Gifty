@@ -218,14 +218,16 @@ window.onload = function instantiate() {
               familyMemberFound = true;
               if (familyData.members != null)
                 if (!familyData.members.includes(userArr[i].uid)) {
-                  generateConfirmDataModal(userArr[i].name, "Confirm Member Name Below",
+                  generateConfirmDataModal("Did you mean " + userArr[i].name + "?",
+                      "Confirm Member Name Below",
                       "user", userArr[i].uid);
                 } else {
                   console.log("User is already in THIS family!");
                   addMemberInfo.innerHTML = "That user is already added to this family, please try another!";
                 }
               else
-                generateConfirmDataModal(userArr[i].name, "Confirm Member Name Below",
+                generateConfirmDataModal("Did you mean " + userArr[i].name + "?",
+                    "Confirm Member Name Below",
                     "user", userArr[i].uid);
             } else {
               console.log("User is already in ANOTHER family!");
@@ -268,7 +270,7 @@ window.onload = function instantiate() {
     closeModal(familyAddModal);
     confirmMemberTitle.innerHTML = confirmString;
 
-    confMemberUserName.innerHTML = "Did you mean " + dataToConfirm + "?";
+    confMemberUserName.innerHTML = dataToConfirm;
 
     addMemberConfirm.onclick = function() {
       if (confirmType == "user"){
@@ -300,12 +302,16 @@ window.onload = function instantiate() {
         openModal(familyAddModal, "familyAddModal");
       } else if (confirmType == "parentChild") {
         openModal(familyPCModal, "familyPCModal");
+        globalChildData = null;
+        globalParentData = null;
       }
     };
 
     window.onclick = function(event) {
       if (event.target == confirmMemberModal) {
         closeModal(confirmMemberModal);
+        globalChildData = null;
+        globalParentData = null;
       }
     };
   }
@@ -594,7 +600,7 @@ window.onload = function instantiate() {
         " each other during Secret Santa, please choose " + parentChildData.name + "\'s " + parentChild +
         " user from the list below.";
 
-    generateFamilyPCUserList(parentChildData);
+    generateFamilyPCUserList(parentChild, parentChildData);
 
     openModal(familyPCModal, parentChildData.uid);
 
@@ -609,7 +615,7 @@ window.onload = function instantiate() {
     };
   }
 
-  function generateFamilyPCUserList(parentChildOmit) {//ToDo
+  function generateFamilyPCUserList(parentChild, parentChildOmit) {//ToDo
     try {
       testFamily.remove();
     } catch (err) {}
@@ -629,9 +635,21 @@ window.onload = function instantiate() {
           liItem.className = "gift";
           let textNode = document.createTextNode(userArr[i].name);
 
-          //onclick functionality, set global PC data
-          globalChildData;
-          globalParentData;
+          liItem.onclick = function () {
+            if (parentChild == "child") {
+              globalChildData = userArr[i];
+              globalParentData = parentChildOmit;
+              generateConfirmDataModal("Are you sure you want " + parentChildOmit.name
+                  + "\'s child to be " + userArr[i].name + "?",
+                  "Confirm The Child Selection", "parentChild", null);
+            } else if (parentChild == "parent") {
+              globalChildData = parentChildOmit;
+              globalParentData = userArr[i];
+              generateConfirmDataModal("Are you sure you want " + parentChildOmit.name
+                  + "\'s parent to be " + userArr[i].name + "?",
+                  "Confirm The Parent Selection", "parentChild", null);
+            }
+          };
 
           liItem.appendChild(textNode);
           familyPCListContainer.insertBefore(liItem, familyPCListContainer.childNodes[0]);
@@ -642,20 +660,16 @@ window.onload = function instantiate() {
     } else {
       testFamily.innerHTML = "There is only one user in the database!";
     }
-
-    //when selected, set global parent-child data and generate confirm user modal upon click:
-    //generateConfirmDataModal();
-    //clear global parent-child data if criteria not met
   }
 
   function updateFamilyRelationsToDB() {//ToDo
     globalChildData;
     globalParentData;
-    //use global parent-child data
 
     //Update parent with parent-child.uid data on DB
     //Update child with parent-child.uid data on DB
 
-    //clear global parent-child data
+    globalChildData = null;
+    globalParentData = null;
   }
 };
