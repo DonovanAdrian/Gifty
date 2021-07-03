@@ -266,7 +266,7 @@ window.onload = function instantiate() {
     };
   }
 
-  function generateConfirmDataModal(dataToConfirm, confirmString, confirmType, dataUID){//ToDo Add FamPC Options
+  function generateConfirmDataModal(dataToConfirm, confirmString, confirmType, dataUID){
     closeModal(familyAddModal);
     confirmMemberTitle.innerHTML = confirmString;
 
@@ -500,12 +500,19 @@ window.onload = function instantiate() {
     initFamilyElement(editFamily, familyMemberData);
   }
 
-  function initFamilyElement(liItem, familyMemberData) {
+  function initFamilyElement(liItem, familyMemberData) {//ToDo
     liItem.className = "gift";
     liItem.onclick = function (){
       familyMemberName.innerHTML = familyMemberData.name;
       familyMemberUserName.innerHTML = familyMemberData.userName;
       familyMemberUID.innerHTML = familyMemberData.uid;
+
+      //Update these to rotate between text if already set***************
+      //(If already set) When clicked, reset parent/child to null
+
+      familyMemberParent.innerHTML = "Set Parent";
+
+      familyMemberChild.innerHTML = "Set Child";
 
       familyMemberParent.onclick = function() {
         generateFamilyPCModal("parent", familyMemberData);
@@ -615,7 +622,7 @@ window.onload = function instantiate() {
     };
   }
 
-  function generateFamilyPCUserList(parentChild, parentChildOmit) {//ToDo
+  function generateFamilyPCUserList(parentChild, parentChildOmit) {
     try {
       testFamily.remove();
     } catch (err) {}
@@ -665,6 +672,12 @@ window.onload = function instantiate() {
   function updateFamilyRelationsToDB() {//ToDo
     globalChildData;
     globalParentData;
+
+    if (user.secretSantaName != undefined) {
+      firebase.database().ref("users/" + user.uid).update({
+        secretSantaName: user.secretSantaName
+      });
+    }
 
     //Update parent with parent-child.uid data on DB
     //Update child with parent-child.uid data on DB
