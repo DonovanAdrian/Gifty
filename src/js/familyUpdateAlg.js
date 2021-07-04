@@ -669,18 +669,17 @@ window.onload = function instantiate() {
     }
   }
 
-  function updateFamilyRelationsToDB() {//ToDo
-    globalChildData;
-    globalParentData;
-
-    if (user.secretSantaName != undefined) {
-      firebase.database().ref("users/" + user.uid).update({
-        secretSantaName: user.secretSantaName
+  function updateFamilyRelationsToDB() {
+    if (globalParentData != null && globalChildData != null) {
+      firebase.database().ref("users/" + globalChildData.uid).update({
+        parentUser: globalParentData.uid
       });
+      firebase.database().ref("users/" + globalParentData.uid).update({
+        childUser: globalChildData.uid
+      });
+    } else {
+      alert("There was an error updating the parent and child of this user, please try again!");
     }
-
-    //Update parent with parent-child.uid data on DB
-    //Update child with parent-child.uid data on DB
 
     globalChildData = null;
     globalParentData = null;
