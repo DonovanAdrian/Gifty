@@ -398,12 +398,12 @@ function flashGiftNumbers(giftsNum, giftsBtn, giftsIndicator) {
   switch (giftsIndicator) {
     case "Private":
       privateListAlternator = setInterval(function(){
-        setButtonText(giftString, giftsBtn, giftButtonAlternatorsA, giftAlternateText);
+        setCyclingButtonText(giftString, giftsBtn, giftButtonAlternatorsA, giftAlternateText);
       }, 1000);
       break;
     case "Public":
       publicListAlternator = setInterval(function(){
-        setButtonText(giftString, giftsBtn, giftButtonAlternatorsB, giftAlternateText);
+        setCyclingButtonText(giftString, giftsBtn, giftButtonAlternatorsB, giftAlternateText);
       }, 1000);
       break;
     default:
@@ -412,7 +412,7 @@ function flashGiftNumbers(giftsNum, giftsBtn, giftsIndicator) {
   }
 }
 
-function setButtonText(giftString, giftsBtn, alternator, altString) {
+function setCyclingButtonText(giftString, giftsBtn, alternator, altString) {
   alternator[0] = alternator[0] + 1000;
   if(alternator[0] >= 3000) {
     alternator[0] = 0;
