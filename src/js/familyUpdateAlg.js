@@ -507,20 +507,23 @@ window.onload = function instantiate() {
       familyMemberUserName.innerHTML = familyMemberData.userName;
       familyMemberUID.innerHTML = familyMemberData.uid;
 
-      //Update these to rotate between text if already set***************
-      //(If already set) When clicked, reset parent/child to null
+      if (familyMemberData.parentUser == null && familyMemberData.childUser == null) {
+        familyMemberParent.innerHTML = "Set Parent";
 
-      familyMemberParent.innerHTML = "Set Parent";
+        familyMemberChild.innerHTML = "Set Child";
 
-      familyMemberChild.innerHTML = "Set Child";
+        familyMemberParent.onclick = function() {
+          generateFamilyPCModal("parent", familyMemberData);
+        };
 
-      familyMemberParent.onclick = function() {
-        generateFamilyPCModal("parent", familyMemberData);
-      };
-
-      familyMemberChild.onclick = function() {
-        generateFamilyPCModal("child", familyMemberData);
-      };
+        familyMemberChild.onclick = function() {
+          generateFamilyPCModal("child", familyMemberData);
+        };
+      } else {
+        //Update these to rotate between text if already set***************
+        //(If already set) When clicked, reset parent/child to null
+        cycleParentChildText(familyMemberData);
+      }
 
       removeFamilyMember.onclick = function() {
         removeFamilyMemberFromDB(familyMemberData.uid);
@@ -542,6 +545,53 @@ window.onload = function instantiate() {
       };
     };
   }
+
+  function cycleParentChildText () {
+    /*
+    let giftString;
+    let giftAlternateText = "View " + giftsIndicator + " Gift List";
+
+    if (giftsNum == 0)
+      giftsNum = "No"; //Absolutely glorious... No?
+
+    if (giftsNum == 1)
+      giftString = "There Is 1 " + giftsIndicator + " Gift";
+    else
+      giftString = "There Are " + giftsNum + " " + giftsIndicator + " Gifts";
+    switch (giftsIndicator) {
+      case "Private":
+        privateListAlternator = setInterval(function(){
+          setButtonText(giftString, giftsBtn, giftButtonAlternatorsA, giftAlternateText);
+        }, 1000);
+        break;
+      case "Public":
+        publicListAlternator = setInterval(function(){
+          setButtonText(giftString, giftsBtn, giftButtonAlternatorsB, giftAlternateText);
+        }, 1000);
+        break;
+      default:
+        console.log("Whoops!");
+        break;
+    }
+
+     */
+  }
+
+  /*
+  function setButtonText(giftString, giftsBtn, alternator, altString) {
+    alternator[0] = alternator[0] + 1000;
+    if(alternator[0] >= 3000) {
+      alternator[0] = 0;
+      if (alternator[1] == 0) {
+        alternator[1]++;
+        giftsBtn.innerHTML = giftString;
+      } else {
+        alternator[1] = 0;
+        giftsBtn.innerHTML = altString;
+      }
+    }
+  }
+  */
 
   function removeFamilyMemberFromDB(uid) {
 
