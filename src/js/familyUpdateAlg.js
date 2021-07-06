@@ -11,6 +11,8 @@ let userArr = [];
 let familyArr = [];
 let oldFamilyMemberArr = [];
 let loadedPCUserArr = [];
+let parentChildAlternatorsA = [0, 0];
+let parentChildAlternatorsB = [0, 0];
 
 let moderationSet = 1;
 let dataCounter = 0;
@@ -547,6 +549,8 @@ window.onload = function instantiate() {
   }
 
   function cycleParentChildText () {
+    parentChildAlternatorsA;
+    parentChildAlternatorsB;
     /*
     let giftString;
     let giftAlternateText = "View " + giftsIndicator + " Gift List";
@@ -577,21 +581,19 @@ window.onload = function instantiate() {
      */
   }
 
-  /*
-  function setButtonText(giftString, giftsBtn, alternator, altString) {
+  function setButtonText(parentChildString, parentChildBtn, alternator, altString) {
     alternator[0] = alternator[0] + 1000;
     if(alternator[0] >= 3000) {
       alternator[0] = 0;
       if (alternator[1] == 0) {
         alternator[1]++;
-        giftsBtn.innerHTML = giftString;
+        parentChildBtn.innerHTML = parentChildString;
       } else {
         alternator[1] = 0;
-        giftsBtn.innerHTML = altString;
+        parentChildBtn.innerHTML = altString;
       }
     }
   }
-  */
 
   function removeFamilyMemberFromDB(uid) {
 
