@@ -468,3 +468,17 @@ function updateMaintenanceLog(locationData, detailsData) {
     time: timeData
   });
 }
+
+function setAlternatingButtonText(initialString, altString, alternatingBtn, alternator) {
+  alternator[0] = alternator[0] + 1000;
+  if(alternator[0] >= 3000) {
+    alternator[0] = 0;
+    if (alternator[1] == 0) {
+      alternator[1]++;
+      alternatingBtn.innerHTML = initialString;
+    } else {
+      alternator[1] = 0;
+      alternatingBtn.innerHTML = altString;
+    }
+  }
+}
