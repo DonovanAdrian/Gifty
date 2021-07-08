@@ -398,31 +398,17 @@ function flashGiftNumbers(giftsNum, giftsBtn, giftsIndicator) {
   switch (giftsIndicator) {
     case "Private":
       privateListAlternator = setInterval(function(){
-        setCyclingButtonText(giftString, giftsBtn, giftButtonAlternatorsA, giftAlternateText);
+        setAlternatingButtonText(giftString, giftAlternateText, giftsBtn, giftButtonAlternatorsA);
       }, 1000);
       break;
     case "Public":
       publicListAlternator = setInterval(function(){
-        setCyclingButtonText(giftString, giftsBtn, giftButtonAlternatorsB, giftAlternateText);
+        setAlternatingButtonText(giftString, giftAlternateText, giftsBtn, giftButtonAlternatorsB);
       }, 1000);
       break;
     default:
       console.log("Whoops!");
       break;
-  }
-}
-
-function setCyclingButtonText(giftString, giftsBtn, alternator, altString) {
-  alternator[0] = alternator[0] + 1000;
-  if(alternator[0] >= 3000) {
-    alternator[0] = 0;
-    if (alternator[1] == 0) {
-      alternator[1]++;
-      giftsBtn.innerHTML = giftString;
-    } else {
-      alternator[1] = 0;
-      giftsBtn.innerHTML = altString;
-    }
   }
 }
 
