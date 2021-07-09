@@ -66,6 +66,14 @@ span.basicBtn:hover {
   color: #000;
 }
 
+span.btnDisabled {
+  background: #c4c4c4;
+}
+
+span.btnDisabled:hover {
+  background: #c48686;
+}
+
 span.boughtBtn {
   position: fixed;
   font-family: Verdana;
