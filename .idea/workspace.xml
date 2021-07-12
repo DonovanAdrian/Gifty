@@ -3,22 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="77ae722c-e8b2-463c-8bb6-522420418add" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/404.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/404.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/boughtGifts.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/boughtGifts.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/confirmation.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/confirmation.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/family.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/family.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/faq.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/faq.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/friendList.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/friendList.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/giftAddUpdate.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/giftAddUpdate.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/invites.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/invites.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lists.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lists.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/moderation.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/moderation.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/moderationQueue.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/moderationQueue.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/notifications.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/notifications.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/privateFriendList.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/privateFriendList.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/settings.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/settings.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/familyUpdateAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/familyUpdateAlg.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -384,7 +369,7 @@
       <workItem from="1615948107385" duration="42556000" />
       <workItem from="1619576339238" duration="40320000" />
       <workItem from="1622518974923" duration="19059000" />
-      <workItem from="1624767281786" duration="9340000" />
+      <workItem from="1624767281786" duration="9941000" />
     </task>
     <servers />
   </component>

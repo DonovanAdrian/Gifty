@@ -34,6 +34,7 @@ let familyMemberUserName;
 let familyMemberUID;
 let familyMemberParent;
 let familyMemberChild;
+let familyMemberPCClear;
 let removeFamilyMember;
 let familyPCModal;
 let closeFamilyPCModal;
@@ -74,6 +75,8 @@ let commonLoadingTimer;
 let userInitial;
 let userInvites;
 let familyInitial;
+let parentAlternator;
+let childAlternator;
 
 
 
@@ -116,6 +119,7 @@ window.onload = function instantiate() {
   familyMemberUID = document.getElementById('familyMemberUID');
   familyMemberParent = document.getElementById('familyMemberParent');
   familyMemberChild = document.getElementById('familyMemberChild');
+  familyMemberPCClear = document.getElementById('familyMemberPCClear');
   removeFamilyMember = document.getElementById('removeFamilyMember');
   familyPCModal = document.getElementById('familyPCModal');
   closeFamilyPCModal = document.getElementById('closeFamilyPCModal');
@@ -153,13 +157,13 @@ window.onload = function instantiate() {
   notificationInfo = document.getElementById('notificationInfo');
   familyUpdateElements = [inviteNote, settingsNote, dataListContainer, testData, addMember, familySettings,
     familyMemberViewModal, closeFamilyMemberViewModal, familyMemberName, familyMemberUserName, familyMemberUID,
-    familyMemberParent, familyMemberChild, removeFamilyMember, familyPCModal, closeFamilyPCModal, familyPCTitle,
-    familyPCText, familyPCListContainer, testFamily, familyAddModal, closeFamilyAddModal, familyMemberInp,
-    addMemberInfo, addFamilyMember, cancelFamilyMember, familyNameModal, closeFamilyNameModal, familyNameInp,
-    updateFamilyName, cancelFamilyName, familyNameInp, updateFamilyName, cancelFamilyName, familySettingsModal,
-    familySettingsTitle, closeFamilySettings, changeFamilyName, removeAllMembers, confirmMemberModal,
-    closeConfirmMemberModal, confirmMemberTitle, confMemberUserName, addMemberConfirm, addMemberDeny, offlineModal,
-    offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
+    familyMemberParent, familyMemberChild, familyMemberPCClear, removeFamilyMember, familyPCModal, closeFamilyPCModal,
+    familyPCTitle, familyPCText, familyPCListContainer, testFamily, familyAddModal, closeFamilyAddModal,
+    familyMemberInp, addMemberInfo, addFamilyMember, cancelFamilyMember, familyNameModal, closeFamilyNameModal,
+    familyNameInp, updateFamilyName, cancelFamilyName, familyNameInp, updateFamilyName, cancelFamilyName,
+    familySettingsModal, familySettingsTitle, closeFamilySettings, changeFamilyName, removeAllMembers,
+    confirmMemberModal, closeConfirmMemberModal, confirmMemberTitle, confMemberUserName, addMemberConfirm,
+    addMemberDeny, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(familyUpdateElements);
@@ -514,6 +518,9 @@ window.onload = function instantiate() {
 
         familyMemberChild.innerHTML = "Set Child";
 
+        familyMemberPCClear.innerHTML = "Button Disabled";
+        familyMemberPCClear.className += " btnDisabled";
+
         familyMemberParent.onclick = function() {
           generateFamilyPCModal("parent", familyMemberData);
         };
@@ -521,10 +528,16 @@ window.onload = function instantiate() {
         familyMemberChild.onclick = function() {
           generateFamilyPCModal("child", familyMemberData);
         };
+
+        familyMemberPCClear.onclick = function() {};
       } else {
-        //Update these to rotate between text if already set***************
-        //(If already set) When clicked, reset parent/child to null
         cycleParentChildText(familyMemberData);
+
+        familyMemberPCClear.innerHTML = "Clear Parent Child Data";
+
+        familyMemberPCClear.onclick = function() {//ToDo
+          alert("This will eventually clear the parent child data");
+        };
       }
 
       removeFamilyMember.onclick = function() {
@@ -537,62 +550,61 @@ window.onload = function instantiate() {
       //close on close
       closeFamilyMemberViewModal.onclick = function() {
         closeModal(familyMemberViewModal);
+        try {
+          clearInterval(parentAlternator);
+          clearInterval(childAlternator);
+        } catch (err) {}
       };
 
       //close on click
       window.onclick = function(event) {
         if (event.target == familyMemberViewModal) {
           closeModal(familyMemberViewModal);
+          try {
+            clearInterval(parentAlternator);
+            clearInterval(childAlternator);
+          } catch (err) {}
         }
       };
     };
   }
 
-  function cycleParentChildText () {
-    parentChildAlternatorsA;
-    parentChildAlternatorsB;
-    /*
-    let giftString;
-    let giftAlternateText = "View " + giftsIndicator + " Gift List";
+  function cycleParentChildText (parentChildData) {
+    let parentInitText = "Click Here To Reset Parent";
+    let childInitText = "Click Here To Reset Child";
+    let parentAltText;
+    let childAltText;
 
-    if (giftsNum == 0)
-      giftsNum = "No"; //Absolutely glorious... No?
-
-    if (giftsNum == 1)
-      giftString = "There Is 1 " + giftsIndicator + " Gift";
-    else
-      giftString = "There Are " + giftsNum + " " + giftsIndicator + " Gifts";
-    switch (giftsIndicator) {
-      case "Private":
-        privateListAlternator = setInterval(function(){
-          setButtonText(giftString, giftsBtn, giftButtonAlternatorsA, giftAlternateText);
-        }, 1000);
-        break;
-      case "Public":
-        publicListAlternator = setInterval(function(){
-          setButtonText(giftString, giftsBtn, giftButtonAlternatorsB, giftAlternateText);
-        }, 1000);
-        break;
-      default:
-        console.log("Whoops!");
-        break;
+    if (parentChildData.parentUser != null) {
+      parentAltText = "";
+      //parent button -> stored uid
+      childAltText = "";
+      //child button -> "this user"
+    } else {
+      parentAltText = "";
+      //child button -> stored uid
+      childAltText = "";
+      //parent button -> "this user"
     }
 
-     */
-  }
+    parentAlternator = setInterval(function(){
+      setAlternatingButtonText(parentInitText, parentAltText, familyMemberParent, parentChildAlternatorsA);
+    }, 1000);
 
-  function setButtonText(parentChildString, parentChildBtn, alternator, altString) {
-    alternator[0] = alternator[0] + 1000;
-    if(alternator[0] >= 3000) {
-      alternator[0] = 0;
-      if (alternator[1] == 0) {
-        alternator[1]++;
-        parentChildBtn.innerHTML = parentChildString;
-      } else {
-        alternator[1] = 0;
-        parentChildBtn.innerHTML = altString;
-      }
-    }
+    childAlternator = setInterval(function(){
+      setAlternatingButtonText(childInitText, childAltText, familyMemberChild, parentChildAlternatorsB);
+    }, 1000);
+
+    familyMemberParent.onclick = function () {
+      alert("This will eventually reset the parent data");
+      //generateFamilyPCModal("parent", parentChildData);
+      //Need to add detection for already existing parent-child data
+    };
+    familyMemberChild.onclick = function () {
+      alert("This will eventually reset the child data");
+      //generateFamilyPCModal("child", parentChildData);
+      //Need to add detection for already existing parent-child data
+    };
   }
 
   function removeFamilyMemberFromDB(uid) {
@@ -650,6 +662,12 @@ window.onload = function instantiate() {
   }
 
   function generateFamilyPCModal(parentChild, parentChildData) {
+    closeModal(familyMemberViewModal);
+    try {
+      clearInterval(parentAlternator);
+      clearInterval(childAlternator);
+    } catch (err) {}
+
     if (parentChild == "child") {
       familyPCTitle.innerHTML = "Choose A Child";
     } else if (parentChild == "parent") {
