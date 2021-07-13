@@ -8,6 +8,7 @@ let buttonOpacLim = 7;
 let logoutReminder = 300;
 let logoutLimit = 900;
 let consoleOutput = false;
+let pageName = "";
 
 let loadingTimerCancelled = false;
 
@@ -76,6 +77,9 @@ function instantiateCommon(){
 }
 
 function commonInitialization(){
+  if (consoleOutput)
+    console.log("Initializing the " + pageName + " Page...");
+
   const config = JSON.parse(sessionStorage.config);
   instantiateCommon();
 
@@ -162,6 +166,9 @@ function commonInitialization(){
 
   if (userChecker != null)
     loginTimer();
+
+  if (consoleOutput)
+    console.log("The " + pageName + " Page has been initialized!");
 }
 
 
