@@ -506,7 +506,7 @@ window.onload = function instantiate() {
     initFamilyElement(editFamily, familyMemberData);
   }
 
-  function initFamilyElement(liItem, familyMemberData) {//ToDo
+  function initFamilyElement(liItem, familyMemberData) {
     liItem.className = "gift";
     liItem.onclick = function (){
       familyMemberName.innerHTML = familyMemberData.name;
@@ -569,7 +569,7 @@ window.onload = function instantiate() {
     };
   }
 
-  function cycleParentChildText (parentChildData) {
+  function cycleParentChildText (parentChildData) {//ToDo
     let parentInitText = "Click Here To Reset Parent";
     let childInitText = "Click Here To Reset Child";
     let parentAltText;
