@@ -535,8 +535,14 @@ window.onload = function instantiate() {
 
         familyMemberPCClear.innerHTML = "Clear Parent Child Data";
 
-        familyMemberPCClear.onclick = function() {//ToDo
-          alert("This will eventually clear the parent child data");
+        familyMemberPCClear.onclick = function() {
+          clearParentChildData(familyMemberData);
+
+          closeModal(familyMemberViewModal);
+          try {
+            clearInterval(parentAlternator);
+            clearInterval(childAlternator);
+          } catch (err) {}
         };
       }
 
@@ -569,22 +575,44 @@ window.onload = function instantiate() {
     };
   }
 
-  function cycleParentChildText (parentChildData) {//ToDo
+  function clearParentChildData (familyMemberData) {
+    let parentUser;
+    let childUser;
+
+    if (familyMemberData.parentUser != null) {
+      parentUser = familyMemberData.parentUser;
+      childUser = familyMemberData.uid;
+    } else {
+      parentUser = familyMemberData.uid;
+      childUser = familyMemberData.childUser;
+    }
+
+    firebase.database().ref("users/" + parentUser).update({
+      childUser: "",
+      parentUser: ""
+    });
+    firebase.database().ref("users/" + childUser).update({
+      childUser: "",
+      parentUser: ""
+    });
+
+    alert("Parent and Child Data Cleared!");
+  }
+
+  function cycleParentChildText (parentChildData) {
     let parentInitText = "Click Here To Reset Parent";
     let childInitText = "Click Here To Reset Child";
     let parentAltText;
     let childAltText;
 
     if (parentChildData.parentUser != null) {
-      parentAltText = "";
-      //parent button -> stored uid
-      childAltText = "";
-      //child button -> "this user"
+      let i = findUIDItemInArr(parentChildData.parentUser, userArr);
+      parentAltText = "Parent: " + userArr[i].name;
+      childAltText = "Child: " + parentChildData.name;
     } else {
-      parentAltText = "";
-      //child button -> stored uid
-      childAltText = "";
-      //parent button -> "this user"
+      let i = findUIDItemInArr(parentChildData.childUser, userArr);
+      parentAltText = "Parent: " + parentChildData.name;
+      childAltText = "Child: " + userArr[i].name;
     }
 
     parentAlternator = setInterval(function(){
@@ -596,19 +624,14 @@ window.onload = function instantiate() {
     }, 1000);
 
     familyMemberParent.onclick = function () {
-      alert("This will eventually reset the parent data");
-      //generateFamilyPCModal("parent", parentChildData);
-      //Need to add detection for already existing parent-child data
+      generateFamilyPCModal("parent", parentChildData);
     };
     familyMemberChild.onclick = function () {
-      alert("This will eventually reset the child data");
-      //generateFamilyPCModal("child", parentChildData);
-      //Need to add detection for already existing parent-child data
+      generateFamilyPCModal("child", parentChildData);
     };
   }
 
   function removeFamilyMemberFromDB(uid) {
-
     for (let i = 0; i < familyData.members.length; i++)
       if (uid == familyData.members[i])
         familyData.members.splice(i, 1);
@@ -706,7 +729,7 @@ window.onload = function instantiate() {
 
     if (userArr.length > 1) {
       for (let i = 0; i < userArr.length; i++) {
-        if (userArr[i].uid != parentChildOmit.uid && findUIDItemInArr(userArr[i].uid, loadedPCUserArr) != -1) {
+        if (userArr[i].uid != parentChildOmit.uid && findUIDItemInArr(userArr[i].uid, loadedPCUserArr) == -1) {
           let liItem = document.createElement("LI");
           liItem.id = userArr[i].uid;
           liItem.className = "gift";
@@ -742,10 +765,12 @@ window.onload = function instantiate() {
   function updateFamilyRelationsToDB() {
     if (globalParentData != null && globalChildData != null) {
       firebase.database().ref("users/" + globalChildData.uid).update({
+        childUser: "",
         parentUser: globalParentData.uid
       });
       firebase.database().ref("users/" + globalParentData.uid).update({
-        childUser: globalChildData.uid
+        childUser: globalChildData.uid,
+        parentUser: ""
       });
     } else {
       alert("There was an error updating the parent and child of this user, please try again!");
