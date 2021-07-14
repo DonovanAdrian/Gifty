@@ -41,6 +41,7 @@ let closeFamilyPCModal;
 let familyPCTitle;
 let familyPCText;
 let familyPCListContainer;
+let familyPCBack;
 let testFamily;
 let familyAddModal;
 let closeFamilyAddModal;
@@ -106,6 +107,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
+  pageName = "FamilyUpdate";
   inviteNote = document.getElementById('inviteNote');
   settingsNote = document.getElementById('settingsNote');
   dataListContainer = document.getElementById('dataListContainer');
@@ -126,6 +128,7 @@ window.onload = function instantiate() {
   familyPCTitle = document.getElementById('familyPCTitle');
   familyPCText = document.getElementById('familyPCText');
   familyPCListContainer = document.getElementById('familyPCListContainer');
+  familyPCBack = document.getElementById('familyPCBack');
   testFamily = document.getElementById('testFamily');
   familyAddModal = document.getElementById('familyAddModal');
   closeFamilyAddModal = document.getElementById('closeFamilyAddModal');
@@ -158,7 +161,7 @@ window.onload = function instantiate() {
   familyUpdateElements = [inviteNote, settingsNote, dataListContainer, testData, addMember, familySettings,
     familyMemberViewModal, closeFamilyMemberViewModal, familyMemberName, familyMemberUserName, familyMemberUID,
     familyMemberParent, familyMemberChild, familyMemberPCClear, removeFamilyMember, familyPCModal, closeFamilyPCModal,
-    familyPCTitle, familyPCText, familyPCListContainer, testFamily, familyAddModal, closeFamilyAddModal,
+    familyPCTitle, familyPCText, familyPCListContainer, familyPCBack, testFamily, familyAddModal, closeFamilyAddModal,
     familyMemberInp, addMemberInfo, addFamilyMember, cancelFamilyMember, familyNameModal, closeFamilyNameModal,
     familyNameInp, updateFamilyName, cancelFamilyName, familyNameInp, updateFamilyName, cancelFamilyName,
     familySettingsModal, familySettingsTitle, closeFamilySettings, changeFamilyName, removeAllMembers,
@@ -405,9 +408,19 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid)
           user = data.val();
+
+        if(data.key == currentModalOpen)
+          closeModal(currentModalOpenObj);
       });
 
       postRef.on('child_removed', function (data) {
+        if(data.key == currentModalOpen)
+          closeModal(currentModalOpenObj);
+
+        try {
+          document.getElementById("family" + data.key).remove();
+        } catch (err) {}
+
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1)
           userArr.splice(i, 1);
@@ -481,7 +494,7 @@ window.onload = function instantiate() {
   }
 
   function createFamilyMemberElement(familyMemberData){
-    try{
+    try {
       testData.remove();
     } catch (err) {}
 
@@ -699,6 +712,21 @@ window.onload = function instantiate() {
     familyPCText.innerHTML = "In order to prevent parents and their YOUNG children from being paired with" +
         " each other during Secret Santa, please choose " + parentChildData.name + "\'s " + parentChild +
         " user from the list below.";
+
+    familyPCBack.onclick = function() {
+      closeModal(familyPCModal);
+      openModal(familyMemberViewModal, parentChildData.uid);
+
+      window.onclick = function(event) {
+        if (event.target == familyMemberViewModal) {
+          closeModal(familyMemberViewModal);
+          try {
+            clearInterval(parentAlternator);
+            clearInterval(childAlternator);
+          } catch (err) {}
+        }
+      };
+    }
 
     generateFamilyPCUserList(parentChild, parentChildData);
 
