@@ -639,11 +639,9 @@ function createSecretSantaNames(){
       console.log("Secret Santa Assignments Complete!");
     if (secretSantaPageName == "moderation") {
       initializeSecretSantaBtns();
-      alert("Did the buttons update? Remove me when done!");
     }
     if (secretSantaPageName == "lists") {
       showSecretSanta();
-      alert("Did the button update? Remove me when done!");
     }
   } else {
     if (consoleOutput)
@@ -706,13 +704,35 @@ function assignUsersSecretSantaNames(usersToAssign) {
     if (!assignedUsers.includes(tempAssignArr[selector].uid)) {
       if (tempAssignArr[selector].uid != usersToAssign[i].uid) {
         if (usersToAssign[i].friends.includes(tempAssignArr[selector].uid)) {
-          if(consoleOutput)
-            console.log("MATCHED!");
-          assignedUsers.push(tempAssignArr[selector].uid);
-          userIndex = findUIDItemInArr(usersToAssign[i].uid, tempUserArr);
-          tempUserArr[userIndex].secretSantaName = tempAssignArr[selector].uid;
-          tempAssignArr.splice(selector, 1);
-          retryCount = 0;
+          try {
+            if (usersToAssign[i].parentUser == tempAssignArr[selector].uid ||
+                usersToAssign[i].childUser == tempAssignArr[selector].uid) {
+              if (consoleOutput)
+                console.log("These users are a parent or child of each other!");
+              retryCount++;
+              if (retryCount >= 10) {
+                assignActionSuccess = false;
+                break;
+              }
+              i--;
+            } else {
+              if (consoleOutput)
+                console.log("MATCHED!");
+              assignedUsers.push(tempAssignArr[selector].uid);
+              userIndex = findUIDItemInArr(usersToAssign[i].uid, tempUserArr);
+              tempUserArr[userIndex].secretSantaName = tempAssignArr[selector].uid;
+              tempAssignArr.splice(selector, 1);
+              retryCount = 0;
+            }
+          } catch (err) {
+            if(consoleOutput)
+              console.log("MATCHED!");
+            assignedUsers.push(tempAssignArr[selector].uid);
+            userIndex = findUIDItemInArr(usersToAssign[i].uid, tempUserArr);
+            tempUserArr[userIndex].secretSantaName = tempAssignArr[selector].uid;
+            tempAssignArr.splice(selector, 1);
+            retryCount = 0;
+          }
         } else {
           if(consoleOutput)
             console.log("These users aren't friends!");
