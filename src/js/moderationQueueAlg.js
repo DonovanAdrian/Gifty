@@ -66,6 +66,8 @@ function getCurrentUser(){
 }
 
 window.onload = function instantiate() {
+
+  pageName = "ModerationQueue";
   dataListContainer = document.getElementById('dataListContainer');
   nukeTickets = document.getElementById('nukeTickets');
   ticketModal = document.getElementById('ticketModal');
@@ -100,9 +102,9 @@ window.onload = function instantiate() {
   function initializeNukeBtn() {
     nukeTickets.innerHTML = "Nuke All Tickets";
     nukeTickets.onclick = function () {
-      for (let i = 0; i < ticketArr.length; i++) {
-        deleteModerationTicket(ticketArr[i]);
-      }
+      firebase.database().ref("maintenance/").remove();
+
+      ticketArr = [];
     };
   }
 
@@ -256,10 +258,13 @@ window.onload = function instantiate() {
     liItem.className = "gift";
     if (ticketData.details.includes("Attempting to delete user")) {
       liItem.className += " highSev";
-      ticketTitleText = "Attempt To Delete User " + ticketData.uid;
+      ticketTitleText = "!!Attempt To Delete User!! " + ticketData.uid;
     } else if (ticketData.details.includes("Invalid Login")) {
       liItem.className += " highSev";
-      ticketTitleText = "Invalid Login Attempt " + ticketData.uid;
+      ticketTitleText = "!!Invalid Login Attempt!! " + ticketData.uid;
+    } else if (ticketData.details.includes("Login Error")) {
+      liItem.className += " highSev";
+      ticketTitleText = "!!Login Error!! " + ticketData.uid;
     } else if (ticketData.details.includes("Attempting to delete gift")) {
       liItem.className += " mediumSev";
       ticketTitleText = "Attempt To Delete Gift " + ticketData.uid;
@@ -283,7 +288,7 @@ window.onload = function instantiate() {
       }
 
       deleteTicket.onclick = function () {
-        deleteModerationTicket(ticketData);
+        deleteModerationTicket(ticketData, false);
       };
 
       //show modal
@@ -305,7 +310,7 @@ window.onload = function instantiate() {
     return ticketTitleText;
   }
 
-  function deleteModerationTicket (ticketData) {
+  function deleteModerationTicket (ticketData, onFailNote) {
     let verifyDeleteBool = true;
     let toDelete;
     let ticketNoteInterval;
@@ -315,8 +320,7 @@ window.onload = function instantiate() {
 
     if (toDelete != -1) {
       ticketArr.splice(toDelete, 1);
-
-      if (findUIDItemInArr(ticketData.uid, ticketArr) == -1) {
+      if (findUIDItemInArr(ticketData.uid, ticketArr) != -1) {
         verifyDeleteBool = false;
       }
     } else {

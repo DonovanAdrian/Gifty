@@ -128,6 +128,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
+  pageName = "PrivateFriendList";
   notificationBtn = document.getElementById('notificationButton');
   giftCreationDate = document.getElementById('giftCreationDate');
   dataListContainer = document.getElementById('dataListContainer');
@@ -237,8 +238,8 @@ window.onload = function instantiate() {
         }
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
-            data.val().creator);
+          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
+          data.val().creator);
         instantiatedNodes.push(data.val());
 
         if(updateGiftToDBBool){
@@ -258,8 +259,8 @@ window.onload = function instantiate() {
         }
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
-            data.val().creator);
+          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
+          data.val().creator);
       });
 
       postRef.on('child_removed', function(data) {
@@ -436,7 +437,7 @@ window.onload = function instantiate() {
           } else {
             updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
             alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
-                "if it needs to be removed.");
+              "if it needs to be removed.");
           }
         }
       };
@@ -467,7 +468,7 @@ window.onload = function instantiate() {
               });
             } else {
               alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-                  "if this has been done in error.");
+                "if this has been done in error.");
             }
           }
         } else {

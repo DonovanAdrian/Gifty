@@ -16,7 +16,7 @@ let secretSantaPageName = "moderation";
 let moderationSet = 1;
 let dataCounter = 0;
 let globalNoteInt = 0;
-let loadingTimerInt = 0;
+let commonLoadingTimerInt = 0;
 let initialBtnInit = 0;
 
 let dataListContainer;
@@ -26,7 +26,7 @@ let privateMessageModal;
 let sendGlobalNotification;
 let user;
 let offlineTimer;
-let loadingTimer;
+let commonLoadingTimer;
 let userModal;
 let notificationModal;
 let notificationInfo;
@@ -91,6 +91,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
+  pageName = "Moderation";
   dataListContainer = document.getElementById('dataListContainer');
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');

@@ -69,6 +69,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
+  pageName = "Settings";
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
   inviteNote = document.getElementById('inviteNote');
@@ -121,14 +122,14 @@ function generateModerationModal(){
       firebase.database().ref("login/").update({
         allowLogin: false,
         loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-            "maintenance before logging in. Thank you for your patience!"
+          "maintenance before logging in. Thank you for your patience!"
       });
     } else {
       loginFxnBtn.innerHTML = "Disable Login Function";
       firebase.database().ref("login/").update({
         allowLogin: true,
         loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-            "maintenance before logging in. Thank you for your patience!"
+          "maintenance before logging in. Thank you for your patience!"
       });
     }
   };

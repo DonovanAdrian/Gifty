@@ -75,6 +75,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
+  pageName = "Family";
   inviteNote = document.getElementById('inviteNote');
   settingsNote = document.getElementById('settingsNote');
   dataListContainer = document.getElementById('dataListContainer');

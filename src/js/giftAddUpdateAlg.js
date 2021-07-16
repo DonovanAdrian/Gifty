@@ -79,7 +79,7 @@ function getCurrentUser(){
           inviteNote.style.background = "#ff3923";
         }
       }
-      else
+    else
       if (user.invites == undefined) {
         if(localConsoleOutput)
           console.log("Invites Not Found");
@@ -99,6 +99,7 @@ function getCurrentUser(){
 //Instantiates all data upon loading the webpage
 window.onload = function instantiate() {
 
+  pageName = "GiftAddUpdate";
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
   giftDescriptionInp = document.getElementById('giftDescriptionInp');
@@ -225,7 +226,7 @@ window.onload = function instantiate() {
 
     if(giftTitleInp.value === "")
       alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
-          "you!");
+        "you!");
     else if (invalidURLBool)
       alert("It looks like you entered an invalid URL, please enter a valid URL or leave the field blank.");
     else {
@@ -371,10 +372,10 @@ window.onload = function instantiate() {
       invalidURLOverride = false;
     if(giftTitleInp.value === "")
       alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
-          "you!");
+        "you!");
     else if (invalidURLBool && !invalidURLOverride) {
       alert("It looks like you might have entered an invalid URL, double check to see if your url is valid and " +
-          "try again.");
+        "try again.");
       invalidURLOverride = true;
       invalidURL = newURL;
     } else {
@@ -484,8 +485,8 @@ window.onload = function instantiate() {
     else if (invalidChar)
       invalidURLBool = true;
     else
-    if(consoleOutput)
-      console.log("Valid URL! " + tempURL);
+      if(consoleOutput)
+        console.log("Valid URL! " + tempURL);
 
     return tempURL;
   }

@@ -102,6 +102,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
+  pageName = "Confirmation";
   testData = document.getElementById('testData');
   notificationBtn = document.getElementById('notificationButton');
   dataListContainer = document.getElementById('dataListContainer');

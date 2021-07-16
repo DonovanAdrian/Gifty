@@ -235,6 +235,7 @@ function collectUserBoughtGifts(){
 
 window.onload = function instantiate() {
 
+  pageName = "Home";
   notificationBtn = document.getElementById('notificationButton');
   dataListContainer = document.getElementById('dataListContainer');
   offlineModal = document.getElementById('offlineModal');
@@ -354,14 +355,14 @@ window.onload = function instantiate() {
         giftArr.push(data.val());
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
+          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
       });
 
       postRef.on('child_changed', function(data) {
         giftArr[data.key] = data.val();
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
+          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
       });
 
       postRef.on('child_removed', function(data) {

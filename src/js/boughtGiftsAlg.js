@@ -112,6 +112,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
+  pageName = "BoughtGifts";
   notificationBtn = document.getElementById('notificationBtn');
   dataListContainer = document.getElementById('dataListContainer');
   offlineModal = document.getElementById('offlineModal');

@@ -120,6 +120,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
+  pageName = "FriendList";
   notificationBtn = document.getElementById('notificationButton');
   dataListContainer = document.getElementById('dataListContainer');
   offlineModal = document.getElementById('offlineModal');
@@ -225,7 +226,7 @@ window.onload = function instantiate() {
         }
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-            data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate);
+          data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate);
 
         if(updateGiftToDBBool){
           updateGiftError(data, data.key);
@@ -241,7 +242,7 @@ window.onload = function instantiate() {
         }
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-            data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate);
+          data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate);
       });
 
       postRef.on('child_removed', function(data) {
@@ -327,7 +328,7 @@ window.onload = function instantiate() {
     let liItem = document.createElement("LI");
     liItem.id = "gift" + giftUid;
     initGiftElement(liItem, giftDescription, giftLink, giftReceived, giftTitle, giftKey, giftWhere, giftBuyer, giftUid,
-        giftDate);
+      giftDate);
     let textNode = document.createTextNode(giftTitle);
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
@@ -416,7 +417,7 @@ window.onload = function instantiate() {
             });
           } else {
             alert("Only the buyer, " + giftBuyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-                "if this has been done in error.");
+              "if this has been done in error.");
           }
         } else {
           alert("This gift has already been marked as \"Un-Bought\"!");

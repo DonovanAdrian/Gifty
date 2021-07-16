@@ -188,7 +188,7 @@ window.onload = function instantiate() {
   familySettings.innerHTML = "Family Settings";
 
   familySettings.onclick = function() {
-    generateFamilySettingsModal();
+      generateFamilySettingsModal();
   };
 
   if(familyData.members != null) {
@@ -210,7 +210,7 @@ window.onload = function instantiate() {
 
     addFamilyMember.onclick = function() {
       if(familyMemberInp.value != "" || (familyMemberInp.value.includes(" ") &&
-          isAlph(familyMemberInp.value.charAt(0)))) {
+        isAlph(familyMemberInp.value.charAt(0)))) {
         for (let i = 0; i < userArr.length; i++) {
           if (familyMemberInp.value.toLowerCase() == userArr[i].userName.toLowerCase()) {
             for (let z = 0; z < familyArr.length; z++) {
@@ -228,16 +228,16 @@ window.onload = function instantiate() {
               if (familyData.members != null)
                 if (!familyData.members.includes(userArr[i].uid)) {
                   generateConfirmDataModal("Did you mean " + userArr[i].name + "?",
-                      "Confirm Member Name Below",
-                      "user", userArr[i].uid);
+                    "Confirm Member Name Below",
+                    "user", userArr[i].uid);
                 } else {
                   console.log("User is already in THIS family!");
                   addMemberInfo.innerHTML = "That user is already added to this family, please try another!";
                 }
               else
                 generateConfirmDataModal("Did you mean " + userArr[i].name + "?",
-                    "Confirm Member Name Below",
-                    "user", userArr[i].uid);
+                  "Confirm Member Name Below",
+                  "user", userArr[i].uid);
             } else {
               console.log("User is already in ANOTHER family!");
               addMemberInfo.innerHTML = "A user can only be in one family at a time!";
@@ -360,7 +360,7 @@ window.onload = function instantiate() {
   function generateFamilyNameModal() {
     updateFamilyName.onclick = function() {
       if(familyNameInp.value != "" || (familyNameInp.value.includes(" ") &&
-          isAlph(familyNameInp.value.charAt(0)))) {
+        isAlph(familyNameInp.value.charAt(0)))) {
         changeFamilyNameInDB(familyNameInp.value);
         familyNameInp.value = "";
         closeModal(familyNameModal);
@@ -710,8 +710,8 @@ window.onload = function instantiate() {
       familyPCTitle.innerHTML = "Choose A Parent";
     }
     familyPCText.innerHTML = "In order to prevent parents and their YOUNG children from being paired with" +
-        " each other during Secret Santa, please choose " + parentChildData.name + "\'s " + parentChild +
-        " user from the list below.";
+      " each other during Secret Santa, please choose " + parentChildData.name + "\'s " + parentChild +
+      " user from the list below.";
 
     familyPCBack.onclick = function() {
       closeModal(familyPCModal);
@@ -768,14 +768,14 @@ window.onload = function instantiate() {
               globalChildData = userArr[i];
               globalParentData = parentChildOmit;
               generateConfirmDataModal("Are you sure you want " + parentChildOmit.name
-                  + "\'s child to be " + userArr[i].name + "?",
-                  "Confirm The Child Selection", "parentChild", null);
+                + "\'s child to be " + userArr[i].name + "?",
+                "Confirm The Child Selection", "parentChild", null);
             } else if (parentChild == "parent") {
               globalChildData = parentChildOmit;
               globalParentData = userArr[i];
               generateConfirmDataModal("Are you sure you want " + parentChildOmit.name
-                  + "\'s parent to be " + userArr[i].name + "?",
-                  "Confirm The Parent Selection", "parentChild", null);
+                + "\'s parent to be " + userArr[i].name + "?",
+                "Confirm The Parent Selection", "parentChild", null);
             }
           };
 

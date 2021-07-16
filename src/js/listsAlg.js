@@ -123,6 +123,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
+  pageName = "Lists";
   notificationBtn = document.getElementById('notificationButton');
   dataListContainer = document.getElementById('dataListContainer');
   offlineModal = document.getElementById('offlineModal');

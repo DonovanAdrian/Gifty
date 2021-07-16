@@ -48,6 +48,7 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
 
+  pageName = "FAQ";
   emailBtn = document.getElementById('emailBtn');
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
@@ -66,7 +67,7 @@ window.onload = function instantiate() {
   emailBtn.onclick = function () {
     let supportStr = genSupport();
     window.open('mailto:gifty.application@gmail.com?subject=Gifty Support #' + supportStr +
-        '&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, ' + user.userName);
+      '&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, ' + user.userName);
   };
 
   function genSupport() {
