@@ -70,9 +70,7 @@ function instantiateCommon(){
     userChecker = JSON.parse(sessionStorage.validUser);
     if(userChecker.moderatorInt == 1)
       consoleOutput = true;
-  } catch (err) {
-    //console.log("No User Logged In...");
-  }
+  } catch (err) {}
   dataListChecker = document.getElementById('dataListContainer');
 }
 
@@ -93,11 +91,8 @@ function commonInitialization(){
 
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
-      // User is signed in.
       let isAnonymous = user.isAnonymous;
       let uid = user.uid;
-    } else {
-      // User is signed out.
     }
   });
 
@@ -136,16 +131,8 @@ function commonInitialization(){
     }, 1000);
   });
 
-  //close offlineModal on close
   offlineSpan.onclick = function() {
     closeModal(offlineModal);
-  };
-
-  //close offlineModal on click
-  window.onclick = function(event) {
-    if (event.target == offlineModal) {
-      closeModal(offlineModal);
-    }
   };
 
   if (dataListChecker != null) {
@@ -184,10 +171,10 @@ function loginTimer(){
     document.onkeypress = resetTimer;
     document.onload = resetTimer;
     document.onmousemove = resetTimer;
-    document.onmousedown = resetTimer; // touchscreen presses
+    document.onmousedown = resetTimer;
     document.ontouchstart = resetTimer;
-    document.onclick = resetTimer;     // touchpad clicks
-    document.onscroll = resetTimer;    // scrolling with arrow keys
+    document.onclick = resetTimer;
+    document.onscroll = resetTimer;
     document.onkeypress = resetTimer;
     loginNum = loginNum + 1;
     if (loginNum >= logoutLimit){//default 900
@@ -224,14 +211,13 @@ function areYouStillThereNote(timeElapsed){
 
   if(!areYouStillThereInit) {
     closeModal(currentModalOpenObj);
-    openModal(notificationModal, "noteModal");
+    openModal(notificationModal, "noteModal", true);
     areYouStillThereInit = true;
   }
   notificationInfo.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
       + ":" + timeSecs + "!";
   notificationTitle.innerHTML = "Are You Still There?";
 
-  //close on close
   noteSpan.onclick = function() {
     closeModal(notificationModal);
     areYouStillThereBool = false;
@@ -257,7 +243,6 @@ function ohThereYouAre(){
     }
   }, 1000);
 
-  //close on click
   window.onclick = function(event) {
     if (event.target == notificationModal) {
       closeModal(notificationModal);
@@ -321,16 +306,21 @@ function newNavigation(navNum) {
   window.location.href = navLocations[navNum];
 }
 
-function openModal(openThisModal, modalName){
+function openModal(openThisModal, modalName, ignoreBool){
+  if (ignoreBool == null)
+    ignoreBool = false;
+
   currentModalOpenObj = openThisModal;
   currentModalOpen = modalName;
   openThisModal.style.display = "block";
   if(consoleOutput)
     console.log("Modal Opened: " + modalName);
 
-  window.onclick = function(event) {
-    if (event.target == currentModalOpenObj) {
-      closeModal(currentModalOpenObj);
+  if (!ignoreBool) {
+    window.onclick = function (event) {
+      if (event.target == currentModalOpenObj) {
+        closeModal(currentModalOpenObj);
+      }
     }
   }
 }
