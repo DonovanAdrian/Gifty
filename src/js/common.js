@@ -327,6 +327,12 @@ function openModal(openThisModal, modalName){
   openThisModal.style.display = "block";
   if(consoleOutput)
     console.log("Modal Opened: " + modalName);
+
+  window.onclick = function(event) {
+    if (event.target == currentModalOpenObj) {
+      closeModal(currentModalOpenObj);
+    }
+  }
 }
 
 function closeModal(closeThisModal){
@@ -336,6 +342,8 @@ function closeModal(closeThisModal){
     closeThisModal.style.display = "none";
     if(consoleOutput)
       console.log("Modal Closed");
+
+    window.onclick = function(event) {}
   } catch (err) {
     if(consoleOutput)
       console.log("Modal Not Open");
