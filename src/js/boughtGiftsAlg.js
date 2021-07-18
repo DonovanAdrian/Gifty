@@ -143,7 +143,6 @@ window.onload = function instantiate() {
     userUserNames.push(userArr[i].userName);
   }
 
-  //initialize back button
   backBtn.innerHTML = "Back To Home";
   backBtn.onclick = function() {
     newNavigation(2);//Home
@@ -293,7 +292,7 @@ window.onload = function instantiate() {
     }
 
     if(updateGiftBool) {
-      if (newGiftData.uid == currentModalOpen){//Moved currentModalOpen reference to common.js
+      if (newGiftData.uid == currentModalOpen){
         closeModal(giftModal);
       }
       changeGiftElement(newGiftData, giftOwner);
@@ -365,20 +364,11 @@ window.onload = function instantiate() {
         giftCreationDateFld.innerHTML = "Creation date not available";
       }
 
-      //show modal
       openModal(giftModal, giftData.uid);
 
-      //close on close
       closeGiftModal.onclick = function() {
         closeModal(giftModal);
       };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == giftModal) {
-          closeModal(giftModal);
-        }
-      }
     };
   }
 };

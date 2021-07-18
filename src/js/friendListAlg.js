@@ -155,7 +155,6 @@ window.onload = function instantiate() {
     userUserNames.push(userArr[i].userName);
   }
 
-  //initialize back button
   backBtn.innerHTML = "Back To Lists";
   backBtn.onclick = function() {
     if(moderationSet == 1){
@@ -237,7 +236,7 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function(data) {
         giftArr[data.key] = data.val();
 
-        if(data.val().uid == currentModalOpen){//Moved currentModalOpen reference to common.js
+        if(data.val().uid == currentModalOpen){
           closeModal(giftModal);
         }
 
@@ -310,7 +309,8 @@ window.onload = function instantiate() {
   }
 
   function updateGiftError(giftData, giftKey){
-    //alert("A gift needs to be updated! Key: " + giftKey);
+    if(consoleOutput)
+      console.log("A gift needs to be updated! Key: " + giftKey);
     firebase.database().ref("users/" + giftUser.uid + "/giftList/" + giftKey).update({
       buyer: ""
     });
@@ -424,19 +424,10 @@ window.onload = function instantiate() {
         }
       };
 
-      //show modal
       openModal(giftModal, giftUid);
 
-      //close on close
       closeGiftModal.onclick = function() {
         closeModal(giftModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == giftModal) {
-          closeModal(giftModal);
-        }
       };
     };
   }

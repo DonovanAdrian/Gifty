@@ -138,7 +138,6 @@ function checkUserErrors(){
   if(consoleOutput)
     console.log("Checking for errors...");
 
-  //check invites for users that no longer exist
   if(invitesValidBool){
     for(let i = 0; i < user.invites.length; i++){
       if(!userUIDs.includes(user.invites[i])){
@@ -158,7 +157,6 @@ function checkUserErrors(){
     }
   }
 
-  //check friends for users that no longer exist
   if(friendsValidBool){
     for(let i = 0; i < user.friends.length; i++){
       if(!userUIDs.includes(user.friends[i])){
@@ -487,20 +485,11 @@ window.onload = function instantiate() {
         deleteGiftElement(key, title, uid, buyer);
       };
 
-      //show modal
       openModal(giftModal, uid);
 
-      //close on close
       closeGiftModal.onclick = function() {
         closeModal(giftModal);
       };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == giftModal) {
-          closeModal(giftModal);
-        }
-      }
     };
   }
 
@@ -557,16 +546,8 @@ window.onload = function instantiate() {
       notificationTitle.innerHTML = "Gift " + title + " successfully deleted!";
       openModal(notificationModal, "noteModal");
 
-      //close on close
       noteSpan.onclick = function() {
         closeModal(notificationModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == notificationModal) {
-          closeModal(notificationModal);
-        }
       };
 
       let nowJ = 0;

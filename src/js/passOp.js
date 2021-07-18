@@ -33,43 +33,43 @@ function checkEncodeName(newEncodeName, input){
 function whatIsInt(rChar){
   switch (rChar){
     case "A":
-      rChar = 1;//multiply
+      rChar = 1;
       break;
     case "B":
     case "G":
     case "L":
     case "Q":
-      rChar = 2;//add
+      rChar = 2;
       break;
     case "E":
-      rChar = 3;//multiply
+      rChar = 3;
       break;
     case "C":
     case "H":
     case "M":
     case "R":
-      rChar = 4;//add
+      rChar = 4;
       break;
     case "I":
-      rChar = 5;//multiply
+      rChar = 5;
       break;
     case "D":
     case "J":
     case "N":
     case "S":
-      rChar = 6;//add
+      rChar = 6;
       break;
     case "O":
-      rChar = 7;//multiply
+      rChar = 7;
       break;
     case "F":
     case "K":
     case "P":
     case "T":
-      rChar = 8;//add
+      rChar = 8;
       break;
     case "U":
-      rChar = 9;//multiply
+      rChar = 9;
       break;
   }
   return rChar;
@@ -78,31 +78,31 @@ function whatIsInt(rChar){
 function IntToChar(rChar){
   switch (rChar){
     case 1:
-      rChar = "1";//multiply
+      rChar = "1";
       break;
     case 2:
-      rChar = "2";//add
+      rChar = "2";
       break;
     case 3:
-      rChar = "3";//multiply
+      rChar = "3";
       break;
     case 4:
-      rChar = "4";//add
+      rChar = "4";
       break;
     case 5:
-      rChar = "5";//multiply
+      rChar = "5";
       break;
     case 6:
-      rChar = "6";//add
+      rChar = "6";
       break;
     case 7:
-      rChar = "7";//multiply
+      rChar = "7";
       break;
     case 8:
-      rChar = "8";//add
+      rChar = "8";
       break;
     case 9:
-      rChar = "9";//multiply
+      rChar = "9";
       break;
   }
   return rChar;
@@ -114,41 +114,41 @@ function whatIsOp(rChar){
     case "A":
     case "B":
     case "G":
-      rChar = 0;//multiply
+      rChar = 0;
       break;
     case "L":
     case "Q":
-      rChar = 1;//add
+      rChar = 1;
       break;
     case "E":
     case "H":
-      rChar = 0;//multiply
+      rChar = 0;
       break;
     case "C":
     case "M":
     case "R":
-      rChar = 1;//add
+      rChar = 1;
       break;
     case "I":
     case "N":
     case "S":
-      rChar = 0;//multiply
+      rChar = 0;
       break;
     case "D":
     case "J":
-      rChar = 1;//add
+      rChar = 1;
       break;
     case "O":
     case "F":
     case "K":
-      rChar = 0;//multiply
+      rChar = 0;
       break;
     case "P":
     case "T":
-      rChar = 1;//add
+      rChar = 1;
       break;
     case "U":
-      rChar = 0;//multiply
+      rChar = 0;
       break;
     case "1":
     case "3":
@@ -164,7 +164,7 @@ function whatIsOp(rChar){
       rChar = 1;
       break;
     default:
-      rChar = 1;//add
+      rChar = 1;
       break;
   }
   return rChar;
@@ -306,46 +306,46 @@ function generateDigitSetter(){
       iterate++;
     }
 
-    if(rBool == 1)//set number
+    if(rBool == 1)
       switch (rChar){
         case "A":
-          rChar = 1;//multiply
+          rChar = 1;
           break;
         case "B":
         case "G":
         case "L":
         case "Q":
-          rChar = 2;//add
+          rChar = 2;
           break;
         case "E":
-          rChar = 3;//multiply
+          rChar = 3;
           break;
         case "C":
         case "H":
         case "M":
         case "R":
-          rChar = 4;//add
+          rChar = 4;
           break;
         case "I":
-          rChar = 5;//multiply
+          rChar = 5;
           break;
         case "D":
         case "J":
         case "N":
         case "S":
-          rChar = 6;//add
+          rChar = 6;
           break;
         case "O":
-          rChar = 7;//multiply
+          rChar = 7;
           break;
         case "F":
         case "K":
         case "P":
         case "T":
-          rChar = 8;//add
+          rChar = 8;
           break;
         case "U":
-          rChar = 9;//multiply
+          rChar = 9;
           break;
         default:
           rChar = 5;

@@ -354,18 +354,10 @@ window.onload = function instantiate() {
         deleteFriend(friendData.uid);
       };
 
-      //show modal
       openModal(inviteModal, friendData.uid);
 
-      //close on close
       closeInviteModal.onclick = function () {
         closeModal(inviteModal);
-      };
-
-      //close on click
-      window.onclick = function (event) {
-        if (event.target == inviteModal)
-          closeModal(inviteModal);
       };
     };
   }
@@ -388,16 +380,8 @@ window.onload = function instantiate() {
 
     openModal(privateMessageModal, "addGlobalMsgModal");
 
-    //close on close
     closePrivateMessageModal.onclick = function() {
       closeModal(privateMessageModal);
-    };
-
-    //close on click
-    window.onclick = function(event) {
-      if (event.target == privateMessageModal) {
-        closeModal(privateMessageModal);
-      }
     };
   }
 
@@ -424,7 +408,6 @@ window.onload = function instantiate() {
   }
 
   function deleteFriend(uid) {
-    //Delete on user's side-----------------------------------------
     let userFriendArrBackup = friendArr;
     let friendFriendArrBackup = [];
     let verifyDeleteBool = true;
@@ -453,13 +436,11 @@ window.onload = function instantiate() {
     if(verifyDeleteBool){
       removeFriendElement(uid);
       user.friends = friendArr;
-      generateAddUserBtn(); //Regenerate the button for new friendArr
+      generateAddUserBtn();
 
       firebase.database().ref("users/" + user.uid).update({
         friends: friendArr
       });
-
-      //alert("Friend Successfully removed from your list!");
     } else {
       friendArr = user.friends;
       firebase.database().ref("users/" + user.uid).update({
@@ -469,10 +450,9 @@ window.onload = function instantiate() {
       return;
     }
 
-    //Delete on friend's side---------------------------------------
     verifyDeleteBool = true;
     toDelete = -1;
-    let friendFriendArr;//Weird name, I know, but it's the friend's friend Array...
+    let friendFriendArr;
 
     for (let i = 0; i < userArr.length; i++){
       if(userArr[i].uid == uid) {
@@ -505,8 +485,6 @@ window.onload = function instantiate() {
       firebase.database().ref("users/" + uid).update({
         friends: friendFriendArr
       });
-
-      //alert("Friend Successfully removed from their list!");
     } else {
       firebase.database().ref("users/" + uid).update({
         friends: friendFriendArrBackup
@@ -594,12 +572,6 @@ window.onload = function instantiate() {
         userNameInp.value = "";
         inviteInfo.innerHTML = "";
       };
-
-      window.onclick = function(event) {
-        if (event.target == userInviteModal) {
-          closeModal(userInviteModal);
-        }
-      }
     };
     if(consoleOutput)
       console.log("Add Button Generated");
@@ -613,7 +585,7 @@ window.onload = function instantiate() {
     if (userLocation != -1) {
       confUserName.innerHTML = "Did you mean to add \"" + userArr[userLocation].name + "\"?";
       closeModal(userInviteModal);
-      openModal(confirmModal, "confirmUserModal");
+      openModal(confirmModal, "confirmUserModal", true);
 
       inviteConfirm.onclick = function () {
         inviteUserDB(userArr[userLocation]);
@@ -629,14 +601,12 @@ window.onload = function instantiate() {
         inviteInfo.innerHTML = "";
       };
 
-      //close on close
       closeConfirmModal.onclick = function () {
         closeModal(confirmModal);
         userNameInp.value = "";
         inviteInfo.innerHTML = "";
       };
 
-      //close on click
       window.onclick = function (event) {
         if (event.target == confirmModal) {
           closeModal(confirmModal);

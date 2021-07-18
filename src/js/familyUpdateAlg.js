@@ -260,7 +260,7 @@ window.onload = function instantiate() {
       closeModal(familyAddModal);
     };
 
-    openModal(familyAddModal, "familyAddModal");
+    openModal(familyAddModal, "familyAddModal", true);
 
     closeFamilyAddModal.onclick = function() {
       addMemberInfo.innerHTML = "";
@@ -303,7 +303,7 @@ window.onload = function instantiate() {
       return false;
     }
 
-    openModal(confirmMemberModal, "confirmMemberModal");
+    openModal(confirmMemberModal, "confirmMemberModal", true);
 
     closeConfirmMemberModal.onclick = function() {
       closeModal(confirmMemberModal);
@@ -342,12 +342,6 @@ window.onload = function instantiate() {
     closeFamilySettings.onclick = function() {
       closeModal(familySettingsModal);
     };
-
-    window.onclick = function(event) {
-      if (event.target == familySettingsModal) {
-        closeModal(familySettingsModal);
-      }
-    };
   }
 
   function removeAllFamilyMembers(familyRemove) {
@@ -376,12 +370,6 @@ window.onload = function instantiate() {
 
     closeFamilyNameModal.onclick = function() {
       closeModal(familyNameModal);
-    };
-
-    window.onclick = function(event) {
-      if (event.target == familyNameModal) {
-        closeModal(familyNameModal);
-      }
     };
   }
 
@@ -563,10 +551,8 @@ window.onload = function instantiate() {
         removeFamilyMemberFromDB(familyMemberData.uid);
       };
 
-      //show modal
-      openModal(familyMemberViewModal, familyMemberData.uid);
+      openModal(familyMemberViewModal, familyMemberData.uid, true);
 
-      //close on close
       closeFamilyMemberViewModal.onclick = function() {
         closeModal(familyMemberViewModal);
         try {
@@ -575,7 +561,6 @@ window.onload = function instantiate() {
         } catch (err) {}
       };
 
-      //close on click
       window.onclick = function(event) {
         if (event.target == familyMemberViewModal) {
           closeModal(familyMemberViewModal);
@@ -715,7 +700,7 @@ window.onload = function instantiate() {
 
     familyPCBack.onclick = function() {
       closeModal(familyPCModal);
-      openModal(familyMemberViewModal, parentChildData.uid);
+      openModal(familyMemberViewModal, parentChildData.uid, true);
 
       window.onclick = function(event) {
         if (event.target == familyMemberViewModal) {
@@ -735,12 +720,6 @@ window.onload = function instantiate() {
     closeFamilyPCModal.onclick = function() {
       closeModal(familyPCModal);
     }
-
-    window.onclick = function(event) {
-      if (event.target == familyPCModal) {
-        closeModal(familyPCModal);
-      }
-    };
   }
 
   function generateFamilyPCUserList(parentChild, parentChildOmit) {

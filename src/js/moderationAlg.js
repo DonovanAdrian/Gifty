@@ -167,16 +167,8 @@ window.onload = function instantiate() {
 
     openModal(privateMessageModal, "addGlobalMsgModal");
 
-    //close on close
     closePrivateMessageModal.onclick = function() {
       closeModal(privateMessageModal);
-    };
-
-    //close on click
-    window.onclick = function(event) {
-      if (event.target == privateMessageModal) {
-        closeModal(privateMessageModal);
-      }
     };
   }
 
@@ -221,16 +213,8 @@ window.onload = function instantiate() {
 
       openModal(privateMessageModal, "addGlobalMsgModal");
 
-      //close on close
       closePrivateMessageModal.onclick = function() {
         closeModal(privateMessageModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == privateMessageModal) {
-          closeModal(privateMessageModal);
-        }
       };
     };
   }
@@ -350,7 +334,7 @@ window.onload = function instantiate() {
           console.log("User Updated: 2");
         }
 
-        if(currentModalOpen == data.key) {//Moved currentModalOpen reference to common.js
+        if(currentModalOpen == data.key) {
           closeModal(userModal);
         }
       });
@@ -364,7 +348,7 @@ window.onload = function instantiate() {
           userArr.splice(i, 1);
         }
 
-        if(currentModalOpen == data.key) {//Moved currentModalOpen reference to common.js
+        if(currentModalOpen == data.key) {
           closeModal(userModal);
         }
       });
@@ -493,7 +477,7 @@ window.onload = function instantiate() {
         if(userData.uid == user.uid){
           alert("Navigate to the home page to see your gifts!");
         } else {
-          sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
+          sessionStorage.setItem("validGiftUser", JSON.stringify(userData));
           newNavigation(9);//FriendList
         }
       };
@@ -501,18 +485,18 @@ window.onload = function instantiate() {
         if(userData.uid == user.uid){
           alert("You aren't allowed to see these gifts, silly!");
         } else {
-          sessionStorage.setItem("validGiftUser", JSON.stringify(userData));//Other User Data
+          sessionStorage.setItem("validGiftUser", JSON.stringify(userData));
           newNavigation(10);//PrivateFriendList
         }
       };
       userPassword.onclick = function() {
         userPassword.innerHTML = decode(userData.encodeStr);
       };
-      warnUser.onclick = function(){
+      warnUser.onclick = function(){//ToDo
         alert("This will eventually warn the user of a certain offense");
         //warn function
       };
-      banUser.onclick = function(){
+      banUser.onclick = function(){//ToDo
         alert("This will eventually ban the user for a certain offense");
         //ban function
       };
@@ -555,19 +539,10 @@ window.onload = function instantiate() {
         generatePrivateMessageDialog(userData);
       };
 
-      //show modal
       openModal(userModal, userData.uid);
 
-      //close on close
       closeUserModal.onclick = function() {
         closeModal(userModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == userModal) {
-          closeModal(userModal);
-        }
       };
     };
   }

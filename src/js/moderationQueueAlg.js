@@ -291,19 +291,10 @@ window.onload = function instantiate() {
         deleteModerationTicket(ticketData, false);
       };
 
-      //show modal
       openModal(ticketModal, ticketData.uid);
 
-      //close on close
       closeTicketModal.onclick = function() {
         closeModal(ticketModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == ticketModal) {
-          closeModal(ticketModal);
-        }
       };
     };
 
@@ -334,15 +325,13 @@ window.onload = function instantiate() {
 
       notificationInfo.innerHTML = "Ticket Deleted";
       notificationTitle.innerHTML = "Moderation ticket " + ticketData.uid + " successfully deleted!";
-      openModal(notificationModal, "noteModal");
+      openModal(notificationModal, "noteModal", true);
 
-      //close on close
       noteSpan.onclick = function() {
         closeModal(notificationModal);
         clearInterval(ticketNoteInterval);
       };
 
-      //close on click
       window.onclick = function(event) {
         if (event.target == notificationModal) {
           closeModal(notificationModal);

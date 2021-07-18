@@ -31,7 +31,6 @@ let signUpFld;
 
 
 function fetchConfigFile(){
-  //console.log("Fetching Config");
   let file = "txt/config.txt";
 
   $.ajax({
@@ -103,12 +102,7 @@ function fetchConfigFile(){
             measurementIdString = measurementIdString.replace(/"/g, '');
             measurementIdString = measurementIdString.replace(/,/g, '');
             measurementIdString = measurementIdString.replace(/ /g, '');
-          } else {
-            //console.log("Unknown Config String, Please Advise:");
-            //console.log(configFileInput[i]);
           }
-        } else {
-          //console.log("Comment Found!");
         }
       }
 
@@ -116,7 +110,6 @@ function fetchConfigFile(){
         if (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
           storageBucketString == "" || messagingSenderIdString == "" || appIdString == "" || measurementIdString == "") {
           alert("Config not properly initialized! Please contact an administrator!");
-          //console.log("Config Not Initialized! Are You Using The Default Config File?");
         } else {
           config = {
             apiKey: apiKeyString,
@@ -128,7 +121,6 @@ function fetchConfigFile(){
             appId: appIdString,
             measurementId: measurementIdString
           };
-          //console.log("Config Successfully Initialized!");
 
           sessionStorage.setItem("config", JSON.stringify(config));
           commonInitialization();
@@ -138,7 +130,6 @@ function fetchConfigFile(){
         if (configInitializeInt == 7 && (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
           storageBucketString == "" || messagingSenderIdString == "" || appIdString == "")) {
           alert("Config not properly initialized! Please contact an administrator!");
-          //console.log("Config Not Initialized! Are You Using The Default Config File?");
         } else {
           console.log("WARNING: Missing measurementId. This variable is optional. Disregard if this is on purpose.");
 
@@ -151,7 +142,6 @@ function fetchConfigFile(){
             messagingSenderId: messagingSenderIdString,
             appId: appIdString,
           };
-          //console.log("Config Successfully Initialized!");
 
           sessionStorage.setItem("config", JSON.stringify(config));
           commonInitialization();
@@ -181,7 +171,6 @@ window.onload = function instantiate() {
   function backgroundAlternator(){
     let nowBackground = 0;
     let alternator = 0;
-    //console.log("Background Alternator Feature Active");
     setInterval(function(){
       nowBackground = nowBackground + 1000;
       if(nowBackground >= 15000){
@@ -213,7 +202,6 @@ function loginQuery() {
   let fetchLogin = function (postRef) {
     postRef.once("value").then(function(snapshot) {
       if(snapshot.exists()) {
-        //console.log("Login Snapshot Exists!");
         postRef.on('child_added', function (data) {
           if(data.key == "allowLogin") {
             if (data.val()) {
@@ -242,14 +230,8 @@ function loginQuery() {
             loginDisabledMsg = data.val();
         });
 
-        postRef.on('child_removed', function (data) {
-          //console.log(data.key + " removed");
-        });
-
         initializeLoginBtns();
       } else {
-        //console.log("Initializing Login In DB");
-
         firebase.database().ref("login/").update({
           allowLogin: true,
           loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
@@ -280,15 +262,12 @@ function initializeLoginBtns() {
 }
 
 function databaseQuery() {
-
-  //console.log("Fetching Data From Database");
   userInitial = firebase.database().ref("users/");
 
   let fetchPosts = function (postRef) {
     postRef.once("value").then(function(snapshot) {
       if (snapshot.exists()) {
         postRef.on('child_added', function (data) {
-          //console.log("Adding " + data.val().userName);
           if (!userArr.includes(data.val()))
             userArr.push(data.val());
         });
@@ -296,7 +275,6 @@ function databaseQuery() {
         postRef.on('child_changed', function (data) {
           let i = findUIDItemInArr(data.key, userArr);
           if (userArr[i] != data.val() && i != -1) {
-            //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
           }
         });

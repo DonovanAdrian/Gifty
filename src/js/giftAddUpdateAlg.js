@@ -96,7 +96,6 @@ function getCurrentUser(){
   }
 }
 
-//Instantiates all data upon loading the webpage
 window.onload = function instantiate() {
 
   pageName = "GiftAddUpdate";

@@ -429,13 +429,13 @@ window.onload = function instantiate() {
       } else if (notificationPage == "friendList.html" && friendUserData != -1) {
         notificationViewPage.innerHTML = "Click here to access their friend list!";
         notificationViewPage.onclick = function () {
-          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));
           newNavigation(9);//FriendList
         };
       } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
         notificationViewPage.innerHTML = "Click here to access their private friend list!";
         notificationViewPage.onclick = function () {
-          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));//Friend's User Data
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));
           newNavigation(10);//PrivateFriendList
         };
       } else if (notificationPage == "deleteGift") {
@@ -460,19 +460,10 @@ window.onload = function instantiate() {
         closeModal(noteViewModal);
       };
 
-      //show modal
       openModal(noteViewModal, notificationKey);
 
-      //close on close
       closeNoteViewModal.onclick = function () {
         closeModal(noteViewModal);
-      };
-
-      //close on click
-      window.onclick = function (event) {
-        if (event.target == noteViewModal) {
-          closeModal(noteViewModal);
-        }
       };
 
       if (!readNotificationArr.includes(notificationString)) {
@@ -502,16 +493,8 @@ window.onload = function instantiate() {
 
     openModal(privateMessageModal, "addGlobalMsgModal");
 
-    //close on close
     privateMessageSpan.onclick = function() {
       closeModal(privateMessageModal);
-    };
-
-    //close on click
-    window.onclick = function(event) {
-      if (event.target == privateMessageModal) {
-        closeModal(privateMessageModal);
-      }
     };
   }
 

@@ -215,7 +215,7 @@ function areYouStillThereNote(timeElapsed){
     areYouStillThereInit = true;
   }
   notificationInfo.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
-      + ":" + timeSecs + "!";
+    + ":" + timeSecs + "!";
   notificationTitle.innerHTML = "Are You Still There?";
 
   noteSpan.onclick = function() {

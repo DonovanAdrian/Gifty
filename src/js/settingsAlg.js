@@ -138,11 +138,5 @@ function generateModerationModal(){
     closeModal(moderationModal);
   };
 
-  window.onclick = function(event) {
-    if (event.target == moderationModal) {
-      closeModal(moderationModal);
-    }
-  };
-
   openModal(moderationModal, "moderationModal");
 }

@@ -375,8 +375,8 @@ window.onload = function instantiate() {
       if(friendData.giftList != undefined){
         if(friendData.giftList.length > 0) {
           publicList.onclick = function () {
-            sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
-            newNavigation(9);//FriendList
+            sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
+            newNavigation(9);
           };
           flashGiftNumbers(friendData.giftList.length, publicList, "Public");
         } else {
@@ -394,25 +394,22 @@ window.onload = function instantiate() {
       else
         flashGiftNumbers(0, privateList, "Private");
       privateList.onclick = function() {
-        sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));//Friend's User Data
-        newNavigation(10);//PrivateFriendList
+        sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
+        newNavigation(10);
       };
 
       sendPrivateMessage.onclick = function() {
         generatePrivateMessageDialog(friendData);
       };
 
-      //show modal
-      openModal(userModal, friendData.uid);
+      openModal(userModal, friendData.uid, true);
 
-      //close on close
       closeUserModal.onclick = function() {
         closeModal(userModal);
         clearInterval(privateListAlternator);
         clearInterval(publicListAlternator);
       };
 
-      //close on click
       window.onclick = function(event) {
         if (event.target == userModal) {
           closeModal(userModal);

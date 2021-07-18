@@ -38,14 +38,12 @@ let noteSpan;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
-  } catch (err) {
-    //console.log("Welcome new user!");
-  }
-  if(user == null){//newUser
+  } catch (err) {}
+  if(user == null){
     btnUpdate.innerHTML = "Create User Profile";
     alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely," +
       "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
-  } else {//returningUser
+  } else {
     btnUpdate.innerHTML = "Loading...";
     btnDelete.style.display = "block";
     btnDelete.style.position = "fixed";
@@ -59,7 +57,6 @@ function getCurrentUser(){
   }
 }
 
-//Instantiates all data upon loading the webpage
 window.onload = function instantiate() {
 
   pageName = "UserAddUpdate";
@@ -167,8 +164,8 @@ function deleteCheck(){
     closeModal(confirmModal);
 
     btnDelete.innerHTML = "Please Wait...";
-    btnUpdate.onclick = function(){};//forces the update button to do nothing
-    btnDelete.onclick = function(){};//forces the delete button to do nothing
+    btnUpdate.onclick = function(){};
+    btnDelete.onclick = function(){};
     window.location.href = "index.html";
   };
 
@@ -178,21 +175,11 @@ function deleteCheck(){
     closeModal(confirmModal);
   };
 
-  //close on close
   confirmSpan.onclick = function () {
     if(consoleOutput)
       console.log("Closed window, user " + user.uid + " not deleted");
     closeModal(confirmModal);
   };
-
-  //close on click
-  window.onclick = function (event) {
-    if (event.target == confirmModal) {
-      if(consoleOutput)
-        console.log("Clicked outside window, user " + user.uid + " not deleted");
-      closeModal(confirmModal);
-    }
-  }
 }
 
 function updateUserToDB(){
@@ -272,8 +259,8 @@ function updateUserToDB(){
     }
 
     btnUpdate.innerHTML = "Please Wait...";
-    btnUpdate.onclick = function(){};//forces the update button to do nothing
-    btnDelete.onclick = function(){};//forces the delete button to do nothing
+    btnUpdate.onclick = function(){};
+    btnDelete.onclick = function(){};
     sessionStorage.setItem("validUser", JSON.stringify(user));
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
     window.location.href = "settings.html";
@@ -324,8 +311,8 @@ function addUserToDB(){
     });
 
     btnUpdate.innerHTML = "Please Wait...";
-    btnUpdate.onclick = function(){};//forces the update button to do nothing
-    btnDelete.onclick = function(){};//forces the delete button to do nothing
+    btnUpdate.onclick = function(){};
+    btnDelete.onclick = function(){};
     window.location.href = "index.html";
   }
 }

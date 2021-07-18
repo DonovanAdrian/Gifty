@@ -254,7 +254,7 @@ window.onload = function instantiate() {
         giftArr[data.key] = data.val();
         instantiatedNodes[data.key] = data.val();
 
-        if(data.val().uid == currentModalOpen){//Moved currentModalOpen reference to common.js
+        if(data.val().uid == currentModalOpen){
           closeModal(giftModal);
         }
 
@@ -476,19 +476,10 @@ window.onload = function instantiate() {
         }
       };
 
-      //show modal
       openModal(giftModal, uid);
 
-      //close on close
       closeGiftModal.onclick = function() {
         closeModal(giftModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == giftModal) {
-          closeModal(giftModal);
-        }
       };
     };
   }

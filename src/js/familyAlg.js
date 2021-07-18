@@ -141,12 +141,6 @@ window.onload = function instantiate() {
     closeFamilyAddModal.onclick = function() {
       closeModal(familyAddModal);
     };
-
-    window.onclick = function(event) {
-      if (event.target == familyAddModal) {
-        closeModal(familyAddModal);
-      }
-    };
   }
 
   function databaseQuery() {
@@ -337,19 +331,10 @@ window.onload = function instantiate() {
         removeFamilyFromDB(familyData.uid);
       };
 
-      //show modal
       openModal(familyModal, familyData.uid);
 
-      //close on close
       closeFamilyModal.onclick = function() {
         closeModal(familyModal);
-      };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == familyModal) {
-          closeModal(familyModal);
-        }
       };
     };
   }

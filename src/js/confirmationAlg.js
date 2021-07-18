@@ -161,7 +161,7 @@ window.onload = function instantiate() {
           userArr[i] = data.val();
         }
 
-        if(data.key == currentModalOpen) {//Moved currentModalOpen reference to common.js
+        if(data.key == currentModalOpen) {
           closeModal(inviteModal);
         }
 
@@ -314,20 +314,11 @@ window.onload = function instantiate() {
         closeModal(inviteModal);
       };
 
-      //show modal
       openModal(inviteModal, inviteData.uid);
 
-      //close on close
       closeInviteModal.onclick = function() {
         closeModal(inviteModal);
       };
-
-      //close on click
-      window.onclick = function(event) {
-        if (event.target == inviteModal) {
-          closeModal(inviteModal);
-        }
-      }
     };
   }
 
