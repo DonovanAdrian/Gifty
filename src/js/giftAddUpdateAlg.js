@@ -27,6 +27,7 @@ let giftDescriptionInp;
 let giftTitleInp;
 let giftWhereInp;
 let giftLinkInp;
+let multiplePurchases;
 let updateGift;
 let homeNote;
 let listNote;
@@ -79,7 +80,7 @@ function getCurrentUser(){
           inviteNote.style.background = "#ff3923";
         }
       }
-    else
+      else
       if (user.invites == undefined) {
         if(localConsoleOutput)
           console.log("Invites Not Found");
@@ -105,6 +106,7 @@ window.onload = function instantiate() {
   giftTitleInp = document.getElementById('giftTitleInp');
   giftWhereInp = document.getElementById('giftWhereInp');
   giftLinkInp = document.getElementById('giftLinkInp');
+  multiplePurchases = document.getElementById('multiplePurchases');
   updateGift = document.getElementById('updateGift');
   homeNote = document.getElementById('homeNote');
   listNote = document.getElementById('listNote');
@@ -114,7 +116,8 @@ window.onload = function instantiate() {
   notificationInfo = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
   giftAddUpdateElements = [offlineModal, offlineSpan, giftDescriptionInp, giftTitleInp, giftWhereInp, giftLinkInp,
-    updateGift, homeNote, listNote, inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan];
+    multiplePurchases, updateGift, homeNote, listNote, inviteNote, notificationModal, notificationTitle,
+    notificationInfo, noteSpan];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(giftAddUpdateElements);
@@ -199,6 +202,8 @@ window.onload = function instantiate() {
         giftDescriptionInp.placeholder = "No Description Was Provided";
       else
         giftDescriptionInp.value = currentGift.description;
+      if (currentGift.multiples != null)
+        multiplePurchases.checked = currentGift.multiples;
     }
   }
 
@@ -225,7 +230,7 @@ window.onload = function instantiate() {
 
     if(giftTitleInp.value === "")
       alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
-        "you!");
+          "you!");
     else if (invalidURLBool)
       alert("It looks like you entered an invalid URL, please enter a valid URL or leave the field blank.");
     else {
@@ -239,7 +244,8 @@ window.onload = function instantiate() {
             uid: giftStorage,
             buyer: currentGift.buyer,
             description: giftDescriptionInp.value,
-            creationDate: ""
+            creationDate: "",
+            multiples: multiplePurchases.checked
           });
           if (currentGift.creationDate != undefined) {
             if (currentGift.creationDate != "") {
@@ -258,7 +264,8 @@ window.onload = function instantiate() {
             received: currentGift.received,
             uid: giftStorage,
             buyer: currentGift.buyer,
-            description: giftDescriptionInp.value
+            description: giftDescriptionInp.value,
+            multiples: multiplePurchases.checked
           });
           if (currentGift.creationDate != undefined) {
             if (currentGift.creationDate != "") {
@@ -371,10 +378,10 @@ window.onload = function instantiate() {
       invalidURLOverride = false;
     if(giftTitleInp.value === "")
       alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
-        "you!");
+          "you!");
     else if (invalidURLBool && !invalidURLOverride) {
       alert("It looks like you might have entered an invalid URL, double check to see if your url is valid and " +
-        "try again.");
+          "try again.");
       invalidURLOverride = true;
       invalidURL = newURL;
     } else {
@@ -390,7 +397,8 @@ window.onload = function instantiate() {
           uid: newUid,
           buyer: "",
           description: giftDescriptionInp.value,
-          creationDate: creationDate
+          creationDate: creationDate,
+          multiples: multiplePurchases.checked
         });
 
         newNavigation(2);//Home
@@ -408,7 +416,8 @@ window.onload = function instantiate() {
           buyer: "",
           description: giftDescriptionInp.value,
           creationDate: creationDate,
-          creator: privateUser.userName
+          creator: privateUser.userName,
+          multiples: multiplePurchases.checked
         });
         sessionStorage.setItem("validGiftUser", JSON.stringify(user));
         newNavigation(10);//PrivateFriendList
@@ -484,8 +493,8 @@ window.onload = function instantiate() {
     else if (invalidChar)
       invalidURLBool = true;
     else
-      if(consoleOutput)
-        console.log("Valid URL! " + tempURL);
+    if(consoleOutput)
+      console.log("Valid URL! " + tempURL);
 
     return tempURL;
   }
