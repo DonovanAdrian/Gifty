@@ -254,6 +254,11 @@ window.onload = function instantiate() {
               });
             }
           }
+          if (currentGift.receivedBy != undefined) {
+            firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
+              receivedBy: currentGift.receivedBy
+            });
+          }
 
           newNavigation(2);//Home
         } else {
@@ -280,6 +285,11 @@ window.onload = function instantiate() {
                 creator: currentGift.creator
               });
             }
+          }
+          if (currentGift.receivedBy != undefined) {
+            firebase.database().ref("users/" + privateList.uid + "/giftList/" + giftUID).update({
+              receivedBy: currentGift.receivedBy
+            });
           }
 
           sessionStorage.setItem("validGiftUser", JSON.stringify(user));
