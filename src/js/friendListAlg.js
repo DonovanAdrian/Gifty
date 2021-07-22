@@ -225,7 +225,8 @@ window.onload = function instantiate() {
         }
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().receivedBy,
-            data.val().title, data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate);
+            data.val().title, data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate,
+            data.val().multiples);
 
         if(updateGiftToDBBool){
           updateGiftError(data, data.key);
@@ -241,7 +242,8 @@ window.onload = function instantiate() {
         }
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().receivedBy,
-            data.val().title, data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate);
+            data.val().title, data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate,
+            data.val().multiples);
       });
 
       postRef.on('child_removed', function(data) {
@@ -317,7 +319,7 @@ window.onload = function instantiate() {
   }
 
   function createGiftElement(giftDescription, giftLink, giftReceived, giftReceivedBy, giftTitle, giftKey, giftWhere,
-                             giftBuyer, giftUid, giftDate){
+                             giftBuyer, giftUid, giftDate, giftMultiples){
     if(consoleOutput)
       console.log("Creating " + giftUid);
     try{
@@ -328,7 +330,7 @@ window.onload = function instantiate() {
     let liItem = document.createElement("LI");
     liItem.id = "gift" + giftUid;
     initGiftElement(liItem, giftDescription, giftLink, giftReceived, giftReceivedBy, giftTitle, giftKey, giftWhere,
-        giftBuyer, giftUid, giftDate);
+        giftBuyer, giftUid, giftDate, giftMultiples);
     let textNode = document.createTextNode(giftTitle);
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
@@ -337,62 +339,68 @@ window.onload = function instantiate() {
     dataCounter++;
   }
 
-  function changeGiftElement(description, link, received, receivedBy, title, key, where, buyer, uid, date) {
+  function changeGiftElement(description, link, received, receivedBy, title, key, where, buyer, uid, date, multiples) {
     let editGift = document.getElementById('gift' + uid);
     editGift.innerHTML = title;
-    initGiftElement(editGift, description, link, received, receivedBy, title, key, where, buyer, uid, date);
+    initGiftElement(editGift, description, link, received, receivedBy, title, key, where, buyer, uid, date, multiples);
   }
 
-  function initGiftElement(liItem, giftDescription, giftLink, giftReceived, giftReceivedBy, giftTitle, giftKey,
-                           giftWhere, giftBuyer, giftUid, giftDate) {
+  function initGiftElement(liItem, giftDescriptionData, giftLinkData, giftReceivedData, giftReceivedBy, giftTitleData, giftKey,
+                           giftWhereData, giftBuyer, giftUid, giftDate, giftMultiples) {
     liItem.className = "gift";
-    if(giftReceived == 1) {
+    if(giftReceivedData == 1) {
       liItem.className += " checked";
       if(consoleOutput)
         console.log("Checked, created");
     }
-    liItem.onclick = function (){
-      if (giftLink != ""){
+    liItem.onclick = function () {
+      if (giftReceivedBy == undefined) {
+        giftReceivedBy = [];
+      }
+
+      if (giftLinkData != "") {
         giftLink.innerHTML = "Click me to go to the webpage!";
         giftLink.onclick = function() {
           let newGiftLink = "http://";
-          if(giftLink.includes("https://")){
-            giftLink = giftLink.slice(8, giftLink.length);
-          } else if (giftLink.includes("http://")){
-            giftLink = giftLink.slice(7, giftLink.length);
+          if(giftLinkData.includes("https://")){
+            giftLinkData = giftLinkData.slice(8, giftLinkData.length);
+          } else if (giftLinkData.includes("http://")){
+            giftLinkData = giftLinkData.slice(7, giftLinkData.length);
           }
-          newGiftLink += giftLink;
+          newGiftLink += giftLinkData;
           window.open(newGiftLink, "_blank");
         };
       } else {
         giftLink.innerHTML = "There was no link provided";
-        giftLink.onclick = function() {
-        };
+        giftLink.onclick = function() {};
       }
-      if(giftDescription != "") {
-        giftDescription.innerHTML = "Description: " + giftDescription;
+      if(giftDescriptionData != "") {
+        giftDescription.innerHTML = "Description: " + giftDescriptionData;
       } else {
         giftDescription.innerHTML = "There was no description provided";
       }
-      giftTitle.innerHTML = giftTitle;
-      if(giftWhere != "") {
-        giftWhere.innerHTML = "This can be found at: " + giftWhere;
+      giftTitle.innerHTML = giftTitleData;
+      if(giftWhereData != "") {
+        giftWhere.innerHTML = "This can be found at: " + giftWhereData;
       } else {
         giftWhere.innerHTML = "There was no location provided";
       }
-      if(giftReceived == 1){
+      if(giftReceivedData == 1){
         if(giftBuyer == undefined){
           giftBought.innerHTML = "This gift has been bought";
         } else {
           giftBought.innerHTML = "This gift was bought by " + giftBuyer;
         }
       } else {
-        if (giftReceivedBy == undefined) {
+        if (giftMultiples == undefined || giftReceivedData == 0) {
           giftBought.innerHTML = "This gift has not been bought yet";
         } else {
-          if (findUIDItemInArr(user.uid, giftReceivedBy) == -1)
-            giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people!";
-          else
+          if (findUIDItemInArr(user.uid, giftReceivedBy) == -1) {
+            if (giftReceivedBy.length == 1)
+              giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " person!";
+            else
+              giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people!";
+          } else
             giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people... And you!";
         }
       }
@@ -406,8 +414,8 @@ window.onload = function instantiate() {
         giftCreationDate.innerHTML = "Creation date not available";
       }
       giftBuy.onclick = function(){
-        if (giftReceivedBy == undefined) {
-          if (giftReceived == 0) {
+        if (giftMultiples == undefined) {
+          if (giftReceivedData == 0) {
             firebase.database().ref("users/" + giftUser.uid + "/giftList/" + giftKey).update({
               received: 1,
               buyer: user.userName
@@ -415,14 +423,22 @@ window.onload = function instantiate() {
           } else {
             alert("This gift has already been marked as bought!");
           }
-        } else {//ToDo
-          alert("This will eventually buy multiple-purchase gifts");
-
+        } else {
+          if (giftReceivedBy.indexOf(user.uid) == -1) {
+            giftReceivedBy.push(user.uid);
+            giftReceivedData = giftReceivedData - 1;
+            firebase.database().ref("users/" + giftUser.uid + "/giftList/" + giftKey).update({
+              received: giftReceivedData,
+              receivedBy: giftReceivedBy
+            });
+          } else {
+            alert("You can only buy this gift once!");
+          }
         }
       };
       giftDontBuy.onclick = function(){
-        if (giftReceivedBy == undefined) {
-          if (giftReceived == 1) {
+        if (giftMultiples == undefined) {
+          if (giftReceivedData == 1) {
             if (giftBuyer == user.userName || giftBuyer == "") {
               firebase.database().ref("users/" + giftUser.uid + "/giftList/" + giftKey).update({
                 received: 0,
@@ -435,8 +451,18 @@ window.onload = function instantiate() {
           } else {
             alert("This gift has already been marked as \"Un-Bought\"!");
           }
-        } else {//ToDo
-          alert("This will eventually unbuy multiple-purchase gifts");
+        } else {
+          let userBought = giftReceivedBy.indexOf(user.uid);
+          if (userBought != -1) {
+            giftReceivedBy.splice(userBought, 1);
+            giftReceivedData = giftReceivedData + 1;
+            firebase.database().ref("users/" + giftUser.uid + "/giftList/" + giftKey).update({
+              received: giftReceivedData,
+              receivedBy: giftReceivedBy
+            });
+          } else {
+            alert("You haven't bought this gift!");
+          }
         }
       };
 
