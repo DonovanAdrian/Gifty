@@ -237,9 +237,9 @@ window.onload = function instantiate() {
           updateGiftToDBBool = true;
         }
 
-        createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
-          data.val().creator);
+        createGiftElement(data.val().description, data.val().link, data.val().received, data.val().receivedBy,
+            data.val().title, data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
+            data.val().creator);
         instantiatedNodes.push(data.val());
 
         if(updateGiftToDBBool){
@@ -258,9 +258,9 @@ window.onload = function instantiate() {
           closeModal(giftModal);
         }
 
-        changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
-          data.val().creator);
+        changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().receivedBy,
+            data.val().title, data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
+            data.val().creator);
       });
 
       postRef.on('child_removed', function(data) {
@@ -334,14 +334,14 @@ window.onload = function instantiate() {
     });
   }
 
-  function createGiftElement(description, link, received, title, key, where, uid, date, buyer, creator){
+  function createGiftElement(description, link, received, receivedBy, title, key, where, uid, date, buyer, creator){
     try{
       testData.remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
     liItem.id = "gift" + uid;
-    initGiftElement(liItem, description, link, received, title, key, where, uid, date, buyer, creator);
+    initGiftElement(liItem, description, link, received, receivedBy, title, key, where, uid, date, buyer, creator);
     let textNode = document.createTextNode(title);
     liItem.appendChild(textNode);
 
@@ -351,13 +351,14 @@ window.onload = function instantiate() {
     dataCounter++;
   }
 
-  function changeGiftElement(description, link, received, title, key, where, uid, date, buyer, creator) {
+  function changeGiftElement(description, link, received, receivedBy, title, key, where, uid, date, buyer, creator) {
     let editGift = document.getElementById('gift' + uid);
     editGift.innerHTML = title;
-    initGiftElement(editGift, description, link, received, title, key, where, uid, date, buyer, creator);
+    initGiftElement(editGift, description, link, received, receivedBy, title, key, where, uid, date, buyer, creator);
   }
 
-  function initGiftElement(liItem, description, link, received, title, key, where, uid, date, buyer, creator) {
+  function initGiftElement(liItem, description, link, received, receivedBy, title, key, where, uid, date, buyer,
+                           creator) {
     liItem.className = "gift";
     if(received == 1) {
       liItem.className += " checked";
@@ -383,13 +384,17 @@ window.onload = function instantiate() {
         };
       }
       if(received == 1){
-        if(buyer == null || buyer == undefined){
+        if(buyer == undefined){
           giftBought.innerHTML = "This gift has been bought";
         } else {
-          if (buyer == "")
-            giftBought.innerHTML = "This gift has been bought";
-          else
+          if (receivedBy == undefined) {
             giftBought.innerHTML = "This gift was bought by " + buyer;
+          } else {
+            if (findUIDItemInArr(user.uid, receivedBy) == -1)
+              giftBought.innerHTML = "This gift was bought by " + receivedBy.length + " people!";
+            else
+              giftBought.innerHTML = "This gift was bought by " + receivedBy.length + " people... And you!";
+          }
         }
       } else {
         giftBought.innerHTML = "This gift has not been bought yet";
@@ -437,42 +442,50 @@ window.onload = function instantiate() {
           } else {
             updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
             alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
-              "if it needs to be removed.");
+                "if it needs to be removed.");
           }
         }
       };
       giftBuy.innerHTML = "Click on me to buy the gift!";
       giftBuy.onclick = function(){
-        if (received == 0) {
-          firebase.database().ref("users/" + giftUser.uid + "/privateList/" + key).update({
-            received: 1,
-            buyer: user.userName
-          });
-        } else {
-          alert("This gift has already been marked as bought!");
+        if (receivedBy == undefined) {
+          if (received == 0) {
+            firebase.database().ref("users/" + giftUser.uid + "/privateList/" + key).update({
+              received: 1,
+              buyer: user.userName
+            });
+          } else {
+            alert("This gift has already been marked as bought!");
+          }
+        } else {//ToDo
+          alert("This will eventually buy multiple-purchase gifts");
         }
       };
       giftDontBuy.innerHTML = "Click on me to un-buy the gift!";
       giftDontBuy.onclick = function(){
-        if (received == 1) {
-          if (buyer == user.userName || buyer == null || buyer == undefined) {
-            firebase.database().ref("users/" + giftUser.uid + "/privateList/" + key).update({
-              received: 0,
-              buyer: ""
-            });
-          } else {
-            if (buyer == "") {
+        if (receivedBy == undefined) {
+          if (received == 1) {
+            if (buyer == user.userName || buyer == null || buyer == undefined) {
               firebase.database().ref("users/" + giftUser.uid + "/privateList/" + key).update({
                 received: 0,
                 buyer: ""
               });
             } else {
-              alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-                "if this has been done in error.");
+              if (buyer == "") {
+                firebase.database().ref("users/" + giftUser.uid + "/privateList/" + key).update({
+                  received: 0,
+                  buyer: ""
+                });
+              } else {
+                alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
+                    "if this has been done in error.");
+              }
             }
+          } else {
+            alert("This gift has already been marked as \"Un-Bought\"!");
           }
-        } else {
-          alert("This gift has already been marked as \"Un-Bought\"!");
+        } else {//ToDo
+          alert("This will eventually unbuy multiple-purchase gifts");
         }
       };
 
