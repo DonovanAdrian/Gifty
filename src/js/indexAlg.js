@@ -12,7 +12,7 @@ let config = {};
 
 let loginDisabledMsg = "";
 let newGiftyMessage = "Please create a new user before trying to log into Gifty! Click on the text below the login " +
-  "button and fill out the form to make a user account.";
+    "button and fill out the form to make a user account.";
 
 let loginBool = false;
 let allowLogin = true;
@@ -108,7 +108,7 @@ function fetchConfigFile(){
 
       if(configInitializeInt == 8){
         if (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
-          storageBucketString == "" || messagingSenderIdString == "" || appIdString == "" || measurementIdString == "") {
+            storageBucketString == "" || messagingSenderIdString == "" || appIdString == "" || measurementIdString == "") {
           alert("Config not properly initialized! Please contact an administrator!");
         } else {
           config = {
@@ -128,7 +128,7 @@ function fetchConfigFile(){
         }
       } else {
         if (configInitializeInt == 7 && (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
-          storageBucketString == "" || messagingSenderIdString == "" || appIdString == "")) {
+            storageBucketString == "" || messagingSenderIdString == "" || appIdString == "")) {
           alert("Config not properly initialized! Please contact an administrator!");
         } else {
           console.log("WARNING: Missing measurementId. This variable is optional. Disregard if this is on purpose.");
@@ -154,6 +154,7 @@ function fetchConfigFile(){
 
 window.onload = function instantiate() {
 
+  pageName = "Index";
   username = document.getElementById('username');
   pin = document.getElementById('pin');
   loginBtn = document.getElementById('loginBtn');
@@ -235,7 +236,7 @@ function loginQuery() {
         firebase.database().ref("login/").update({
           allowLogin: true,
           loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-            "maintenance before logging in. Thank you for your patience!"
+              "maintenance before logging in. Thank you for your patience!"
         });
         loginBtn.innerHTML = "Log In";
         allowLogin = true;
