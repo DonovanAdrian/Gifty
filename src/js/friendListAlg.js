@@ -352,10 +352,20 @@ window.onload = function instantiate() {
       liItem.className += " checked";
       if(consoleOutput)
         console.log("Checked, created");
+    } else if (giftMultiples && giftReceivedData < 0) {
+      liItem.className += " multiCheck";
+      if(consoleOutput)
+        console.log("Multi check, created");
     }
     liItem.onclick = function () {
       if (giftReceivedBy == undefined) {
         giftReceivedBy = [];
+      }
+
+      if (giftMultiples && giftReceivedData < 0) {
+        giftTitle.innerHTML = giftReceivedBy.length + " " + giftTitleData;
+      } else {
+        giftTitle.innerHTML = giftTitleData;
       }
 
       if (giftLinkData != "") {
@@ -379,7 +389,6 @@ window.onload = function instantiate() {
       } else {
         giftDescription.innerHTML = "There was no description provided";
       }
-      giftTitle.innerHTML = giftTitleData;
       if(giftWhereData != "") {
         giftWhere.innerHTML = "This can be found at: " + giftWhereData;
       } else {
