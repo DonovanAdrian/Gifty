@@ -67,9 +67,11 @@ function verifyElementIntegrity(arr){
 
 function instantiateCommon(){
   try {
-    userChecker = JSON.parse(sessionStorage.validUser);
-    if(userChecker.moderatorInt == 1)
-      consoleOutput = true;
+    if (pageName != "Index") {
+      userChecker = JSON.parse(sessionStorage.validUser);
+      if (userChecker.moderatorInt == 1)
+        consoleOutput = true;
+    }
   } catch (err) {}
   dataListChecker = document.getElementById('dataListContainer');
 }
@@ -151,7 +153,7 @@ function commonInitialization(){
     }, 1000);
   }
 
-  if (userChecker != null)
+  if (userChecker != undefined)
     loginTimer();
 
   if (consoleOutput)
@@ -215,7 +217,7 @@ function areYouStillThereNote(timeElapsed){
     areYouStillThereInit = true;
   }
   notificationInfo.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
-    + ":" + timeSecs + "!";
+      + ":" + timeSecs + "!";
   notificationTitle.innerHTML = "Are You Still There?";
 
   noteSpan.onclick = function() {
@@ -276,8 +278,10 @@ function newNavigation(navNum) {
     sessionStorage.setItem("validUser", JSON.stringify(user));
   }
 
+  try {
+    sessionStorage.setItem("userArr", JSON.stringify(userArr));
+  } catch (err) {}
 
-  sessionStorage.setItem("userArr", JSON.stringify(userArr));
   let navLocations = [
     "404.html",//0
     "index.html",//1
@@ -343,7 +347,8 @@ function closeModal(closeThisModal){
 function alternateButtonLabel(button, parentLabel, childLabel){
   let nowConfirm = 0;
   let alternator = 0;
-  console.log(childLabel + " Button Feature Active");
+  if (consoleOutput)
+    console.log(childLabel + " Button Feature Active");
   setInterval(function(){
     nowConfirm = nowConfirm + 1000;
     if(nowConfirm >= 3000){
