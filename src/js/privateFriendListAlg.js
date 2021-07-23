@@ -65,8 +65,8 @@ function getCurrentUser(){
       localConsoleOutput = true;
     if(user.uid == giftUser.uid){
       if(localConsoleOutput)
-        console.log("HOW'D YOU GET HERE???");
-      newNavigation(2);//Home
+        console.log("***HOW'D YOU GET HERE???***");
+      newNavigation(1);//Index
     }
     if(localConsoleOutput) {
       console.log("User: " + user.userName + " loaded in");
@@ -162,7 +162,7 @@ window.onload = function instantiate() {
   commonInitialization();
   verifyElementIntegrity(privateFriendListElements);
 
-  for(let i = 0; i < userArr.length; i++){
+  for (let i = 0; i < userArr.length; i++) {
     userUserNames.push(userArr[i].userName);
   }
 
@@ -457,8 +457,17 @@ window.onload = function instantiate() {
           } else {
             alert("This gift has already been marked as bought!");
           }
-        } else {//ToDo
-          alert("This will eventually buy multiple-purchase gifts");
+        } else {
+          if (receivedBy.indexOf(user.uid) == -1) {
+            receivedBy.push(user.uid);
+            received = received - 1;
+            firebase.database().ref("users/" + giftUser.uid + "/giftList/" + key).update({
+              received: received,
+              receivedBy: receivedBy
+            });
+          } else {
+            alert("You can only buy this gift once!");
+          }
         }
       };
       giftDontBuy.innerHTML = "Click on me to un-buy the gift!";
@@ -485,7 +494,17 @@ window.onload = function instantiate() {
             alert("This gift has already been marked as \"Un-Bought\"!");
           }
         } else {//ToDo
-          alert("This will eventually unbuy multiple-purchase gifts");
+          let userBought = receivedBy.indexOf(user.uid);
+          if (userBought != -1) {
+            receivedBy.splice(userBought, 1);
+            received = received + 1;
+            firebase.database().ref("users/" + giftUser.uid + "/giftList/" + key).update({
+              received: received,
+              receivedBy: receivedBy
+            });
+          } else {
+            alert("You haven't bought this gift!");
+          }
         }
       };
 
