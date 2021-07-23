@@ -263,6 +263,24 @@ ul li:hover.gift {
   background: #ddd;
 }
 
+ul li.multiCheck {
+  color: #429ef5;
+  text-decoration: line-through;
+}
+
+ul li.multiCheck::before {
+  content: '';
+  position: absolute;
+  border-color: #429ef5;
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  top: 10px;
+  left: 16px;
+  transform: rotate(45deg);
+  height: 15px;
+  width: 7px;
+}
+
 ul li.checked {
   color: #f00;
   text-decoration: line-through;
@@ -965,7 +983,6 @@ ul li.santa::before {
   }
 }
 
-/*This is meant to solve the issue with modals going off the screen on shorter displays*/
 @media screen and (max-height: 600px) {
   .modal {
     position: fixed;
