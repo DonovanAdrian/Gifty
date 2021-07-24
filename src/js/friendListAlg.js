@@ -347,26 +347,31 @@ window.onload = function instantiate() {
 
   function initGiftElement(liItem, giftDescriptionData, giftLinkData, giftReceivedData, giftReceivedBy, giftTitleData, giftKey,
                            giftWhereData, giftBuyer, giftUid, giftDate, giftMultiples) {
+    let multipleBool = false;
+
     liItem.className = "gift";
     if(giftReceivedData == 1) {
       liItem.className += " checked";
       if(consoleOutput)
         console.log("Checked, created");
-    } else if (giftMultiples && giftReceivedData < 0) {
-      liItem.className += " multiCheck";
-      if(consoleOutput)
-        console.log("Multi check, created");
+    } else if (giftMultiples != undefined) {
+      if (giftMultiples && giftReceivedData < 0) {
+        liItem.className += " multiCheck";
+        if (consoleOutput)
+          console.log("Multi check, created");
+      }
     }
+
     liItem.onclick = function () {
       if (giftReceivedBy == undefined) {
         giftReceivedBy = [];
       }
 
-      if (giftMultiples && giftReceivedData < 0) {
-        giftTitle.innerHTML = giftReceivedBy.length + " " + giftTitleData;
-      } else {
-        giftTitle.innerHTML = giftTitleData;
+      if (giftMultiples != undefined) {
+        multipleBool = giftMultiples;
       }
+
+      giftTitle.innerHTML = giftTitleData;
 
       if (giftLinkData != "") {
         giftLink.innerHTML = "Click me to go to the webpage!";
@@ -404,13 +409,18 @@ window.onload = function instantiate() {
         if (giftMultiples == undefined || giftReceivedData == 0) {
           giftBought.innerHTML = "This gift has not been bought yet";
         } else {
-          if (findUIDItemInArr(user.uid, giftReceivedBy) == -1) {
+          let userBought = giftReceivedBy.indexOf(user.uid);
+          if (userBought == -1) {
             if (giftReceivedBy.length == 1)
               giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " person!";
             else
               giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people!";
-          } else
-            giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people... And you!";
+          } else {
+            if (giftReceivedBy.length == 1)
+              giftBought.innerHTML = "This gift was bought by you!";
+            else
+              giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people... And you!";
+          }
         }
       }
       if(giftDate != undefined) {
@@ -423,7 +433,7 @@ window.onload = function instantiate() {
         giftCreationDate.innerHTML = "Creation date not available";
       }
       giftBuy.onclick = function(){
-        if (giftMultiples == undefined) {
+        if (!multipleBool) {
           if (giftReceivedData == 0) {
             firebase.database().ref("users/" + giftUser.uid + "/giftList/" + giftKey).update({
               received: 1,
@@ -446,7 +456,7 @@ window.onload = function instantiate() {
         }
       };
       giftDontBuy.onclick = function(){
-        if (giftMultiples == undefined) {
+        if (!multipleBool) {
           if (giftReceivedData == 1) {
             if (giftBuyer == user.userName || giftBuyer == "") {
               firebase.database().ref("users/" + giftUser.uid + "/giftList/" + giftKey).update({
