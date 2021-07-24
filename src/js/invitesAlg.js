@@ -9,6 +9,7 @@ let inviteArr = [];
 let friendArr = [];
 let listeningFirebaseRefs = [];
 let userArr = [];
+let commonFriendArr = [];
 
 let readNotificationsBool = false;
 let invitesFound = false;
@@ -192,6 +193,8 @@ window.onload = function instantiate() {
 
   addUser.innerHTML = "Invite User";
   generateAddUserBtn();
+
+  evaluateCommonFriends();
 
   databaseQuery();
 
@@ -490,6 +493,48 @@ window.onload = function instantiate() {
         friends: friendFriendArrBackup
       });
       alert("Delete failed, please try again later! (friend)");
+    }
+  }
+
+  function evaluateCommonFriends(){
+    let userFriendInt1;
+    let userFriendInt2;
+    let userFriendData1;
+    let userFriendData2;
+    let userFriendLength = user.friends.length;
+    let commonFriends = 0;
+    let commonFriendData;
+
+    if (userFriendLength > 3) {
+      for (let i = 0; i < userFriendLength; i++) {
+        userFriendInt1 = findUIDItemInArr(user.friends[i], userArr);
+        userFriendData1 = userArr[userFriendInt1].friends;
+
+        for (let a = 0; a < userFriendData1.length; a++) {
+          userFriendInt2 = findUIDItemInArr(user.friends[i], userArr);
+          userFriendData2 = userArr[userFriendInt2].friends;
+          for (let b = 0; b < userFriendData2.length; b++) {
+            if (userFriendData1[a] == userFriendData2[b]) {
+              commonFriends += 1;
+            }
+          }
+        }
+
+        if (commonFriends > 3 && userFriendData1.length > userFriendLength) {
+          commonFriendData = userArr[userFriendInt1];
+          break;
+        }
+      }
+
+      for (let c = 0; c < commonFriendData.friends.length; c++) {
+        if (!user.friends.includes(commonFriendData.friends[c])) {
+          commonFriendArr.push(commonFriendData.friends[c]);
+        }
+      }
+
+      if (commonFriendArr.length > 0) {
+        addUser.style.background = "#3be357";
+      }
     }
   }
 
