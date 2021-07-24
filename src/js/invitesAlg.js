@@ -349,6 +349,7 @@ window.onload = function instantiate() {
       userShareCode.innerHTML = "Share Code: " + friendData.shareCode;
 
       sendPrivateMessage.onclick = function() {
+        closeModal(inviteModal);
         generatePrivateMessageDialog(friendData);
       };
 
@@ -375,10 +376,12 @@ window.onload = function instantiate() {
       addPrivateMessageToDB(userData, message);
       privateMessageInp.value = "";
       closeModal(privateMessageModal);
+      openModal(inviteModal, userData.uid);
     };
     cancelMsg.onclick = function (){
       privateMessageInp.value = "";
       closeModal(privateMessageModal);
+      openModal(inviteModal, userData.uid);
     };
 
     openModal(privateMessageModal, "addGlobalMsgModal");
@@ -527,7 +530,7 @@ window.onload = function instantiate() {
       }
 
       for (let c = 0; c < commonFriendData.friends.length; c++) {
-        if (!user.friends.includes(commonFriendData.friends[c])) {
+        if (!user.friends.includes(commonFriendData.friends[c]) && commonFriendData.friends[c] != user.uid) {
           commonFriendArr.push(commonFriendData.friends[c]);
         }
       }
@@ -541,6 +544,7 @@ window.onload = function instantiate() {
   function generateAddUserBtn(){
     let friendUserNameList = [];
     let upperCaseUserArr = [];
+    let suggestedFriendData;
     if(user.friends != undefined || user.friends != null) {
       for (let i = 0; i < user.friends.length; i++) {
         for (let a = 0; a < userArr.length; a++) {
@@ -558,6 +562,11 @@ window.onload = function instantiate() {
     addUser.onclick = function() {
       openModal(userInviteModal, "userInviteModal");
       addInvite.innerHTML = "Send Invite";
+
+      if (commonFriendArr.length > 0) {
+        let i = findUIDItemInArr(commonFriendArr[0], userArr);
+        inviteInfo.innerHTML = "Suggested Friend: " + userArr[i].userName;
+      }
 
       addInvite.onclick = function() {
         let userLocation = -1;
@@ -694,6 +703,11 @@ window.onload = function instantiate() {
       if(consoleOutput)
         console.log("New Invite List");
       firebase.database().ref("users/" + invitedUser.uid).update({invites:{0:user.uid}});
+    }
+
+    if (commonFriendArr.includes(invitedUser.uid)) {
+      let i = commonFriendArr.indexOf(invitedUser.uid);
+      commonFriendArr.splice(i, 1);
     }
 
     let notificationString = generateNotificationString(user.name, "invites.html");
