@@ -253,17 +253,18 @@ window.onload = function instantiate() {
             if(data.key == "automaticUpdates" && secretBtnStates[1] != data.val()) {
               secretBtnStates[1] = data.val();
               initializeSecretSantaBtns();
-            } else if (initialBtnInit <= 1) {
-              initializeSecretSantaBtns();
-              initialBtnInit++;
             }
 
-            if(data.key == "manuallyEnable" && secretBtnStates[0] != data.val()) {
-              secretBtnStates[0] = data.val();
-              initializeSecretSantaBtns();
-            } else if (initialBtnInit <= 1) {
+            if (initialBtnInit == 0 && data.key == "manuallyEnable") {
+              if (secretBtnStates[0] != data.val())
+                secretBtnStates[0] = data.val();
               initializeSecretSantaBtns();
               initialBtnInit++;
+            } else if(data.key == "manuallyEnable" && secretBtnStates[0] != data.val()) {
+              secretBtnStates[0] = data.val();
+              initializeSecretSantaBtns();
+              if(data.val())
+                checkSecretSanta(data.val());
             }
           });
 
@@ -277,6 +278,8 @@ window.onload = function instantiate() {
             if(data.key == "manuallyEnable" && secretBtnStates[0] != data.val()) {
               secretBtnStates[0] = data.val();
               initializeSecretSantaBtns();
+              if(!data.val())
+                hideSecretSanta();
             }
           });
 
@@ -287,6 +290,8 @@ window.onload = function instantiate() {
             if(data.key == "manuallyEnable")
               secretBtnStates[0] = data.val();
             initializeSecretSantaBtns();
+            if(data.key == "automaticUpdates" || data.key == "manuallyEnable")
+              checkSecretSanta(false);
           });
         } else {
           console.log("Initializing Secret Santa In DB");
