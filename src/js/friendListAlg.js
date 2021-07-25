@@ -419,7 +419,7 @@ window.onload = function instantiate() {
             if (giftReceivedBy.length == 1)
               giftBought.innerHTML = "This gift was bought by you!";
             else
-              giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people... And you!";
+              giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people... Including you!";
           }
         }
       }
