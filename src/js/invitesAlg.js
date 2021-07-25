@@ -529,14 +529,16 @@ window.onload = function instantiate() {
         }
       }
 
-      for (let c = 0; c < commonFriendData.friends.length; c++) {
-        if (!user.friends.includes(commonFriendData.friends[c]) && commonFriendData.friends[c] != user.uid) {
-          commonFriendArr.push(commonFriendData.friends[c]);
+      if (commonFriendData != undefined) {
+        for (let c = 0; c < commonFriendData.friends.length; c++) {
+          if (!user.friends.includes(commonFriendData.friends[c]) && commonFriendData.friends[c] != user.uid) {
+            commonFriendArr.push(commonFriendData.friends[c]);
+          }
         }
-      }
 
-      if (commonFriendArr.length > 0) {
-        addUser.style.background = "#3be357";
+        if (commonFriendArr.length > 0) {
+          addUser.style.background = "#3be357";
+        }
       }
     }
   }
