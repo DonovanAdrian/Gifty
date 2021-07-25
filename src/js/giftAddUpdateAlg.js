@@ -227,6 +227,7 @@ window.onload = function instantiate() {
 
   function updateGiftToDB(){
     let newURL = verifyURLString(giftLinkInp.value);
+    let clearReceivedByBool = false;
 
     if(giftTitleInp.value === "")
       alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
@@ -236,6 +237,33 @@ window.onload = function instantiate() {
     else {
       if(giftUID != -1) {
         if (!privateListBool) {
+          if (!multiplePurchases.checked && currentGift.multiples && currentGift.receivedBy.length != undefined) {
+            if (currentGift.receivedBy.length != 0) {
+              let userFound;
+              for (let i = 0; i < currentGift.receivedBy.length; i++) {
+                userFound = findUIDItemInArr(currentGift.receivedBy[i], userArr);
+                if (userFound != -1)
+                  addNotificationToDB(userArr[userFound], currentGift.title);
+              }
+
+              clearReceivedByBool = true;
+              currentGift.received = 0;
+            }
+          } else if (multiplePurchases.checked && !currentGift.multiples && currentGift.received > 0) {
+            currentGift.receivedBy = [];
+            for (let i = 0; i < userArr.length; i++) {
+              if (userArr[i].userName == currentGift.buyer) {
+                currentGift.receivedBy.push(userArr[i].uid);
+              }
+            }
+
+            firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
+              received: -1,
+              receivedBy: currentGift.receivedBy,
+              buyer: ""
+            });
+          }
+
           firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
             title: giftTitleInp.value,
             link: newURL,
@@ -244,24 +272,53 @@ window.onload = function instantiate() {
             uid: giftStorage,
             buyer: currentGift.buyer,
             description: giftDescriptionInp.value,
-            creationDate: "",
             multiples: multiplePurchases.checked
           });
           if (currentGift.creationDate != undefined) {
-            if (currentGift.creationDate != "") {
-              firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
-                creationDate: currentGift.creationDate
-              });
-            }
+            firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
+              creationDate: currentGift.creationDate
+            });
           }
           if (currentGift.receivedBy != undefined) {
             firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
               receivedBy: currentGift.receivedBy
             });
+            if (clearReceivedByBool) {
+              firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID + "/receivedBy").remove();
+            }
           }
 
           newNavigation(2);//Home
         } else {
+          if (!multiplePurchases.checked && currentGift.multiples && currentGift.receivedBy.length != undefined) {
+            if (currentGift.receivedBy.length != 0) {
+              let userFound;
+              for (let i = 0; i < currentGift.receivedBy.length; i++) {
+                userFound = findUIDItemInArr(currentGift.receivedBy[i], userArr);
+                if (userFound != -1)
+                  addNotificationToDB(userArr[userFound], currentGift.title);
+              }
+
+              clearReceivedByBool = true;
+              currentGift.received = 0;
+            }
+          } else if (multiplePurchases.checked && !currentGift.multiples && currentGift.received > 0) {
+            currentGift.receivedBy = [];
+            for (let i = 0; i < userArr.length; i++) {
+              if (userArr[i].userName == currentGift.buyer) {
+                currentGift.receivedBy.push(userArr[i].uid);
+              }
+            }
+            currentGift.received = -1;
+            currentGift.buyer = "";
+
+            firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
+              received: -1,
+              receivedBy: currentGift.receivedBy,
+              buyer: ""
+            });
+          }
+
           firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
             title: giftTitleInp.value,
             link: newURL,
@@ -273,23 +330,22 @@ window.onload = function instantiate() {
             multiples: multiplePurchases.checked
           });
           if (currentGift.creationDate != undefined) {
-            if (currentGift.creationDate != "") {
-              firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
-                creationDate: currentGift.creationDate
-              });
-            }
+            firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
+              creationDate: currentGift.creationDate
+            });
           }
           if (currentGift.creator != undefined) {
-            if (currentGift.creator != "") {
-              firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
-                creator: currentGift.creator
-              });
-            }
+            firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
+              creator: currentGift.creator
+            });
           }
           if (currentGift.receivedBy != undefined) {
-            firebase.database().ref("users/" + privateList.uid + "/giftList/" + giftUID).update({
+            firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
               receivedBy: currentGift.receivedBy
             });
+            if (clearReceivedByBool) {
+              firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID + "/receivedBy").remove();
+            }
           }
 
           sessionStorage.setItem("validGiftUser", JSON.stringify(user));
