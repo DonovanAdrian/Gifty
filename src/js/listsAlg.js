@@ -182,8 +182,13 @@ window.onload = function instantiate() {
           postRef.on('child_changed', function (data) {
             if(consoleOutput)
               console.log(data.key + " changed");
-            if(data.key == "automaticUpdates" || data.key == "manuallyEnable")
+            if(data.key == "automaticUpdates")
               checkSecretSanta(data.val());
+            if(data.key == "manuallyEnable")
+              if (data.val())
+                showSecretSanta();
+              else
+                hideSecretSanta();
           });
 
           postRef.on('child_removed', function (data) {
