@@ -12,7 +12,7 @@ let ticketArr = [];
 
 let moderationSet = 1;
 let dataCounter = 0;
-let loadingTimerInt = 0;
+let commonLoadingTimerInt = 0;
 
 let dataListContainer;
 let nukeTickets;
@@ -28,7 +28,7 @@ let offlineSpan;
 let offlineModal;
 let user;
 let offlineTimer;
-let loadingTimer;
+let commonLoadingTimer;
 let notificationModal;
 let notificationInfo;
 let notificationTitle;
@@ -105,6 +105,8 @@ window.onload = function instantiate() {
       firebase.database().ref("maintenance/").remove();
 
       ticketArr = [];
+
+      location.reload();
     };
   }
 
@@ -319,7 +321,6 @@ window.onload = function instantiate() {
     }
 
     if (verifyDeleteBool) {
-      removeModerationTicket(ticketData.uid);
       firebase.database().ref("maintenance/").child(ticketData.uid).remove();
       closeModal(ticketModal);
 
@@ -351,7 +352,7 @@ window.onload = function instantiate() {
     }
   }
 
-  function removeModerationTicket (uid) {
+  function removeModerationTicket(uid) {
     try {
       document.getElementById('ticket' + uid).remove();
 
