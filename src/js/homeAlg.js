@@ -216,6 +216,11 @@ function collectUserBoughtGifts(){
           userBoughtGifts.push(userGiftArr[a]);
           userBoughtGiftsUsers.push(userArr[i].name);
         }
+        if (userGiftArr[a].receivedBy != undefined)
+          if (userGiftArr[a].receivedBy.includes(user.uid)) {
+            userBoughtGifts.push(userGiftArr[a]);
+            userBoughtGiftsUsers.push(userArr[i].name + " (Multiple Purchase Gift)");
+          }
       }
     }
 
@@ -226,6 +231,11 @@ function collectUserBoughtGifts(){
           userBoughtGifts.push(userPrivateGiftArr[b]);
           userBoughtGiftsUsers.push(userArr[i].name + " (Private List)");
         }
+        if (userPrivateGiftArr[b].receivedBy != undefined)
+          if (userPrivateGiftArr[b].receivedBy.includes(user.uid)) {
+            userBoughtGifts.push(userPrivateGiftArr[b]);
+            userBoughtGiftsUsers.push(userArr[i].name + " (Private List, Multiple Purchase Gift)");
+          }
       }
     }
   }
@@ -353,14 +363,14 @@ window.onload = function instantiate() {
         giftArr.push(data.val());
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
+            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
       });
 
       postRef.on('child_changed', function(data) {
         giftArr[data.key] = data.val();
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
+            data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
       });
 
       postRef.on('child_removed', function(data) {
@@ -591,26 +601,43 @@ window.onload = function instantiate() {
   function addNotificationToDB(buyerUserData, giftTitle){
     let pageName = "deleteGift";
     let giftOwner = user.uid;
+    let buyerUserNotifications = [];
+    let buyerReadNotifications = [];
+    let updateNotificationBool = false;
     let notificationString = generateNotificationString(giftOwner, giftTitle, pageName);
-    let buyerUserNotifications;
-    if(buyerUserData.notifications == undefined || buyerUserData.notifications == null){
-      buyerUserNotifications = [];
-    } else {
+
+    if(buyerUserData.notifications != undefined){
       buyerUserNotifications = buyerUserData.notifications;
     }
-    buyerUserNotifications.push(notificationString);
-
-    if(buyerUserData.notifications != undefined) {
-      firebase.database().ref("users/" + buyerUserData.uid).update({
-        notifications: buyerUserNotifications
-      });
-    } else {
-      if(consoleOutput)
-        console.log("New Notifications List");
-      firebase.database().ref("users/" + buyerUserData.uid).update({notifications:{0:notificationString}});
+    if(buyerUserData.readNotifications != undefined){
+      buyerReadNotifications = buyerUserData.readNotifications;
     }
-    if(consoleOutput)
-      console.log("Added Notification To DB");
+
+    if (!buyerUserNotifications.includes(notificationString)) {
+      buyerUserNotifications.push(notificationString);
+      updateNotificationBool = true;
+    } else if (buyerReadNotifications.includes(notificationString)) {
+      let i = buyerReadNotifications.indexOf(notificationString);
+      buyerReadNotifications.splice(i, 1);
+      updateNotificationBool = true;
+    }
+
+    if (updateNotificationBool) {
+      if (buyerUserData.notifications != undefined) {
+        firebase.database().ref("users/" + buyerUserData.uid).update({
+          notifications: buyerUserNotifications,
+          readNotifications: buyerReadNotifications
+        });
+        if (consoleOutput)
+          console.log("Added New Notification To DB");
+      } else {
+        if (consoleOutput)
+          console.log("New Notifications List");
+        firebase.database().ref("users/" + buyerUserData.uid).update({notifications: {0: notificationString}});
+        if (consoleOutput)
+          console.log("Added Notification To DB");
+      }
+    }
   }
 
   function generateNotificationString(giftOwner, giftTitle, pageName){
