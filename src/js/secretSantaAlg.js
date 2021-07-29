@@ -10,6 +10,7 @@ let assignedUsers = [];
 
 let ignoreFamilySet = false;
 let checkForSecretSantaBool = false;
+let showSecretTextCycler = false;
 
 let currentDate = new Date();
 let currentYear = currentDate.getFullYear();
@@ -20,10 +21,11 @@ let hideDateMax = 9; //Sept
 
 let globalThanks = "Thank you for participating in the Secret Santa! See you next year!";
 let globalApology = "Unfortunately the Secret Santa for this year has come to an early end! Please contact" +
-  " a moderator for assistance";
+    " a moderator for assistance";
 
 let ignoreFamilySetTimer;
 let textCyclerInterval;
+let textCyclerLimiter = 0;
 
 function checkSecretSanta(autoUpdateBool){
   if(autoUpdateBool) {
@@ -76,7 +78,7 @@ function showSecretSanta(){
           });
           user.secretSanta = 1;
           alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
-            " Santa Recipient!");
+              " Santa Recipient!");
           secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
         } else {
           firebase.database().ref("users/" + user.uid).update({
@@ -92,7 +94,7 @@ function showSecretSanta(){
         });
         user.secretSanta = 1;
         alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
-          " Santa Recipient!");
+            " Santa Recipient!");
         secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
       }
       sessionStorage.setItem("validUser", JSON.stringify(user));
@@ -160,9 +162,9 @@ function checkIfSantaActive() {
 function checkForGlobalMessage() {
   for (let i = 0; i < userArr.length; i++) {
     if (userArr[i].notifications.includes(globalThanks) ||
-      userArr[i].notifications.includes(globalApology)) {
+        userArr[i].notifications.includes(globalApology)) {
       if (userArr[i].readNotifications.includes(globalThanks) ||
-        userArr[i].readNotifications.includes(globalApology)) {
+          userArr[i].readNotifications.includes(globalApology)) {
         return true;
       }
     }
@@ -223,12 +225,13 @@ function initializeSecretSantaBtns() {
   }
 
   if (!secretBtnStates[1]) {
-    clearInterval(textCyclerInterval);
+    showSecretTextCycler = false;
     secretSantaAutoBtn.innerHTML = "Enable Auto Control";
     secretSantaAutoBtn.onclick = function () {
       secretSantaButtonManager("autoT");
     };
   } else {
+    showSecretTextCycler = true;
     cycleSecretSantaAutoBtnTxt();
     if (!secretBtnStates[0])
       secretSantaBtn.innerHTML = "Manually " + secretSantaBtnTxtEnable;
@@ -248,29 +251,34 @@ function initializeSecretSantaBtns() {
 }
 
 function cycleSecretSantaAutoBtnTxt() {
-  let textCycler = 0;
-  let alternator = 0;
-  let upcomingDate = checkNextDate();
+  if (textCyclerLimiter == 0) {
+    let textCycler = 0;
+    let alternator = 0;
+    let upcomingDate = checkNextDate();
 
-  if (consoleOutput)
-    console.log("Text Cycle Feature Active");
+    if (consoleOutput)
+      console.log("Text Cycle Feature Active");
 
-  textCyclerInterval = setInterval(function(){
-    textCycler = textCycler + 1000;
-    if(textCycler >= 3000){
-      textCycler = 0;
-      if(alternator == 0) {
-        alternator++;
-        secretSantaAutoBtn.innerHTML = "Disable Auto Control";
-      } else if (alternator == 1){
-        alternator++;
-        secretSantaAutoBtn.innerHTML = "Next Trigger Date";
-      } else {
-        alternator = 0;
-        secretSantaAutoBtn.innerHTML = upcomingDate;
+    textCyclerInterval = setInterval(function () {
+      textCycler = textCycler + 1000;
+      if (textCycler >= 3000) {
+        textCycler = 0;
+        if (showSecretTextCycler)
+          if (alternator == 0) {
+            alternator++;
+            secretSantaAutoBtn.innerHTML = "Disable Auto Control";
+          } else if (alternator == 1) {
+            alternator++;
+            secretSantaAutoBtn.innerHTML = "Next Trigger Date";
+          } else {
+            alternator = 0;
+            secretSantaAutoBtn.innerHTML = upcomingDate;
+          }
       }
-    }
-  }, 1000);
+    }, 1000);
+
+    textCyclerLimiter++;
+  }
 }
 
 function checkNextDate() {
@@ -299,8 +307,8 @@ function secretSantaButtonManager(buttonPressed) {
       updateSecretSantaToDB("auto", true);
       break;
     case "autoF":
+      showSecretTextCycler = false;
       updateSecretSantaToDB("auto", false);
-      clearInterval(textCyclerInterval);
       secretSantaAutoBtn.innerHTML = "Enable Auto Control";
       secretSantaAutoBtn.onclick = function () {
         secretSantaButtonManager("autoT");
@@ -516,8 +524,8 @@ function createSecretSantaNames(){
 
   if (familyArr.length == 0) {
     alert("It seems that you don't have any families created yet!\n\n" +
-      "If you have more than 3 users on Gifty, assign them to a family before" +
-      "attempting to assign them Secret Santa names!");
+        "If you have more than 3 users on Gifty, assign them to a family before" +
+        "attempting to assign them Secret Santa names!");
     return;
   }
 
@@ -563,7 +571,7 @@ function createSecretSantaNames(){
     if (optInFamilyStatsArr[i] < 3) {
       if (!ignoreFamilySet && secretSantaPageName == "moderation") {
         alert("There is a family with less than three users signed up!\n\n\nYou have 10 seconds to press the button again" +
-          " if you are okay with this. The users in question will NOT be assigned names.");
+            " if you are okay with this. The users in question will NOT be assigned names.");
         startIgnoreFamilySetTimer();
         tempUserArr = [];
         assignedUsers = [];
@@ -609,7 +617,7 @@ function createSecretSantaNames(){
   }
 
   if (assignedUsers.length == tempUserArr.length &&
-    assignedFamilies.length == optInFamilyArr.length) {
+      assignedFamilies.length == optInFamilyArr.length) {
     let userIndex = 0;
     for (let i = 0; i < tempUserArr.length; i++) {
       userIndex = findUIDItemInArr(tempUserArr[i].uid, userArr);
@@ -689,7 +697,7 @@ function assignUsersSecretSantaNames(usersToAssign) {
         if (usersToAssign[i].friends.includes(tempAssignArr[selector].uid)) {
           try {
             if (usersToAssign[i].parentUser == tempAssignArr[selector].uid ||
-              usersToAssign[i].childUser == tempAssignArr[selector].uid) {
+                usersToAssign[i].childUser == tempAssignArr[selector].uid) {
               if (consoleOutput)
                 console.log("These users are a parent or child of each other!");
               retryCount++;
@@ -757,9 +765,9 @@ function generateActivateSecretSantaModal(){
     if (checkForSecretSantaBool) {
       if (checkForRandomErrors()) {
         alert("***WARNING***\n\n\nDue to a low number of users being randomly assigned names, there is a " +
-          "higher likelihood for potential errors. Please be prepared to press the \"Assign\" button " +
-          "more than once. To remedy this issue, invite more users to use Gifty or consolidate " +
-          "your users into larger families. Thank you!");
+            "higher likelihood for potential errors. Please be prepared to press the \"Assign\" button " +
+            "more than once. To remedy this issue, invite more users to use Gifty or consolidate " +
+            "your users into larger families. Thank you!");
       }
     }
 
