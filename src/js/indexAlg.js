@@ -329,6 +329,7 @@ function login() {
     }
   }
   if (loginBool === true){
+    loginInfo.style.color = "#fff";
     loginInfo.innerHTML = "User " + userArr[validUserInt].userName + " Authenticated";
     validUser = userArr[validUserInt];
     sessionStorage.setItem("validUser", JSON.stringify(validUser));
