@@ -628,26 +628,43 @@ window.onload = function instantiate() {
   function addNotificationToDB(buyerUserData, giftDeleter, giftTitle){
     let pageName = "deleteGiftPrivate";
     let giftOwner = giftUser.uid;
+    let buyerUserNotifications = [];
+    let buyerReadNotifications = [];
+    let updateNotificationBool = false;
     let notificationString = generateNotificationString(giftOwner, giftDeleter, giftTitle, pageName);
-    let buyerUserNotifications;
-    if(buyerUserData.notifications == undefined || buyerUserData.notifications == null){
-      buyerUserNotifications = [];
-    } else {
+
+    if(buyerUserData.notifications != undefined){
       buyerUserNotifications = buyerUserData.notifications;
     }
-    buyerUserNotifications.push(notificationString);
-
-    if(buyerUserData.notifications != undefined) {
-      firebase.database().ref("users/" + buyerUserData.uid).update({
-        notifications: buyerUserNotifications
-      });
-    } else {
-      if(consoleOutput)
-        console.log("New Notifications List");
-      firebase.database().ref("users/" + buyerUserData.uid).update({notifications:{0:notificationString}});
+    if(buyerUserData.readNotifications != undefined){
+      buyerReadNotifications = buyerUserData.readNotifications;
     }
-    if(consoleOutput)
-      console.log("Added Notification To DB");
+
+    if (!buyerUserNotifications.includes(notificationString)) {
+      buyerUserNotifications.push(notificationString);
+      updateNotificationBool = true;
+    } else if (buyerReadNotifications.includes(notificationString)) {
+      let i = buyerReadNotifications.indexOf(notificationString);
+      buyerReadNotifications.splice(i, 1);
+      updateNotificationBool = true;
+    }
+
+    if (updateNotificationBool) {
+      if (buyerUserData.notifications != undefined) {
+        firebase.database().ref("users/" + buyerUserData.uid).update({
+          notifications: buyerUserNotifications,
+          readNotifications: buyerReadNotifications
+        });
+        if (consoleOutput)
+          console.log("Added New Notification To DB");
+      } else {
+        if (consoleOutput)
+          console.log("New Notifications List");
+        firebase.database().ref("users/" + buyerUserData.uid).update({notifications: {0: notificationString}});
+        if (consoleOutput)
+          console.log("Added Notification To DB");
+      }
+    }
   }
 
   function generateNotificationString(giftOwner, giftDeleter, giftTitle, pageName){
