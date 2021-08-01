@@ -404,6 +404,9 @@ window.onload = function instantiate() {
       };
 
       sendPrivateMessage.onclick = function() {
+        closeModal(userModal);
+        clearInterval(privateListAlternator);
+        clearInterval(publicListAlternator);
         generatePrivateMessageDialog(friendData);
       };
 
