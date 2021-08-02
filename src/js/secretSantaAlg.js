@@ -457,11 +457,30 @@ function generatePrivateMessageDialog(userData) {
     addPrivateMessageToDB(userData, message);
     privateMessageInp.value = "";
     closeModal(privateMessageModal);
+    openModal(userModal, userData.uid, true);
+
+    window.onclick = function(event) {
+      if (event.target == userModal) {
+        closeModal(userModal);
+        clearInterval(privateListAlternator);
+        clearInterval(publicListAlternator);
+      }
+    }
+
     alert("The Message Has Been Sent!");
   };
   cancelMsg.onclick = function (){
     privateMessageInp.value = "";
     closeModal(privateMessageModal);
+    openModal(userModal, userData.uid, true);
+
+    window.onclick = function(event) {
+      if (event.target == userModal) {
+        closeModal(userModal);
+        clearInterval(privateListAlternator);
+        clearInterval(publicListAlternator);
+      }
+    }
   };
 
   openModal(privateMessageModal, "add");
