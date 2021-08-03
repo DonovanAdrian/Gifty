@@ -377,6 +377,7 @@ window.onload = function instantiate() {
       privateMessageInp.value = "";
       closeModal(privateMessageModal);
       openModal(inviteModal, userData.uid);
+      alert("The Message Has Been Sent!");
     };
     cancelMsg.onclick = function (){
       privateMessageInp.value = "";
