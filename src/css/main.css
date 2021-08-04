@@ -395,7 +395,7 @@ ul li.santa::before {
   color: white;
 }
 
-@media screen and (min-width: 0px) and (max-width: 400px) {
+@media screen and (min-width: 0px) and (max-width: 500px) {
   span.boughtBtn {
     left: 5px;
     bottom: 5px;
@@ -416,6 +416,11 @@ ul li.santa::before {
   }
 
   span.settingsBtn {
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.faqBtn {
     padding: 5px;
     font-size: 13px;
   }
@@ -492,13 +497,18 @@ ul li.santa::before {
   }
 }
 
-@media screen and (min-width: 400px) and (max-width: 750px) {
+@media screen and (min-width: 500px) and (max-width: 850px) {
   span.basicBtn {
     padding: 7px;
     font-size: 15px;
   }
 
   span.settingsBtn {
+    padding: 7px;
+    font-size: 15px;
+  }
+
+  span.faqBtn {
     padding: 7px;
     font-size: 15px;
   }
@@ -578,6 +588,7 @@ ul li.santa::before {
   }
 
   div.topnav ul li a {
+    width: 65px;
     font-size: 14px;
     padding: 14px 16px;
   }
@@ -588,13 +599,18 @@ ul li.santa::before {
   }
 }
 
-@media screen and (min-width: 750px) and (max-width: 1500px) {
+@media screen and (min-width: 850px) and (max-width: 1500px) {
   span.basicBtn {
     padding: 9px;
     font-size: 17px;
   }
 
   span.settingsBtn {
+    padding: 9px;
+    font-size: 17px;
+  }
+
+  span.faqBtn {
     padding: 9px;
     font-size: 17px;
   }
@@ -670,6 +686,7 @@ ul li.santa::before {
   }
 
   div.topnav ul li a {
+    width: 75px;
     font-size: 16px;
     padding: 15.5px 16px;
   }
@@ -687,6 +704,11 @@ ul li.santa::before {
   }
 
   span.settingsBtn {
+    padding: 11px;
+    font-size: 21px;
+  }
+
+  span.faqBtn {
     padding: 11px;
     font-size: 21px;
   }
@@ -771,6 +793,7 @@ ul li.santa::before {
   }
 
   div.topnav ul li a {
+    width: 90px;
     font-size: 20px;
     padding: 15.5px 16px;
   }
@@ -788,6 +811,11 @@ ul li.santa::before {
   }
 
   span.settingsBtn {
+    padding: 13px;
+    font-size: 23px;
+  }
+
+  span.faqBtn {
     padding: 13px;
     font-size: 23px;
   }
@@ -872,8 +900,9 @@ ul li.santa::before {
   }
 
   div.topnav ul li a {
+    width: 110px;
     font-size: 22px;
-    padding: 15.5px 16px;
+    padding: 17px 17px;
   }
 
   ul li.gift {
@@ -889,6 +918,11 @@ ul li.santa::before {
   }
 
   span.settingsBtn {
+    padding: 13px;
+    font-size: 26px;
+  }
+
+  span.faqBtn {
     padding: 13px;
     font-size: 26px;
   }
@@ -973,6 +1007,7 @@ ul li.santa::before {
   }
 
   div.topnav ul li a {
+    width: 135px;
     font-size: 25px;
     padding: 15.5px 16px;
   }
