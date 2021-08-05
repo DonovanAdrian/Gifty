@@ -100,14 +100,18 @@ window.onload = function instantiate() {
   initializeNukeBtn();
 
   function initializeNukeBtn() {
-    nukeTickets.innerHTML = "Nuke All Tickets";
-    nukeTickets.onclick = function () {
-      firebase.database().ref("maintenance/").remove();
+    if (ticketArr.length != 0) {
+      nukeTickets.innerHTML = "Nuke All Tickets";
+      nukeTickets.onclick = function () {
+        firebase.database().ref("maintenance/").remove();
 
-      ticketArr = [];
-
-      location.reload();
-    };
+        ticketArr = [];
+        location.reload();
+      };
+    } else {
+      nukeTickets.innerHTML = "No Tickets To Remove!";
+      nukeTickets.onclick = function () {};
+    }
   }
 
   function databaseQuery() {
@@ -192,14 +196,14 @@ window.onload = function instantiate() {
 
             let i = findUIDItemInArr(data.key, ticketArr);
             if(ticketArr[i] != data.val() && i != -1){
-              console.log("Removing " + ticketArr[i].uid);
+              console.log("Changing " + ticketArr[i].uid);
               ticketArr[i] = data.val();
             }
           });
 
           postRef.on("child_removed", function (data) {
             console.log(data.key + " Removed!");
-            removeModerationTicket(data.val());
+            removeModerationTicket(data.key);
 
             let i = findUIDItemInArr(data.key, ticketArr);
             if(ticketArr[i] != data.val() && i != -1){
@@ -290,7 +294,7 @@ window.onload = function instantiate() {
       }
 
       deleteTicket.onclick = function () {
-        deleteModerationTicket(ticketData, false);
+        deleteModerationTicket(ticketData);
       };
 
       openModal(ticketModal, ticketData.uid);
@@ -303,7 +307,7 @@ window.onload = function instantiate() {
     return ticketTitleText;
   }
 
-  function deleteModerationTicket (ticketData, onFailNote) {
+  function deleteModerationTicket (ticketData) {
     let verifyDeleteBool = true;
     let toDelete;
     let ticketNoteInterval;
