@@ -125,10 +125,16 @@ function commonInitialization(){
           }
         }
         try{
-          closeModal(currentModalOpen);
+          closeModal(currentModalOpenObj);
         } catch (err) {}
         openModal(offlineModal, "offlineModal");
         clearInterval(offlineTimer);
+        if (pageName == "Index") {
+          loginBtn.innerHTML = "No Internet!";
+          allowLogin = false;
+          loginDisabledMsg = "It seems that you are offline! Please connect to the internet to be able to " +
+              "use Gifty properly!";
+        }
       }
     }, 1000);
   });
