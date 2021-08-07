@@ -248,7 +248,7 @@ ul li.gift {
   font-family: Verdana;
   list-style-type: none;
   background: #eee;
-  transition: 0.2s;
+  transition: 0.4s;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -395,7 +395,7 @@ ul li.santa::before {
   color: white;
 }
 
-@media screen and (min-width: 0px) and (max-width: 500px) {
+@media screen and (min-width: 0px) and (max-width: 550px) {
   span.boughtBtn {
     left: 5px;
     bottom: 5px;
@@ -497,7 +497,7 @@ ul li.santa::before {
   }
 }
 
-@media screen and (min-width: 500px) and (max-width: 850px) {
+@media screen and (min-width: 550px) and (max-width: 925px) {
   span.basicBtn {
     padding: 7px;
     font-size: 15px;
@@ -588,7 +588,7 @@ ul li.santa::before {
   }
 
   div.topnav ul li a {
-    width: 65px;
+    width: 75px;
     font-size: 14px;
     padding: 14px 16px;
   }
@@ -599,7 +599,7 @@ ul li.santa::before {
   }
 }
 
-@media screen and (min-width: 850px) and (max-width: 1500px) {
+@media screen and (min-width: 925px) and (max-width: 1500px) {
   span.basicBtn {
     padding: 9px;
     font-size: 17px;
@@ -686,7 +686,7 @@ ul li.santa::before {
   }
 
   div.topnav ul li a {
-    width: 75px;
+    width: 90px;
     font-size: 16px;
     padding: 15.5px 16px;
   }
@@ -793,7 +793,7 @@ ul li.santa::before {
   }
 
   div.topnav ul li a {
-    width: 90px;
+    width: 110px;
     font-size: 20px;
     padding: 15.5px 16px;
   }
@@ -900,7 +900,7 @@ ul li.santa::before {
   }
 
   div.topnav ul li a {
-    width: 110px;
+    width: 135px;
     font-size: 22px;
     padding: 17px 17px;
   }
@@ -1007,7 +1007,7 @@ ul li.santa::before {
   }
 
   div.topnav ul li a {
-    width: 135px;
+    width: 165px;
     font-size: 25px;
     padding: 15.5px 16px;
   }
