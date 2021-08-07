@@ -451,18 +451,18 @@ window.onload = function instantiate() {
       }
       userPassword.innerHTML = "Click On Me To View Password";
 
-      if (checkIfSantaSignUp() && !checkIfSantaActive()) {
+      if ((checkIfSantaSignUp() && !checkIfSantaActive()) || (secretBtnStates[0] && !checkIfSantaActive())) {
         if(userData.secretSanta != undefined) {
           if (userData.secretSanta == 0) {
-            userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
-            userSecretSanta.style.color = "#000";
+            userSecretSanta.innerHTML = "Click To Opt Into Secret Santa";
+            userSecretSanta.style.color = "#f00";
           } else {
-            userSecretSanta.innerHTML = "This User Is Signed Up For Secret Santa";
+            userSecretSanta.innerHTML = "Click To Opt Out Of Secret Santa";
             userSecretSanta.style.color = "#00d118";
           }
         } else {
-          userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
-          userSecretSanta.style.color = "#000";
+          userSecretSanta.innerHTML = "Click To Opt Into Secret Santa";
+          userSecretSanta.style.color = "#f00";
         }
         userSecretSanta.onclick = function() {
           manuallyOptInOut(userData);
@@ -521,6 +521,7 @@ window.onload = function instantiate() {
         }
       } else if (userData.moderatorInt == 1) {
         moderatorOp.innerHTML = "Click To Revoke Moderator Role";
+        moderatorOp.style.color = "#00d118";
         moderatorOp.onclick = function() {
           if(userData.uid == user.uid){
             alert("You cannot adjust your own role");
@@ -534,6 +535,7 @@ window.onload = function instantiate() {
         };
       } else {
         moderatorOp.innerHTML = "Click To Grant Moderator Role";
+        moderatorOp.style.color = "#f00";
         moderatorOp.onclick = function() {
           if(userData.userName == user.userName){
             alert("You cannot adjust your own role");
