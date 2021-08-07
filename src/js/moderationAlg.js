@@ -432,8 +432,8 @@ window.onload = function instantiate() {
     }
     liItem.onclick = function (){
       userName.innerHTML = userData.name;
-      userUID.innerHTML = userData.uid;
-      userUserName.innerHTML = userData.userName;
+      userUID.innerHTML = "UID: " + userData.uid;
+      userUserName.innerHTML = "Username: " + userData.userName;
       if(userData.giftList != undefined){
         userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
       } else {
@@ -455,27 +455,36 @@ window.onload = function instantiate() {
         if(userData.secretSanta != undefined) {
           if (userData.secretSanta == 0) {
             userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
+            userSecretSanta.style.color = "#000";
           } else {
             userSecretSanta.innerHTML = "This User Is Signed Up For Secret Santa";
+            userSecretSanta.style.color = "#00d118";
           }
         } else {
           userSecretSanta.innerHTML = "This User Is Not Opted Into Secret Santa";
+          userSecretSanta.style.color = "#000";
         }
         userSecretSanta.onclick = function() {
           manuallyOptInOut(userData);
         };
       } else if (checkIfSantaActive()) {
         if (userData.secretSantaName == "") {
-          userSecretSanta.innerHTML = "This User Was Not Assigned A Name";
+          userSecretSanta.innerHTML = "This User Was Not Assigned A Name!";
+          userSecretSanta.style.color = "#000";
           userSecretSanta.onclick = function(){};
         } else {
           userSecretSanta.innerHTML = "Click Here To View Secret Santa Assignment";
+          userSecretSanta.style.color = "#00d118";
           userSecretSanta.onclick = function(){
             let userSecretIndex = findUIDItemInArr(userData.secretSantaName, userArr);
             userSecretSanta.innerHTML = userArr[userSecretIndex].name;
             userSecretSanta.onclick = function(){};
           };
         }
+      } else {
+        userSecretSanta.innerHTML = "Secret Santa Is Not Active!";
+        userSecretSanta.style.color = "#000";
+        userSecretSanta.onclick = function() {};
       }
 
       userGifts.onclick = function() {
@@ -511,7 +520,7 @@ window.onload = function instantiate() {
 
         }
       } else if (userData.moderatorInt == 1) {
-        moderatorOp.innerHTML = "Revoke Moderator Role";
+        moderatorOp.innerHTML = "Click To Revoke Moderator Role";
         moderatorOp.onclick = function() {
           if(userData.uid == user.uid){
             alert("You cannot adjust your own role");
@@ -524,7 +533,7 @@ window.onload = function instantiate() {
           }
         };
       } else {
-        moderatorOp.innerHTML = "Grant Moderator Role";
+        moderatorOp.innerHTML = "Click To Grant Moderator Role";
         moderatorOp.onclick = function() {
           if(userData.userName == user.userName){
             alert("You cannot adjust your own role");
@@ -539,7 +548,7 @@ window.onload = function instantiate() {
         };
       }
 
-      sendPrivateMessage.innerHTML = "Send Message To " + userData.name;
+      sendPrivateMessage.innerHTML = "Click To Send Message To " + userData.name;
       sendPrivateMessage.onclick = function() {
         generatePrivateMessageDialog(userData);
       };
