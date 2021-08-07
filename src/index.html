@@ -28,15 +28,16 @@
 </head>
 <body>
 
-<div class="loginContainer">
-    <input type="text" placeholder="User Name" id="username">
-    <input type="password" placeholder="Pin" id="pin">
-    <button id="loginBtn">Loading...</button>
-    <p id="loginInfo" style="color:red"></p>
-    <a style="color:#ffffff" id="signUpFld">Don't have an account? Click here!</a>
+<div class="loginContainer" id="fadeOutLogin">
+  <p id="loginInfo" style="color:red; text-shadow: 2px 3px 5px rgba(0,0,0,1);">&nbsp;</p>
+  <input type="text" placeholder="User Name" id="username">
+  <input type="password" placeholder="Pin" id="pin">
+  <button id="loginBtn" class="typeWriter">Loading...</button>
+  <br/><br/>
+  <a style="color:#ffffff" id="signUpFld">Don't have an account? Click here!</a>
 </div>
 
-<div class="iconContainer">
+<div class="iconContainer" id="fadeOutIcon">
   <img class="imgIcon" src="img/giftyIcon.png">
 </div>
 
