@@ -5,8 +5,54 @@
  */
 
 body {
+  margin: 16px;
   background-color: #870b0b;
   transition: 3.5s;
+  animation: fadeInAnimation ease 1s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+body.B {
+  background-color: #fff;
+}
+
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fadeOutItemA {
+  position: relative;
+  text-align: center;
+  z-index: 1;
+  animation: fadeOutAnimation ease 1s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-delay: 1s;
+}
+
+.fadeOutItemB {
+  position: relative;
+  text-align: center;
+  z-index: 0;
+  top: -150px;
+  animation: fadeOutAnimation ease 1s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeOutAnimation {
+  100% {
+    opacity: 0;
+  }
+  0% {
+    opacity: 1;
+  }
 }
 
 .iconContainer {
@@ -14,12 +60,18 @@ body {
   text-align: center;
   z-index: 0;
   top: -150px;
+  animation: fadeInAnimation ease 3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 }
 
 .loginContainer {
   position: relative;
   text-align: center;
   z-index: 1;
+  animation: fadeInAnimation ease 3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 }
 
 p {
@@ -121,6 +173,9 @@ button {
   .loginContainer {
     top: 175px;
   }
+  .fadeOutItemA {
+    top: 175px;
+  }
   input {
     width: 300px;
   }
@@ -148,6 +203,9 @@ button {
 
 @media screen and (min-width: 600px) and (max-width: 1000px) {
   .loginContainer {
+    top: 275px;
+  }
+  .fadeOutItemA {
     top: 275px;
   }
   input {
@@ -179,6 +237,9 @@ button {
   .loginContainer {
     top: 375px;
   }
+  .fadeOutItemA {
+    top: 375px;
+  }
   input {
     width: 900px;
   }
@@ -206,6 +267,9 @@ button {
 
 @media screen and (min-width: 1800px){
   .loginContainer {
+    top: 475px;
+  }
+  .fadeOutItemA {
     top: 475px;
   }
   input {
