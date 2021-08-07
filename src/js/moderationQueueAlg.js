@@ -97,10 +97,8 @@ window.onload = function instantiate() {
 
   alternateButtonLabel(settingsNote, "Settings", "Moderation");
 
-  initializeNukeBtn();
-
   function initializeNukeBtn() {
-    if (ticketArr.length != 0) {
+    if (ticketArr.length > 0) {
       nukeTickets.innerHTML = "Nuke All Tickets";
       nukeTickets.onclick = function () {
         firebase.database().ref("maintenance/").remove();
@@ -186,8 +184,8 @@ window.onload = function instantiate() {
         if (snapshot.exists()) {
           postRef.on("child_added", function (data) {
             console.log(data.key + " Added!");
-            createModerationTicket(data.val());
             ticketArr.push(data.val());
+            createModerationTicket(data.val());
           });
 
           postRef.on("child_changed", function (data) {
@@ -213,6 +211,7 @@ window.onload = function instantiate() {
           });
         } else {
           deployListEmptyNotification("There Are No Items In The Moderation Queue!");
+          initializeNukeBtn();
         }
       });
     };
@@ -243,6 +242,9 @@ window.onload = function instantiate() {
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     clearInterval(offlineTimer);
 
+    if (dataCounter < 1) {
+      initializeNukeBtn();
+    }
     dataCounter++;
     if (dataCounter > buttonOpacLim) {
       nukeTickets.style.opacity = ".75";
@@ -363,6 +365,7 @@ window.onload = function instantiate() {
       dataCounter--;
       if (dataCounter == 0){
         deployListEmptyNotification("There Are No Items In The Moderation Queue!");
+        initializeNukeBtn();
       }
     } catch (err) {}
   }
