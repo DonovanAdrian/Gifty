@@ -12,7 +12,7 @@ let config = {};
 
 let loginDisabledMsg = "";
 let newGiftyMessage = "Please create a new user before trying to log into Gifty! Click on the text below the login " +
-    "button and fill out the form to make a user account.";
+  "button and fill out the form to make a user account.";
 
 let loginBool = false;
 let allowLogin = true;
@@ -27,6 +27,7 @@ let offlineModal;
 let validUser;
 let loginBtn;
 let signUpFld;
+let colorShifter;
 
 
 
@@ -108,7 +109,7 @@ function fetchConfigFile(){
 
       if(configInitializeInt == 8){
         if (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
-            storageBucketString == "" || messagingSenderIdString == "" || appIdString == "" || measurementIdString == "") {
+          storageBucketString == "" || messagingSenderIdString == "" || appIdString == "" || measurementIdString == "") {
           alert("Config not properly initialized! Please contact an administrator!");
         } else {
           config = {
@@ -128,7 +129,7 @@ function fetchConfigFile(){
         }
       } else {
         if (configInitializeInt == 7 && (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
-            storageBucketString == "" || messagingSenderIdString == "" || appIdString == "")) {
+          storageBucketString == "" || messagingSenderIdString == "" || appIdString == "")) {
           alert("Config not properly initialized! Please contact an administrator!");
         } else {
           console.log("WARNING: Missing measurementId. This variable is optional. Disregard if this is on purpose.");
@@ -172,7 +173,7 @@ window.onload = function instantiate() {
   function backgroundAlternator(){
     let nowBackground = 0;
     let alternator = 0;
-    setInterval(function(){
+    colorShifter = setInterval(function(){
       nowBackground = nowBackground + 1000;
       if(nowBackground >= 15000){
         nowBackground = 0;
@@ -236,7 +237,7 @@ function loginQuery() {
         firebase.database().ref("login/").update({
           allowLogin: true,
           loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-              "maintenance before logging in. Thank you for your patience!"
+            "maintenance before logging in. Thank you for your patience!"
         });
         loginBtn.innerHTML = "Log In";
         allowLogin = true;
@@ -330,11 +331,21 @@ function login() {
   }
   if (loginBool === true){
     loginInfo.style.color = "#fff";
-    loginInfo.innerHTML = "User " + userArr[validUserInt].userName + " Authenticated";
+    loginInfo.innerHTML = "Welcome Back, " + userArr[validUserInt].name + "!";
+    document.body.className="B";
+    clearInterval(colorShifter);
+    document.getElementById("fadeOutLogin").className = "fadeOutItemA";
+    document.getElementById("fadeOutIcon").className = "fadeOutItemB";
     validUser = userArr[validUserInt];
     sessionStorage.setItem("validUser", JSON.stringify(validUser));
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    window.location.href = "home.html";
+    let timer = 0;
+    setInterval(function(){
+      timer = timer + 1000;
+      if(timer >= 2000){
+        window.location.href = "home.html";
+      }
+    }, 1000);
   } else if (loginBool === false) {
     if (allowLogin)
       loginInfo.innerHTML = "Username or Password Incorrect";
