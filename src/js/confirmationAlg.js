@@ -375,7 +375,7 @@ window.onload = function instantiate() {
     if(consoleOutput)
       console.log("Deleting Invite " + uid);
 
-    toDelete = findUIDItemInArr(uid, inviteArr);
+    toDelete = inviteArr.indexOf(uid);
 
     if(toDelete != -1) {
       inviteArr.splice(toDelete, 1);
