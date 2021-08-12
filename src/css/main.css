@@ -338,6 +338,7 @@ ul li.santa::before {
   width: 100%;
   height: 100%;
   overflow: auto;
+  max-height: 75%;
 }
 
 .modal-content {
@@ -1015,19 +1016,5 @@ ul li.santa::before {
   ul li.gift {
     padding: 12px 8px 12px 40px;
     font-size: 27px;
-  }
-}
-
-@media screen and (max-height: 600px) {
-  .modal {
-    position: fixed;
-    z-index: 1;
-    padding-top: 50px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    max-height: 75%;
   }
 }
