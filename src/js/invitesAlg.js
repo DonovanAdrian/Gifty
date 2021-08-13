@@ -547,7 +547,7 @@ window.onload = function instantiate() {
   function generateAddUserBtn(){
     let friendUserNameList = [];
     let upperCaseUserArr = [];
-    let suggestedFriendData;
+
     if(user.friends != undefined || user.friends != null) {
       for (let i = 0; i < user.friends.length; i++) {
         for (let a = 0; a < userArr.length; a++) {
@@ -568,7 +568,7 @@ window.onload = function instantiate() {
 
       if (commonFriendArr.length > 0) {
         let i = findUIDItemInArr(commonFriendArr[0], userArr);
-        inviteInfo.innerHTML = "Suggested Friend: " + userArr[i].userName;
+        inviteInfo.innerHTML = "Suggested Friend: " + userArr[i].userName + " " + "(" + userArr[i].name + ")";
       }
 
       addInvite.onclick = function() {
