@@ -238,8 +238,8 @@ window.onload = function instantiate() {
         }
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().receivedBy,
-            data.val().title, data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
-            data.val().creator, data.val().multiples);
+          data.val().title, data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
+          data.val().creator, data.val().multiples);
         instantiatedNodes.push(data.val());
 
         if(updateGiftToDBBool){
@@ -259,8 +259,8 @@ window.onload = function instantiate() {
         }
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().receivedBy,
-            data.val().title, data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
-            data.val().creator, data.val().multiples);
+          data.val().title, data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer,
+          data.val().creator, data.val().multiples);
       });
 
       postRef.on('child_removed', function(data) {
@@ -343,7 +343,7 @@ window.onload = function instantiate() {
     let liItem = document.createElement("LI");
     liItem.id = "gift" + uid;
     initGiftElement(liItem, description, link, received, receivedBy, title, key, where, uid, date, buyer, creator,
-        multiples);
+      multiples);
     let textNode = document.createTextNode(title);
     liItem.appendChild(textNode);
 
@@ -358,7 +358,7 @@ window.onload = function instantiate() {
     let editGift = document.getElementById('gift' + uid);
     editGift.innerHTML = title;
     initGiftElement(editGift, description, link, received, receivedBy, title, key, where, uid, date, buyer, creator,
-        multiples);
+      multiples);
   }
 
   function initGiftElement(liItem, description, link, received, receivedBy, title, key, where, uid, date, buyer,
@@ -426,7 +426,7 @@ window.onload = function instantiate() {
             if (receivedBy.length == 1)
               giftBought.innerHTML = "This gift was bought by you!";
             else
-              giftBought.innerHTML = "This gift was bought by " + receivedBy.length + " people... And you!";
+              giftBought.innerHTML = "This gift was bought by " + receivedBy.length + " people... Including you!";
           }
         }
       }
@@ -472,7 +472,7 @@ window.onload = function instantiate() {
           } else {
             updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
             alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
-                "if it needs to be removed.");
+              "if it needs to be removed.");
           }
         }
       };
@@ -517,7 +517,7 @@ window.onload = function instantiate() {
                 });
               } else {
                 alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-                    "if this has been done in error.");
+                  "if this has been done in error.");
               }
             }
           } else {
