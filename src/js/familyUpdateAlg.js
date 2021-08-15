@@ -188,7 +188,7 @@ window.onload = function instantiate() {
   familySettings.innerHTML = "Family Settings";
 
   familySettings.onclick = function() {
-      generateFamilySettingsModal();
+    generateFamilySettingsModal();
   };
 
   if(familyData.members != null) {
@@ -735,7 +735,12 @@ window.onload = function instantiate() {
     }
 
     if (userArr.length > 1) {
+      closeModal(familyPCModal);
+
       for (let i = 0; i < userArr.length; i++) {
+        //ToDo
+        //The "Are you sure Parent/Child" doesn't set Parent/Child
+        //Check if they are in the same family before setting
         if (userArr[i].uid != parentChildOmit.uid && findUIDItemInArr(userArr[i].uid, loadedPCUserArr) == -1) {
           let liItem = document.createElement("LI");
           liItem.id = userArr[i].uid;
