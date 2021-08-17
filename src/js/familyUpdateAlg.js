@@ -227,6 +227,7 @@ window.onload = function instantiate() {
               familyMemberFound = true;
               if (familyData.members != null)
                 if (!familyData.members.includes(userArr[i].uid)) {
+                  closeModal(familyAddModal);
                   generateConfirmDataModal("Did you mean " + userArr[i].name + "?",
                     "Confirm Member Name Below",
                     "user", userArr[i].uid);
@@ -234,10 +235,12 @@ window.onload = function instantiate() {
                   console.log("User is already in THIS family!");
                   addMemberInfo.innerHTML = "That user is already added to this family, please try another!";
                 }
-              else
+              else {
+                closeModal(familyAddModal);
                 generateConfirmDataModal("Did you mean " + userArr[i].name + "?",
                   "Confirm Member Name Below",
                   "user", userArr[i].uid);
+              }
             } else {
               console.log("User is already in ANOTHER family!");
               addMemberInfo.innerHTML = "A user can only be in one family at a time!";
@@ -276,7 +279,6 @@ window.onload = function instantiate() {
   }
 
   function generateConfirmDataModal(dataToConfirm, confirmString, confirmType, dataUID){
-    closeModal(familyAddModal);
     confirmMemberTitle.innerHTML = confirmString;
 
     confMemberUserName.innerHTML = dataToConfirm;
@@ -378,7 +380,7 @@ window.onload = function instantiate() {
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() && i != -1)
+        if(i != -1)
           userArr[i] = data.val();
 
         if(data.key == user.uid)
@@ -387,7 +389,7 @@ window.onload = function instantiate() {
 
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() && i != -1)
+        if(i != -1)
           userArr[i] = data.val();
 
         for(let b = 0; i < familyData.members.length; i++)
@@ -510,11 +512,15 @@ window.onload = function instantiate() {
   function initFamilyElement(liItem, familyMemberData) {
     liItem.className = "gift";
     liItem.onclick = function (){
+      //ToDo
+      console.log(familyMemberData);
+
       familyMemberName.innerHTML = familyMemberData.name;
       familyMemberUserName.innerHTML = familyMemberData.userName;
       familyMemberUID.innerHTML = familyMemberData.uid;
 
-      if (familyMemberData.parentUser == null && familyMemberData.childUser == null) {
+      if ((familyMemberData.parentUser == null && familyMemberData.childUser == null) ||
+        (familyMemberData.parentUser == "" && familyMemberData.childUser == "")) {
         familyMemberParent.innerHTML = "Set Parent";
 
         familyMemberChild.innerHTML = "Set Child";
@@ -535,6 +541,7 @@ window.onload = function instantiate() {
         cycleParentChildText(familyMemberData);
 
         familyMemberPCClear.innerHTML = "Clear Parent Child Data";
+        familyMemberPCClear.className = "basicBtn";
 
         familyMemberPCClear.onclick = function() {
           clearParentChildData(familyMemberData);
@@ -605,12 +612,16 @@ window.onload = function instantiate() {
 
     if (parentChildData.parentUser != null) {
       let i = findUIDItemInArr(parentChildData.parentUser, userArr);
-      parentAltText = "Parent: " + userArr[i].name;
-      childAltText = "Child: " + parentChildData.name;
+      if (i != -1) {
+        parentAltText = "Parent: " + userArr[i].name;
+        childAltText = "Child: " + parentChildData.name;
+      }
     } else {
       let i = findUIDItemInArr(parentChildData.childUser, userArr);
-      parentAltText = "Parent: " + parentChildData.name;
-      childAltText = "Child: " + userArr[i].name;
+      if (i != -1) {
+        parentAltText = "Parent: " + parentChildData.name;
+        childAltText = "Child: " + userArr[i].name;
+      }
     }
 
     parentAlternator = setInterval(function(){
@@ -735,12 +746,8 @@ window.onload = function instantiate() {
     }
 
     if (userArr.length > 1) {
-      closeModal(familyPCModal);
 
       for (let i = 0; i < userArr.length; i++) {
-        //ToDo
-        //The "Are you sure Parent/Child" doesn't set Parent/Child
-        //Check if they are in the same family before setting
         if (userArr[i].uid != parentChildOmit.uid && findUIDItemInArr(userArr[i].uid, loadedPCUserArr) == -1) {
           let liItem = document.createElement("LI");
           liItem.id = userArr[i].uid;
@@ -748,6 +755,7 @@ window.onload = function instantiate() {
           let textNode = document.createTextNode(userArr[i].name);
 
           liItem.onclick = function () {
+            closeModal(familyPCModal);
             if (parentChild == "child") {
               globalChildData = userArr[i];
               globalParentData = parentChildOmit;
