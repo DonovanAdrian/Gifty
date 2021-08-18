@@ -519,38 +519,65 @@ window.onload = function instantiate() {
       familyMemberUserName.innerHTML = familyMemberData.userName;
       familyMemberUID.innerHTML = familyMemberData.uid;
 
-      if ((familyMemberData.parentUser == null && familyMemberData.childUser == null) ||
-        (familyMemberData.parentUser == "" && familyMemberData.childUser == "")) {
+      if (familyData.members.length > 3) {
         familyMemberParent.innerHTML = "Set Parent";
+        familyMemberParent.className = "basicBtn";
 
         familyMemberChild.innerHTML = "Set Child";
+        familyMemberChild.className = "basicBtn";
+
+        familyMemberParent.onclick = function () {
+          generateFamilyPCModal("parent", familyMemberData);
+        };
+
+        familyMemberChild.onclick = function () {
+          generateFamilyPCModal("child", familyMemberData);
+        };
+
+        if ((familyMemberData.parentUser == null && familyMemberData.childUser == null) ||
+          (familyMemberData.parentUser == "" && familyMemberData.childUser == "")) {
+          familyMemberPCClear.innerHTML = "Button Disabled";
+          familyMemberPCClear.className += " btnDisabled";
+
+          familyMemberPCClear.onclick = function () {
+            alert("This button is disabled, please set a parent or child for this user first.");
+          };
+        } else {
+          cycleParentChildText(familyMemberData);
+
+          familyMemberPCClear.innerHTML = "Clear Parent Child Data";
+          familyMemberPCClear.className = "basicBtn";
+
+          familyMemberPCClear.onclick = function () {
+            clearParentChildData(familyMemberData);
+
+            closeModal(familyMemberViewModal);
+            try {
+              clearInterval(parentAlternator);
+              clearInterval(childAlternator);
+            } catch (err) {}
+          };
+        }
+      } else {
+        familyMemberParent.innerHTML = "Button Disabled";
+        familyMemberParent.className += " btnDisabled";
+
+        familyMemberChild.innerHTML = "Button Disabled";
+        familyMemberChild.className += " btnDisabled";
 
         familyMemberPCClear.innerHTML = "Button Disabled";
         familyMemberPCClear.className += " btnDisabled";
 
-        familyMemberParent.onclick = function() {
-          generateFamilyPCModal("parent", familyMemberData);
+        familyMemberParent.onclick = function () {
+          alert("This button is disabled, please add more members to this family first.");
         };
 
-        familyMemberChild.onclick = function() {
-          generateFamilyPCModal("child", familyMemberData);
+        familyMemberChild.onclick = function () {
+          alert("This button is disabled, please add more members to this family first.");
         };
 
-        familyMemberPCClear.onclick = function() {};
-      } else {
-        cycleParentChildText(familyMemberData);
-
-        familyMemberPCClear.innerHTML = "Clear Parent Child Data";
-        familyMemberPCClear.className = "basicBtn";
-
-        familyMemberPCClear.onclick = function() {
-          clearParentChildData(familyMemberData);
-
-          closeModal(familyMemberViewModal);
-          try {
-            clearInterval(parentAlternator);
-            clearInterval(childAlternator);
-          } catch (err) {}
+        familyMemberPCClear.onclick = function () {
+          alert("This button is disabled, please add more members to this family first.");
         };
       }
 
@@ -748,7 +775,8 @@ window.onload = function instantiate() {
     if (userArr.length > 1) {
 
       for (let i = 0; i < userArr.length; i++) {
-        if (userArr[i].uid != parentChildOmit.uid && findUIDItemInArr(userArr[i].uid, loadedPCUserArr) == -1) {
+        if (userArr[i].uid != parentChildOmit.uid && findUIDItemInArr(userArr[i].uid, loadedPCUserArr) == -1 &&
+          familyData.members.indexOf(userArr[i].uid) != -1) {
           let liItem = document.createElement("LI");
           liItem.id = userArr[i].uid;
           liItem.className = "gift";
