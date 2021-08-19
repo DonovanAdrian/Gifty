@@ -192,12 +192,7 @@ window.onload = function instantiate() {
   };
 
   if(familyData.members != null) {
-    if (familyData.members.length > 0) {
-      for (let i = 0; i < familyData.members.length; i++) {
-        let a = findUIDItemInArr(familyData.members[i], userArr);
-        createFamilyMemberElement(userArr[a]);
-      }
-    } else {
+    if (familyData.members.length == 0) {
       deployListEmptyNotification("No Family Members Found!");
     }
   } else {
@@ -380,21 +375,28 @@ window.onload = function instantiate() {
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
-        if(i != -1)
+        if(i != -1) {
           userArr[i] = data.val();
+
+          for (let b = 0; b < familyData.members.length; b++)
+            if (userArr[i].uid == familyData.members[b])
+              createFamilyMemberElement(userArr[i]);
+        }
 
         if(data.key == user.uid)
           user = data.val();
       });
 
       postRef.on('child_changed', function (data) {
+
         let i = findUIDItemInArr(data.key, userArr);
-        if(i != -1)
+        if(i != -1) {
           userArr[i] = data.val();
 
-        for(let b = 0; i < familyData.members.length; i++)
-          if(userArr[i].uid == familyData.members[b])
-            changeFamilyMemberElement(userArr[i]);
+          for (let b = 0; b < familyData.members.length; b++)
+            if (userArr[i].uid == familyData.members[b])
+              changeFamilyMemberElement(userArr[i]);
+        }
 
         if(data.key == user.uid)
           user = data.val();
@@ -512,18 +514,14 @@ window.onload = function instantiate() {
   function initFamilyElement(liItem, familyMemberData) {
     liItem.className = "gift";
     liItem.onclick = function (){
-      //ToDo
-      console.log(familyMemberData);
 
       familyMemberName.innerHTML = familyMemberData.name;
       familyMemberUserName.innerHTML = familyMemberData.userName;
       familyMemberUID.innerHTML = familyMemberData.uid;
 
       if (familyData.members.length > 3) {
-        familyMemberParent.innerHTML = "Set Parent";
         familyMemberParent.className = "basicBtn";
 
-        familyMemberChild.innerHTML = "Set Child";
         familyMemberChild.className = "basicBtn";
 
         familyMemberParent.onclick = function () {
@@ -536,6 +534,8 @@ window.onload = function instantiate() {
 
         if ((familyMemberData.parentUser == null && familyMemberData.childUser == null) ||
           (familyMemberData.parentUser == "" && familyMemberData.childUser == "")) {
+          familyMemberParent.innerHTML = "Set Parent";
+          familyMemberChild.innerHTML = "Set Child";
           familyMemberPCClear.innerHTML = "Button Disabled";
           familyMemberPCClear.className += " btnDisabled";
 
@@ -544,7 +544,8 @@ window.onload = function instantiate() {
           };
         } else {
           cycleParentChildText(familyMemberData);
-
+          familyMemberParent.innerHTML = "Parent Data Detected!";
+          familyMemberChild.innerHTML = "Child Data Detected!";
           familyMemberPCClear.innerHTML = "Clear Parent Child Data";
           familyMemberPCClear.className = "basicBtn";
 
@@ -611,10 +612,10 @@ window.onload = function instantiate() {
     let parentUser;
     let childUser;
 
-    if (familyMemberData.parentUser != null) {
+    if (familyMemberData.parentUser != null && familyMemberData.parentUser != "") {
       parentUser = familyMemberData.parentUser;
       childUser = familyMemberData.uid;
-    } else {
+    } else if (familyMemberData.childUser != null && familyMemberData.childUser != "") {
       parentUser = familyMemberData.uid;
       childUser = familyMemberData.childUser;
     }
@@ -637,13 +638,13 @@ window.onload = function instantiate() {
     let parentAltText;
     let childAltText;
 
-    if (parentChildData.parentUser != null) {
+    if (parentChildData.parentUser != null && parentChildData.parentUser != "") {
       let i = findUIDItemInArr(parentChildData.parentUser, userArr);
       if (i != -1) {
         parentAltText = "Parent: " + userArr[i].name;
         childAltText = "Child: " + parentChildData.name;
       }
-    } else {
+    } else if (parentChildData.childUser != null && parentChildData.childUser != "") {
       let i = findUIDItemInArr(parentChildData.childUser, userArr);
       if (i != -1) {
         parentAltText = "Parent: " + parentChildData.name;
@@ -694,16 +695,12 @@ window.onload = function instantiate() {
         familyData.members = [];
         familyData.members.push(memberUID);
         sessionStorage.setItem("familyData", JSON.stringify(familyData));
-        let a = findUIDItemInArr(memberUID, userArr);
-        createFamilyMemberElement(userArr[a]);
         firebase.database().ref("family/" + familyData.uid).update({
           members: {0: memberUID}
         });
       } else {
         familyData.members.push(memberUID);
         sessionStorage.setItem("familyData", JSON.stringify(familyData));
-        let a = findUIDItemInArr(memberUID, userArr);
-        createFamilyMemberElement(userArr[a]);
         firebase.database().ref("family/" + familyData.uid).update({
           members: familyData.members
         });
@@ -712,8 +709,6 @@ window.onload = function instantiate() {
       familyData.members = [];
       familyData.members.push(memberUID);
       sessionStorage.setItem("familyData", JSON.stringify(familyData));
-      let a = findUIDItemInArr(memberUID, userArr);
-      createFamilyMemberElement(userArr[a]);
       firebase.database().ref("family/" + familyData.uid).update({
         members: {0: memberUID}
       });
