@@ -807,10 +807,18 @@ window.onload = function instantiate() {
 
   function updateFamilyRelationsToDB() {
     if (globalParentData != null && globalChildData != null) {
-      firebase.database().ref("users/" + globalChildData.uid).update({
-        childUser: "",
-        parentUser: globalParentData.uid
-      });
+      if (globalChildData.parentUser == null || globalChildData.parentUser == "") {
+        firebase.database().ref("users/" + globalChildData.uid).update({
+          childUser: "",
+          parentUser: globalParentData.uid
+        });
+      } else {
+        firebase.database().ref("users/" + globalChildData.uid).update({
+          childUser: "",
+          parentUser: globalChildData.parentUser,
+          parentUser2: globalParentData.uid
+        });
+      }
       firebase.database().ref("users/" + globalParentData.uid).update({
         childUser: globalChildData.uid,
         parentUser: ""
