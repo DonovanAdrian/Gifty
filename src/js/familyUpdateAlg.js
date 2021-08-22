@@ -610,26 +610,56 @@ window.onload = function instantiate() {
 
   function clearParentChildData (familyMemberData) {
     let parentUser;
+    let parentUser2;
     let childUser;
+    let errorBool;
 
     if (familyMemberData.parentUser != null && familyMemberData.parentUser != "") {
       parentUser = familyMemberData.parentUser;
       childUser = familyMemberData.uid;
+
+      if (familyMemberData.parentUser2 != null && familyMemberData.parentUser2 != "") {
+        parentUser2 = familyMemberData.parentUser2;
+      }
     } else if (familyMemberData.childUser != null && familyMemberData.childUser != "") {
       parentUser = familyMemberData.uid;
       childUser = familyMemberData.childUser;
+
+      let i = findUIDItemInArr(childUser, userArr);
+      if (userArr[i].parentUser2 != null && userArr[i].parentUser2 != "") {
+        parentUser2 = userArr[i].parentUser2;
+      }
+    } else {
+      errorBool = true;
     }
 
-    firebase.database().ref("users/" + parentUser).update({
-      childUser: "",
-      parentUser: ""
-    });
-    firebase.database().ref("users/" + childUser).update({
-      childUser: "",
-      parentUser: ""
-    });
+    if (!errorBool) {
+      if (parentUser2 != null && parentUser2 != "") {
+        firebase.database().ref("users/" + parentUser2).update({
+          childUser: "",
+          parentUser: ""
+        });
+        firebase.database().ref("users/" + childUser).update({
+          childUser: "",
+          parentUser: "",
+          parentUser2: ""
+        });
+      } else {
+        firebase.database().ref("users/" + childUser).update({
+          childUser: "",
+          parentUser: ""
+        });
+      }
 
-    alert("Parent and Child Data Cleared!");
+      firebase.database().ref("users/" + parentUser).update({
+        childUser: "",
+        parentUser: ""
+      });
+
+      alert("Parent and Child Data Cleared!");
+    } else {
+      alert("Error! Parent and Child Data NOT Cleared...");
+    }
   }
 
   function cycleParentChildText (parentChildData) {
@@ -812,17 +842,23 @@ window.onload = function instantiate() {
           childUser: "",
           parentUser: globalParentData.uid
         });
-      } else {
+        firebase.database().ref("users/" + globalParentData.uid).update({
+          childUser: globalChildData.uid,
+          parentUser: ""
+        });
+      } else if (globalChildData.parentUser2 == null || globalChildData.parentUser2 == "") {
         firebase.database().ref("users/" + globalChildData.uid).update({
           childUser: "",
           parentUser: globalChildData.parentUser,
           parentUser2: globalParentData.uid
         });
+        firebase.database().ref("users/" + globalParentData.uid).update({
+          childUser: globalChildData.uid,
+          parentUser: ""
+        });
+      } else {
+        alert ("All parents have already been assigned. Please clear Parent/Child data to correct parent assignments.");
       }
-      firebase.database().ref("users/" + globalParentData.uid).update({
-        childUser: globalChildData.uid,
-        parentUser: ""
-      });
     } else {
       alert("There was an error updating the parent and child of this user, please try again!");
     }
