@@ -668,7 +668,16 @@ window.onload = function instantiate() {
     let parentAltText;
     let childAltText;
 
-    if (parentChildData.parentUser != null && parentChildData.parentUser != "") {
+    if (parentChildData.parentUser2 != null && parentChildData.parentUser2 != "") {
+      let firstPar = findUIDItemInArr(parentChildData.parentUser, userArr);
+      let secondPar = findUIDItemInArr(parentChildData.parentUser2, userArr);
+
+      if (firstPar != -1 && secondPar != -1) {
+        parentAltText = "Parents: " + userArr[firstPar].name + " & " + userArr[secondPar].name;
+        childAltText = "Child: " + parentChildData.name;
+      }
+      parentInitText = "Click Here To Reset Parents";
+    } else if (parentChildData.parentUser != null && parentChildData.parentUser != "") {
       let i = findUIDItemInArr(parentChildData.parentUser, userArr);
       if (i != -1) {
         parentAltText = "Parent: " + userArr[i].name;
