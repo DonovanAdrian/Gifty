@@ -155,7 +155,10 @@ function fetchConfigFile(){
 
 window.onload = function instantiate() {
 
+  const analytics = firebase.analytics();
   pageName = "Index";
+
+  analytics.setCurrentScreen(pageName);
   username = document.getElementById('username');
   pin = document.getElementById('pin');
   loginBtn = document.getElementById('loginBtn');
@@ -257,9 +260,11 @@ function initializeLoginBtns() {
   databaseQuery();
   loginBtn.onclick = function(){
     login();
+    analytics.logEvent('login_attempt');
   };
   signUpFld.onclick = function(){
     signUp();
+    analytics.logEvent('signUp_request');
   };
 }
 
