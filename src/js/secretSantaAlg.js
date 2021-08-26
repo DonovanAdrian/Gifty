@@ -21,7 +21,7 @@ let hideDateMax = 9; //Sept
 
 let globalThanks = "Thank you for participating in the Secret Santa! See you next year!";
 let globalApology = "Unfortunately the Secret Santa for this year has come to an early end! Please contact" +
-    " a moderator for assistance";
+  " a moderator for assistance";
 
 let ignoreFamilySetTimer;
 let textCyclerInterval;
@@ -78,7 +78,7 @@ function showSecretSanta(){
           });
           user.secretSanta = 1;
           alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
-              " Santa Recipient!");
+            " Santa Recipient!");
           secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
         } else {
           firebase.database().ref("users/" + user.uid).update({
@@ -94,7 +94,7 @@ function showSecretSanta(){
         });
         user.secretSanta = 1;
         alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
-            " Santa Recipient!");
+          " Santa Recipient!");
         secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
       }
       sessionStorage.setItem("validUser", JSON.stringify(user));
@@ -172,10 +172,10 @@ function checkForGlobalMessage() {
   for (let i = 0; i < userArr.length; i++) {
     if (userArr[i].notifications != undefined)
       if (userArr[i].notifications.includes(globalThanks) ||
-          userArr[i].notifications.includes(globalApology)) {
+        userArr[i].notifications.includes(globalApology)) {
         if (userArr[i].readNotifications != undefined)
           if (userArr[i].readNotifications.includes(globalThanks) ||
-              userArr[i].readNotifications.includes(globalApology)) {
+            userArr[i].readNotifications.includes(globalApology)) {
             return true;
           }
       }
@@ -580,8 +580,8 @@ function createSecretSantaNames(){
 
   if (familyArr.length == 0) {
     alert("It seems that you don't have any families created yet!\n\n" +
-        "If you have more than 3 users on Gifty, assign them to a family before" +
-        "attempting to assign them Secret Santa names!");
+      "If you have more than 3 users on Gifty, assign them to a family before" +
+      "attempting to assign them Secret Santa names!");
     return;
   }
 
@@ -627,7 +627,7 @@ function createSecretSantaNames(){
     if (optInFamilyStatsArr[i] < 3) {
       if (!ignoreFamilySet && secretSantaPageName == "moderation") {
         alert("There is a family with less than three users signed up!\n\n\nYou have 10 seconds to press the button again" +
-            " if you are okay with this. The users in question will NOT be assigned names.");
+          " if you are okay with this. The users in question will NOT be assigned names.");
         startIgnoreFamilySetTimer();
         tempUserArr = [];
         assignedUsers = [];
@@ -674,7 +674,7 @@ function createSecretSantaNames(){
     }
 
     if (assignedUsers.length == tempUserArr.length &&
-        assignedFamilies.length == optInFamilyArr.length) {
+      assignedFamilies.length == optInFamilyArr.length) {
       let userIndex = 0;
       for (let i = 0; i < tempUserArr.length; i++) {
         userIndex = findUIDItemInArr(tempUserArr[i].uid, userArr);
@@ -738,78 +738,100 @@ function startIgnoreFamilySetTimer() {
 function assignUsersSecretSantaNames(usersToAssign) {
   let selector;
   let userIndex;
+  let masterRetryLimit = 5;
+  let masterRetryCount = 0;
   let retryCount = 0;
   let tempAssignArr = [];
+  let masterBreak = false;
   let assignActionSuccess = true;
 
-  for (let i = 0; i < usersToAssign.length; i++)
-    tempAssignArr.push(usersToAssign[i]);
+  while (masterRetryCount < masterRetryLimit) {
+    for (let i = 0; i < usersToAssign.length; i++)
+      tempAssignArr.push(usersToAssign[i]);
 
-  for (let i = 0; i < usersToAssign.length; i++) {
-    selector = Math.floor((Math.random() * tempAssignArr.length));
-    if (!assignedUsers.includes(tempAssignArr[selector].uid)) {
-      if (tempAssignArr[selector].uid != usersToAssign[i].uid) {
-        if (usersToAssign[i].friends.includes(tempAssignArr[selector].uid)) {
-          try {
-            if (usersToAssign[i].parentUser == tempAssignArr[selector].uid ||
+    for (let i = 0; i < usersToAssign.length; i++) {
+      selector = Math.floor((Math.random() * tempAssignArr.length));
+      if (!assignedUsers.includes(tempAssignArr[selector].uid)) {
+        if (tempAssignArr[selector].uid != usersToAssign[i].uid) {
+          if (usersToAssign[i].friends.includes(tempAssignArr[selector].uid)) {
+            try {
+              if (usersToAssign[i].parentUser2 == tempAssignArr[selector].uid ||
+                usersToAssign[i].parentUser == tempAssignArr[selector].uid ||
                 usersToAssign[i].childUser == tempAssignArr[selector].uid) {
-              if (consoleOutput)
-                console.log("These users are a parent or child of each other!");
-              retryCount++;
-              if (retryCount >= 10) {
-                assignActionSuccess = false;
-                break;
+                if (consoleOutput)
+                  console.log("These users are a parent or child of each other!");
+                retryCount++;
+                if (retryCount >= 3) {
+                  masterRetryCount++;
+                  masterBreak = true;
+                  break;
+                }
+                i--;
+              } else {
+                if (consoleOutput)
+                  console.log("MATCHED!");
+                assignedUsers.push(tempAssignArr[selector].uid);
+                userIndex = findUIDItemInArr(usersToAssign[i].uid, tempUserArr);
+                tempUserArr[userIndex].secretSantaName = tempAssignArr[selector].uid;
+                tempAssignArr.splice(selector, 1);
+                retryCount = 0;
               }
-              i--;
-            } else {
-              if (consoleOutput)
+            } catch (err) {
+              if (consoleOutput) {
+                console.log(err.toString());
                 console.log("MATCHED!");
+              }
               assignedUsers.push(tempAssignArr[selector].uid);
               userIndex = findUIDItemInArr(usersToAssign[i].uid, tempUserArr);
               tempUserArr[userIndex].secretSantaName = tempAssignArr[selector].uid;
               tempAssignArr.splice(selector, 1);
               retryCount = 0;
             }
-          } catch (err) {
-            if(consoleOutput)
-              console.log("MATCHED!");
-            assignedUsers.push(tempAssignArr[selector].uid);
-            userIndex = findUIDItemInArr(usersToAssign[i].uid, tempUserArr);
-            tempUserArr[userIndex].secretSantaName = tempAssignArr[selector].uid;
-            tempAssignArr.splice(selector, 1);
-            retryCount = 0;
+          } else {
+            if (consoleOutput)
+              console.log("These users aren't friends!");
+            retryCount++;
+            if (retryCount >= 3) {
+              masterRetryCount++;
+              masterBreak = true;
+              break;
+            }
+            i--;
           }
         } else {
-          if(consoleOutput)
-            console.log("These users aren't friends!");
+          if (consoleOutput)
+            console.log("These are the same users!");
           retryCount++;
-          if(retryCount >= 10) {
-            assignActionSuccess = false;
+          if (retryCount >= 3) {
+            masterRetryCount++;
+            masterBreak = true;
             break;
           }
           i--;
         }
       } else {
-        if(consoleOutput)
-          console.log("These are the same users!");
+        if (consoleOutput)
+          console.log("This user has already been assigned!");
         retryCount++;
-        if(retryCount >= 10) {
-          assignActionSuccess = false;
+        if (retryCount >= 3) {
+          masterRetryCount++;
+          masterBreak = true;
           break;
         }
         i--;
       }
+    }
+
+    if (masterBreak) {
+      masterBreak = false;
     } else {
-      if(consoleOutput)
-        console.log("This user has already been assigned!");
-      retryCount++;
-      if(retryCount >= 10) {
-        assignActionSuccess = false;
-        break;
-      }
-      i--;
+      break;
     }
   }
+
+  if (masterRetryCount >= masterRetryLimit)
+    assignActionSuccess = false;
+
 
   return assignActionSuccess;
 }
@@ -820,9 +842,9 @@ function generateActivateSecretSantaModal(){
     if (checkForSecretSantaBool) {
       if (checkForRandomErrors()) {
         alert("***WARNING***\n\n\nDue to a low number of users being randomly assigned names, there is a " +
-            "higher likelihood for potential errors. Please be prepared to press the \"Assign\" button " +
-            "more than once. To remedy this issue, invite more users to use Gifty or consolidate " +
-            "your users into larger families. Thank you!");
+          "higher likelihood for potential errors. Please be prepared to press the \"Assign\" button " +
+          "more than once. To remedy this issue, invite more users to use Gifty or consolidate " +
+          "your users into larger families. Thank you!");
       }
     }
 
