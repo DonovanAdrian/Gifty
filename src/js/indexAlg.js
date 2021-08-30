@@ -32,125 +32,124 @@ let colorShifter;
 
 
 function fetchConfigFile(){
-  let file = "txt/config.txt";
+  let oFrame = document.getElementById("frmFile");
+  let strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;
+  let configFileInput = strRawContents.split("\n");
 
-  $.ajax({
-    url: file,
-    success: function(data){
-      let configInitializeInt = 0;
-      let configFileInput = data.split('\n');
-      let isComment;
-      let apiKeyString = "";
-      let authDomainString = "";
-      let databaseURLString = "";
-      let projectIdString = "";
-      let storageBucketString = "";
-      let messagingSenderIdString = "";
-      let appIdString = "";
-      let measurementIdString = "";
+  let configInitializeInt = 0;
+  let isComment;
+  let apiKeyString = "";
+  let authDomainString = "";
+  let databaseURLString = "";
+  let projectIdString = "";
+  let storageBucketString = "";
+  let messagingSenderIdString = "";
+  let appIdString = "";
+  let measurementIdString = "";
 
-      for(let i = 0; i < configFileInput.length; i++){
-        isComment = false;
-        if (configFileInput[i].charAt(0) == "#" || configFileInput[i].charAt(0) == "") {
-          isComment = true;
-        }
-        if (!isComment) {
-          if (configFileInput[i].includes("apiKey:")){
-            configInitializeInt++;
-            apiKeyString = configFileInput[i].substr(7, configFileInput[i].length);
-            apiKeyString = apiKeyString.replace(/"/g, '');
-            apiKeyString = apiKeyString.replace(/,/g, '');
-            apiKeyString = apiKeyString.replace(/ /g, '');
-          } else if (configFileInput[i].includes("authDomain:")){
-            configInitializeInt++;
-            authDomainString = configFileInput[i].substr(11, configFileInput[i].length);
-            authDomainString = authDomainString.replace(/"/g, '');
-            authDomainString = authDomainString.replace(/,/g, '');
-            authDomainString = authDomainString.replace(/ /g, '');
-          } else if (configFileInput[i].includes("databaseURL:")){
-            configInitializeInt++;
-            databaseURLString = configFileInput[i].substr(12, configFileInput[i].length);
-            databaseURLString = databaseURLString.replace(/"/g, '');
-            databaseURLString = databaseURLString.replace(/,/g, '');
-            databaseURLString = databaseURLString.replace(/ /g, '');
-          } else if (configFileInput[i].includes("projectId:")){
-            configInitializeInt++;
-            projectIdString = configFileInput[i].substr(10, configFileInput[i].length);
-            projectIdString = projectIdString.replace(/"/g, '');
-            projectIdString = projectIdString.replace(/,/g, '');
-            projectIdString = projectIdString.replace(/ /g, '');
-          } else if (configFileInput[i].includes("storageBucket:")){
-            configInitializeInt++;
-            storageBucketString = configFileInput[i].substr(14, configFileInput[i].length);
-            storageBucketString = storageBucketString.replace(/"/g, '');
-            storageBucketString = storageBucketString.replace(/,/g, '');
-            storageBucketString = storageBucketString.replace(/ /g, '');
-          } else if (configFileInput[i].includes("messagingSenderId:")){
-            configInitializeInt++;
-            messagingSenderIdString = configFileInput[i].substr(18, configFileInput[i].length);
-            messagingSenderIdString = messagingSenderIdString.replace(/"/g, '');
-            messagingSenderIdString = messagingSenderIdString.replace(/,/g, '');
-            messagingSenderIdString = messagingSenderIdString.replace(/ /g, '');
-          } else if (configFileInput[i].includes("appId:")){
-            configInitializeInt++;
-            appIdString = configFileInput[i].substr(6, configFileInput[i].length);
-            appIdString = appIdString.replace(/"/g, '');
-            appIdString = appIdString.replace(/,/g, '');
-            appIdString = appIdString.replace(/ /g, '');
-          } else if (configFileInput[i].includes("measurementId:")){
-            configInitializeInt++;
-            measurementIdString = configFileInput[i].substr(14, configFileInput[i].length);
-            measurementIdString = measurementIdString.replace(/"/g, '');
-            measurementIdString = measurementIdString.replace(/,/g, '');
-            measurementIdString = measurementIdString.replace(/ /g, '');
-          }
-        }
-      }
+  while (strRawContents.indexOf("\r") >= 0)
+    strRawContents = strRawContents.replace("\r", "");
 
-      if(configInitializeInt == 8){
-        if (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
-          storageBucketString == "" || messagingSenderIdString == "" || appIdString == "" || measurementIdString == "") {
-          alert("Config not properly initialized! Please contact an administrator!");
-        } else {
-          config = {
-            apiKey: apiKeyString,
-            authDomain: authDomainString,
-            databaseURL: databaseURLString,
-            projectId: projectIdString,
-            storageBucket: storageBucketString,
-            messagingSenderId: messagingSenderIdString,
-            appId: appIdString,
-            measurementId: measurementIdString
-          };
-
-          sessionStorage.setItem("config", JSON.stringify(config));
-          commonInitialization();
-          loginQuery();
-        }
-      } else {
-        if (configInitializeInt == 7 && (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
-          storageBucketString == "" || messagingSenderIdString == "" || appIdString == "")) {
-          alert("Config not properly initialized! Please contact an administrator!");
-        } else {
-          console.log("WARNING: Missing measurementId. This variable is optional. Disregard if this is on purpose.");
-
-          config = {
-            apiKey: apiKeyString,
-            authDomain: authDomainString,
-            databaseURL: databaseURLString,
-            projectId: projectIdString,
-            storageBucket: storageBucketString,
-            messagingSenderId: messagingSenderIdString,
-            appId: appIdString,
-          };
-
-          sessionStorage.setItem("config", JSON.stringify(config));
-          commonInitialization();
-          loginQuery();
-        }
+  for (var i = 0; i < configFileInput.length; i++) {
+    isComment = false;
+    if (configFileInput[i].charAt(0) == "#" || configFileInput[i].charAt(0) == "") {
+      isComment = true;
+    }
+    if (!isComment) {
+      if (configFileInput[i].includes("apiKey:")){
+        configInitializeInt++;
+        apiKeyString = configFileInput[i].substr(7, configFileInput[i].length);
+        apiKeyString = apiKeyString.replace(/"/g, '');
+        apiKeyString = apiKeyString.replace(/,/g, '');
+        apiKeyString = apiKeyString.replace(/ /g, '');
+      } else if (configFileInput[i].includes("authDomain:")){
+        configInitializeInt++;
+        authDomainString = configFileInput[i].substr(11, configFileInput[i].length);
+        authDomainString = authDomainString.replace(/"/g, '');
+        authDomainString = authDomainString.replace(/,/g, '');
+        authDomainString = authDomainString.replace(/ /g, '');
+      } else if (configFileInput[i].includes("databaseURL:")){
+        configInitializeInt++;
+        databaseURLString = configFileInput[i].substr(12, configFileInput[i].length);
+        databaseURLString = databaseURLString.replace(/"/g, '');
+        databaseURLString = databaseURLString.replace(/,/g, '');
+        databaseURLString = databaseURLString.replace(/ /g, '');
+      } else if (configFileInput[i].includes("projectId:")){
+        configInitializeInt++;
+        projectIdString = configFileInput[i].substr(10, configFileInput[i].length);
+        projectIdString = projectIdString.replace(/"/g, '');
+        projectIdString = projectIdString.replace(/,/g, '');
+        projectIdString = projectIdString.replace(/ /g, '');
+      } else if (configFileInput[i].includes("storageBucket:")){
+        configInitializeInt++;
+        storageBucketString = configFileInput[i].substr(14, configFileInput[i].length);
+        storageBucketString = storageBucketString.replace(/"/g, '');
+        storageBucketString = storageBucketString.replace(/,/g, '');
+        storageBucketString = storageBucketString.replace(/ /g, '');
+      } else if (configFileInput[i].includes("messagingSenderId:")){
+        configInitializeInt++;
+        messagingSenderIdString = configFileInput[i].substr(18, configFileInput[i].length);
+        messagingSenderIdString = messagingSenderIdString.replace(/"/g, '');
+        messagingSenderIdString = messagingSenderIdString.replace(/,/g, '');
+        messagingSenderIdString = messagingSenderIdString.replace(/ /g, '');
+      } else if (configFileInput[i].includes("appId:")){
+        configInitializeInt++;
+        appIdString = configFileInput[i].substr(6, configFileInput[i].length);
+        appIdString = appIdString.replace(/"/g, '');
+        appIdString = appIdString.replace(/,/g, '');
+        appIdString = appIdString.replace(/ /g, '');
+      } else if (configFileInput[i].includes("measurementId:")){
+        configInitializeInt++;
+        measurementIdString = configFileInput[i].substr(14, configFileInput[i].length);
+        measurementIdString = measurementIdString.replace(/"/g, '');
+        measurementIdString = measurementIdString.replace(/,/g, '');
+        measurementIdString = measurementIdString.replace(/ /g, '');
       }
     }
-  });
+  }
+
+  if(configInitializeInt == 8){
+    if (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
+      storageBucketString == "" || messagingSenderIdString == "" || appIdString == "" || measurementIdString == "") {
+      alert("Config not properly initialized! Please contact an administrator!");
+    } else {
+      config = {
+        apiKey: apiKeyString,
+        authDomain: authDomainString,
+        databaseURL: databaseURLString,
+        projectId: projectIdString,
+        storageBucket: storageBucketString,
+        messagingSenderId: messagingSenderIdString,
+        appId: appIdString,
+        measurementId: measurementIdString
+      };
+
+      sessionStorage.setItem("config", JSON.stringify(config));
+      commonInitialization();
+      loginQuery();
+    }
+  } else {
+    if (configInitializeInt == 7 && (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
+      storageBucketString == "" || messagingSenderIdString == "" || appIdString == "")) {
+      alert("Config not properly initialized! Please contact an administrator!");
+    } else {
+      console.log("WARNING: Missing measurementId. This variable is optional. Disregard if this is on purpose.");
+
+      config = {
+        apiKey: apiKeyString,
+        authDomain: authDomainString,
+        databaseURL: databaseURLString,
+        projectId: projectIdString,
+        storageBucket: storageBucketString,
+        messagingSenderId: messagingSenderIdString,
+        appId: appIdString,
+      };
+
+      sessionStorage.setItem("config", JSON.stringify(config));
+      commonInitialization();
+      loginQuery();
+    }
+  }
 }
 
 window.onload = function instantiate() {
