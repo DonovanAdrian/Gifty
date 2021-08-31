@@ -23,6 +23,7 @@ let currentTitle;
 let userChecker;
 let dataListChecker;
 let verifiedElements;
+let analytics;
 
 
 
@@ -84,7 +85,8 @@ function commonInitialization(){
   instantiateCommon();
 
   firebase.initializeApp(config);
-  firebase.analytics();
+  analytics = firebase.analytics();
+  analytics.setCurrentScreen(pageName);
 
   firebase.auth().signInAnonymously().catch(function (error) {
     let errorCode = error.code;
@@ -133,7 +135,7 @@ function commonInitialization(){
           loginBtn.innerHTML = "No Internet!";
           allowLogin = false;
           loginDisabledMsg = "It seems that you are offline! Please connect to the internet to be able to " +
-              "use Gifty properly!";
+            "use Gifty properly!";
         }
       }
     }, 1000);
@@ -197,6 +199,7 @@ function loginTimer(){
       document.title = "Where'd You Go?";
     }
     function resetTimer() {
+      analytics.logEvent('user_inactive');
       if (areYouStillThereBool) {
         if(consoleOutput)
           console.log("User Active");
@@ -223,7 +226,7 @@ function areYouStillThereNote(timeElapsed){
     areYouStillThereInit = true;
   }
   notificationInfo.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
-      + ":" + timeSecs + "!";
+    + ":" + timeSecs + "!";
   notificationTitle.innerHTML = "Are You Still There?";
 
   noteSpan.onclick = function() {
@@ -313,6 +316,8 @@ function newNavigation(navNum) {
 
   if(consoleOutput)
     console.log("Navigating to " + navLocations[navNum]);
+
+  analytics.logEvent(navLocations[navNum] + '_navigation_request');
   window.location.href = navLocations[navNum];
 }
 
