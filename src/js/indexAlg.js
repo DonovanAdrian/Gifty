@@ -17,7 +17,6 @@ let newGiftyMessage = "Please create a new user before trying to log into Gifty!
 let loginBool = false;
 let allowLogin = true;
 
-let analytics;
 let loginInitial;
 let userInitial;
 let username;
@@ -149,9 +148,6 @@ function fetchConfigFile(){
       sessionStorage.setItem("config", JSON.stringify(config));
       commonInitialization();
       loginQuery();
-
-      analytics = firebase.analytics();
-      analytics.setCurrentScreen(pageName);
     }
   }
 }
