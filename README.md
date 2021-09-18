@@ -15,6 +15,7 @@
       - giftAddUpdate
     - lists
       - friendList
+      - privateFriendList
     - invites
       - confirmation
     - settings
@@ -26,6 +27,7 @@
       - family *\(Moderator Role Only)*
         - familyUpdate *\(Moderator Role Only)*
     - notifications *\(Accessible from **almost** all pages)*
+- 404
   
 ## Code Structure
 
@@ -36,6 +38,7 @@
       - giftAddUpdateAlg, commonAlg
     - listsAlg, commonAlg, secretSantaAlg
       - friendListAlg, commonAlg
+      - privateFriendListAlg, commonAlg
     - invitesAlg, commonAlg
       - confirmationAlg, commonAlg
     - settingsAlg, commonAlg
@@ -59,7 +62,7 @@ handled all the data operations on the front end.
 
 ## How Well Does This Work?
 While Gifty is far from perfect, I have been able to bring 
-it up to full functionality over the past couple months! 
+it up to full functionality within the past year! 
 Some of the updates from the old version include more 
 efficient data usage, faster page loading, data error 
 correction, and more reliable database interactions.
