@@ -288,7 +288,6 @@ window.onload = function instantiate() {
 
   addGift.innerHTML = "Add Gift";
   addGift.onclick = function() {
-    analytics.logEvent('addGift_request');
     giftStorage = "";
     privateList = "";
     sessionStorage.setItem("privateList", JSON.stringify(privateList));
