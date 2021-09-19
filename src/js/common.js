@@ -4,6 +4,9 @@
  * with written consent under any circumstance.
  */
 
+let buttonAlternatorTimer = 0;
+let buttonAlternatorInt = 0;
+
 let buttonOpacLim = 7;
 let logoutReminder = 300;
 let logoutLimit = 900;
@@ -86,7 +89,6 @@ function commonInitialization(){
 
   firebase.initializeApp(config);
   analytics = firebase.analytics();
-  analytics.setCurrentScreen(pageName);
 
   firebase.auth().signInAnonymously().catch(function (error) {
     let errorCode = error.code;
@@ -199,7 +201,6 @@ function loginTimer(){
       document.title = "Where'd You Go?";
     }
     function resetTimer() {
-      analytics.logEvent('user_inactive');
       if (areYouStillThereBool) {
         if(consoleOutput)
           console.log("User Active");
@@ -317,7 +318,6 @@ function newNavigation(navNum) {
   if(consoleOutput)
     console.log("Navigating to " + navLocations[navNum]);
 
-  analytics.logEvent(navLocations[navNum] + '_navigation_request');
   window.location.href = navLocations[navNum];
 }
 
@@ -490,16 +490,19 @@ function updateMaintenanceLog(locationData, detailsData) {
   });
 }
 
-function setAlternatingButtonText(initialString, altString, alternatingBtn, alternator) {
-  alternator[0] = alternator[0] + 1000;
-  if(alternator[0] >= 3000) {
-    alternator[0] = 0;
-    if (alternator[1] == 0) {
-      alternator[1]++;
-      alternatingBtn.innerHTML = initialString;
+function setAlternatingButtonText(initialStringA, altStringA, alternatingBtnA,
+                                  initialStringB, altStringB, alternatingBtnB) {
+  buttonAlternatorTimer = buttonAlternatorTimer + 1000;
+  if(buttonAlternatorTimer >= 3000) {
+    buttonAlternatorTimer = 0;
+    if (buttonAlternatorInt == 0) {
+      buttonAlternatorInt++;
+      alternatingBtnA.innerHTML = initialStringA;
+      alternatingBtnB.innerHTML = initialStringB;
     } else {
-      alternator[1] = 0;
-      alternatingBtn.innerHTML = altString;
+      buttonAlternatorInt = 0;
+      alternatingBtnA.innerHTML = altStringA;
+      alternatingBtnB.innerHTML = altStringB;
     }
   }
 }
