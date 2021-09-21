@@ -11,8 +11,6 @@ let userArr = [];
 let familyArr = [];
 let oldFamilyMemberArr = [];
 let loadedPCUserArr = [];
-let parentChildAlternatorsA = [0, 0];
-let parentChildAlternatorsB = [0, 0];
 
 let moderationSet = 1;
 let dataCounter = 0;
@@ -76,8 +74,7 @@ let commonLoadingTimer;
 let userInitial;
 let userInvites;
 let familyInitial;
-let parentAlternator;
-let childAlternator;
+let parentChildInterval;
 
 
 
@@ -554,8 +551,7 @@ window.onload = function instantiate() {
 
             closeModal(familyMemberViewModal);
             try {
-              clearInterval(parentAlternator);
-              clearInterval(childAlternator);
+              clearInterval(parentChildInterval);
             } catch (err) {}
           };
         }
@@ -591,8 +587,7 @@ window.onload = function instantiate() {
       closeFamilyMemberViewModal.onclick = function() {
         closeModal(familyMemberViewModal);
         try {
-          clearInterval(parentAlternator);
-          clearInterval(childAlternator);
+          clearInterval(parentChildInterval);
         } catch (err) {}
       };
 
@@ -600,8 +595,7 @@ window.onload = function instantiate() {
         if (event.target == familyMemberViewModal) {
           closeModal(familyMemberViewModal);
           try {
-            clearInterval(parentAlternator);
-            clearInterval(childAlternator);
+            clearInterval(parentChildInterval);
           } catch (err) {}
         }
       };
@@ -691,12 +685,9 @@ window.onload = function instantiate() {
       }
     }
 
-    parentAlternator = setInterval(function(){
-      setAlternatingButtonText(parentInitText, parentAltText, familyMemberParent, parentChildAlternatorsA);
-    }, 1000);
-
-    childAlternator = setInterval(function(){
-      setAlternatingButtonText(childInitText, childAltText, familyMemberChild, parentChildAlternatorsB);
+    parentChildInterval = setInterval(function(){
+      setAlternatingButtonText(parentInitText, parentAltText, familyMemberParent,
+        childInitText, childAltText, familyMemberChild);
     }, 1000);
 
     familyMemberParent.onclick = function () {
@@ -757,8 +748,7 @@ window.onload = function instantiate() {
   function generateFamilyPCModal(parentChild, parentChildData) {
     closeModal(familyMemberViewModal);
     try {
-      clearInterval(parentAlternator);
-      clearInterval(childAlternator);
+      clearInterval(parentChildInterval);
     } catch (err) {}
 
     if (parentChild == "child") {
@@ -778,8 +768,7 @@ window.onload = function instantiate() {
         if (event.target == familyMemberViewModal) {
           closeModal(familyMemberViewModal);
           try {
-            clearInterval(parentAlternator);
-            clearInterval(childAlternator);
+            clearInterval(parentChildInterval);
           } catch (err) {}
         }
       };
