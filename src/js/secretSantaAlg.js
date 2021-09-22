@@ -27,6 +27,8 @@ let ignoreFamilySetTimer;
 let textCyclerInterval;
 let textCyclerLimiter = 0;
 
+let giftListInterval;
+
 function checkSecretSanta(autoUpdateBool){
   if(autoUpdateBool) {
     if (currentDate >= showDate && currentDate <= assignDate)
@@ -377,29 +379,38 @@ function updateSecretSantaToDB(settingToUpdate, settingToBool) {
 }
 
 function generateSecretSantaModal(){
+  let setPublicButton = false;
+
   if(secretSantaData != null){
     userTitle.innerHTML = secretSantaData.name;
     if(secretSantaData.giftList != null){
       if(secretSantaData.giftList.length > 0) {
+        setPublicButton = true;
         publicList.onclick = function () {
           sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));
           newNavigation(9);//FriendList
         };
-        flashGiftNumbers(secretSantaData.giftList.length, publicList, "Public");
       } else {
-        publicList.innerHTML = "Public List Empty";
         publicList.onclick = function () {};
       }
     } else {
-      publicList.innerHTML = "Public List Empty";
       publicList.onclick = function () {};
     }
 
-    privateList.innerHTML = "View Private Gift List";
-    if(secretSantaData.privateList != undefined)
-      flashGiftNumbers(secretSantaData.privateList.length, privateList, "Private");
-    else
-      flashGiftNumbers(0, privateList, "Private");
+    if(secretSantaData.privateList != undefined) {
+      if (setPublicButton) {
+        flashGiftNumbers(secretSantaData.privateList.length, secretSantaData.giftList.length);
+      } else {
+        flashGiftNumbers(secretSantaData.privateList.length, 0);
+      }
+    } else {
+      if (setPublicButton) {
+        flashGiftNumbers(0, secretSantaData.giftList.length);
+      } else {
+        flashGiftNumbers(0, 0);
+      }
+    }
+
     privateList.onclick = function() {
       sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));
       newNavigation(10);//PrivateFriendList
@@ -411,6 +422,7 @@ function generateSecretSantaModal(){
 
     closeUserModal.onclick = function() {
       closeModal(userModal);
+      clearInterval(giftListInterval);
     };
 
     openModal(userModal, secretSantaData.uid);
@@ -419,32 +431,38 @@ function generateSecretSantaModal(){
   }
 }
 
-function flashGiftNumbers(giftsNum, giftsBtn, giftsIndicator) {
-  let giftString;
-  let giftAlternateText = "View " + giftsIndicator + " Gift List";
+function flashGiftNumbers(privateGiftNum, publicGiftNum) {
+  let giftPrivateString;
+  let giftPublicString;
+  let giftPrivateAltText = "View Private Gift List";
+  let giftPublicAltText = "View Public Gift List";
 
-  if (giftsNum == 0)
-    giftsNum = "No";
-
-  if (giftsNum == 1)
-    giftString = "There Is 1 " + giftsIndicator + " Gift";
-  else
-    giftString = "There Are " + giftsNum + " " + giftsIndicator + " Gifts";
-  switch (giftsIndicator) {
-    case "Private":
-      privateListAlternator = setInterval(function(){
-        setAlternatingButtonText(giftString, giftAlternateText, giftsBtn, giftButtonAlternatorsA);
-      }, 1000);
-      break;
-    case "Public":
-      publicListAlternator = setInterval(function(){
-        setAlternatingButtonText(giftString, giftAlternateText, giftsBtn, giftButtonAlternatorsB);
-      }, 1000);
-      break;
-    default:
-      console.log("Whoops!");
-      break;
+  if (privateGiftNum == 0) {
+    privateGiftNum = "No";
   }
+  if (privateGiftNum == 1) {
+    giftPrivateString = "There Is 1 Private Gift";
+  } else {
+    giftPrivateString = "There Are " + privateGiftNum + " Private Gifts";
+  }
+
+  if (publicGiftNum == 0) {
+    publicGiftNum = "No";
+    giftPublicAltText = "Public List Empty";
+  }
+  if (publicGiftNum == 1) {
+    giftPublicString = "There Is 1 Public Gift";
+  } else {
+    giftPublicString = "There Are " + publicGiftNum + " Public Gifts";
+  }
+
+  privateList.innerHTML = giftPrivateString;
+  publicList.innerHTML = giftPublicString;
+
+  giftListInterval = setInterval(function(){
+    setAlternatingButtonText(giftPublicString, giftPublicAltText, publicList,
+      giftPrivateString, giftPrivateAltText, privateList);
+  }, 1000);
 }
 
 function generatePrivateMessageDialog(userData) {
@@ -462,8 +480,7 @@ function generatePrivateMessageDialog(userData) {
     window.onclick = function(event) {
       if (event.target == userModal) {
         closeModal(userModal);
-        clearInterval(privateListAlternator);
-        clearInterval(publicListAlternator);
+        clearInterval(giftListInterval);
       }
     }
 
@@ -477,8 +494,7 @@ function generatePrivateMessageDialog(userData) {
     window.onclick = function(event) {
       if (event.target == userModal) {
         closeModal(userModal);
-        clearInterval(privateListAlternator);
-        clearInterval(publicListAlternator);
+        clearInterval(giftListInterval);
       }
     }
   };
