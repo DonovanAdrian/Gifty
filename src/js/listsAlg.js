@@ -9,8 +9,6 @@ let inviteArr = [];
 let friendArr = [];
 let listeningFirebaseRefs = [];
 let userArr = [];
-let giftButtonAlternatorsA = [0, 0];
-let giftButtonAlternatorsB = [0, 0];
 
 let readNotificationsBool = false;
 let friendListEmptyBool = false;
@@ -52,8 +50,6 @@ let closePrivateMessageModal;
 let privateMessageInp;
 let sendMsg;
 let cancelMsg;
-let publicListAlternator;
-let privateListAlternator;
 
 
 
@@ -372,32 +368,40 @@ window.onload = function instantiate() {
   }
 
   function initFriendElement(liItem, friendData) {
+    let setPublicButton = false;
+
     liItem.className = "gift";
     liItem.onclick = function () {
-      clearInterval(privateListAlternator);
-      clearInterval(publicListAlternator);
+      clearInterval(giftListInterval);
       userTitle.innerHTML = friendData.name;
       if(friendData.giftList != undefined){
         if(friendData.giftList.length > 0) {
+          setPublicButton = true;
           publicList.onclick = function () {
             sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
             newNavigation(9);
           };
-          flashGiftNumbers(friendData.giftList.length, publicList, "Public");
         } else {
-          publicList.innerHTML = "Public List Empty";
           publicList.onclick = function () {};
         }
       } else {
-        publicList.innerHTML = "Public List Empty";
         publicList.onclick = function () {};
       }
 
-      privateList.innerHTML = "View Private Gift List";
-      if(friendData.privateList != undefined)
-        flashGiftNumbers(friendData.privateList.length, privateList, "Private");
-      else
-        flashGiftNumbers(0, privateList, "Private");
+      if(friendData.privateList != undefined) {
+        if (setPublicButton) {
+          flashGiftNumbers(friendData.privateList.length, friendData.giftList.length);
+        } else {
+          flashGiftNumbers(friendData.privateList.length, 0);
+        }
+      } else {
+        if (setPublicButton) {
+          flashGiftNumbers(0, friendData.giftList.length);
+        } else {
+          flashGiftNumbers(0, 0);
+        }
+      }
+
       privateList.onclick = function() {
         sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
         newNavigation(10);
@@ -405,8 +409,7 @@ window.onload = function instantiate() {
 
       sendPrivateMessage.onclick = function() {
         closeModal(userModal);
-        clearInterval(privateListAlternator);
-        clearInterval(publicListAlternator);
+        clearInterval(giftListInterval);
         generatePrivateMessageDialog(friendData);
       };
 
@@ -414,15 +417,13 @@ window.onload = function instantiate() {
 
       closeUserModal.onclick = function() {
         closeModal(userModal);
-        clearInterval(privateListAlternator);
-        clearInterval(publicListAlternator);
+        clearInterval(giftListInterval);
       };
 
       window.onclick = function(event) {
         if (event.target == userModal) {
           closeModal(userModal);
-          clearInterval(privateListAlternator);
-          clearInterval(publicListAlternator);
+          clearInterval(giftListInterval);
         }
       }
     };
