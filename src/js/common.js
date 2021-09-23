@@ -506,3 +506,11 @@ function setAlternatingButtonText(initialStringA, altStringA, alternatingBtnA,
     }
   }
 }
+
+function giftLinkRedirect(link) {
+  if(!link.includes("https://") && !link.includes("http://")){
+    link = "http://" + link;
+  }
+
+  window.open(link, "_blank");
+}
