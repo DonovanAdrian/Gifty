@@ -330,14 +330,7 @@ window.onload = function instantiate() {
       if (giftData.link != ""){
         giftLinkFld.innerHTML = "Click me to go to the webpage!";
         giftLinkFld.onclick = function() {
-          let newGiftLink = "http://";
-          if(giftData.link.includes("https://")){
-            giftData.link = giftData.link.slice(8, giftData.link.length);
-          } else if (giftData.link.includes("http://")){
-            giftData.link = giftData.link.slice(7, giftData.link.length);
-          }
-          newGiftLink += giftData.link;
-          window.open(newGiftLink, "_blank");
+          giftLinkRedirect(giftData.link);
         };
       } else {
         giftLinkFld.innerHTML = "There was no link provided";
