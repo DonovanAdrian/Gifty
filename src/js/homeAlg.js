@@ -452,14 +452,7 @@ window.onload = function instantiate() {
       if (link != ""){
         giftLink.innerHTML = "Click me to go to the webpage!";
         giftLink.onclick = function() {
-          let newGiftLink = "http://";
-          if(link.includes("https://")){
-            giftLink = link.slice(8, link.length);
-          } else if (link.includes("http://")){
-            giftLink = link.slice(7, link.length);
-          }
-          newGiftLink += link;
-          window.open(newGiftLink, "_blank");
+          giftLinkRedirect(link);
         };
       } else {
         giftLink.innerHTML = "There was no link provided";
