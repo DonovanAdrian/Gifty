@@ -225,8 +225,8 @@ window.onload = function instantiate() {
         }
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().receivedBy,
-            data.val().title, data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate,
-            data.val().multiples);
+          data.val().title, data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate,
+          data.val().multiples);
 
         if(updateGiftToDBBool){
           updateGiftError(data, data.key);
@@ -242,8 +242,8 @@ window.onload = function instantiate() {
         }
 
         changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().receivedBy,
-            data.val().title, data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate,
-            data.val().multiples);
+          data.val().title, data.key, data.val().where, data.val().buyer, data.val().uid, data.val().creationDate,
+          data.val().multiples);
       });
 
       postRef.on('child_removed', function(data) {
@@ -330,7 +330,7 @@ window.onload = function instantiate() {
     let liItem = document.createElement("LI");
     liItem.id = "gift" + giftUid;
     initGiftElement(liItem, giftDescription, giftLink, giftReceived, giftReceivedBy, giftTitle, giftKey, giftWhere,
-        giftBuyer, giftUid, giftDate, giftMultiples);
+      giftBuyer, giftUid, giftDate, giftMultiples);
     let textNode = document.createTextNode(giftTitle);
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
@@ -376,14 +376,7 @@ window.onload = function instantiate() {
       if (giftLinkData != "") {
         giftLink.innerHTML = "Click me to go to the webpage!";
         giftLink.onclick = function() {
-          let newGiftLink = "http://";
-          if(giftLinkData.includes("https://")){
-            giftLinkData = giftLinkData.slice(8, giftLinkData.length);
-          } else if (giftLinkData.includes("http://")){
-            giftLinkData = giftLinkData.slice(7, giftLinkData.length);
-          }
-          newGiftLink += giftLinkData;
-          window.open(newGiftLink, "_blank");
+          giftLinkRedirect(giftLinkData);
         };
       } else {
         giftLink.innerHTML = "There was no link provided";
@@ -465,7 +458,7 @@ window.onload = function instantiate() {
               });
             } else {
               alert("Only the buyer, " + giftBuyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-                  "if this has been done in error.");
+                "if this has been done in error.");
             }
           } else {
             alert("This gift has already been marked as \"Un-Bought\"!");
