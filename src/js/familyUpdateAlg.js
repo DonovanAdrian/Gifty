@@ -604,46 +604,24 @@ window.onload = function instantiate() {
 
   function clearParentChildData (familyMemberData) {
     let parentUser;
-    let parentUser2;
     let childUser;
     let errorBool;
 
     if (familyMemberData.parentUser != null && familyMemberData.parentUser != "") {
       parentUser = familyMemberData.parentUser;
       childUser = familyMemberData.uid;
-
-      if (familyMemberData.parentUser2 != null && familyMemberData.parentUser2 != "") {
-        parentUser2 = familyMemberData.parentUser2;
-      }
     } else if (familyMemberData.childUser != null && familyMemberData.childUser != "") {
       parentUser = familyMemberData.uid;
       childUser = familyMemberData.childUser;
-
-      let i = findUIDItemInArr(childUser, userArr);
-      if (userArr[i].parentUser2 != null && userArr[i].parentUser2 != "") {
-        parentUser2 = userArr[i].parentUser2;
-      }
     } else {
       errorBool = true;
     }
 
     if (!errorBool) {
-      if (parentUser2 != null && parentUser2 != "") {
-        firebase.database().ref("users/" + parentUser2).update({
-          childUser: "",
-          parentUser: ""
-        });
-        firebase.database().ref("users/" + childUser).update({
-          childUser: "",
-          parentUser: "",
-          parentUser2: ""
-        });
-      } else {
-        firebase.database().ref("users/" + childUser).update({
-          childUser: "",
-          parentUser: ""
-        });
-      }
+      firebase.database().ref("users/" + childUser).update({
+        childUser: "",
+        parentUser: ""
+      });
 
       firebase.database().ref("users/" + parentUser).update({
         childUser: "",
@@ -662,16 +640,7 @@ window.onload = function instantiate() {
     let parentAltText;
     let childAltText;
 
-    if (parentChildData.parentUser2 != null && parentChildData.parentUser2 != "") {
-      let firstPar = findUIDItemInArr(parentChildData.parentUser, userArr);
-      let secondPar = findUIDItemInArr(parentChildData.parentUser2, userArr);
-
-      if (firstPar != -1 && secondPar != -1) {
-        parentAltText = "Parents: " + userArr[firstPar].name + " & " + userArr[secondPar].name;
-        childAltText = "Child: " + parentChildData.name;
-      }
-      parentInitText = "Click Here To Reset Parents";
-    } else if (parentChildData.parentUser != null && parentChildData.parentUser != "") {
+    if (parentChildData.parentUser != null && parentChildData.parentUser != "") {
       let i = findUIDItemInArr(parentChildData.parentUser, userArr);
       if (i != -1) {
         parentAltText = "Parent: " + userArr[i].name;
@@ -839,16 +808,6 @@ window.onload = function instantiate() {
         firebase.database().ref("users/" + globalChildData.uid).update({
           childUser: "",
           parentUser: globalParentData.uid
-        });
-        firebase.database().ref("users/" + globalParentData.uid).update({
-          childUser: globalChildData.uid,
-          parentUser: ""
-        });
-      } else if (globalChildData.parentUser2 == null || globalChildData.parentUser2 == "") {
-        firebase.database().ref("users/" + globalChildData.uid).update({
-          childUser: "",
-          parentUser: globalChildData.parentUser,
-          parentUser2: globalParentData.uid
         });
         firebase.database().ref("users/" + globalParentData.uid).update({
           childUser: globalChildData.uid,
