@@ -33,6 +33,9 @@ let emptyArrayCount = 0;
 let patternCount = 0;
 let failureReason = "";
 
+let yay = 0;
+let nay = 0;
+
 
 function checkSecretSanta(autoUpdateBool){
   if(autoUpdateBool) {
@@ -347,7 +350,14 @@ function secretSantaButtonManager(buttonPressed, shuffleMode) {
       if (shuffleMode) {
         secretSantaShuffle.onclick = function (){};
 
-        createSecretSantaNames();
+        for (let i = 0; i < 1000; i++) {
+          createSecretSantaNames();
+        }
+
+        console.log("YAY! " + yay + " NAY... " + nay);
+
+        yay = 0;
+        nay = 0;
 
         secretSantaShuffle.onclick = function (){
           secretSantaButtonManager("shuffle", true);
@@ -686,7 +696,8 @@ function createSecretSantaNames(){
       }
       if (!assignUsersSecretSantaNames(familySet)) {
         if (consoleOutput) {
-          alert("There was an error assigning Secret Santa names. Please " + secretSantaAssignErrorMsg);
+          nay++;
+          //alert("There was an error assigning Secret Santa names. Please " + secretSantaAssignErrorMsg);
           console.log("*************************\n\nSecret Santa Assignments NOT COMPLETE\n\nPattern Resets: "
             + patternCount + "\n\nEmpty Array Resets: " + emptyArrayCount
             + "\n\nFailure Reason: " + failureReason + "\n\n*************************");
@@ -735,7 +746,7 @@ function createSecretSantaNames(){
       }
 
       updateAllUsersToDBSantaNames();
-
+      yay++;
       if (consoleOutput)
         console.log("*************************\n\nSecret Santa Assignments Complete!\n\nPattern Resets: " + patternCount
           + "\n\nEmpty Array Resets: "+ emptyArrayCount + "\n\n*************************");
@@ -748,8 +759,9 @@ function createSecretSantaNames(){
         showSecretSanta();
       }
     } else {
+      nay++;
       if (consoleOutput) {
-        alert("There was an error assigning Secret Santa names automatically. Please " + secretSantaAssignErrorMsg);
+        //alert("There was an error assigning Secret Santa names automatically. Please " + secretSantaAssignErrorMsg);
         console.log("*************************\n\nSecret Santa Assignments NOT COMPLETE\n\nPattern Resets: "
           + patternCount + "\n\nEmpty Array Resets: " + emptyArrayCount
           + "\n\nFailure Reason: " + failureReason + "\n\n*************************");
@@ -804,7 +816,6 @@ function assignUsersSecretSantaNames(usersToAssign) {
   let masterResetInt = 0;
   let masterResetLim = 25;
   let usersToAssignIndex = 0;
-  let patternDetectionLimit = usersToAssign.length * 3;
   let ignoreResetBool = false;
   let arrayAssignBool = false;
   let randomSelectBool = true;
@@ -812,6 +823,13 @@ function assignUsersSecretSantaNames(usersToAssign) {
   let assignUsersNamesSuccess = false;
   let tempAssignArr = [];
   let patternArr = [];
+
+  //Pattern variables
+  let patternDetectionParameter = 3;
+  let patternDetectionLimit = usersToAssign.length * patternDetectionParameter;
+  let patternDetectionThreshold = 60; //Default 60 = family size of 20 or more
+  let lowPatternLimit = 1.25; //Default 1.25 = 80% of the array is the same number
+  let highPatternLimit = 4; //Default 4 = 25% of the array is the same number in a row
 
   resetTempArray();
 
@@ -834,12 +852,13 @@ function assignUsersSecretSantaNames(usersToAssign) {
 
     if ((assignedUsers.indexOf(tempAssignArr[selector].uid) == -1) && //This user should NOT yet be assigned
       (usersToAssign[usersToAssignIndex].uid != tempAssignArr[selector].uid) && //This user should NOT be the same user
-      (usersToAssign[usersToAssignIndex].friends.indexOf(tempAssignArr[selector].uid) != -1) && //These users MUST be friends
+      (checkFriend(tempAssignArr[selector].uid, usersToAssign[usersToAssignIndex])) && //These users MUST be friends
       (!checkRelation(tempAssignArr[selector].uid, usersToAssign[usersToAssignIndex]))) {//These users CANNOT be parent/child
 
       if (consoleOutput) {
         console.log("MATCHED!");
       }
+
       errorIndex = 0;
       assignedUsers.push(tempAssignArr[selector].uid);
       userIndex = findUIDItemInArr(usersToAssign[usersToAssignIndex].uid, tempUserArr);
@@ -860,8 +879,6 @@ function assignUsersSecretSantaNames(usersToAssign) {
             if(checkForPattern()) {
               patternCount++;
               resetAssignment();
-            } else {
-              errorIndex = 0;
             }
           }
         } else {
@@ -909,29 +926,49 @@ function assignUsersSecretSantaNames(usersToAssign) {
   function checkForPattern() {
     let patternBool = false;
     let intCheck = 0;
+    let lastInt = -1;
     let intOccurrence = 0;
     let intOccurrenceMax = 0;
     let checkedIntsArr = [];
+    let patternThreshold;
 
-    for (let a = 0; a < patternArr.length; a++) {
-      if (checkedIntsArr.indexOf(patternArr[a]) == -1) {
-        intCheck = patternArr[a];
+    if (patternDetectionLimit < patternDetectionThreshold) {//Smaller array, simple checking for occurrences
+      patternThreshold = lowPatternLimit;
 
-        for (let i = 0; i < patternArr.length; i++) {
-          if (intCheck == patternArr[i]) {
-            intOccurrence++;
+      for (let a = 0; a < patternArr.length; a++) {
+        if (checkedIntsArr.indexOf(patternArr[a]) == -1) {
+          intCheck = patternArr[a];
+
+          for (let i = 0; i < patternArr.length; i++) {
+            if (intCheck == patternArr[i]) {
+              intOccurrence++;
+            }
           }
-        }
 
-        if (intOccurrence > intOccurrenceMax) {
-          intOccurrenceMax = intOccurrence;
-        }
+          if (intOccurrence > intOccurrenceMax) {
+            intOccurrenceMax = intOccurrence;
+          }
 
-        checkedIntsArr.push(patternArr[a]);
+          checkedIntsArr.push(patternArr[a]);
+        }
+      }
+    } else {//Larger array, more serious pattern detection
+      patternThreshold = highPatternLimit;
+
+      for (let a = 0; a < patternArr.length; a++) {
+        if (patternArr[a] == lastInt) {
+          intOccurrence++;
+          if (intOccurrence > intOccurrenceMax) {
+            intOccurrenceMax = intOccurrence;
+          }
+        } else {
+          intOccurrence = 0;
+        }
+        lastInt = patternArr[a];
       }
     }
 
-    if (intOccurrenceMax >= (patternArr.length/1.25)) {
+    if (intOccurrenceMax >= (patternArr.length/patternThreshold)) {
       if(consoleOutput)
         console.log("Pattern Detected!");
       patternBool = true;
@@ -952,6 +989,18 @@ function assignUsersSecretSantaNames(usersToAssign) {
     } catch (err) {}
 
     return relatedBool;
+  }
+
+  function checkFriend(selectedUser, staticUser) {
+    let friendBool = false;
+
+    try {
+      if (staticUser.friends.indexOf(selectedUser)) {
+        friendBool = true;
+      }
+    } catch (err) {}
+
+    return friendBool;
   }
 
   function resetTempArray() {
