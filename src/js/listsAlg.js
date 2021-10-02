@@ -390,13 +390,13 @@ window.onload = function instantiate() {
 
       if(friendData.privateList != undefined) {
         if (setPublicButton) {
-          flashGiftNumbers(friendData.privateList.length, friendData.giftList.length);
+          flashGiftNumbers(friendData.privateList, friendData.giftList);
         } else {
-          flashGiftNumbers(friendData.privateList.length, 0);
+          flashGiftNumbers(friendData.privateList, 0);
         }
       } else {
         if (setPublicButton) {
-          flashGiftNumbers(0, friendData.giftList.length);
+          flashGiftNumbers(0, friendData.giftList);
         } else {
           flashGiftNumbers(0, 0);
         }
