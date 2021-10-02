@@ -434,13 +434,13 @@ function generateSecretSantaModal(){
 
     if(secretSantaData.privateList != undefined) {
       if (setPublicButton) {
-        flashGiftNumbers(secretSantaData.privateList.length, secretSantaData.giftList.length);
+        flashGiftNumbers(secretSantaData.privateList, secretSantaData.giftList);
       } else {
-        flashGiftNumbers(secretSantaData.privateList.length, 0);
+        flashGiftNumbers(secretSantaData.privateList, 0);
       }
     } else {
       if (setPublicButton) {
-        flashGiftNumbers(0, secretSantaData.giftList.length);
+        flashGiftNumbers(0, secretSantaData.giftList);
       } else {
         flashGiftNumbers(0, 0);
       }
@@ -466,29 +466,63 @@ function generateSecretSantaModal(){
   }
 }
 
-function flashGiftNumbers(privateGiftNum, publicGiftNum) {
+function flashGiftNumbers(privateGiftList, publicGiftList) {
   let giftPrivateString;
   let giftPublicString;
-  let giftPrivateAltText = "View Private Gift List";
-  let giftPublicAltText = "View Public Gift List";
+  let giftPrivateAltText = "Click To Add Private Gifts!";
+  let giftPublicAltText = "Click To View Public Gift List!";
+  let privateGiftNum = 0;
+  let publicGiftNum = 0;
+  let emptyPrivateBool = false;
+  let emptyPublicBool = false;
 
-  if (privateGiftNum == 0) {
-    privateGiftNum = "No";
-  }
-  if (privateGiftNum == 1) {
-    giftPrivateString = "There Is 1 Private Gift";
+  if (privateGiftList != 0) {
+    privateGiftNum = privateGiftList.length;
+
+    for (let i = 0; i < privateGiftList.length; i++) {
+      if (privateGiftList[i].received == 1) {
+        privateGiftNum--;
+      }
+    }
   } else {
-    giftPrivateString = "There Are " + privateGiftNum + " Private Gifts";
+    emptyPrivateBool = true;
   }
 
-  if (publicGiftNum == 0) {
-    publicGiftNum = "No";
-    giftPublicAltText = "Public List Empty";
-  }
-  if (publicGiftNum == 1) {
-    giftPublicString = "There Is 1 Public Gift";
+  if (publicGiftList != 0) {
+    publicGiftNum = publicGiftList.length;
+
+    for (let i = 0; i < publicGiftList.length; i++) {
+      if (publicGiftList[i].received == 1) {
+        publicGiftNum--;
+      }
+    }
   } else {
-    giftPublicString = "There Are " + publicGiftNum + " Public Gifts";
+    emptyPublicBool = true;
+  }
+
+  if (!emptyPrivateBool) {
+    if (privateGiftNum == 0) {
+      giftPrivateString = "All Private Gifts Have Been Bought!";
+    } else if (privateGiftNum == 1) {
+      giftPrivateString = "There Is 1 Un-Bought Private Gift!";
+    } else {
+      giftPrivateString = "There Are " + privateGiftNum + " Un-Bought Private Gifts!";
+    }
+  } else {
+    giftPrivateString = "There Are No Private Gifts Yet!";
+  }
+
+  if (!emptyPublicBool) {
+    if (publicGiftNum == 0) {
+      giftPublicString = "All Public Gifts Have Been Bought!";
+    } else if (publicGiftNum == 1) {
+      giftPublicString = "There Is 1 Un-Bought Public Gift!";
+    } else {
+      giftPublicString = "There Are " + publicGiftNum + " Un-Bought Public Gifts!";
+    }
+  } else {
+    giftPublicAltText = "Public Gift List Empty!";
+    giftPublicString = "There Are No Public Gifts Yet!";
   }
 
   privateList.innerHTML = giftPrivateString;
