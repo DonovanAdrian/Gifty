@@ -29,6 +29,7 @@ let textCyclerLimiter = 0;
 
 let giftListInterval;
 
+let friendScoreNote = 0;
 let emptyArrayCount = 0;
 let patternCount = 0;
 let failureReason = "";
@@ -68,7 +69,7 @@ function showSecretSanta(){
     } else if (user.secretSanta == 1 && checkIfSantaActive()) {
       if (user.secretSantaName != null) {
         if (user.secretSantaName != "") {
-          let i = findUIDItemInArr(user.secretSantaName, userArr);
+          let i = findUIDItemInArr(user.secretSantaName, userArr, true);
           secretSantaData = userArr[i];
           secretSantaSignUp.innerHTML = userArr[i].name;
           secretSantaSignUp.style.display = "block";
@@ -344,6 +345,7 @@ function secretSantaButtonManager(buttonPressed, shuffleMode) {
       updateSecretSantaToDB("manual", true);
       break;
     case "mainF":
+      friendScoreNote = 0;
       updateSecretSantaToDB("manual", false);
       break;
     case "shuffle":
@@ -614,11 +616,11 @@ function checkForRandomErrors() {
           if (familyArr[a].members != null) {
             if (familyArr[a].members.includes(userArr[i].uid)) {
               existInFamInt = 1;
-              if (findUIDItemInArr(familyArr[a].uid, optInFamilyArr) == -1) {
+              if (findUIDItemInArr(familyArr[a].uid, optInFamilyArr, true) == -1) {
                 optInFamilyArr.push(familyArr[a]);
                 optInFamilyStatsArr.push(1);
               } else {
-                optInFamInt = findUIDItemInArr(familyArr[a].uid, optInFamilyArr);
+                optInFamInt = findUIDItemInArr(familyArr[a].uid, optInFamilyArr,true);
                 optInFamilyStatsArr[optInFamInt]++;
               }
             }
@@ -636,7 +638,7 @@ function checkForRandomErrors() {
 
   for (let i = 0; i < optInFamilyArr.length; i++) {
     for (let a = 0; a < optInFamilyArr[i].members.length; a++) {
-      let famSetUserIndex = findUIDItemInArr(optInFamilyArr[i].members[a], tempUserArr);
+      let famSetUserIndex = findUIDItemInArr(optInFamilyArr[i].members[a], tempUserArr, true);
       if (famSetUserIndex != -1)
         familySet.push(tempUserArr[famSetUserIndex]);
     }
@@ -653,15 +655,20 @@ function checkForRandomErrors() {
 }
 
 function createSecretSantaNames(){
-
   let assignedFamilies = [];
   let optInFamilyArr = [];
   let optInFamilyStatsArr = [];
   let skippedFamilies = [];
   let familySet = [];
+  let friendScore = 0;
+  let friendScoreThreshold = .25;
+  let tempParentArr = [];
+  let tempChildArr = [];
+  let userIndex = 0;
   let existInFamInt = 0;
   let optInFamInt = 0;
   let namesReadyBool = true;
+  let friendScoreBool = false;
 
   tempUserArr = [];
 
@@ -687,11 +694,11 @@ function createSecretSantaNames(){
           if (familyArr[a].members != null) {
             if (familyArr[a].members.includes(userArr[i].uid)) {
               existInFamInt = 1;
-              if (findUIDItemInArr(familyArr[a].uid, optInFamilyArr) == -1) {
+              if (findUIDItemInArr(familyArr[a].uid, optInFamilyArr, true) == -1) {
                 optInFamilyArr.push(familyArr[a]);
                 optInFamilyStatsArr.push(1);
               } else {
-                optInFamInt = findUIDItemInArr(familyArr[a].uid, optInFamilyArr);
+                optInFamInt = findUIDItemInArr(familyArr[a].uid, optInFamilyArr, true);
                 optInFamilyStatsArr[optInFamInt]++;
               }
             }
@@ -706,6 +713,58 @@ function createSecretSantaNames(){
       }
     }
   }
+
+  for (let i = 0; i < tempUserArr.length; i++) {
+    if (tempUserArr[i].friends == null) {
+      tempUserArr.splice(i, 1);
+      friendScoreBool = true;
+      i--;
+    }
+  }
+
+  for (let i = 0; i < tempUserArr.length; i++) {
+    if (tempUserArr[i].friends != null) {
+      friendScore = tempUserArr[i].friends.length;
+      if (friendScore < (tempUserArr.length * friendScoreThreshold)) {
+        tempUserArr.splice(i, 1);
+        friendScoreBool = true;
+        i--;
+      }
+    }
+  }
+
+  if (friendScoreBool && tempUserArr.length > 2) {
+    if (friendScoreNote == 0 || (friendScoreNote%3 == 2))
+      alert("Some friends did not have enough mutual friends, so they will NOT be assigned a name!");
+    friendScoreNote++;
+  } else if (friendScoreBool && tempUserArr.length < 3 || tempUserArr.length == 0) {
+    alert("The signed up users DO NOT have enough friends! No users will be assigned names");
+    return;
+  }
+
+  for (let i = 0; i < tempUserArr.length; i++) {
+    if (tempUserArr[i].parentUser != null) {
+      if (tempUserArr[i].parentUser != "") {
+        userIndex = findUIDItemInArr(tempUserArr[i].parentUser, tempUserArr)
+        if (userIndex != -1 && (findUIDItemInArr(tempUserArr[i].uid, tempChildArr) == -1)) {
+          tempParentArr.push(tempUserArr[userIndex]);
+          tempChildArr.push(tempUserArr[i]);
+        }
+      }
+    }
+    if (tempUserArr[i].childUser != null) {
+      if (tempUserArr[i].childUser != "") {
+        userIndex = findUIDItemInArr(tempUserArr[i].childUser, tempUserArr)
+        if (userIndex != -1 && (findUIDItemInArr(tempUserArr[i].uid, tempParentArr) == -1)) {
+          tempChildArr.push(tempUserArr[userIndex]);
+          tempParentArr.push(tempUserArr[i]);
+        }
+      }
+    }
+  }
+
+  console.log(tempChildArr);
+  console.log(tempParentArr);
 
   if (consoleOutput)
     console.log("Secret Santa Families Initialized!");
@@ -724,7 +783,7 @@ function createSecretSantaNames(){
       }
     } else {
       for (let a = 0; a < optInFamilyArr[i].members.length; a++) {
-        let famSetUserIndex = findUIDItemInArr(optInFamilyArr[i].members[a], tempUserArr);
+        let famSetUserIndex = findUIDItemInArr(optInFamilyArr[i].members[a], tempUserArr, true);
         if (famSetUserIndex != -1)
           familySet.push(tempUserArr[famSetUserIndex]);
       }
@@ -775,7 +834,7 @@ function createSecretSantaNames(){
       assignedFamilies.length == optInFamilyArr.length) {
       let userIndex = 0;
       for (let i = 0; i < tempUserArr.length; i++) {
-        userIndex = findUIDItemInArr(tempUserArr[i].uid, userArr);
+        userIndex = findUIDItemInArr(tempUserArr[i].uid, userArr, true);
         userArr[userIndex].secretSantaName = tempUserArr[i].secretSantaName;
       }
 
@@ -804,6 +863,8 @@ function createSecretSantaNames(){
       assignedUsers = [];
     }
   }
+  patternCount = 0;
+  emptyArrayCount = 0;
 }
 
 function startIgnoreFamilySetTimer() {
@@ -888,14 +949,9 @@ function assignUsersSecretSantaNames(usersToAssign) {
       (usersToAssign[usersToAssignIndex].uid != tempAssignArr[selector].uid) && //This user should NOT be the same user
       (checkFriend(tempAssignArr[selector].uid, usersToAssign[usersToAssignIndex])) && //These users MUST be friends
       (!checkRelation(tempAssignArr[selector].uid, usersToAssign[usersToAssignIndex]))) {//These users CANNOT be parent/child
-
-      if (consoleOutput) {
-        console.log("MATCHED!");
-      }
-
       errorIndex = 0;
       assignedUsers.push(tempAssignArr[selector].uid);
-      userIndex = findUIDItemInArr(usersToAssign[usersToAssignIndex].uid, tempUserArr);
+      userIndex = findUIDItemInArr(usersToAssign[usersToAssignIndex].uid, tempUserArr, true);
       tempUserArr[userIndex].secretSantaName = tempAssignArr[selector].uid;
       tempAssignArr.splice(selector, 1);
       randomSelectBool = true;
@@ -1029,7 +1085,7 @@ function assignUsersSecretSantaNames(usersToAssign) {
     let friendBool = false;
 
     try {
-      if (staticUser.friends.indexOf(selectedUser)) {
+      if (staticUser.friends.indexOf(selectedUser) != -1) {
         friendBool = true;
       }
     } catch (err) {}
