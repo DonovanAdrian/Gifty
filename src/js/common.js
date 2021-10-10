@@ -437,12 +437,13 @@ function findUIDInString(input){
   return potentialUID;
 }
 
-function findUIDItemInArr(item, array){
+function findUIDItemInArr(item, array, override){
   if (array != null) {
     for (let i = 0; i < array.length; i++) {
       if (array[i].uid == item) {
-        if (consoleOutput)
+        if (consoleOutput && !override) {
           console.log("Found item: " + item);
+        }
         return i;
       }
     }
