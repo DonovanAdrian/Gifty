@@ -662,9 +662,6 @@ function createSecretSantaNames(){
   let familySet = [];
   let friendScore = 0;
   let friendScoreThreshold = .25;
-  let tempParentArr = [];
-  let tempChildArr = [];
-  let userIndex = 0;
   let existInFamInt = 0;
   let optInFamInt = 0;
   let namesReadyBool = true;
@@ -734,37 +731,13 @@ function createSecretSantaNames(){
   }
 
   if (friendScoreBool && tempUserArr.length > 2) {
-    if (friendScoreNote == 0 || (friendScoreNote%3 == 2))
+    if (friendScoreNote == 0)
       alert("Some friends did not have enough mutual friends, so they will NOT be assigned a name!");
     friendScoreNote++;
   } else if (friendScoreBool && tempUserArr.length < 3 || tempUserArr.length == 0) {
     alert("The signed up users DO NOT have enough friends! No users will be assigned names");
     return;
   }
-
-  for (let i = 0; i < tempUserArr.length; i++) {
-    if (tempUserArr[i].parentUser != null) {
-      if (tempUserArr[i].parentUser != "") {
-        userIndex = findUIDItemInArr(tempUserArr[i].parentUser, tempUserArr)
-        if (userIndex != -1 && (findUIDItemInArr(tempUserArr[i].uid, tempChildArr) == -1)) {
-          tempParentArr.push(tempUserArr[userIndex]);
-          tempChildArr.push(tempUserArr[i]);
-        }
-      }
-    }
-    if (tempUserArr[i].childUser != null) {
-      if (tempUserArr[i].childUser != "") {
-        userIndex = findUIDItemInArr(tempUserArr[i].childUser, tempUserArr)
-        if (userIndex != -1 && (findUIDItemInArr(tempUserArr[i].uid, tempParentArr) == -1)) {
-          tempChildArr.push(tempUserArr[userIndex]);
-          tempParentArr.push(tempUserArr[i]);
-        }
-      }
-    }
-  }
-
-  console.log(tempChildArr);
-  console.log(tempParentArr);
 
   if (consoleOutput)
     console.log("Secret Santa Families Initialized!");
@@ -787,6 +760,9 @@ function createSecretSantaNames(){
         if (famSetUserIndex != -1)
           familySet.push(tempUserArr[famSetUserIndex]);
       }
+
+
+
       if (!assignUsersSecretSantaNames(familySet)) {
         if (consoleOutput) {
           nay++;
