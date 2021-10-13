@@ -452,9 +452,29 @@ function findUIDItemInArr(item, array, override){
 }
 
 function deployListEmptyNotification(dataItemText){
+  let giftElements = document.getElementsByClassName("gift");
+  let elementFoundBool = false;
+
   try{
-    testData.innerHTML = dataItemText;
+    for(let i = 0; i < giftElements.length; i++) {
+      if (giftElements[i].id == "testData") {
+        elementFoundBool = true;
+        testData.innerHTML = dataItemText;
+      }
+    }
+
+    if (!elementFoundBool) {
+      generateTestDataElement();
+    }
   } catch(err){
+    generateTestDataElement();
+  }
+
+  clearInterval(commonLoadingTimer);
+  clearInterval(offlineTimer);
+  loadingTimerCancelled = true;
+
+  function generateTestDataElement(){
     if(consoleOutput)
       console.log("Loading Element Missing, Creating A New One");
     let liItem = document.createElement("LI");
@@ -464,10 +484,6 @@ function deployListEmptyNotification(dataItemText){
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
   }
-
-  clearInterval(commonLoadingTimer);
-  clearInterval(offlineTimer);
-  loadingTimerCancelled = true;
 }
 
 function updateMaintenanceLog(locationData, detailsData) {
