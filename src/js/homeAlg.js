@@ -305,7 +305,7 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-        let i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr, true);
         if(userArr[i] != data.val() && i != -1){
           if(consoleOutput)
             console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
