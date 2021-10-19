@@ -313,9 +313,8 @@ window.onload = function instantiate() {
           initializeGlobalNotification();
         }
 
-        let i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr, true);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
@@ -476,7 +475,7 @@ window.onload = function instantiate() {
           userSecretSanta.innerHTML = "Click Here To View Secret Santa Assignment";
           userSecretSanta.style.color = "#00d118";
           userSecretSanta.onclick = function(){
-            let userSecretIndex = findUIDItemInArr(userData.secretSantaName, userArr);
+            let userSecretIndex = findUIDItemInArr(userData.secretSantaName, userArr, true);
             userSecretSanta.innerHTML = userArr[userSecretIndex].name;
             userSecretSanta.onclick = function(){};
           };
