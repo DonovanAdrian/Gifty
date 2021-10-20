@@ -897,9 +897,62 @@ function createSecretSantaNames(){
 }
 
 function assignUsersSecretSantaNames(usersToAssign) {
+  let nextAssignArray = [];
+  let nextUserIndex = 0;
+  let lowestFriendCount = 0;
+  let allUsersAssigned = false;
+  let errorLimit = usersToAssign.length * 50;
+  let errorCounter = -1;
+
   console.log(usersToAssign);
+
+  while (!allUsersAssigned) {
+    errorCounter++;
+    if (errorCounter > errorLimit) {
+      break;
+    }
+
+    lowestFriendCount = usersToAssign[0].length;
+    nextUserIndex = 0;
+    for (let i = 0; i < usersToAssign.length; i++) {
+      if (usersToAssign[i].length < lowestFriendCount) {
+        lowestFriendCount = usersToAssign[i].length;
+        nextUserIndex = i;
+      }
+    }
+    buildNextArray(nextUserIndex);
+    while(!assignUser());
+    usersToAssign.splice(nextUserIndex, 1);
+    nextAssignArray = [];
+
+    if (usersToAssign.length == 0) {
+      allUsersAssigned = true;
+    }
+  }
+
   failureReason = "Assign Function Not Ready";
   return false;
+
+  function assignUser() {
+    let userAssignSuccess = false;
+
+    console.log("Assigning " + nextAssignArray[0].name);
+    console.log(nextAssignArray.length);
+    for (let i = 1; i < nextAssignArray.length; i++) {
+      console.log(nextAssignArray[i].name);
+    }
+    console.log("**********************");
+    userAssignSuccess = true;
+
+    return userAssignSuccess;
+  }
+
+  function buildNextArray(nextArrInt) {
+    let tempNextArray = usersToAssign[nextArrInt];
+    for (let i = 0; i < tempNextArray.length; i++) {
+      nextAssignArray.push(tempNextArray[i]);
+    }
+  }
 }
 
 function buildPotentialMatchesArray(usersToAssign) {
@@ -920,17 +973,19 @@ function buildPotentialMatchesArray(usersToAssign) {
     removedUsersString = usersToAssign[a].name + " was not assigned because: \n"
 
     for (let b = 0; b < tempAssignArr.length; b++) {
-      if (assignedUsers.indexOf(tempAssignArr[b].uid) == -1) {//This user should NOT yet be assigned
-        if (usersToAssign[a].uid != tempAssignArr[b].uid) {//This user should NOT be the same user
-          if (checkFriend(tempAssignArr[b].uid, usersToAssign[a])) {//These users MUST be friends
+      if (usersToAssign[a].uid != tempAssignArr[b].uid) {//This user should NOT be the same user
+        if (checkFriend(tempAssignArr[b].uid, usersToAssign[a])) {//These users MUST be friends
+          if (checkFamily(tempAssignArr[b].uid, usersToAssign[a].uid)) {//These users MUST be in the same family
             if (!checkRelation(tempAssignArr[b].uid, usersToAssign[a])) {//These users CANNOT be parent/child
               tempPotentialMatchesArr.push(tempAssignArr[b]);
             } else {
               removedUsersString += "-" + tempAssignArr[b].name + " is related to this user\n";
             }
           } else {
-            removedUsersString += "-" + tempAssignArr[b].name + " is not friends with this user\n";
+            removedUsersString += "-" + tempAssignArr[b].name + " is not in the same family as this user\n";
           }
+        } else {
+          removedUsersString += "-" + tempAssignArr[b].name + " is not friends with this user\n";
         }
       }
     }
@@ -979,6 +1034,22 @@ function buildPotentialMatchesArray(usersToAssign) {
     } catch (err) {}
 
     return relatedBool;
+  }
+
+  function checkFamily(selectedUser, staticUser) {
+    let familyBool = true;
+
+    for (let i = 0; i < familyArr.length; i++) {
+      if (familyArr[i].members.indexOf(selectedUser) != -1) {
+        if (familyArr[i].members.indexOf(staticUser) == -1) {
+          console.log(staticUser + " not in " + selectedUser + "'s family!");
+          familyBool = false;
+          break;
+        }
+      }
+    }
+
+    return familyBool;
   }
 
   function checkFriend(selectedUser, staticUser) {
