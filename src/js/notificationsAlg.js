@@ -217,6 +217,7 @@ window.onload = function instantiate() {
     let notificationDetails;
     let notificationPage;
     let notificationSplit = notificationString.split(",");
+    let pageNameNote;
 
     if(notificationString.includes("@#$:")) {
       let privateMessage = notificationString.split("@#$:");
@@ -233,36 +234,36 @@ window.onload = function instantiate() {
         notificationPage = "globalNotification";
       } else if (notificationSplit.length == 2) {
         let invitedName = notificationSplit[0];
-        let pageName = notificationSplit[1];
+        pageNameNote = notificationSplit[1];
         if(consoleOutput)
-          console.log(invitedName + " " + pageName);
+          console.log(invitedName + " " + pageNameNote);
 
         notificationTitle = "You received an invite!";
         notificationDetails = invitedName + " has sent you an invite!";
-        notificationPage = pageName;
+        notificationPage = pageNameNote;
       } else if (notificationSplit.length == 3) {
         let giftOwner = notificationSplit[0];
         let giftTitle = notificationSplit[1];
-        let pageName = notificationSplit[2];
+        pageNameNote = notificationSplit[2];
         if(consoleOutput)
-          console.log(giftOwner + " " + giftTitle + " " + pageName);
+          console.log(giftOwner + " " + giftTitle + " " + pageNameNote);
 
         friendUserData = findFriendUserData(giftOwner);
-        notificationPage = pageName;
+        notificationPage = pageNameNote;
 
-        if (pageName == "friendList.html") {
+        if (pageNameNote == "friendList.html") {
           if (friendUserData != -1)
             notificationTitle = friendUserData.name + " updated a gift you bought!";
           else
             notificationTitle = "A gift you bought was updated!";
           notificationDetails = "The gift, " + giftTitle + ", was updated!";
-        } else if (pageName == "privateFriendList.html") {
+        } else if (pageNameNote == "privateFriendList.html") {
           if (friendUserData != -1)
             notificationTitle = friendUserData.name + "\'s private gift that you bought was updated!";
           else
             notificationTitle = "A private gift that you bought was updated!";
           notificationDetails = "The gift, " + giftTitle + ", was updated!";
-        } else if (pageName == "deleteGift") {
+        } else if (pageNameNote == "deleteGift") {
           if (friendUserData != -1)
             notificationTitle = friendUserData.name + " deleted a gift you bought!";
           else
@@ -276,11 +277,11 @@ window.onload = function instantiate() {
         let giftOwner = notificationSplit[0];
         let giftDeleter = notificationSplit[1];
         let giftTitle = notificationSplit[2];
-        let pageName = notificationSplit[3];
+        pageNameNote = notificationSplit[3];
 
         friendUserData = findFriendUserData(giftOwner);
 
-        notificationPage = pageName;
+        notificationPage = pageNameNote;
 
         if (friendUserData != -1)
           notificationTitle = friendUserData.name + "\'s private gift that you bought was deleted!";
@@ -316,6 +317,7 @@ window.onload = function instantiate() {
     let notificationDetails;
     let notificationPage;
     let notificationSplit = notificationString.split(",");
+    let pageNameNote;
 
     if(notificationString.includes("@#$:")) {
       let privateMessage = notificationString.split("@#$:");
@@ -332,36 +334,36 @@ window.onload = function instantiate() {
         notificationPage = "globalNotification";
       } else if (notificationSplit.length == 2) {
         let invitedName = notificationSplit[0];
-        let pageName = notificationSplit[1];
+        pageNameNote = notificationSplit[1];
         if(consoleOutput)
-          console.log(invitedName + " " + pageName);
+          console.log(invitedName + " " + pageNameNote);
 
         notificationTitle = "You received an invite!";
         notificationDetails = invitedName + " has sent you an invite!";
-        notificationPage = pageName;
+        notificationPage = pageNameNote;
       } else if (notificationSplit.length == 3) {
         let giftOwner = notificationSplit[0];
         let giftTitle = notificationSplit[1];
-        let pageName = notificationSplit[2];
+        pageNameNote = notificationSplit[2];
         if(consoleOutput)
-          console.log(giftOwner + " " + giftTitle + " " + pageName);
+          console.log(giftOwner + " " + giftTitle + " " + pageNameNote);
 
         friendUserData = findFriendUserData(giftOwner);
-        notificationPage = pageName;
+        notificationPage = pageNameNote;
 
-        if (pageName == "friendList.html") {
+        if (pageNameNote == "friendList.html") {
           if (friendUserData != -1)
             notificationTitle = friendUserData.name + " updated a gift you bought!";
           else
             notificationTitle = "A gift you bought was updated!";
           notificationDetails = "The gift, " + giftTitle + ", was updated!";
-        } else if (pageName == "privateFriendList.html") {
+        } else if (pageNameNote == "privateFriendList.html") {
           if (friendUserData != -1)
             notificationTitle = friendUserData.name + "\'s private gift that you bought was updated!";
           else
             notificationTitle = "A private gift that you bought was updated!";
           notificationDetails = "The gift, " + giftTitle + ", was updated!";
-        } else if (pageName == "deleteGift") {
+        } else if (pageNameNote == "deleteGift") {
           if (friendUserData != -1)
             notificationTitle = friendUserData.name + " deleted a gift you bought!";
           else
@@ -375,11 +377,11 @@ window.onload = function instantiate() {
         let giftOwner = notificationSplit[0];
         let giftDeleter = notificationSplit[1];
         let giftTitle = notificationSplit[2];
-        let pageName = notificationSplit[3];
+        pageNameNote = notificationSplit[3];
 
         friendUserData = findFriendUserData(giftOwner);
 
-        notificationPage = pageName;
+        notificationPage = pageNameNote;
 
         if (friendUserData != -1)
           notificationTitle = friendUserData.name + "\'s private gift that you bought was deleted!";
