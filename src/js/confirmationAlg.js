@@ -16,6 +16,7 @@ let inviteListEmptyBool = false;
 let dataCounter = 0;
 let commonLoadingTimerInt = 0;
 let deleteInviteRun = 0;
+let localDelete = 0;
 
 let testData;
 let dataListContainer;
@@ -139,10 +140,8 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-        let i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr, true);
         if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput)
-            console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
@@ -156,8 +155,10 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput)
+          if(consoleOutput) {
             console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            console.log(data.val());
+          }
           userArr[i] = data.val();
         }
 
@@ -175,8 +176,9 @@ window.onload = function instantiate() {
       postRef.on('child_removed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput)
+          if(consoleOutput) {
             console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          }
           userArr.splice(i, 1);
         }
       });
@@ -187,35 +189,38 @@ window.onload = function instantiate() {
         if (!friendArr.includes(data.val())) {
           friendArr.push(data.val());
         }
-        if (!user.friends.includes(data.val())) {
-          user.friends.push(data.val());
-        }
+        if (user.friends != null)
+          if (!user.friends.includes(data.val())) {
+            user.friends.push(data.val());
+          }
       });
 
       postRef.on('child_changed', function (data) {
-        if(consoleOutput)
+        if(consoleOutput) {
           console.log(friendArr);
+        }
         friendArr[data.key] = data.val();
-        if(consoleOutput)
+        if(consoleOutput) {
           console.log(friendArr);
-
-        if(consoleOutput)
           console.log(user.friends);
-        user.friends[data.key] = data.val();
+        }
+        if (user.friends != null)
+          user.friends[data.key] = data.val();
         if(consoleOutput)
           console.log(user.friends);
       });
 
       postRef.on('child_removed', function (data) {
-        if(consoleOutput)
+        if(consoleOutput) {
           console.log(friendArr);
+        }
         friendArr.splice(data.key, 1);
-        if(consoleOutput)
+        if(consoleOutput) {
           console.log(friendArr);
-
-        if(consoleOutput)
           console.log(user.friends);
-        user.friends.splice(data.key, 1);
+        }
+        if (user.friends != null)
+          user.friends.splice(data.key, 1);
         if(consoleOutput)
           console.log(user.friends);
       });
@@ -235,9 +240,12 @@ window.onload = function instantiate() {
         changeInviteElement(data.val());
       });
 
-      postRef.on('child_removed', function (data) {
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        location.reload();
+      postRef.on('child_removed', function () {
+        if (localDelete == 1) {
+          localDelete = 0;
+        } else {
+          location.reload();
+        }
       });
     };
 
@@ -253,7 +261,9 @@ window.onload = function instantiate() {
   function createInviteElement(inviteKey){
     try{
       testData.remove();
-    } catch (err) {}
+    } catch (err) {
+      console.log("But it \"Doesn't Exist!!\"");
+    }
 
     let inviteData;
     for (let i = 0; i < userArr.length; i++){
@@ -328,17 +338,21 @@ window.onload = function instantiate() {
     let userFriendArr;
 
     if(consoleOutput) {
-      console.log("Adding " + inviteData.uid);
+      console.log("Pre-adding " + inviteData.uid + " to User's Friend List:");
       console.log(friendArr);
     }
 
-    if(inviteData.friends == undefined || inviteData.friends == null || inviteData.friends.length == 0) {
+    if(inviteData.friends == null || inviteData.friends.length == 0) {
       friendFriendArr = [];
     } else {
       friendFriendArr = inviteData.friends;
     }
 
     friendFriendArr.push(user.uid);
+    if(consoleOutput) {
+      console.log("Added current user (" + user.uid + ") to friend's Friend List:");
+      console.log(friendFriendArr);
+    }
 
     if (!friendFriendArr.includes(user.uid)) {
       alert("The invite could not be added to your friend list! Please try again...");
@@ -358,8 +372,10 @@ window.onload = function instantiate() {
       return;
     }
 
-    if(consoleOutput)
+    if(consoleOutput) {
+      console.log("New User's Friend List:")
       console.log(userFriendArr);
+    }
 
     finalInviteData = [friendFriendArr, userFriendArr];
 
@@ -370,10 +386,10 @@ window.onload = function instantiate() {
     let verifyDeleteBool = true;
     let toDelete;
 
-    if(consoleOutput)
+    if(consoleOutput) {
+      console.log("Pre User Invites:");
       console.log(inviteArr);
-    if(consoleOutput)
-      console.log("Deleting Invite " + uid);
+    }
 
     toDelete = inviteArr.indexOf(uid);
 
@@ -396,21 +412,29 @@ window.onload = function instantiate() {
               setReadNotification(x);
 
       if(consoleOutput) {
+        console.log("New User Invites:");
         console.log(inviteArr);
-        console.log("Updating Invites To DB...");
       }
+
+      localDelete = 1;
       firebase.database().ref("users/" + user.uid).update({
         invites: inviteArr
       });
 
-      if(consoleOutput)
-        console.log("Updating Friend's Friend List To DB...");
+      if(consoleOutput) {
+        console.log("Updating Friend's Friend List To DB:");
+        console.log(finalInviteData[0]);
+      }
+
       firebase.database().ref("users/" + uid).update({
         friends: finalInviteData[0]
       });
 
-      if(consoleOutput)
-        console.log("Updating User's Friend List To DB...");
+      if(consoleOutput) {
+        console.log("Updating User's Friend List To DB:");
+        console.log(finalInviteData[1]);
+      }
+
       firebase.database().ref("users/" + user.uid).update({
         friends: finalInviteData[1]
       });
@@ -418,9 +442,12 @@ window.onload = function instantiate() {
       user.invites = inviteArr;
       user.friends = finalInviteData[1];
 
-      if(inviteArr.length == 0) {
-        newNavigation(4);//Invites
+      console.log(dataCounter);
+      if (dataCounter <= 4) {
+        deployListEmptyNotification("No Invites Found! You Already Accepted All Your Invites!");
       }
+      document.getElementById("user" + uid).remove();
+      dataCounter--;
     } else {
       if (deleteInviteRun < 3) {
         deleteInviteRun++;
