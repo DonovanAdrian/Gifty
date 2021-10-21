@@ -81,8 +81,11 @@ function instantiateCommon(){
 }
 
 function commonInitialization(){
-  if (consoleOutput)
+  if (consoleOutput) {
+    let today = new Date();
+    console.log(today);
     console.log("Initializing the " + pageName + " Page...");
+  }
 
   const config = JSON.parse(sessionStorage.config);
   instantiateCommon();
@@ -322,8 +325,12 @@ function newNavigation(navNum) {
 }
 
 function openModal(openThisModal, modalName, ignoreBool){
-  if (ignoreBool == null)
+  if (ignoreBool == null) {
     ignoreBool = false;
+  }
+  if (currentModalOpenObj != null) {
+    closeModal(currentModalOpenObj);
+  }
 
   currentModalOpenObj = openThisModal;
   currentModalOpen = modalName;
