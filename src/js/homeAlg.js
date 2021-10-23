@@ -590,12 +590,12 @@ window.onload = function instantiate() {
   }
 
   function addNotificationToDB(buyerUserData, giftTitle){
-    let pageName = "deleteGift";
+    let pageNameNote = "deleteGift";
     let giftOwner = user.uid;
     let buyerUserNotifications = [];
     let buyerReadNotifications = [];
     let updateNotificationBool = false;
-    let notificationString = generateNotificationString(giftOwner, giftTitle, pageName);
+    let notificationString = generateNotificationString(giftOwner, giftTitle, pageNameNote);
 
     if(buyerUserData.notifications != undefined){
       buyerUserNotifications = buyerUserData.notifications;
@@ -631,9 +631,9 @@ window.onload = function instantiate() {
     }
   }
 
-  function generateNotificationString(giftOwner, giftTitle, pageName){
+  function generateNotificationString(giftOwner, giftTitle, pageNameNote){
     if(consoleOutput)
       console.log("Generating Notification");
-    return (giftOwner + "," + giftTitle + "," + pageName);
+    return (giftOwner + "," + giftTitle + "," + pageNameNote);
   }
 };
