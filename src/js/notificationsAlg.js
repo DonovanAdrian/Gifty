@@ -17,6 +17,7 @@ let dataCounter = 0;
 let commonLoadingTimerInt = 0;
 
 let dataListContainer;
+let nukeNotifications;
 let offlineSpan;
 let offlineModal;
 let user;
@@ -69,6 +70,7 @@ function getCurrentUser(){
       if(localConsoleOutput)
         console.log("Notifications Not Found");
       deployListEmptyNotification("No Notifications Found!");
+      initializeNukeBtn();
       notificationListEmptyBool = true;
     } else {
       let notificationOverride = sessionStorage.getItem("notificationOverride");
@@ -80,6 +82,7 @@ function getCurrentUser(){
           if(localConsoleOutput)
             console.log("Notifications Empty");
           deployListEmptyNotification("No Notifications Found!");
+          initializeNukeBtn();
           notificationListEmptyBool = true;
         } else {
           if(localConsoleOutput)
@@ -99,6 +102,7 @@ window.onload = function instantiate() {
 
   pageName = "Notifications";
   dataListContainer = document.getElementById('dataListContainer');
+  nukeNotifications = document.getElementById('nukeNotifications');
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
   inviteNote = document.getElementById('inviteNote');
@@ -118,10 +122,10 @@ window.onload = function instantiate() {
   privateMessageInp = document.getElementById('privateMessageInp');
   sendMsg = document.getElementById('sendMsg');
   cancelMsg = document.getElementById('cancelMsg');
-  notificationsElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
-    notificationTitle, notificationInfo, noteSpan, privateMessageModal, noteViewModal, testData, closeNoteViewModal,
-    notificationViewTitle, notificationViewDetails, notificationViewPage, notificationViewDelete, privateMessageSpan,
-    privateMessageInp, sendMsg, cancelMsg];
+  notificationsElements = [dataListContainer, nukeNotifications, offlineModal, offlineSpan, inviteNote,
+    notificationModal, notificationTitle, notificationInfo, noteSpan, privateMessageModal, noteViewModal, testData,
+    closeNoteViewModal, notificationViewTitle, notificationViewDetails, notificationViewPage, notificationViewDelete,
+    privateMessageSpan, privateMessageInp, sendMsg, cancelMsg];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(notificationsElements);
@@ -304,6 +308,10 @@ window.onload = function instantiate() {
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
+
+    if (dataCounter < 1) {
+      initializeNukeBtn();
+    }
     dataCounter++;
   }
 
@@ -573,6 +581,7 @@ window.onload = function instantiate() {
     dataCounter--;
     if (dataCounter == 0){
       deployListEmptyNotification("No Notifications Found!");
+      initializeNukeBtn();
     }
   }
 
@@ -590,3 +599,21 @@ window.onload = function instantiate() {
     }
   }
 };
+
+function initializeNukeBtn() {
+  if (notificationArr.length > 0) {
+    nukeNotifications.innerHTML = "Remove All Notifications";
+    nukeNotifications.onclick = function() {
+      firebase.database().ref("users/" + user.uid + "/notifications/").remove();
+      if (user.readNotifications != null) {
+        firebase.database().ref("users/" + user.uid + "/readNotifications/").remove();
+      }
+
+      notificationArr = [];
+      newNavigation(2);//Home
+    };
+  } else {
+    nukeNotifications.innerHTML = "No Notifications To Remove!";
+    nukeNotifications.onclick = function() {};
+  }
+}
