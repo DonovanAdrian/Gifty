@@ -208,10 +208,8 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         globalNoteInt = 1;
 
-        let i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr, true);
         if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput)
-            console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
@@ -225,8 +223,9 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput)
+          if(consoleOutput) {
             console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          }
           userArr[i] = data.val();
         }
 
@@ -240,8 +239,9 @@ window.onload = function instantiate() {
       postRef.on('child_removed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput)
+          if(consoleOutput) {
             console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          }
           userArr.splice(i, 1);
         }
       });
@@ -505,9 +505,13 @@ window.onload = function instantiate() {
     let userFriendInt2;
     let userFriendData1;
     let userFriendData2;
-    let userFriendLength = user.friends.length;
+    let userFriendLength = 0;
     let commonFriends = 0;
     let commonFriendData;
+
+    if (user.friends != null) {
+      userFriendLength = user.friends.length;
+    }
 
     if (userFriendLength > 3) {
       for (let i = 0; i < userFriendLength; i++) {
@@ -733,7 +737,7 @@ window.onload = function instantiate() {
     }
   }
 
-  function generateNotificationString(invitedName, pageName){
-    return (invitedName + "," + pageName);
+  function generateNotificationString(invitedName, pageNameNote){
+    return (invitedName + "," + pageNameNote);
   }
 };
