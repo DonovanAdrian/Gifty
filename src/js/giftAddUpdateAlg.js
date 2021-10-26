@@ -231,7 +231,7 @@ window.onload = function instantiate() {
 
     if(giftTitleInp.value === "")
       alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
-          "you!");
+        "you!");
     else if (invalidURLBool)
       alert("It looks like you entered an invalid URL, please enter a valid URL or leave the field blank.");
     else {
@@ -395,7 +395,7 @@ window.onload = function instantiate() {
   }
 
   function addNotificationToDB(buyerUserData, giftTitle){
-    let pageName = "friendList.html";
+    let pageNameNote = "friendList.html";
     let giftOwner = user.uid;
     let notificationString;
     let buyerUserNotifications = [];
@@ -403,11 +403,11 @@ window.onload = function instantiate() {
     let updateNotificationBool = false;
 
     if(privateListBool){
-      pageName = "privateFriendList.html";
+      pageNameNote = "privateFriendList.html";
       giftOwner = privateList.uid;
     }
 
-    notificationString = generateNotificationString(giftOwner, giftTitle, pageName);
+    notificationString = generateNotificationString(giftOwner, giftTitle, pageNameNote);
 
     if(buyerUserData.notifications != undefined){
       buyerUserNotifications = buyerUserData.notifications;
@@ -443,10 +443,10 @@ window.onload = function instantiate() {
     }
   }
 
-  function generateNotificationString(giftOwner, giftTitle, pageName){
+  function generateNotificationString(giftOwner, giftTitle, pageNameNote){
     if(consoleOutput)
       console.log("Generating Notification");
-    return (giftOwner + "," + giftTitle + "," + pageName);
+    return (giftOwner + "," + giftTitle + "," + pageNameNote);
   }
 
   function addGiftToDB(){
@@ -462,10 +462,10 @@ window.onload = function instantiate() {
       invalidURLOverride = false;
     if(giftTitleInp.value === "")
       alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
-          "you!");
+        "you!");
     else if (invalidURLBool && !invalidURLOverride) {
       alert("It looks like you might have entered an invalid URL, double check to see if your url is valid and " +
-          "try again.");
+        "try again.");
       invalidURLOverride = true;
       invalidURL = newURL;
     } else {
