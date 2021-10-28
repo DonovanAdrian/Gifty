@@ -10,7 +10,7 @@ let inviteArr = [];
 let userArr = [];
 let familyArr = [];
 
-let secretSantaAssignErrorMsg = "try again!";
+let secretSantaAssignErrorMsg = "try again or look at the console for more details!";
 let secretSantaPageName = "moderation";
 
 let moderationSet = 1;
