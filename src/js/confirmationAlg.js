@@ -472,9 +472,7 @@ window.onload = function instantiate() {
         });
       }
     } else {
-      readNotificationArr = [];
-      readNotificationArr.push(user.notifications[uid]);
-      firebase.database().ref("users/" + user.uid).update({readNotifications:{0:readNotificationArr}});
+      firebase.database().ref("users/" + user.uid).update({readNotifications:{0:user.notifications[uid]}});
     }
   }
 };
