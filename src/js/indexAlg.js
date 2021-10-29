@@ -330,7 +330,15 @@ function login() {
   }
   if (loginBool === true){
     loginInfo.style.color = "#fff";
-    loginInfo.innerHTML = "Welcome Back, " + userArr[validUserInt].name + "!";
+    if (userArr[validUserInt].firstLogin == 1) {
+      loginInfo.innerHTML = "Welcome Back, " + userArr[validUserInt].name + "!";
+    } else {
+      loginInfo.innerHTML = "Welcome to Gifty, " + userArr[validUserInt].name + "!";
+      userArr[validUserInt].firstLogin = 1;
+      firebase.database().ref("users/" + userArr[validUserInt].uid).update({
+        firstLogin: 1
+      });
+    }
     document.body.className="B";
     clearInterval(colorShifter);
     document.getElementById("fadeOutLogin").className = "fadeOutItemA";
