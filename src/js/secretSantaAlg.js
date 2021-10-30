@@ -758,20 +758,26 @@ function createSecretSantaNames(){
 
       potentialMatchesArr = buildPotentialMatchesArray(familySet);
       if (potentialMatchesArr.length > 3) {
-        if (!assignUsersSecretSantaNames(potentialMatchesArr)) {
-          if (consoleOutput) {
-            nay++;
-            //alert("There was an error assigning Secret Santa names. Please " + secretSantaAssignErrorMsg);
-            console.log("*************************\n\nSecret Santa Assignments NOT COMPLETE" +
-              "\n\nFailure Reason: " + failureReason + "\n\n*************************");
+        if (checkBuiltArray(potentialMatchesArr)) {
+          if (!assignUsersSecretSantaNames(potentialMatchesArr)) {
+            if (consoleOutput) {
+              nay++;
+              //alert("There was an error assigning Secret Santa names. Please " + secretSantaAssignErrorMsg);
+              console.log("*************************\n\nSecret Santa Assignments NOT COMPLETE" +
+                "\n\nFailure Reason: " + failureReason + "\n\n*************************");
+            }
+            failureReason = "Unknown Error";
+            tempUserArr = [];
+            assignedUsers = [];
+            namesReadyBool = false;
+          } else {
+            assignedFamilies.push(optInFamilyArr[i].name);
+            familySet = [];
           }
-          failureReason = "Unknown Error";
-          tempUserArr = [];
-          assignedUsers = [];
-          namesReadyBool = false;
         } else {
-          assignedFamilies.push(optInFamilyArr[i].name);
-          familySet = [];
+          alert("Some or all of the signed up users don't have enough mutual friends! NO users were assigned...\n\n" +
+            "Tips:\n-Your users need to invite more friends to their lists\n-Split up your users into separate family" +
+            " lists");
         }
       } else if (!ignoreFamilySet && secretSantaPageName == "moderation" && !checkIfSantaActive()) {
         alert("There is a family with less than three eligible users!\n\n\nYou have 10 SECONDS to press the button again" +
@@ -842,6 +848,20 @@ function createSecretSantaNames(){
   }
   failureReason = "Unknown Error";
 
+  function checkBuiltArray(builtArray) {
+    let warningsFound = false;
+    let friendSizeLimit = builtArray.length / 5;
+
+    //ToDo
+    for (let i = 0; i < builtArray.length; i++) {
+      if (builtArray[i].length < friendSizeLimit) {
+        warningsFound = true;
+      }
+    }
+
+    return warningsFound;
+  }
+
   function checkFriendLists() {
     let friendScoreBool = false;
 
@@ -897,7 +917,11 @@ function createSecretSantaNames(){
 }
 
 function assignUsersSecretSantaNames(usersToAssign) {
-  let nextAssignArray = [];
+  let nextAssignArr = [];
+  let nonCommonUserArr = [];
+  let commonUserArr = [];
+  let commonUserCountArr = [];
+  let lowCommonCountArr = [];
   let nextUserIndex = 0;
   let lowestFriendCount = 0;
   let allUsersAssigned = false;
@@ -905,6 +929,12 @@ function assignUsersSecretSantaNames(usersToAssign) {
   let errorCounter = -1;
 
   console.log(usersToAssign);
+
+  if (!preFlightCheck()) {
+    failureReason = "Non-Common User Error";
+    alert("There are some users that don't have enough common friends!");
+    return false;
+  }
 
   while (!allUsersAssigned) {
     errorCounter++;
@@ -923,7 +953,7 @@ function assignUsersSecretSantaNames(usersToAssign) {
     buildNextArray(nextUserIndex);
     while(!assignUser());
     usersToAssign.splice(nextUserIndex, 1);
-    nextAssignArray = [];
+    nextAssignArr = [];
 
     if (usersToAssign.length == 0) {
       allUsersAssigned = true;
@@ -936,10 +966,15 @@ function assignUsersSecretSantaNames(usersToAssign) {
   function assignUser() {
     let userAssignSuccess = false;
 
-    console.log("Assigning " + nextAssignArray[0].name);
-    console.log(nextAssignArray.length);
-    for (let i = 1; i < nextAssignArray.length; i++) {
-      console.log(nextAssignArray[i].name);
+    console.log("Assigning " + nextAssignArr[0].name);
+    console.log(nextAssignArr.length);
+
+    console.log(checkNonCommonUsers());
+    console.log(checkLowCountUsers());
+    console.log(randomizeUsers());
+
+    for (let i = 1; i < nextAssignArr.length; i++) {
+      console.log(nextAssignArr[i].name);
     }
     console.log("**********************");
     userAssignSuccess = true;
@@ -947,12 +982,100 @@ function assignUsersSecretSantaNames(usersToAssign) {
     return userAssignSuccess;
   }
 
+  function randomizeUsers() {
+    console.log("***Not Ready Yet***");
+  }
+
+  function checkLowCountUsers() {
+    for (let i = 1; i < nextAssignArr.length; i++) {
+      if (lowCommonCountArr.indexOf(nextAssignArr[i]) != -1) {
+        return i;
+      }
+    }
+
+    return -1;
+  }
+
+  function checkNonCommonUsers() {
+    for (let i = 1; i < nextAssignArr.length; i++) {
+      if (nonCommonUserArr.indexOf(nextAssignArr[i]) != -1) {
+        return i;
+      }
+    }
+
+    return -1;
+  }
+
   function buildNextArray(nextArrInt) {
     let tempNextArray = usersToAssign[nextArrInt];
     for (let i = 0; i < tempNextArray.length; i++) {
-      nextAssignArray.push(tempNextArray[i]);
+      nextAssignArr.push(tempNextArray[i]);
     }
   }
+
+  function preFlightCheck() {
+    let tempNextArray = [];
+    let tempNonCommonUserArr = [];
+    let tempCommonUserArr = [];
+    let tempCommonUserCountArr = [];
+    let tempLowCommonCountArr = [];
+    let nonCommonUserCount = 0;
+    let userIndex = 0;
+
+    for (let a = 0; a < usersToAssign.length; a++) {
+      tempNextArray = usersToAssign[a];
+      for (let b = 0; b < tempNextArray.length; b++) {
+        userIndex = tempNonCommonUserArr.indexOf(tempNextArray[b].uid);
+        if (userIndex != -1) {
+          tempCommonUserArr.push(tempNonCommonUserArr[userIndex]);
+          tempLowCommonCountArr.push(tempNonCommonUserArr[userIndex]);
+          tempCommonUserCountArr.push(2);
+          tempNonCommonUserArr.splice(userIndex, 1);
+          nonCommonUserCount--;
+        } else {
+          userIndex = tempCommonUserArr.indexOf(tempNextArray[b].uid);
+          if (userIndex != -1) {
+            tempCommonUserCountArr[userIndex] = tempCommonUserCountArr[userIndex] + 1;
+            if (tempCommonUserCountArr[userIndex] > 3) {
+              userIndex = tempLowCommonCountArr.indexOf(tempNextArray[b].uid);
+              tempLowCommonCountArr.splice(userIndex, 1);
+            }
+          } else {
+            tempNonCommonUserArr.push(tempNextArray[b].uid);
+            nonCommonUserCount++;
+          }
+        }
+      }
+      if (nonCommonUserCount > 1) {
+        return false;
+      }
+      nonCommonUserCount = 0;
+    }
+
+    commonUserArr = buildAlternateArray(tempCommonUserArr);
+    nonCommonUserArr = buildAlternateArray(tempNonCommonUserArr);
+    commonUserCountArr = buildAlternateArray(tempCommonUserCountArr);
+    lowCommonCountArr = buildAlternateArray(tempLowCommonCountArr);
+
+    console.log("***********");
+    console.log(commonUserArr);
+    console.log(nonCommonUserArr);
+    console.log(commonUserCountArr);
+    console.log(lowCommonCountArr);
+    console.log("Pre Flight Check Complete!");
+
+    return true;
+  }
+}
+
+function buildAlternateArray(oldArr){
+  let newArr = [];
+
+  for (let i = 0; i < oldArr.length; i++) {
+    newArr.push(oldArr[i]);
+  }
+
+  return newArr;
 }
 
 function buildPotentialMatchesArray(usersToAssign) {
@@ -975,14 +1098,10 @@ function buildPotentialMatchesArray(usersToAssign) {
     for (let b = 0; b < tempAssignArr.length; b++) {
       if (usersToAssign[a].uid != tempAssignArr[b].uid) {//This user should NOT be the same user
         if (checkFriend(tempAssignArr[b].uid, usersToAssign[a])) {//These users MUST be friends
-          if (checkFamily(tempAssignArr[b].uid, usersToAssign[a].uid)) {//These users MUST be in the same family
-            if (!checkRelation(tempAssignArr[b].uid, usersToAssign[a])) {//These users CANNOT be parent/child
-              tempPotentialMatchesArr.push(tempAssignArr[b]);
-            } else {
-              removedUsersString += "-" + tempAssignArr[b].name + " is related to this user\n";
-            }
+          if (!checkRelation(tempAssignArr[b].uid, usersToAssign[a])) {//These users CANNOT be parent/child
+            tempPotentialMatchesArr.push(tempAssignArr[b]);
           } else {
-            removedUsersString += "-" + tempAssignArr[b].name + " is not in the same family as this user\n";
+            removedUsersString += "-" + tempAssignArr[b].name + " is related to this user\n";
           }
         } else {
           removedUsersString += "-" + tempAssignArr[b].name + " is not friends with this user\n";
@@ -998,7 +1117,6 @@ function buildPotentialMatchesArray(usersToAssign) {
     }
     tempPotentialMatchesArr = [];
   }
-
 
   while(!checkRemovedUsers());
 
@@ -1034,22 +1152,6 @@ function buildPotentialMatchesArray(usersToAssign) {
     } catch (err) {}
 
     return relatedBool;
-  }
-
-  function checkFamily(selectedUser, staticUser) {
-    let familyBool = true;
-
-    for (let i = 0; i < familyArr.length; i++) {
-      if (familyArr[i].members.indexOf(selectedUser) != -1) {
-        if (familyArr[i].members.indexOf(staticUser) == -1) {
-          console.log(staticUser + " not in " + selectedUser + "'s family!");
-          familyBool = false;
-          break;
-        }
-      }
-    }
-
-    return familyBool;
   }
 
   function checkFriend(selectedUser, staticUser) {
