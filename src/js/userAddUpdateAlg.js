@@ -41,7 +41,7 @@ function getCurrentUser(){
   } catch (err) {}
   if(user == null){
     btnUpdate.innerHTML = "Create User Profile";
-    alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely," +
+    alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely, " +
       "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
   } else {
     btnUpdate.innerHTML = "Loading...";
