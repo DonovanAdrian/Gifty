@@ -75,6 +75,7 @@ let userInitial;
 let userInvites;
 let familyInitial;
 let parentChildInterval;
+let initializedElementsArr = [];
 
 
 
@@ -445,13 +446,25 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         if(familyData.uid == data.key) {
           familyData = data.val();
-          sessionStorage.setItem("familyData", JSON.stringify(familyData));
 
-          if(familyData.members != null) {
-            oldFamilyMemberArr = familyData.members;
-            if (oldFamilyMemberArr.length != familyData.members.length) {
-              console.log("Something Changed! (FamilyMemberArr)");
-              location.reload();
+          if (familyData.members != null) {
+            if (initializedElementsArr.length > familyData.members.length) {
+              for (let i = 0; i < initializedElementsArr.length; i++) {
+                if (familyData.members.indexOf(initializedElementsArr[i]) == -1) {
+                  removeFamilyMemberElement(initializedElementsArr[i]);
+                  closeModal(familyMemberViewModal);
+                  initializedElementsArr.splice(i, 1);
+                  break;
+                }
+              }
+            } else {
+              for (let i = 0; i < familyData.members.length; i++) {
+                if (initializedElementsArr.indexOf(familyData.members[i]) == -1) {
+                  let userIndex = findUIDItemInArr(familyData.members[i], userArr);
+                  createFamilyMemberElement(userArr[userIndex]);
+                  break;
+                }
+              }
             }
           }
         }
@@ -500,12 +513,17 @@ window.onload = function instantiate() {
     if (dataCounter > buttonOpacLim) {
       familySettings.style.opacity = ".75";
     }
+    initializedElementsArr.push(familyMemberData.uid);
   }
 
   function changeFamilyMemberElement(familyMemberData) {
     let editFamily = document.getElementById('family' + familyMemberData.uid);
     editFamily.innerHTML = familyMemberData.name;
     initFamilyElement(editFamily, familyMemberData);
+  }
+
+  function removeFamilyMemberElement(familyMemberUID) {
+    document.getElementById('family' + familyMemberUID).remove();
   }
 
   function initFamilyElement(liItem, familyMemberData) {
@@ -677,8 +695,6 @@ window.onload = function instantiate() {
     firebase.database().ref("family/" + familyData.uid).update({
       members: familyData.members
     });
-
-    location.reload();
   }
 
   function changeFamilyNameInDB(newFamilyName){
