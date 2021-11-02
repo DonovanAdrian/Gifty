@@ -99,7 +99,7 @@ window.onload = function instantiate() {
 
   function initializeNukeBtn() {
     if (ticketArr.length > 0) {
-      nukeTickets.innerHTML = "Nuke All Tickets";
+      nukeTickets.innerHTML = "Remove All Tickets";
       nukeTickets.onclick = function () {
         firebase.database().ref("maintenance/").remove();
 
