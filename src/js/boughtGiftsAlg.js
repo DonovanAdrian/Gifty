@@ -182,8 +182,6 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
-          if(consoleOutput)
-            console.log("User Updated: 1");
         }
       });
 
