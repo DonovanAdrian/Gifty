@@ -153,10 +153,8 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput) {
+          if(consoleOutput)
             console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
-            console.log(data.val());
-          }
           userArr[i] = data.val();
         }
 
@@ -440,7 +438,6 @@ window.onload = function instantiate() {
       user.invites = inviteArr;
       user.friends = finalInviteData[1];
 
-      console.log(dataCounter);
       if (dataCounter <= 4) {
         deployListEmptyNotification("No Invites Found! You Already Accepted All Your Invites!");
       }
