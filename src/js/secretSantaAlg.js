@@ -925,6 +925,7 @@ function assignUsersSecretSantaNames(usersToAssign) {
   let nextUserIndex = 0;
   let lowestFriendCount = 0;
   let allUsersAssigned = false;
+  let userRandomized = false;
   let errorLimit = usersToAssign.length * 50;
   let errorCounter = -1;
 
@@ -965,12 +966,16 @@ function assignUsersSecretSantaNames(usersToAssign) {
 
   function assignUser() {
     let userAssignSuccess = false;
+    userRandomized = false;
 
     console.log("Assigning " + nextAssignArr[0].name);
     console.log(nextAssignArr.length);
 
+    console.log("NonCommonUsers");
     console.log(checkNonCommonUsers());
+    console.log("LowCountUsers");
     console.log(checkLowCountUsers());
+    console.log("RandomUser");
     console.log(randomizeUsers());
 
     for (let i = 1; i < nextAssignArr.length; i++) {
@@ -982,15 +987,30 @@ function assignUsersSecretSantaNames(usersToAssign) {
     return userAssignSuccess;
   }
 
-  function randomizeUsers() {
-    console.log("***Not Ready Yet***");
+  function randomizeUsers(arr) {
+    if (!userRandomized) {
+      console.log("***Not Ready Yet?***");
+      userRandomized = true;
+    } else {
+      console.log("***Not Ready Yet!***");
+    }
   }
 
   function checkLowCountUsers() {
+    let tempLowCountArr = [];
+    let lowCountIndex = 0;
+
     for (let i = 1; i < nextAssignArr.length; i++) {
-      if (lowCommonCountArr.indexOf(nextAssignArr[i]) != -1) {
-        return i;
+      lowCountIndex = lowCommonCountArr.indexOf(nextAssignArr[i]);
+      if (lowCountIndex != -1) {
+        tempLowCountArr.push(lowCommonCountArr[lowCountIndex]);
       }
+    }
+
+    if (tempLowCountArr.length > 1) {
+      randomizeUsers(tempLowCountArr);
+    } else if (tempLowCountArr.length == 1) {
+      return tempLowCountArr[0];
     }
 
     return -1;
