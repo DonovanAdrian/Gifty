@@ -376,9 +376,13 @@ window.onload = function instantiate() {
         if(i != -1) {
           userArr[i] = data.val();
 
-          for (let b = 0; b < familyData.members.length; b++)
-            if (userArr[i].uid == familyData.members[b])
-              createFamilyMemberElement(userArr[i]);
+          if (familyData.members != null) {
+            for (let b = 0; b < familyData.members.length; b++) {
+              if (userArr[i].uid == familyData.members[b]) {
+                createFamilyMemberElement(userArr[i]);
+              }
+            }
+          }
         }
 
         if(data.key == user.uid)
