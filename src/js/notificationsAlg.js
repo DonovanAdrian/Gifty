@@ -8,10 +8,12 @@ let notificationsElements = [];
 let userArr = [];
 let inviteArr = [];
 let notificationArr = [];
+let notificationKeyArr = [];
 let readNotificationArr = [];
 let listeningFirebaseRefs = [];
 
 let notificationListEmptyBool = false;
+let settingReadNotifications = false;
 
 let dataCounter = 0;
 let commonLoadingTimerInt = 0;
@@ -162,6 +164,7 @@ window.onload = function instantiate() {
     let fetchNotifications = function (postRef) {
       postRef.on('child_added', function (data) {
         notificationArr.push(data.val());
+        notificationKeyArr.push(data.key);
         createNotificationElement(data.val(), data.key);
       });
 
@@ -239,8 +242,6 @@ window.onload = function instantiate() {
       } else if (notificationSplit.length == 2) {
         let invitedName = notificationSplit[0];
         pageNameNote = notificationSplit[1];
-        if(consoleOutput)
-          console.log(invitedName + " " + pageNameNote);
 
         notificationTitle = "You received an invite!";
         notificationDetails = invitedName + " has sent you an invite!";
@@ -403,7 +404,7 @@ window.onload = function instantiate() {
     }
 
     let liItemUpdate = document.getElementById('notification' + notificationKey);
-    if (liItemUpdate == undefined) {
+    if (liItemUpdate != undefined) {
       liItemUpdate.innerHTML = notificationTitle;
       initNotificationElement(liItemUpdate, notificationTitle, notificationString, notificationKey, notificationDetails,
         notificationPage, friendUserData);
@@ -415,8 +416,6 @@ window.onload = function instantiate() {
     liItem.className = "gift";
     if(readNotificationArr.includes(notificationString)) {
       liItem.className += " checked";
-      if(consoleOutput)
-        console.log("Checked, created");
     }
     liItem.onclick = function () {
       notificationViewTitle.innerHTML = notificationTitle;
@@ -479,6 +478,18 @@ window.onload = function instantiate() {
       if (!readNotificationArr.includes(notificationString)) {
         readNotificationArr.push(notificationString);
 
+        if (!settingReadNotifications) {
+          settingReadNotifications = true;
+
+          for (let i = 0; i < notificationArr.length; i++) {
+            if (notificationArr[i] == notificationString) {
+              changeNotificationElement(notificationString, notificationKeyArr[i]);
+            }
+          }
+
+          settingReadNotifications = false;
+        }
+
         user.readNotifications = readNotificationArr;
         updateReadNotificationToDB();
       }
@@ -531,9 +542,7 @@ window.onload = function instantiate() {
   }
 
   function findFriendUserData(giftOwnerUID) {
-    let i = findUIDItemInArr(giftOwnerUID, userArr);
-    if(consoleOutput)
-      console.log(i + " " + userArr[i].name);
+    let i = findUIDItemInArr(giftOwnerUID, userArr, true);
     if (i != -1){
       return userArr[i];
     }
@@ -556,6 +565,7 @@ window.onload = function instantiate() {
 
     if(deleteNotificationBool) {
       notificationArr.splice(uid, 1);
+      notificationKeyArr.splice(uid, 1);
 
       if (notificationArr.length == 0) {
         sessionStorage.setItem("notificationOverride", "notificationArrEmpty");
@@ -586,8 +596,6 @@ window.onload = function instantiate() {
   }
 
   function updateReadNotificationToDB(){
-    if(consoleOutput)
-      console.log(readNotificationArr);
     if (user.readNotifications != undefined) {
       firebase.database().ref("users/" + user.uid).update({
         readNotifications: readNotificationArr
