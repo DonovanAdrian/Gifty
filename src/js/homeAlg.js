@@ -324,8 +324,6 @@ window.onload = function instantiate() {
               newNavigation(6);//Notifications
             }
           }
-          if(consoleOutput)
-            console.log("User Updated: 1");
         }
       });
 
