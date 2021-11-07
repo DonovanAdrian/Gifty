@@ -215,8 +215,6 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
-          if(consoleOutput)
-            console.log("User Updated: 1");
         }
       });
 
@@ -232,7 +230,7 @@ window.onload = function instantiate() {
         if(data.key == user.uid){
           user = data.val();
           if(consoleOutput)
-            console.log("User Updated: 2");
+            console.log("User Updated: 2");//ToDo
         }
       });
 
@@ -250,8 +248,6 @@ window.onload = function instantiate() {
     let fetchFriends = function (postRef) {
       postRef.on('child_added', function (data) {
         friendArr.push(data.val());
-        if(consoleOutput)
-          console.log("Creating " + data.val());
         createFriendElement(data.val());
       });
 
