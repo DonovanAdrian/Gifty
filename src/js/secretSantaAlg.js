@@ -729,13 +729,11 @@ function createSecretSantaNames(){
     alert("The signed up users DO NOT have enough friends! No users will be assigned names");
     return;
   } else if (checkFriendLists() && tempUserArr.length > 2) {
-    if (friendScoreNote == 0)//Todo Remove Later
-      alert("Some users did not have any friends, so they will NOT be assigned a name!");
+    if (friendScoreNote == 0) {//Todo Remove Later
+      //alert("Some users did not have any friends, so they will NOT be assigned a name!");
+    }
     friendScoreNote++;
   }
-
-  if (consoleOutput)
-    console.log("Secret Santa Families Initialized!");
 
   for (let i = 0; i < optInFamilyArr.length; i++) {
     if (optInFamilyStatsArr[i] < 3) {
@@ -758,7 +756,7 @@ function createSecretSantaNames(){
 
       potentialMatchesArr = buildPotentialMatchesArray(familySet);
       if (potentialMatchesArr.length > 3) {
-        if (checkBuiltArray(potentialMatchesArr)) {
+        if (!checkBuiltArray(potentialMatchesArr)) {
           if (!assignUsersSecretSantaNames(potentialMatchesArr)) {
             if (consoleOutput) {
               nay++;
@@ -775,9 +773,12 @@ function createSecretSantaNames(){
             familySet = [];
           }
         } else {
-          alert("Some or all of the signed up users don't have enough mutual friends! NO users were assigned...\n\n" +
-            "Tips:\n-Your users need to invite more friends to their lists\n-Split up your users into separate family" +
-            " lists");
+          //ToDo set bool to show the alert once all users have been assigned
+
+          //alert("Some or all of the signed up users don't have enough mutual friends! NO users were assigned for one or more families...\n\n" +
+          //  "Tips:\n-Your users need to invite more friends to their lists\n-Split up your users into separate family" +
+          //  " lists");
+          skippedFamilies.push(optInFamilyArr[i]);
         }
       } else if (!ignoreFamilySet && secretSantaPageName == "moderation" && !checkIfSantaActive()) {
         alert("There is a family with less than three eligible users!\n\n\nYou have 10 SECONDS to press the button again" +
@@ -792,9 +793,6 @@ function createSecretSantaNames(){
   }
 
   if (namesReadyBool) {
-    if (consoleOutput)
-      console.log("Secret Santa Names Assigned!");
-
     if (skippedFamilies.length > 0) {
       if (consoleOutput) {
         console.log("Skipped Families: ");
@@ -823,7 +821,7 @@ function createSecretSantaNames(){
         userArr[userIndex].secretSantaName = tempUserArr[i].secretSantaName;
       }
 
-      //updateAllUsersToDBSantaNums();//ToDo remove comment later
+      //updateAllUsersToDBSantaNums();//ToDo remove comments later
       //updateAllUsersToDBSantaNames();
       yay++;
       if (consoleOutput)
@@ -850,11 +848,10 @@ function createSecretSantaNames(){
 
   function checkBuiltArray(builtArray) {
     let warningsFound = false;
-    let friendSizeLimit = builtArray.length / 5;
+    let friendSizeLimit = Math.round(builtArray.length / 4);
 
-    //ToDo
     for (let i = 0; i < builtArray.length; i++) {
-      if (builtArray[i].length < friendSizeLimit) {
+      if (builtArray[i].length <= friendSizeLimit) {
         warningsFound = true;
       }
     }
@@ -925,15 +922,11 @@ function assignUsersSecretSantaNames(usersToAssign) {
   let nextUserIndex = 0;
   let lowestFriendCount = 0;
   let allUsersAssigned = false;
-  let userRandomized = false;
   let errorLimit = usersToAssign.length * 50;
   let errorCounter = -1;
 
-  console.log(usersToAssign);
-
   if (!preFlightCheck()) {
     failureReason = "Non-Common User Error";
-    alert("There are some users that don't have enough common friends!");
     return false;
   }
 
@@ -952,7 +945,7 @@ function assignUsersSecretSantaNames(usersToAssign) {
       }
     }
     buildNextArray(nextUserIndex);
-    while(!assignUser());
+    assignUser();
     usersToAssign.splice(nextUserIndex, 1);
     nextAssignArr = [];
 
@@ -962,69 +955,82 @@ function assignUsersSecretSantaNames(usersToAssign) {
   }
 
   failureReason = "Assign Function Not Ready";
-  return false;
+  return allUsersAssigned;
 
   function assignUser() {
-    let userAssignSuccess = false;
-    userRandomized = false;
-
     console.log("Assigning " + nextAssignArr[0].name);
-    console.log(nextAssignArr.length);
 
-    console.log("NonCommonUsers");
-    console.log(checkNonCommonUsers());
-    console.log("LowCountUsers");
-    console.log(checkLowCountUsers());
-    console.log("RandomUser");
-    console.log(randomizeUsers());
-
-    for (let i = 1; i < nextAssignArr.length; i++) {
-      console.log(nextAssignArr[i].name);
+    if (checkNonCommonUsers() == -1) {
+      if (checkLowCountUsers() != -1) {
+        randomizeUsers(nextAssignArr);
+      } else {
+        console.log("Heck2");
+      }
+    } else {
+      console.log("Heck1");
     }
-    console.log("**********************");
-    userAssignSuccess = true;
 
-    return userAssignSuccess;
+    console.log("**********************");
   }
 
   function randomizeUsers(arr) {
-    if (!userRandomized) {
-      console.log("***Not Ready Yet?***");
-      userRandomized = true;
-    } else {
-      console.log("***Not Ready Yet!***");
-    }
+    let selector;
+    console.log(arr);
+
+    selector = Math.floor((Math.random() * arr.length));
+    console.log(selector);
+    assignUserTo(arr[selector]);
   }
 
   function checkLowCountUsers() {
-    let tempLowCountArr = [];
-    let lowCountIndex = 0;
+    if (lowCommonCountArr.length != 0) {
+      let tempLowCountArr = [];
+      let lowCountIndex = 0;
 
-    for (let i = 1; i < nextAssignArr.length; i++) {
-      lowCountIndex = lowCommonCountArr.indexOf(nextAssignArr[i]);
-      if (lowCountIndex != -1) {
-        tempLowCountArr.push(lowCommonCountArr[lowCountIndex]);
+      for (let i = 1; i < nextAssignArr.length; i++) {
+        lowCountIndex = lowCommonCountArr.indexOf(nextAssignArr[i]);
+        if (lowCountIndex != -1) {
+          tempLowCountArr.push(lowCommonCountArr[lowCountIndex]);
+        }
       }
-    }
 
-    if (tempLowCountArr.length > 1) {
-      randomizeUsers(tempLowCountArr);
-    } else if (tempLowCountArr.length == 1) {
-      return tempLowCountArr[0];
+      if (tempLowCountArr.length > 1) {
+        randomizeUsers(tempLowCountArr);
+        return 1;
+      } else if (tempLowCountArr.length == 1) {
+        assignUserTo(tempLowCountArr[0]);
+        return 0;
+      }
     }
 
     return -1;
   }
 
   function checkNonCommonUsers() {
-    for (let i = 1; i < nextAssignArr.length; i++) {
-      if (nonCommonUserArr.indexOf(nextAssignArr[i]) != -1) {
-        return i;
+    if (nonCommonUserArr.length != 0)
+      for (let i = 1; i < nextAssignArr.length; i++) {
+        if (nonCommonUserArr.indexOf(nextAssignArr[i]) != -1) {
+          assignUserTo(nonCommonUserArr[i]);
+          return 0;
+        }
       }
-    }
 
     return -1;
   }
+
+  function assignUserTo(user) {
+    console.log("Assigning...");
+    console.log(user);
+
+    /*
+    userUIDArr.push(tempUserArr[selector].uid);
+    userIndex = findUIDItemInArr(optInUserArr[i].uid, userArr);
+    userArr[userIndex].secretSantaName = tempUserArr[selector].uid;
+    tempUserArr.splice(selector, 1);
+    */
+  }
+
+
 
   function buildNextArray(nextArrInt) {
     let tempNextArray = usersToAssign[nextArrInt];
@@ -1066,10 +1072,6 @@ function assignUsersSecretSantaNames(usersToAssign) {
           }
         }
       }
-      if (nonCommonUserCount > 1) {
-        return false;
-      }
-      nonCommonUserCount = 0;
     }
 
     commonUserArr = buildAlternateArray(tempCommonUserArr);
@@ -1077,14 +1079,11 @@ function assignUsersSecretSantaNames(usersToAssign) {
     commonUserCountArr = buildAlternateArray(tempCommonUserCountArr);
     lowCommonCountArr = buildAlternateArray(tempLowCommonCountArr);
 
-    console.log("***********");
-    console.log(commonUserArr);
-    console.log(nonCommonUserArr);
-    console.log(commonUserCountArr);
-    console.log(lowCommonCountArr);
-    console.log("Pre Flight Check Complete!");
-
-    return true;
+    if (nonCommonUserCount > 1) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }
 
