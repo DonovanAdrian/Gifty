@@ -120,15 +120,13 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-        let i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr, true);
         if(userArr[i] != data.val() && i != -1){
-          console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
         if(data.key == user.uid){
           user = data.val();
-          console.log("User Updated: 1");
         }
       });
 
@@ -183,7 +181,6 @@ window.onload = function instantiate() {
       postRef.once("value").then(function(snapshot) {
         if (snapshot.exists()) {
           postRef.on("child_added", function (data) {
-            console.log(data.key + " Added!");
             ticketArr.push(data.val());
             createModerationTicket(data.val());
           });
