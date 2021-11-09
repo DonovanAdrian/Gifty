@@ -112,8 +112,6 @@ window.onload = function instantiate() {
             pinConfField.placeholder = "Please Confirm Pin To Continue";
             btnUpdate.innerHTML = "Update User Profile";
             btnDelete.innerHTML = "Delete User Profile";
-            if(consoleOutput)
-              console.log("User Updated: 1");
           }
         }
       });
@@ -132,7 +130,7 @@ window.onload = function instantiate() {
           if (data.key == user.uid) {
             user = data.val();
             if(consoleOutput)
-              console.log("User Updated: 2");
+              console.log("Current User Updated");
           }
         }
       });
@@ -203,8 +201,10 @@ function updateUserToDB(){
       name: nameField.value,
       encodeStr: encodeKey,
       userName: userNameField.value,
+      userScore: user.userScore,
       ban: user.ban,
       firstLogin: user.firstLogin,
+      lastLogin: user.lastLogin,
       moderatorInt: user.moderatorInt,
       organize: user.organize,
       strike: user.strike,
@@ -297,8 +297,10 @@ function addUserToDB(){
       name: nameField.value,
       encodeStr: encodeKey,
       userName: userNameField.value,
+      userScore: 0,
       ban: 0,
       firstLogin: 0,
+      lastLogin: "Never Logged In",
       moderatorInt: moderatorSetter,
       organize: 0,
       strike: 0,
