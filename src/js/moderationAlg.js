@@ -52,6 +52,8 @@ let userUserName;
 let userGifts;
 let userPrivateGifts;
 let userFriends;
+let userLastLogin;
+let userScore;
 let userPassword;
 let userSecretSanta;
 let moderatorOp;
@@ -119,6 +121,8 @@ window.onload = function instantiate() {
   userGifts = document.getElementById('userGifts');
   userPrivateGifts = document.getElementById('userPrivateGifts');
   userFriends = document.getElementById('userFriends');
+  userLastLogin = document.getElementById('userLastLogin');
+  userScore = document.getElementById('userScore');
   userPassword = document.getElementById('userPassword');
   userSecretSanta = document.getElementById('userSecretSanta');
   moderatorOp = document.getElementById('moderatorOp');
@@ -134,8 +138,8 @@ window.onload = function instantiate() {
     notificationInfo, noteSpan, privateMessageModal, sendGlobalNotification, sendPrivateMessage, userModal,
     activateSecretSanta, secretSantaModal, santaModalSpan, secretSantaBtn, secretSantaShuffle, secretSantaAutoBtn,
     settingsNote, testData, closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends,
-    userPassword, userSecretSanta, moderatorOp, sendPrivateMessage, warnUser, banUser, closePrivateMessageModal,
-    globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
+    userLastLogin, userScore, userPassword, userSecretSanta, moderatorOp, sendPrivateMessage, warnUser, banUser,
+    closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(moderationElements);
@@ -320,7 +324,6 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
-          console.log("User Updated: 1");
         }
       });
 
@@ -335,7 +338,7 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
-          console.log("User Updated: 2");
+          console.log("Current User Updated");
         }
 
         if(currentModalOpen == data.key) {
@@ -447,6 +450,16 @@ window.onload = function instantiate() {
         userFriends.innerHTML = "# Friends: " + userData.friends.length;
       } else {
         userFriends.innerHTML = "This User Has No Friends";
+      }
+      if(userData.lastLogin != undefined) {
+        userLastLogin.innerHTML = "Last Login: " + userData.lastLogin;
+      } else {
+        userLastLogin.innerHTML = "This User Has Never Logged In";
+      }
+      if(userData.userScore != undefined) {
+        userScore.innerHTML = "User Score: " + userData.userScore;
+      } else {
+        userScore.innerHTML = "User Score: 0";
       }
       userPassword.innerHTML = "Click On Me To View Password";
 
