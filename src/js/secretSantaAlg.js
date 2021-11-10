@@ -6,11 +6,11 @@
 
 let secretBtnStates = [false, false];
 let tempUserArr = [];
+let assignedNameUsers = [];
 let assignedUsers = [];
 let removedUsers = [];
 
 let ignoreFamilySet = false;
-let checkForSecretSantaBool = false;
 let showSecretTextCycler = false;
 
 let currentDate = new Date();
@@ -31,20 +31,12 @@ let textCyclerLimiter = 0;
 let giftListInterval;
 
 let friendScoreNote = 0;
-let emptyArrayCount = 0;
-let patternCount = 0;
-let allUsersAttemptedCount = 0;
 let failureReason = "Unknown Error";
 
 //ToDo need to remove this
 let yay = 0;
 let nay = 0;
-let masterResetCount = 0;
-let patternResetCount = 0;
-let allUsersResetOverall = 0;
-let patternResetOverall = 0;
-let emptyResetOverall = 0;
-let errorResetOverall = 0;
+
 
 
 function checkSecretSanta(autoUpdateBool){
@@ -247,7 +239,6 @@ function initializeSecretSantaBtns() {
         secretSantaButtonManager("shuffle", true);
       };
     } else {
-      checkForSecretSantaBool = true;
       secretSantaBtn.innerHTML = secretSantaBtnTxtTrigger;
       secretSantaBtn.onclick = function () {
         if (checkIfSantaSignUp()) {
@@ -285,7 +276,6 @@ function initializeSecretSantaBtns() {
           secretSantaButtonManager("mainF");
         };
       } else {
-        checkForSecretSantaBool = true;
         secretSantaBtn.innerHTML = "Manually " + secretSantaBtnTxtTrigger;
         secretSantaBtn.onclick = function () {
           if (checkIfSantaSignUp()) {
@@ -362,20 +352,17 @@ function secretSantaButtonManager(buttonPressed, shuffleMode) {
       if (shuffleMode) {
         secretSantaShuffle.onclick = function (){};
 
-        for (let i = 0; i < 1000; i++) {
+        console.log("Processing... Please Wait!");
+        for (let i = 0; i < 100000; i++) {
+          if (i % 100000 == 0) {
+            console.log("Still going!");
+          }
           createSecretSantaNames();
         }
 
         console.log("YAY! " + yay + " NAY... " + nay);
-        console.log("Total Empty Array Resets: " + emptyResetOverall + "\n\nTotal Pattern Resets:" +
-          patternResetOverall + "\n\nTotal All Users Attempted Resets:" + allUsersResetOverall +
-          "\n\nTotal Error Resets:" + errorResetOverall);
         yay = 0;
         nay = 0;
-        emptyResetOverall = 0;
-        patternResetOverall = 0;
-        allUsersResetOverall = 0;
-        errorResetOverall = 0;
 
         secretSantaShuffle.onclick = function (){
           secretSantaButtonManager("shuffle", true);
@@ -615,61 +602,6 @@ function addPrivateMessageToDB(userData, message) {
   }
 }
 
-function checkForRandomErrors() {
-
-  let optInFamilyArr = [];
-  let optInFamilyStatsArr = [];
-  let familySet = [];
-  let existInFamInt = 0;
-  let optInFamInt = 0;
-  let potentialErrorInt = 0;
-
-  for (let i = 0; i < userArr.length; i++) {
-    if (userArr[i].secretSanta != null) {
-      if (userArr[i].secretSanta == 1) {
-        tempUserArr.push(userArr[i]);
-        for (let a = 0; a < familyArr.length; a++) {
-          if (familyArr[a].members != null) {
-            if (familyArr[a].members.includes(userArr[i].uid)) {
-              existInFamInt = 1;
-              if (findUIDItemInArr(familyArr[a].uid, optInFamilyArr, true) == -1) {
-                optInFamilyArr.push(familyArr[a]);
-                optInFamilyStatsArr.push(1);
-              } else {
-                optInFamInt = findUIDItemInArr(familyArr[a].uid, optInFamilyArr,true);
-                optInFamilyStatsArr[optInFamInt]++;
-              }
-            }
-          }
-
-          if (existInFamInt == 0) {
-            assignedUsers.push(userArr[i]);
-          } else {
-            existInFamInt = 0;
-          }
-        }
-      }
-    }
-  }
-
-  for (let i = 0; i < optInFamilyArr.length; i++) {
-    for (let a = 0; a < optInFamilyArr[i].members.length; a++) {
-      let famSetUserIndex = findUIDItemInArr(optInFamilyArr[i].members[a], tempUserArr, true);
-      if (famSetUserIndex != -1)
-        familySet.push(tempUserArr[famSetUserIndex]);
-    }
-
-    if (familySet.length < 5)
-      potentialErrorInt++;
-    familySet = [];
-  }
-
-  tempUserArr = [];
-  assignedUsers = [];
-
-  return potentialErrorInt > 0;
-}
-
 function createSecretSantaNames(){
   let assignedFamilies = [];
   let optInFamilyArr = [];
@@ -677,9 +609,11 @@ function createSecretSantaNames(){
   let skippedFamilies = [];
   let familySet = [];
   let potentialMatchesArr = [];
-  let existInFamInt = 0;
   let optInFamInt = 0;
+  let errorsFound = 0;
+  let errorsFoundLim = 10;
   let namesReadyBool = true;
+  let santaNamesAssigned = false;
 
   tempUserArr = [];
 
@@ -700,11 +634,10 @@ function createSecretSantaNames(){
   for (let i = 0; i < userArr.length; i++) {
     if (userArr[i].secretSanta != null) {
       if (userArr[i].secretSanta == 1) {
-        tempUserArr.push(userArr[i]);
         for (let a = 0; a < familyArr.length; a++) {
           if (familyArr[a].members != null) {
             if (familyArr[a].members.includes(userArr[i].uid)) {
-              existInFamInt = 1;
+              tempUserArr.push(userArr[i]);
               if (findUIDItemInArr(familyArr[a].uid, optInFamilyArr, true) == -1) {
                 optInFamilyArr.push(familyArr[a]);
                 optInFamilyStatsArr.push(1);
@@ -714,12 +647,6 @@ function createSecretSantaNames(){
               }
             }
           }
-        }
-
-        if (existInFamInt == 0) {
-          assignedUsers.push(userArr[i]);
-        } else {
-          existInFamInt = 0;
         }
       }
     }
@@ -742,6 +669,7 @@ function createSecretSantaNames(){
           " if you are okay with this. The users in question will NOT be assigned names.");
         startIgnoreFamilySetTimer();
         tempUserArr = [];
+        assignedNameUsers = [];
         assignedUsers = [];
         return;
       } else {
@@ -757,7 +685,17 @@ function createSecretSantaNames(){
       potentialMatchesArr = buildPotentialMatchesArray(familySet);
       if (potentialMatchesArr.length > 3) {
         if (!checkBuiltArray(potentialMatchesArr)) {
-          if (!assignUsersSecretSantaNames(potentialMatchesArr)) {
+          while (errorsFound < errorsFoundLim) {
+            if (assignUsersSecretSantaNames(potentialMatchesArr)) {
+              santaNamesAssigned = true;
+              break;
+            } else {
+              errorsFound++;
+              assignedNameUsers = [];
+              assignedUsers = [];
+            }
+          }
+          if (!santaNamesAssigned) {
             if (consoleOutput) {
               nay++;
               //alert("There was an error assigning Secret Santa names. Please " + secretSantaAssignErrorMsg);
@@ -766,12 +704,15 @@ function createSecretSantaNames(){
             }
             failureReason = "Unknown Error";
             tempUserArr = [];
+            assignedNameUsers = [];
             assignedUsers = [];
             namesReadyBool = false;
           } else {
             assignedFamilies.push(optInFamilyArr[i].name);
             familySet = [];
           }
+          santaNamesAssigned = false;
+          errorsFound = 0;
         } else {
           //ToDo set bool to show the alert once all users have been assigned
 
@@ -785,8 +726,11 @@ function createSecretSantaNames(){
           " if you are okay with this. The users in question will NOT be assigned names.");
         startIgnoreFamilySetTimer();
         tempUserArr = [];
+        assignedNameUsers = [];
         assignedUsers = [];
         return;
+      } else {
+        skippedFamilies.push(optInFamilyArr[i]);
       }
     }
     familySet = [];
@@ -795,25 +739,25 @@ function createSecretSantaNames(){
   if (namesReadyBool) {
     if (skippedFamilies.length > 0) {
       if (consoleOutput) {
-        console.log("Skipped Families: ");
-        console.log(skippedFamilies);
+        //console.log("Skipped Families: ");
+        //console.log(skippedFamilies);
       }
       for (let i = 0; i < skippedFamilies.length; i++) {
         assignedFamilies.push(skippedFamilies[i]);
       }
 
       for (let i = 0; i < tempUserArr.length; i++) {
-        if (assignedUsers.indexOf(tempUserArr[i].uid) == -1) {
+        if (assignedNameUsers.indexOf(tempUserArr[i].uid) == -1) {
           for (let a = 0; a < skippedFamilies.length; a++) {
             if (skippedFamilies[a].members.indexOf(tempUserArr[i].uid) != -1) {
-              assignedUsers.push(tempUserArr[i].uid);
+              assignedNameUsers.push(tempUserArr[i].uid);
             }
           }
         }
       }
     }
 
-    if (assignedUsers.length == tempUserArr.length &&
+    if (assignedNameUsers.length == tempUserArr.length &&
       assignedFamilies.length == optInFamilyArr.length) {
       let userIndex = 0;
       for (let i = 0; i < tempUserArr.length; i++) {
@@ -825,15 +769,18 @@ function createSecretSantaNames(){
       //updateAllUsersToDBSantaNames();
       yay++;
       if (consoleOutput)
-        console.log("*************************\n\nSecret Santa Assignments Complete!"
-          + "\n\n*************************");
-      if (secretSantaPageName == "moderation") {
-        initializeSecretSantaBtns();
-      }
+        //console.log("*************************\n\nSecret Santa Assignments Complete!\n\n*************************");
+        if (secretSantaPageName == "moderation") {
+          initializeSecretSantaBtns();
+        }
       if (secretSantaPageName == "lists") {
         showSecretSanta();
       }
+      tempUserArr = [];
+      assignedNameUsers = [];
+      assignedUsers = [];
     } else {
+
       nay++;
       if (consoleOutput) {
         //alert("There was an error assigning Secret Santa names automatically. Please " + secretSantaAssignErrorMsg);
@@ -841,6 +788,7 @@ function createSecretSantaNames(){
           "\n\nFailure Reason: " + failureReason + "\n\n*************************");
       }
       tempUserArr = [];
+      assignedNameUsers = [];
       assignedUsers = [];
     }
   }
@@ -919,11 +867,14 @@ function assignUsersSecretSantaNames(usersToAssign) {
   let commonUserArr = [];
   let commonUserCountArr = [];
   let lowCommonCountArr = [];
+  let usersToAssignActive = [];
   let nextUserIndex = 0;
   let lowestFriendCount = 0;
   let allUsersAssigned = false;
   let errorLimit = usersToAssign.length * 50;
   let errorCounter = -1;
+
+  usersToAssignActive = buildAlternateArray(usersToAssign);
 
   if (!preFlightCheck()) {
     failureReason = "Non-Common User Error";
@@ -931,25 +882,30 @@ function assignUsersSecretSantaNames(usersToAssign) {
   }
 
   while (!allUsersAssigned) {
+
     errorCounter++;
     if (errorCounter > errorLimit) {
       break;
     }
 
-    lowestFriendCount = usersToAssign[0].length;
+    lowestFriendCount = usersToAssignActive[0].length;
     nextUserIndex = 0;
-    for (let i = 0; i < usersToAssign.length; i++) {
-      if (usersToAssign[i].length < lowestFriendCount) {
-        lowestFriendCount = usersToAssign[i].length;
+    for (let i = 0; i < usersToAssignActive.length; i++) {
+      if (usersToAssignActive[i].length < lowestFriendCount) {
+        lowestFriendCount = usersToAssignActive[i].length;
         nextUserIndex = i;
       }
     }
-    buildNextArray(nextUserIndex);
-    assignUser();
-    usersToAssign.splice(nextUserIndex, 1);
-    nextAssignArr = [];
+    if (buildNextArray(nextUserIndex)) {
+      assignUser();
+      usersToAssignActive.splice(nextUserIndex, 1);
+      nextAssignArr = [];
+    } else {
+      failureReason = "Users Not All Assigned";
+      return allUsersAssigned;
+    }
 
-    if (usersToAssign.length == 0) {
+    if (usersToAssignActive.length == 0) {
       allUsersAssigned = true;
     }
   }
@@ -958,28 +914,20 @@ function assignUsersSecretSantaNames(usersToAssign) {
   return allUsersAssigned;
 
   function assignUser() {
-    console.log("Assigning " + nextAssignArr[0].name);
-
     if (checkNonCommonUsers() == -1) {
-      if (checkLowCountUsers() != -1) {
+      if (checkLowCountUsers() == -1) {
         randomizeUsers(nextAssignArr);
-      } else {
-        console.log("Heck2");
       }
-    } else {
-      console.log("Heck1");
     }
-
-    console.log("**********************");
   }
 
   function randomizeUsers(arr) {
     let selector;
-    console.log(arr);
 
     selector = Math.floor((Math.random() * arr.length));
-    console.log(selector);
-    assignUserTo(arr[selector]);
+    if (selector == 0)
+      selector++;
+    assignNextUserTo(arr[selector]);
   }
 
   function checkLowCountUsers() {
@@ -998,7 +946,7 @@ function assignUsersSecretSantaNames(usersToAssign) {
         randomizeUsers(tempLowCountArr);
         return 1;
       } else if (tempLowCountArr.length == 1) {
-        assignUserTo(tempLowCountArr[0]);
+        assignNextUserTo(tempLowCountArr[0]);
         return 0;
       }
     }
@@ -1010,7 +958,7 @@ function assignUsersSecretSantaNames(usersToAssign) {
     if (nonCommonUserArr.length != 0)
       for (let i = 1; i < nextAssignArr.length; i++) {
         if (nonCommonUserArr.indexOf(nextAssignArr[i]) != -1) {
-          assignUserTo(nonCommonUserArr[i]);
+          assignNextUserTo(nonCommonUserArr[i]);
           return 0;
         }
       }
@@ -1018,25 +966,38 @@ function assignUsersSecretSantaNames(usersToAssign) {
     return -1;
   }
 
-  function assignUserTo(user) {
-    console.log("Assigning...");
-    console.log(user);
+  function assignNextUserTo(user) {
+    let userIndex;
 
-    /*
-    userUIDArr.push(tempUserArr[selector].uid);
-    userIndex = findUIDItemInArr(optInUserArr[i].uid, userArr);
-    userArr[userIndex].secretSantaName = tempUserArr[selector].uid;
-    tempUserArr.splice(selector, 1);
-    */
+    userIndex = findUIDItemInArr(user.uid, nonCommonUserArr, true);
+    nonCommonUserArr.splice(userIndex, 1);
+    userIndex = findUIDItemInArr(user.uid, commonUserArr, true);
+    commonUserArr.splice(userIndex, 1);
+    commonUserCountArr.splice(userIndex, 1);
+    userIndex = findUIDItemInArr(user.uid, lowCommonCountArr, true);
+    lowCommonCountArr.splice(userIndex, 1);
+
+    assignedUsers.push(user.uid);
+    assignedNameUsers.push(nextAssignArr[0].uid);
+    userIndex = findUIDItemInArr(nextAssignArr[0].uid, userArr, true);
+    userArr[userIndex].secretSantaName = user.uid;
   }
 
 
 
   function buildNextArray(nextArrInt) {
-    let tempNextArray = usersToAssign[nextArrInt];
-    for (let i = 0; i < tempNextArray.length; i++) {
-      nextAssignArr.push(tempNextArray[i]);
+    let tempNextArray = usersToAssignActive[nextArrInt];
+    nextAssignArr.push(tempNextArray[0]);
+    for (let i = 1; i < tempNextArray.length; i++) {
+      if (assignedUsers.indexOf(tempNextArray[i].uid) == -1) {
+        nextAssignArr.push(tempNextArray[i]);
+      }
     }
+
+    if (nextAssignArr.length == 1) {
+      return false;
+    }
+    return true;
   }
 
   function preFlightCheck() {
@@ -1048,8 +1009,8 @@ function assignUsersSecretSantaNames(usersToAssign) {
     let nonCommonUserCount = 0;
     let userIndex = 0;
 
-    for (let a = 0; a < usersToAssign.length; a++) {
-      tempNextArray = usersToAssign[a];
+    for (let a = 0; a < usersToAssignActive.length; a++) {
+      tempNextArray = usersToAssignActive[a];
       for (let b = 0; b < tempNextArray.length; b++) {
         userIndex = tempNonCommonUserArr.indexOf(tempNextArray[b].uid);
         if (userIndex != -1) {
@@ -1105,6 +1066,7 @@ function buildPotentialMatchesArray(usersToAssign) {
   let removedUsersCheckArr = [];
   let removedUsersReasonsArr = [];
   let removedUsersString = "";
+  let userIndex = 0;
 
   for (let i = 0; i < usersToAssign.length; i++) {
     tempAssignArr.push(usersToAssign[i]);
@@ -1133,8 +1095,21 @@ function buildPotentialMatchesArray(usersToAssign) {
     } else {
       removedUsersArr.push(usersToAssign[a]);
       removedUsersReasonsArr.push(removedUsersString);
+      userIndex = findUIDItemInArr(usersToAssign[a].uid, tempUserArr, true);
+      tempUserArr.splice(userIndex, 1);
+
+      for (let i = 0; i < potentialMatchesArr.length; i++) {
+        userIndex = findUIDItemInArr(usersToAssign[a].uid, potentialMatchesArr[i], true);
+        if (userIndex != -1) {
+          potentialMatchesArr[i].splice(userIndex, 1);
+        }
+      }
     }
     tempPotentialMatchesArr = [];
+  }
+
+  if (consoleOutput && (pageName == "Moderation")) {
+    //console.log(removedUsersReasonsArr);
   }
 
   while(!checkRemovedUsers());
@@ -1189,15 +1164,6 @@ function buildPotentialMatchesArray(usersToAssign) {
 function generateActivateSecretSantaModal(){
 
   activateSecretSanta.onclick = function() {
-    if (checkForSecretSantaBool) {
-      if (checkForRandomErrors()) {
-        alert("***WARNING***\n\n\nDue to a low number of users being randomly assigned names, there is a " +
-          "higher likelihood for potential errors. Please be prepared to press the \"Assign\" button " +
-          "more than once. To remedy this issue, invite more users to use Gifty or consolidate " +
-          "your users into larger families. Thank you!");
-      }
-    }
-
     santaModalSpan.onclick = function(){
       closeModal(secretSantaModal);
     };
