@@ -328,8 +328,6 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        if(consoleOutput)
-          console.log("User Updated: " + data.val().userName);
         let i = findUIDItemInArr(data.key, userArr);
         if(userArr[i] != data.val() && i != -1){
           if(consoleOutput)
@@ -340,7 +338,7 @@ window.onload = function instantiate() {
         if(data.key == user.uid){
           user = data.val();
           if(consoleOutput)
-            console.log("User Updated: 2");
+            console.log("Current User Updated");
         }
       });
 
