@@ -329,16 +329,40 @@ function login() {
     }
   }
   if (loginBool === true){
+    let today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth()+1;
+    let yy = today.getFullYear();
+    let loginDate = mm + "/" + dd + "/" + yy;
+    let currentUserScore;
+
+    if (userArr[validUserInt].userScore != null) {
+      currentUserScore = userArr[validUserInt].userScore + 5;
+    } else {
+      currentUserScore = 10;
+    }
+
     loginInfo.style.color = "#fff";
     if (userArr[validUserInt].firstLogin == 1) {
       loginInfo.innerHTML = "Welcome Back, " + userArr[validUserInt].name + "!";
+      userArr[validUserInt].lastLogin = loginDate;
+      userArr[validUserInt].userScore = currentUserScore;
+      firebase.database().ref("users/" + userArr[validUserInt].uid).update({
+        lastLogin: loginDate,
+        userScore: currentUserScore
+      });
     } else {
       loginInfo.innerHTML = "Welcome to Gifty, " + userArr[validUserInt].name + "!";
       userArr[validUserInt].firstLogin = 1;
+      userArr[validUserInt].lastLogin = loginDate;
+      userArr[validUserInt].userScore = currentUserScore;
       firebase.database().ref("users/" + userArr[validUserInt].uid).update({
-        firstLogin: 1
+        firstLogin: 1,
+        lastLogin: loginDate,
+        userScore: currentUserScore
       });
     }
+
     document.body.className="B";
     clearInterval(colorShifter);
     document.getElementById("fadeOutLogin").className = "fadeOutItemA";
@@ -346,6 +370,7 @@ function login() {
     validUser = userArr[validUserInt];
     sessionStorage.setItem("validUser", JSON.stringify(validUser));
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
+
     let timer = 0;
     setInterval(function(){
       timer = timer + 1000;
