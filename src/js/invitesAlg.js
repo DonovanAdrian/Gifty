@@ -394,12 +394,17 @@ window.onload = function instantiate() {
 
   function addPrivateMessageToDB(userData, message) {
     let userNotificationArr = [];
+    let currentUserScore = user.userScore + 1;
+
+    user.userScore = user.userScore + 1;
     if(userData.notifications == undefined){
       userNotificationArr = [];
     } else {
       userNotificationArr = userData.notifications;
     }
     userNotificationArr.push(message);
+
+    firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
 
     if(userData.notifications == undefined) {
       firebase.database().ref("users/" + userData.uid).update({notifications:{0:message}});
@@ -715,7 +720,7 @@ window.onload = function instantiate() {
 
     let notificationString = generateNotificationString(user.name, "invites.html");
     let invitedUserNotificiations;
-    if(invitedUser.notifications == undefined || invitedUser.notifications == null){
+    if(invitedUser.notifications == undefined){
       invitedUserNotificiations = [];
     } else {
       invitedUserNotificiations = invitedUser.notifications;
