@@ -405,7 +405,7 @@ window.onload = function instantiate() {
     let liItem = document.createElement("LI");
     liItem.id = "user" + userData.uid;
     initUserElement(liItem, userData);
-    let textNode = document.createTextNode(userData.name);
+    let textNode = document.createTextNode(" " + userData.name);
     liItem.appendChild(textNode);
 
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
