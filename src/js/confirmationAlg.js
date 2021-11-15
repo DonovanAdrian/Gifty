@@ -332,6 +332,9 @@ window.onload = function instantiate() {
     let finalInviteData;
     let friendFriendArr;
     let userFriendArr;
+    let currentUserScore = user.userScore + 5;
+
+    user.userScore = user.userScore + 5;
 
     if(consoleOutput) {
       console.log("Pre-adding " + inviteData.uid + " to User's Friend List:");
@@ -374,6 +377,8 @@ window.onload = function instantiate() {
     }
 
     finalInviteData = [friendFriendArr, userFriendArr];
+
+    firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
 
     deleteInvite(inviteData.uid, finalInviteData);
   }
