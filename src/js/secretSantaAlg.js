@@ -4,7 +4,8 @@
  * with written consent under any circumstance.
  */
 
-let secretBtnStates = [false, false];
+let automaticControl = null;
+let currentState = -1;
 let tempUserArr = [];
 let assignedNameUsers = [];
 let assignedUsers = [];
@@ -36,49 +37,232 @@ let usersNotAssignedAlert = false;
 
 
 
-function checkSecretSanta(autoUpdateBool){
-  if(autoUpdateBool) {
-    if (currentDate >= showDate && currentDate <= assignDate)
-      showSecretSanta();
-    if (currentDate >= assignDate && currentDate.getMonth() <= hideDateMin) {
-      showSecretSanta();
-      if(!checkIfSantaActive())
-        createSecretSantaNames();
+function initializeSecretSantaDataMod(data) {
+  if(data.key == "automaticUpdates") {
+    automaticControl = data.val();
+  } else if (data.key == "santaState") {
+    currentState = data.val();
+  }
+
+  if (currentState != -1 && automaticControl != null) {
+    initializeSecretSantaButtons();
+
+    if (automaticControl) {
+      if (currentDate >= assignDate && currentDate.getMonth() <= hideDateMin && currentState == 2) {
+        console.log("Assign Names???")
+        console.log("Set state to 3???");
+        if (checkIfSantaSignUp()) {
+          console.log("Assign Names!");
+          //createSecretSantaNames(); ToDo
+          changeSecretSantaState(3);
+        } else if (!checkIfSantaSignUp() && pageName == "Moderation") {
+          alert ("Not enough people have signed up yet! At least 3 people need to be signed up in order" +
+            " to assign names");
+        }
+      }
     }
-    if (currentDate.getMonth() >= hideDateMin && currentDate.getMonth() <= hideDateMax)
+  }
+}
+
+function initializeSecretSantaDataList(data) {
+  if(data.key == "automaticUpdates") {
+    automaticControl = data.val();
+  } else if (data.key == "santaState") {
+    currentState = data.val();
+  }
+
+  if (currentState != -1 && automaticControl != null) {
+    if (currentState != 1) {
+      showSecretSanta();
+    } else {
       hideSecretSanta();
-  } else
-    hideSecretSanta();
+    }
+    if (automaticControl) {
+      checkSecretSanta();
+    }
+  }
+}
+
+function autoControlUpdate() {
+  if (automaticControl == false) {
+    automaticControl = true;
+  } else {
+    automaticControl = false;
+  }
+
+  updateSecretSantaToDB("auto");
+}
+
+function changeSecretSantaState(manualChange) {
+  if (manualChange == 0) {
+    if (currentState == 3) {
+      currentState = 1
+    } else {
+      currentState++;
+    }
+  } else {
+    currentState = manualChange;
+  }
+
+  switch (currentState) {
+    case 1:
+      console.log("State 1: Idle");
+      currentState = 1;
+      //disableSecretSanta(); ToDo
+      break;
+    case 2:
+      console.log("State 2: Ready");
+      currentState = 2;
+      break;
+    case 3:
+      console.log("State 3: Active");
+      currentState = 3;
+      if (checkIfSantaSignUp()) {
+        console.log("Assign Names!");
+        //createSecretSantaNames(); ToDo
+      } else if (!checkIfSantaSignUp() && pageName == "Moderation") {
+        alert ("Not enough people have signed up yet! At least 3 people need to be signed up in order" +
+          " to assign names");
+      }
+      break;
+    default:
+      console.log("Hmm, this wasn't supposed to happen!");
+      break;
+  }
+
+  updateSecretSantaToDB("state");
+}
+
+function initializeSecretSantaButtons() {
+  let secretSantaBtnTxtEnable = "Enable Secret Santa";
+  let secretSantaBtnTxtTrigger = "Assign Secret Santa Names";
+  let secretSantaBtnTxtDisable = "Disable Secret Santa";
+
+  secretSantaShuffle.innerHTML = "Button Disabled";
+  secretSantaShuffle.onclick = function() {};
+  secretSantaBtn.onclick = function() {
+    secretSantaButtonManager("main");
+  };
+  secretSantaAutoBtn.onclick = function () {
+    secretSantaButtonManager("auto");
+  };
+
+  if (automaticControl) {
+    secretSantaBtnTxtEnable = "Manually " + secretSantaBtnTxtEnable;
+    secretSantaBtnTxtTrigger = "Manually " + secretSantaBtnTxtTrigger;
+    secretSantaBtnTxtDisable = "Manually " + secretSantaBtnTxtDisable;
+    secretSantaAutoBtn.innerHTML = "Disable Auto Control";
+    showSecretTextCycler = true;
+    cycleSecretSantaAutoBtnTxt();
+  } else {
+    secretSantaAutoBtn.innerHTML = "Enable Auto Control";
+    showSecretTextCycler = false;
+  }
+
+  if (currentState == 1) {
+    secretSantaBtn.innerHTML = secretSantaBtnTxtEnable;
+  } else if (currentState == 2) {
+    secretSantaBtn.innerHTML = secretSantaBtnTxtTrigger;
+  } else {
+    secretSantaBtn.innerHTML = secretSantaBtnTxtDisable;
+    secretSantaShuffle.innerHTML = "Shuffle Secret Santa";
+    secretSantaShuffle.onclick = function() {
+      secretSantaButtonManager("shuffle");
+    };
+  }
+}
+
+function secretSantaButtonManager(buttonPressed) {
+  console.log("Pressed " + buttonPressed);
+
+  switch(buttonPressed) {
+    case "auto":
+      autoControlUpdate();
+      initializeSecretSantaButtons();
+      break;
+    case "shuffle":
+      //createSecretSantaNames(); ToDo
+      break;
+    case "main":
+      if (currentState == 2) {
+        changeSecretSantaState(0);
+        initializeSecretSantaButtons();
+      } else {
+        changeSecretSantaState(0);
+        initializeSecretSantaButtons();
+      }
+      break;
+    default:
+      console.log("Hm, this shouldn't have happened!");
+      break;
+  }
+}
+
+function disableSecretSanta() {
+  removeSecretSantaNames();
+  if(consoleOutput)
+    console.log("Removed Secret Santa Names!");
+  updateAllUsersToDBSantaNames();
+
+  removeSecretSantaNums();
+  if(consoleOutput)
+    console.log("Removed Secret Santa Nums!");
+  updateAllUsersToDBSantaNums();
+}
+
+function checkSecretSanta(){
+  if (currentDate >= showDate && currentDate <= assignDate) { //State 2
+    changeSecretSantaState(2);
+    if (pageName == "Lists") {
+      showSecretSanta();
+    }
+  }
+  if (currentDate >= assignDate && currentDate.getMonth() <= hideDateMin) { //State 3
+    if (pageName == "Lists") {
+      showSecretSanta();
+    }
+
+    changeSecretSantaState(3);
+    //createSecretSantaNames(); ToDo
+    console.log("Assign Names???")
+    console.log("Set state to 3???");
+  }
+  if (currentDate.getMonth() >= hideDateMin && currentDate.getMonth() <= hideDateMax) { //State 1
+    changeSecretSantaState(1);
+    if (pageName == "Lists") {
+      //autoHideSecretSanta(); ToDo
+    }
+  }
 }
 
 function showSecretSanta(){
   if (user.secretSanta == null) {
-    if (!checkIfSantaActive()) {
+    if (currentState == 2) {
       secretSantaSignUp.style.display = "block";
       secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
     }
   } else {
-    if (user.secretSanta == 0 && !checkIfSantaActive()) {
-      secretSantaSignUp.style.display = "block";
+    if (user.secretSanta == 0 && currentState == 2) {
       secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
-    } else if (user.secretSanta == 1 && !checkIfSantaActive()) {
-      secretSantaSignUp.style.display = "block";
+    } else if (user.secretSanta == 1 && currentState == 2) {
       secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
-    } else if (user.secretSanta == 1 && checkIfSantaActive()) {
+    } else if (user.secretSanta == 1 && currentState == 3) {
       if (user.secretSantaName != null) {
         if (user.secretSantaName != "") {
           let i = findUIDItemInArr(user.secretSantaName, userArr, true);
           secretSantaData = userArr[i];
           secretSantaSignUp.innerHTML = userArr[i].name;
-          secretSantaSignUp.style.display = "block";
         }
       }
     }
+    secretSantaSignUp.style.display = "block";
   }
 
   secretSantaSignUp.onclick = function() {
-    if (checkIfSantaActive()) {
-      generateSecretSantaModal();
+    if (currentState == 3 && user.secretSantaName != null) {
+      if (user.secretSantaName != "") {
+        generateSecretSantaModal();
+      }
     } else {
       if (user.secretSanta != null) {
         if (user.secretSanta == 0) {
@@ -111,46 +295,37 @@ function showSecretSanta(){
   };
 }
 
-function hideSecretSanta(){
-  let clearSecretSantasBool = false;
-  let manuallyEnableActiveBool = false;
+function hideSecretSanta() {
+  secretSantaSignUp.style.display = "none";
+  secretSantaSignUp.onclick = function () {};
+}
+
+function autoHideSecretSanta(){
+
+  let clearSecretSantaBool = false;
   let globalSecretSantaMessage = "";
 
   try {
     secretSantaSignUp.style.display = "none";
     secretSantaSignUp.onclick = function () {};
   } catch (err) {}
-  try {
-    manuallyEnableActiveBool = secretBtnStates[1];
-  } catch (err) {}
 
   if (currentDate >= showDate && currentDate.getMonth() < hideDateMin && checkIfSantaSignUp()) {
-    clearSecretSantasBool = true;
+    clearSecretSantaBool = true;
     globalSecretSantaMessage = globalApology;
-  } else if (currentDate.getMonth() >= hideDateMin && currentDate.getMonth() <= hideDateMax && checkIfSantaActive()) {
-    clearSecretSantasBool = true;
+  } else if (currentDate.getMonth() >= hideDateMin && currentDate.getMonth() <= hideDateMax && currentState == 3) {
+    clearSecretSantaBool = true;
     globalSecretSantaMessage = globalThanks;
-  } else {
-    if (consoleOutput && secretBtnStates[1])
-      alert("It seems that the Secret Santa was cancelled out of cycle!");
   }
 
-  if (clearSecretSantasBool) {
-    if(checkForGlobalMessage() && manuallyEnableActiveBool) {
+  if (clearSecretSantaBool) {
+    if(checkForGlobalMessage()) {
       addGlobalMessageToDB(globalSecretSantaMessage);
       if(consoleOutput)
         console.log("Sent A Global Message!");
     }
 
-    removeSecretSantaNames();
-    if(consoleOutput)
-      console.log("Removed Secret Santa Names!");
-    updateAllUsersToDBSantaNames();
-
-    removeSecretSantaNums();
-    if(consoleOutput)
-      console.log("Removed Secret Santa Nums!");
-    updateAllUsersToDBSantaNums();
+    disableSecretSanta();
   }
 }
 
@@ -165,15 +340,6 @@ function checkIfSantaSignUp() {
 
   if (signUpLimit > 2)
     return true;
-  return false;
-}
-
-function checkIfSantaActive() {
-  for (let i = 0; i < userArr.length; i++)
-    if(userArr[i].secretSantaName != null)
-      if(userArr[i].secretSantaName != "") {
-        return true;
-      }
   return false;
 }
 
@@ -212,88 +378,6 @@ function addGlobalMessageToDB(message) {
   }
 }
 
-function initializeSecretSantaBtns() {
-  let secretSantaBtnTxtEnable = "Enable Secret Santa";
-  let secretSantaBtnTxtTrigger = "Assign Secret Santa Names";
-  let secretSantaBtnTxtDisable = "Disable Secret Santa";
-
-  secretSantaShuffle.innerHTML = "Button Disabled";
-  secretSantaShuffle.onclick = function() {};
-
-  if (!secretBtnStates[0]) {
-    secretSantaBtn.innerHTML = secretSantaBtnTxtEnable;
-    secretSantaBtn.onclick = function () {
-      secretSantaButtonManager("mainT");
-    };
-  } else {
-    if(checkIfSantaActive()) {
-      secretSantaBtn.innerHTML = secretSantaBtnTxtDisable;
-      secretSantaBtn.onclick = function () {
-        secretSantaButtonManager("mainF");
-      };
-      secretSantaShuffle.innerHTML = "Shuffle Secret Santa";
-      secretSantaShuffle.onclick = function() {
-        secretSantaButtonManager("shuffle", true);
-      };
-    } else {
-      secretSantaBtn.innerHTML = secretSantaBtnTxtTrigger;
-      secretSantaBtn.onclick = function () {
-        if (checkIfSantaSignUp()) {
-          secretSantaButtonManager("shuffle", false);
-        } else {
-          alert ("Not enough people have signed up yet! At least 3 people need to be signed up in order" +
-            " to assign names");
-        }
-      };
-      secretSantaShuffle.innerHTML = secretSantaBtnTxtDisable;
-      secretSantaShuffle.onclick = function() {
-        secretSantaButtonManager("mainF");
-      };
-    }
-  }
-
-  if (!secretBtnStates[1]) {
-    showSecretTextCycler = false;
-    secretSantaAutoBtn.innerHTML = "Enable Auto Control";
-    secretSantaAutoBtn.onclick = function () {
-      secretSantaButtonManager("autoT");
-    };
-  } else {
-    showSecretTextCycler = true;
-    cycleSecretSantaAutoBtnTxt();
-    if (!secretBtnStates[0]) {
-      secretSantaBtn.innerHTML = "Manually " + secretSantaBtnTxtEnable;
-      secretSantaBtn.onclick = function () {
-        secretSantaButtonManager("mainT");
-      };
-    } else {
-      if (checkIfSantaActive()) {
-        secretSantaBtn.innerHTML = "Manually " + secretSantaBtnTxtDisable;
-        secretSantaBtn.onclick = function () {
-          secretSantaButtonManager("mainF");
-        };
-      } else {
-        secretSantaBtn.innerHTML = "Manually " + secretSantaBtnTxtTrigger;
-        secretSantaBtn.onclick = function () {
-          if (checkIfSantaSignUp()) {
-            secretSantaButtonManager("shuffle", false);
-          } else {
-            alert ("Not enough people have signed up yet!");
-          }
-        };
-        secretSantaShuffle.innerHTML = "Manually " + secretSantaBtnTxtDisable;
-        secretSantaShuffle.onclick = function() {
-          secretSantaButtonManager("mainF");
-        };
-      }
-    }
-    secretSantaAutoBtn.innerHTML = "Disable Auto Control";
-    secretSantaAutoBtn.onclick = function () {
-      secretSantaButtonManager("autoF");
-    };
-  }
-}
-
 function cycleSecretSantaAutoBtnTxt() {
   if (textCyclerLimiter == 0) {
     let textCycler = 0;
@@ -329,73 +413,23 @@ function checkNextDate() {
   if (currentDate >= showDate && currentDate <= assignDate)
     return "Assigning " + assignDate.getMonth() + "/" + assignDate.getDay() + "/" + currentYear;
   if (currentDate >= assignDate && currentDate.getMonth() <= hideDateMin)
-    if(checkIfSantaActive()) {
+    if(currentState == 3) {
       return "Ending " + hideDateMin + "/1/" + currentYear+1;
     }
   if (currentDate.getMonth() >= hideDateMin && currentDate.getMonth() <= hideDateMax)
     return "Starting " + showDate.getMonth() + "/" + showDate.getDay() + "/" + currentYear;
 }
 
-function secretSantaButtonManager(buttonPressed, shuffleMode) {
-  switch(buttonPressed) {
-    case "mainT":
-      updateSecretSantaToDB("manual", true);
-      break;
-    case "mainF":
-      friendScoreNote = 0;
-      updateSecretSantaToDB("manual", false);
-      break;
-    case "shuffle":
-      if (shuffleMode) {
-        secretSantaShuffle.onclick = function (){};
-
-        createSecretSantaNames();
-
-        secretSantaShuffle.onclick = function (){
-          secretSantaButtonManager("shuffle", true);
-        };
-      } else {
-        secretSantaBtn.onclick = function (){};
-
-        createSecretSantaNames();
-
-        secretSantaBtn.onclick = function (){
-          if (checkIfSantaSignUp()) {
-            secretSantaButtonManager("shuffle", false);
-          } else {
-            alert ("Not enough people have signed up yet!");
-          }
-        };
-      }
-      break;
-    case "autoT":
-      updateSecretSantaToDB("auto", true);
-      break;
-    case "autoF":
-      showSecretTextCycler = false;
-      updateSecretSantaToDB("auto", false);
-      secretSantaAutoBtn.innerHTML = "Enable Auto Control";
-      secretSantaAutoBtn.onclick = function () {
-        secretSantaButtonManager("autoT");
-      };
-      break;
-    default:
-      if(consoleOutput)
-        console.log("Unrecognized Button!?!");
-      break;
-  }
-}
-
-function updateSecretSantaToDB(settingToUpdate, settingToBool) {
+function updateSecretSantaToDB(settingToUpdate) {
   switch(settingToUpdate) {
     case "auto":
       firebase.database().ref("secretSanta/").update({
-        automaticUpdates: settingToBool
+        automaticUpdates: automaticControl
       });
       break;
-    case "manual":
+    case "state":
       firebase.database().ref("secretSanta/").update({
-        manuallyEnable: settingToBool
+        santaState: currentState
       });
       break;
     default:
@@ -653,7 +687,7 @@ function createSecretSantaNames(){
 
   for (let i = 0; i < optInFamilyArr.length; i++) {
     if (optInFamilyStatsArr[i] < 3) {
-      if (!ignoreFamilySet && !checkIfSantaActive() && (pageName == "Moderation")) {
+      if (!ignoreFamilySet && currentState == 2 && pageName == "Moderation") {
         alert("There is a family with less than three users signed up!\n\n\nYou have 10 SECONDS to press the button again" +
           " if you are okay with this. The users in question will NOT be assigned names.");
         startIgnoreFamilySetTimer();
@@ -707,7 +741,7 @@ function createSecretSantaNames(){
           usersNotAssignedAlert = true;
           skippedFamilies.push(optInFamilyArr[i]);
         }
-      } else if (!ignoreFamilySet && !checkIfSantaActive() && (pageName == "Moderation")) {
+      } else if (!ignoreFamilySet && currentState == 2 && pageName == "Moderation") {
         alert("There is a family with less than three eligible users!\n\n\nYou have 10 SECONDS to press the button again" +
           " if you are okay with this. The users in question will NOT be assigned names.");
         startIgnoreFamilySetTimer();
@@ -763,10 +797,7 @@ function createSecretSantaNames(){
           " lists");
         usersNotAssignedAlert = false;
       }
-      if (secretSantaPageName == "moderation") {
-        initializeSecretSantaBtns();
-      }
-      if (secretSantaPageName == "lists") {
+      if (pageName == "Lists") {
         showSecretSanta();
       }
       tempUserArr = [];
