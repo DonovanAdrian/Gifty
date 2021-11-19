@@ -11,13 +11,11 @@ let userArr = [];
 let familyArr = [];
 
 let secretSantaAssignErrorMsg = "try again or look at the console for more details!";
-let secretSantaPageName = "moderation";
 
 let moderationSet = 1;
 let dataCounter = 0;
 let globalNoteInt = 0;
 let commonLoadingTimerInt = 0;
-let initialBtnInit = 0;
 
 let dataListContainer;
 let offlineSpan;
@@ -254,55 +252,33 @@ window.onload = function instantiate() {
           console.log("Secret Santa Snapshot Exists!");
           postRef.on('child_added', function (data) {
             console.log(data.key + " added");
-            if(data.key == "automaticUpdates" && secretBtnStates[1] != data.val()) {
-              secretBtnStates[1] = data.val();
-              initializeSecretSantaBtns();
-            }
 
-            if (initialBtnInit == 0 && data.key == "manuallyEnable") {
-              if (secretBtnStates[0] != data.val())
-                secretBtnStates[0] = data.val();
-              initializeSecretSantaBtns();
-              initialBtnInit++;
-            } else if(data.key == "manuallyEnable" && secretBtnStates[0] != data.val()) {
-              secretBtnStates[0] = data.val();
-              initializeSecretSantaBtns();
-              if(data.val())
-                checkSecretSanta(data.val());
-            }
+            initializeSecretSantaDataMod(data);
           });
 
           postRef.on('child_changed', function (data) {
             console.log(data.key + " changed");
-            if(data.key == "automaticUpdates" && secretBtnStates[1] != data.val()) {
-              secretBtnStates[1] = data.val();
-              initializeSecretSantaBtns();
-            }
 
-            if(data.key == "manuallyEnable" && secretBtnStates[0] != data.val()) {
-              secretBtnStates[0] = data.val();
-              initializeSecretSantaBtns();
-              if(!data.val())
-                hideSecretSanta();
-            }
+            initializeSecretSantaDataMod(data);
           });
 
           postRef.on('child_removed', function (data) {
-            console.log(data.key + " removed");
-            if(data.key == "automaticUpdates")
-              secretBtnStates[1] = data.val();
-            if(data.key == "manuallyEnable")
-              secretBtnStates[0] = data.val();
-            initializeSecretSantaBtns();
-            if(data.key == "automaticUpdates" || data.key == "manuallyEnable")
-              checkSecretSanta(false);
+            console.log(data.key + " removed!");
+
+            firebase.database().ref("secretSanta/").update({
+              automaticUpdates: false,
+              manualUpdates: false,
+              santaState: 1
+            });
           });
+
         } else {
           console.log("Initializing Secret Santa In DB");
 
           firebase.database().ref("secretSanta/").update({
             automaticUpdates: false,
-            manuallyEnable: false
+            manualUpdates: false,
+            santaState: 1
           });
         }
       });
@@ -426,10 +402,12 @@ window.onload = function instantiate() {
   function initUserElement(liItem, userData) {
     liItem.className = "gift";
     if (userData.secretSanta != null) {
-      if (userData.secretSanta == 1 && !checkIfSantaActive()) {
+      if (userData.secretSanta == 1 && currentState != 3) {
         liItem.className += " santa";
-      } else if (userData.secretSantaName != "") {
-        liItem.className += " santa";
+      } else if (userData.secretSantaName != null) {
+        if (userData.secretSantaName != "") {
+          liItem.className += " santa";
+        }
       }
     }
     liItem.onclick = function (){
@@ -463,7 +441,7 @@ window.onload = function instantiate() {
       }
       userPassword.innerHTML = "Click On Me To View Password";
 
-      if ((checkIfSantaSignUp() && !checkIfSantaActive()) || (secretBtnStates[0] && !checkIfSantaActive())) {
+      if (checkIfSantaSignUp() && currentState != 3) {
         if(userData.secretSanta != undefined) {
           if (userData.secretSanta == 0) {
             userSecretSanta.innerHTML = "Click To Opt Into Secret Santa";
@@ -479,7 +457,7 @@ window.onload = function instantiate() {
         userSecretSanta.onclick = function() {
           manuallyOptInOut(userData);
         };
-      } else if (checkIfSantaActive()) {
+      } else if (currentState == 3) {
         if (userData.secretSantaName == "") {
           userSecretSanta.innerHTML = "This User Was Not Assigned A Name!";
           userSecretSanta.style.color = "#000";
