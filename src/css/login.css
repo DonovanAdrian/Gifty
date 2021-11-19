@@ -14,7 +14,11 @@ body {
 }
 
 body.B {
-  background-color: #fff;
+  background-color: #ffffff;
+}
+
+body.C {
+  background-color: #000000;
 }
 
 @keyframes fadeInAnimation {
@@ -169,7 +173,71 @@ button {
   border-radius: 0;
 }
 
-@media screen and (min-width: 0px) and (max-width: 600px) {
+@media screen and (min-width: 0px) and (max-width: 275px) {
+  .loginContainer {
+    top: 45px;
+  }
+  .fadeOutItemA {
+    top: 45px;
+  }
+  input {
+    width: 125px;
+  }
+  button {
+    width: 145px;
+  }
+  img.imgIcon {
+    width: 150px;
+    height: 150px;
+    transition: 0.3s;
+  }
+  input {
+    font-size: 9px;
+  }
+  button {
+    font-size: 9px;
+  }
+  p {
+    font-size: 9px;
+  }
+  a {
+    font-size: 9px;
+  }
+}
+
+@media screen and (min-width: 275px) and (max-width: 360px) {
+  .loginContainer {
+    top: 100px;
+  }
+  .fadeOutItemA {
+    top: 100px;
+  }
+  input {
+    width: 200px;
+  }
+  button {
+    width: 220px;
+  }
+  img.imgIcon {
+    width: 200px;
+    height: 200px;
+    transition: 0.3s;
+  }
+  input {
+    font-size: 13px;
+  }
+  button {
+    font-size: 13px;
+  }
+  p {
+    font-size: 13px;
+  }
+  a {
+    font-size: 13px;
+  }
+}
+
+@media screen and (min-width: 360px) and (max-width: 600px) {
   .loginContainer {
     top: 175px;
   }
