@@ -14,7 +14,6 @@ let readNotificationsBool = false;
 let friendListEmptyBool = false;
 
 let secretSantaAssignErrorMsg = "refresh the page or ignore this message!";
-let secretSantaPageName = "lists";
 
 let moderationSet = 0;
 let dataCounter = 0;
@@ -167,31 +166,26 @@ window.onload = function instantiate() {
           postRef.on('child_added', function (data) {
             if(consoleOutput)
               console.log(data.key + " added");
-            if(data.key == "automaticUpdates")
-              if(data.val())
-                checkSecretSanta(data.val());
-            if(data.key == "manuallyEnable")
-              if (data.val())
-                showSecretSanta();
+
+            initializeSecretSantaDataList(data);
           });
 
           postRef.on('child_changed', function (data) {
             if(consoleOutput)
               console.log(data.key + " changed");
-            if(data.key == "automaticUpdates")
-              checkSecretSanta(data.val());
-            if(data.key == "manuallyEnable")
-              if (data.val())
-                showSecretSanta();
-              else
-                hideSecretSanta();
+
+            initializeSecretSantaDataList(data);
           });
 
           postRef.on('child_removed', function (data) {
             if(consoleOutput)
               console.log(data.key + " removed");
-            if(data.key == "automaticUpdates" || data.key == "manuallyEnable")
-              checkSecretSanta(false);
+
+            firebase.database().ref("secretSanta/").update({
+              automaticUpdates: false,
+              manualUpdates: false,
+              santaState: 1
+            });
           });
         } else {
           if(consoleOutput)
@@ -199,7 +193,8 @@ window.onload = function instantiate() {
 
           firebase.database().ref("secretSanta/").update({
             automaticUpdates: false,
-            manuallyEnable: false
+            manualUpdates: false,
+            santaState: 1
           });
         }
       });
