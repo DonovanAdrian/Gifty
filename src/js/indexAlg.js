@@ -330,6 +330,7 @@ function login() {
   }
   if (loginBool === true){
     let today = new Date();
+    let hh = today.getHours();
     let dd = today.getDate();
     let mm = today.getMonth()+1;
     let yy = today.getFullYear();
@@ -363,7 +364,11 @@ function login() {
       });
     }
 
-    document.body.className="B";
+    if (hh < 16 && hh > 8) {
+      document.body.className = "B";
+    } else {
+      document.body.className = "C";
+    }
     clearInterval(colorShifter);
     document.getElementById("fadeOutLogin").className = "fadeOutItemA";
     document.getElementById("fadeOutIcon").className = "fadeOutItemB";
