@@ -4,7 +4,9 @@
  * with written consent under any circumstance.
  */
 
-body {margin: 0;}
+body {
+  margin: 0;
+}
 
 div.giftUpdateContainer {
   text-align: center;
