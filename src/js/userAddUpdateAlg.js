@@ -26,6 +26,7 @@ let pinField;
 let pinConfField;
 let btnUpdate;
 let btnDelete;
+let backBtn;
 let userInitial;
 let user;
 let notificationModal;
@@ -46,10 +47,13 @@ function getCurrentUser(){
   } else {
     btnUpdate.innerHTML = "Loading...";
     btnDelete.style.display = "block";
-    btnDelete.style.position = "fixed";
     btnDelete.style.left = "50%";
     btnDelete.style.transform = "translate(-50%)";
     btnDelete.innerHTML = "Loading...";
+    backBtn.style.display = "block";
+    backBtn.style.left = "50%";
+    backBtn.style.transform = "translate(-50%)";
+    backBtn.innerHTML = "Loading...";
     userArr = JSON.parse(sessionStorage.userArr);
 
     alert("Please note that you will be required to input your confirmation pin to continue. If you would like to " +
@@ -66,6 +70,7 @@ window.onload = function instantiate() {
   pinConfField = document.getElementById('pinConfField');
   btnUpdate = document.getElementById('updateUser');
   btnDelete = document.getElementById('deleteUser');
+  backBtn = document.getElementById('backBtn');
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
   confirmModal = document.getElementById('confirmModal');
@@ -76,9 +81,9 @@ window.onload = function instantiate() {
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
-  userAddUpdateElements = [nameField, userNameField, pinField, pinConfField, btnUpdate, btnDelete, offlineModal,
-    offlineSpan, confirmModal, confirmSpan, deleteConfirm, deleteDeny, notificationModal, notificationTitle,
-    notificationInfo, noteSpan];
+  userAddUpdateElements = [nameField, userNameField, pinField, pinConfField, btnUpdate, btnDelete, backBtn,
+    offlineModal, offlineSpan, confirmModal, confirmSpan, deleteConfirm, deleteDeny, notificationModal,
+    notificationTitle, notificationInfo, noteSpan];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(userAddUpdateElements);
@@ -112,6 +117,7 @@ window.onload = function instantiate() {
             pinConfField.placeholder = "Please Confirm Pin To Continue";
             btnUpdate.innerHTML = "Update User Profile";
             btnDelete.innerHTML = "Delete User Profile";
+            backBtn.innerHTML = "Return To Settings";
           }
         }
       });
@@ -164,6 +170,7 @@ function deleteCheck(){
     btnDelete.innerHTML = "Please Wait...";
     btnUpdate.onclick = function(){};
     btnDelete.onclick = function(){};
+    backBtn.onclick = function(){};
     window.location.href = "index.html";
   };
 
@@ -261,6 +268,7 @@ function updateUserToDB(){
     btnUpdate.innerHTML = "Please Wait...";
     btnUpdate.onclick = function(){};
     btnDelete.onclick = function(){};
+    backBtn.onclick = function(){};
     sessionStorage.setItem("validUser", JSON.stringify(user));
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
     window.location.href = "settings.html";
@@ -315,6 +323,7 @@ function addUserToDB(){
     btnUpdate.innerHTML = "Please Wait...";
     btnUpdate.onclick = function(){};
     btnDelete.onclick = function(){};
+    backBtn.onclick = function(){};
     window.location.href = "index.html";
   }
 }
