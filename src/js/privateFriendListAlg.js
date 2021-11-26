@@ -23,6 +23,7 @@ let dataListContainer;
 let giftStorage;
 let user;
 let addGift;
+let backBtn;
 let offlineSpan;
 let offlineModal;
 let giftUser;
@@ -141,6 +142,7 @@ window.onload = function instantiate() {
   inviteNote = document.getElementById('inviteNote');
   listNote = document.getElementById('listNote');
   addGift = document.getElementById('addGift');
+  backBtn = document.getElementById('backBtn');
   giftModal = document.getElementById('giftModal');
   testData = document.getElementById('testData');
   closeGiftModal = document.getElementById('closeGiftModal');
@@ -155,7 +157,7 @@ window.onload = function instantiate() {
   giftEdit = document.getElementById('giftEdit');
   giftDelete = document.getElementById('giftDelete');
   privateFriendListElements = [notificationBtn, giftCreationDate, dataListContainer, offlineModal, offlineSpan,
-    notificationModal, notificationTitle, notificationInfo, noteSpan, inviteNote, listNote, addGift, giftModal,
+    notificationModal, notificationTitle, notificationInfo, noteSpan, inviteNote, listNote, addGift, backBtn, giftModal,
     testData, closeGiftModal, giftTitle, giftLink, giftWhere, giftDescription, giftCreator, giftBought, giftBuy,
     giftDontBuy, giftEdit, giftDelete];
   getCurrentUser();
@@ -165,6 +167,15 @@ window.onload = function instantiate() {
   for (let i = 0; i < userArr.length; i++) {
     userUserNames.push(userArr[i].userName);
   }
+
+  backBtn.innerHTML = "Back To Lists";
+  backBtn.onclick = function() {
+    if(moderationSet == 1){
+      newNavigation(14);//Moderation
+    } else {
+      newNavigation(3);//Lists
+    }
+  };
 
   addGift.innerHTML = "Add Private Gift";
   addGift.onclick = function() {
