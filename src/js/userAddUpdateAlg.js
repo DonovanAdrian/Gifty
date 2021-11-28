@@ -56,8 +56,7 @@ function getCurrentUser(){
     backBtn.innerHTML = "Loading...";
     userArr = JSON.parse(sessionStorage.userArr);
 
-    alert("Please note that you will be required to input your confirmation pin to continue. If you would like to " +
-      "cancel, please click the back button on the browser.");
+    alert("Please note that you will be required to input your confirmation pin to continue.");
   }
 }
 
