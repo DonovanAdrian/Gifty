@@ -138,6 +138,12 @@ a {
   padding: 2px 16px;
 }
 
+.modal-footer {
+  padding-bottom: 50px;
+  background-color: #5cb85c;
+  color: white;
+}
+
 .close {
   color: white;
   float: right;
