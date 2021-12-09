@@ -22,34 +22,35 @@
   <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-analytics.js"></script>
-
-
-  <div class="topnav">
-    <ul>
-      <li><div class="cropIcon"><img class="imgIcon" src="img/giftyIcon.png"></div></li>
-      <div class="break"></div>
-      <li><a class="active" onclick="newNavigation(2)" id="homeNote">Home</a></li>
-      <li><a onclick="newNavigation(3)" id="listNote">Lists</a></li>
-      <li><a onclick="newNavigation(4)" id="inviteNote">Invites</a></li>
-      <li><a onclick="newNavigation(5)">Settings</a></li>
-      <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
-    </ul>
-  </div>
 </head>
 <body>
 
+<div class="topnav">
+  <ul>
+    <li><div class="cropIcon"><img class="imgIcon" src="img/giftyIcon.png"></div></li>
+    <div class="break"></div>
+    <li><a class="active" onclick="newNavigation(2)" id="homeNote">Home</a></li>
+    <li><a onclick="newNavigation(3)" id="listNote">Lists</a></li>
+    <li><a onclick="newNavigation(4)" id="inviteNote">Invites</a></li>
+    <li><a onclick="newNavigation(5)">Settings</a></li>
+    <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
+  </ul>
+</div>
+
+<svg id="fader"></svg>
+
 <div class="giftUpdateContainer">
   <p class="giftInf">Title</p>
-  <input type="text" id="giftTitleInp" placeholder="Gift Title" class="giftInp">
-  <p class="giftInf">Link</p>
+  <input type="text" id="giftTitleInp" placeholder="Gift Title" class="giftInp" maxlength="50">
+  <p class="giftInf">Web Link/URL</p>
   <input type="text" id="giftLinkInp" placeholder="Gift Link" class="giftInp">
   <p class="giftInf">Where This Gift Can Be Found</p>
-  <input type="text" id="giftWhereInp" placeholder="Gift Location" class="giftInp">
+  <input type="text" id="giftWhereInp" placeholder="Gift Location" class="giftInp" maxlength="100">
   <p class="giftInf">Description</p>
-  <input type="text" id="giftDescriptionInp" placeholder="Gift Description" class="giftInp"><br/><br/>
+  <input type="text" id="giftDescriptionInp" placeholder="Gift Description" class="giftInp" maxlength="250"><br/><br/>
   <p class="giftInf">
     <input type="checkbox" id="multiplePurchases">
-  Allow Multiple Purchases</p><br/><br/><br/>
+    Allow Multiple Purchases</p><br/><br/><br/>
   <span class="updateBtn" id="updateGift">Loading... Please Wait</span>
 </div>
 
