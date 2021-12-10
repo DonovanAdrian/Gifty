@@ -22,20 +22,22 @@
   <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-analytics.js"></script>
-
-  <div class="topnav">
-    <ul>
-      <li><div class="cropIcon"><img class="imgIcon" src="img/giftyIcon.png"></div></li>
-      <div class="break"></div>
-      <li><a class="active" onclick="newNavigation(2)">Home</a></li>
-      <li><a onclick="newNavigation(3)">Lists</a></li>
-      <li><a onclick="newNavigation(4)" id="inviteNote">Invites</a></li>
-      <li><a onclick="newNavigation(5)">Settings</a></li>
-      <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
-    </ul>
-  </div>
 </head>
 <body>
+
+<div class="topnav">
+  <ul>
+    <li><div class="cropIcon"><img class="imgIcon" src="img/giftyIcon.png"></div></li>
+    <div class="break"></div>
+    <li><a class="active" onclick="newNavigation(2)">Home</a></li>
+    <li><a onclick="newNavigation(3)">Lists</a></li>
+    <li><a onclick="newNavigation(4)" id="inviteNote">Invites</a></li>
+    <li><a onclick="newNavigation(5)">Settings</a></li>
+    <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
+  </ul>
+</div>
+
+<svg id="fader"></svg>
 
 <ul id="dataListContainer" class="giftList">
   <li class="gift" id="testData">Loading...</li>
