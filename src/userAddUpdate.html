@@ -27,12 +27,14 @@
 </head>
 <body>
 
+<svg id="fader"></svg>
+
 <div class="loginContainer">
   <button style="display: none; position: relative" onclick="newNavigation(5)" id="backBtn">Loading...</button>
-  <input type="text" placeholder="Full Name" id="nameField">
-  <input type="text" placeholder="User Name" id="userNameField">
-  <input type="number" placeholder="Enter Pin" id="pinField">
-  <input type="number" placeholder="Confirm Pin" id="pinConfField">
+  <input type="text" placeholder="Full Name" id="nameField" maxlength="40">
+  <input type="text" placeholder="User Name" id="userNameField" maxlength="25">
+  <input type="number" placeholder="Enter Pin" id="pinField" maxlength="15">
+  <input type="number" placeholder="Confirm Pin" id="pinConfField" maxlength="15">
   <button onclick="updateSuppressCheck()" id="updateUser">Loading...</button>
   <button style="display: none; position: relative" onclick="deleteCheck()" id="deleteUser">Loading...</button>
   <p id="loginInfo" style="color:red"></p>
