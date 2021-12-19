@@ -16,6 +16,7 @@ let commonLoadingTimerInt = 0;
 
 let dataListContainer;
 let nukeTickets;
+let backBtn;
 let ticketModal;
 let closeTicketModal;
 let ticketTitle;
@@ -70,6 +71,7 @@ window.onload = function instantiate() {
   pageName = "ModerationQueue";
   dataListContainer = document.getElementById('dataListContainer');
   nukeTickets = document.getElementById('nukeTickets');
+  backBtn = document.getElementById('backBtn');
   ticketModal = document.getElementById('ticketModal');
   closeTicketModal = document.getElementById('closeTicketModal');
   ticketTitle = document.getElementById('ticketTitle');
@@ -86,9 +88,9 @@ window.onload = function instantiate() {
   notificationInfo = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
   testData = document.getElementById('testData');
-  moderationQueueElements = [dataListContainer, nukeTickets, ticketModal, closeTicketModal, ticketTitle, ticketUID,
-    ticketDetails, ticketLocation, ticketTime, deleteTicket, offlineModal, offlineSpan, inviteNote, notificationModal,
-    notificationTitle, notificationInfo, noteSpan, testData];
+  moderationQueueElements = [dataListContainer, nukeTickets, backBtn, ticketModal, closeTicketModal, ticketTitle,
+    ticketUID, ticketDetails, ticketLocation, ticketTime, deleteTicket, offlineModal, offlineSpan, inviteNote,
+    notificationModal, notificationTitle, notificationInfo, noteSpan, testData];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(moderationQueueElements);
@@ -110,6 +112,14 @@ window.onload = function instantiate() {
       nukeTickets.innerHTML = "No Tickets To Remove!";
       nukeTickets.onclick = function () {};
     }
+  }
+
+  function initializeBackBtn() {
+    backBtn.innerHTML = "Return To Settings";
+
+    backBtn.onclick = function() {
+      newNavigation(5);
+    };
   }
 
   function databaseQuery() {
@@ -209,6 +219,7 @@ window.onload = function instantiate() {
         } else {
           deployListEmptyNotification("There Are No Items In The Moderation Queue!");
           initializeNukeBtn();
+          initializeBackBtn();
         }
       });
     };
@@ -241,6 +252,7 @@ window.onload = function instantiate() {
 
     if (dataCounter < 1) {
       initializeNukeBtn();
+      initializeBackBtn();
     }
     dataCounter++;
     if (dataCounter > buttonOpacLim) {
@@ -363,6 +375,7 @@ window.onload = function instantiate() {
       if (dataCounter == 0){
         deployListEmptyNotification("There Are No Items In The Moderation Queue!");
         initializeNukeBtn();
+        initializeBackBtn();
       }
     } catch (err) {}
   }
