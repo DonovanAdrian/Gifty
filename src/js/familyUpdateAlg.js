@@ -24,6 +24,7 @@ let settingsNote;
 let dataListContainer;
 let testData;
 let addMember;
+let backBtn;
 let familySettings;
 let familyMemberViewModal;
 let closeFamilyMemberViewModal;
@@ -111,6 +112,7 @@ window.onload = function instantiate() {
   dataListContainer = document.getElementById('dataListContainer');
   testData = document.getElementById('testData');
   addMember = document.getElementById('addMember');
+  backBtn = document.getElementById('backBtn');
   familySettings = document.getElementById('familySettings');
   familyMemberViewModal = document.getElementById('familyMemberViewModal');
   closeFamilyMemberViewModal = document.getElementById('closeFamilyMemberViewModal');
@@ -156,7 +158,7 @@ window.onload = function instantiate() {
   noteSpan = document.getElementById('closeNotification');
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
-  familyUpdateElements = [inviteNote, settingsNote, dataListContainer, testData, addMember, familySettings,
+  familyUpdateElements = [inviteNote, settingsNote, dataListContainer, testData, addMember, backBtn, familySettings,
     familyMemberViewModal, closeFamilyMemberViewModal, familyMemberName, familyMemberUserName, familyMemberUID,
     familyMemberParent, familyMemberChild, familyMemberPCClear, removeFamilyMember, familyPCModal, closeFamilyPCModal,
     familyPCTitle, familyPCText, familyPCListContainer, familyPCBack, testFamily, familyAddModal, closeFamilyAddModal,
@@ -183,11 +185,25 @@ window.onload = function instantiate() {
     generateAddMemberModal();
   };
 
-  familySettings.innerHTML = "Family Settings";
+  function initializeFamilySettingsBtn() {
+    familySettings.innerHTML = "Family Settings";
 
-  familySettings.onclick = function() {
-    generateFamilySettingsModal();
-  };
+    familySettings.onclick = function () {
+      generateFamilySettingsModal();
+    };
+  }
+
+  function initializeBackBtn() {
+    backBtn.innerHTML = "Return To Family Page";
+
+    backBtn.onclick = function() {
+      newNavigation(15);
+    };
+  }
+
+  initializeFamilySettingsBtn();
+
+  initializeBackBtn();
 
   if(familyData.members != null) {
     if (familyData.members.length == 0) {
