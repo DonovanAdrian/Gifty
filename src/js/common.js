@@ -80,12 +80,39 @@ function instantiateCommon(){
   dataListChecker = document.getElementById('dataListContainer');
 }
 
+function fadeInPage() {
+  if (!window.AnimationEvent) {
+    return;
+  }
+  try {
+    let fader = document.getElementById('fader');
+    fader.classList.add('fade-out');
+  } catch(err) {}
+}
+
+function initializeFadeOut() {
+  if (!window.AnimationEvent) {
+    return;
+  }
+
+  window.addEventListener('pageshow', function (event) {
+    if (!event.persisted) {
+      return;
+    }
+    var fader = document.getElementById('fader');
+    fader.classList.remove('fade-in');
+  });
+}
+
 function commonInitialization(){
   if (consoleOutput) {
     let today = new Date();
     console.log(today);
     console.log("Initializing the " + pageName + " Page...");
   }
+
+  fadeInPage();
+  initializeFadeOut();
 
   const config = JSON.parse(sessionStorage.config);
   instantiateCommon();
@@ -271,29 +298,32 @@ function ohThereYouAre(){
 
 function signOut(){
   sessionStorage.clear();
+  newNavigation(1, true);
   window.location.href = "index.html";
 }
 
-function newNavigation(navNum) {
-  try {
-    if (privateUser != null) {
+function newNavigation(navNum, loginOverride) {
+  if (!loginOverride) {
+    try {
+      if (privateUser != null) {
+        if (consoleOutput)
+          console.log("***Private***");
+        sessionStorage.setItem("validUser", JSON.stringify(privateUser));
+      } else {
+        if (consoleOutput)
+          console.log("***Normal***");
+        sessionStorage.setItem("validUser", JSON.stringify(user));
+      }
+    } catch (err) {
       if (consoleOutput)
-        console.log("***Private***");
-      sessionStorage.setItem("validUser", JSON.stringify(privateUser));
-    } else {
-      if (consoleOutput)
-        console.log("***Normal***");
+        console.log("***Normal + Catch***");
       sessionStorage.setItem("validUser", JSON.stringify(user));
     }
-  } catch (err) {
-    if (consoleOutput)
-      console.log("***Normal + Catch***");
-    sessionStorage.setItem("validUser", JSON.stringify(user));
-  }
 
-  try {
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-  } catch (err) {}
+    try {
+      sessionStorage.setItem("userArr", JSON.stringify(userArr));
+    } catch (err) {}
+  }
 
   let navLocations = [
     "404.html",//0
@@ -321,7 +351,13 @@ function newNavigation(navNum) {
   if(consoleOutput)
     console.log("Navigating to " + navLocations[navNum]);
 
-  window.location.href = navLocations[navNum];
+  let fader = document.getElementById('fader');
+  let listener = function() {
+    fader.removeEventListener('animationend', listener);
+    window.location.href = navLocations[navNum];
+  };
+  fader.addEventListener('animationend', listener);
+  fader.classList.add('fade-in');
 }
 
 function openModal(openThisModal, modalName, ignoreBool){
