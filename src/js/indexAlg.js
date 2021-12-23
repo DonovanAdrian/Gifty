@@ -364,11 +364,8 @@ function login() {
       });
     }
 
-    if (hh < 16 && hh > 8) {
-      document.body.className = "B";
-    } else {
-      document.body.className = "C";
-    }
+    document.body.className = "B";
+
     clearInterval(colorShifter);
     document.getElementById("fadeOutLogin").className = "fadeOutItemA";
     document.getElementById("fadeOutIcon").className = "fadeOutItemB";
@@ -380,7 +377,7 @@ function login() {
     setInterval(function(){
       timer = timer + 1000;
       if(timer >= 2000){
-        window.location.href = "home.html";
+        newNavigation(2, true);
       }
     }, 1000);
   } else if (loginBool === false) {
