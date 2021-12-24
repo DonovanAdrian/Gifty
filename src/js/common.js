@@ -18,6 +18,8 @@ let loadingTimerCancelled = false;
 let areYouStillThereBool = false;
 let areYouStillThereInit = false;
 
+let signOutFadeOut = false;
+
 let currentModalOpenObj = null;
 
 let currentModalOpen = "";
@@ -91,6 +93,8 @@ function fadeInPage() {
 }
 
 function initializeFadeOut() {
+  let fader = document.getElementById('fader');
+
   if (!window.AnimationEvent) {
     return;
   }
@@ -99,7 +103,6 @@ function initializeFadeOut() {
     if (!event.persisted) {
       return;
     }
-    var fader = document.getElementById('fader');
     fader.classList.remove('fade-in');
   });
 }
@@ -117,20 +120,20 @@ function commonInitialization(){
   const config = JSON.parse(sessionStorage.config);
   instantiateCommon();
 
-  firebase.initializeApp(config);
-  analytics = firebase.analytics();
+  try {
+    initializeDB(config);
+  } catch (err) {
+    let dbInitTimer = 0;
+    let dbInitInterval;
 
-  firebase.auth().signInAnonymously().catch(function (error) {
-    let errorCode = error.code;
-    let errorMessage = error.message;
-  });
-
-  firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-      let isAnonymous = user.isAnonymous;
-      let uid = user.uid;
-    }
-  });
+    dbInitInterval = setInterval(function(){
+      dbInitTimer = dbInitTimer + 1000;
+      if(dbInitTimer >= 3000){
+        initializeDB(config);
+        clearInterval(dbInitInterval);
+      }
+    }, 1000);
+  }
 
   window.addEventListener("online", function(){
     closeModal(offlineModal);
@@ -198,6 +201,23 @@ function commonInitialization(){
 
   if (consoleOutput)
     console.log("The " + pageName + " Page has been initialized!");
+}
+
+function initializeDB(config) {
+  firebase.initializeApp(config);
+  analytics = firebase.analytics();
+
+  firebase.auth().signInAnonymously().catch(function (error) {
+    let errorCode = error.code;
+    let errorMessage = error.message;
+  });
+
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+      let isAnonymous = user.isAnonymous;
+      let uid = user.uid;
+    }
+  });
 }
 
 
@@ -298,12 +318,12 @@ function ohThereYouAre(){
 
 function signOut(){
   sessionStorage.clear();
-  newNavigation(1, true);
-  window.location.href = "index.html";
+  newNavigation(1, false);
 }
 
 function newNavigation(navNum, loginOverride) {
-  if (!loginOverride) {
+
+  if (loginOverride == undefined) {
     try {
       if (privateUser != null) {
         if (consoleOutput)
@@ -357,6 +377,11 @@ function newNavigation(navNum, loginOverride) {
     window.location.href = navLocations[navNum];
   };
   fader.addEventListener('animationend', listener);
+  if (loginOverride) {
+    fader.style.background = "white";
+  } else if (loginOverride != undefined) {
+    fader.style.background = "#870b0b";
+  }
   fader.classList.add('fade-in');
 }
 
