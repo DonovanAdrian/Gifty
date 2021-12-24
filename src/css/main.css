@@ -211,7 +211,7 @@ img.newInvite {
 
 span.updateBtn {
   font-family: Verdana;
-  background: #d9d9d9;
+  background: #b0d4b0;
   color: #555;
   cursor: pointer;
   transition: 0.3s;
@@ -219,7 +219,22 @@ span.updateBtn {
 }
 
 span.updateBtn:hover {
-  background-color: #bbb;
+  background-color: #00d639;
+  color: #000;
+}
+
+span.giftBackBtn {
+  font-family: Verdana;
+  background: #d4b0b0;
+  color: #555;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0;
+}
+
+span.giftBackBtn:hover {
+  background-color: #ff4c4c;
+  color: #000;
 }
 
 img.imgIcon {
@@ -480,6 +495,11 @@ ul li.santa::before {
     font-size: 13px;
   }
 
+  span.giftBackBtn {
+    padding: 5px;
+    font-size: 13px;
+  }
+
   p {
     font-size: 14px;
   }
@@ -578,6 +598,11 @@ ul li.santa::before {
   }
 
   span.updateBtn {
+    padding: 7px;
+    font-size: 15px;
+  }
+
+  span.giftBackBtn {
     padding: 7px;
     font-size: 15px;
   }
@@ -684,6 +709,11 @@ ul li.santa::before {
     font-size: 17px;
   }
 
+  span.giftBackBtn {
+    padding: 9px;
+    font-size: 17px;
+  }
+
   input.giftInp {
     width: 550px;
     font-size: 17px;
@@ -778,6 +808,11 @@ ul li.santa::before {
   }
 
   span.updateBtn {
+    padding: 11px;
+    font-size: 21px;
+  }
+
+  span.giftBackBtn {
     padding: 11px;
     font-size: 21px;
   }
@@ -889,6 +924,11 @@ ul li.santa::before {
     font-size: 23px;
   }
 
+  span.giftBackBtn {
+    padding: 13px;
+    font-size: 23px;
+  }
+
   input.giftInp {
     width: 1200px;
     font-size: 23px;
@@ -992,6 +1032,11 @@ ul li.santa::before {
   }
 
   span.updateBtn {
+    padding: 13px;
+    font-size: 26px;
+  }
+
+  span.giftBackBtn {
     padding: 13px;
     font-size: 26px;
   }
