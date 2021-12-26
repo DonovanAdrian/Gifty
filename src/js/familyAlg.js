@@ -11,7 +11,6 @@ let userArr = [];
 let familyArr = [];
 let familyMemberArr = [];
 let loadedFamilyMembersArr = [];
-let loadedFamilyModalsArr = [];
 
 let moderationSet = 1;
 let dataCounter = 0;
@@ -22,6 +21,7 @@ let settingsNote;
 let dataListContainer;
 let testData;
 let createFamilyBtn;
+let backBtn;
 let familyModal;
 let closeFamilyModal;
 let familyTitle;
@@ -81,6 +81,7 @@ window.onload = function instantiate() {
   dataListContainer = document.getElementById('dataListContainer');
   testData = document.getElementById('testData');
   createFamilyBtn = document.getElementById('createFamily');
+  backBtn = document.getElementById('backBtn');
   familyModal = document.getElementById('familyModal');
   closeFamilyModal = document.getElementById('closeFamilyModal');
   familyTitle = document.getElementById('familyTitle');
@@ -101,7 +102,7 @@ window.onload = function instantiate() {
   noteSpan = document.getElementById('closeNotification');
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
-  familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, familyModal,
+  familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, backBtn, familyModal,
     closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily, familyEdit,
     familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
     offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
@@ -117,11 +118,25 @@ window.onload = function instantiate() {
 
   alternateButtonLabel(settingsNote, "Settings", "Family");
 
-  createFamilyBtn.innerHTML = "Create Family";
+  function initializeCreateFamilyBtn() {
+    createFamilyBtn.innerHTML = "Create Family";
 
-  createFamilyBtn.onclick = function() {
-    generateAddFamilyModal();
-  };
+    createFamilyBtn.onclick = function () {
+      generateAddFamilyModal();
+    };
+  }
+
+  function initializeBackBtn() {
+    backBtn.innerHTML = "Return To Settings";
+
+    backBtn.onclick = function() {
+      newNavigation(5);
+    };
+  }
+
+  initializeCreateFamilyBtn();
+
+  initializeBackBtn();
 
   function generateAddFamilyModal(){
     addFamily.onclick = function() {
