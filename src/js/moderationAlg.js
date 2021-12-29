@@ -148,6 +148,16 @@ window.onload = function instantiate() {
 
   generateActivateSecretSantaModal();
 
+  function initializeBackBtn() {
+    backBtn.innerHTML = "Return To Settings";
+
+    backBtn.onclick = function() {
+      newNavigation(5);
+    };
+  }
+
+  initializeBackBtn();
+
   function generatePrivateMessageDialog(userData) {
     globalMsgTitle.innerHTML = "Send A Private Message Below";
     globalMsgInp.placeholder = "Hey! Just to let you know...";
