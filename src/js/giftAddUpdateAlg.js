@@ -477,7 +477,11 @@ window.onload = function instantiate() {
     let yy = today.getFullYear();
     let creationDate = mm + "/" + dd + "/" + yy;
     let newURL = verifyURLString(giftLinkInp.value);
-    let currentUserScore = user.userScore + 2;
+    let currentUserScore = 0;
+
+    if (user.userScore == null) {
+      user.userScore = 0;
+    }
 
     user.userScore = user.userScore + 2;
 
