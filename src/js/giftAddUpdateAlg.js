@@ -14,8 +14,10 @@ let invalidURLBool = false;
 let invalidURLOverride = false;
 
 let invalidURL = "";
+let buttonText = "";
 
 let giftUID = -1;
+let giftNavigationInt = 0;
 
 let giftStorage;
 let privateList;
@@ -53,6 +55,8 @@ function getCurrentUser(){
         localConsoleOutput = true;
       if(localConsoleOutput)
         console.log("User: " + user.userName + " loaded in");
+      buttonText = "Back To Home";
+      giftNavigationInt = 2;
     } else {
       privateUser = JSON.parse(sessionStorage.validPrivateUser);
       homeNote.className = "";
@@ -63,6 +67,8 @@ function getCurrentUser(){
         console.log("User: " + privateUser.userName + " loaded in");
         console.log("Friend: " + user.userName + " loaded in");
       }
+      buttonText = "Back To Private List";
+      giftNavigationInt = 10;
     }
     giftStorage = JSON.parse(sessionStorage.giftStorage);
     if (giftStorage == null || giftStorage == undefined || giftStorage == "") {
@@ -122,17 +128,31 @@ window.onload = function instantiate() {
   commonInitialization();
   verifyElementIntegrity(giftAddUpdateElements);
 
-  if(giftPresent) {
-    updateGift.innerHTML = "Update Gift";
-    updateGift.onclick = function() {
-      updateGiftToDB();
-    }
-  } else {
-    updateGift.innerHTML = "Add New Gift";
-    updateGift.onclick = function() {
-      addGiftToDB();
+  function initializeBackBtn() {
+    backBtn.innerHTML = buttonText;
+
+    backBtn.onclick = function() {
+      newNavigation(giftNavigationInt);
+    };
+  }
+
+  function initializeGiftAddBtn() {
+    if (giftPresent) {
+      updateGift.innerHTML = "Update Gift";
+      updateGift.onclick = function () {
+        updateGiftToDB();
+      }
+    } else {
+      updateGift.innerHTML = "Add New Gift";
+      updateGift.onclick = function () {
+        addGiftToDB();
+      }
     }
   }
+
+  initializeBackBtn();
+
+  initializeGiftAddBtn();
 
   databaseQuery();
 
@@ -457,6 +477,14 @@ window.onload = function instantiate() {
     let yy = today.getFullYear();
     let creationDate = mm + "/" + dd + "/" + yy;
     let newURL = verifyURLString(giftLinkInp.value);
+    let currentUserScore = user.userScore + 2;
+
+    user.userScore = user.userScore + 2;
+
+    if(!privateListBool) {
+      currentUserScore = user.userScore + 2
+      user.userScore = user.userScore + 2;
+    }
 
     if(invalidURL != newURL)
       invalidURLOverride = false;
@@ -479,6 +507,7 @@ window.onload = function instantiate() {
           where: giftWhereInp.value,
           received: 0,
           uid: newUid,
+          userScore: currentUserScore,
           buyer: "",
           description: giftDescriptionInp.value,
           creationDate: creationDate,
@@ -497,6 +526,7 @@ window.onload = function instantiate() {
           where: giftWhereInp.value,
           received: 0,
           uid: newUid,
+          userScore: currentUserScore,
           buyer: "",
           description: giftDescriptionInp.value,
           creationDate: creationDate,
