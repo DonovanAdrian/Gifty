@@ -321,9 +321,9 @@ function signOut(){
   newNavigation(1, false);
 }
 
-function newNavigation(navNum, loginOverride) {
+function newNavigation(navNum, loginOverride, privateUserOverride) {
 
-  if (loginOverride == undefined) {
+  if (loginOverride == undefined && privateUserOverride == undefined) {
     try {
       if (privateUser != null) {
         if (consoleOutput)
@@ -343,6 +343,13 @@ function newNavigation(navNum, loginOverride) {
     try {
       sessionStorage.setItem("userArr", JSON.stringify(userArr));
     } catch (err) {}
+  } else if (loginOverride == undefined && privateUserOverride) {
+    giftStorage = "";
+    sessionStorage.setItem("privateList", JSON.stringify(giftUser));
+    sessionStorage.setItem("validUser", JSON.stringify(giftUser));
+    sessionStorage.setItem("validPrivateUser", JSON.stringify(user));
+    sessionStorage.setItem("userArr", JSON.stringify(userArr));
+    sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
   }
 
   let navLocations = [
