@@ -332,9 +332,14 @@ window.onload = function instantiate() {
     let finalInviteData;
     let friendFriendArr;
     let userFriendArr;
-    let currentUserScore = user.userScore + 5;
+    let currentUserScore;
+
+    if (user.userScore == null) {
+      user.userScore = 0;
+    }
 
     user.userScore = user.userScore + 5;
+    currentUserScore = user.userScore;
 
     if(consoleOutput) {
       console.log("Pre-adding " + inviteData.uid + " to User's Friend List:");
