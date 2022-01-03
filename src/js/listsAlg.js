@@ -332,7 +332,7 @@ window.onload = function instantiate() {
       let liItem = document.createElement("LI");
       liItem.id = "user" + userUid;
       initFriendElement(liItem, friendData);
-      let textNode = document.createTextNode(friendName);
+      let textNode = document.createTextNode("View " + friendName + "'s Gift Lists");
       liItem.appendChild(textNode);
       dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
       clearInterval(commonLoadingTimer);
