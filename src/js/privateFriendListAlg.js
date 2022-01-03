@@ -179,13 +179,7 @@ window.onload = function instantiate() {
 
   addGift.innerHTML = "Add Private Gift";
   addGift.onclick = function() {
-    giftStorage = "";
-    sessionStorage.setItem("privateList", JSON.stringify(giftUser));
-    sessionStorage.setItem("validUser", JSON.stringify(giftUser));
-    sessionStorage.setItem("validPrivateUser", JSON.stringify(user));
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
-    window.location.href = "giftAddUpdate.html";
+    newNavigation(8, undefined, true);
   };
 
   databaseQuery();
@@ -202,8 +196,6 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput)
-            console.log("Adding " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
         }
 
