@@ -5,6 +5,7 @@
  */
 
 let automaticControl = null;
+let manualControl = null;
 let currentState = -1;
 let tempUserArr = [];
 let assignedNameUsers = [];
@@ -16,8 +17,8 @@ let showSecretTextCycler = false;
 
 let currentDate = new Date();
 let currentYear = currentDate.getFullYear();
-let showDate = new Date(currentYear, 10, 1, 0, 0, 0, 0);//Oct 1st
-let assignDate = new Date(currentYear, 11, 1, 0, 0, 0, 0);//Nov 1st
+let showDate = new Date(currentYear, 9, 1, 0, 0, 0, 0);//Oct 1st
+let assignDate = new Date(currentYear, 10, 1, 0, 0, 0, 0);//Nov 1st
 let hideDateMin = 1; //Jan
 let hideDateMax = 9; //Sept
 
@@ -42,24 +43,15 @@ function initializeSecretSantaDataMod(data) {
     automaticControl = data.val();
   } else if (data.key == "santaState") {
     currentState = data.val();
+  } else if (data.key == "manualUpdates") {
+    manualControl = data.val();
   }
 
-  if (currentState != -1 && automaticControl != null) {
+  if (currentState != -1 && automaticControl != null && manualControl != null) {
     initializeSecretSantaButtons();
 
-    if (automaticControl) {
-      if (currentDate >= assignDate && currentDate.getMonth() <= hideDateMin && currentState == 2) {
-        console.log("Assign Names???")
-        console.log("Set state to 3???");
-        if (checkIfSantaSignUp()) {
-          console.log("Assign Names!");
-          //createSecretSantaNames(); ToDo
-          changeSecretSantaState(3);
-        } else if (!checkIfSantaSignUp() && pageName == "Moderation") {
-          alert ("Not enough people have signed up yet! At least 3 people need to be signed up in order" +
-            " to assign names");
-        }
-      }
+    if (automaticControl && !manualControl) {
+      checkSecretSanta();
     }
   }
 }
@@ -69,15 +61,17 @@ function initializeSecretSantaDataList(data) {
     automaticControl = data.val();
   } else if (data.key == "santaState") {
     currentState = data.val();
+  } else if (data.key == "manualUpdates") {
+    manualControl = data.val();
   }
 
-  if (currentState != -1 && automaticControl != null) {
+  if (currentState != -1 && automaticControl != null && manualControl != null) {
     if (currentState != 1) {
       showSecretSanta();
     } else {
       hideSecretSanta();
     }
-    if (automaticControl) {
+    if (automaticControl && !manualControl) {
       checkSecretSanta();
     }
   }
@@ -94,6 +88,8 @@ function autoControlUpdate() {
 }
 
 function changeSecretSantaState(manualChange) {
+  let priorState = currentState;
+
   if (manualChange == 0) {
     if (currentState == 3) {
       currentState = 1
@@ -106,23 +102,27 @@ function changeSecretSantaState(manualChange) {
 
   switch (currentState) {
     case 1:
-      console.log("State 1: Idle");
+      if (consoleOutput)
+        console.log("State 1: Idle");
       currentState = 1;
-      //disableSecretSanta(); ToDo
+      disableSecretSanta();
       break;
     case 2:
-      console.log("State 2: Ready");
+      if (consoleOutput)
+        console.log("State 2: Ready");
       currentState = 2;
       break;
     case 3:
-      console.log("State 3: Active");
+      if (consoleOutput)
+        console.log("State 3: Active");
       currentState = 3;
-      if (checkIfSantaSignUp()) {
-        console.log("Assign Names!");
-        //createSecretSantaNames(); ToDo
-      } else if (!checkIfSantaSignUp() && pageName == "Moderation") {
-        alert ("Not enough people have signed up yet! At least 3 people need to be signed up in order" +
-          " to assign names");
+      if (checkIfSantaSignUp() && !checkIfSantaActive()) {
+        createSecretSantaNames();
+      } else if (!checkIfSantaSignUp() && !checkIfSantaActive() && pageName == "Moderation") {
+        alert ("Not enough people have signed up for Secret Santa yet! At least 3 people need to be signed up in " +
+          "order to assign names");
+      } else {
+        console.log("Hm, this wasn't supposed to happen!");
       }
       break;
     default:
@@ -130,7 +130,9 @@ function changeSecretSantaState(manualChange) {
       break;
   }
 
-  updateSecretSantaToDB("state");
+  if (priorState != currentState) {
+    updateSecretSantaToDB("state");
+  }
 }
 
 function initializeSecretSantaButtons() {
@@ -179,11 +181,19 @@ function secretSantaButtonManager(buttonPressed) {
     case "auto":
       autoControlUpdate();
       initializeSecretSantaButtons();
+      if (manualControl == true) {
+        manualControl = false;
+        updateSecretSantaToDB("manual");
+      }
       break;
     case "shuffle":
-      //createSecretSantaNames(); ToDo
+      createSecretSantaNames();
       break;
     case "main":
+      if (automaticControl) {
+        manualControl = true;
+        updateSecretSantaToDB("manual");
+      }
       if (currentState == 2) {
         changeSecretSantaState(0);
         initializeSecretSantaButtons();
@@ -211,27 +221,53 @@ function disableSecretSanta() {
 }
 
 function checkSecretSanta(){
-  if (currentDate >= showDate && currentDate <= assignDate) { //State 2
-    changeSecretSantaState(2);
-    if (pageName == "Lists") {
-      showSecretSanta();
-    }
-  }
-  if (currentDate >= assignDate && currentDate.getMonth() <= hideDateMin) { //State 3
-    if (pageName == "Lists") {
-      showSecretSanta();
-    }
+  let checkCurrentState = 0;
 
-    changeSecretSantaState(3);
-    //createSecretSantaNames(); ToDo
-    console.log("Assign Names???")
-    console.log("Set state to 3???");
+  if (currentDate >= showDate && currentDate <= assignDate) { //State 2
+    checkCurrentState = 2;
+  }
+  if (currentDate >= assignDate && currentDate.getMonth() >= hideDateMin) { //State 3
+    checkCurrentState = 3;
   }
   if (currentDate.getMonth() >= hideDateMin && currentDate.getMonth() <= hideDateMax) { //State 1
-    changeSecretSantaState(1);
-    if (pageName == "Lists") {
-      //autoHideSecretSanta(); ToDo
+    checkCurrentState = 1;
+  }
+
+  if (manualControl == true && checkCurrentState <= currentState) {
+    console.log("Current State Set, No Change Necessary");
+  } else {
+    switch (checkCurrentState) {
+      case 0:
+        console.log("Automatic Control Not Needed, But Enabled");
+        break;
+      case 1:
+        changeSecretSantaState(1);
+        if (pageName == "Lists") {
+          autoHideSecretSanta();
+        }
+        break;
+      case 2:
+        changeSecretSantaState(2);
+        if (pageName == "Lists") {
+          showSecretSanta();
+        }
+        break;
+      case 3:
+        if (pageName == "Lists") {
+          showSecretSanta();
+        }
+
+        if (!checkIfSantaActive()) {
+          changeSecretSantaState(3);
+        }
+        break;
+      default:
+        console.log("This shouldn't have happened!");
+        break;
     }
+
+    manualControl = false;
+    updateSecretSantaToDB("manual");
   }
 }
 
@@ -343,6 +379,15 @@ function checkIfSantaSignUp() {
   return false;
 }
 
+function checkIfSantaActive() {
+  for (let i = 0; i < userArr.length; i++)
+    if(userArr[i].secretSantaName != null)
+      if(userArr[i].secretSantaName != "") {
+        return true;
+      }
+  return false;
+}
+
 function checkForGlobalMessage() {
   for (let i = 0; i < userArr.length; i++) {
     if (userArr[i].notifications != undefined)
@@ -410,14 +455,16 @@ function cycleSecretSantaAutoBtnTxt() {
 }
 
 function checkNextDate() {
+  let yearAdjustment = currentYear + 1;
+
   if (currentDate >= showDate && currentDate <= assignDate)
-    return "Assigning " + assignDate.getMonth() + "/" + assignDate.getDay() + "/" + currentYear;
-  if (currentDate >= assignDate && currentDate.getMonth() <= hideDateMin)
+    return "Assigning 11/1/" + currentYear;
+  if (currentDate >= assignDate && currentDate.getMonth() >= hideDateMin)
     if(currentState == 3) {
-      return "Ending " + hideDateMin + "/1/" + currentYear+1;
+      return "Ending 1/1/" + yearAdjustment;
     }
   if (currentDate.getMonth() >= hideDateMin && currentDate.getMonth() <= hideDateMax)
-    return "Starting " + showDate.getMonth() + "/" + showDate.getDay() + "/" + currentYear;
+    return "Starting 10/1/" + currentYear;
 }
 
 function updateSecretSantaToDB(settingToUpdate) {
@@ -430,6 +477,11 @@ function updateSecretSantaToDB(settingToUpdate) {
     case "state":
       firebase.database().ref("secretSanta/").update({
         santaState: currentState
+      });
+      break;
+    case "manual":
+      firebase.database().ref("secretSanta/").update({
+        manualUpdates: manualControl
       });
       break;
     default:
@@ -606,8 +658,15 @@ function generatePrivateMessage(userUID, message){
 }
 
 function addPrivateMessageToDB(userData, message) {
-  let userNotificationArr = [];
-  let currentUserScore = user.userScore + 1;
+  let userNotificationArr;
+  let currentUserScore;
+
+  if (user.userScore == null) {
+    user.userScore = 0;
+  }
+
+  user.userScore = user.userScore + 1;
+  currentUserScore = user.userScore;
 
   if(userData.notifications == undefined){
     userNotificationArr = [];
