@@ -477,13 +477,14 @@ window.onload = function instantiate() {
     let yy = today.getFullYear();
     let creationDate = mm + "/" + dd + "/" + yy;
     let newURL = verifyURLString(giftLinkInp.value);
-    let currentUserScore = 0;
+    let currentUserScore;
 
     if (user.userScore == null) {
       user.userScore = 0;
     }
 
     user.userScore = user.userScore + 2;
+    currentUserScore = user.userScore;
 
     if(!privateListBool) {
       currentUserScore = user.userScore + 2
