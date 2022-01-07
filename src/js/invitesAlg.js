@@ -393,10 +393,16 @@ window.onload = function instantiate() {
   }
 
   function addPrivateMessageToDB(userData, message) {
-    let userNotificationArr = [];
-    let currentUserScore = user.userScore + 1;
+    let userNotificationArr;
+    let currentUserScore;
+
+    if (user.userScore == null) {
+      user.userScore = 0;
+    }
 
     user.userScore = user.userScore + 1;
+    currentUserScore = user.userScore;
+
     if(userData.notifications == undefined){
       userNotificationArr = [];
     } else {
