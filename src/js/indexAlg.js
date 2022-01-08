@@ -330,11 +330,12 @@ function login() {
   }
   if (loginBool === true){
     let today = new Date();
-    let hh = today.getHours();
+    let UTCmm = today.getUTCMinutes();
+    let UTChh = today.getUTCHours();
     let dd = today.getDate();
     let mm = today.getMonth()+1;
     let yy = today.getFullYear();
-    let loginDate = mm + "/" + dd + "/" + yy;
+    let loginDate = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm;
     let currentUserScore;
 
     if (userArr[validUserInt].userScore != null) {
