@@ -63,6 +63,15 @@ function getCurrentUser(){
       }
     }
 
+    if (user.friends == undefined) {
+      if(localConsoleOutput)
+        console.log("Friends Not Found");
+    } else if (user.friends != undefined) {
+      if (user.friends.length < 100 && user.friends.length > 0) {
+        inviteNote.innerHTML = user.friends.length + " Friends";
+      }
+    }
+
     if (user.readNotifications == undefined) {
       if(localConsoleOutput)
         console.log("Read Notifications Not Found");
