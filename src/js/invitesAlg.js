@@ -97,6 +97,10 @@ function getCurrentUser(){
         inviteListEmptyText = "No Friends Found! Invite Some Friends With The Button Below!";
       deployListEmptyNotification(inviteListEmptyText);
       friendListEmptyBool = true;
+    } else if (user.friends != undefined) {
+      if (user.friends.length < 100 && user.friends.length > 0) {
+        inviteNote.innerHTML = user.friends.length + " Friends";
+      }
     } else {
       if(localConsoleOutput)
         console.log(user.friends);
