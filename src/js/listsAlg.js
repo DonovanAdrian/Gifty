@@ -67,7 +67,10 @@ function getCurrentUser(){
     } else if (user.friends.length == 0) {
       deployListEmptyNotification("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
       friendListEmptyBool = true;
+    } else if (user.friends.length < 100 && user.friends.length > 0) {
+      inviteNote.innerHTML = user.friends.length + " Friends";
     }
+
     if (user.invites == undefined) {
       if(localConsoleOutput)
         console.log("Invites Not Found");
