@@ -313,6 +313,19 @@ ul li:hover.gift {
   background: #ddd;
 }
 
+ul li.spacer {
+  cursor: pointer;
+  position: relative;
+  font-family: Verdana;
+  list-style-type: none;
+  background: #ffffff;
+  transition: 0.4s;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 ul li.multiCheck {
   color: #429ef5;
   text-decoration: line-through;
@@ -551,6 +564,11 @@ ul li.santa::before {
     padding: 10px 6px 10px 30px;
     font-size: 13px;
   }
+
+  ul li.spacer {
+    padding: 25px 6px 25px 30px;
+    font-size: 13px;
+  }
 }
 
 @media screen and (min-width: 550px) and (max-width: 925px) {
@@ -658,6 +676,11 @@ ul li.santa::before {
     padding: 10px 6px 10px 30px;
     font-size: 15px;
   }
+
+  ul li.spacer {
+    padding: 25px 6px 25px 30px;
+    font-size: 15px;
+  }
 }
 
 @media screen and (min-width: 925px) and (max-width: 1500px) {
@@ -759,6 +782,11 @@ ul li.santa::before {
 
   ul li.gift {
     padding: 12px 8px 12px 40px;
+    font-size: 17px;
+  }
+
+  ul li.spacer {
+    padding: 30px 8px 30px 40px;
     font-size: 17px;
   }
 }
@@ -873,6 +901,11 @@ ul li.santa::before {
     padding: 12px 8px 12px 40px;
     font-size: 22px;
   }
+
+  ul li.spacer {
+    padding: 30px 8px 30px 40px;
+    font-size: 22px;
+  }
 }
 
 @media screen and (min-width: 2000px) and (max-width: 2700px) {
@@ -985,6 +1018,11 @@ ul li.santa::before {
     padding: 12px 8px 12px 40px;
     font-size: 24px;
   }
+
+  ul li.spacer {
+    padding: 30px 8px 30px 40px;
+    font-size: 24px;
+  }
 }
 
 @media screen and (min-width: 2700px) {
@@ -1095,6 +1133,11 @@ ul li.santa::before {
 
   ul li.gift {
     padding: 12px 8px 12px 40px;
+    font-size: 27px;
+  }
+
+  ul li.spacer {
+    padding: 30px 8px 30px 40px;
     font-size: 27px;
   }
 }
