@@ -29,10 +29,10 @@
   <ul>
     <li><div class="cropIcon"><img class="imgIcon" src="img/giftyIcon.png"></div></li>
     <div class="break"></div>
-    <li><a class="active" onclick="newNavigation(2)">Home</a></li>
-    <li><a onclick="newNavigation(3)">Gift Lists</a></li>
-    <li><a onclick="newNavigation(4)" id="inviteNote">Friends</a></li>
-    <li><a onclick="newNavigation(5)">Settings</a></li>
+    <li><a class="active" onclick="navigation(2)">Home</a></li>
+    <li><a onclick="navigation(3)">Gift Lists</a></li>
+    <li><a onclick="navigation(4)" id="inviteNote">Friends</a></li>
+    <li><a onclick="navigation(5)">Settings</a></li>
     <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
   </ul>
 </div>
@@ -41,6 +41,7 @@
 
 <ul id="dataListContainer" class="giftList">
   <li class="gift" id="testData">Loading...</li>
+  <li class="spacer"></li>
 </ul>
 
 <span class="boughtBtn" id="boughtGifts" alt="View The Gifts You Have Bought So Far">Loading... Please Wait</span>

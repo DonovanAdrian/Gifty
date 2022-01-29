@@ -14,7 +14,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="icon" type="image/png" href="img/giftySmol.png">
   <link href="css/main.css?v=2021-08-19" rel="stylesheet" type="text/css"/>
-  <title>Lists</title>
+  <title>Gift Lists</title>
 
   <script src="js/listsAlg.js?v=2021-08-19" type="text/javascript"></script>
   <script src="js/secretSantaAlg.js?v=2021-08-19" type="text/javascript"></script>
@@ -30,10 +30,10 @@
   <ul>
     <li><div class="cropIcon"><img class="imgIcon" src="img/giftyIcon.png"></div></li>
     <div class="break"></div>
-    <li><a onclick="newNavigation(2)">Home</a></li>
-    <li><a class="active" onclick="newNavigation(3)">Gift Lists</a></li>
-    <li><a onclick="newNavigation(4)" id="inviteNote">Friends</a></li>
-    <li><a onclick="newNavigation(5)">Settings</a></li>
+    <li><a onclick="navigation(2)">Home</a></li>
+    <li><a class="active" onclick="navigation(3)">Gift Lists</a></li>
+    <li><a onclick="navigation(4)" id="inviteNote">Friends</a></li>
+    <li><a onclick="navigation(5)">Settings</a></li>
     <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
   </ul>
 </div>
@@ -42,6 +42,7 @@
 
 <ul id="dataListContainer" class="giftList">
   <li class="gift" id="testData">Loading...</li>
+  <li class="spacer"></li>
 </ul>
 
 <div class="centeredImage">

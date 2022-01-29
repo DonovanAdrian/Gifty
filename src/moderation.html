@@ -31,10 +31,10 @@
   <ul>
     <li><div class="cropIcon"><img class="imgIcon" src="img/giftyIcon.png"></div></li>
     <div class="break"></div>
-    <li><a onclick="newNavigation(2)">Home</a></li>
-    <li><a onclick="newNavigation(3)">Gift Lists</a></li>
-    <li><a onclick="newNavigation(4)" id="inviteNote">Friends</a></li>
-    <li><a class="active" onclick="newNavigation(5)" id="settingsNote">Settings</a></li>
+    <li><a onclick="navigation(2)">Home</a></li>
+    <li><a onclick="navigation(3)">Gift Lists</a></li>
+    <li><a onclick="navigation(4)" id="inviteNote">Friends</a></li>
+    <li><a class="active" onclick="navigation(5)" id="settingsNote">Settings</a></li>
     <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
   </ul>
 </div>
@@ -43,6 +43,7 @@
 
 <ul id="dataListContainer" class="giftList">
   <li class="gift" id="testData">Loading...</li>
+  <li class="spacer"></li>
 </ul>
 
 <span class="boughtBtn" id="activateSecretSanta" alt="Secret Santa Settings">Loading... Please Wait</span>
@@ -120,15 +121,15 @@
       <br/>
       <br/>
       <br/>
-      <span class="basicBtn" id="secretSantaShuffle">Loading Shuffle Button...</span>
+      <span class="basicBtn" id="secretSantaShuffle" alt="Shuffle Secret Santa Names">Loading Shuffle Button...</span>
       <br/>
       <br/>
       <br/>
-      <span class="basicBtn" id="secretSantaAutoBtn">Loading Auto Button...</span>
+      <span class="basicBtn" id="secretSantaAutoBtn" alt="Enable Or Disable Automatic Control">Loading Auto Button...</span>
       <br/>
       <br/>
       <br/>
-      <span class="basicBtn" id="sendGlobalNotification">Loading Message Button...</span>
+      <span class="basicBtn" id="sendGlobalNotification">Loading Message Button...</span><!--Check this on page-->
       <br/>
       <br/>
       <br/>

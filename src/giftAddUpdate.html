@@ -29,10 +29,10 @@
   <ul>
     <li><div class="cropIcon"><img class="imgIcon" src="img/giftyIcon.png"></div></li>
     <div class="break"></div>
-    <li><a class="active" onclick="newNavigation(2)" id="homeNote">Home</a></li>
-    <li><a onclick="newNavigation(3)" id="listNote">Gift Lists</a></li>
-    <li><a onclick="newNavigation(4)" id="inviteNote">Friends</a></li>
-    <li><a onclick="newNavigation(5)">Settings</a></li>
+    <li><a class="active" onclick="navigation(2)" id="homeNote">Home</a></li>
+    <li><a onclick="navigation(3)" id="listNote">Gift Lists</a></li>
+    <li><a onclick="navigation(4)" id="inviteNote">Friends</a></li>
+    <li><a onclick="navigation(5)">Settings</a></li>
     <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
   </ul>
 </div>
@@ -52,8 +52,8 @@
   <p class="giftInf">Description</p>
   <input type="text" id="giftDescriptionInp" placeholder="Gift Description" class="giftInp" maxlength="250" alt="Enter A Desired Description About This Gift"><br/><br/>
   <p class="giftInf">
-    <input type="checkbox" id="multiplePurchases" alt="If This Gift Can Be Bought Multiple Times, Check This Box">
-    Allow Multiple Purchases</p><br/><br/><br/>
+  <input type="checkbox" id="multiplePurchases" alt="If This Gift Can Be Bought Multiple Times, Check This Box">
+  Allow Multiple Purchases</p><br/><br/><br/>
   <span class="updateBtn" id="updateGift" alt="Add Or Update This Gift To The Gift List">Loading... Please Wait</span>
   <br/><br/><br/>
 </div>
