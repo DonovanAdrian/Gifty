@@ -130,7 +130,7 @@ window.onload = function instantiate() {
     backBtn.innerHTML = buttonText;
 
     backBtn.onclick = function() {
-      newNavigation(giftNavigationInt);
+      navigation(giftNavigationInt);
     };
   }
 
@@ -306,7 +306,7 @@ window.onload = function instantiate() {
             }
           }
 
-          newNavigation(2);//Home
+          navigation(2);//Home
         } else {
           if (!multiplePurchases.checked && currentGift.multiples && currentGift.receivedBy.length != undefined) {
             if (currentGift.receivedBy.length != 0) {
@@ -367,7 +367,7 @@ window.onload = function instantiate() {
           }
 
           sessionStorage.setItem("validGiftUser", JSON.stringify(user));
-          newNavigation(10);//PrivateFriendList
+          navigation(10);//PrivateFriendList
         }
 
         if(currentGift.buyer != ""){
@@ -517,7 +517,7 @@ window.onload = function instantiate() {
           multiples: multiplePurchases.checked
         });
 
-        newNavigation(2);//Home
+        navigation(2);//Home
       } else {
 
         let newUid = firebase.database().ref("users/" + user.uid + "/privateList/" + uid).push();
@@ -537,7 +537,7 @@ window.onload = function instantiate() {
           multiples: multiplePurchases.checked
         });
         sessionStorage.setItem("validGiftUser", JSON.stringify(user));
-        newNavigation(10);//PrivateFriendList
+        navigation(10);//PrivateFriendList
       }
     }
     invalidURLBool = false;
@@ -610,8 +610,8 @@ window.onload = function instantiate() {
     else if (invalidChar)
       invalidURLBool = true;
     else
-    if(consoleOutput)
-      console.log("Valid URL! " + tempURL);
+      if(consoleOutput)
+        console.log("Valid URL! " + tempURL);
 
     return tempURL;
   }

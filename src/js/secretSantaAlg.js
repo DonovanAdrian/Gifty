@@ -501,7 +501,7 @@ function generateSecretSantaModal(){
         setPublicButton = true;
         publicList.onclick = function () {
           sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));
-          newNavigation(9);//FriendList
+          navigation(9);//FriendList
         };
       } else {
         publicList.onclick = function () {};
@@ -526,7 +526,7 @@ function generateSecretSantaModal(){
 
     privateList.onclick = function() {
       sessionStorage.setItem("validGiftUser", JSON.stringify(secretSantaData));
-      newNavigation(10);//PrivateFriendList
+      navigation(10);//PrivateFriendList
     };
 
     sendPrivateMessage.onclick = function() {

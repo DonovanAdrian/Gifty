@@ -78,8 +78,7 @@ function getCurrentUser(){
       }
     }
     if (user.friends == undefined) {
-      if(localConsoleOutput)
-        console.log("Friends Not Found");
+      console.log("Friends Not Found");
     } else if (user.friends != undefined) {
       if (user.friends.length < 100 && user.friends.length > 0) {
         inviteNote.innerHTML = user.friends.length + " Friends";
@@ -161,7 +160,7 @@ window.onload = function instantiate() {
     backBtn.innerHTML = "Return To Settings";
 
     backBtn.onclick = function() {
-      newNavigation(5);
+      navigation(5);
     };
   }
 
@@ -499,7 +498,7 @@ window.onload = function instantiate() {
           alert("Navigate to the home page to see your gifts!");
         } else {
           sessionStorage.setItem("validGiftUser", JSON.stringify(userData));
-          newNavigation(9);//FriendList
+          navigation(9);//FriendList
         }
       };
       userPrivateGifts.onclick = function() {
@@ -507,7 +506,7 @@ window.onload = function instantiate() {
           alert("You aren't allowed to see these gifts, silly!");
         } else {
           sessionStorage.setItem("validGiftUser", JSON.stringify(userData));
-          newNavigation(10);//PrivateFriendList
+          navigation(10);//PrivateFriendList
         }
       };
       userPassword.onclick = function() {

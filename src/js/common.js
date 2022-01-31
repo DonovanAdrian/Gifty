@@ -318,10 +318,10 @@ function ohThereYouAre(){
 
 function signOut(){
   sessionStorage.clear();
-  newNavigation(1, false);
+  navigation(1, false);
 }
 
-function newNavigation(navNum, loginOverride, privateUserOverride) {
+function navigation(navNum, loginOverride, privateUserOverride) {
 
   if (loginOverride == undefined && privateUserOverride == undefined) {
     try {
@@ -370,7 +370,8 @@ function newNavigation(navNum, loginOverride, privateUserOverride) {
     "moderation.html",//14
     "family.html",//15
     "familyUpdate.html",//16
-    "moderationQueue.html"];//17
+    "moderationQueue.html",//17
+    "backup.html"];//18
 
   if (navNum >= navLocations.length)
     navNum = 0;

@@ -68,7 +68,7 @@ function getCurrentUser(){
       deployListEmptyNotification("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
       friendListEmptyBool = true;
     } else if (user.friends.length < 100 && user.friends.length > 0) {
-      inviteNote.innerHTML = user.friends.length + " Friends";
+        inviteNote.innerHTML = user.friends.length + " Friends";
     }
 
     if (user.invites == undefined) {
@@ -95,18 +95,18 @@ function getCurrentUser(){
         if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
           notificationBtn.src = "img/bellNotificationOn.png";
           notificationBtn.onclick = function() {
-            newNavigation(6);//Notifications
+            navigation(6);//Notifications
           }
         } else {
           notificationBtn.src = "img/bellNotificationOff.png";
           notificationBtn.onclick = function() {
-            newNavigation(6);//Notifications
+            navigation(6);//Notifications
           }
         }
       } else if (user.notifications.length > 0) {
         notificationBtn.src = "img/bellNotificationOn.png";
         notificationBtn.onclick = function() {
-          newNavigation(6);//Notifications
+          navigation(6);//Notifications
         }
       }
     }
@@ -373,7 +373,7 @@ window.onload = function instantiate() {
           setPublicButton = true;
           publicList.onclick = function () {
             sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
-            newNavigation(9);
+            navigation(9);
           };
         } else {
           publicList.onclick = function () {};
@@ -398,7 +398,7 @@ window.onload = function instantiate() {
 
       privateList.onclick = function() {
         sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
-        newNavigation(10);
+        navigation(10);
       };
 
       sendPrivateMessage.onclick = function() {

@@ -139,7 +139,7 @@ window.onload = function instantiate() {
     backBtn.innerHTML = "Return To Settings";
 
     backBtn.onclick = function() {
-      newNavigation(5);
+      navigation(5);
     };
   }
 
@@ -347,7 +347,7 @@ window.onload = function instantiate() {
 
       familyEdit.onclick = function (){
         sessionStorage.setItem("familyData", JSON.stringify(familyData));
-        newNavigation(16);//familyUpdate
+        navigation(16);//familyUpdate
       };
 
       familyRemove.onclick = function (){

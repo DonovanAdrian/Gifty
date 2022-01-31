@@ -440,19 +440,19 @@ window.onload = function instantiate() {
       } else if (notificationPage == "invites.html") {
         notificationViewPage.innerHTML = "Click here to access your invites!";
         notificationViewPage.onclick = function () {
-          newNavigation(11);//Confirmation
+          navigation(11);//Confirmation
         };
       } else if (notificationPage == "friendList.html" && friendUserData != -1) {
         notificationViewPage.innerHTML = "Click here to access their friend list!";
         notificationViewPage.onclick = function () {
           sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));
-          newNavigation(9);//FriendList
+          navigation(9);//FriendList
         };
       } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
         notificationViewPage.innerHTML = "Click here to access their private friend list!";
         notificationViewPage.onclick = function () {
           sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));
-          newNavigation(10);//PrivateFriendList
+          navigation(10);//PrivateFriendList
         };
       } else if (notificationPage == "deleteGift") {
         notificationViewPage.innerHTML = "If this has been done in error, please contact the gift owner.";
@@ -625,7 +625,7 @@ function initializeNukeBtn() {
       }
 
       notificationArr = [];
-      newNavigation(2);//Home
+      navigation(2);//Home
     };
   } else {
     nukeNotifications.innerHTML = "No Notifications To Remove!";

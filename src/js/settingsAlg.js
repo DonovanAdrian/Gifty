@@ -17,6 +17,7 @@ let moderationModal;
 let moderationSpan;
 let moderationQueueBtn;
 let userListBtn;
+let backupBtn;
 let loginFxnBtn;
 let offlineTimer;
 let offlineSpan;
@@ -64,7 +65,7 @@ function getCurrentUser(){
 
       familyBtn.style.display = "block";
       familyBtn.onclick = function () {
-        newNavigation(15);//Family
+        navigation(15);//Family
       };
     }
     userArr = JSON.parse(sessionStorage.userArr);
@@ -89,40 +90,47 @@ window.onload = function instantiate() {
   moderationSpan = document.getElementById('moderationSpan');
   moderationQueueBtn = document.getElementById('moderationQueueBtn');
   userListBtn = document.getElementById('userListBtn');
+  backupBtn = document.getElementById('backupBtn');
   loginFxnBtn = document.getElementById('loginFxnBtn');
   notificationModal = document.getElementById('notificationModal');
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
   settingsElements = [offlineModal, offlineSpan, inviteNote, editBtn, faqBtn, modBtn, familyBtn, moderationModal,
-    moderationSpan, moderationQueueBtn, userListBtn, loginFxnBtn, notificationModal, notificationTitle,
+    moderationSpan, moderationQueueBtn, userListBtn, backupBtn, loginFxnBtn, notificationModal, notificationTitle,
     notificationInfo, noteSpan];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(settingsElements);
 
   editBtn.onclick = function (){
-    newNavigation(13);//UserAddUpdate
+    navigation(13);//UserAddUpdate
   };
 
   faqBtn.onclick = function (){
-    newNavigation(12);//FAQ
+    navigation(12);//FAQ
   };
 };
 
 function generateModerationModal(){
-  if(allowLogin)
+  if(allowLogin) {
     loginFxnBtn.innerHTML = "Disable Login Function";
-  else
+  } else {
     loginFxnBtn.innerHTML = "Enable Login Function";
+  }
 
   userListBtn.onclick = function(){
-    newNavigation(14);//Moderation
+    navigation(14);//Moderation
   };
 
   moderationQueueBtn.onclick = function(){
-    newNavigation(17);//ModerationQueue
+    navigation(17);//ModerationQueue
   };
+
+  backupBtn.onclick = function() {
+    navigation(18);//Backups
+  };
+
 
   loginFxnBtn.onclick = function(){
     if(allowLogin) {

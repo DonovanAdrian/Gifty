@@ -378,7 +378,7 @@ function login() {
     setInterval(function(){
       timer = timer + 1000;
       if(timer >= 2000){
-        newNavigation(2, true);
+        navigation(2, true);
       }
     }, 1000);
   } else if (loginBool === false) {

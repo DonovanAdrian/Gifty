@@ -104,18 +104,18 @@ function getCurrentUser(){
         if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
           notificationBtn.src = "img/bellNotificationOn.png";
           notificationBtn.onclick = function() {
-            newNavigation(6);//Notifications
+            navigation(6);//Notifications
           }
         } else {
           notificationBtn.src = "img/bellNotificationOff.png";
           notificationBtn.onclick = function() {
-            newNavigation(6);//Notifications
+            navigation(6);//Notifications
           }
         }
       } else if (user.notifications.length > 0) {
         notificationBtn.src = "img/bellNotificationOn.png";
         notificationBtn.onclick = function() {
-          newNavigation(6);//Notifications
+          navigation(6);//Notifications
         }
       }
     }
@@ -284,7 +284,7 @@ window.onload = function instantiate() {
     } else {
       sessionStorage.setItem("boughtGifts", JSON.stringify(userBoughtGifts));
       sessionStorage.setItem("boughtGiftsUsers", JSON.stringify(userBoughtGiftsUsers));
-      newNavigation(7);//BoughtGifts
+      navigation(7);//BoughtGifts
     }
   };
 
@@ -294,7 +294,7 @@ window.onload = function instantiate() {
     privateList = "";
     sessionStorage.setItem("privateList", JSON.stringify(privateList));
     sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
-    newNavigation(8);//GiftAddUpdate
+    navigation(8);//GiftAddUpdate
   };
 
   databaseQuery();
@@ -323,7 +323,7 @@ window.onload = function instantiate() {
           } else if (data.val().readNotifications.length == data.val().notifications.length) {
             notificationBtn.src = "img/bellNotificationOff.png";
             notificationBtn.onclick = function() {
-              newNavigation(6);//Notifications
+              navigation(6);//Notifications
             }
           }
         }
@@ -506,7 +506,7 @@ window.onload = function instantiate() {
     privateList = "";
     sessionStorage.setItem("privateList", JSON.stringify(privateList));
     sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
-    newNavigation(8);//GiftAddUpdate
+    navigation(8);//GiftAddUpdate
   }
 
   function deleteGiftElement(key, title, uid, buyer) {

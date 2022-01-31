@@ -67,7 +67,7 @@ function getCurrentUser(){
     if(user.uid == giftUser.uid){
       if(localConsoleOutput)
         console.log("***HOW'D YOU GET HERE???***");
-      newNavigation(1);//Index
+      navigation(1);//Index
     }
     if(localConsoleOutput) {
       console.log("User: " + user.userName + " loaded in");
@@ -111,18 +111,18 @@ function getCurrentUser(){
         if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
           notificationBtn.src = "img/bellNotificationOn.png";
           notificationBtn.onclick = function() {
-            newNavigation(6);//Notifications
+            navigation(6);//Notifications
           }
         } else {
           notificationBtn.src = "img/bellNotificationOff.png";
           notificationBtn.onclick = function() {
-            newNavigation(6);//Notifications
+            navigation(6);//Notifications
           }
         }
       } else if (user.notifications.length > 0) {
         notificationBtn.src = "img/bellNotificationOn.png";
         notificationBtn.onclick = function() {
-          newNavigation(6);//Notifications
+          navigation(6);//Notifications
         }
       }
     }
@@ -175,23 +175,23 @@ window.onload = function instantiate() {
     userUserNames.push(userArr[i].userName);
   }
 
-  backBtn.innerHTML = "Back To Lists";
+  backBtn.innerHTML = "Back To Gift Lists";
   backBtn.onclick = function() {
     if(moderationSet == 1){
-      newNavigation(14);//Moderation
+      navigation(14);//Moderation
     } else {
-      newNavigation(3);//Lists
+      navigation(3);//Lists
     }
   };
 
   addGift.innerHTML = "Add Private Gift";
   addGift.onclick = function() {
-    newNavigation(8, undefined, true);
+    navigation(8, undefined, true);
   };
 
   databaseQuery();
 
-  alternateButtonLabel(listNote, "Lists", "Private");
+  alternateButtonLabel(listNote, "Gift Lists", "Private");
 
   function databaseQuery() {
 
@@ -392,7 +392,7 @@ window.onload = function instantiate() {
       }
 
       if (multiples != undefined) {
-        multipleBool = multiples;
+          multipleBool = multiples;
       }
 
       giftTitle.innerHTML = title;

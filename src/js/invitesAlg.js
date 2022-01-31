@@ -121,18 +121,18 @@ function getCurrentUser(){
         if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
           notificationBtn.src = "img/bellNotificationOn.png";
           notificationBtn.onclick = function() {
-            newNavigation(6);//Notifications
+            navigation(6);//Notifications
           }
         } else {
           notificationBtn.src = "img/bellNotificationOff.png";
           notificationBtn.onclick = function() {
-            newNavigation(6);//Notifications
+            navigation(6);//Notifications
           }
         }
       } else if (user.notifications.length > 0) {
         notificationBtn.src = "img/bellNotificationOn.png";
         notificationBtn.onclick = function() {
-          newNavigation(6);//Notifications
+          navigation(6);//Notifications
         }
       }
     }
@@ -192,7 +192,7 @@ window.onload = function instantiate() {
   verifyElementIntegrity(inviteElements);
 
   newInviteIcon.onclick = function() {
-    newNavigation(11);//Confirmation
+    navigation(11);//Confirmation
   };
 
   addUser.innerHTML = "Invite User";

@@ -94,18 +94,18 @@ function getCurrentUser(){
         if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
           notificationBtn.src = "img/bellNotificationOn.png";
           notificationBtn.onclick = function() {
-            newNavigation(6);//Notifications
+            navigation(6);//Notifications
           }
         } else {
           notificationBtn.src = "img/bellNotificationOff.png";
           notificationBtn.onclick = function() {
-            newNavigation(6);//Notifications
+            navigation(6);//Notifications
           }
         }
       } else if (user.notifications.length > 0) {
         notificationBtn.src = "img/bellNotificationOn.png";
         notificationBtn.onclick = function() {
-          newNavigation(6);//Notifications
+          navigation(6);//Notifications
         }
       }
     }
@@ -154,7 +154,7 @@ window.onload = function instantiate() {
 
   backBtn.innerHTML = "Back To Home";
   backBtn.onclick = function() {
-    newNavigation(2);//Home
+    navigation(2);//Home
   };
 
   initializeGifts();
@@ -172,7 +172,7 @@ window.onload = function instantiate() {
       }
     } else {
       alert("There has been a critical error, redirecting back home...");
-      newNavigation(2);//Home
+      navigation(2);//Home
     }
   }
 

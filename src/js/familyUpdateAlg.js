@@ -205,7 +205,7 @@ window.onload = function instantiate() {
     backBtn.innerHTML = "Return To Family Page";
 
     backBtn.onclick = function() {
-      newNavigation(15);
+      navigation(15);
     };
   }
 
@@ -505,7 +505,7 @@ window.onload = function instantiate() {
 
       postRef.on('child_removed', function (data) {
         if(data.key == familyData.uid)
-          newNavigation(15);//family.html
+          navigation(15);//family.html
 
         let i = findUIDItemInArr(data.key, familyArr);
         if(familyArr[i] != data.val() && i != -1) {
@@ -729,7 +729,7 @@ window.onload = function instantiate() {
     firebase.database().ref("family/" + familyData.uid).update({
       name:newFamilyName
     });
-    newNavigation(15);//family.html
+    navigation(15);//family.html
   }
 
   function addFamilyMemberToDB(memberUID){
