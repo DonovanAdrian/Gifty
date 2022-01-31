@@ -35,7 +35,7 @@ let userInitial;
 let userInvites;
 let autoSecretSanta;
 let familyInitial;
-let activateSecretSanta;
+let userOptionsBtn;
 let secretSantaModal;
 let santaModalSpan;
 let secretSantaBtn;
@@ -110,7 +110,7 @@ window.onload = function instantiate() {
   sendGlobalNotification = document.getElementById('sendGlobalNotification');
   sendPrivateMessage = document.getElementById('sendPrivateMessage');
   userModal = document.getElementById('userModal');
-  activateSecretSanta = document.getElementById('activateSecretSanta');
+  userOptionsBtn = document.getElementById('userOptionsBtn');
   secretSantaModal = document.getElementById('santaModal');
   santaModalSpan = document.getElementById('secretSantaSpan');
   secretSantaBtn = document.getElementById('secretSantaBtn');
@@ -140,7 +140,7 @@ window.onload = function instantiate() {
   cancelMsg = document.getElementById('cancelMsg');
   moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal, notificationTitle,
     notificationInfo, noteSpan, privateMessageModal, sendGlobalNotification, sendPrivateMessage, userModal,
-    activateSecretSanta, secretSantaModal, santaModalSpan, secretSantaBtn, secretSantaShuffle, secretSantaAutoBtn,
+    userOptionsBtn, secretSantaModal, santaModalSpan, secretSantaBtn, secretSantaShuffle, secretSantaAutoBtn,
     settingsNote, testData, closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends,
     userLastLogin, userScore, userPassword, userSecretSanta, moderatorOp, sendPrivateMessage, warnUser, banUser,
     closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
@@ -152,7 +152,9 @@ window.onload = function instantiate() {
 
   alternateButtonLabel(settingsNote, "Settings", "Moderation");
 
-  generateActivateSecretSantaModal();
+  generateUserOptionsModal();
+
+  userOptionsBtn.innerHTML = "User Options";
 
   initializeBackBtn();
 
@@ -390,6 +392,7 @@ window.onload = function instantiate() {
   }
 
   function createUserElement(userData){
+    let textNode;
     try{
       testData.remove();
     } catch (err) {}
@@ -397,7 +400,13 @@ window.onload = function instantiate() {
     let liItem = document.createElement("LI");
     liItem.id = "user" + userData.uid;
     initUserElement(liItem, userData);
-    let textNode = document.createTextNode(userData.name);
+
+    if(userData.userScore != null) {
+      textNode = document.createTextNode(userData.name + " - " + userData.userScore);
+    } else {
+      textNode = document.createTextNode(userData.name);
+    }
+
     liItem.appendChild(textNode);
 
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
@@ -405,13 +414,18 @@ window.onload = function instantiate() {
 
     dataCounter++;
     if (dataCounter > buttonOpacLim) {
-      activateSecretSanta.style.opacity = ".75";
+      userOptionsBtn.style.opacity = ".75";
     }
   }
 
   function changeUserElement(userData) {
     let editUser = document.getElementById('user' + userData.uid);
-    editUser.innerHTML = userData.name;
+
+    if(userData.userScore != null) {
+      editUser.innerHTML = userData.name + " - " + userData.userScore;
+    } else {
+      editUser.innerHTML = userData.name;
+    }
     initUserElement(editUser, userData);
   }
 
