@@ -1244,16 +1244,14 @@ function buildPotentialMatchesArray(usersToAssign) {
   }
 }
 
-function generateActivateSecretSantaModal(){
-
-  activateSecretSanta.onclick = function() {
+function generateUserOptionsModal(){
+  userOptionsBtn.onclick = function() {
     santaModalSpan.onclick = function(){
       closeModal(secretSantaModal);
     };
 
-    openModal(secretSantaModal, "secretSantaModal");
+    openModal(secretSantaModal, "userOptionsModal");
   };
-  activateSecretSanta.innerHTML = "Secret Santa";
 }
 
 function removeSecretSantaNames(){
