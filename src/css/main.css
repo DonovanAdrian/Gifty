@@ -903,7 +903,7 @@ ul li.santa::before {
   }
 
   ul li.spacer {
-    padding: 30px 8px 30px 40px;
+    padding: 35px 8px 35px 40px;
     font-size: 22px;
   }
 }
@@ -1020,7 +1020,7 @@ ul li.santa::before {
   }
 
   ul li.spacer {
-    padding: 30px 8px 30px 40px;
+    padding: 40px 8px 40px 40px;
     font-size: 24px;
   }
 }
@@ -1137,7 +1137,7 @@ ul li.santa::before {
   }
 
   ul li.spacer {
-    padding: 30px 8px 30px 40px;
+    padding: 40px 8px 40px 40px;
     font-size: 27px;
   }
 }
