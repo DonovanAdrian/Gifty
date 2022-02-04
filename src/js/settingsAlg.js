@@ -5,9 +5,12 @@
  */
 
 let settingsElements = [];
+let listeningFirebaseRefs = [];
 let userArr = [];
 
 let allowLogin = false;
+
+let loginDisabledMsg = "";
 
 let editBtn;
 let faqBtn;
@@ -28,6 +31,7 @@ let notificationModal;
 let notificationInfo;
 let notificationTitle;
 let noteSpan;
+let loginInitial;
 
 
 
@@ -110,6 +114,46 @@ window.onload = function instantiate() {
   faqBtn.onclick = function (){
     navigation(12);//FAQ
   };
+
+  databaseQuery();
+
+  function databaseQuery() {
+    loginInitial = firebase.database().ref("login/");
+
+    let fetchLogin = function (postRef){
+      postRef.on('child_added', function (data) {
+        if (data.key == "allowLogin") {
+          allowLogin = data.val();
+          console.log("Allow Login? " + allowLogin);
+        } else if (data.key == "loginDisabledMsg") {
+          loginDisabledMsg = data.val();
+          console.log("Current LoginDisabledMsg: " + loginDisabledMsg);
+        }
+      });
+
+      postRef.on('child_changed', function (data) {
+        if (data.key == "allowLogin") {
+          allowLogin = data.val();
+          console.log("Allow Login? " + allowLogin);
+        } else if (data.key == "loginDisabledMsg") {
+          loginDisabledMsg = data.val();
+          console.log("Current LoginDisabledMsg: " + loginDisabledMsg);
+        }
+      });
+
+      postRef.on('child_removed', function (data) {
+        if (data.key == "allowLogin") {
+          allowLogin = true;
+        } else if (data.key == "loginDisabledMsg") {
+          loginDisabledMsg = "";
+        }
+      });
+    };
+
+    fetchLogin(loginInitial);
+
+    listeningFirebaseRefs.push(loginInitial);
+  }
 };
 
 function generateModerationModal(){
