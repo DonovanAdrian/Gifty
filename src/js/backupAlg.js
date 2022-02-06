@@ -16,11 +16,14 @@ let moderationSet = 1;
 let dataCounter = 0;
 let globalNoteInt = 0;
 let commonLoadingTimerInt = 0;
+let generateDataLayer = 0;
+
+let lastBackupWhen = "";
+let generatedDataString = "";
 
 let dataListContainer;
 let offlineSpan;
 let offlineModal;
-let privateMessageModal;
 let user;
 let offlineTimer;
 let commonLoadingTimer;
@@ -30,10 +33,18 @@ let notificationTitle;
 let noteSpan;
 let inviteNote;
 let entireDB;
+let backupInitial;
 let userInitial;
 let userInvites;
 let settingsNote;
 let testData;
+let backupSettings;
+let backBtn;
+let backupModal;
+let backupSpan;
+let lastBackup;
+let exportBtn;
+let importBtn;
 
 
 
@@ -79,8 +90,16 @@ window.onload = function instantiate() {
   noteSpan = document.getElementById('closeNotification');
   settingsNote = document.getElementById('settingsNote');
   testData = document.getElementById('testData');
+  backupSettings = document.getElementById('backupSettings');
+  backBtn = document.getElementById('backBtn');
+  backupModal = document.getElementById('backupModal');
+  backupSpan = document.getElementById('backupSpan');
+  lastBackup = document.getElementById('lastBackup');
+  exportBtn = document.getElementById('exportBtn');
+  importBtn = document.getElementById('importBtn');
   backupElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal, notificationTitle,
-    notificationInfo, noteSpan, settingsNote, testData];
+    notificationInfo, noteSpan, settingsNote, testData, backupSettings, backBtn, backupModal, backupSpan,
+    lastBackup, exportBtn, importBtn];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(backupElements);
@@ -89,7 +108,38 @@ window.onload = function instantiate() {
 
   alternateButtonLabel(settingsNote, "Settings", "Backups");
 
-  //generateActivateSecretSantaModal();
+  generateBackupModal();
+
+  function generateBackupModal(){
+    //Remember...
+    //Show all database keys, later show more levels, with indentation
+    //Actively listen for database updates, update array as updates come in
+    //Initialize backupInitial in DB if it doesn't exist
+    //fetch "lastBackupWhen" from DB. After initialization, set "Never"
+    lastBackupWhen = "Never";
+
+    backupSettings.onclick = function(){
+      lastBackup.innerHTML = "Last Backup: " + lastBackupWhen;
+
+      exportBtn.onclick = function() {
+        exportBackup();
+      }
+      exportBtn.innerHTML = "Export Backup";
+
+      importBtn.onclick = function() {
+        //importBackup();
+        alert("This button will import a backup to the Database");
+      }
+      importBtn.innerHTML = "Import Backup";
+
+      backupSpan.onclick = function() {
+        closeModal(backupModal);
+      }
+
+      openModal(backupModal, "backupModal");
+    };
+    backupSettings.innerHTML = "Backup Settings";
+  }
 
   initializeBackBtn();
 
@@ -103,23 +153,52 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
     entireDB = firebase.database().ref("/");
+    backupInitial = firebase.database().ref("backup/");
     userInitial = firebase.database().ref("users/");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+
+    let fetchBackup = function (postRef) {
+      postRef.once("value").then(function(snapshot) {
+        if(snapshot.exists()) {
+          postRef.on('child_added', function (data) {
+            lastBackupWhen = data.val();
+          });
+
+          postRef.on('child_changed', function (data) {
+            lastBackupWhen = data.val();
+          });
+
+          postRef.on('child_removed', function (data) {
+            lastBackupWhen = "Never";
+          });
+        } else {
+          if(consoleOutput)
+            console.log("Initializing Backup Data In DB...");
+
+          firebase.database().ref("backup/").update({
+            backupWhen: "Never"
+          });
+        }
+      });
+    };
 
     let fetchAllData = function (postRef) {
       postRef.on('child_added', function (data) {
         entireDBDataArr.push(data.val());
         entireDBDataKeyArr.push(data.key);
-
-        console.log("KEY: " + data.key);
-        console.log(data.val());
-        console.log("");
+        createKeyElement(data.key);
       });
 
       postRef.on('child_changed', function (data) {
+        let i = findUIDItemInArr(data.key, entireDBDataKeyArr);
+        entireDBDataArr[i] = data.val();
       });
 
       postRef.on('child_removed', function (data) {
+        let i = findUIDItemInArr(data.key, entireDBDataKeyArr);
+        entireDBDataArr.splice(i, 1);
+        entireDBDataKeyArr.splice(i, 1);
+        removeKeyElement(data.key);
       });
     };
 
@@ -162,12 +241,114 @@ window.onload = function instantiate() {
       });
     };
 
+    fetchBackup(backupInitial);
     fetchAllData(entireDB);
     fetchData(userInitial);
     fetchInvites(userInvites);
 
+    listeningFirebaseRefs.push(backupInitial);
     listeningFirebaseRefs.push(entireDB);
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
+  }
+
+  function createKeyElement(keyName) {
+    try {
+      testData.remove();
+    } catch (err) {}
+    let liItem = document.createElement("LI");
+    liItem.id = "data" + keyName;
+    liItem.className = "gift";
+    let textNode = document.createTextNode("Data Point: " + keyName);
+    liItem.appendChild(textNode);
+    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+    clearInterval(commonLoadingTimer);
+    clearInterval(offlineTimer);
+  }
+
+  function removeKeyElement(keyName) {
+    let removeItem = document.getElementById("data" + keyName);
+    removeItem.remove();
+  }
+
+  function exportBackup() {
+    let today = new Date();
+    let UTCmm = today.getUTCMinutes();
+    let UTChh = today.getUTCHours();
+    let dd = today.getDate();
+    let mm = today.getMonth()+1;
+    let yy = today.getFullYear();
+    let backupDate = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm;
+    let simpleBackupDate = mm + "." + dd + "." + yy;
+    let backupData = "GiftyBackupDataFile,BackupDate: " + backupDate + "\n";
+
+    compileBackupData(backupData);
+
+    let backupElement = document.createElement('a');
+    backupElement.href = "data:text/csv;charset=utf-8," + encodeURI(backupData);
+    backupElement.target = "_blank";
+
+    backupElement.download = "GiftyBackup" + simpleBackupDate + "-" + generateRandomShortString() + ".csv";
+    //backupElement.click();
+  }
+
+  function compileBackupData(inputData) {
+    //Don't forget about "," and "\n" at EOL
+    let outputData = inputData;
+    generatedDataString = "";
+
+    for (let i = 0; i < entireDBDataArr.length; i++) {
+      outputData += "\nTOP," + entireDBDataKeyArr[i] + "\n";
+
+      if (typeof entireDBDataArr[i] == "object") {
+        compileObjectData(entireDBDataArr[i], true);
+      }
+
+      console.log(entireDBDataArr[i]);
+      console.log();
+    }
+
+    return outputData;
+  }
+
+  function compileObjectData(inputObj, reset) {
+
+    if (reset) {
+      generateDataLayer = 1;
+    } else {
+      generateDataLayer++;
+    }
+
+    let currentLayer = generateDataLayer;
+    console.log("**********");
+    console.log("Current Layer: " + currentLayer);
+
+    for (let name in inputObj) {
+      console.log(name);
+      console.log(inputObj[name]);
+      if (typeof inputObj[name] == "object") {
+        //partial string compile: layer#, key \n
+        compileObjectData(inputObj[name]);
+        generateDataLayer--;
+      } else {
+        //full string compile: layer#, key, value \n
+      }
+    }
+  }
+
+  function generateRandomShortString() {
+    let numSelect = "56789";
+    let numSelector = Math.floor((Math.random() * numSelect.length));
+    let strLenLim = numSelect.charAt(numSelector);
+    let alphaNumSelect = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
+    let randShortStr = "";
+    let strSelector = 0;
+
+    for (let i = 0; i < strLenLim; i++) {
+      strSelector = Math.floor((Math.random() * alphaNumSelect.length));
+      randShortStr += alphaNumSelect.charAt(strSelector);
+    }
+
+    return randShortStr;
   }
 };
