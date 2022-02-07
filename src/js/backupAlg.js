@@ -116,7 +116,6 @@ window.onload = function instantiate() {
     //Actively listen for database updates, update array as updates come in
     //Initialize backupInitial in DB if it doesn't exist
     //fetch "lastBackupWhen" from DB. After initialization, set "Never"
-    lastBackupWhen = "Never";
 
     backupSettings.onclick = function(){
       lastBackup.innerHTML = "Last Backup: " + lastBackupWhen;
@@ -278,22 +277,25 @@ window.onload = function instantiate() {
     let dd = today.getDate();
     let mm = today.getMonth()+1;
     let yy = today.getFullYear();
-    let backupDate = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm;
+    let backupDate = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + " (UTC)";
     let simpleBackupDate = mm + "." + dd + "." + yy;
     let backupData = "GiftyBackupDataFile,BackupDate: " + backupDate + "\n";
 
-    compileBackupData(backupData);
+    backupData = compileBackupData(backupData);
 
     let backupElement = document.createElement('a');
     backupElement.href = "data:text/csv;charset=utf-8," + encodeURI(backupData);
     backupElement.target = "_blank";
 
     backupElement.download = "GiftyBackup" + simpleBackupDate + "-" + generateRandomShortString() + ".csv";
-    //backupElement.click();
+    backupElement.click();
+
+    firebase.database().ref("backup/").update({
+      backupWhen: backupDate
+    });
   }
 
   function compileBackupData(inputData) {
-    //Don't forget about "," and "\n" at EOL
     let outputData = inputData;
     generatedDataString = "";
 
@@ -302,16 +304,16 @@ window.onload = function instantiate() {
 
       if (typeof entireDBDataArr[i] == "object") {
         compileObjectData(entireDBDataArr[i], true);
+        outputData += generatedDataString;
+        generatedDataString = "";
       }
-
-      console.log(entireDBDataArr[i]);
-      console.log();
     }
 
     return outputData;
   }
 
   function compileObjectData(inputObj, reset) {
+    let currentLayer;
 
     if (reset) {
       generateDataLayer = 1;
@@ -319,19 +321,15 @@ window.onload = function instantiate() {
       generateDataLayer++;
     }
 
-    let currentLayer = generateDataLayer;
-    console.log("**********");
-    console.log("Current Layer: " + currentLayer);
+    currentLayer = generateDataLayer;
 
     for (let name in inputObj) {
-      console.log(name);
-      console.log(inputObj[name]);
       if (typeof inputObj[name] == "object") {
-        //partial string compile: layer#, key \n
+        generatedDataString += currentLayer + "," + name + "\n";
         compileObjectData(inputObj[name]);
         generateDataLayer--;
       } else {
-        //full string compile: layer#, key, value \n
+        generatedDataString += currentLayer + "," + name + "," + inputObj[name] + "\n";
       }
     }
   }
