@@ -185,12 +185,13 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         entireDBDataArr.push(data.val());
         entireDBDataKeyArr.push(data.key);
-        createKeyElement(data.key);
+        createKeyElement(data.key, data.val());
       });
 
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, entireDBDataKeyArr);
         entireDBDataArr[i] = data.val();
+        updateKeyElement(data.key);
       });
 
       postRef.on('child_removed', function (data) {
@@ -251,7 +252,7 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 
-  function createKeyElement(keyName) {
+  function createKeyElement(keyName, keyData) {
     try {
       testData.remove();
     } catch (err) {}
@@ -263,6 +264,10 @@ window.onload = function instantiate() {
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
+  }
+
+  function updateKeyElement(keyName) {
+
   }
 
   function removeKeyElement(keyName) {
