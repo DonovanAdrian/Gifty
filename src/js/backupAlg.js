@@ -11,6 +11,7 @@ let listeningFirebaseRefs = [];
 let inviteArr = [];
 let userArr = [];
 let familyArr = [];
+let loadedDataArr = [];
 
 let moderationSet = 1;
 let dataCounter = 0;
@@ -256,6 +257,9 @@ window.onload = function instantiate() {
     try {
       testData.remove();
     } catch (err) {}
+
+    //At some point, create second level and further, using keyData and using cues from exportBackup recursion
+
     let liItem = document.createElement("LI");
     liItem.id = "data" + keyName;
     liItem.className = "gift";
@@ -264,14 +268,20 @@ window.onload = function instantiate() {
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
+
+    loadedDataArr.push(keyName);
   }
 
   function updateKeyElement(keyName) {
-
+    let editData = document.getElementById('data' + keyName);
+    editData.innerHTML = "Data Point: " + keyName + " (Updated!)";
+    editData.className += " santa";
   }
 
   function removeKeyElement(keyName) {
     let removeItem = document.getElementById("data" + keyName);
+    let removeItemIndex = findUIDItemInArr(keyName, loadedDataArr);
+    loadedDataArr.splice(removeItemIndex, 1);
     removeItem.remove();
   }
 
@@ -285,6 +295,7 @@ window.onload = function instantiate() {
     let backupDate = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + " (UTC)";
     let simpleBackupDate = mm + "." + dd + "." + yy;
     let backupData = "GiftyBackupDataFile,BackupDate: " + backupDate + "\n";
+    let updateBackupData;
 
     backupData = compileBackupData(backupData);
 
@@ -294,6 +305,11 @@ window.onload = function instantiate() {
 
     backupElement.download = "GiftyBackup" + simpleBackupDate + "-" + generateRandomShortString() + ".csv";
     backupElement.click();
+
+    for (let i = 0; i < loadedDataArr.length; i++) {
+      updateBackupData = document.getElementById('data' + loadedDataArr[i]);
+      updateBackupData.className = "gift";
+    }
 
     firebase.database().ref("backup/").update({
       backupWhen: backupDate
