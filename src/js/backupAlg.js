@@ -12,12 +12,14 @@ let inviteArr = [];
 let userArr = [];
 let familyArr = [];
 let loadedDataArr = [];
+let generatedLayerArr = [];
 
 let moderationSet = 1;
 let dataCounter = 0;
 let globalNoteInt = 0;
 let commonLoadingTimerInt = 0;
 let generateDataLayer = 0;
+let generateNLevelLayer = 0;
 
 let lastBackupWhen = "";
 let generatedDataString = "";
@@ -259,6 +261,7 @@ window.onload = function instantiate() {
     } catch (err) {}
 
     //At some point, create second level and further, using keyData and using cues from exportBackup recursion
+    compileNLevelKeyElements(keyData);
 
     let liItem = document.createElement("LI");
     liItem.id = "data" + keyName;
@@ -270,6 +273,54 @@ window.onload = function instantiate() {
     clearInterval(offlineTimer);
 
     loadedDataArr.push(keyName);
+  }
+
+  function compileNLevelKeyElements(keyData) {
+    console.log(keyData);
+    /*
+    let outputData = inputData;
+    generatedDataString = "";
+
+    for (let i = 0; i < entireDBDataArr.length; i++) {
+      outputData += "\nTOP," + entireDBDataKeyArr[i] + "\n";
+
+      if (typeof entireDBDataArr[i] == "object") {
+        compileBackupObjectData(entireDBDataArr[i], true);
+        outputData += generatedDataString;
+        generatedDataString = "";
+      }
+    }
+
+    return outputData;
+     */
+    //Once complete, for loop create items from generatedLayerArr and clear array
+  }
+
+  function compileNLevelObjectData(keyData, reset) {
+    let currentNLevel;
+
+    if (reset) {
+      generateNLevelLayer = 1;
+    } else {
+      generateNLevelLayer++;
+    }
+
+    currentNLevel = generateNLevelLayer;
+
+    generatedLayerArr = []; //Add To This
+
+    for (let name in keyData) {
+      if (typeof keyData[name] == "object") {
+        generatedDataString += currentNLevel + " > " + name;
+        //Increase " > " depending on level, use ">" instead of #
+        compileNLevelObjectData(keyData[name]);
+        generateNLevelLayer--;
+      } else {
+        //Add To Array
+        generatedDataString += currentNLevel + " > " + name;
+        //Increase " > " depending on level, use ">" instead of #
+      }
+    }
   }
 
   function updateKeyElement(keyName) {
@@ -324,7 +375,7 @@ window.onload = function instantiate() {
       outputData += "\nTOP," + entireDBDataKeyArr[i] + "\n";
 
       if (typeof entireDBDataArr[i] == "object") {
-        compileObjectData(entireDBDataArr[i], true);
+        compileBackupObjectData(entireDBDataArr[i], true);
         outputData += generatedDataString;
         generatedDataString = "";
       }
@@ -333,7 +384,7 @@ window.onload = function instantiate() {
     return outputData;
   }
 
-  function compileObjectData(inputObj, reset) {
+  function compileBackupObjectData(inputObj, reset) {
     let currentLayer;
 
     if (reset) {
@@ -347,7 +398,7 @@ window.onload = function instantiate() {
     for (let name in inputObj) {
       if (typeof inputObj[name] == "object") {
         generatedDataString += currentLayer + "," + name + "\n";
-        compileObjectData(inputObj[name]);
+        compileBackupObjectData(inputObj[name]);
         generateDataLayer--;
       } else {
         generatedDataString += currentLayer + "," + name + "," + inputObj[name] + "\n";
