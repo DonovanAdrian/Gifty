@@ -20,9 +20,13 @@ let globalNoteInt = 0;
 let commonLoadingTimerInt = 0;
 let generateDataLayer = 0;
 let generateNLevelLayer = 0;
+let ignoreLayer = 2;
+let changesInt = 0;
 
 let lastBackupWhen = "";
 let generatedDataString = "";
+
+let runningBackup = false;
 
 let dataListContainer;
 let offlineSpan;
@@ -114,12 +118,6 @@ window.onload = function instantiate() {
   generateBackupModal();
 
   function generateBackupModal(){
-    //Remember...
-    //Show all database keys, later show more levels, with indentation
-    //Actively listen for database updates, update array as updates come in
-    //Initialize backupInitial in DB if it doesn't exist
-    //fetch "lastBackupWhen" from DB. After initialization, set "Never"
-
     backupSettings.onclick = function(){
       lastBackup.innerHTML = "Last Backup: " + lastBackupWhen;
 
@@ -129,8 +127,7 @@ window.onload = function instantiate() {
       exportBtn.innerHTML = "Export Backup";
 
       importBtn.onclick = function() {
-        //importBackup();
-        alert("This button will import a backup to the Database");
+        importBackup();
       }
       importBtn.innerHTML = "Import Backup";
 
@@ -167,6 +164,7 @@ window.onload = function instantiate() {
           });
 
           postRef.on('child_changed', function (data) {
+            closeModal(backupModal);
             lastBackupWhen = data.val();
           });
 
@@ -192,13 +190,16 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        let i = findUIDItemInArr(data.key, entireDBDataKeyArr);
-        entireDBDataArr[i] = data.val();
-        updateKeyElement(data.key);
+        if (!runningBackup) {
+          let i = entireDBDataKeyArr.indexOf(data.key);
+          entireDBDataArr[i] = data.val();
+          updateKeyElement(data.key);
+          changesInt++;
+        }
       });
 
       postRef.on('child_removed', function (data) {
-        let i = findUIDItemInArr(data.key, entireDBDataKeyArr);
+        let i = entireDBDataKeyArr.indexOf(data.key);
         entireDBDataArr.splice(i, 1);
         entireDBDataKeyArr.splice(i, 1);
         removeKeyElement(data.key);
@@ -260,44 +261,39 @@ window.onload = function instantiate() {
       testData.remove();
     } catch (err) {}
 
-    //At some point, create second level and further, using keyData and using cues from exportBackup recursion
     compileNLevelKeyElements(keyData);
+    generateBackupNodeElement(keyName);
+  }
 
+  function generateBackupNodeElement(keyName){
     let liItem = document.createElement("LI");
     liItem.id = "data" + keyName;
     liItem.className = "gift";
-    let textNode = document.createTextNode("Data Point: " + keyName);
+    let textNode = document.createTextNode(keyName);
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
 
     loadedDataArr.push(keyName);
+    dataCounter++;
+    if (dataCounter > buttonOpacLim) {
+      backupSettings.style.opacity = ".75";
+    }
   }
 
   function compileNLevelKeyElements(keyData) {
-    console.log(keyData);
-    /*
-    let outputData = inputData;
-    generatedDataString = "";
+    compileNLevelObjectData(keyData, true);
 
-    for (let i = 0; i < entireDBDataArr.length; i++) {
-      outputData += "\nTOP," + entireDBDataKeyArr[i] + "\n";
-
-      if (typeof entireDBDataArr[i] == "object") {
-        compileBackupObjectData(entireDBDataArr[i], true);
-        outputData += generatedDataString;
-        generatedDataString = "";
-      }
+    for (let i = 0; i < generatedLayerArr.length; i++) {
+      generateBackupNodeElement(generatedLayerArr[i]);
     }
-
-    return outputData;
-     */
-    //Once complete, for loop create items from generatedLayerArr and clear array
+    generatedLayerArr = [];
   }
 
   function compileNLevelObjectData(keyData, reset) {
     let currentNLevel;
+    let prefix = "";
 
     if (reset) {
       generateNLevelLayer = 1;
@@ -307,26 +303,29 @@ window.onload = function instantiate() {
 
     currentNLevel = generateNLevelLayer;
 
-    generatedLayerArr = []; //Add To This
+    for (let i = 0; i < currentNLevel; i++) {
+      prefix += " > ";
+    }
 
-    for (let name in keyData) {
-      if (typeof keyData[name] == "object") {
-        generatedDataString += currentNLevel + " > " + name;
-        //Increase " > " depending on level, use ">" instead of #
-        compileNLevelObjectData(keyData[name]);
-        generateNLevelLayer--;
-      } else {
-        //Add To Array
-        generatedDataString += currentNLevel + " > " + name;
-        //Increase " > " depending on level, use ">" instead of #
+    if (currentNLevel < ignoreLayer) {
+      for (let name in keyData) {
+        if (typeof keyData[name] == "object") {
+          generatedLayerArr.push(prefix + name);
+          compileNLevelObjectData(keyData[name]);
+          generateNLevelLayer--;
+        } else {
+          generatedLayerArr.push(prefix + name);
+        }
       }
     }
   }
 
   function updateKeyElement(keyName) {
     let editData = document.getElementById('data' + keyName);
-    editData.innerHTML = "Data Point: " + keyName + " (Updated!)";
+    editData.innerHTML = keyName + " (Updated!)";
     editData.className += " santa";
+    backupSettings.style.background = "#3be357";
+    exportBtn.style.background = "#3be357";
   }
 
   function removeKeyElement(keyName) {
@@ -348,6 +347,7 @@ window.onload = function instantiate() {
     let backupData = "GiftyBackupDataFile,BackupDate: " + backupDate + "\n";
     let updateBackupData;
 
+    runningBackup = true;
     backupData = compileBackupData(backupData);
 
     let backupElement = document.createElement('a');
@@ -357,14 +357,21 @@ window.onload = function instantiate() {
     backupElement.download = "GiftyBackup" + simpleBackupDate + "-" + generateRandomShortString() + ".csv";
     backupElement.click();
 
-    for (let i = 0; i < loadedDataArr.length; i++) {
-      updateBackupData = document.getElementById('data' + loadedDataArr[i]);
-      updateBackupData.className = "gift";
-    }
-
     firebase.database().ref("backup/").update({
       backupWhen: backupDate
     });
+
+    if (changesInt > 0) {
+      for (let i = 0; i < loadedDataArr.length; i++) {
+        updateBackupData = document.getElementById("data" + loadedDataArr[i]);
+        updateBackupData.innerHTML = loadedDataArr[i];
+        updateBackupData.className = "gift";
+      }
+      backupSettings.style.background = "#ff8e8e";
+      exportBtn.style.background = "#ff8e8e";
+    }
+
+    runningBackup = false;
   }
 
   function compileBackupData(inputData) {
@@ -420,5 +427,9 @@ window.onload = function instantiate() {
     }
 
     return randShortStr;
+  }
+
+  function importBackup() {
+    alert("This button will import a backup to the Database");
   }
 };
