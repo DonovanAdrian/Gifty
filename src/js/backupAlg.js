@@ -119,6 +119,9 @@ window.onload = function instantiate() {
 
   function generateBackupModal(){
     backupSettings.onclick = function(){
+      let fileHandle;
+      let fileSuffix;
+
       lastBackup.innerHTML = "Last Backup: " + lastBackupWhen;
 
       exportBtn.onclick = function() {
@@ -126,9 +129,24 @@ window.onload = function instantiate() {
       }
       exportBtn.innerHTML = "Export Backup";
 
-      importBtn.onclick = function() {
-        importBackup();
-      }
+      importBtn.addEventListener('click', async() => {
+        try {
+          [fileHandle] = await window.showOpenFilePicker();
+          const file = await fileHandle.getFile();
+          fileSuffix = file.name;
+          if (file.name.length > 4) {
+            fileSuffix = file.name.substring(file.name.length - 4);
+            if (fileSuffix == ".txt" || fileSuffix == ".csv") {
+              const contents = await file.text();
+              console.log(contents);
+            } else {
+              alert("Please only import text or comma seperated variable files!");
+            }
+          } else {
+            alert("File import error, please try a different file!");
+          }
+        } catch (err) {}
+      });
       importBtn.innerHTML = "Import Backup";
 
       backupSpan.onclick = function() {
@@ -430,6 +448,6 @@ window.onload = function instantiate() {
   }
 
   function importBackup() {
-    alert("This button will import a backup to the Database");
+
   }
 };
