@@ -138,7 +138,7 @@ window.onload = function instantiate() {
             fileSuffix = file.name.substring(file.name.length - 4);
             if (fileSuffix == ".txt" || fileSuffix == ".csv") {
               const contents = await file.text();
-              console.log(contents);
+              importBackup(contents);
             } else {
               alert("Please only import text or comma seperated variable files!");
             }
@@ -447,7 +447,15 @@ window.onload = function instantiate() {
     return randShortStr;
   }
 
-  function importBackup() {
-
+  function importBackup(importText) {
+    //Maybe just like a manual item reader...?
+    //precheck for necessary prerequisites, including looking for:
+    //TOP
+    //GiftyDataBackupFile
+    //BackupDate
+    //and basic element data that should be mandatory initialized by default (when ready... clear database and test)
+    //this latter one being if you went directly from login to backup with one user
+    //if precheck fails, alert user
+    //for i = 0, if ",", else if "\n", else if (some other EOL code)
   }
 };
