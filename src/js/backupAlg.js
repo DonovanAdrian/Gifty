@@ -143,7 +143,7 @@ window.onload = function instantiate() {
               alert("Please only import text or comma seperated variable files!");
             }
           } else {
-            alert("File import error, please try a different file!");
+            alert("File Import Error! Please try a different file!");
           }
         } catch (err) {}
       });
@@ -362,7 +362,7 @@ window.onload = function instantiate() {
     let yy = today.getFullYear();
     let backupDate = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + " (UTC)";
     let simpleBackupDate = mm + "." + dd + "." + yy;
-    let backupData = "GiftyBackupDataFile,BackupDate: " + backupDate + "\n";
+    let backupData = "GiftyBackupDataFile,\"BackupDate: " + backupDate + "\"\n";
     let updateBackupData;
 
     runningBackup = true;
@@ -397,7 +397,7 @@ window.onload = function instantiate() {
     generatedDataString = "";
 
     for (let i = 0; i < entireDBDataArr.length; i++) {
-      outputData += "\nTOP," + entireDBDataKeyArr[i] + "\n";
+      outputData += "\nTOP,\"" + entireDBDataKeyArr[i] + "\"\n";
 
       if (typeof entireDBDataArr[i] == "object") {
         compileBackupObjectData(entireDBDataArr[i], true);
@@ -422,11 +422,11 @@ window.onload = function instantiate() {
 
     for (let name in inputObj) {
       if (typeof inputObj[name] == "object") {
-        generatedDataString += currentLayer + "," + name + "\n";
+        generatedDataString += currentLayer + ",\"" + name + "\"\n";
         compileBackupObjectData(inputObj[name]);
         generateDataLayer--;
       } else {
-        generatedDataString += currentLayer + "," + name + "," + inputObj[name] + "\n";
+        generatedDataString += currentLayer + ",\"" + name + "\",\"" + inputObj[name] + "\"\n";
       }
     }
   }
@@ -448,14 +448,59 @@ window.onload = function instantiate() {
   }
 
   function importBackup(importText) {
-    //Maybe just like a manual item reader...?
+    let firstCol = [];
+    let secondCol = [];
+    let thirdCol = [];
+    let importString = "";
+    let importColumnState = 1;
+    let lastPush = 0;
+    let elementBool = false;
+
     //precheck for necessary prerequisites, including looking for:
-    //TOP
-    //GiftyDataBackupFile
-    //BackupDate
-    //and basic element data that should be mandatory initialized by default (when ready... clear database and test)
+    //basic element data that should be mandatory initialized by default (when ready... clear database and test)
     //this latter one being if you went directly from login to backup with one user
-    //if precheck fails, alert user
-    //for i = 0, if ",", else if "\n", else if (some other EOL code)
+
+    if (importText.includes("TOP") && importText.includes("GiftyDataBackupFile")
+      && importText.includes("BackupDate")) {//ADD MOAR
+      for (let i = 0; i < importText.length; i++) {
+        if (importText[i] == "\n") {
+          if (lastPush == 2) {
+            thirdCol.push(importString);
+          }
+          importColumnState = 1;
+          importString = "";
+        } else if (importText[i] == "," && !elementBool) {
+          if (importString != "") {
+            firstCol.push(importString);
+            importColumnState = 2;
+            importString = "";
+          }
+        } else if (importText[i] == "\"") {
+          if (importString != "") {
+            if (importColumnState == 2) {
+              secondCol.push(importString);
+            } else if (importColumnState == 3) {
+              thirdCol.push(importString);
+            }
+            lastPush = importColumnState;
+            importColumnState = 3;
+            importString = "";
+          }
+          if (elementBool) {
+            elementBool = false;
+          } else {
+            elementBool = true;
+          }
+        } else {
+          importString += importText[i];
+        }
+      }
+
+      console.log(firstCol);
+      console.log(secondCol);
+      console.log(thirdCol);
+    } else {
+      alert("File Import Error! This backup file is not in the correct format!");
+    }
   }
 };
