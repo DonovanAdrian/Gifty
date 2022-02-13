@@ -143,7 +143,7 @@ window.onload = function instantiate() {
               alert("Please only import text or comma seperated variable files!");
             }
           } else {
-            alert("File Import Error! Please try a different file!");
+            alert("File Import Error! This backup file is not in the correct format! \n\nError Code: 100");
           }
         } catch (err) {}
       });
@@ -460,8 +460,8 @@ window.onload = function instantiate() {
     //basic element data that should be mandatory initialized by default (when ready... clear database and test)
     //this latter one being if you went directly from login to backup with one user
 
-    if (importText.includes("TOP") && importText.includes("GiftyDataBackupFile")
-      && importText.includes("BackupDate")) {//ADD MOAR
+    if (importText.indexOf("TOP") && importText.indexOf("GiftyDataBackupFile")
+      && importText.indexOf("BackupDate")) {//ADD MOAR
       for (let i = 0; i < importText.length; i++) {
         if (importText[i] == "\n") {
           if (lastPush == 2) {
@@ -496,11 +496,19 @@ window.onload = function instantiate() {
         }
       }
 
-      console.log(firstCol);
-      console.log(secondCol);
-      console.log(thirdCol);
+
+
+      if (firstCol.length == secondCol.length && secondCol.length == thirdCol.length) {
+        processBackupData(firstCol, secondCol, thirdCol);
+      } else {
+        alert("File Import Error! This backup file is not in the correct format! \n\nError Code: 200");
+      }
     } else {
-      alert("File Import Error! This backup file is not in the correct format!");
+      alert("File Import Error! This backup file is not in the correct format! \n\nError Code: 300");
     }
+  }
+
+  function processBackupData(colA, colB, colC) {
+    console.log("Ready for processing...");
   }
 };
