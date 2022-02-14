@@ -496,7 +496,9 @@ window.onload = function instantiate() {
         }
       }
 
-
+      //Correcting minor data collection error
+      thirdCol.splice(0, 1);
+      thirdCol.push("");
 
       if (firstCol.length == secondCol.length && secondCol.length == thirdCol.length) {
         processBackupData(firstCol, secondCol, thirdCol);
@@ -509,6 +511,61 @@ window.onload = function instantiate() {
   }
 
   function processBackupData(colA, colB, colC) {
-    console.log("Ready for processing...");
+    let currentLevel = 0;
+    let previousLevel = 0;
+    let masterDBArray = [];
+    let tempArr = [];
+
+    console.log(colA);
+    console.log(colB);
+    console.log(colC);
+
+    for (let i = 1; i < colA.length; i++) {
+      if (colA[i] == "TOP") {
+        currentLevel = 0;
+      } else if (colA[i] == "1") {
+        currentLevel = 1;
+      } else if (colA[i] == "2") {
+        currentLevel = 2;
+      } else if (colA[i] == "3") {
+        currentLevel = 3;
+      }
+
+      //need to consider moving up and down levels - such that the parent key is stored per each set of
+      //objects.
+      // top
+      //  - object ***No objects at a higher level, save and continue
+      //  - object ***No objects at a higher level, save and continue
+      //  - object ***Object at a higher level found, collect more data
+      //  -  -  object
+      //  -  -  object
+      //  - object ***No objects at a higher level, save and continue
+      //  - object ***No objects at a higher level, save and continue
+
+      if (previousLevel > currentLevel && currentLevel != 0) {
+        console.log("Store Data!");
+        console.log("Lowered level, save previous object and start new data point!");
+        console.log(colB[i] + " : " + colC[i]);
+      } else if (currentLevel == 0 && colA[i] == "TOP") {
+        if (i != 1) {//Initially nothing is stored, nothing is there to save
+          console.log("Store into master array! " + i);
+          console.log("");
+        }
+        console.log("Start collecting new object data for " + colB[i]);
+      } else if (previousLevel < currentLevel) {
+        console.log("Add new child object!");
+        console.log(colB[i] + " : " + colC[i]);
+      } else {
+        console.log("Add new object!");
+        console.log(colB[i] + " : " + colC[i]);
+      }
+
+      previousLevel = currentLevel;
+    }
+    //If at end, save last object!
+  }
+
+  function pushBackupData(databaseArray) {
+    console.log(databaseArray);
   }
 };
