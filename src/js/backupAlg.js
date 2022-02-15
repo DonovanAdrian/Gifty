@@ -2,6 +2,11 @@
  * This project was created by Donovan Adrian and any
  * edits or changes must be confirmed as valid by Donovan
  * with written consent under any circumstance.
+ *
+ * Error Code Key *
+ * 100 - The filename is too short, only formal text and csv files are allowed.
+ * 200 - This does not appear to be a traditional Gifty Backup File
+ * 300 - There was potential data loss with this file's export or import
  */
 
 let entireDBDataArr = [];
@@ -515,6 +520,8 @@ window.onload = function instantiate() {
     let previousLevel = 0;
     let masterDBArray = [];
     let tempArr = [];
+    let tempDataA;
+    let tempDataB;
 
     console.log(colA);
     console.log(colB);
@@ -558,6 +565,11 @@ window.onload = function instantiate() {
       } else {
         console.log("Add new object!");
         console.log(colB[i] + " : " + colC[i]);
+        tempDataA = colB[i];
+        tempDataB = colC[i];
+        const obj = {};
+        obj[tempDataA] = tempDataB;
+        console.log(obj);
       }
 
       previousLevel = currentLevel;
