@@ -516,10 +516,13 @@ window.onload = function instantiate() {
   }
 
   function processBackupData(colA, colB, colC) {
+    let saveDataBool = false;
     let currentLevel = 0;
     let previousLevel = 0;
     let masterDBArray = [];
     let tempArr = [];
+    let tempObj = {};
+    let parentStr = "";
     let tempDataA;
     let tempDataB;
 
@@ -537,6 +540,8 @@ window.onload = function instantiate() {
       } else if (colA[i] == "3") {
         currentLevel = 3;
       }
+      tempDataA = colB[i];
+      tempDataB = colC[i];
 
       //need to consider moving up and down levels - such that the parent key is stored per each set of
       //objects.
@@ -553,7 +558,9 @@ window.onload = function instantiate() {
         console.log("Store Data!");
         console.log("Lowered level, save previous object and start new data point!");
         console.log(colB[i] + " : " + colC[i]);
+        saveDataBool = true;
       } else if (currentLevel == 0 && colA[i] == "TOP") {
+
         if (i != 1) {//Initially nothing is stored, nothing is there to save
           console.log("Store into master array! " + i);
           console.log("");
@@ -562,19 +569,29 @@ window.onload = function instantiate() {
       } else if (previousLevel < currentLevel) {
         console.log("Add new child object!");
         console.log(colB[i] + " : " + colC[i]);
+        saveDataBool = true;
       } else {
         console.log("Add new object!");
         console.log(colB[i] + " : " + colC[i]);
-        tempDataA = colB[i];
-        tempDataB = colC[i];
-        const obj = {};
-        obj[tempDataA] = tempDataB;
-        console.log(obj);
+        saveDataBool = true;
       }
 
+      if (saveDataBool) {
+        tempObj[tempDataA] = tempDataB;
+        tempArr.push(tempObj);
+        saveDataBool = false;
+      } else if (!saveDataBool && i != 1) {
+        tempObj[parentStr] = tempArr;
+        masterDBArray.push(tempObj);
+        tempArr = [];
+        parentStr = colB[i];
+      }
+
+      tempObj = {};
       previousLevel = currentLevel;
     }
     //If at end, save last object!
+    console.log(masterDBArray);
   }
 
   function pushBackupData(databaseArray) {
