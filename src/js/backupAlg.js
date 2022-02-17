@@ -516,13 +516,19 @@ window.onload = function instantiate() {
   }
 
   function processBackupData(colA, colB, colC) {
-    let saveDataBool = false;
+    let saveTopDataBool = false;
+    let saveParentDataBool = false;
+    let saveChildDataBool = false;
     let currentLevel = 0;
     let previousLevel = 0;
-    let masterDBArray = [];
-    let tempArr = [];
+    let masterDBArr = [];
+    let tempTopArr = [];
+    let tempParentArr = [];
+    let tempChildArr = [];
     let tempObj = {};
+    let topStr = "";
     let parentStr = "";
+    let childStr = "";
     let tempDataA;
     let tempDataB;
 
@@ -555,43 +561,62 @@ window.onload = function instantiate() {
       //  - object ***No objects at a higher level, save and continue
 
       if (previousLevel > currentLevel && currentLevel != 0) {
-        console.log("Store Data!");
-        console.log("Lowered level, save previous object and start new data point!");
+        if (saveParentDataBool) {
+          saveTopDataBool = true;
+          saveParentDataBool = true;
+          console.log("Increased level, save top data!");
+        } else if (saveChildDataBool) {
+          saveParentDataBool = true;
+          saveChildDataBool = false;
+          console.log("Increased level, save parent data!");
+        }
         console.log(colB[i] + " : " + colC[i]);
-        saveDataBool = true;
       } else if (currentLevel == 0 && colA[i] == "TOP") {
-
         if (i != 1) {//Initially nothing is stored, nothing is there to save
           console.log("Store into master array! " + i);
           console.log("");
+          saveTopDataBool = true;
+          saveParentDataBool = false;
         }
         console.log("Start collecting new object data for " + colB[i]);
+        topStr = colB[i];
       } else if (previousLevel < currentLevel) {
-        console.log("Add new child object!");
+        if (saveTopDataBool) {
+          console.log("Add new parent object!");
+          saveParentDataBool = true;
+          saveTopDataBool = false;
+        } else if (saveParentDataBool) {
+          console.log("Add new child object!");
+          saveChildDataBool = true;
+          saveParentDataBool = false;
+        }
         console.log(colB[i] + " : " + colC[i]);
-        saveDataBool = true;
       } else {
         console.log("Add new object!");
         console.log(colB[i] + " : " + colC[i]);
-        saveDataBool = true;
       }
 
-      if (saveDataBool) {
-        tempObj[tempDataA] = tempDataB;
-        tempArr.push(tempObj);
-        saveDataBool = false;
-      } else if (!saveDataBool && i != 1) {
-        tempObj[parentStr] = tempArr;
-        masterDBArray.push(tempObj);
-        tempArr = [];
-        parentStr = colB[i];
+      if (saveTopDataBool) {
+
+      } else if (saveParentDataBool) {
+
+      } else if (saveChildDataBool) {
+
       }
 
-      tempObj = {};
+      //retain topKey when starting
+      //retain parentKey when saving a new parent
+      //save data as needed into tempParentArr
+      //if child found, retain childKey
+      //save child data as needed into tempChildArr
+      //once finished, save tempChildArr into tempParentArr
+      //May need a nested function to clear the previous array before merging?
+      //once finished, save tempParentArr into tempTopArr
+      //once finished, save tempTOPArr into masterDBArr
+
       previousLevel = currentLevel;
     }
     //If at end, save last object!
-    console.log(masterDBArray);
   }
 
   function pushBackupData(databaseArray) {
