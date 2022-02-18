@@ -124,20 +124,16 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         if (data.key == "allowLogin") {
           allowLogin = data.val();
-          console.log("Allow Login? " + allowLogin);
         } else if (data.key == "loginDisabledMsg") {
           loginDisabledMsg = data.val();
-          console.log("Current LoginDisabledMsg: " + loginDisabledMsg);
         }
       });
 
       postRef.on('child_changed', function (data) {
         if (data.key == "allowLogin") {
           allowLogin = data.val();
-          console.log("Allow Login? " + allowLogin);
         } else if (data.key == "loginDisabledMsg") {
           loginDisabledMsg = data.val();
-          console.log("Current LoginDisabledMsg: " + loginDisabledMsg);
         }
       });
 
