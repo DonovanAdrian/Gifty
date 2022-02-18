@@ -477,7 +477,11 @@ window.onload = function instantiate() {
           importString = "";
         } else if (importText[i] == "," && !elementBool) {
           if (importString != "") {
-            firstCol.push(importString);
+            if (importString = "TOP") {
+              firstCol.push("0");
+            } else {
+              firstCol.push(importString);
+            }
             importColumnState = 2;
             importString = "";
           }
@@ -519,10 +523,11 @@ window.onload = function instantiate() {
   function processBackupData(colA, colB, colC) {
     let currentLevel = 0;
     let previousLevel = 0;
-    let masterDBArr = [];
+    let tempMasterArr = [];
     let tempMasterObj = {};
     let tempObj = {};
     let tempStr = "";
+    let topStr = "";
     let tempDataA;
     let tempDataB;
 
@@ -531,27 +536,40 @@ window.onload = function instantiate() {
     console.log(colC);
 
     for (let i = 1; i < colA.length; i++) {
+      currentLevel = colA[i];
       tempDataA = colB[i];
       tempDataB = colC[i];
 
-      //if child object found...
-      saveChildObject(i);//No sure if this is worthwhile, need to keep track of colA[i] location...
-
-      //otherwise, save objects like so
-      tempObj[tempDataA] = tempDataB;
-      tempMasterObj[i] = tempObj;
+      if (currentLevel > previousLevel) {
+        console.log("Save child object");
+        //if child object found...
+        //saveChildObject();
+        //^^^save tempMasterObj[parentStr] = tempMasterObj; ???
+      } else if (currentLevel == 0) {
+        console.log("Log top level item and send to saveChildObject");
+        topStr = tempDataA;
+        //saveChildObject();
+        //^^^save tempMasterObj[parentStr] = tempMasterObj; ???
+      } else {
+        tempObj[tempDataA] = tempDataB;
+        tempMasterObj[i] = tempObj;
+        console.log(tempObj);
+        console.log(tempMasterObj);
+      }
 
       previousLevel = currentLevel;
-    }
-    console.log(tempMasterObj);
 
-    function saveChildObject() {
-      //If child object found, saveChildObject()
+      function saveChildObject() {
+        //If child object found, saveChildObject()
 
-      //otherwise save objects
-      //check for arrays (if key == int)
-      if (Number.isInteger(tempDataA)) {
-        console.log("Heck");
+        //otherwise, save objects like so
+        tempObj[tempDataA] = tempDataB;
+        tempMasterObj[tempDataA] = tempObj;
+
+        //check for arrays (if key == int)
+        if (Number.isInteger(parseInt(tempDataA))) {
+          console.log("Heck");
+        }
       }
     }
   }
