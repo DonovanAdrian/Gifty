@@ -533,46 +533,65 @@ window.onload = function instantiate() {
     let tempDataA;
     let tempDataB;
 
+    //Try doing... preprocessing? find what the range is to save, save, then reset
+    //or send to another function to save all values within range to a given key.
+
     console.log(colA);
     console.log(colB);
     console.log(colC);
 
-    for (let i = 0; i < colA.length; i++) {
-      currentLevel = colA[i];
+    for (let i = 0; i < 50;) { //Instead of 50, colA.length
       tempDataA = colB[i];
       tempDataB = colC[i];
 
-      console.log(currentLevel);
+      //console.log("For Loop");
 
-      if (currentLevel > previousLevel) {
-        console.log("Save child object");
-        //if child object found...
-        //saveChildObject();
-        //^^^save tempMasterObj[parentStr] = tempMasterObj; ???
-      } else if (currentLevel == 0) {
-        console.log("Log top level item and send to saveChildObject");
-        topStr = tempDataA;
-        //saveChildObject();
-        //^^^save tempMasterObj[parentStr] = tempMasterObj; ???
-      } else {
-        tempObj[tempDataA] = tempDataB;
-        tempMasterObj[i] = tempObj;
-        //console.log(tempObj);
-        //console.log(tempMasterObj);
-      }
-
-      previousLevel = currentLevel;
+      saveChildObject();
 
       function saveChildObject() {
-        //If child object found, saveChildObject()
+        currentLevel = colA[i];
+
+        if (currentLevel > previousLevel) {
+          i++;
+          previousLevel = currentLevel;
+          //console.log(i + " : " + currentLevel);
+          //console.log("Save child object");
+          //if child object found...
+          //tempMasterObj[parentStr] = tempMasterObj;
+          tempObj[tempDataA] = tempDataB;
+          saveChildObject();
+        } else if (currentLevel == 0) {
+          i++;
+          previousLevel = currentLevel;
+          //console.log(i + " : " + currentLevel);
+          //console.log("Log top level item and send to saveChildObject");
+          topStr = tempDataA;
+          saveChildObject();
+          //^^^save tempMasterObj[parentStr] = tempMasterObj; ???
+        } else if (currentLevel < previousLevel) {
+          i++;
+          previousLevel = currentLevel;
+          //console.log(i + " : " + currentLevel);
+          //console.log("HUEH");
+        } else {
+          i++;
+          previousLevel = currentLevel;
+          //console.log(i + " : " + currentLevel);
+          //console.log("Save at current level");
+          //tempObj[tempDataA] = tempDataB;
+          //tempMasterObj[i] = tempObj;
+          //console.log(tempObj);
+          //console.log(tempMasterObj);
+          tempObj[tempDataA] = tempDataB;
+        }
 
         //otherwise, save objects like so
-        tempObj[tempDataA] = tempDataB;
-        tempMasterObj[tempDataA] = tempObj;
+        tempMasterObj[topStr] = tempObj;
+        console.log(tempMasterObj);
 
         //check for arrays (if key == int)
         if (Number.isInteger(parseInt(tempDataA))) {
-          console.log("Heck");
+          //console.log("Heck");
         }
       }
     }
