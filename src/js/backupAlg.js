@@ -477,7 +477,7 @@ window.onload = function instantiate() {
           importString = "";
         } else if (importText[i] == "," && !elementBool) {
           if (importString != "") {
-            if (importString = "TOP") {
+            if (importString == "TOP") {
               firstCol.push("0");
             } else {
               firstCol.push(importString);
@@ -506,7 +506,9 @@ window.onload = function instantiate() {
         }
       }
 
-      //Correcting minor data collection error
+      firstCol.splice(0, 1);
+      secondCol.splice(0, 1);
+      thirdCol.splice(0, 1);
       thirdCol.splice(0, 1);
       thirdCol.push("");
 
@@ -535,10 +537,12 @@ window.onload = function instantiate() {
     console.log(colB);
     console.log(colC);
 
-    for (let i = 1; i < colA.length; i++) {
+    for (let i = 0; i < colA.length; i++) {
       currentLevel = colA[i];
       tempDataA = colB[i];
       tempDataB = colC[i];
+
+      console.log(currentLevel);
 
       if (currentLevel > previousLevel) {
         console.log("Save child object");
@@ -553,8 +557,8 @@ window.onload = function instantiate() {
       } else {
         tempObj[tempDataA] = tempDataB;
         tempMasterObj[i] = tempObj;
-        console.log(tempObj);
-        console.log(tempMasterObj);
+        //console.log(tempObj);
+        //console.log(tempMasterObj);
       }
 
       previousLevel = currentLevel;
