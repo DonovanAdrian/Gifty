@@ -523,13 +523,14 @@ window.onload = function instantiate() {
   }
 
   function processBackupData(colA, colB, colC) {
+    let fromInitial = 0;
+    let toInitial = 0;
     let currentLevel = 0;
     let previousLevel = 0;
     let tempMasterArr = [];
     let tempMasterObj = {};
     let tempObj = {};
-    let tempStr = "";
-    let topStr = "";
+    let priorParentStr = "";
     let tempDataA;
     let tempDataB;
 
@@ -539,23 +540,59 @@ window.onload = function instantiate() {
     console.log(colA);
     console.log(colB);
     console.log(colC);
+    priorParentStr = colB[0];
 
-    for (let i = 0; i < colA.length; i++) {
-      currentLevel = colA[i];
+    for (let i = 0; i < 50; i++) {//colA.length
 
-      if (currentLevel < previousLevel) {
-        //
+
+      if (currentLevel == colA[i] && i != 0) {
+        toInitial = i;
+        toInitial = toInitial - 1;
+        console.log(currentLevel + "@" + i + ": Fetch data from " + fromInitial + " to " + toInitial + "... " + " Parent: " + priorParentStr);
+        fetchDataInRange(fromInitial, toInitial, currentLevel, priorParentStr);
+        fromInitial = i;
+        priorParentStr = colB[i];
       }
 
-      //fetchDataInRange();
       previousLevel = currentLevel;
     }
+    toInitial = colA.length;
+    console.log(currentLevel + "@" + toInitial + ": Fetch data from " + fromInitial + " to " + toInitial + "... " + " Parent: " + priorParentStr);
+    fetchDataInRange(fromInitial, toInitial, currentLevel, priorParentStr);
 
-
-    function fetchDataInRange(fromInt, toInt, level) {
-      /*for (let a = fromInt; a < toInt; a++) {
-
-      }*/
+    function fetchDataInRange(fromInt, toInt, level, parent) {
+      let fromIntFinal = fromInt;
+      fromIntFinal = fromIntFinal + 1;
+      let toIntFinal = toInt;
+      level++;
+      if (level == colA[fromIntFinal]) {
+        parent = colB[fromIntFinal];
+        for (let a = fromInt; a < toInt; a++) {
+          if (level == colA[a] && fromIntFinal > (toIntFinal - 1)) {
+            toIntFinal = a;
+            toIntFinal = toIntFinal - 1;
+            fetchDataInRange(fromIntFinal, toIntFinal, level, parent);
+            console.log(level + "@" + a + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
+            fromIntFinal = a;
+            parent = colB[a];
+          } else if (a == (toInt - 1)) {
+            toIntFinal = toInt;
+            console.log(level + "@" + a + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
+            fetchDataInRange(fromIntFinal, toIntFinal, level, parent);
+          } else {
+            console.log("Collect Data Point?");
+            console.log("level " + level);
+            console.log("colA " + colA[a]);
+            if (Number.isInteger(parseInt(tempDataA))) {
+              //console.log("Collect Array");
+            } else {
+              //console.log("Collect Object");
+              //tempObj[tempDataA] = tempDataB;
+              //tempMasterObj[a] = tempObj;
+            }
+          }
+        }
+      }
     }
   }
 
