@@ -575,10 +575,12 @@ window.onload = function instantiate() {
         //console.log("Fetch Level " + level);
         parent = colB[fromIntFinal];
         for (let a = fromInt; a <= toInt; a++) {
+          console.log("a@level&colA ... fromInt-toInt");
+          console.log(a+"@"+level+"&"+colA[a]+" ... "+fromIntFinal+"-"+toInt);
           if (level == colA[a]) {
-
+            console.log("level==colA[a]");
             if (expectMoreData) {
-              console.log("Collect Data For " + parentStr);
+              //console.log("Collect Data For " + parentStr);
               expectMoreData = false;
             }
 
@@ -586,21 +588,23 @@ window.onload = function instantiate() {
               expectMoreData = true;
               parentStr = colB[a];
             } else if (Number.isInteger(parseInt(colB[a]))) {
-              console.log(level + "@" + a + " Collect Array " + colB[a] + ": " + colC[a]);
+              //console.log(level + "@" + a + " Collect Array " + colB[a] + ": " + colC[a]);
             } else {
-              console.log(level + "@" + a + " Collect Object " + colB[a] + ": " + colC[a]);
+              //console.log(level + "@" + a + " Collect Object " + colB[a] + ": " + colC[a]);
               //tempObj[tempDataA] = tempDataB;
               //tempMasterObj[a] = tempObj;
             }
 
           } else if (level == colA[a] && (fromIntFinal < (a - 1))) {
+            console.log("level==colA[a]&&fromInt<a-1");
             toIntFinal = a;
             toIntFinal = toIntFinal - 1;
             fetchDataInRange(fromIntFinal, toIntFinal, level, parent);
             //console.log(level + "@" + a + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
             fromIntFinal = a;
             parent = colB[a];
-          } else if (a == (toInt - 1)) {
+          } else if (a == toInt) {
+            console.log("a==toInt (last item)");
             toIntFinal = toInt;
             //console.log(level + "@" + a + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
             fetchDataInRange(fromIntFinal, toIntFinal, level, parent);
