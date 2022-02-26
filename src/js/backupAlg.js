@@ -535,9 +535,6 @@ window.onload = function instantiate() {
     let handOffBool = false;
     let priorParentStr = "";
 
-    //Try doing... preprocessing? find what the range is to save, save, then reset
-    //or send to another function to save all values within range to a given key.
-
     console.log(colA);
     console.log(colB);
     console.log(colC);
@@ -547,9 +544,10 @@ window.onload = function instantiate() {
       if (currentLevel == colA[i] && i != 0) {
         toInitial = i;
         toInitial = toInitial - 1;
-        //console.log(currentLevel + "@" + i + ": Fetch data from " + fromInitial + " to " + toInitial + "... " + " Parent: " + priorParentStr);
         fetchDataInRange(fromInitial, toInitial, currentLevel, priorParentStr);
-        console.log("Finish Collecting Above Data For " + priorParentStr + "\n\n");
+        console.log("Finish Collecting Above Data For " + priorParentStr);
+        console.log("");
+        console.log("");
         fromInitial = i;
         priorParentStr = colB[i];
       }
@@ -565,50 +563,66 @@ window.onload = function instantiate() {
       let tempObj = {};
       let fromIntFinal = fromInt;
       let toIntFinal = toInt;
+      let nextLevel;
+      let nextFromInt = -1;
+      let nextToInt = -1;
+      let expectLastDataPoint = false;
       let expectMoreData = false;
       let parentStr = "";
+      console.log(level + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
 
-      fromIntFinal = fromIntFinal + 1;
-      level++;
+      nextLevel = level + 1;
 
-      if (level == colA[fromIntFinal]) {
-        //console.log("Fetch Level " + level);
-        parent = colB[fromIntFinal];
-        for (let a = fromInt; a <= toInt; a++) {
-          console.log("a@level&colA ... fromInt-toInt");
-          console.log(a+"@"+level+"&"+colA[a]+" ... "+fromIntFinal+"-"+toInt);
-          if (level == colA[a]) {
-            console.log("level==colA[a]");
-            if (expectMoreData) {
-              //console.log("Collect Data For " + parentStr);
-              expectMoreData = false;
-            }
-
-            if (colC[a] == "") {
-              expectMoreData = true;
-              parentStr = colB[a];
-            } else if (Number.isInteger(parseInt(colB[a]))) {
-              //console.log(level + "@" + a + " Collect Array " + colB[a] + ": " + colC[a]);
-            } else {
-              //console.log(level + "@" + a + " Collect Object " + colB[a] + ": " + colC[a]);
-              //tempObj[tempDataA] = tempDataB;
-              //tempMasterObj[a] = tempObj;
-            }
-
-          } else if (level == colA[a] && (fromIntFinal < (a - 1))) {
-            console.log("level==colA[a]&&fromInt<a-1");
-            toIntFinal = a;
-            toIntFinal = toIntFinal - 1;
-            fetchDataInRange(fromIntFinal, toIntFinal, level, parent);
-            //console.log(level + "@" + a + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
-            fromIntFinal = a;
-            parent = colB[a];
-          } else if (a == toInt) {
-            console.log("a==toInt (last item)");
-            toIntFinal = toInt;
-            //console.log(level + "@" + a + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
-            fetchDataInRange(fromIntFinal, toIntFinal, level, parent);
+      for (let a = fromIntFinal; a <= toIntFinal; a++) {
+        if (colA[a] == level) {
+          if (expectLastDataPoint) {
+            nextToInt = a;
+            parentStr = colB[nextFromInt];
+            if (level < 3)//limiter
+              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+            nextFromInt = -1;
+            expectLastDataPoint = false;
           }
+          console.log(colA[a] + "@"+a+": " + colB[a] + " - " + colC[a]);
+        } else if (colA[a] == nextLevel) {
+          if (nextFromInt == -1) {
+            nextFromInt = a;
+            if (a == toIntFinal) {
+              console.log(colA[a] + "@"+a+": " + colB[a] + " - " + colC[a]);
+            }
+            expectLastDataPoint = true;
+          } else if (colA[a+1] != nextLevel) {
+            nextToInt = a;
+            parentStr = colB[nextFromInt];
+            if (level < 3)//limiter
+              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+            nextFromInt = -1;
+            expectLastDataPoint = false;
+          }
+        } else if (a == toIntFinal) {
+          if (expectLastDataPoint) {
+            nextToInt = a;
+            parentStr = colB[nextFromInt];
+            if (level < 3)//limiter
+              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+            nextFromInt = -1;
+            expectLastDataPoint = false;
+          } else {
+            nextToInt = a;
+            parentStr = colB[nextFromInt];
+            if (level < 3)//limiter
+              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+          }
+        }
+      }
+
+      function collectData(key, value) {
+        if (Number.isInteger(parseInt(key))) {
+          console.log(key+":"+value + " Array");
+        } else {
+          //tempObj[tempDataA] = tempDataB;
+          //tempMasterObj[a] = tempObj;
+          console.log(key+":"+value + " Object");
         }
       }
     }
