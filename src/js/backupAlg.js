@@ -573,13 +573,16 @@ window.onload = function instantiate() {
 
       nextLevel = level + 1;
 
+      //Ideally I want to have it keeeep going until it finds the parent or the end before it gives up...
+      //Not sure why I'm getting some that are just like "ok", I'm gonna fetch thez
+
       for (let a = fromIntFinal; a <= toIntFinal; a++) {
         if (colA[a] == level) {
           if (expectLastDataPoint) {
+            console.log("ThisOneIsDumb");//I'm pretty sure this one is useless now, so I'm gonna leave this here
             nextToInt = a;
             parentStr = colB[nextFromInt];
-            if (level < 3)//limiter
-              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+            fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
             nextFromInt = -1;
             expectLastDataPoint = false;
           }
@@ -592,15 +595,19 @@ window.onload = function instantiate() {
             }
             expectLastDataPoint = true;
           } else if (colA[a+1] != nextLevel) {
+            console.log("Ready for next level and next is not next level")
             nextToInt = a;
             parentStr = colB[nextFromInt];
             if (level < 3)//limiter
               fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
             nextFromInt = -1;
             expectLastDataPoint = false;
+          } else if (colA[a+1] == nextLevel) {
+            console.log("Found a hidden set?");
           }
         } else if (a == toIntFinal) {
           if (expectLastDataPoint) {
+            console.log("Last but tru")
             nextToInt = a;
             parentStr = colB[nextFromInt];
             if (level < 3)//limiter
@@ -608,6 +615,7 @@ window.onload = function instantiate() {
             nextFromInt = -1;
             expectLastDataPoint = false;
           } else {
+            console.log("Last but not tru")
             nextToInt = a;
             parentStr = colB[nextFromInt];
             if (level < 3)//limiter
