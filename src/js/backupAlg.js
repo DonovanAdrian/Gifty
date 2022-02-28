@@ -594,7 +594,7 @@ window.onload = function instantiate() {
               console.log(colA[a] + "@"+a+": " + colB[a] + " - " + colC[a]);
             }
             expectLastDataPoint = true;
-          } else if (colA[a+1] != nextLevel) {
+          } else if (colA[a+1] < level) {
             console.log("Ready for next level and next is not next level")
             nextToInt = a;
             parentStr = colB[nextFromInt];
@@ -602,8 +602,6 @@ window.onload = function instantiate() {
               fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
             nextFromInt = -1;
             expectLastDataPoint = false;
-          } else if (colA[a+1] == nextLevel) {
-            console.log("Found a hidden set?");
           }
         } else if (a == toIntFinal) {
           if (expectLastDataPoint) {
