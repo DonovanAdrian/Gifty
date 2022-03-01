@@ -528,6 +528,7 @@ window.onload = function instantiate() {
     let toInitial = 0;
     let currentLevel = 0;
     let previousLevel = 0;
+    let masterCounter = 0;
     let tempMasterArr = [];
     let tempMasterObj = {};
     let handOffArr = [];
@@ -540,7 +541,7 @@ window.onload = function instantiate() {
     console.log(colC);
     priorParentStr = colB[0];
 
-    for (let i = 0; i < 44; i++) {//colA.length
+    for (let i = 0; i < 44; i++) {//colA.length, 155 is next goal
       if (currentLevel == colA[i] && i != 0) {
         toInitial = i;
         toInitial = toInitial - 1;
@@ -567,53 +568,66 @@ window.onload = function instantiate() {
       let nextFromInt = -1;
       let nextToInt = -1;
       let expectLastDataPoint = false;
-      let expectMoreData = false;
+      let nextLevelExists = false;
       let parentStr = "";
       console.log(level + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
 
-      nextLevel = level + 1;
+      //Next figure out handing off data from parent level to lower levels
 
-      //Ideally I want to have it keeeep going until it finds the parent or the end before it gives up...
-      //Not sure why I'm getting some that are just like "ok", I'm gonna fetch thez
+      nextLevel = level + 1;
 
       for (let a = fromIntFinal; a <= toIntFinal; a++) {
         if (colA[a] == level) {
           if (expectLastDataPoint) {
-            console.log("ThisOneIsDumb");//I'm pretty sure this one is useless now, so I'm gonna leave this here
             nextToInt = a;
             parentStr = colB[nextFromInt];
             fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
             nextFromInt = -1;
             expectLastDataPoint = false;
           }
-          console.log(colA[a] + "@"+a+": " + colB[a] + " - " + colC[a]);
+          collectData(colA[a], a, colB[a], colC[a]);
         } else if (colA[a] == nextLevel) {
           if (nextFromInt == -1) {
             nextFromInt = a;
             if (a == toIntFinal) {
-              console.log(colA[a] + "@"+a+": " + colB[a] + " - " + colC[a]);
+              collectData(colA[a], a, colB[a], colC[a]);
             }
             expectLastDataPoint = true;
           } else if (colA[a+1] < level) {
-            console.log("Ready for next level and next is not next level")
             nextToInt = a;
             parentStr = colB[nextFromInt];
             if (level < 3)//limiter
               fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
             nextFromInt = -1;
             expectLastDataPoint = false;
+          } else if (colA[a+1] == level && nextLevelExists) {
+            if (nextFromInt == -1)
+              nextFromInt = fromInt;
+            nextToInt = a;
+            parentStr = colB[nextFromInt];
+            if (level < 3)//limiter
+              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
           }
+          nextLevelExists = true;
         } else if (a == toIntFinal) {
           if (expectLastDataPoint) {
-            console.log("Last but tru")
             nextToInt = a;
             parentStr = colB[nextFromInt];
             if (level < 3)//limiter
               fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
             nextFromInt = -1;
             expectLastDataPoint = false;
+          } else if (nextLevelExists) {
+            console.log("....It happens, I guess.");
+            if (nextFromInt == -1)
+              nextFromInt = fromInt;
+            nextToInt = a;
+            parentStr = colB[nextFromInt];
+            if (level < 3)//limiter
+              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
           } else {
-            console.log("Last but not tru")
+            if (nextFromInt == -1)
+              nextFromInt = fromInt;
             nextToInt = a;
             parentStr = colB[nextFromInt];
             if (level < 3)//limiter
@@ -622,7 +636,14 @@ window.onload = function instantiate() {
         }
       }
 
-      function collectData(key, value) {
+      function collectData(level, index, key, value) {
+        //console.log(masterCounter); //The GATEKEEPER :O
+        if (index == masterCounter) {
+          console.log(level + "@" + index + ": " + key + " - " + value);
+          masterCounter++;
+        }
+
+        /*
         if (Number.isInteger(parseInt(key))) {
           console.log(key+":"+value + " Array");
         } else {
@@ -630,6 +651,7 @@ window.onload = function instantiate() {
           //tempMasterObj[a] = tempObj;
           console.log(key+":"+value + " Object");
         }
+         */
       }
     }
   }
