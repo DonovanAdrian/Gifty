@@ -530,6 +530,7 @@ window.onload = function instantiate() {
     let previousLevel = 0;
     let masterCounter = 0;
     let tempMasterArr = [];
+    let tempLevelArr = [];
     let tempMasterObj = {};
     let handOffArr = [];
     let handOffObj = {};
@@ -540,6 +541,12 @@ window.onload = function instantiate() {
     console.log(colB);
     console.log(colC);
     priorParentStr = colB[0];
+
+    for (let i = 0; i < colA.length; i++) {
+      if (!tempLevelArr.includes(colA[i])) {
+        tempLevelArr.push(colA[i]);
+      }
+    }
 
     for (let i = 0; i < 44; i++) {//colA.length, 155 is next goal
       if (currentLevel == colA[i] && i != 0) {
@@ -596,8 +603,7 @@ window.onload = function instantiate() {
           } else if (colA[a+1] < level) {
             nextToInt = a;
             parentStr = colB[nextFromInt];
-            if (level < 3)//limiter
-              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+            fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
             nextFromInt = -1;
             expectLastDataPoint = false;
           } else if (colA[a+1] == level && nextLevelExists) {
@@ -605,16 +611,14 @@ window.onload = function instantiate() {
               nextFromInt = fromInt;
             nextToInt = a;
             parentStr = colB[nextFromInt];
-            if (level < 3)//limiter
-              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+            fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
           }
           nextLevelExists = true;
         } else if (a == toIntFinal) {
           if (expectLastDataPoint) {
             nextToInt = a;
             parentStr = colB[nextFromInt];
-            if (level < 3)//limiter
-              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+            fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
             nextFromInt = -1;
             expectLastDataPoint = false;
           } else if (nextLevelExists) {
@@ -623,15 +627,13 @@ window.onload = function instantiate() {
               nextFromInt = fromInt;
             nextToInt = a;
             parentStr = colB[nextFromInt];
-            if (level < 3)//limiter
-              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
-          } else {
+            fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+          } else if (tempLevelArr.includes(level)) {
             if (nextFromInt == -1)
               nextFromInt = fromInt;
             nextToInt = a;
             parentStr = colB[nextFromInt];
-            if (level < 3)//limiter
-              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+            fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
           }
         }
       }
