@@ -458,6 +458,8 @@ window.onload = function instantiate() {
     let firstCol = [];
     let secondCol = [];
     let thirdCol = [];
+    let handOffArrMaster = [];
+    let handOffObjMaster = {};
     let importString = "";
     let importColumnState = 1;
     let lastPush = 0;
@@ -529,11 +531,11 @@ window.onload = function instantiate() {
     let currentLevel = 0;
     let previousLevel = 0;
     let masterCounter = 0;
-    let tempMasterArr = [];
     let tempLevelArr = [];
-    let tempMasterObj = {};
     let handOffArr = [];
     let handOffObj = {};
+    let tempMasterArr = [];
+    let tempMasterObj = {};
     let handOffBool = false;
     let priorParentStr = "";
 
@@ -636,24 +638,24 @@ window.onload = function instantiate() {
             fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
           }
         }
+
       }
 
       function collectData(level, index, key, value) {
         //console.log(masterCounter); //The GATEKEEPER :O
         if (index == masterCounter) {
-          console.log(level + "@" + index + ": " + key + " - " + value);
+
+          if (Number.isInteger(parseInt(key))) {
+            console.log(level + "@" + index + ": " + key + " - " + value + " ---ARR");
+            handOffArr.push(value);
+          } else {
+            //tempObj[tempDataA] = tempDataB;
+            //tempMasterObj[a] = tempObj;
+            console.log(level + "@" + index + ": " + key + " - " + value + " ---OBJ");
+          }
+
           masterCounter++;
         }
-
-        /*
-        if (Number.isInteger(parseInt(key))) {
-          console.log(key+":"+value + " Array");
-        } else {
-          //tempObj[tempDataA] = tempDataB;
-          //tempMasterObj[a] = tempObj;
-          console.log(key+":"+value + " Object");
-        }
-         */
       }
     }
   }
