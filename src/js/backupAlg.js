@@ -210,8 +210,8 @@ window.onload = function instantiate() {
         entireDBDataArr.push(data.val());
         entireDBDataKeyArr.push(data.key);
         createKeyElement(data.key, data.val());
-        console.log(data.key);
-        console.log(data.val());
+        //console.log(data.key);
+        //console.log(data.val());
       });
 
       postRef.on('child_changed', function (data) {
@@ -458,8 +458,6 @@ window.onload = function instantiate() {
     let firstCol = [];
     let secondCol = [];
     let thirdCol = [];
-    let handOffArrMaster = [];
-    let handOffObjMaster = {};
     let importString = "";
     let importColumnState = 1;
     let lastPush = 0;
@@ -532,8 +530,8 @@ window.onload = function instantiate() {
     let previousLevel = 0;
     let masterCounter = 0;
     let tempLevelArr = [];
-    let handOffArr = [];
-    let handOffObj = {};
+    let handOffArrMaster = [];
+    let handOffObjMaster = {};
     let tempMasterArr = [];
     let tempMasterObj = {};
     let handOffBool = false;
@@ -571,6 +569,8 @@ window.onload = function instantiate() {
     function fetchDataInRange(fromInt, toInt, level, parent) {
       let tempArray = [];
       let tempObj = {};
+      let handOffArr = [];
+      let handOffObj = {};
       let fromIntFinal = fromInt;
       let toIntFinal = toInt;
       let nextLevel;
@@ -579,7 +579,7 @@ window.onload = function instantiate() {
       let expectLastDataPoint = false;
       let nextLevelExists = false;
       let parentStr = "";
-      console.log(level + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
+      //console.log(level + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
 
       //Next figure out handing off data from parent level to lower levels
 
@@ -624,7 +624,6 @@ window.onload = function instantiate() {
             nextFromInt = -1;
             expectLastDataPoint = false;
           } else if (nextLevelExists) {
-            console.log("....It happens, I guess.");
             if (nextFromInt == -1)
               nextFromInt = fromInt;
             nextToInt = a;
@@ -638,8 +637,13 @@ window.onload = function instantiate() {
             fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
           }
         }
-
       }
+      console.log(handOffArr);
+      console.log(handOffObj);
+      handOffArr = [];
+      handOffObj = {};
+      //handOffArrMaster = [];
+      //handOffObjMaster = {};
 
       function collectData(level, index, key, value) {
         //console.log(masterCounter); //The GATEKEEPER :O
@@ -655,6 +659,14 @@ window.onload = function instantiate() {
           }
 
           masterCounter++;
+        }
+      }
+
+      function wrapUpData(data, parent, type) {
+        if(type == "arr") {
+          handOffArrMaster = handOffArr;
+        } else if (type == "obj") {
+          handOffObjMaster = handOffObj;
         }
       }
     }
