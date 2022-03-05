@@ -528,10 +528,11 @@ window.onload = function instantiate() {
     let toInitial = 0;
     let currentLevel = 0;
     let previousLevel = 0;
+    let collectedLevel = 0;
     let masterCounter = 0;
     let tempLevelArr = [];
-    let handOffArrMaster = [];
-    let handOffObjMaster = {};
+    let handOffArr = [];
+    let handOffObj = {};
     let tempMasterArr = [];
     let tempMasterObj = {};
     let handOffBool = false;
@@ -569,8 +570,6 @@ window.onload = function instantiate() {
     function fetchDataInRange(fromInt, toInt, level, parent) {
       let tempArray = [];
       let tempObj = {};
-      let handOffArr = [];
-      let handOffObj = {};
       let fromIntFinal = fromInt;
       let toIntFinal = toInt;
       let nextLevel;
@@ -638,16 +637,15 @@ window.onload = function instantiate() {
           }
         }
       }
-      console.log(handOffArr);
-      console.log(handOffObj);
-      handOffArr = [];
-      handOffObj = {};
-      //handOffArrMaster = [];
-      //handOffObjMaster = {};
 
       function collectData(level, index, key, value) {
         //console.log(masterCounter); //The GATEKEEPER :O
         if (index == masterCounter) {
+
+          if (level < collectedLevel && handOffArr.length != 0) {
+            console.log(handOffArr);
+            handOffArr = [];
+          }
 
           if (Number.isInteger(parseInt(key))) {
             console.log(level + "@" + index + ": " + key + " - " + value + " ---ARR");
@@ -658,15 +656,9 @@ window.onload = function instantiate() {
             console.log(level + "@" + index + ": " + key + " - " + value + " ---OBJ");
           }
 
-          masterCounter++;
-        }
-      }
+          collectedLevel = level;
 
-      function wrapUpData(data, parent, type) {
-        if(type == "arr") {
-          handOffArrMaster = handOffArr;
-        } else if (type == "obj") {
-          handOffObjMaster = handOffObj;
+          masterCounter++;
         }
       }
     }
