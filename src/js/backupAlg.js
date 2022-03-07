@@ -210,8 +210,8 @@ window.onload = function instantiate() {
         entireDBDataArr.push(data.val());
         entireDBDataKeyArr.push(data.key);
         createKeyElement(data.key, data.val());
-        //console.log(data.key);
-        //console.log(data.val());
+        console.log(data.key);
+        console.log(data.val());
       });
 
       postRef.on('child_changed', function (data) {
@@ -538,9 +538,9 @@ window.onload = function instantiate() {
     let handOffBool = false;
     let priorParentStr = "";
 
-    console.log(colA);
-    console.log(colB);
-    console.log(colC);
+    //console.log(colA);
+    //console.log(colB);
+    //console.log(colC);
     priorParentStr = colB[0];
 
     for (let i = 0; i < colA.length; i++) {
@@ -578,7 +578,7 @@ window.onload = function instantiate() {
       let expectLastDataPoint = false;
       let nextLevelExists = false;
       let parentStr = "";
-      //console.log(level + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
+      console.log(level + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
 
       //Next figure out handing off data from parent level to lower levels
 
@@ -642,18 +642,22 @@ window.onload = function instantiate() {
         //console.log(masterCounter); //The GATEKEEPER :O
         if (index == masterCounter) {
 
-          if (level < collectedLevel && handOffArr.length != 0) {
-            console.log(handOffArr);
-            handOffArr = [];
-          }
-
           if (Number.isInteger(parseInt(key))) {
             console.log(level + "@" + index + ": " + key + " - " + value + " ---ARR");
             handOffArr.push(value);
           } else {
-            //tempObj[tempDataA] = tempDataB;
-            //tempMasterObj[a] = tempObj;
+            tempObj[key] = value;
+            console.log(tempObj);
+            tempMasterObj[parent] = tempObj;
             console.log(level + "@" + index + ": " + key + " - " + value + " ---OBJ");
+          }
+
+          if (level < collectedLevel && handOffArr.length != 0 ) {
+            tempObj[parent] = handOffArr;
+            //console.log(tempObj);
+            console.log(tempMasterObj);
+            handOffArr = [];
+            tempMasterObj = {};
           }
 
           collectedLevel = level;
