@@ -655,8 +655,10 @@ window.onload = function instantiate() {
           if (level < collectedLevel && handOffArr.length != 0 ) {
             tempObj[parent] = handOffArr;
             //console.log(tempObj);
-            console.log(tempMasterObj);
+            console.log(tempObj);
             handOffArr = [];
+          } else if (level < collectedLevel && Object.keys(tempMasterObj).length !== 0) {
+            console.log(tempMasterObj);
             tempMasterObj = {};
           }
 
