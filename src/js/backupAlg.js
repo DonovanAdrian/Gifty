@@ -533,7 +533,6 @@ window.onload = function instantiate() {
     let tempLevelArr = [];
     let handOffArr = [];
     let handOffObj = {};
-    let tempMasterArr = [];
     let tempMasterObj = {};
     let handOffBool = false;
     let priorParentStr = "";
@@ -541,6 +540,15 @@ window.onload = function instantiate() {
     //console.log(colA);
     //console.log(colB);
     //console.log(colC);
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("------------------------");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
     priorParentStr = colB[0];
 
     for (let i = 0; i < colA.length; i++) {
@@ -554,9 +562,11 @@ window.onload = function instantiate() {
         toInitial = i;
         toInitial = toInitial - 1;
         fetchDataInRange(fromInitial, toInitial, currentLevel, priorParentStr);
+        console.log(tempMasterObj);
         console.log("Finish Collecting Above Data For " + priorParentStr);
         console.log("");
         console.log("");
+        tempMasterObj = {};
         fromInitial = i;
         priorParentStr = colB[i];
       }
@@ -642,28 +652,32 @@ window.onload = function instantiate() {
         //console.log(masterCounter); //The GATEKEEPER :O
         if (index == masterCounter) {
 
-          if (Number.isInteger(parseInt(key))) {
-            console.log(level + "@" + index + ": " + key + " - " + value + " ---ARR");
-            handOffArr.push(value);
-          } else {
-            tempObj[key] = value;
-            console.log(tempObj);
-            tempMasterObj[parent] = tempObj;
-            console.log(level + "@" + index + ": " + key + " - " + value + " ---OBJ");
+          if (level != 0) {
+            if (Number.isInteger(parseInt(key))) {
+              console.log(level + "@" + index + ": " + key + " - " + value + " ---ARR");
+              handOffArr.push(value);
+            } else {
+              tempObj[key] = value;
+              console.log(tempObj);
+              console.log(level + "@" + index + ": " + key + " - " + value + " ---OBJ");
+            }
+
+            if (level < collectedLevel && handOffArr.length != 0) {
+              tempObj[parent] = handOffArr;
+              console.log(tempObj);
+              tempMasterObj = tempObj;
+              handOffArr = [];
+            } else if (level < collectedLevel && Object.keys(tempObj).length !== 0) {
+              console.log(tempObj);
+              tempMasterObj = tempObj;
+            }
+
+            console.log("");
+            console.log("");
+
+            collectedLevel = level;
+
           }
-
-          if (level < collectedLevel && handOffArr.length != 0 ) {
-            tempObj[parent] = handOffArr;
-            //console.log(tempObj);
-            console.log(tempObj);
-            handOffArr = [];
-          } else if (level < collectedLevel && Object.keys(tempMasterObj).length !== 0) {
-            console.log(tempMasterObj);
-            tempMasterObj = {};
-          }
-
-          collectedLevel = level;
-
           masterCounter++;
         }
       }
