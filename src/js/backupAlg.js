@@ -557,6 +557,10 @@ window.onload = function instantiate() {
       }
     }
 
+    console.log(tempLevelArr);
+    //Do a "trace" and note a 1 or a 0 when a "cliff" is detected for the next item.
+    //During the "trace", also note when there are "short" data sets, which only have 1 level.
+
     for (let i = 0; i < 44; i++) {//colA.length, 155 is next goal
       if (currentLevel == colA[i] && i != 0) {
         toInitial = i;
@@ -646,6 +650,12 @@ window.onload = function instantiate() {
             fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
           }
         }
+
+        //Implement some sort of "catch" wrapper here, which is able to detect "cliffs"
+        //I'm gonna just coin that term for now, where the level drops from 2 or 3 straight to 0.
+        //If it does something like this, then the tempObj for the given level should still exist.
+        //If it does, then assign the necessary values on the upper levels to the current level.
+        //Hopefully this can be done somewhat dynamically...
       }
 
       function collectData(level, index, key, value) {
