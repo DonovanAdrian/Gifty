@@ -531,6 +531,7 @@ window.onload = function instantiate() {
     let collectedLevel = 0;
     let masterCounter = 0;
     let tempLevelArr = [];
+    let tempTraceArr = [];
     let handOffArr = [];
     let handOffObj = {};
     let tempMasterObj = {};
@@ -560,6 +561,9 @@ window.onload = function instantiate() {
     console.log(tempLevelArr);
     //Do a "trace" and note a 1 or a 0 when a "cliff" is detected for the next item.
     //During the "trace", also note when there are "short" data sets, which only have 1 level.
+    //0 = No Unusual Events
+    //1 = Cliff On Next Data Point, Save Current Data Accordingly
+    //2 = Short Data Set, Save Current Data Accordingly
 
     for (let i = 0; i < 44; i++) {//colA.length, 155 is next goal
       if (currentLevel == colA[i] && i != 0) {
@@ -593,8 +597,6 @@ window.onload = function instantiate() {
       let nextLevelExists = false;
       let parentStr = "";
       console.log(level + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
-
-      //Next figure out handing off data from parent level to lower levels
 
       nextLevel = level + 1;
 
@@ -652,7 +654,7 @@ window.onload = function instantiate() {
         }
 
         //Implement some sort of "catch" wrapper here, which is able to detect "cliffs"
-        //I'm gonna just coin that term for now, where the level drops from 2 or 3 straight to 0.
+        //I'm gonna just coin that term for now, where the level drops two+ levels.
         //If it does something like this, then the tempObj for the given level should still exist.
         //If it does, then assign the necessary values on the upper levels to the current level.
         //Hopefully this can be done somewhat dynamically...
