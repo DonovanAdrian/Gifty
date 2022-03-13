@@ -467,8 +467,7 @@ window.onload = function instantiate() {
     //basic element data that should be mandatory initialized by default (when ready... clear database and test)
     //this latter one being if you went directly from login to backup with one user
 
-    if (importText.indexOf("TOP") && importText.indexOf("GiftyDataBackupFile")
-      && importText.indexOf("BackupDate")) {//ADD MOAR
+    if (preCheckImport(importText)) {//ADD MOAR
       for (let i = 0; i < importText.length; i++) {
         if (importText[i] == "\n") {
           if (lastPush == 2) {
@@ -520,6 +519,24 @@ window.onload = function instantiate() {
       }
     } else {
       alert("File Import Error! This backup file is not in the correct format! \n\nError Code: 300");
+    }
+  }
+
+  function preCheckImport(importText) {
+    let textCheckCounter = 0;
+    let importThreshhold = 5;
+
+    /*
+    importText.indexOf("TOP") && importText.indexOf("GiftyDataBackupFile")
+      && importText.indexOf("BackupDate")
+     */
+
+    if (importText.includes("TOP")) {
+
+    }
+
+    if (textCheckCounter >= importThreshhold) {
+
     }
   }
 
