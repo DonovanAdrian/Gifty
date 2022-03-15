@@ -463,11 +463,7 @@ window.onload = function instantiate() {
     let lastPush = 0;
     let elementBool = false;
 
-    //precheck for necessary prerequisites, including looking for:
-    //basic element data that should be mandatory initialized by default (when ready... clear database and test)
-    //this latter one being if you went directly from login to backup with one user
-
-    if (preCheckImport(importText)) {//ADD MOAR
+    if (preCheckImport(importText)) {
       for (let i = 0; i < importText.length; i++) {
         if (importText[i] == "\n") {
           if (lastPush == 2) {
@@ -524,20 +520,19 @@ window.onload = function instantiate() {
 
   function preCheckImport(importText) {
     let textCheckCounter = 0;
-    let importThreshhold = 5;
+    let importThreshhold = 7;
+    let keywordCheckArr = ["TOP", "GiftyDataBackupFile", "BackupDate", "login", "allowLogin", "users", "moderatorInt"];
 
-    /*
-    importText.indexOf("TOP") && importText.indexOf("GiftyDataBackupFile")
-      && importText.indexOf("BackupDate")
-     */
-
-    if (importText.includes("TOP")) {
-
+    for (let i = 0; i < importText.length; i++) {
+      if (keywordCheckArr.includes(importText[i])) {
+        textCheckCounter++;
+        if (textCheckCounter >= importThreshhold) {
+          return true;
+        }
+      }
     }
 
-    if (textCheckCounter >= importThreshhold) {
-
-    }
+    return false;
   }
 
   function processBackupData(colA, colB, colC) {
