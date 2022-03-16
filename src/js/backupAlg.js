@@ -535,7 +535,12 @@ window.onload = function instantiate() {
     return false;
   }
 
+
+
   function processBackupData(colA, colB, colC) {
+    let currentTrace = 0;
+    let lastTrace = 0;
+    let maxTrace = 0;
     let fromInitial = 0;
     let toInitial = 0;
     let currentLevel = 0;
@@ -568,6 +573,26 @@ window.onload = function instantiate() {
       if (!tempLevelArr.includes(colA[i])) {
         tempLevelArr.push(colA[i]);
       }
+
+      if ((lastTrace - 1) != colA[i] && lastTrace > colA[i]) {
+        console.log(console.log("cliff at " + i));
+        currentTrace = 1;
+      }
+
+      if (colA[i] == 0) {
+        if (maxTrace == 1) {
+          console.log(console.log("short data set at " + i));
+          currentTrace = 2;
+        }
+        maxTrace = 0;
+      } else if (colA[i] > maxTrace) {
+        maxTrace = colA[i];
+      }
+
+      tempTraceArr.push(currentTrace);
+      currentTrace = 0;
+
+      lastTrace = colA[i];
     }
 
     console.log(tempLevelArr);
@@ -581,11 +606,13 @@ window.onload = function instantiate() {
       if (currentLevel == colA[i] && i != 0) {
         toInitial = i;
         toInitial = toInitial - 1;
+        /*
         fetchDataInRange(fromInitial, toInitial, currentLevel, priorParentStr);
         console.log(tempMasterObj);
         console.log("Finish Collecting Above Data For " + priorParentStr);
         console.log("");
         console.log("");
+        */
         tempMasterObj = {};
         fromInitial = i;
         priorParentStr = colB[i];
