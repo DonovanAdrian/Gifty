@@ -520,11 +520,11 @@ window.onload = function instantiate() {
 
   function preCheckImport(importText) {
     let textCheckCounter = 0;
-    let importThreshhold = 7;
+    let importThreshhold = 6;
     let keywordCheckArr = ["TOP", "GiftyDataBackupFile", "BackupDate", "login", "allowLogin", "users", "moderatorInt"];
 
-    for (let i = 0; i < importText.length; i++) {
-      if (keywordCheckArr.includes(importText[i])) {
+    for (let i = 0; i < keywordCheckArr.length; i++) {
+      if (importText.includes(keywordCheckArr[i])) {
         textCheckCounter++;
         if (textCheckCounter >= importThreshhold) {
           return true;
@@ -575,13 +575,13 @@ window.onload = function instantiate() {
       }
 
       if ((lastTrace - 1) != colA[i] && lastTrace > colA[i]) {
-        console.log(console.log("cliff at " + i));
+        console.log("cliff at " + i);
         currentTrace = 1;
       }
 
       if (colA[i] == 0) {
         if (maxTrace == 1) {
-          console.log(console.log("short data set at " + i));
+          console.log("short data set at " + i);
           currentTrace = 2;
         }
         maxTrace = 0;
@@ -595,6 +595,7 @@ window.onload = function instantiate() {
       lastTrace = colA[i];
     }
 
+    console.log(tempTraceArr);
     console.log(tempLevelArr);
     //Do a "trace" and note a 1 or a 0 when a "cliff" is detected for the next item.
     //During the "trace", also note when there are "short" data sets, which only have 1 level.
