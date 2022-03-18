@@ -127,32 +127,46 @@ window.onload = function instantiate() {
       let fileHandle;
       let fileSuffix;
 
-      lastBackup.innerHTML = "Last Backup: " + lastBackupWhen;
+      if (!mobileDeviceCheck()) {
+        lastBackup.innerHTML = "Last Backup: " + lastBackupWhen;
 
-      exportBtn.onclick = function() {
-        exportBackup();
-      }
-      exportBtn.innerHTML = "Export Backup";
+        exportBtn.onclick = function () {
+          exportBackup();
+        }
+        exportBtn.innerHTML = "Export Backup";
 
-      importBtn.addEventListener('click', async() => {
-        try {
-          [fileHandle] = await window.showOpenFilePicker();
-          const file = await fileHandle.getFile();
-          fileSuffix = file.name;
-          if (file.name.length > 4) {
-            fileSuffix = file.name.substring(file.name.length - 4);
-            if (fileSuffix == ".txt" || fileSuffix == ".csv") {
-              const contents = await file.text();
-              importBackup(contents);
+        importBtn.addEventListener('click', async () => {
+          try {
+            [fileHandle] = await window.showOpenFilePicker();
+            const file = await fileHandle.getFile();
+            fileSuffix = file.name;
+            if (file.name.length > 4) {
+              fileSuffix = file.name.substring(file.name.length - 4);
+              if (fileSuffix == ".txt" || fileSuffix == ".csv") {
+                const contents = await file.text();
+                importBackup(contents);
+              } else {
+                alert("Please only import text or comma seperated variable files!");
+              }
             } else {
-              alert("Please only import text or comma seperated variable files!");
+              alert("File Import Error! This backup file is not in the correct format! \n\nError Code: 100");
             }
-          } else {
-            alert("File Import Error! This backup file is not in the correct format! \n\nError Code: 100");
+          } catch (err) {
           }
-        } catch (err) {}
-      });
-      importBtn.innerHTML = "Import Backup";
+        });
+        importBtn.innerHTML = "Import Backup";
+        exportBtn.className = "basicBtn";
+        importBtn.className = "basicBtn";
+      } else {
+        lastBackup.innerHTML = "Last Backup: " + lastBackupWhen +
+          "<br /><br /> Mobile Device Detected!<br /><br /> " +
+          "Mobile Devices Are Not Allowed To Export Or Import Backups.";
+
+        exportBtn.className += " btnDisabled";
+        exportBtn.innerHTML = "Export Backup Disabled";
+        importBtn.className += " btnDisabled";
+        importBtn.innerHTML = "Import Backup Disabled";
+      }
 
       backupSpan.onclick = function() {
         closeModal(backupModal);
@@ -360,6 +374,17 @@ window.onload = function instantiate() {
     removeItem.remove();
   }
 
+  function mobileDeviceCheck() {
+    const userAgentType = navigator.userAgent;
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(userAgentType)) {
+      return true;
+    }
+    else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(userAgentType)) {
+      return true;
+    }
+    return false;
+  }
+
   function exportBackup() {
     let today = new Date();
     let UTCmm = today.getUTCMinutes();
@@ -555,7 +580,7 @@ window.onload = function instantiate() {
     let handOffBool = false;
     let priorParentStr = "";
 
-    //console.log(colA);
+    console.log(colA);
     //console.log(colB);
     //console.log(colC);
     console.log("");
@@ -575,13 +600,13 @@ window.onload = function instantiate() {
       }
 
       if ((lastTrace - 1) != colA[i] && lastTrace > colA[i]) {
-        console.log("cliff at " + i);
+        console.log("cliff ending BEFORE " + i);
         currentTrace = 1;
       }
 
       if (colA[i] == 0) {
         if (maxTrace == 1) {
-          console.log("short data set at " + i);
+          console.log("short data set ending BEFORE " + i);
           currentTrace = 2;
         }
         maxTrace = 0;
@@ -596,12 +621,6 @@ window.onload = function instantiate() {
     }
 
     console.log(tempTraceArr);
-    console.log(tempLevelArr);
-    //Do a "trace" and note a 1 or a 0 when a "cliff" is detected for the next item.
-    //During the "trace", also note when there are "short" data sets, which only have 1 level.
-    //0 = No Unusual Events
-    //1 = Cliff On Next Data Point, Save Current Data Accordingly
-    //2 = Short Data Set, Save Current Data Accordingly
 
     for (let i = 0; i < 44; i++) {//colA.length, 155 is next goal
       if (currentLevel == colA[i] && i != 0) {
