@@ -32,6 +32,7 @@ let lastBackupWhen = "";
 let generatedDataString = "";
 
 let runningBackup = false;
+let enablePhoneBackups = true;
 
 let dataListContainer;
 let offlineSpan;
@@ -127,7 +128,7 @@ window.onload = function instantiate() {
       let fileHandle;
       let fileSuffix;
 
-      if (!mobileDeviceCheck()) {
+      if (!mobileDeviceCheck() || enablePhoneBackups) {
         lastBackup.innerHTML = "Last Backup: " + lastBackupWhen;
 
         exportBtn.onclick = function () {
@@ -566,6 +567,7 @@ window.onload = function instantiate() {
     let currentTrace = 0;
     let lastTrace = 0;
     let maxTrace = 0;
+    let traceHistory = 0;
     let fromInitial = 0;
     let toInitial = 0;
     let currentLevel = 0;
@@ -580,7 +582,7 @@ window.onload = function instantiate() {
     let handOffBool = false;
     let priorParentStr = "";
 
-    console.log(colA);
+    //console.log(colA);
     //console.log(colB);
     //console.log(colC);
     console.log("");
@@ -660,6 +662,12 @@ window.onload = function instantiate() {
       nextLevel = level + 1;
 
       for (let a = fromIntFinal; a <= toIntFinal; a++) {
+        if (traceHistory != 0) {
+          traceHistory = a;
+          traceHistory--;
+          console.log(traceHistory);
+        }
+
         if (colA[a] == level) {
           if (expectLastDataPoint) {
             nextToInt = a;
@@ -711,12 +719,6 @@ window.onload = function instantiate() {
             fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
           }
         }
-
-        //Implement some sort of "catch" wrapper here, which is able to detect "cliffs"
-        //I'm gonna just coin that term for now, where the level drops two+ levels.
-        //If it does something like this, then the tempObj for the given level should still exist.
-        //If it does, then assign the necessary values on the upper levels to the current level.
-        //Hopefully this can be done somewhat dynamically...
       }
 
       function collectData(level, index, key, value) {
