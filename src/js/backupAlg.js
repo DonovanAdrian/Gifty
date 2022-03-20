@@ -567,7 +567,7 @@ window.onload = function instantiate() {
     let currentTrace = 0;
     let lastTrace = 0;
     let maxTrace = 0;
-    let traceHistory = 0;
+    let traceLookahead = 0;
     let fromInitial = 0;
     let toInitial = 0;
     let currentLevel = 0;
@@ -602,13 +602,11 @@ window.onload = function instantiate() {
       }
 
       if ((lastTrace - 1) != colA[i] && lastTrace > colA[i]) {
-        console.log("cliff ending BEFORE " + i);
         currentTrace = 1;
       }
 
       if (colA[i] == 0) {
         if (maxTrace == 1) {
-          console.log("short data set ending BEFORE " + i);
           currentTrace = 2;
         }
         maxTrace = 0;
@@ -622,19 +620,15 @@ window.onload = function instantiate() {
       lastTrace = colA[i];
     }
 
-    console.log(tempTraceArr);
-
     for (let i = 0; i < 44; i++) {//colA.length, 155 is next goal
       if (currentLevel == colA[i] && i != 0) {
         toInitial = i;
         toInitial = toInitial - 1;
-        /*
         fetchDataInRange(fromInitial, toInitial, currentLevel, priorParentStr);
         console.log(tempMasterObj);
         console.log("Finish Collecting Above Data For " + priorParentStr);
         console.log("");
         console.log("");
-        */
         tempMasterObj = {};
         fromInitial = i;
         priorParentStr = colB[i];
@@ -654,6 +648,8 @@ window.onload = function instantiate() {
       let nextLevel;
       let nextFromInt = -1;
       let nextToInt = -1;
+      let cliffInt = 0;
+      let shortSetInt = 0;
       let expectLastDataPoint = false;
       let nextLevelExists = false;
       let parentStr = "";
@@ -662,12 +658,6 @@ window.onload = function instantiate() {
       nextLevel = level + 1;
 
       for (let a = fromIntFinal; a <= toIntFinal; a++) {
-        if (traceHistory != 0) {
-          traceHistory = a;
-          traceHistory--;
-          console.log(traceHistory);
-        }
-
         if (colA[a] == level) {
           if (expectLastDataPoint) {
             nextToInt = a;
@@ -724,6 +714,13 @@ window.onload = function instantiate() {
       function collectData(level, index, key, value) {
         //console.log(masterCounter); //The GATEKEEPER :O
         if (index == masterCounter) {
+          traceLookahead = masterCounter;
+          traceLookahead++;
+          if (tempTraceArr[traceLookahead] == 1) {
+            cliffInt = traceLookahead;
+          } else if (tempTraceArr[traceLookahead] == 2) {
+            shortSetInt = traceLookahead;
+          }
 
           if (level != 0) {
             if (Number.isInteger(parseInt(key))) {
@@ -741,7 +738,7 @@ window.onload = function instantiate() {
               tempMasterObj = tempObj;
               handOffArr = [];
             } else if (level < collectedLevel && Object.keys(tempObj).length !== 0) {
-              console.log(tempObj);
+              console.log(tempObj);//Is this used? I want "normal case" to be condensed, if possible.
               tempMasterObj = tempObj;
             }
 
