@@ -121,8 +121,6 @@ window.onload = function instantiate() {
 
   alternateButtonLabel(settingsNote, "Settings", "Backups");
 
-  generateBackupModal();
-
   function generateBackupModal(){
     backupSettings.onclick = function(){
       let fileHandle;
@@ -303,6 +301,7 @@ window.onload = function instantiate() {
 
     compileNLevelKeyElements(keyData);
     generateBackupNodeElement(keyName);
+
   }
 
   function generateBackupNodeElement(keyName){
@@ -319,6 +318,8 @@ window.onload = function instantiate() {
     dataCounter++;
     if (dataCounter > buttonOpacLim) {
       backupSettings.style.opacity = ".75";
+    } else if (dataCounter == 1) {
+      generateBackupModal();
     }
   }
 
@@ -576,13 +577,14 @@ window.onload = function instantiate() {
     let masterCounter = 0;
     let tempLevelArr = [];
     let tempTraceArr = [];
+    let levelCheckArr = [];
     let handOffArr = [];
     let handOffObj = {};
     let tempMasterObj = {};
     let handOffBool = false;
     let priorParentStr = "";
 
-    //console.log(colA);
+    console.log(colA);
     //console.log(colB);
     //console.log(colC);
     console.log("");
@@ -653,65 +655,74 @@ window.onload = function instantiate() {
       let expectLastDataPoint = false;
       let nextLevelExists = false;
       let parentStr = "";
+      let levelCheckStr = "";
+      let tempUID = "";
       console.log(level + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
 
-      nextLevel = level + 1;
+      levelCheckStr = level + ":" + fromIntFinal;
 
-      for (let a = fromIntFinal; a <= toIntFinal; a++) {
-        if (colA[a] == level) {
-          if (expectLastDataPoint) {
-            nextToInt = a;
-            parentStr = colB[nextFromInt];
-            fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
-            nextFromInt = -1;
-            expectLastDataPoint = false;
-          }
-          collectData(colA[a], a, colB[a], colC[a]);
-        } else if (colA[a] == nextLevel) {
-          if (nextFromInt == -1) {
-            nextFromInt = a;
-            if (a == toIntFinal) {
-              collectData(colA[a], a, colB[a], colC[a]);
+      if (!levelCheckArr.includes(levelCheckStr)) {
+        levelCheckArr.push(levelCheckStr);
+
+        nextLevel = level + 1;
+
+        for (let a = fromIntFinal; a <= toIntFinal; a++) {
+          if (colA[a] == level && a == masterCounter) {
+            collectData(colA[a], a, colB[a], colC[a]);
+            if (expectLastDataPoint) {
+              nextToInt = a;
+              nextToInt = nextToInt - 1;
+              parentStr = colB[nextFromInt];
+              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+              nextFromInt = -1;
+              expectLastDataPoint = false;
             }
-            expectLastDataPoint = true;
-          } else if (colA[a+1] < level) {
-            nextToInt = a;
-            parentStr = colB[nextFromInt];
-            fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
-            nextFromInt = -1;
-            expectLastDataPoint = false;
-          } else if (colA[a+1] == level && nextLevelExists) {
-            if (nextFromInt == -1)
-              nextFromInt = fromInt;
-            nextToInt = a;
-            parentStr = colB[nextFromInt];
-            fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
-          }
-          nextLevelExists = true;
-        } else if (a == toIntFinal) {
-          if (expectLastDataPoint) {
-            nextToInt = a;
-            parentStr = colB[nextFromInt];
-            fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
-            nextFromInt = -1;
-            expectLastDataPoint = false;
-          } else if (nextLevelExists) {
-            if (nextFromInt == -1)
-              nextFromInt = fromInt;
-            nextToInt = a;
-            parentStr = colB[nextFromInt];
-            fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
-          } else if (tempLevelArr.includes(level)) {
-            if (nextFromInt == -1)
-              nextFromInt = fromInt;
-            nextToInt = a;
-            parentStr = colB[nextFromInt];
-            fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+          } else if (colA[a] == nextLevel) {
+            if (nextFromInt == -1) {
+              nextFromInt = a;
+              if (a == toIntFinal) {
+                collectData(colA[a], a, colB[a], colC[a]);
+              }
+              expectLastDataPoint = true;
+            } else if (colA[a + 1] < level) {
+              nextToInt = a;
+              parentStr = colB[nextFromInt];
+              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+              nextFromInt = -1;
+              expectLastDataPoint = false;
+            } else if (colA[a + 1] == level && nextLevelExists) {
+              if (nextFromInt == -1)
+                nextFromInt = fromInt;
+              nextToInt = a;
+              parentStr = colB[nextFromInt];
+              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+            }
+            nextLevelExists = true;
+          } else if (a == toIntFinal) {
+            if (expectLastDataPoint) {
+              nextToInt = a;
+              parentStr = colB[nextFromInt];
+              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+              nextFromInt = -1;
+              expectLastDataPoint = false;
+            } else if (nextLevelExists) {
+              if (nextFromInt == -1)
+                nextFromInt = fromInt;
+              nextToInt = a;
+              parentStr = colB[nextFromInt];
+              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+            } else if (tempLevelArr.includes(level)) {
+              if (nextFromInt == -1)
+                nextFromInt = fromInt;
+              nextToInt = a;
+              parentStr = colB[nextFromInt];
+              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
+            }
           }
         }
       }
 
-      function collectData(level, index, key, value) {
+      function collectData(level, index, key, value, handOff) {
         //console.log(masterCounter); //The GATEKEEPER :O
         if (index == masterCounter) {
           traceLookahead = masterCounter;
@@ -738,15 +749,11 @@ window.onload = function instantiate() {
               tempMasterObj = tempObj;
               handOffArr = [];
             } else if (level < collectedLevel && Object.keys(tempObj).length !== 0) {
-              console.log(tempObj);//Is this used? I want "normal case" to be condensed, if possible.
+              console.log(tempObj);
               tempMasterObj = tempObj;
             }
 
-            console.log("");
-            console.log("");
-
             collectedLevel = level;
-
           }
           masterCounter++;
         }
