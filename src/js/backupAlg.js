@@ -578,6 +578,8 @@ window.onload = function instantiate() {
     let tempLevelArr = [];
     let tempTraceArr = [];
     let levelCheckArr = [];
+    let emptyValueArr = [];
+    let collectedKeys = [];
     let handOffArr = [];
     let handOffObj = {};
     let tempMasterObj = {};
@@ -720,6 +722,13 @@ window.onload = function instantiate() {
             }
           }
         }
+
+        if (emptyValueArr.length != 0 && Object.keys(tempObj).length !== 0) {
+          console.log(emptyValueArr);
+          console.log(tempObj);
+          console.log(level + " Yeos?");
+        }
+        //Assign resulting object to most recent (top) index in emptyValueArr
       }
 
       function collectData(level, index, key, value, handOff) {
@@ -741,6 +750,11 @@ window.onload = function instantiate() {
               tempObj[key] = value;
               console.log(tempObj);
               console.log(level + "@" + index + ": " + key + " - " + value + " ---OBJ");
+              if (value == "" && !collectedKeys.includes(key)) {
+                console.log("Collected!");
+                emptyValueArr.push(tempObj);
+                collectedKeys.push(key);
+              }
             }
 
             if (level < collectedLevel && handOffArr.length != 0) {
