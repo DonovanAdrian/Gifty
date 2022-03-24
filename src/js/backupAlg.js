@@ -656,6 +656,7 @@ window.onload = function instantiate() {
       let shortSetInt = 0;
       let expectLastDataPoint = false;
       let nextLevelExists = false;
+      let expectChildData = false;
       let parentStr = "";
       let levelCheckStr = "";
       let tempUID = "";
@@ -670,6 +671,13 @@ window.onload = function instantiate() {
 
         for (let a = fromIntFinal; a <= toIntFinal; a++) {
           if (colA[a] == level && a == masterCounter) {
+            if (colC[a]=="") {
+              console.log("Collect Test1");
+              expectChildData = true;
+            } else if (expectChildData) {
+              console.log("Collect Above1");
+              expectChildData = false;
+            }
             collectData(colA[a], a, colB[a], colC[a]);
             if (expectLastDataPoint) {
               nextToInt = a;
@@ -683,6 +691,13 @@ window.onload = function instantiate() {
             if (nextFromInt == -1) {
               nextFromInt = a;
               if (a == toIntFinal) {
+                if (colC[a]=="") {
+                  console.log("Collect Test2");
+                  expectChildData = true;
+                } else if (expectChildData) {
+                  console.log("Collect Above2");
+                  expectChildData = false;
+                }
                 collectData(colA[a], a, colB[a], colC[a]);
               }
               expectLastDataPoint = true;
@@ -720,20 +735,30 @@ window.onload = function instantiate() {
               parentStr = colB[nextFromInt];
               fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
             }
+            if (expectChildData) {
+              console.log("Ummmmmmm?");
+            }
           }
         }
 
-        if (emptyValueArr.length != 0 && Object.keys(tempObj).length !== 0) {
-          console.log(emptyValueArr);
+        /*
+        if (emptyValueArr.length != 0 && Object.keys(tempObj).length !== 0 && level == 1) {
+          console.log(emptyValueArr[emptyValueArr.length-1]);
           console.log(tempObj);
-          console.log(level + " Yeos?");
+          console.log(level + " Yeos? " + parent);
+        } else if (emptyValueArr.length != 0 && Object.keys(tempObj).length !== 0 && level == 2) {
+          console.log(emptyValueArr[emptyValueArr.length-1]);
+          console.log(tempObj);
+          console.log(level + " Yeos? " + parent);
         }
         //Assign resulting object to most recent (top) index in emptyValueArr
+         */
       }
 
       function collectData(level, index, key, value, handOff) {
         //console.log(masterCounter); //The GATEKEEPER :O
         if (index == masterCounter) {
+          /*
           traceLookahead = masterCounter;
           traceLookahead++;
           if (tempTraceArr[traceLookahead] == 1) {
@@ -741,6 +766,7 @@ window.onload = function instantiate() {
           } else if (tempTraceArr[traceLookahead] == 2) {
             shortSetInt = traceLookahead;
           }
+          */
 
           if (level != 0) {
             if (Number.isInteger(parseInt(key))) {
