@@ -592,14 +592,21 @@ window.onload = function instantiate() {
       console.log("From " + fromInt + " to " + toInt + " with " + parent);
 
       for (let i = fromInt; i <= toInt; i++) {//Preprocess
-        //console.log(colA[i]);
+        console.log(colA[i]);
         if (colA[i] > arrayHeight) {
           arrayHeight = colA[i];
         }
 
-        if (colC[i] == "") {
-          console.log("Start Trace For " + colB[i]);
-        }
+        //Perhaps use the following as a way of collecting the data for a specific level...
+        //X data gets sent to add to Y level, once X level is collected. Y data gets
+        //sent to add to Z level, once Y level is collected. Etc.
+
+        //Adding the data to a temporary array as it gets found could save a bit on how long this takes...
+        //Instead of focusing solely on creating objects as they come, focus on collecting the values first.
+        //Then use the keys to assign to the values.
+
+        //When we get to objects, we will need to focus on "one for all" where one key refers to many values
+        //as well as "one for each" where each key has a value... as they usually do.
 
         previousHeight = colA[i];
       }
