@@ -223,8 +223,8 @@ window.onload = function instantiate() {
         entireDBDataArr.push(data.val());
         entireDBDataKeyArr.push(data.key);
         createKeyElement(data.key, data.val());
-        console.log(data.key);
-        console.log(data.val());
+        //console.log(data.key);
+        //console.log(data.val());
       });
 
       postRef.on('child_changed', function (data) {
@@ -565,238 +565,56 @@ window.onload = function instantiate() {
 
 
   function processBackupData(colA, colB, colC) {
-    let currentTrace = 0;
-    let lastTrace = 0;
-    let maxTrace = 0;
-    let traceLookahead = 0;
-    let fromInitial = 0;
-    let toInitial = 0;
-    let currentLevel = 0;
-    let previousLevel = 0;
-    let collectedLevel = 0;
-    let masterCounter = 0;
-    let tempLevelArr = [];
-    let tempTraceArr = [];
-    let levelCheckArr = [];
-    let emptyValueArr = [];
-    let collectedKeys = [];
-    let handOffArr = [];
-    let handOffObj = {};
-    let tempMasterObj = {};
-    let handOffBool = false;
-    let priorParentStr = "";
+    let initialFromInt = 0;
+    let initialToInt = 0;
 
-    console.log(colA);
-    //console.log(colB);
+    //console.log(colA);
+    console.log(colB);
     //console.log(colC);
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("------------------------");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    priorParentStr = colB[0];
-
-    for (let i = 0; i < colA.length; i++) {
-      if (!tempLevelArr.includes(colA[i])) {
-        tempLevelArr.push(colA[i]);
-      }
-
-      if ((lastTrace - 1) != colA[i] && lastTrace > colA[i]) {
-        currentTrace = 1;
-      }
-
-      if (colA[i] == 0) {
-        if (maxTrace == 1) {
-          currentTrace = 2;
-        }
-        maxTrace = 0;
-      } else if (colA[i] > maxTrace) {
-        maxTrace = colA[i];
-      }
-
-      tempTraceArr.push(currentTrace);
-      currentTrace = 0;
-
-      lastTrace = colA[i];
-    }
 
     for (let i = 0; i < 44; i++) {//colA.length, 155 is next goal
-      if (currentLevel == colA[i] && i != 0) {
-        toInitial = i;
-        toInitial = toInitial - 1;
-        fetchDataInRange(fromInitial, toInitial, currentLevel, priorParentStr);
-        console.log(tempMasterObj);
-        console.log("Finish Collecting Above Data For " + priorParentStr);
-        console.log("");
-        console.log("");
-        tempMasterObj = {};
-        fromInitial = i;
-        priorParentStr = colB[i];
+      if (colA[i] == 0 && i != 0) {
+        initialToInt = i - 1;
+        fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt]);
+        initialFromInt = i;
       }
-
-      previousLevel = currentLevel;
     }
-    toInitial = colA.length;
-    //console.log(currentLevel + "@" + toInitial + ": Fetch data from " + fromInitial + " to " + toInitial + "... " + " Parent: " + priorParentStr);
-    //fetchDataInRange(fromInitial, toInitial, currentLevel, priorParentStr);
 
-    function fetchDataInRange(fromInt, toInt, level, parent) {
-      let tempArray = [];
-      let tempObj = {};
-      let fromIntFinal = fromInt;
-      let toIntFinal = toInt;
-      let nextLevel;
-      let nextFromInt = -1;
-      let nextToInt = -1;
-      let cliffInt = 0;
-      let shortSetInt = 0;
-      let expectLastDataPoint = false;
-      let nextLevelExists = false;
-      let expectChildData = false;
-      let parentStr = "";
-      let levelCheckStr = "";
-      let tempUID = "";
-      console.log(level + ": Fetch data from " + fromIntFinal + " to " + toIntFinal + "... " + " Parent: " + parent);
+    function fetchDataInRange(fromInt, toInt, parent) {
+      let tempAdjInt = 0;
+      let arrayHeight = 0;
+      let previousHeight = 0;
+      let traceLevelArr = [];
+      let traceLevel2Arr = [];
+      let traceFromArr = [];
+      let traceToArr = [];
+      let traceCodeArr = "ABCDEFGHIJKLMNPQRSTUVWXYZ";
+      console.log("From " + fromInt + " to " + toInt + " with " + parent);
 
-      levelCheckStr = level + ":" + fromIntFinal;
-
-      if (!levelCheckArr.includes(levelCheckStr)) {
-        levelCheckArr.push(levelCheckStr);
-
-        nextLevel = level + 1;
-
-        for (let a = fromIntFinal; a <= toIntFinal; a++) {
-          if (colA[a] == level && a == masterCounter) {
-            if (colC[a]=="") {
-              console.log("Collect Test1");
-              expectChildData = true;
-            } else if (expectChildData) {
-              console.log("Collect Above1");
-              expectChildData = false;
-            }
-            collectData(colA[a], a, colB[a], colC[a]);
-            if (expectLastDataPoint) {
-              nextToInt = a;
-              nextToInt = nextToInt - 1;
-              parentStr = colB[nextFromInt];
-              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
-              nextFromInt = -1;
-              expectLastDataPoint = false;
-            }
-          } else if (colA[a] == nextLevel) {
-            if (nextFromInt == -1) {
-              nextFromInt = a;
-              if (a == toIntFinal) {
-                if (colC[a]=="") {
-                  console.log("Collect Test2");
-                  expectChildData = true;
-                } else if (expectChildData) {
-                  console.log("Collect Above2");
-                  expectChildData = false;
-                }
-                collectData(colA[a], a, colB[a], colC[a]);
-              }
-              expectLastDataPoint = true;
-            } else if (colA[a + 1] < level) {
-              nextToInt = a;
-              parentStr = colB[nextFromInt];
-              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
-              nextFromInt = -1;
-              expectLastDataPoint = false;
-            } else if (colA[a + 1] == level && nextLevelExists) {
-              if (nextFromInt == -1)
-                nextFromInt = fromInt;
-              nextToInt = a;
-              parentStr = colB[nextFromInt];
-              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
-            }
-            nextLevelExists = true;
-          } else if (a == toIntFinal) {
-            if (expectLastDataPoint) {
-              nextToInt = a;
-              parentStr = colB[nextFromInt];
-              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
-              nextFromInt = -1;
-              expectLastDataPoint = false;
-            } else if (nextLevelExists) {
-              if (nextFromInt == -1)
-                nextFromInt = fromInt;
-              nextToInt = a;
-              parentStr = colB[nextFromInt];
-              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
-            } else if (tempLevelArr.includes(level)) {
-              if (nextFromInt == -1)
-                nextFromInt = fromInt;
-              nextToInt = a;
-              parentStr = colB[nextFromInt];
-              fetchDataInRange(nextFromInt, nextToInt, nextLevel, parentStr);
-            }
-            if (expectChildData) {
-              console.log("Ummmmmmm?");
-            }
-          }
+      for (let i = fromInt; i <= toInt; i++) {//Preprocess
+        //console.log(colA[i]);
+        if (colA[i] > arrayHeight) {
+          arrayHeight = colA[i];
         }
 
-        /*
-        if (emptyValueArr.length != 0 && Object.keys(tempObj).length !== 0 && level == 1) {
-          console.log(emptyValueArr[emptyValueArr.length-1]);
-          console.log(tempObj);
-          console.log(level + " Yeos? " + parent);
-        } else if (emptyValueArr.length != 0 && Object.keys(tempObj).length !== 0 && level == 2) {
-          console.log(emptyValueArr[emptyValueArr.length-1]);
-          console.log(tempObj);
-          console.log(level + " Yeos? " + parent);
+        if (colC[i] == "") {
+          console.log("Start Trace For " + colB[i]);
         }
-        //Assign resulting object to most recent (top) index in emptyValueArr
-         */
+
+        previousHeight = colA[i];
       }
 
-      function collectData(level, index, key, value, handOff) {
-        //console.log(masterCounter); //The GATEKEEPER :O
-        if (index == masterCounter) {
-          /*
-          traceLookahead = masterCounter;
-          traceLookahead++;
-          if (tempTraceArr[traceLookahead] == 1) {
-            cliffInt = traceLookahead;
-          } else if (tempTraceArr[traceLookahead] == 2) {
-            shortSetInt = traceLookahead;
-          }
-          */
+      console.log("Height: " + arrayHeight);
+      console.log(traceLevelArr);
+      console.log(traceFromArr);
+      console.log(traceLevel2Arr);
+      console.log(traceToArr);
+      console.log("");
+      console.log("");
+      console.log("");
 
-          if (level != 0) {
-            if (Number.isInteger(parseInt(key))) {
-              console.log(level + "@" + index + ": " + key + " - " + value + " ---ARR");
-              handOffArr.push(value);
-            } else {
-              tempObj[key] = value;
-              console.log(tempObj);
-              console.log(level + "@" + index + ": " + key + " - " + value + " ---OBJ");
-              if (value == "" && !collectedKeys.includes(key)) {
-                console.log("Collected!");
-                emptyValueArr.push(tempObj);
-                collectedKeys.push(key);
-              }
-            }
+      for (let i = fromInt; i <= toInt; i++) {//Preprocess
 
-            if (level < collectedLevel && handOffArr.length != 0) {
-              tempObj[parent] = handOffArr;
-              console.log(tempObj);
-              tempMasterObj = tempObj;
-              handOffArr = [];
-            } else if (level < collectedLevel && Object.keys(tempObj).length !== 0) {
-              console.log(tempObj);
-              tempMasterObj = tempObj;
-            }
-
-            collectedLevel = level;
-          }
-          masterCounter++;
-        }
       }
     }
   }
@@ -804,4 +622,4 @@ window.onload = function instantiate() {
   function pushBackupData(databaseArray) {
     console.log(databaseArray);
   }
-};
+}
