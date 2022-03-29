@@ -572,61 +572,66 @@ window.onload = function instantiate() {
     console.log(colB);
     //console.log(colC);
 
-    for (let i = 0; i < 44; i++) {//colA.length, 155 is next goal
+    for (let i = 0; i <= colA.length; i++) {//colA.length, 44, then 155 is next goal
       if (colA[i] == 0 && i != 0) {
         initialToInt = i - 1;
         fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt]);
         initialFromInt = i;
       }
     }
+    initialToInt = colA.length;
+    fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt]);
 
     function fetchDataInRange(fromInt, toInt, parent) {
-      let tempAdjInt = 0;
-      let arrayHeight = 0;
-      let previousHeight = 0;
-      let traceLevelArr = [];
-      let traceLevel2Arr = [];
-      let traceFromArr = [];
-      let traceToArr = [];
-      let traceCodeArr = "ABCDEFGHIJKLMNPQRSTUVWXYZ";
+      let previousLevel = 0;
+      let tempIntAdj = 0;
+      let parentArr = [];
+      let dataArr = [];
+      let tempArr = [];
+      let savingArrayBool = false;
+
       console.log("From " + fromInt + " to " + toInt + " with " + parent);
 
-      for (let i = fromInt; i <= toInt; i++) {//Preprocess
-        console.log(colA[i]);
-        if (colA[i] > arrayHeight) {
-          arrayHeight = colA[i];
+      for (let i = fromInt; i <= toInt; i++) {
+
+        if (previousLevel > colA[i] || i == toInt) {
+          console.log(previousLevel - colA[i]);
+          if (i != toInt || (previousLevel - colA[i]) <= 0) {
+            console.log("Save last set of data to most recent parent arr item");
+            parentArr.splice(parentArr.length - 1, 1);
+          } else {
+            //This one will need to cascade to save any remaining data points to parents programmatically
+            //For loop?
+            console.log("Cascade!");
+          }
+        } else if (previousLevel < colA[i]) {
+          tempIntAdj = i - 1;
+          parentArr.push(colB[tempIntAdj]);
+          //console.log(colB[tempIntAdj]);
+        } else if (previousLevel == colA[i]) {
+          //Save current index of data
+        } else if (Number.isInteger(parseInt(colB[i]))) {
+          tempArr.push(colC[i]);
+          savingArrayBool = true;
+        } else if (!Number.isInteger(parseInt(colB[i])) && savingArrayBool) {
+          console.log(tempArr);
+          dataArr.push(tempArr);
+          tempArr = [];
+          savingArrayBool = false;
         }
 
-        //Perhaps use the following as a way of collecting the data for a specific level...
-        //X data gets sent to add to Y level, once X level is collected. Y data gets
-        //sent to add to Z level, once Y level is collected. Etc.
-
-        //Adding the data to a temporary array as it gets found could save a bit on how long this takes...
-        //Instead of focusing solely on creating objects as they come, focus on collecting the values first.
-        //Then use the keys to assign to the values.
-
-        //When we get to objects, we will need to focus on "one for all" where one key refers to many values
-        //as well as "one for each" where each key has a value... as they usually do.
-
-        previousHeight = colA[i];
+        previousLevel = colA[i];
       }
 
-      console.log("Height: " + arrayHeight);
-      console.log(traceLevelArr);
-      console.log(traceFromArr);
-      console.log(traceLevel2Arr);
-      console.log(traceToArr);
+      console.log(dataArr);
+      console.log(parentArr);//This should usually be the TOP item
       console.log("");
       console.log("");
       console.log("");
-
-      for (let i = fromInt; i <= toInt; i++) {//Preprocess
-
-      }
     }
   }
 
   function pushBackupData(databaseArray) {
-    console.log(databaseArray);
+    console.log(databaseArray);//Use "update"
   }
 }
