@@ -572,7 +572,7 @@ window.onload = function instantiate() {
     console.log(colB);
     //console.log(colC);
 
-    for (let i = 0; i <= colA.length; i++) {//colA.length, 44, then 155 is next goal
+    for (let i = 0; i <= 10; i++) {//goals are 44, 155, then colA.length
       if (colA[i] == 0 && i != 0) {
         initialToInt = i - 1;
         fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt]);
@@ -580,37 +580,23 @@ window.onload = function instantiate() {
       }
     }
     initialToInt = colA.length;
-    fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt]);
+    //fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt]);
 
     function fetchDataInRange(fromInt, toInt, parent) {
       let previousLevel = 0;
       let tempIntAdj = 0;
+      let collectionArr = [];
       let parentArr = [];
       let dataArr = [];
       let tempArr = [];
+      let tempObj = {};
       let savingArrayBool = false;
 
       console.log("From " + fromInt + " to " + toInt + " with " + parent);
 
       for (let i = fromInt; i <= toInt; i++) {
 
-        if (previousLevel > colA[i] || i == toInt) {
-          console.log(previousLevel - colA[i]);
-          if (i != toInt || (previousLevel - colA[i]) <= 0) {
-            console.log("Save last set of data to most recent parent arr item");
-            parentArr.splice(parentArr.length - 1, 1);
-          } else {
-            //This one will need to cascade to save any remaining data points to parents programmatically
-            //For loop?
-            console.log("Cascade!");
-          }
-        } else if (previousLevel < colA[i]) {
-          tempIntAdj = i - 1;
-          parentArr.push(colB[tempIntAdj]);
-          //console.log(colB[tempIntAdj]);
-        } else if (previousLevel == colA[i]) {
-          //Save current index of data
-        } else if (Number.isInteger(parseInt(colB[i]))) {
+        if (Number.isInteger(parseInt(colB[i]))) {
           tempArr.push(colC[i]);
           savingArrayBool = true;
         } else if (!Number.isInteger(parseInt(colB[i])) && savingArrayBool) {
@@ -618,6 +604,27 @@ window.onload = function instantiate() {
           dataArr.push(tempArr);
           tempArr = [];
           savingArrayBool = false;
+        }
+
+        if (previousLevel > colA[i] || i == toInt) {
+          if (i != toInt && (previousLevel - colA[i]) <= 1) {
+            //Save last set of data----------------------------------------------------------
+            console.log("Save last set of data to most recent parent arr item");
+            parentArr.splice(parentArr.length - 1, 1);
+          } else {
+            for (let p = 0; p < parentArr.length; p++) {
+              parentArr.splice(parentArr.length - 1, 1);
+            }
+          }
+        } else if (previousLevel < colA[i]) {
+          tempIntAdj = i - 1;
+          parentArr.push(colB[tempIntAdj]);
+          //console.log(colB[tempIntAdj]);
+        } else if (previousLevel == colA[i]) {
+          tempObj[colB[i]] = colC[i];
+          collectionArr.push(tempObj);
+          tempObj = {};
+          //Save current index of data----------------------------------------------------------
         }
 
         previousLevel = colA[i];
