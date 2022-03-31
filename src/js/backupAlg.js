@@ -583,6 +583,7 @@ window.onload = function instantiate() {
     //fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt]);
 
     function fetchDataInRange(fromInt, toInt, parent) {
+      let shortSetThreshold = 2;
       let previousLevel = 0;
       let tempIntAdj = 0;
       let collectionArr = [];
@@ -590,44 +591,53 @@ window.onload = function instantiate() {
       let dataArr = [];
       let tempArr = [];
       let tempObj = {};
+      let shortSetBool = false;
       let savingArrayBool = false;
 
       console.log("From " + fromInt + " to " + toInt + " with " + parent);
 
-      for (let i = fromInt; i <= toInt; i++) {
+      if (toInt - fromInt < shortSetThreshold) {
+        shortSetBool = true;
+      }
 
-        if (Number.isInteger(parseInt(colB[i]))) {
-          tempArr.push(colC[i]);
-          savingArrayBool = true;
-        } else if (!Number.isInteger(parseInt(colB[i])) && savingArrayBool) {
-          console.log(tempArr);
-          dataArr.push(tempArr);
-          tempArr = [];
-          savingArrayBool = false;
-        }
+      if (shortSetBool) {
+        console.log("This is a short set, save data accordingly.")
+      } else {
+        for (let i = fromInt; i <= toInt; i++) {
 
-        if (previousLevel > colA[i] || i == toInt) {
-          if (i != toInt && (previousLevel - colA[i]) <= 1) {
-            //Save last set of data----------------------------------------------------------
-            console.log("Save last set of data to most recent parent arr item");
-            parentArr.splice(parentArr.length - 1, 1);
-          } else {
-            for (let p = 0; p < parentArr.length; p++) {
-              parentArr.splice(parentArr.length - 1, 1);
-            }
+          if (Number.isInteger(parseInt(colB[i]))) {
+            tempArr.push(colC[i]);
+            savingArrayBool = true;
+          } else if (!Number.isInteger(parseInt(colB[i])) && savingArrayBool) {
+            console.log(tempArr);
+            dataArr.push(tempArr);
+            tempArr = [];
+            savingArrayBool = false;
           }
-        } else if (previousLevel < colA[i]) {
-          tempIntAdj = i - 1;
-          parentArr.push(colB[tempIntAdj]);
-          //console.log(colB[tempIntAdj]);
-        } else if (previousLevel == colA[i]) {
-          tempObj[colB[i]] = colC[i];
-          collectionArr.push(tempObj);
-          tempObj = {};
-          //Save current index of data----------------------------------------------------------
-        }
 
-        previousLevel = colA[i];
+          if (previousLevel > colA[i] || i == toInt) {
+            if (i != toInt && (previousLevel - colA[i]) <= 1) {
+              //Save last set of data----------------------------------------------------------
+              console.log("Save last set of data to most recent parent arr item");
+              parentArr.splice(parentArr.length - 1, 1);
+            } else {
+              for (let p = 0; p < parentArr.length; p++) {
+                parentArr.splice(parentArr.length - 1, 1);
+              }
+            }
+          } else if (previousLevel < colA[i]) {
+            tempIntAdj = i - 1;
+            parentArr.push(colB[tempIntAdj]);
+            //console.log(colB[tempIntAdj]);
+          } else if (previousLevel == colA[i]) {
+            tempObj[colB[i]] = colC[i];
+            collectionArr.push(tempObj);
+            tempObj = {};
+            //Save current index of data----------------------------------------------------------
+          }
+
+          previousLevel = colA[i];
+        }
       }
 
       console.log(dataArr);
