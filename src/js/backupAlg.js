@@ -601,7 +601,9 @@ window.onload = function instantiate() {
       }
 
       if (shortSetBool) {
-        console.log("This is a short set, save data accordingly.")
+        for (let i = fromInt; i <= toInt; i++) {
+          console.log(colA[i] + "-> " + colB[i] + " : " + colC[i]);
+        }
       } else {
         for (let i = fromInt; i <= toInt; i++) {
 
