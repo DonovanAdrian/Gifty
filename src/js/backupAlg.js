@@ -223,8 +223,8 @@ window.onload = function instantiate() {
         entireDBDataArr.push(data.val());
         entireDBDataKeyArr.push(data.key);
         createKeyElement(data.key, data.val());
-        //console.log(data.key);
-        //console.log(data.val());
+        console.log(data.key);
+        console.log(data.val());
       });
 
       postRef.on('child_changed', function (data) {
@@ -621,10 +621,27 @@ window.onload = function instantiate() {
             if (i != toInt && (previousLevel - colA[i]) <= 1) {
               //Save last set of data----------------------------------------------------------
               console.log("Save last set of data to most recent parent arr item");
+              //Realistically, I need to be able to detect when I'm saving an array or not.
+              //The tempArr shouldn't be a "Just in case if there's data here"
+              //Be sure to run a check to make sure that all of the if/elif/else options show up for all data points
+              if (tempArr.length == 0) {
+                console.log(dataArr);
+                console.log(parentArr[parentArr.length - 1]);
+              } else {
+                console.log(tempArr);
+                console.log(parentArr[parentArr.length - 1]);
+              }
               parentArr.splice(parentArr.length - 1, 1);
             } else {
               for (let p = 0; p < parentArr.length; p++) {
                 parentArr.splice(parentArr.length - 1, 1);
+                if (tempArr.length == 0) {
+                  console.log(dataArr);
+                  console.log(parentArr[parentArr.length - 1]);
+                } else {
+                  console.log(tempArr);
+                  console.log(parentArr[parentArr.length - 1]);
+                }
               }
             }
           } else if (previousLevel < colA[i]) {
