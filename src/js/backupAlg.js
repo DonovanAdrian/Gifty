@@ -603,6 +603,13 @@ window.onload = function instantiate() {
       if (shortSetBool) {
         for (let i = fromInt; i <= toInt; i++) {
           console.log(colA[i] + "-> " + colB[i] + " : " + colC[i]);
+          if (colC[i] == "") {
+            tempObj[colB[i]] = colC[i];
+            collectionArr.push(tempObj);
+            tempObj = {};
+          } else {
+            parentArr.push(colB[i]);
+          }
         }
       } else {
         for (let i = fromInt; i <= toInt; i++) {
