@@ -157,6 +157,7 @@ Everything below this point is supplemental data for those who are curious!
         - friendList
       - family *\(Moderator Role Only)*
         - familyUpdate *\(Moderator Role Only)*
+      - backup *\(Moderator Role Only)*
     - notifications *\(Accessible from **almost** all pages)*
 - 404
   
@@ -179,4 +180,5 @@ Everything below this point is supplemental data for those who are curious!
         - friendListAlg, commonAlg
       - familyAlg, commonAlg
           - familyUpdateAlg, commonAlg
+      - backupAlg, commonAlg
     - notificationAlg, commonAlg
