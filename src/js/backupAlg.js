@@ -603,13 +603,15 @@ window.onload = function instantiate() {
       if (shortSetBool) {
         for (let i = fromInt; i <= toInt; i++) {
           console.log(colA[i] + "-> " + colB[i] + " : " + colC[i]);
-          if (colC[i] == "") {
+          if (previousLevel < colA[i]) {
+            parentArr.push(colB[i]);
+          } else {
             tempObj[colB[i]] = colC[i];
             collectionArr.push(tempObj);
             tempObj = {};
-          } else {
-            parentArr.push(colB[i]);
           }
+
+          previousLevel = colA[i];
         }
       } else {
         for (let i = fromInt; i <= toInt; i++) {
