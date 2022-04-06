@@ -133,7 +133,7 @@ function fetchConfigFile(){
       storageBucketString == "" || messagingSenderIdString == "" || appIdString == "")) {
       alert("Config not properly initialized! Please contact an administrator!");
     } else {
-      console.log("WARNING: Missing measurementId. This variable is optional. Disregard if this is on purpose.");
+      console.log("WARNING: Missing measurementId. This variable is optional. Disregard if this is intentional.");
 
       config = {
         apiKey: apiKeyString,
