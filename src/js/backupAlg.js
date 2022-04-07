@@ -613,6 +613,10 @@ window.onload = function instantiate() {
 
           previousLevel = colA[i];
         }
+
+        //Save collected data from above
+        console.log(parentArr);
+        console.log(collectionArr);
       } else {
         for (let i = fromInt; i <= toInt; i++) {
 
