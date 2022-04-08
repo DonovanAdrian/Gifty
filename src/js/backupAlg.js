@@ -585,6 +585,7 @@ window.onload = function instantiate() {
     function fetchDataInRange(fromInt, toInt, parent) {
       let shortSetThreshold = 2;
       let previousLevel = 0;
+      let nextLevel = 0;
       let tempIntAdj = 0;
       let collectionArr = [];
       let parentArr = [];
@@ -605,7 +606,11 @@ window.onload = function instantiate() {
           console.log(colA[i] + "-> " + colB[i] + " : " + colC[i]);
           if (previousLevel < colA[i]) {
             parentArr.push(colB[i]);
-          } else {
+
+            tempObj[colB[i]] = colC[i];
+            collectionArr.push(tempObj);
+            tempObj = {};
+          } else if (i != fromInt) {
             tempObj[colB[i]] = colC[i];
             collectionArr.push(tempObj);
             tempObj = {};
@@ -634,9 +639,6 @@ window.onload = function instantiate() {
             if (i != toInt && (previousLevel - colA[i]) <= 1) {
               //Save last set of data----------------------------------------------------------
               console.log("Save last set of data to most recent parent arr item");
-              //Realistically, I need to be able to detect when I'm saving an array or not.
-              //The tempArr shouldn't be a "Just in case if there's data here"
-              //Be sure to run a check to make sure that all of the if/elif/else options show up for all data points
               if (tempArr.length == 0) {
                 console.log(dataArr);
                 console.log(parentArr[parentArr.length - 1]);
@@ -657,10 +659,14 @@ window.onload = function instantiate() {
                 }
               }
             }
+
           } else if (previousLevel < colA[i]) {
             tempIntAdj = i - 1;
             parentArr.push(colB[tempIntAdj]);
-            //console.log(colB[tempIntAdj]);
+
+            tempObj[colB[i]] = colC[i];
+            collectionArr.push(tempObj);
+            tempObj = {};
           } else if (previousLevel == colA[i]) {
             tempObj[colB[i]] = colC[i];
             collectionArr.push(tempObj);
@@ -672,8 +678,9 @@ window.onload = function instantiate() {
         }
       }
 
+      console.log(collectionArr);
       console.log(dataArr);
-      console.log(parentArr);//This should usually be the TOP item
+      console.log(parentArr);//This should usually just be the TOP item
       console.log("");
       console.log("");
       console.log("");
