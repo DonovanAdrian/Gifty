@@ -575,115 +575,33 @@ window.onload = function instantiate() {
     for (let i = 0; i <= 10; i++) {//goals are 44, 155, then colA.length
       if (colA[i] == 0 && i != 0) {
         initialToInt = i - 1;
-        fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt]);
+        fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt], 0);
         initialFromInt = i;
       }
     }
-    initialToInt = colA.length;
+    //initialToInt = colA.length;
     //fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt]);
 
-    function fetchDataInRange(fromInt, toInt, parent) {
-      let shortSetThreshold = 2;
-      let previousLevel = 0;
-      let nextLevel = 0;
-      let tempIntAdj = 0;
-      let collectionArr = [];
-      let parentArr = [];
-      let dataArr = [];
-      let tempArr = [];
-      let tempObj = {};
-      let shortSetBool = false;
-      let savingArrayBool = false;
+    function fetchDataInRange(fromInt, toInt, parent, level) {
+      let nextLevel = level + 1;
+      let nextFromInt = fromInt + 1;
+      let nextToInt = toInt;
+      let lookAhead = 0;
 
-      console.log("From " + fromInt + " to " + toInt + " with " + parent);
+      console.log(parent);
+      for (let i = fromInt; i <= toInt; i++) {
+        //console.log(i); //Also consider that there may also be data at the current index, don't always look for parents
+        lookAhead = i + 1;
 
-      if (toInt - fromInt < shortSetThreshold) {
-        shortSetBool = true;
-      }
-
-      if (shortSetBool) {
-        for (let i = fromInt; i <= toInt; i++) {
-          console.log(colA[i] + "-> " + colB[i] + " : " + colC[i]);
-          if (previousLevel < colA[i]) {
-            parentArr.push(colB[i]);
-
-            tempObj[colB[i]] = colC[i];
-            collectionArr.push(tempObj);
-            tempObj = {};
-          } else if (i != fromInt) {
-            tempObj[colB[i]] = colC[i];
-            collectionArr.push(tempObj);
-            tempObj = {};
-          }
-
-          previousLevel = colA[i];
+        if (colA[i] == nextLevel) {
+          nextFromInt = i;
         }
-
-        //Save collected data from above
-        console.log(parentArr);
-        console.log(collectionArr);
-      } else {
-        for (let i = fromInt; i <= toInt; i++) {
-
-          if (Number.isInteger(parseInt(colB[i]))) {
-            tempArr.push(colC[i]);
-            savingArrayBool = true;
-          } else if (!Number.isInteger(parseInt(colB[i])) && savingArrayBool) {
-            console.log(tempArr);
-            dataArr.push(tempArr);
-            tempArr = [];
-            savingArrayBool = false;
-          }
-
-          if (previousLevel > colA[i] || i == toInt) {
-            if (i != toInt && (previousLevel - colA[i]) <= 1) {
-              //Save last set of data----------------------------------------------------------
-              console.log("Save last set of data to most recent parent arr item");
-              if (tempArr.length == 0) {
-                console.log(dataArr);
-                console.log(parentArr[parentArr.length - 1]);
-              } else {
-                console.log(tempArr);
-                console.log(parentArr[parentArr.length - 1]);
-              }
-              parentArr.splice(parentArr.length - 1, 1);
-            } else {
-              for (let p = 0; p < parentArr.length; p++) {
-                parentArr.splice(parentArr.length - 1, 1);
-                if (tempArr.length == 0) {
-                  console.log(dataArr);
-                  console.log(parentArr[parentArr.length - 1]);
-                } else {
-                  console.log(tempArr);
-                  console.log(parentArr[parentArr.length - 1]);
-                }
-              }
-            }
-
-          } else if (previousLevel < colA[i]) {
-            tempIntAdj = i - 1;
-            parentArr.push(colB[tempIntAdj]);
-
-            tempObj[colB[i]] = colC[i];
-            collectionArr.push(tempObj);
-            tempObj = {};
-          } else if (previousLevel == colA[i]) {
-            tempObj[colB[i]] = colC[i];
-            collectionArr.push(tempObj);
-            tempObj = {};
-            //Save current index of data----------------------------------------------------------
-          }
-
-          previousLevel = colA[i];
+        if (colA[lookAhead] == level) {
+          nextToInt = i;
+          console.log(colB[nextFromInt]);
+          //console.log("Collect " + nextFromInt + " to " + nextToInt);
         }
       }
-
-      console.log(collectionArr);
-      console.log(dataArr);
-      console.log(parentArr);//This should usually just be the TOP item
-      console.log("");
-      console.log("");
-      console.log("");
     }
   }
 
