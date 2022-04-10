@@ -583,23 +583,35 @@ window.onload = function instantiate() {
     //fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt]);
 
     function fetchDataInRange(fromInt, toInt, parent, level) {
+      let increaseLevelBool = false;
       let nextLevel = level + 1;
       let nextFromInt = fromInt + 1;
       let nextToInt = toInt;
       let lookAhead = 0;
+      let prefix = "";
 
-      console.log(parent);
+      for (let i = 0; i < level; i++) {
+        prefix = " > " + prefix;
+      }
+
+      console.log(parent + ":" + level);
       for (let i = fromInt; i <= toInt; i++) {
-        //console.log(i); //Also consider that there may also be data at the current index, don't always look for parents
+        //Also consider that there may also be data at the current index, don't always look for parents
         lookAhead = i + 1;
 
-        if (colA[i] == nextLevel) {
-          nextFromInt = i;
+        if (colA[i] == level) {
+          console.log(prefix + i);
         }
-        if (colA[lookAhead] == level) {
+
+        if (colA[lookAhead] > level && !increaseLevelBool) {
+          increaseLevelBool = true;
+          nextFromInt = lookAhead;
+        }
+        if (colA[lookAhead] <= level && increaseLevelBool) {
           nextToInt = i;
-          console.log(colB[nextFromInt]);
-          //console.log("Collect " + nextFromInt + " to " + nextToInt);
+          fetchDataInRange(nextFromInt, nextToInt, colB[nextFromInt], nextLevel);
+          nextFromInt = lookAhead;
+          increaseLevelBool = false;
         }
       }
     }
