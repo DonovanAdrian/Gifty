@@ -567,6 +567,8 @@ window.onload = function instantiate() {
   function processBackupData(colA, colB, colC) {
     let initialFromInt = 0;
     let initialToInt = 0;
+    let handOffObj = {};
+    let handOffArr = [];
 
     //console.log(colA);
     console.log(colB);
@@ -584,24 +586,25 @@ window.onload = function instantiate() {
 
     function fetchDataInRange(fromInt, toInt, parent, level) {
       let increaseLevelBool = false;
-      let nextLevel = level + 1;
       let nextFromInt = fromInt + 1;
+      let nextLevel = level + 1;
       let nextToInt = toInt;
       let lookAhead = 0;
+      let tempObj = {};
+      let tempArr = [];
+      let parentObj = {};
       let prefix = "";
+
 
       for (let i = 0; i < level; i++) {
         prefix = " > " + prefix;
       }
 
+      console.log("");
       console.log(parent + ":" + level);
       for (let i = fromInt; i <= toInt; i++) {
         //Also consider that there may also be data at the current index, don't always look for parents
         lookAhead = i + 1;
-
-        if (colA[i] == level) {
-          console.log(prefix + i);
-        }
 
         if (colA[lookAhead] > level && !increaseLevelBool) {
           increaseLevelBool = true;
@@ -613,6 +616,24 @@ window.onload = function instantiate() {
           nextFromInt = lookAhead;
           increaseLevelBool = false;
         }
+
+        if (colA[i] == level) {
+          console.log(prefix + i);
+          //Do I need a bool to check if there was an array that was collected prior to the current index?
+          if (Number.isInteger(parseInt(colB[i]))) {
+            tempArr.push(colC[i]);
+          } else {
+            //(First) Test saving Temp Obj
+            //(Next Test saving Temp Obj to Parent Text with Parent Obj
+          }
+        }
+      }
+      if (tempArr.length > 0) {
+        console.log("Save Array To Parent Obj With Handoff Obj");
+        console.log(tempArr);
+        tempArr = [];
+      } else {
+        console.log("Save Object Collection To Parent");
       }
     }
   }
