@@ -570,6 +570,8 @@ window.onload = function instantiate() {
     let handOffObj = {};
     let handOffArr = [];
     let collectionArr = [];
+    let parentStringArr = [];
+    let parentLevelArr = [];
 
     //console.log(colA);
     console.log(colB);
@@ -579,6 +581,7 @@ window.onload = function instantiate() {
       if (colA[i] == 0 && i != 0) {
         initialToInt = i - 1;
         fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt], 0);
+        parentStringArr = [];
         initialFromInt = i;
         collectionArr.push(handOffObj);
       }
@@ -597,7 +600,10 @@ window.onload = function instantiate() {
       let parentObj = {};
       let prefix = "";
 
-
+      if (!Number.isInteger(parseInt(parent))) {
+        parentStringArr.push(parent);
+        parentLevelArr.push(level);
+      }
       for (let i = 0; i < level; i++) {
         prefix = " > " + prefix;
       }
@@ -610,7 +616,6 @@ window.onload = function instantiate() {
       //>>>Object.keys(tempObj).length !== 0
 
       for (let i = fromInt; i <= toInt; i++) {
-        //Also consider that there may also be data at the current index, don't always look for parents
         lookAhead = i + 1;
 
         if (colA[lookAhead] > level && !increaseLevelBool) {
@@ -633,13 +638,7 @@ window.onload = function instantiate() {
             if (colA[lookAhead] > level && colC[i] == "") {
               console.log("This is a parent object");
             } else {
-              if (handOffArr.length > 0 && colC[i] == "") {
-                console.log("What?");
-                tempObj[colB[i]] = handOffArr;
-                handOffArr = [];
-              } else {
-                tempObj[colB[i]] = colC[i];
-              }
+              tempObj[colB[i]] = colC[i];
               console.log(tempObj);
             }
             //(First) Test saving Temp Obj
@@ -652,13 +651,14 @@ window.onload = function instantiate() {
       if (tempArr.length > 0) {
         console.log("Save Array To Parent Obj With Handoff Obj");
         console.log(tempArr);
-        for (let a = 0; a < tempArr.length; a++) {
-          handOffArr.push(tempArr[a]);
-        }
-        console.log(handOffArr);
+
+        tempObj[parentStringArr[parentStringArr.length-1]] = tempArr;
+        console.log(tempObj);
+
         tempArr = [];
       } else {
         console.log("Save Object Collection To Parent");
+        console.log(tempObj);
       }
 
       //Clean up objects as needed as well
