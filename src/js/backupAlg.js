@@ -582,6 +582,7 @@ window.onload = function instantiate() {
         initialToInt = i - 1;
         fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt], 0);
         parentStringArr = [];
+        collectionArr = [];
         initialFromInt = i;
         collectionArr.push(handOffObj);
       }
@@ -636,10 +637,11 @@ window.onload = function instantiate() {
             tempArr.push(colC[i]);
           } else {
             if (colA[lookAhead] > level && colC[i] == "") {
-              console.log("This is a parent object");
+              //console.log("This is a parent object");
             } else {
               tempObj[colB[i]] = colC[i];
               console.log(tempObj);
+              collectionArr.push(tempObj);
             }
             //(First) Test saving Temp Obj
             //>>>NOTE: DO NOT Collect Parents. Check if nextLevel > level AND colC[i] == ""
@@ -649,16 +651,15 @@ window.onload = function instantiate() {
       }
 
       if (tempArr.length > 0) {
-        console.log("Save Array To Parent Obj With Handoff Obj");
-        console.log(tempArr);
-
         tempObj[parentStringArr[parentStringArr.length-1]] = tempArr;
-        console.log(tempObj);
+        handOffObj = tempObj;
+
+        console.log(handOffObj);
 
         tempArr = [];
       } else {
         console.log("Save Object Collection To Parent");
-        console.log(tempObj);
+        console.log(collectionArr);
       }
 
       //Clean up objects as needed as well
