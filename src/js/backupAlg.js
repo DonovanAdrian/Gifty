@@ -568,10 +568,8 @@ window.onload = function instantiate() {
     let initialFromInt = 0;
     let initialToInt = 0;
     let handOffObj = {};
-    let handOffArr = [];
     let collectionArr = [];
     let parentStringArr = [];
-    let parentLevelArr = [];
 
     //console.log(colA);
     console.log(colB);
@@ -584,7 +582,6 @@ window.onload = function instantiate() {
         parentStringArr = [];
         collectionArr = [];
         initialFromInt = i;
-        collectionArr.push(handOffObj);
       }
     }
     //initialToInt = colA.length;
@@ -603,7 +600,6 @@ window.onload = function instantiate() {
 
       if (!Number.isInteger(parseInt(parent))) {
         parentStringArr.push(parent);
-        parentLevelArr.push(level);
       }
       for (let i = 0; i < level; i++) {
         prefix = " > " + prefix;
@@ -652,17 +648,32 @@ window.onload = function instantiate() {
 
       if (tempArr.length > 0) {
         tempObj[parentStringArr[parentStringArr.length-1]] = tempArr;
-        handOffObj = tempObj;
 
-        console.log(handOffObj);
+        parentStringArr.splice(parentStringArr.length-1, 1);
 
-        tempArr = [];
-      } else {
+        collectionArr.push(tempObj);
+      } else if (collectionArr.length > 1) {
         console.log("Save Object Collection To Parent");
         console.log(collectionArr);
+        tempObj = {};
+
+        for (let i = 0; i < collectionArr.length; i++) {
+          parentObj[Object.keys(collectionArr[i])] = collectionArr[i][Object.keys(collectionArr[i])];
+        }
+        console.log(parentObj);
+        tempObj = parentObj;
+        parentObj = {};
+        parentObj[parentStringArr[parentStringArr.length-1]] = tempObj;
+        console.log(parentObj);
+        handOffObj = parentObj;
+
+        parentStringArr.splice(parentStringArr.length-1, 1);
+        collectionArr = [];
+      } else if (Object.keys(handOffObj).length !== 0) {
+        console.log("Save HandOff");
       }
 
-      //Clean up objects as needed as well
+      //Clean up objects if needed as well
     }
   }
 
