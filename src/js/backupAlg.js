@@ -575,10 +575,11 @@ window.onload = function instantiate() {
     console.log(colB);
     //console.log(colC);
 
-    for (let i = 0; i <= 10; i++) {//goals are 44, 155, then colA.length
+    for (let i = 0; i <= 44; i++) {//goals are 44, 155, then colA.length
       if (colA[i] == 0 && i != 0) {
         initialToInt = i - 1;
         fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt], 0);
+        //Check Collection Arr Or HandOff Obj
         parentStringArr = [];
         collectionArr = [];
         initialFromInt = i;
@@ -608,10 +609,6 @@ window.onload = function instantiate() {
       console.log("");
       console.log(parent + ":" + level);
 
-      //Might be necessary to check if an object needs to be sent to handoff prior to beginning collection
-      //>>>To check if an object contains anything:
-      //>>>Object.keys(tempObj).length !== 0
-
       for (let i = fromInt; i <= toInt; i++) {
         lookAhead = i + 1;
 
@@ -628,7 +625,6 @@ window.onload = function instantiate() {
 
         if (colA[i] == level) {
           console.log(prefix + i);
-          //Do I need a bool to check if there was an array that was collected prior to the current index?
           if (Number.isInteger(parseInt(colB[i]))) {
             tempArr.push(colC[i]);
           } else {
@@ -638,21 +634,19 @@ window.onload = function instantiate() {
               tempObj[colB[i]] = colC[i];
               console.log(tempObj);
               collectionArr.push(tempObj);
+              //This will need to be changed to an array that collects on a level-by-level basis
             }
-            //(First) Test saving Temp Obj
-            //>>>NOTE: DO NOT Collect Parents. Check if nextLevel > level AND colC[i] == ""
-            //(Next Test saving Temp Obj to Parent Text with Parent Obj
           }
         }
       }
 
-      if (tempArr.length > 0) {
+      if (tempArr.length > 0 && parentStringArr.length > 0) {
         tempObj[parentStringArr[parentStringArr.length-1]] = tempArr;
 
         parentStringArr.splice(parentStringArr.length-1, 1);
 
         collectionArr.push(tempObj);
-      } else if (collectionArr.length > 1) {
+      } else if (collectionArr.length > 1 && parentStringArr.length > 0) {
         console.log("Save Object Collection To Parent");
         console.log(collectionArr);
         tempObj = {};
@@ -669,8 +663,13 @@ window.onload = function instantiate() {
 
         parentStringArr.splice(parentStringArr.length-1, 1);
         collectionArr = [];
-      } else if (Object.keys(handOffObj).length !== 0) {
-        console.log("Save HandOff");
+      } else if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
+        parentObj = {};
+        parentObj[parentStringArr[parentStringArr.length-1]] = handOffObj;
+        handOffObj = parentObj;
+
+        parentStringArr.splice(parentStringArr.length-1, 1);
+        console.log(parentObj);
       }
 
       //Clean up objects if needed as well
