@@ -596,6 +596,7 @@ window.onload = function instantiate() {
       let lookAhead = 0;
       let tempObj = {};
       let tempArr = [];
+      let levelArr = [];
       let parentObj = {};
       let prefix = "";
 
@@ -633,8 +634,7 @@ window.onload = function instantiate() {
             } else {
               tempObj[colB[i]] = colC[i];
               console.log(tempObj);
-              collectionArr.push(tempObj);
-              //This will need to be changed to an array that collects on a level-by-level basis
+              levelArr.push(tempObj);
             }
           }
         }
@@ -645,14 +645,14 @@ window.onload = function instantiate() {
 
         parentStringArr.splice(parentStringArr.length-1, 1);
 
-        collectionArr.push(tempObj);
-      } else if (collectionArr.length > 1 && parentStringArr.length > 0) {
+        levelArr.push(tempObj);
+      } else if (levelArr.length > 1 && parentStringArr.length > 0) {
         console.log("Save Object Collection To Parent");
-        console.log(collectionArr);
+        console.log(levelArr);
         tempObj = {};
 
-        for (let i = 0; i < collectionArr.length; i++) {
-          parentObj[Object.keys(collectionArr[i])] = collectionArr[i][Object.keys(collectionArr[i])];
+        for (let i = 0; i < levelArr.length; i++) {
+          parentObj[Object.keys(levelArr[i])] = levelArr[i][Object.keys(levelArr[i])];
         }
         console.log(parentObj);
         tempObj = parentObj;
@@ -662,7 +662,10 @@ window.onload = function instantiate() {
         handOffObj = parentObj;
 
         parentStringArr.splice(parentStringArr.length-1, 1);
-        collectionArr = [];
+        //Push to collectionArr?
+
+        console.log(levelArr);
+        //collectionArr = []; //Not sure if this is needed anymore
       } else if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
         parentObj = {};
         parentObj[parentStringArr[parentStringArr.length-1]] = handOffObj;
