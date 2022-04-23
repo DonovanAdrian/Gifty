@@ -634,20 +634,28 @@ window.onload = function instantiate() {
             } else {
               tempObj[colB[i]] = colC[i];
               console.log(tempObj);
-              levelArr.push(tempObj);
+              //levelArr.push(tempObj); May not be necessary
             }
           }
         }
       }
 
-      if (tempArr.length > 0 && parentStringArr.length > 0) {
+      if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
+        parentObj = {};
+        parentObj[parentStringArr[parentStringArr.length-1]] = handOffObj;
+        handOffObj = parentObj;
+
+        parentStringArr.splice(parentStringArr.length-1, 1);
+        console.log(parentObj);
+      } else if (tempArr.length > 0 && parentStringArr.length > 0) {
         tempObj[parentStringArr[parentStringArr.length-1]] = tempArr;
 
         parentStringArr.splice(parentStringArr.length-1, 1);
 
         levelArr.push(tempObj);
+        console.log(levelArr); //May not need to push to levelArr if object is ready... Assign to handoffObj?
       } else if (levelArr.length > 1 && parentStringArr.length > 0) {
-        console.log("Save Object Collection To Parent");
+        console.log("Saving Object Collection To Parent...");
         console.log(levelArr);
         tempObj = {};
 
@@ -660,22 +668,10 @@ window.onload = function instantiate() {
         parentObj[parentStringArr[parentStringArr.length-1]] = tempObj;
         console.log(parentObj);
         handOffObj = parentObj;
+        console.log(handOffObj);
 
         parentStringArr.splice(parentStringArr.length-1, 1);
-        //Push to collectionArr?
-
-        console.log(levelArr);
-        //collectionArr = []; //Not sure if this is needed anymore
-      } else if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
-        parentObj = {};
-        parentObj[parentStringArr[parentStringArr.length-1]] = handOffObj;
-        handOffObj = parentObj;
-
-        parentStringArr.splice(parentStringArr.length-1, 1);
-        console.log(parentObj);
       }
-
-      //Clean up objects if needed as well
     }
   }
 
