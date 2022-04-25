@@ -582,6 +582,7 @@ window.onload = function instantiate() {
         //Check Collection Arr Or HandOff Obj
         parentStringArr = [];
         collectionArr = [];
+        handOffObj = {};
         initialFromInt = i;
       }
     }
@@ -634,7 +635,6 @@ window.onload = function instantiate() {
             } else {
               tempObj[colB[i]] = colC[i];
               console.log(tempObj);
-              //levelArr.push(tempObj); May not be necessary
             }
           }
         }
@@ -646,32 +646,30 @@ window.onload = function instantiate() {
         handOffObj = parentObj;
 
         parentStringArr.splice(parentStringArr.length-1, 1);
+        console.log(level);
         console.log(parentObj);
       } else if (tempArr.length > 0 && parentStringArr.length > 0) {
         tempObj[parentStringArr[parentStringArr.length-1]] = tempArr;
 
         parentStringArr.splice(parentStringArr.length-1, 1);
 
-        levelArr.push(tempObj);
-        console.log(levelArr); //May not need to push to levelArr if object is ready... Assign to handoffObj?
+        handOffObj = tempObj;
+        console.log(handOffObj);
       } else if (levelArr.length > 1 && parentStringArr.length > 0) {
-        console.log("Saving Object Collection To Parent...");
-        console.log(levelArr);
         tempObj = {};
 
         for (let i = 0; i < levelArr.length; i++) {
           parentObj[Object.keys(levelArr[i])] = levelArr[i][Object.keys(levelArr[i])];
         }
-        console.log(parentObj);
         tempObj = parentObj;
         parentObj = {};
         parentObj[parentStringArr[parentStringArr.length-1]] = tempObj;
-        console.log(parentObj);
         handOffObj = parentObj;
-        console.log(handOffObj);
 
         parentStringArr.splice(parentStringArr.length-1, 1);
+        console.log(handOffObj);
       }
+      console.log("");
     }
   }
 
