@@ -601,9 +601,6 @@ window.onload = function instantiate() {
       let parentObj = {};
       let prefix = "";
 
-      if (!Number.isInteger(parseInt(parent))) {
-        parentStringArr.push(parent);
-      }
       for (let i = 0; i < level; i++) {
         prefix = " > " + prefix;
       }
@@ -631,7 +628,7 @@ window.onload = function instantiate() {
             tempArr.push(colC[i]);
           } else {
             if (colA[lookAhead] > level && colC[i] == "") {
-              //console.log("This is a parent object");
+              parentStringArr.push(parent);
             } else {
               tempObj[colB[i]] = colC[i];
               console.log(tempObj);
@@ -643,6 +640,7 @@ window.onload = function instantiate() {
       if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
         parentObj = {};
         parentObj[parentStringArr[parentStringArr.length-1]] = handOffObj;
+        handOffObj = {};
         handOffObj = parentObj;
 
         parentStringArr.splice(parentStringArr.length-1, 1);
@@ -655,19 +653,8 @@ window.onload = function instantiate() {
 
         handOffObj = tempObj;
         console.log(handOffObj);
-      } else if (levelArr.length > 1 && parentStringArr.length > 0) {
-        tempObj = {};
-
-        for (let i = 0; i < levelArr.length; i++) {
-          parentObj[Object.keys(levelArr[i])] = levelArr[i][Object.keys(levelArr[i])];
-        }
-        tempObj = parentObj;
-        parentObj = {};
-        parentObj[parentStringArr[parentStringArr.length-1]] = tempObj;
-        handOffObj = parentObj;
-
-        parentStringArr.splice(parentStringArr.length-1, 1);
-        console.log(handOffObj);
+      } else if (Object.keys(tempObj).length !== 0) {
+        handOffObj = tempObj;
       }
       console.log("");
     }
