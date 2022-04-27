@@ -10,6 +10,9 @@ let userArr = [];
 
 let config = {};
 
+let loginTry = 0;
+let loginThreshold = 3;
+
 let loginDisabledMsg = "";
 let newGiftyMessage = "Please create a new user before trying to log into Gifty! Click on the text below the login " +
   "button and fill out the form to make a user account.";
@@ -324,7 +327,7 @@ function login() {
         console.log("The following error occurred:");
         console.log(err);
         loginInfo.innerHTML = "Login Error Occurred. Please Contact A Moderator!";
-        updateMaintenanceLog("index", "Login Error: " + username.value.toLowerCase() + " " + pin.value.toString());
+        updateMaintenanceLog("index", "Login Error: " + username.value.toLowerCase() + " " + pin.value.toString() + " - " + err);
       }
     }
   }
@@ -382,14 +385,20 @@ function login() {
       }
     }, 1000);
   } else if (loginBool === false) {
-    if (allowLogin)
-      loginInfo.innerHTML = "Username or Password Incorrect";
-    else {
-      if(showLoginAlert == 0)
-        alert(loginDisabledMsg);
+    if (loginTry < loginThreshold) {
+      loginTry++;
+      login();
+    } else {
+      if (allowLogin)
+        loginInfo.innerHTML = "Username or Password Incorrect";
+      else {
+        if (showLoginAlert == 0)
+          alert(loginDisabledMsg);
+      }
+      if (username.value != "" && pin.value != "")
+        updateMaintenanceLog("index", "Invalid Login: " + username.value.toLowerCase() + " " + pin.value.toString());
+      loginTry = 0;
     }
-    if (username.value != "" && pin.value != "")
-      updateMaintenanceLog("index", "Invalid Login: " + username.value.toLowerCase() + " " + pin.value.toString());
   }
 }
 
