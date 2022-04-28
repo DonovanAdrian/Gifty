@@ -568,7 +568,6 @@ window.onload = function instantiate() {
     let initialFromInt = 0;
     let initialToInt = 0;
     let handOffObj = {};
-    let collectionArr = [];
     let parentStringArr = [];
 
     //console.log(colA);
@@ -579,9 +578,13 @@ window.onload = function instantiate() {
       if (colA[i] == 0 && i != 0) {
         initialToInt = i - 1;
         fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt], 0);
-        //Check Collection Arr Or HandOff Obj
+        if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
+          for (let i = parentStringArr.length; i >= 0; i++) {
+            handOffObj[parentStringArr[i]] = handOffObj;
+            console.log(handOffObj);
+          }
+        }
         parentStringArr = [];
-        collectionArr = [];
         handOffObj = {};
         initialFromInt = i;
       }
@@ -597,7 +600,6 @@ window.onload = function instantiate() {
       let lookAhead = 0;
       let tempObj = {};
       let tempArr = [];
-      let levelArr = [];
       let parentObj = {};
       let prefix = "";
 
