@@ -626,6 +626,7 @@ window.onload = function instantiate() {
 
         if (colA[i] == level) {
           console.log(prefix + i);
+          console.log(parent);
           if (Number.isInteger(parseInt(colB[i]))) {
             tempArr.push(colC[i]);
           } else {
@@ -649,6 +650,8 @@ window.onload = function instantiate() {
         console.log(level);
         console.log(parentObj);
       } else if (tempArr.length > 0 && parentStringArr.length > 0) {
+        console.log(parentStringArr[parentStringArr.length-2]);
+        console.log(parentStringArr[parentStringArr.length-1]);
         tempObj[parentStringArr[parentStringArr.length-1]] = tempArr;
 
         parentStringArr.splice(parentStringArr.length-1, 1);
