@@ -568,6 +568,8 @@ window.onload = function instantiate() {
     let initialFromInt = 0;
     let initialToInt = 0;
     let handOffObj = {};
+    let handOffArr = [];
+    let handOffString = "";
     let parentStringArr = [];
 
     //console.log(colA);
@@ -627,19 +629,27 @@ window.onload = function instantiate() {
         if (colA[i] == level) {
           console.log(prefix + i);
           if (Number.isInteger(parseInt(colB[i]))) {
+            console.log(colB[i]);
             tempArr.push(colC[i]);
           } else {
-            if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
-              tempObj[Object.keys(handOffObj)] = handOffObj;
+            if (handOffArr.length != 0 && parentStringArr.length > 0) {
+              tempObj[handOffString] = handOffArr;
+              handOffArr = [];
+
+              parentStringArr.splice(parentStringArr.length-1, 1);
+            } else if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
+              tempObj[handOffString] = handOffObj;
               handOffObj = {};
 
               parentStringArr.splice(parentStringArr.length-1, 1);
             }
 
             if (colA[lookAhead] > level && colC[i] == "") {
+              console.log(parentStringArr);
               parentStringArr.push(colB[i]);
             } else {
               tempObj[colB[i]] = colC[i];
+              console.log(colB[i]);
               console.log(tempObj);
             }
           }
@@ -657,16 +667,16 @@ window.onload = function instantiate() {
         console.log(level);
         console.log(parentObj);
       } else if (tempArr.length > 0 && parentStringArr.length > 0) {
-        tempObj[parentStringArr[parentStringArr.length-1]] = tempArr;
-
+        handOffString = parentStringArr[parentStringArr.length-1];
         parentStringArr.splice(parentStringArr.length-1, 1);
-
-        handOffObj = tempObj;
-        console.log(handOffObj);
+        handOffArr = tempArr;
       } else if (Object.keys(tempObj).length !== 0) {
         handOffObj = tempObj;
       }
+
       console.log("");
+
+
     }
   }
 
