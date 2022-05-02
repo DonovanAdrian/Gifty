@@ -638,6 +638,7 @@ window.onload = function instantiate() {
 
               parentStringArr.splice(parentStringArr.length-1, 1);
             } else if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
+              //What's in the handOffObj before going into this?
               tempObj[handOffString] = handOffObj;
               handOffObj = {};
 
@@ -657,7 +658,6 @@ window.onload = function instantiate() {
       }
 
       if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
-        console.log("THIS");
         parentObj = {};
         parentObj[parentStringArr[parentStringArr.length-1]] = handOffObj;
         handOffObj = {};
