@@ -588,6 +588,7 @@ window.onload = function instantiate() {
         }
         parentStringArr = [];
         handOffObj = {};
+        handOffArr = [];
         initialFromInt = i;
       }
     }
@@ -629,16 +630,16 @@ window.onload = function instantiate() {
         if (colA[i] == level) {
           console.log(prefix + i);
           if (Number.isInteger(parseInt(colB[i]))) {
-            console.log(colB[i]);
             tempArr.push(colC[i]);
           } else {
             if (handOffArr.length != 0 && parentStringArr.length > 0) {
+              console.log(handOffArr);
               tempObj[handOffString] = handOffArr;
               handOffArr = [];
 
               parentStringArr.splice(parentStringArr.length-1, 1);
             } else if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
-              //What's in the handOffObj before going into this?
+              console.log(handOffObj);//if what's in here...
               tempObj[handOffString] = handOffObj;
               handOffObj = {};
 
@@ -646,7 +647,8 @@ window.onload = function instantiate() {
             }
 
             if (colA[lookAhead] > level && colC[i] == "") {
-              console.log(parentStringArr);
+              if (parentStringArr.length > 0)
+                console.log(parentStringArr);
               parentStringArr.push(colB[i]);
             } else {
               tempObj[colB[i]] = colC[i];
@@ -664,7 +666,6 @@ window.onload = function instantiate() {
         handOffObj = parentObj;
 
         parentStringArr.splice(parentStringArr.length-1, 1);
-        console.log(level);
         console.log(parentObj);
       } else if (tempArr.length > 0 && parentStringArr.length > 0) {
         handOffString = parentStringArr[parentStringArr.length-1];
