@@ -636,12 +636,14 @@ window.onload = function instantiate() {
               console.log(handOffArr);
               tempObj[handOffString] = handOffArr;
               handOffArr = [];
+              console.log(tempObj);
 
               parentStringArr.splice(parentStringArr.length-1, 1);
             } else if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
               console.log(handOffObj);//if what's in here...
               tempObj[handOffString] = handOffObj;
               handOffObj = {};
+              console.log(tempObj);
 
               parentStringArr.splice(parentStringArr.length-1, 1);
             }
@@ -653,27 +655,37 @@ window.onload = function instantiate() {
             } else {
               tempObj[colB[i]] = colC[i];
               console.log(colB[i]);
+              console.log(colC[i]);
               console.log(tempObj);
             }
           }
         }
       }
 
+      console.log(handOffObj);
+      console.log(handOffArr);
+      console.log(tempObj);
+      console.log(tempArr);
       if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
+        console.log("A");
         parentObj = {};
         parentObj[parentStringArr[parentStringArr.length-1]] = handOffObj;
         handOffObj = {};
         handOffObj = parentObj;
-
         parentStringArr.splice(parentStringArr.length-1, 1);
-        console.log(parentObj);
       } else if (tempArr.length > 0 && parentStringArr.length > 0) {
+        console.log("B");
         handOffString = parentStringArr[parentStringArr.length-1];
         parentStringArr.splice(parentStringArr.length-1, 1);
         handOffArr = tempArr;
       } else if (Object.keys(tempObj).length !== 0) {
+        console.log("C");
         handOffObj = tempObj;
       }
+      console.log(handOffObj);
+      console.log(handOffArr);
+      console.log(tempObj);
+      console.log(tempArr);
 
       console.log("");
 
