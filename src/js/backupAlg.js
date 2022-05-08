@@ -567,14 +567,11 @@ window.onload = function instantiate() {
   function processBackupData(colA, colB, colC) {
     let initialFromInt = 0;
     let initialToInt = 0;
-    let savingLevel = 0;
-    let lastLevel = 0;
     let handOffString = "";
     let handOffObj = {};
     let secondaryHandOffObj = {};
     let handOffArr = [];
     let parentStringArr = [];
-    let lastLevelSaved = false;
 
     //console.log(colA);
     console.log(colB);
@@ -584,6 +581,8 @@ window.onload = function instantiate() {
       if (colA[i] == 0 && i != 0) {
         initialToInt = i - 1;
         fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt], 0);
+        initialFromInt = i;
+        console.log(initialFromInt);
         if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
           for (let i = parentStringArr.length; i >= 0; i++) {
             handOffObj[parentStringArr[i]] = handOffObj;
@@ -594,11 +593,11 @@ window.onload = function instantiate() {
         secondaryHandOffObj = {};
         handOffObj = {};
         handOffArr = [];
-        initialFromInt = i;
       }
     }
     initialToInt = colA.length;
-    fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt], 0);
+    //console.log("Fetch final " + initialFromInt + " " + initialToInt + " " + colB[initialFromInt]);
+    //fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt], 0);
 
     function fetchDataInRange(fromInt, toInt, parent, level) {
       let increaseLevelBool = false;
@@ -639,10 +638,6 @@ window.onload = function instantiate() {
             handOffObj = {};
             parentStringArr.splice(parentStringArr.length-1, 1);
             console.log(secondaryHandOffObj);
-            if (savingLevel == 0) {
-              savingLevel = level;
-              console.log(savingLevel);
-            }
           }
 
           if (parentStringArr.length > 0)
@@ -680,10 +675,8 @@ window.onload = function instantiate() {
         handOffArr = tempArr;
       } else if (Object.keys(tempObj).length !== 0) {
         console.log("C");
-        console.log(secondaryHandOffObj);
         handOffObj = tempObj;
         console.log(handOffObj);
-        console.log(level);
         if (Object.keys(secondaryHandOffObj).length !== 0 && Object.keys(handOffObj).length == 3 &&
           level == 2) {
           secondaryHandOffObj[parentStringArr[parentStringArr.length-1]] = handOffObj;
@@ -696,8 +689,6 @@ window.onload = function instantiate() {
         handOffObj = secondaryHandOffObj;
         secondaryHandOffObj = {};
       }
-
-      lastLevel = level;
 
       console.log("");
     }
