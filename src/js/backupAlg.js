@@ -567,11 +567,14 @@ window.onload = function instantiate() {
   function processBackupData(colA, colB, colC) {
     let initialFromInt = 0;
     let initialToInt = 0;
+    let savingLevel = 0;
+    let lastLevel = 0;
+    let handOffString = "";
     let handOffObj = {};
     let secondaryHandOffObj = {};
     let handOffArr = [];
-    let handOffString = "";
     let parentStringArr = [];
+    let lastLevelSaved = false;
 
     //console.log(colA);
     console.log(colB);
@@ -588,13 +591,14 @@ window.onload = function instantiate() {
           }
         }
         parentStringArr = [];
+        secondaryHandOffObj = {};
         handOffObj = {};
         handOffArr = [];
         initialFromInt = i;
       }
     }
-    //initialToInt = colA.length;
-    //fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt]);
+    initialToInt = colA.length;
+    fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt], 0);
 
     function fetchDataInRange(fromInt, toInt, parent, level) {
       let increaseLevelBool = false;
@@ -635,6 +639,10 @@ window.onload = function instantiate() {
             handOffObj = {};
             parentStringArr.splice(parentStringArr.length-1, 1);
             console.log(secondaryHandOffObj);
+            if (savingLevel == 0) {
+              savingLevel = level;
+              console.log(savingLevel);
+            }
           }
 
           if (parentStringArr.length > 0)
@@ -658,6 +666,7 @@ window.onload = function instantiate() {
       }
 
       if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
+        console.log("A");
         parentObj = {};
         parentObj[parentStringArr[parentStringArr.length-1]] = handOffObj;
         handOffObj = {};
@@ -665,17 +674,32 @@ window.onload = function instantiate() {
 
         parentStringArr.splice(parentStringArr.length-1, 1);
       } else if (tempArr.length > 0 && parentStringArr.length > 0) {
+        console.log("B");
         handOffString = parentStringArr[parentStringArr.length-1];
         parentStringArr.splice(parentStringArr.length-1, 1);
         handOffArr = tempArr;
       } else if (Object.keys(tempObj).length !== 0) {
-        console.log(tempObj);
+        console.log("C");
+        console.log(secondaryHandOffObj);
         handOffObj = tempObj;
+        console.log(handOffObj);
+        console.log(level);
+        if (Object.keys(secondaryHandOffObj).length !== 0 && Object.keys(handOffObj).length == 3 &&
+          level == 2) {
+          secondaryHandOffObj[parentStringArr[parentStringArr.length-1]] = handOffObj;
+          handOffObj = {};
+          parentStringArr.splice(parentStringArr.length-1, 1);
+          console.log(secondaryHandOffObj);
+        }
+      } else if (Object.keys(secondaryHandOffObj).length !== 0 && Object.keys(handOffObj).length == 0 &&
+        parentStringArr.length == 1) {
+        handOffObj = secondaryHandOffObj;
+        secondaryHandOffObj = {};
       }
 
+      lastLevel = level;
+
       console.log("");
-
-
     }
   }
 
