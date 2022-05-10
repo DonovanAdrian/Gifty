@@ -573,11 +573,11 @@ window.onload = function instantiate() {
     let handOffArr = [];
     let parentStringArr = [];
 
-    //console.log(colA);
+    console.log(colA);
     console.log(colB);
-    //console.log(colC);
+    console.log(colC);
 
-    for (let i = 0; i <= 44; i++) {//goals are 44, 155, then colA.length
+    for (let i = 0; i <= colA.length; i++) {//goals are 44, 155, then colA.length
       if (colA[i] == 0 && i != 0) {
         initialToInt = i - 1;
         fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt], 0);
@@ -596,11 +596,20 @@ window.onload = function instantiate() {
       }
     }
     initialToInt = colA.length;
-    //console.log("Fetch final " + initialFromInt + " " + initialToInt + " " + colB[initialFromInt]);
-    //fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt], 0);
+    fetchDataInRange(initialFromInt, initialToInt, colB[initialFromInt], 0);
+    if (Object.keys(handOffObj).length !== 0 && parentStringArr.length > 0) {
+      for (let i = parentStringArr.length; i >= 0; i++) {
+        handOffObj[parentStringArr[i]] = handOffObj;
+        console.log(handOffObj);
+      }
+    }
+    console.log(colA);
+    console.log(colB);
+    console.log(colC);
 
     function fetchDataInRange(fromInt, toInt, parent, level) {
       let increaseLevelBool = false;
+      let mainFetchTriggered = false;
       let nextFromInt = fromInt + 1;
       let nextLevel = level + 1;
       let nextToInt = toInt;
@@ -616,8 +625,10 @@ window.onload = function instantiate() {
 
       console.log("");
       console.log(parent + ":" + level);
+      console.log(fromInt + " " + toInt);
 
       for (let i = fromInt; i <= toInt; i++) {
+        //console.log(i);
         lookAhead = i + 1;
 
         if (colA[lookAhead] > level && !increaseLevelBool) {
@@ -626,6 +637,7 @@ window.onload = function instantiate() {
         }
         if (colA[lookAhead] <= level && increaseLevelBool) {
           nextToInt = i;
+          mainFetchTriggered = true;
           fetchDataInRange(nextFromInt, nextToInt, colB[nextFromInt], nextLevel);
           nextFromInt = lookAhead;
           increaseLevelBool = false;
@@ -639,9 +651,6 @@ window.onload = function instantiate() {
             parentStringArr.splice(parentStringArr.length-1, 1);
             console.log(secondaryHandOffObj);
           }
-
-          if (parentStringArr.length > 0)
-            console.log(parentStringArr);
 
           if (Number.isInteger(parseInt(colB[i]))) {
             tempArr.push(colC[i]);
@@ -657,6 +666,15 @@ window.onload = function instantiate() {
               tempObj[colB[i]] = colC[i];
             }
           }
+        }
+
+        if (increaseLevelBool && !mainFetchTriggered && i == toInt) {
+          console.log("TestC");
+          nextToInt = i;
+          mainFetchTriggered = true;
+          fetchDataInRange(nextFromInt, nextToInt, colB[nextFromInt], nextLevel);
+          nextFromInt = lookAhead;
+          increaseLevelBool = false;
         }
       }
 
