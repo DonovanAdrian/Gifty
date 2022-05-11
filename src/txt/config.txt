@@ -5,6 +5,9 @@
 # off of a config similar to the one below, you may have to do some extra leg work on your
 # own! Good luck!
 #
+# Please note that most of the variables below are REQUIRED! If any become optional, I
+# will try to push out a compatability update as soon as it's known.
+#
 # PS, use those "#" to make comments here if you need to! Otherwise the website will likely
 # be unable to properly read the file. Thanks!
 
