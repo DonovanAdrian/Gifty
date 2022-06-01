@@ -207,11 +207,6 @@ function initializeDB(config) {
   firebase.initializeApp(config);
   analytics = firebase.analytics();
 
-  firebase.auth().signInAnonymously().catch(function (error) {
-    let errorCode = error.code;
-    let errorMessage = error.message;
-  });
-
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       let isAnonymous = user.isAnonymous;
@@ -219,7 +214,6 @@ function initializeDB(config) {
     }
   });
 }
-
 
 function loginTimer(){
   let loginNum = 0;
