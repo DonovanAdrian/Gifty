@@ -392,7 +392,7 @@ window.onload = function instantiate() {
       }
 
       if (multiples != undefined) {
-          multipleBool = multiples;
+        multipleBool = multiples;
       }
 
       giftTitle.innerHTML = title;
@@ -578,7 +578,6 @@ window.onload = function instantiate() {
     }
 
     if(toDelete != -1) {
-      alert("Attempting to delete " + giftArr[toDelete].title + "! If this is successful, the page will reload.");
       giftArr.splice(toDelete, 1);
 
       for (let i = 0; i < giftArr.length; i++) {
