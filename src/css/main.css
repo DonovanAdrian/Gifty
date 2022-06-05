@@ -413,6 +413,9 @@ ul li.santa::before {
   border: 1px solid #888;
   width: 80%;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+.modal-content-open {
   -webkit-animation-name: animatetop;
   -webkit-animation-duration: 0.4s;
   animation-name: animatetop;
@@ -427,6 +430,23 @@ ul li.santa::before {
 @keyframes animatetop {
   from {top:-300px; opacity:0}
   to {top:0; opacity:1}
+}
+
+.modal-content-close {
+  -webkit-animation-name: animateclose;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animateclose;
+  animation-duration: 0.4s;
+}
+
+@-webkit-keyframes animateclose {
+  from {top:0; opacity:1}
+  to {top:-300px; opacity:0}
+}
+
+@keyframes animateclose {
+  from {top:0; opacity:1}
+  to {top:-300px; opacity:0}
 }
 
 .close {
