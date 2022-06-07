@@ -20,7 +20,9 @@ let areYouStillThereInit = false;
 
 let signOutFadeOut = false;
 
+let closeModalTimer;
 let currentModalOpenObj = null;
+let modalClosingBool = false;
 
 let currentModalOpen = "";
 let currentTitle;
@@ -388,23 +390,28 @@ function navigation(navNum, loginOverride, privateUserOverride) {
 }
 
 function openModal(openThisModal, modalName, ignoreBool){
-  if (ignoreBool == null) {
-    ignoreBool = false;
-  }
-  if (currentModalOpenObj != null) {
-    closeModal(currentModalOpenObj);
-  }
+  if (!modalClosingBool) {
+    openThisModal.classList.add('modal-content-open');
+    openThisModal.classList.remove('modal-content-close');
 
-  currentModalOpenObj = openThisModal;
-  currentModalOpen = modalName;
-  openThisModal.style.display = "block";
-  if(consoleOutput)
-    console.log("Modal Opened: " + modalName);
+    if (ignoreBool == null) {
+      ignoreBool = false;
+    }
+    if (currentModalOpenObj != null) {
+      closeModal(currentModalOpenObj);
+    }
 
-  if (!ignoreBool) {
-    window.onclick = function (event) {
-      if (event.target == currentModalOpenObj) {
-        closeModal(currentModalOpenObj);
+    currentModalOpenObj = openThisModal;
+    currentModalOpen = modalName;
+    openThisModal.style.display = "block";
+    if (consoleOutput)
+      console.log("Modal Opened: " + modalName);
+
+    if (!ignoreBool) {
+      window.onclick = function (event) {
+        if (event.target == currentModalOpenObj) {
+          closeModal(currentModalOpenObj);
+        }
       }
     }
   }
@@ -412,11 +419,29 @@ function openModal(openThisModal, modalName, ignoreBool){
 
 function closeModal(closeThisModal){
   try {
+    let closeTimer = 0;
     currentModalOpenObj = null;
     currentModalOpen = "";
-    closeThisModal.style.display = "none";
-    if(consoleOutput)
-      console.log("Modal Closed");
+
+    closeThisModal.classList.remove('modal-content-open');
+    closeThisModal.classList.add('modal-content-close');
+    modalClosingBool = true;
+
+    if (!window.AnimationEvent) {
+      return;
+    }
+
+    closeModalTimer = setInterval(function(){
+      closeTimer = closeTimer + 10;
+      if(closeTimer >= 370){
+        closeTimer = 0;
+        closeThisModal.style.display = "none";
+        modalClosingBool = false;
+        if(consoleOutput)
+          console.log("Modal Closed");
+        clearInterval(closeModalTimer);
+      }
+    }, 10);
 
     window.onclick = function(event) {}
   } catch (err) {
