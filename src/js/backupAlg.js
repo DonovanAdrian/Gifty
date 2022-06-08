@@ -573,6 +573,8 @@ window.onload = function instantiate() {
     let handOffArr = [];
     let parentStringArr = [];
 
+    let outputLimit = 168;
+
     console.log(colA);
     console.log(colB);
     console.log(colC);
@@ -628,70 +630,70 @@ window.onload = function instantiate() {
       console.log(fromInt + " " + toInt);
 
       for (let i = fromInt; i <= toInt; i++) {
-        //console.log(i);
-        lookAhead = i + 1;
+        if (i <= outputLimit) {
+          //console.log(i);
+          lookAhead = i + 1;
 
-        if (colA[lookAhead] > level && !increaseLevelBool) {
-          increaseLevelBool = true;
-          nextFromInt = lookAhead;
-        }
-        if (colA[lookAhead] <= level && increaseLevelBool) {
-          nextToInt = i;
-          mainFetchTriggered = true;
-          fetchDataInRange(nextFromInt, nextToInt, colB[nextFromInt], nextLevel);
-          nextFromInt = lookAhead;
-          increaseLevelBool = false;
-        }
+          if (colA[lookAhead] > level && !increaseLevelBool) {
+            increaseLevelBool = true;
+            nextFromInt = lookAhead;
+          }
+          if (colA[lookAhead] <= level && increaseLevelBool) {
+            nextToInt = i;
+            mainFetchTriggered = true;
+            fetchDataInRange(nextFromInt, nextToInt, colB[nextFromInt], nextLevel);
+            nextFromInt = lookAhead;
+            increaseLevelBool = false;
+          }
 
-        if (colA[i] == level) {
-          console.log(prefix + i);
-          if (parentStringArr.length > 0) {
-            if (Object.keys(primaryHandOffObj).length !== 0) {
-              secondaryHandOffObj[parentStringArr[parentStringArr.length-1]] = primaryHandOffObj;
+          if (colA[i] == level) {
+            console.log(prefix + i);
+            if (Object.keys(primaryHandOffObj).length !== 0 && parentStringArr.length > 0) {
+              secondaryHandOffObj[parentStringArr[parentStringArr.length - 1]] = primaryHandOffObj;
               primaryHandOffObj = {};
-              parentStringArr.splice(parentStringArr.length-1, 1);
+              parentStringArr.splice(parentStringArr.length - 1, 1);
               console.log(secondaryHandOffObj);
             }
-          }
 
-          if (Number.isInteger(parseInt(colB[i]))) {
-            tempArr.push(colC[i]);
-          } else {
-            if (handOffArr.length != 0 && parentStringArr.length > 0) {
-              tempObj[handOffString] = handOffArr;
-              handOffArr = [];
-            }
-
-            if (colA[lookAhead] > level && colC[i] == "") {
-              parentStringArr.push(colB[i]);
+            if (Number.isInteger(parseInt(colB[i]))) {
+              tempArr.push(colC[i]);
             } else {
-              tempObj[colB[i]] = colC[i];
+              if (handOffArr.length != 0 && parentStringArr.length > 0) {
+                tempObj[handOffString] = handOffArr;
+                handOffArr = [];
+              }
+
+              if (colA[lookAhead] > level && colC[i] == "") {
+                parentStringArr.push(colB[i]);
+              } else {
+                tempObj[colB[i]] = colC[i];
+              }
             }
           }
-        }
 
-        if (increaseLevelBool && !mainFetchTriggered && i == toInt) {
-          console.log("TestC");
-          nextToInt = i;
-          mainFetchTriggered = true;
-          fetchDataInRange(nextFromInt, nextToInt, colB[nextFromInt], nextLevel);
-          nextFromInt = lookAhead;
-          increaseLevelBool = false;
+          if (increaseLevelBool && !mainFetchTriggered && i == toInt) {
+            console.log("TestC");
+            nextToInt = i;
+            mainFetchTriggered = true;
+            fetchDataInRange(nextFromInt, nextToInt, colB[nextFromInt], nextLevel);
+            nextFromInt = lookAhead;
+            increaseLevelBool = false;
+          }
         }
       }
 
       if (Object.keys(primaryHandOffObj).length !== 0 && parentStringArr.length > 0) {
         console.log("A");
         parentObj = {};
-        parentObj[parentStringArr[parentStringArr.length-1]] = primaryHandOffObj;
+        parentObj[parentStringArr[parentStringArr.length - 1]] = primaryHandOffObj;
         primaryHandOffObj = {};
         primaryHandOffObj = parentObj;
 
-        parentStringArr.splice(parentStringArr.length-1, 1);
+        parentStringArr.splice(parentStringArr.length - 1, 1);
       } else if (tempArr.length > 0 && parentStringArr.length > 0) {
         console.log("B");
-        handOffString = parentStringArr[parentStringArr.length-1];
-        parentStringArr.splice(parentStringArr.length-1, 1);
+        handOffString = parentStringArr[parentStringArr.length - 1];
+        parentStringArr.splice(parentStringArr.length - 1, 1);
         handOffArr = tempArr;
       } else if (Object.keys(tempObj).length !== 0) {
         console.log("C");
@@ -699,20 +701,17 @@ window.onload = function instantiate() {
         console.log(primaryHandOffObj);
         if (Object.keys(secondaryHandOffObj).length !== 0 && Object.keys(primaryHandOffObj).length == 3 &&
           level == 2) {
-          console.log("C2");
-          //This should likely be saved back into primaryHO
-          secondaryHandOffObj[parentStringArr[parentStringArr.length-1]] = primaryHandOffObj;
-          primaryHandOffObj = {};
-          parentStringArr.splice(parentStringArr.length-1, 1);
-          console.log(secondaryHandOffObj);
+          secondaryHandOffObj[parentStringArr[parentStringArr.length - 1]] = primaryHandOffObj;
+          primaryHandOffObj = secondaryHandOffObj;
+          secondaryHandOffObj = {};
+          parentStringArr.splice(parentStringArr.length - 1, 1);
+          console.log(primaryHandOffObj);
         }
       } else if (Object.keys(secondaryHandOffObj).length !== 0 && Object.keys(primaryHandOffObj).length == 0 &&
         parentStringArr.length == 1) {
-        console.log("D");
-        console.log(primaryHandOffObj);
-        //This shouldn't be overwriting whatever is here
         primaryHandOffObj = secondaryHandOffObj;
         secondaryHandOffObj = {};
+        console.log(primaryHandOffObj);
       }
 
       console.log("");
