@@ -115,40 +115,42 @@ window.onload = function instantiate() {
     navigation(12);//FAQ
   };
 
-  databaseQuery();
+  if (user.moderatorInt == 1) {
+    databaseQuery();
 
-  function databaseQuery() {
-    loginInitial = firebase.database().ref("login/");
+    function databaseQuery() {
+      loginInitial = firebase.database().ref("login/");
 
-    let fetchLogin = function (postRef){
-      postRef.on('child_added', function (data) {
-        if (data.key == "allowLogin") {
-          allowLogin = data.val();
-        } else if (data.key == "loginDisabledMsg") {
-          loginDisabledMsg = data.val();
-        }
-      });
+      let fetchLogin = function (postRef) {
+        postRef.on('child_added', function (data) {
+          if (data.key == "allowLogin") {
+            allowLogin = data.val();
+          } else if (data.key == "loginDisabledMsg") {
+            loginDisabledMsg = data.val();
+          }
+        });
 
-      postRef.on('child_changed', function (data) {
-        if (data.key == "allowLogin") {
-          allowLogin = data.val();
-        } else if (data.key == "loginDisabledMsg") {
-          loginDisabledMsg = data.val();
-        }
-      });
+        postRef.on('child_changed', function (data) {
+          if (data.key == "allowLogin") {
+            allowLogin = data.val();
+          } else if (data.key == "loginDisabledMsg") {
+            loginDisabledMsg = data.val();
+          }
+        });
 
-      postRef.on('child_removed', function (data) {
-        if (data.key == "allowLogin") {
-          allowLogin = true;
-        } else if (data.key == "loginDisabledMsg") {
-          loginDisabledMsg = "";
-        }
-      });
-    };
+        postRef.on('child_removed', function (data) {
+          if (data.key == "allowLogin") {
+            allowLogin = true;
+          } else if (data.key == "loginDisabledMsg") {
+            loginDisabledMsg = "";
+          }
+        });
+      };
 
-    fetchLogin(loginInitial);
+      fetchLogin(loginInitial);
 
-    listeningFirebaseRefs.push(loginInitial);
+      listeningFirebaseRefs.push(loginInitial);
+    }
   }
 };
 
@@ -173,7 +175,7 @@ function generateModerationModal(){
 
 
   loginFxnBtn.onclick = function(){
-    if(allowLogin) {
+    if (allowLogin) {
       loginFxnBtn.innerHTML = "Enable Login Function";
       firebase.database().ref("login/").update({
         allowLogin: false,
