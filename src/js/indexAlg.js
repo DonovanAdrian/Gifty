@@ -309,9 +309,15 @@ function login() {
       try {
         if(decode(userArr[i].encodeStr) == pin.value){
           if(allowLogin) {
-            loginBool = true;
-            validUserInt = i;
-            break;
+            if (userArr[i].ban == 0) {
+              loginBool = true;
+              validUserInt = i;
+              break;
+            } else {
+              loginInfo.innerHTML = "Login Error Occurred... Please Contact A Moderator!";
+              updateMaintenanceLog("index", "Banned user " + userArr[i].userName + " attempted to log in!");
+              return;
+            }
           } else {
             if(userArr[i].moderatorInt == 1) {
               loginBool = true;
