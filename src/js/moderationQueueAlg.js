@@ -289,12 +289,15 @@ window.onload = function instantiate() {
     } else if (ticketData.details.includes("Login Error")) {
       liItem.className += " highSev";
       ticketTitleText = "!!Login Error!! " + ticketData.uid;
+    } else if (ticketData.details.includes("attempted to log in")) {
+      liItem.className += " highSev";
+      ticketTitleText = "Banned User Attempted Login: " + ticketData.uid;
     } else if (ticketData.details.includes("Attempting to delete gift")) {
       liItem.className += " mediumSev";
-      ticketTitleText = "Attempt To Delete Gift " + ticketData.uid;
+      ticketTitleText = "Attempt To Delete Gift: " + ticketData.uid;
     } else if (ticketData.details.includes("Attempting to update gift")) {
       liItem.className += " lowSev";
-      ticketTitleText = "Attempt To Update Gift " + ticketData.uid;
+      ticketTitleText = "Attempt To Update Gift: " + ticketData.uid;
     } else {
       liItem.className += " highSev";
       ticketTitleText = "No Data Available!";
