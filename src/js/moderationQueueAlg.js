@@ -291,10 +291,13 @@ window.onload = function instantiate() {
       ticketTitleText = "!!Login Error!! " + ticketData.uid;
     } else if (ticketData.details.includes("attempted to log in")) {
       liItem.className += " highSev";
-      ticketTitleText = "Banned User Attempted Login: " + ticketData.uid;
+      ticketTitleText = "A Banned User Attempted Login: " + ticketData.uid;
     } else if (ticketData.details.includes("Attempting to delete gift")) {
       liItem.className += " mediumSev";
       ticketTitleText = "Attempt To Delete Gift: " + ticketData.uid;
+    } else if (ticketData.details.includes("has opened their warning")) {
+      liItem.className += " mediumSev";
+      ticketTitleText = "A Warned User Was Successfully Notified: " + ticketData.uid;
     } else if (ticketData.details.includes("Attempting to update gift")) {
       liItem.className += " lowSev";
       ticketTitleText = "Attempt To Update Gift: " + ticketData.uid;
