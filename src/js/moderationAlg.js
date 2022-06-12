@@ -402,9 +402,17 @@ window.onload = function instantiate() {
     initUserElement(liItem, userData);
 
     if(userData.userScore != null) {
-      textNode = document.createTextNode(userData.name + " - " + userData.userScore);
+      if (userData.ban > 0) {
+        textNode = document.createTextNode(userData.name + " - BANNED");
+      } else {
+        textNode = document.createTextNode(userData.name + " - " + userData.userScore);
+      }
     } else {
-      textNode = document.createTextNode(userData.name);
+      if (userData.ban > 0) {
+        textNode = document.createTextNode(userData.name + " - BANNED");
+      } else {
+        textNode = document.createTextNode(userData.name);
+      }
     }
 
     liItem.appendChild(textNode);
@@ -422,16 +430,26 @@ window.onload = function instantiate() {
     let editUser = document.getElementById('user' + userData.uid);
 
     if(userData.userScore != null) {
-      editUser.innerHTML = userData.name + " - " + userData.userScore;
+      if (userData.ban > 0) {
+        editUser.innerHTML = userData.name + " - BANNED";
+      } else {
+        editUser.innerHTML = userData.name + " - " + userData.userScore;
+      }
     } else {
-      editUser.innerHTML = userData.name;
+      if (userData.ban > 0) {
+        editUser.innerHTML = userData.name + " - BANNED";
+      } else {
+        editUser.innerHTML = userData.name;
+      }
     }
     initUserElement(editUser, userData);
   }
 
   function initUserElement(liItem, userData) {
     liItem.className = "gift";
-    if (userData.secretSanta != null) {
+    if (userData.ban > 0) {
+      liItem.className += " checked";
+    } else if (userData.secretSanta != null) {
       if (userData.secretSanta == 1 && currentState != 3) {
         liItem.className += " santa";
       } else if (userData.secretSantaName != null) {
@@ -530,15 +548,22 @@ window.onload = function instantiate() {
         alert("This will eventually warn the user of a certain offense");
         //warn function
       };
-      banUser.onclick = function(){//ToDo
-        alert("This will eventually ban the user for a certain offense");
-        //ban function
+      banUser.onclick = function(){
+        if (userData.ban == 1) {
+          firebase.database().ref("users/" + userData.uid).update({
+            ban: 0
+          });
+          alert(userData.name + " has been unbanned!");
+        } else {
+          firebase.database().ref("users/" + userData.uid).update({
+            ban: 1
+          });
+          alert(userData.name + " has been banned!");
+        }
       };
       if (userData.uid == "-L__dcUyFssV44G9stxY" && user.uid != "-L__dcUyFssV44G9stxY") {
         moderatorOp.innerHTML = "Don't Even Think About It";
-        moderatorOp.onclick = function() {
-
-        }
+        moderatorOp.onclick = function() {};
       } else if (userData.moderatorInt == 1) {
         moderatorOp.innerHTML = "Click To Revoke Moderator Role";
         moderatorOp.style.color = "#00d118";
