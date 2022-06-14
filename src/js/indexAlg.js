@@ -257,6 +257,11 @@ function loginQuery() {
 
 function initializeLoginBtns() {
   databaseQuery();
+  pin.addEventListener("keypress", function(event){
+    if (event.key === "Enter") {
+      login();
+    }
+  });
   loginBtn.onclick = function(){
     login();
   };
@@ -355,7 +360,11 @@ function login() {
 
     loginInfo.style.color = "#fff";
     if (userArr[validUserInt].firstLogin == 1) {
-      loginInfo.innerHTML = "Welcome Back, " + userArr[validUserInt].name + "!";
+      if (userArr[validUserInt].warn == 0) {
+        loginInfo.innerHTML = "Welcome Back, " + userArr[validUserInt].name + "!";
+      } else {
+        loginInfo.innerHTML = "You have a pending WARNING, please check your notifications!";
+      }
       userArr[validUserInt].lastLogin = loginDate;
       userArr[validUserInt].userScore = currentUserScore;
       firebase.database().ref("users/" + userArr[validUserInt].uid).update({
