@@ -229,6 +229,9 @@ window.onload = function instantiate() {
             console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           }
           userArr[i] = data.val();
+          if (findUIDItemInArr(data.key, friendArr, true)) {
+            changeFriendElement(data.key);
+          }
         }
 
         if(data.key == user.uid){
@@ -259,7 +262,7 @@ window.onload = function instantiate() {
         friendArr[data.key] = data.val();
         if(consoleOutput)
           console.log("Changing " + data.val());
-        changeFriendElement(data.val());
+        changeFriendElement(data.key);
       });
 
       postRef.on('child_removed', function (data) {
@@ -300,6 +303,7 @@ window.onload = function instantiate() {
 
   function createFriendElement(friendKey){
     let friendData;
+    let textNode;
     for (let i = 0; i < userArr.length; i++)
       if(friendKey == userArr[i].uid){
         friendData = userArr[i];
@@ -314,7 +318,11 @@ window.onload = function instantiate() {
       let liItem = document.createElement("LI");
       liItem.id = "user" + friendData.uid;
       initFriendElement(liItem, friendData);
-      let textNode = document.createTextNode(friendData.name);
+      if (friendData.moderatorInt > 0) {
+        textNode = document.createTextNode(friendData.name + " (Moderator)");
+      } else {
+        textNode = document.createTextNode(friendData.name);
+      }
       liItem.appendChild(textNode);
       dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
       clearInterval(commonLoadingTimer);
@@ -325,21 +333,30 @@ window.onload = function instantiate() {
 
   function changeFriendElement(friendKey){
     let friendData;
-    for (let i = 0; i < userArr.length; i++)
-      if(friendKey == userArr[i].uid){
+    for (let i = 0; i < userArr.length; i++) {
+      if (friendKey == userArr[i].uid) {
         friendData = userArr[i];
         break;
       }
+    }
 
     if(friendData != null) {
       let liItemUpdate = document.getElementById('user' + friendData.uid);
       liItemUpdate.innerHTML = friendData.name;
+      if (friendData.moderatorInt > 0) {
+        liItemUpdate.innerHTML = friendData.name + " (Moderator)";
+      } else {
+        liItemUpdate.innerHTML = friendData.name;
+      }
       initFriendElement(liItemUpdate, friendData);
     }
   }
 
   function initFriendElement(liItem, friendData) {
     liItem.className = "gift";
+    if (friendData.moderatorInt > 0) {
+      liItem.className += " highSev";
+    }
     liItem.onclick = function () {
       if (friendData.shareCode == undefined || friendData.shareCode == "")
         friendData.shareCode = "This User Does Not Have A Share Code";
