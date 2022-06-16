@@ -166,9 +166,15 @@ window.onload = function instantiate() {
     };
   }
 
-  function generatePrivateMessageDialog(userData) {
-    globalMsgTitle.innerHTML = "Send A Private Message Below";
-    globalMsgInp.placeholder = "Hey! Just to let you know...";
+  function generatePrivateMessageDialog(userData, warnBool) {
+    let warnCount;
+    if (warnBool) {
+      globalMsgTitle.innerHTML = "Send A Warning Message Below";
+      globalMsgInp.placeholder = "Your next offense will result in a ban...";
+    } else {
+      globalMsgTitle.innerHTML = "Send A Private Message Below";
+      globalMsgInp.placeholder = "Hey! Just to let you know...";
+    }
 
     sendMsg.onclick = function (){
       if(globalMsgInp.value.includes(",")){
@@ -177,7 +183,16 @@ window.onload = function instantiate() {
         addPrivateMessageToDB(userData, globalMsgInp.value);
         globalMsgInp.value = "";
         closeModal(privateMessageModal);
-        alert("The Private Message Has Been Sent!");
+        if (warnBool) {
+          warnCount = userData.warn;
+          warnCount = warnCount + 1;
+          firebase.database().ref("users/" + userData.uid).update({
+            warn: warnCount
+          });
+          alert(userData.name + " Has Been Warned! Once The User Reads The Warning, Their Warning Will Be Removed.");
+        } else {
+          alert("The Private Message Has Been Sent!");
+        }
       }
     };
     cancelMsg.onclick = function (){
@@ -404,12 +419,16 @@ window.onload = function instantiate() {
     if(userData.userScore != null) {
       if (userData.ban > 0) {
         textNode = document.createTextNode(userData.name + " - BANNED");
+      } else if (userData.warn > 0) {
+        textNode = document.createTextNode(userData.name + " - WARNED");
       } else {
         textNode = document.createTextNode(userData.name + " - " + userData.userScore);
       }
     } else {
       if (userData.ban > 0) {
         textNode = document.createTextNode(userData.name + " - BANNED");
+      } else if (userData.warn > 0) {
+        textNode = document.createTextNode(userData.name + " - WARNED");
       } else {
         textNode = document.createTextNode(userData.name);
       }
@@ -432,12 +451,16 @@ window.onload = function instantiate() {
     if(userData.userScore != null) {
       if (userData.ban > 0) {
         editUser.innerHTML = userData.name + " - BANNED";
+      } else if (userData.warn > 0) {
+        editUser.innerHTML = userData.name + " - WARNED";
       } else {
         editUser.innerHTML = userData.name + " - " + userData.userScore;
       }
     } else {
       if (userData.ban > 0) {
         editUser.innerHTML = userData.name + " - BANNED";
+      } else if (userData.warn > 0) {
+        editUser.innerHTML = userData.name + " - WARNED";
       } else {
         editUser.innerHTML = userData.name;
       }
@@ -544,9 +567,8 @@ window.onload = function instantiate() {
       userPassword.onclick = function() {
         userPassword.innerHTML = decode(userData.encodeStr);
       };
-      warnUser.onclick = function(){//ToDo
-        alert("This will eventually warn the user of a certain offense");
-        //warn function
+      warnUser.onclick = function(){
+        generatePrivateMessageDialog(userData, true);
       };
       banUser.onclick = function(){
         if (userData.ban == 1) {
@@ -597,7 +619,7 @@ window.onload = function instantiate() {
 
       sendPrivateMessage.innerHTML = "Click To Send Message To " + userData.name;
       sendPrivateMessage.onclick = function() {
-        generatePrivateMessageDialog(userData);
+        generatePrivateMessageDialog(userData, false);
       };
 
       openModal(userModal, userData.uid);
