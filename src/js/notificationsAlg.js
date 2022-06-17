@@ -421,6 +421,7 @@ window.onload = function instantiate() {
   function initNotificationElement(liItem, notificationTitle, notificationString, notificationKey, notificationDetails,
                                    notificationPage, friendUserData) {
     liItem.className = "gift";
+    let warningCount;
     if(readNotificationArr.includes(notificationString)) {
       liItem.className += " checked";
     }
@@ -434,8 +435,7 @@ window.onload = function instantiate() {
           generatePrivateMessageDialog(friendUserData);
         };
       } else if (notificationPage == "globalNotification"){
-        notificationViewPage.innerHTML = "As always, if you need any other information, send me a support email that can" +
-          " be found in the Help/FAQ under settings! Thank you!";
+        notificationViewPage.innerHTML = "Please send a message to a moderator if there are any questions or concerns.";
         notificationViewPage.onclick = function(){};
       } else if (notificationPage == "invites.html") {
         notificationViewPage.innerHTML = "Click here to access your invites!";
@@ -484,6 +484,19 @@ window.onload = function instantiate() {
 
       if (!readNotificationArr.includes(notificationString)) {
         readNotificationArr.push(notificationString);
+        if (notificationTitle == "New Message From An Administrator!") {
+          warningCount = user.warn;
+
+          if (warningCount > 0) {
+            warningCount = warningCount - 1;
+          }
+
+          firebase.database().ref("users/" + user.uid).update({
+            warn: warningCount
+          });
+
+          updateMaintenanceLog("notifications", "The user " + user.userName + " has opened their warning");
+        }
 
         if (!settingReadNotifications) {
           settingReadNotifications = true;
