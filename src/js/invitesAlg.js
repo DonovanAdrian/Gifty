@@ -578,6 +578,7 @@ window.onload = function instantiate() {
 
   function generateAddUserBtn(){
     let friendUserNameList = [];
+    let friendShareCodeList = [];
     let upperCaseUserArr = [];
 
     if(user.friends != undefined || user.friends != null) {
@@ -585,6 +586,7 @@ window.onload = function instantiate() {
         for (let a = 0; a < userArr.length; a++) {
           if (userArr[a].uid == user.friends[i]) {
             friendUserNameList.push(userArr[a].userName.toUpperCase());
+            friendShareCodeList.push(userArr[a].shareCode);
             break;
           }
         }
@@ -605,19 +607,50 @@ window.onload = function instantiate() {
 
       addInvite.onclick = function() {
         let userLocation = -1;
-        for (let i = 0; i < upperCaseUserArr.length; i++) {
-          if (upperCaseUserArr[i] == userNameInp.value.toUpperCase()) {
-            userLocation = i;
+        let containsInt = false;
+        let dashCount = 0;
+        let shareCodeBool = false;
+
+        for (let i = 0; i < userNameInp.value.length; i++) {
+          if (userNameInp.value[i] >= '0' && userNameInp.value[i] <= '9') {
+            containsInt = true;
+          } else if (userNameInp.value[i] >= '-') {
+            dashCount++;
+          }
+
+          if (dashCount > 2 && containsInt) {
+            shareCodeBool = true;
             break;
+          }
+        }
+
+        containsInt = false;
+        dashCount = 0;
+
+        if (shareCodeBool) {
+          for (let i = 0; i < userArr.length; i++) {
+            if (userArr[i].shareCode == userNameInp.value) {
+              userLocation = i;
+              break;
+            }
+          }
+        } else {
+          for (let i = 0; i < upperCaseUserArr.length; i++) {
+            if (upperCaseUserArr[i] == userNameInp.value.toUpperCase()) {
+              userLocation = i;
+              break;
+            }
           }
         }
 
         inviteInfo.innerHTML = "";
         if(userNameInp.value == ""){
-          inviteInfo.innerHTML = "User Name Field Empty, Please Try Again!";
-        } else if (friendUserNameList.includes(userNameInp.value.toUpperCase())) {
+          inviteInfo.innerHTML = "No User Name Or Share Code Provided, Please Try Again!";
+        } else if (friendShareCodeList.includes(userNameInp.value) ||
+          friendUserNameList.includes(userNameInp.value.toUpperCase())) {
           inviteInfo.innerHTML = "That User Is Already Your Friend, Please Try Again!";
-        } else if (user.userName.toUpperCase() == userNameInp.value.toUpperCase()){
+        } else if (user.userName.toUpperCase() == userNameInp.value.toUpperCase() ||
+          user.shareCode == userNameInp.value){
           inviteInfo.innerHTML = "You Cannot Invite Yourself, Please Try Again!";
         } else if (userLocation != -1) {
           try {
@@ -646,8 +679,13 @@ window.onload = function instantiate() {
         } else if (userNameInp.value.toUpperCase() == "SOMETHING SERIOUS"){
           inviteInfo.innerHTML = "You're Just Mocking Me At This Point";
         } else {
-          inviteInfo.innerHTML = "That User Name Does Not Exist, Please Try Again!";
+          if (shareCodeBool) {
+            inviteInfo.innerHTML = "That Share Code Does Not Exist, Please Try Again!";
+          } else {
+            inviteInfo.innerHTML = "That User Name Does Not Exist, Please Try Again!";
+          }
         }
+        shareCodeBool = false;
       };
 
       cancelInvite.onclick = function() {
@@ -672,9 +710,8 @@ window.onload = function instantiate() {
       console.log(userArr[userLocation].userName);
     }
     if (userLocation != -1) {
-      confUserName.innerHTML = "Did you mean to add \"" + userArr[userLocation].name + "\"?";
       closeModal(userInviteModal);
-      openModal(confirmModal, "confirmUserModal", true);
+      confUserName.innerHTML = "Did you mean to add \"" + userArr[userLocation].name + "\"?";
 
       inviteConfirm.onclick = function () {
         inviteUserDB(userArr[userLocation]);
@@ -703,6 +740,7 @@ window.onload = function instantiate() {
           inviteInfo.innerHTML = "";
         }
       }
+      openModal(confirmModal, "confirmUserModal", true);
     } else {
       alert("Error finding user, please contact the developer for assistance!");
     }
