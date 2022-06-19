@@ -431,6 +431,7 @@ function closeModal(closeThisModal){
       return;
     }
 
+    clearInterval(closeModalTimer);
     closeModalTimer = setInterval(function(){
       closeTimer = closeTimer + 10;
       if(closeTimer >= 370){
@@ -442,6 +443,8 @@ function closeModal(closeThisModal){
         clearInterval(closeModalTimer);
       }
     }, 10);
+
+
 
     window.onclick = function(event) {}
   } catch (err) {
