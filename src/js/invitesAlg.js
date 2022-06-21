@@ -624,9 +624,6 @@ window.onload = function instantiate() {
           }
         }
 
-        containsInt = false;
-        dashCount = 0;
-
         if (shareCodeBool) {
           for (let i = 0; i < userArr.length; i++) {
             if (userArr[i].shareCode == userNameInp.value) {
