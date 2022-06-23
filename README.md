@@ -7,7 +7,8 @@ This website is meant to be a gift list registry that
 aims at eliminating the double-buying of gifts. My personal
 goal here was to offer something to my family that would
 give an extra layer of confidence when buying gifts for each
-other. In order to complete this, I enlisted Google Firebase
+other. Getting two of everything isn't as fun as it sounds!
+In order to solve this problem, I enlisted Google Firebase
 to follow through with all database and hosting operations, 
 while I handled all the data processing operations on the 
 front end.
