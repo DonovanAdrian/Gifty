@@ -18,6 +18,7 @@ let readNotificationsBool = false;
 let updateUserBool = false;
 let giftListEmptyBool = false;
 
+let giftLimit = 100;
 let dataCounter = 0;
 let commonLoadingTimerInt = 0;
 
@@ -288,14 +289,24 @@ window.onload = function instantiate() {
     }
   };
 
-  addGift.innerHTML = "Add Gift";
-  addGift.onclick = function() {
-    giftStorage = "";
-    privateList = "";
-    sessionStorage.setItem("privateList", JSON.stringify(privateList));
-    sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
-    navigation(8);//GiftAddUpdate
-  };
+  //ToDo Add Ability To Set Gift Limit Via DataBase (default: 100)
+  if(user.giftList.length <= giftLimit) {
+    addGift.innerHTML = "Add Gift";
+    addGift.onclick = function () {
+      giftStorage = "";
+      privateList = "";
+      sessionStorage.setItem("privateList", JSON.stringify(privateList));
+      sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
+      navigation(8);//GiftAddUpdate
+    };
+  } else {
+    addGift.className += " btnDisabled";
+    addGift.innerHTML = "Gift Limit Reached!";
+    addGift.onclick = function () {
+      alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
+        "Please remove some gifts in order to create more!");
+    };
+  }
 
   databaseQuery();
 
@@ -360,6 +371,15 @@ window.onload = function instantiate() {
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
           data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
+
+        if(giftArr.length > giftLimit) {
+          addGift.className += " btnDisabled";
+          addGift.innerHTML = "Gift Limit Reached!";
+          addGift.onclick = function () {
+            alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
+              "Please remove some gifts in order to create more!");
+          };
+        }
       });
 
       postRef.on('child_changed', function(data) {
@@ -494,6 +514,18 @@ window.onload = function instantiate() {
 
   function removeGiftElement(uid) {
     document.getElementById('gift' + uid).remove();
+
+    if (user.giftList.length <= 100) {
+      addGift.innerHTML = "Add Gift";
+      addGift.className = "addBtn";
+      addGift.onclick = function () {
+        giftStorage = "";
+        privateList = "";
+        sessionStorage.setItem("privateList", JSON.stringify(privateList));
+        sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
+        navigation(8);//GiftAddUpdate
+      };
+    }
 
     dataCounter--;
     if (dataCounter == 0){
