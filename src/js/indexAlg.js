@@ -10,6 +10,7 @@ let userArr = [];
 
 let config = {};
 
+let userLimit = 100;
 let loginTry = 0;
 let loginThreshold = 3;
 
@@ -279,6 +280,13 @@ function databaseQuery() {
         postRef.on('child_added', function (data) {
           if (!userArr.includes(data.val()))
             userArr.push(data.val());
+
+          if (userArr.length > userLimit) {
+            signUpFld.onclick = function(){
+              alert("Unfortunately this Gifty Database is full, so no more users can be created." +
+                " Please contact the owner to obtain access.");
+            };
+          }
         });
 
         postRef.on('child_changed', function (data) {
@@ -418,8 +426,10 @@ function login() {
 }
 
 function signUp(){
-  if(allowLogin || loginDisabledMsg.includes(newGiftyMessage))
+  if(allowLogin || loginDisabledMsg.includes(newGiftyMessage)) {
+    sessionStorage.setItem("userArr", JSON.stringify(userArr));
     window.location.href = "userAddUpdate.html";
-  else
+  } else {
     alert(loginDisabledMsg);
+  }
 }
