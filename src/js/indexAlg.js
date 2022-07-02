@@ -23,6 +23,7 @@ let allowLogin = true;
 
 let loginInitial;
 let userInitial;
+let limitsInitial;
 let username;
 let pin;
 let loginInfo;
@@ -203,6 +204,7 @@ window.onload = function instantiate() {
 
 function loginQuery() {
   loginInitial = firebase.database().ref("login/");
+  limitsInitial = firebase.database().ref("limits/");
 
   let fetchLogin = function (postRef) {
     postRef.once("value").then(function(snapshot) {
@@ -236,6 +238,36 @@ function loginQuery() {
         });
 
         initializeLoginBtns();
+
+        let fetchLimits = function (postRef) {
+          postRef.on('child_added', function (data) {
+            if (data.key == "userLimit") {
+              userLimit = data.val();
+            } else if (data.key == "giftLimit") {
+              giftLimit = data.val();
+            }
+          });
+
+          postRef.on('child_changed', function (data) {
+            if (data.key == "userLimit") {
+              userLimit = data.val();
+            } else if (data.key == "giftLimit") {
+              giftLimit = data.val();
+            }
+          });
+
+          postRef.on('child_removed', function (data) {
+            if (data.key == "userLimit") {
+              userLimit = 50;
+            } else if (data.key == "giftLimit") {
+              giftLimit = 100;
+            }
+          });
+        };
+
+        fetchLimits(limitsInitial);
+
+        listeningFirebaseRefs.push(limitsInitial);
       } else {
         firebase.database().ref("login/").update({
           allowLogin: true,
@@ -247,6 +279,11 @@ function loginQuery() {
         sessionStorage.setItem("allowLogin", JSON.stringify(allowLogin));
 
         initializeLoginBtns();
+
+        firebase.database().ref("limits/").update({
+          giftLimit: 50,
+          userLimit: 100
+        });
       }
     });
   };
