@@ -13,6 +13,7 @@ let userArr = [];
 let userNameBool = true;
 
 let pinClearedInt = 0;
+let userLimit = 100;
 
 let offlineSpan;
 let offlineModal;
@@ -40,10 +41,19 @@ function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
   } catch (err) {}
+
+  userArr = JSON.parse(sessionStorage.userArr);
+
   if(user == null){
-    btnUpdate.innerHTML = "Create User Profile";
-    alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely, " +
-      "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
+    if (userArr.length <= userLimit) {
+      btnUpdate.innerHTML = "Create User Profile";
+      alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely, " +
+        "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
+    } else {
+      alert("Unfortunately this Gifty Database is full, so no more users can be created." +
+        " Please contact the owner to obtain access.");
+      window.location.href = "index.html";
+    }
   } else {
     btnUpdate.innerHTML = "Loading...";
     btnDelete.style.display = "block";
@@ -54,7 +64,6 @@ function getCurrentUser(){
     backBtn.style.left = "50%";
     backBtn.style.transform = "translate(-50%)";
     backBtn.innerHTML = "Loading...";
-    userArr = JSON.parse(sessionStorage.userArr);
 
     alert("Please note that you will be required to input your confirmation pin to continue.");
   }
@@ -103,9 +112,11 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-        userArr.push(data.val());
-        userNameArr.push(data.val().userName);
-        userKeyArr.push(data.key);
+        if (!userArr.includes(data.val())) {
+          userArr.push(data.val());
+          userNameArr.push(data.val().userName);
+          userKeyArr.push(data.key);
+        }
 
         if(user != null) {
           if (data.key == user.uid) {
