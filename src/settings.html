@@ -67,11 +67,15 @@
       <br/>
       <br/>
       <br/>
+      <span class="basicBtn" id="backupBtn" alt="View Backup Settings">Backups</span>
+      <br/>
+      <br/>
+      <br/>
       <span class="basicBtn" id="loginFxnBtn" alt="Disable Or Enable Login Functionality">Loading...</span>
       <br/>
       <br/>
       <br/>
-      <span class="basicBtn" id="backupBtn" alt="View Backup Settings">Backups</span>
+      <span class="basicBtn" id="limitsBtn" alt="Set Database Limits">Set Database Limits</span>
       <br/>
       <br/>
       <br/>
@@ -79,6 +83,34 @@
 
     <!--Modal Footer-->
     <div class="modal-footer">
+    </div>
+  </div>
+</div>
+
+<div id="databaseLimitsModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeDatabaseLimitsModal">&times;</span>
+      <h2>Set Database Limits Below</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p>Gift Limit:</p>
+      <input type="number" id="giftLimitInp" placeholder="Set Gift Limit Per User" class="giftInp" alt="Set the amount of gifts that a given user is able to create" maxlength="4">
+      <p></p>
+      <br>
+      <p>User Limit:</p>
+      <input type="number" id="userLimitInp" placeholder="Set User Limit For Database" class="giftInp" alt="Set the amount of users that can be created in this database" maxlength="4">
+      <p></p>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3 style="float: left;padding-left: 10px" id="confirmLimits" alt="Confirm Settings">Confirm</h3>
+      <h3 style="float: right;padding-right: 10px" id="cancelLimits" alt="Cancel Settings">Cancel</h3>
     </div>
   </div>
 </div>
