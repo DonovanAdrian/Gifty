@@ -22,6 +22,13 @@ let moderationQueueBtn;
 let userListBtn;
 let backupBtn;
 let loginFxnBtn;
+let limitsBtn;
+let databaseLimitsModal;
+let closeDatabaseLimitsModal;
+let giftLimitInp;
+let userLimitInp;
+let confirmLimits;
+let cancelLimits;
 let offlineTimer;
 let offlineSpan;
 let offlineModal;
@@ -32,6 +39,7 @@ let notificationInfo;
 let notificationTitle;
 let noteSpan;
 let loginInitial;
+let limitsInitial;
 
 
 
@@ -96,13 +104,21 @@ window.onload = function instantiate() {
   userListBtn = document.getElementById('userListBtn');
   backupBtn = document.getElementById('backupBtn');
   loginFxnBtn = document.getElementById('loginFxnBtn');
+  limitsBtn = document.getElementById('limitsBtn');
+  databaseLimitsModal = document.getElementById('databaseLimitsModal');
+  closeDatabaseLimitsModal = document.getElementById('closeDatabaseLimitsModal');
+  giftLimitInp = document.getElementById('giftLimitInp');
+  userLimitInp = document.getElementById('userLimitInp');
+  confirmLimits = document.getElementById('confirmLimits');
+  cancelLimits = document.getElementById('cancelLimits');
   notificationModal = document.getElementById('notificationModal');
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
   settingsElements = [offlineModal, offlineSpan, inviteNote, editBtn, faqBtn, modBtn, familyBtn, moderationModal,
-    moderationSpan, moderationQueueBtn, userListBtn, backupBtn, loginFxnBtn, notificationModal, notificationTitle,
-    notificationInfo, noteSpan];
+    moderationSpan, moderationQueueBtn, userListBtn, backupBtn, loginFxnBtn, limitsBtn, databaseLimitsModal,
+    closeDatabaseLimitsModal, giftLimitInp, userLimitInp, confirmLimits, cancelLimits, notificationModal,
+    notificationTitle, notificationInfo, noteSpan];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(settingsElements);
@@ -120,6 +136,7 @@ window.onload = function instantiate() {
 
     function databaseQuery() {
       loginInitial = firebase.database().ref("login/");
+      limitsInitial = firebase.database().ref("limits/");
 
       let fetchLogin = function (postRef) {
         postRef.on('child_added', function (data) {
@@ -147,9 +164,37 @@ window.onload = function instantiate() {
         });
       };
 
+      let fetchLimits = function (postRef) {
+        postRef.on('child_added', function (data) {
+          if (data.key == "userLimit") {
+            userLimit = data.val();
+          } else if (data.key == "giftLimit") {
+            giftLimit = data.val();
+          }
+        });
+
+        postRef.on('child_changed', function (data) {
+          if (data.key == "userLimit") {
+            userLimit = data.val();
+          } else if (data.key == "giftLimit") {
+            giftLimit = data.val();
+          }
+        });
+
+        postRef.on('child_removed', function (data) {
+          if (data.key == "userLimit") {
+            userLimit = 50;
+          } else if (data.key == "giftLimit") {
+            giftLimit = 100;
+          }
+        });
+      };
+
       fetchLogin(loginInitial);
+      fetchLimits(limitsInitial);
 
       listeningFirebaseRefs.push(loginInitial);
+      listeningFirebaseRefs.push(limitsInitial);
     }
   }
 };
@@ -171,6 +216,10 @@ function generateModerationModal(){
 
   backupBtn.onclick = function() {
     navigation(18);//Backups
+  };
+
+  limitsBtn.onclick = function() {
+    generateLimitsModal();
   };
 
 
@@ -197,4 +246,50 @@ function generateModerationModal(){
   };
 
   openModal(moderationModal, "moderationModal");
+}
+
+function generateLimitsModal() {
+  closeModal(moderationModal);
+  let invalidChars = ['+', '-', 'e'];
+
+  giftLimitInp.value = giftLimit;
+  userLimitInp.value = userLimit;
+
+  confirmLimits.onclick = function (){
+    if (giftLimitInp.value == "" && userLimitInp.value == "") {
+      alert("Please Do Not Enter Invalid Characters!");
+    } else if (!isNaN(giftLimitInp.value) && !isNaN(userLimitInp.value)) {
+
+      firebase.database().ref("limits/").update({
+        giftLimit: giftLimitInp.value,
+        userLimit: userLimitInp.value
+      });
+
+      alert("Database Limits Successfully Set!");
+
+      closeModal(databaseLimitsModal);
+      openModal(moderationModal, "moderationModal");
+    } else {
+      alert("Please Only Enter Numbers Into The Fields!");
+    }
+  }
+
+  cancelLimits.onclick = function(){
+    closeModal(databaseLimitsModal);
+    openModal(moderationModal, "moderationModal");
+  };
+
+  closeDatabaseLimitsModal.onclick = function(){
+    closeModal(databaseLimitsModal);
+    openModal(moderationModal, "moderationModal");
+  };
+
+  window.onclick = function (event) {
+    if (event.target == databaseLimitsModal) {
+      closeModal(databaseLimitsModal);
+      openModal(moderationModal, "moderationModal");
+    }
+  }
+
+  openModal(databaseLimitsModal, "databaseLimitsModal", true);
 }
