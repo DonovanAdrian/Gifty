@@ -28,6 +28,7 @@ let pinConfField;
 let btnUpdate;
 let btnDelete;
 let backBtn;
+let limitsInitial;
 let userInitial;
 let user;
 let notificationModal;
@@ -40,21 +41,10 @@ let noteSpan;
 function getCurrentUser(){
   try {
     user = JSON.parse(sessionStorage.validUser);
+    userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {}
 
-  userArr = JSON.parse(sessionStorage.userArr);
-
-  if(user == null){
-    if (userArr.length <= userLimit) {
-      btnUpdate.innerHTML = "Create User Profile";
-      alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely, " +
-        "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
-    } else {
-      alert("Unfortunately this Gifty Database is full, so no more users can be created." +
-        " Please contact the owner to obtain access.");
-      window.location.href = "index.html";
-    }
-  } else {
+  if(user != null) {
     btnUpdate.innerHTML = "Loading...";
     btnDelete.style.display = "block";
     btnDelete.style.left = "50%";
@@ -109,6 +99,7 @@ window.onload = function instantiate() {
   function databaseQuery() {
 
     userInitial = firebase.database().ref("users/");
+    limitsInitial = firebase.database().ref("limits/");
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
@@ -158,8 +149,31 @@ window.onload = function instantiate() {
       });
     };
 
+    let fetchLimits = function (postRef) {
+      postRef.on('child_added', function (data) {
+        if (data.key == "userLimit") {
+          userLimit = data.val();
+          checkUserLimit();
+        }
+      });
+
+      postRef.on('child_changed', function (data) {
+        if (data.key == "userLimit") {
+          userLimit = data.val();
+        }
+      });
+
+      postRef.on('child_removed', function (data) {
+        if (data.key == "userLimit") {
+          userLimit = 50;
+        }
+      });
+    };
+
+    fetchLimits(limitsInitial);
     fetchData(userInitial);
 
+    listeningFirebaseRefs.push(limitsInitial);
     listeningFirebaseRefs.push(userInitial);
   }
 };
@@ -369,5 +383,17 @@ function updateSuppressCheck(){
     updateUserToDB();
   } else {
     addUserToDB();
+  }
+}
+
+function checkUserLimit() {
+  if (userArr.length < userLimit && userArr.length != 0) {
+    btnUpdate.innerHTML = "Create User Profile";
+    alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely, " +
+      "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
+  } else {
+    alert("Unfortunately this Gifty Database is full, so no more users can be created." +
+      " Please contact the owner to obtain access.");
+    window.location.href = "index.html";
   }
 }
