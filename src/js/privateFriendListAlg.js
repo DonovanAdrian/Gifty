@@ -15,7 +15,7 @@ let readNotificationsBool = false;
 let updateGiftToDBBool = false;
 let giftListEmptyBool = false;
 
-let giftLimit = 100;
+let giftLimit = 50;
 let dataCounter = 0;
 let commonLoadingTimerInt = 0;
 
@@ -41,6 +41,7 @@ let inviteNote;
 let notificationBtn;
 let userBase;
 let userGifts;
+let limitsInitial;
 let testData;
 let closeGiftModal;
 let giftTitle;
@@ -185,21 +186,6 @@ window.onload = function instantiate() {
     }
   };
 
-  //ToDo Add Ability To Set Gift Limit Via DataBase (default: 100)
-  if(giftUser.privateList.length <= giftLimit) {
-    addGift.innerHTML = "Add Private Gift";
-    addGift.onclick = function () {
-      navigation(8, undefined, true);
-    };
-  } else {
-    addGift.className += " btnDisabled";
-    addGift.innerHTML = "Gift Limit Reached!";
-    addGift.onclick = function () {
-      alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
-        "Please remove some gifts in order to create more!");
-    };
-  }
-
   databaseQuery();
 
   alternateButtonLabel(listNote, "Gift Lists", "Private");
@@ -209,6 +195,7 @@ window.onload = function instantiate() {
     userBase = firebase.database().ref("users/");
     userGifts = firebase.database().ref("users/" + giftUser.uid + "/privateList/");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+    limitsInitial = firebase.database().ref("limits/");
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
@@ -266,14 +253,7 @@ window.onload = function instantiate() {
           updateGiftToDBBool = false;
         }
 
-        if(giftArr.length > giftLimit) {
-          addGift.className += " btnDisabled";
-          addGift.innerHTML = "Gift Limit Reached!";
-          addGift.onclick = function () {
-            alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
-              "Please remove some gifts in order to create more!");
-          };
-        }
+        checkGiftLimitLite();
       });
 
       postRef.on('child_changed', function(data) {
@@ -328,13 +308,38 @@ window.onload = function instantiate() {
       });
     };
 
+    let fetchLimits = function (postRef) {
+      postRef.on('child_added', function (data) {
+        if (data.key == "giftLimit") {
+          giftLimit = data.val();
+          checkGiftLimitLite();
+        }
+      });
+
+      postRef.on('child_changed', function (data) {
+        if (data.key == "giftLimit") {
+          giftLimit = data.val();
+          checkGiftLimit();
+        }
+      });
+
+      postRef.on('child_removed', function (data) {
+        if (data.key == "giftLimit") {
+          giftLimit = 100;
+          checkGiftLimit();
+        }
+      });
+    };
+
     fetchData(userBase);
     fetchGifts(userGifts);
     fetchInvites(userInvites);
+    fetchLimits(limitsInitial);
 
     listeningFirebaseRefs.push(userBase);
     listeningFirebaseRefs.push(userGifts);
     listeningFirebaseRefs.push(userInvites);
+    listeningFirebaseRefs.push(limitsInitial);
   }
 
   function checkGiftBuyer(buyer){
@@ -570,17 +575,7 @@ window.onload = function instantiate() {
   function removeGiftElement(uid) {
     document.getElementById('gift' + uid).remove();
 
-    if (user.giftList.length <= 100) {
-      addGift.innerHTML = "Add Gift";
-      addGift.className = "addBtn";
-      addGift.onclick = function () {
-        giftStorage = "";
-        privateList = "";
-        sessionStorage.setItem("privateList", JSON.stringify(privateList));
-        sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
-        navigation(8);//GiftAddUpdate
-      };
-    }
+    checkGiftLimit();
 
     dataCounter--;
     if (dataCounter == 0){
@@ -703,5 +698,33 @@ window.onload = function instantiate() {
     if(consoleOutput)
       console.log("Generating Notification");
     return (giftOwner + "," + giftDeleter + "," + giftTitle + "," + pageNameNote);
+  }
+
+  function checkGiftLimitLite() {
+    if(giftArr.length >= giftLimit) {
+      addGift.className += " btnDisabled";
+      addGift.innerHTML = "Gift Limit Reached!";
+      addGift.onclick = function () {
+        alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
+          "Please remove some gifts in order to create more!");
+      };
+    }
+  }
+
+  function checkGiftLimit() {
+    if(giftUser.privateList.length < giftLimit) {
+      addGift.innerHTML = "Add Private Gift";
+      addGift.className = "addBtn";
+      addGift.onclick = function () {
+        navigation(8, undefined, true);
+      };
+    } else {
+      addGift.className += " btnDisabled";
+      addGift.innerHTML = "Gift Limit Reached!";
+      addGift.onclick = function () {
+        alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
+          "Please remove some gifts in order to create more!");
+      };
+    }
   }
 };
