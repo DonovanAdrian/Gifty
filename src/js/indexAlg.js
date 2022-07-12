@@ -12,6 +12,7 @@ let config = {};
 
 let userLimit = 100;
 let loginTry = 0;
+let showLoginAlert = 0;
 let loginThreshold = 3;
 
 let loginDisabledMsg = "";
@@ -243,24 +244,21 @@ function loginQuery() {
           postRef.on('child_added', function (data) {
             if (data.key == "userLimit") {
               userLimit = data.val();
-            } else if (data.key == "giftLimit") {
-              giftLimit = data.val();
+              checkSignUpLite();
             }
           });
 
           postRef.on('child_changed', function (data) {
             if (data.key == "userLimit") {
               userLimit = data.val();
-            } else if (data.key == "giftLimit") {
-              giftLimit = data.val();
+              checkSignUp();
             }
           });
 
           postRef.on('child_removed', function (data) {
             if (data.key == "userLimit") {
               userLimit = 50;
-            } else if (data.key == "giftLimit") {
-              giftLimit = 100;
+              checkSignUp();
             }
           });
         };
@@ -318,12 +316,7 @@ function databaseQuery() {
           if (!userArr.includes(data.val()))
             userArr.push(data.val());
 
-          if (userArr.length > userLimit) {
-            signUpFld.onclick = function(){
-              alert("Unfortunately this Gifty Database is full, so no more users can be created." +
-                " Please contact the owner to obtain access.");
-            };
-          }
+          checkSignUp();
         });
 
         postRef.on('child_changed', function (data) {
@@ -331,6 +324,8 @@ function databaseQuery() {
           if (userArr[i] != data.val() && i != -1) {
             userArr[i] = data.val();
           }
+
+          checkSignUpLite();
         });
 
         postRef.on('child_removed', function (data) {
@@ -352,7 +347,6 @@ function databaseQuery() {
 
 function login() {
   let validUserInt = 0;
-  let showLoginAlert = 0;
 
   for(let i = 0; i < userArr.length; i++){
     if(userArr[i].userName.toLowerCase() == username.value.toLowerCase()){
@@ -374,8 +368,10 @@ function login() {
               validUserInt = i;
               break;
             } else {
-              showLoginAlert++;
-              alert(loginDisabledMsg);
+              if (showLoginAlert == 0) {
+                showLoginAlert++;
+                alert(loginDisabledMsg);
+              }
             }
           }
         }
@@ -452,13 +448,40 @@ function login() {
       if (allowLogin)
         loginInfo.innerHTML = "Username or Password Incorrect";
       else {
-        if (showLoginAlert == 0)
+        if (showLoginAlert == 0) {
+          showLoginAlert++;
           alert(loginDisabledMsg);
+        }
       }
       if (username.value != "" && pin.value != "")
         updateMaintenanceLog("index", "Invalid Login: " + username.value.toLowerCase() + " " + pin.value.toString());
       loginTry = 0;
+      showLoginAlert = 0;
     }
+  }
+}
+
+function checkSignUpLite(){
+  if (userArr.length < userLimit) {
+    signUpFld.innerHTML = "Don't have an account? Click here!";
+    signUpFld.onclick = function(){
+      signUp();
+    };
+  }
+}
+
+function checkSignUp(){
+  if (userArr.length >= userLimit) {
+    signUpFld.innerHTML = "Gifty Database Full! Existing Users Can Still Log In Above!";
+    signUpFld.onclick = function(){
+      alert("Unfortunately this Gifty Database is full, so no more users can be created." +
+        " Please contact the owner to obtain access.");
+    };
+  } else {
+    signUpFld.innerHTML = "Don't have an account? Click here!";
+    signUpFld.onclick = function(){
+      signUp();
+    };
   }
 }
 
