@@ -87,6 +87,36 @@
   </div>
 </div>
 
+<div id="loginDisabledModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeLoginDisabledModal">&times;</span>
+      <h2>Set Login Disabled Message Below</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p>Gift Limit:</p>
+      <input type="text" id="loginDisabledInp" placeholder="Set Login Disabled Message" class="giftInp" alt="Set the login disabled text" maxlength="150">
+      <p>Set A Custom Alert Upon Attempted Login</p>
+      <br/>
+      <br/>
+      <span class="basicBtn" id="resetDefaultLoginDisabledBtn" alt="Reset To Default Login Message">Reset To Default Alert</span>
+      <br/>
+      <br/>
+      <br/>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3 style="float: left;padding-left: 10px" id="confirmLoginDisabled" alt="Confirm Message">Confirm</h3>
+      <h3 style="float: right;padding-right: 10px" id="cancelLoginDisabled" alt="Cancel Message">Cancel</h3>
+    </div>
+  </div>
+</div>
+
 <div id="databaseLimitsModal" class="modal">
   <div class="modal-content">
 
@@ -100,11 +130,11 @@
     <div class="modal-body">
       <p>Gift Limit:</p>
       <input type="number" id="giftLimitInp" placeholder="Set Gift Limit Per User" class="giftInp" alt="Set the amount of gifts that a given user is able to create" maxlength="4">
-      <p></p>
+      <p>Set Gift Limit Per User</p>
       <br>
       <p>User Limit:</p>
       <input type="number" id="userLimitInp" placeholder="Set User Limit For Database" class="giftInp" alt="Set the amount of users that can be created in this database" maxlength="4">
-      <p></p>
+      <p>Set User Limit For Database</p>
     </div>
 
     <!--Modal Footer-->
