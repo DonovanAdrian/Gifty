@@ -29,6 +29,12 @@ let giftLimitInp;
 let userLimitInp;
 let confirmLimits;
 let cancelLimits;
+let loginDisabledModal;
+let closeLoginDisabledModal;
+let loginDisabledInp;
+let resetDefaultLoginDisabledBtn;
+let confirmLoginDisabled;
+let cancelLoginDisabled;
 let offlineTimer;
 let offlineSpan;
 let offlineModal;
@@ -111,14 +117,21 @@ window.onload = function instantiate() {
   userLimitInp = document.getElementById('userLimitInp');
   confirmLimits = document.getElementById('confirmLimits');
   cancelLimits = document.getElementById('cancelLimits');
+  loginDisabledModal = document.getElementById('loginDisabledModal');
+  closeLoginDisabledModal = document.getElementById('closeLoginDisabledModal');
+  loginDisabledInp = document.getElementById('loginDisabledInp');
+  resetDefaultLoginDisabledBtn = document.getElementById('resetDefaultLoginDisabledBtn');
+  confirmLoginDisabled = document.getElementById('confirmLoginDisabled');
+  cancelLoginDisabled = document.getElementById('cancelLoginDisabled');
   notificationModal = document.getElementById('notificationModal');
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
   settingsElements = [offlineModal, offlineSpan, inviteNote, editBtn, faqBtn, modBtn, familyBtn, moderationModal,
     moderationSpan, moderationQueueBtn, userListBtn, backupBtn, loginFxnBtn, limitsBtn, databaseLimitsModal,
-    closeDatabaseLimitsModal, giftLimitInp, userLimitInp, confirmLimits, cancelLimits, notificationModal,
-    notificationTitle, notificationInfo, noteSpan];
+    closeDatabaseLimitsModal, giftLimitInp, userLimitInp, confirmLimits, cancelLimits, loginDisabledModal,
+    closeLoginDisabledModal, loginDisabledInp, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled,
+    notificationModal, notificationTitle, notificationInfo, noteSpan];
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(settingsElements);
@@ -222,22 +235,16 @@ function generateModerationModal(){
     generateLimitsModal();
   };
 
-
   loginFxnBtn.onclick = function(){
     if (allowLogin) {
-      loginFxnBtn.innerHTML = "Enable Login Function";
-      firebase.database().ref("login/").update({
-        allowLogin: false,
-        loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-          "maintenance before logging in. Thank you for your patience!"
-      });
+      generateLoginDisabledModal();
     } else {
       loginFxnBtn.innerHTML = "Disable Login Function";
       firebase.database().ref("login/").update({
         allowLogin: true,
-        loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-          "maintenance before logging in. Thank you for your patience!"
+        loginDisabledMsg: loginDisabledMsg
       });
+      alert("Login Enabled!");
     }
   };
 
@@ -250,14 +257,13 @@ function generateModerationModal(){
 
 function generateLimitsModal() {
   closeModal(moderationModal);
-  let invalidChars = ['+', '-', 'e'];
 
   giftLimitInp.value = giftLimit;
   userLimitInp.value = userLimit;
 
   confirmLimits.onclick = function (){
     if (giftLimitInp.value == "" && userLimitInp.value == "") {
-      alert("Please Do Not Enter Invalid Characters!");
+      alert("Please Do Not Enter Empty Or Invalid Characters!");
     } else if (!isNaN(giftLimitInp.value) && !isNaN(userLimitInp.value)) {
 
       firebase.database().ref("limits/").update({
@@ -272,7 +278,7 @@ function generateLimitsModal() {
     } else {
       alert("Please Only Enter Numbers Into The Fields!");
     }
-  }
+  };
 
   cancelLimits.onclick = function(){
     closeModal(databaseLimitsModal);
@@ -292,4 +298,56 @@ function generateLimitsModal() {
   }
 
   openModal(databaseLimitsModal, "databaseLimitsModal", true);
+}
+
+function generateLoginDisabledModal() {
+  closeModal(moderationModal);
+
+  loginDisabledInp.value = loginDisabledMsg;
+
+  resetDefaultLoginDisabledBtn.onclick = function (){
+    loginDisabledInp.value = "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
+      "maintenance before logging in. Thank you for your patience!";
+    firebase.database().ref("login/").update({
+      allowLogin: allowLogin,
+      loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
+        "maintenance before logging in. Thank you for your patience!"
+    });
+    alert("Login Disabled Message Reset!");
+  };
+
+  confirmLoginDisabled.onclick = function (){
+    if (loginDisabledInp.value == "") {
+      alert("Please Do Not Leave The Login Message Empty!");
+    } else {
+      loginFxnBtn.innerHTML = "Enable Login Function";
+      firebase.database().ref("login/").update({
+        allowLogin: false,
+        loginDisabledMsg: loginDisabledInp.value
+      });
+      alert("Login Disabled Message Set!");
+
+      closeModal(loginDisabledModal);
+      openModal(moderationModal, "moderationModal");
+    }
+  };
+
+  cancelLoginDisabled.onclick = function(){
+    closeModal(loginDisabledModal);
+    openModal(moderationModal, "moderationModal");
+  };
+
+  closeLoginDisabledModal.onclick = function(){
+    closeModal(loginDisabledModal);
+    openModal(moderationModal, "moderationModal");
+  };
+
+  window.onclick = function (event) {
+    if (event.target == loginDisabledModal) {
+      closeModal(loginDisabledModal);
+      openModal(moderationModal, "moderationModal");
+    }
+  }
+
+  openModal(loginDisabledModal, "loginDisabledModal", true);
 }
