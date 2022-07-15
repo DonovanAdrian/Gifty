@@ -402,6 +402,7 @@ ul li.santa::before {
   height: 100%;
   overflow: auto;
   max-height: 75%;
+  box-shadow: 0 -25px 200px 200px rgba(255,255,255,0.4) inset;
 }
 
 .modal-content {
@@ -412,7 +413,7 @@ ul li.santa::before {
   padding: 0;
   border: 1px solid #888;
   width: 80%;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  box-shadow: 0px 30px 30px 10px rgba(0,0,0,0.4);
 }
 
 .modal-content-open {
