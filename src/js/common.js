@@ -18,8 +18,6 @@ let loadingTimerCancelled = false;
 let areYouStillThereBool = false;
 let areYouStillThereInit = false;
 
-let signOutFadeOut = false;
-
 let closeModalTimer;
 let openModalTimer;
 let currentModalOpenObj = null;
@@ -392,12 +390,11 @@ function navigation(navNum, loginOverride, privateUserOverride) {
 
 function openModal(openThisModal, modalName, ignoreBool){
   let openRetryTimer = 0;
-  openThisModal.classList.add('modal-content-open');
-  openThisModal.classList.remove('modal-content-close');
 
   if (ignoreBool == null) {
     ignoreBool = false;
   }
+
   if (currentModalOpenObj != null) {
     closeModal(currentModalOpenObj);
   }
@@ -408,22 +405,26 @@ function openModal(openThisModal, modalName, ignoreBool){
       openRetryTimer = openRetryTimer + 10;
       if (openRetryTimer >= 50) {
         if (!modalClosingBool) {
+          openThisModal.classList.remove('modal-content-close');
+          openThisModal.classList.add('modal-content-open');
           openRetryTimer = 0;
           currentModalOpenObj = openThisModal;
           currentModalOpen = modalName;
           openThisModal.style.display = "block";
           if (consoleOutput)
-            console.log("Modal Opened: " + modalName);
+            console.log("A Modal Opened: " + modalName);
           clearInterval(openModalTimer);
         }
       }
     }, 60);
   } else {
+    openThisModal.classList.remove('modal-content-close');
+    openThisModal.classList.add('modal-content-open');
     currentModalOpenObj = openThisModal;
     currentModalOpen = modalName;
     openThisModal.style.display = "block";
     if (consoleOutput)
-      console.log("Modal Opened: " + modalName);
+      console.log("B Modal Opened: " + modalName);
   }
 
   if (!ignoreBool) {
@@ -443,6 +444,7 @@ function closeModal(closeThisModal){
 
     closeThisModal.classList.remove('modal-content-open');
     closeThisModal.classList.add('modal-content-close');
+
     modalClosingBool = true;
 
     if (!window.AnimationEvent) {
