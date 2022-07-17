@@ -292,12 +292,27 @@ window.onload = function instantiate() {
     } else if (ticketData.details.includes("attempted to log in")) {
       liItem.className += " highSev";
       ticketTitleText = "A Banned User Attempted Login: " + ticketData.uid;
-    } else if (ticketData.details.includes("Attempting to delete gift")) {
+    } else if (ticketData.details.includes("forced the moderation modal to appear")) {
+      liItem.className += " highSev";
+      ticketTitleText = "A Restricted Window Was Forced Open: " + ticketData.uid;
+    } else if (ticketData.details.includes("Login disabled by")) {
+      liItem.className += " highSev";
+      ticketTitleText = "Login Disabled: " + ticketData.uid;
+    } else if (ticketData.details.includes("Database limits set by")) {
       liItem.className += " mediumSev";
+      ticketTitleText = "Database Limits Set: " + ticketData.uid;
+    } else if (ticketData.details.includes("Attempting to delete gift")) {
+      liItem.className += " lowSev";
       ticketTitleText = "Attempt To Delete Gift: " + ticketData.uid;
     } else if (ticketData.details.includes("has opened their warning")) {
       liItem.className += " mediumSev";
       ticketTitleText = "A Warned User Was Successfully Notified: " + ticketData.uid;
+    } else if (ticketData.details.includes("Login disabled message reset by")) {
+      liItem.className += " lowSev";
+      ticketTitleText = "Login Message Reset: " + ticketData.uid;
+    } else if (ticketData.details.includes("Login enabled by")) {
+      liItem.className += " lowSev";
+      ticketTitleText = "Login Enabled: " + ticketData.uid;
     } else if (ticketData.details.includes("Attempting to update gift")) {
       liItem.className += " lowSev";
       ticketTitleText = "Attempt To Update Gift: " + ticketData.uid;
