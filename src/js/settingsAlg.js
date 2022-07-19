@@ -210,9 +210,24 @@ window.onload = function instantiate() {
       listeningFirebaseRefs.push(limitsInitial);
     }
   }
+
+  let targetNode = document.getElementById('moderationModal');
+  let observer = new MutationObserver(function(){
+    if(targetNode.style.display != 'none' && user.moderatorInt != 1){
+      updateMaintenanceLog("settings", "The user \"" + user.userName + "\" " +
+        "forced the moderation modal to appear. Functionality and button text is NOT available to the user when forced " +
+        "open, but please advise.");
+    }
+  });
+  observer.observe(targetNode, { attributes: true, childList: true });
 };
 
 function generateModerationModal(){
+  moderationQueueBtn.innerHTML = "System Audit Queue";
+  userListBtn.innerHTML = "User List & Secret Santa";
+  backupBtn.innerHTML = "Backups";
+  limitsBtn.innerHTML = "Set Database Limits";
+
   if(allowLogin) {
     loginFxnBtn.innerHTML = "Disable Login Function";
   } else {
@@ -245,6 +260,7 @@ function generateModerationModal(){
         loginDisabledMsg: loginDisabledMsg
       });
       alert("Login Enabled!");
+      updateMaintenanceLog("settings", "Login enabled by the user \"" + user.userName + "\"");
     }
   };
 
@@ -272,6 +288,8 @@ function generateLimitsModal() {
       });
 
       alert("Database Limits Successfully Set!");
+      updateMaintenanceLog("settings", "Database limits set by the user \"" + user.userName
+        + "\" " + "to Gift Limit: " + giftLimitInp.value + " and User Limit: " + userLimitInp.value);
 
       closeModal(databaseLimitsModal);
       openModal(moderationModal, "moderationModal");
@@ -314,6 +332,8 @@ function generateLoginDisabledModal() {
         "maintenance before logging in. Thank you for your patience!"
     });
     alert("Login Disabled Message Reset!");
+    updateMaintenanceLog("settings", "Login disabled message reset by the user \"" + user.userName
+      + "\"");
   };
 
   confirmLoginDisabled.onclick = function (){
@@ -326,6 +346,8 @@ function generateLoginDisabledModal() {
         loginDisabledMsg: loginDisabledInp.value
       });
       alert("Login Disabled Message Set!");
+      updateMaintenanceLog("settings", "Login disabled by the user \"" + user.userName + "\" " +
+        "with the following message: " + loginDisabledInp.value);
 
       closeModal(loginDisabledModal);
       openModal(moderationModal, "moderationModal");
