@@ -405,7 +405,7 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         if (data.key == "giftLimit") {
           giftLimit = data.val();
-          checkGiftLimitLite();
+          checkGiftLimit();
         }
       });
 
