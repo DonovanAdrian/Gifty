@@ -312,7 +312,7 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         if (data.key == "giftLimit") {
           giftLimit = data.val();
-          checkGiftLimitLite();
+          checkGiftLimit();
         }
       });
 
@@ -714,7 +714,7 @@ window.onload = function instantiate() {
   function checkGiftLimit() {
     if(giftUser.privateList.length < giftLimit) {
       addGift.innerHTML = "Add Private Gift";
-      addGift.className = "addBtn";
+      addGift.className = "boughtBtn";
       addGift.onclick = function () {
         navigation(8, undefined, true);
       };
