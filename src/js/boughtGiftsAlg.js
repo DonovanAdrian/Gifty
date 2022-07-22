@@ -11,13 +11,16 @@ let userUserNames = [];
 let userBoughtGiftsArr = [];
 let userBoughtGiftsUsersArr = [];
 let initializedGiftsArr = [];
+let itemColor = [" highSev", " mediumSev", " lowSev"];
 
 let readNotificationsBool = false;
 
 let dataCounter = 0;
 let moderationSet = -1;
 let commonLoadingTimerInt = 0;
+let colorIndex = -1;
 
+let lastUser;
 let dataListContainer;
 let backBtn;
 let offlineSpan;
@@ -307,6 +310,7 @@ window.onload = function instantiate() {
   }
 
   function createGiftElement(giftData, giftOwner){
+    let giftOwnerTrim = "";
     try{
       testData.remove();
     } catch (err) {}
@@ -314,6 +318,21 @@ window.onload = function instantiate() {
     let liItem = document.createElement("LI");
     liItem.id = "gift" + giftData.uid;
     initGiftElement(liItem, giftData, giftOwner);
+    for (let i = 0; i < giftOwner.length; i++) {
+      if (giftOwner[i] != "(") {
+        giftOwnerTrim = giftOwnerTrim + giftOwner[i];
+      } else {
+        break;
+      }
+    }
+    if (lastUser != giftOwnerTrim) {
+      if (colorIndex < 2) {
+        colorIndex++;
+      } else {
+        colorIndex = 0;
+      }
+    }
+    liItem.className += itemColor[colorIndex];
     let textNode = document.createTextNode(giftData.title + " - for " + giftOwner);
     liItem.appendChild(textNode);
 
@@ -321,6 +340,7 @@ window.onload = function instantiate() {
     initializedGiftsArr.push(giftData.uid);
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
+    lastUser = giftOwnerTrim;
   }
 
   function changeGiftElement(giftData, giftOwner){
