@@ -26,7 +26,6 @@ let modalClosingBool = false;
 let currentModalOpen = "";
 let currentTitle;
 
-let userChecker;
 let dataListChecker;
 let verifiedElements;
 let analytics;
@@ -72,17 +71,6 @@ function verifyElementIntegrity(arr){
     console.log("Verified " + verifiedElements.length + " Elements!");
 }
 
-function instantiateCommon(){
-  try {
-    if (pageName != "Index") {
-      userChecker = JSON.parse(sessionStorage.validUser);
-      if (userChecker.moderatorInt == 1)
-        consoleOutput = true;
-    }
-  } catch (err) {}
-  dataListChecker = document.getElementById('dataListContainer');
-}
-
 function fadeInPage() {
   if (!window.AnimationEvent) {
     return;
@@ -119,7 +107,7 @@ function commonInitialization(){
   initializeFadeOut();
 
   const config = JSON.parse(sessionStorage.config);
-  instantiateCommon();
+  dataListChecker = document.getElementById('dataListContainer');
 
   try {
     initializeDB(config);
@@ -197,8 +185,11 @@ function commonInitialization(){
     }, 1000);
   }
 
-  if (userChecker != undefined)
+  if (user != undefined) {
     loginTimer();
+  } else {
+    console.log("User Not Found!");
+  }
 
   if (consoleOutput)
     console.log("The " + pageName + " Page has been initialized!");
@@ -214,6 +205,26 @@ function initializeDB(config) {
       let uid = user.uid;
     }
   });
+}
+
+function getCurrentUserCommon(){
+  let restrictedPages = ["Backups", "Moderation", "ModerationQueue", "Family", "FamilyUpdate"];
+
+  try {
+    user = JSON.parse(sessionStorage.validUser);
+    if (user.moderatorInt == 1) {
+      consoleOutput = true;
+      console.log("User: " + user.userName + " loaded in");
+    } else if (restrictedPages.includes(pageName)) {
+      window.location.href = "home.html";
+    }
+
+    userArr = JSON.parse(sessionStorage.userArr);
+  } catch (err) {
+    if(consoleOutput)
+      console.log(err.toString());
+    window.location.href = "index.html";
+  }
 }
 
 function loginTimer(){
