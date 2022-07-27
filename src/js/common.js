@@ -185,10 +185,12 @@ function commonInitialization(){
     }, 1000);
   }
 
-  if (user != undefined) {
+  if (user != undefined && pageName != "Index") {
     loginTimer();
   } else {
-    console.log("User Not Found!");
+    if (consoleOutput) {
+      console.log("User Not Found!");
+    }
   }
 
   if (consoleOutput)
