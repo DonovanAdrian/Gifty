@@ -101,14 +101,6 @@ span.basicBtn:hover {
   color: #000;
 }
 
-span.btnDisabled {
-  background: #c4c4c4;
-}
-
-span.btnDisabled:hover {
-  background: #c48686;
-}
-
 span.boughtBtn {
   position: fixed;
   font-family: Verdana;
@@ -235,6 +227,14 @@ span.giftBackBtn {
 span.giftBackBtn:hover {
   background-color: #ff4c4c;
   color: #000;
+}
+
+span.btnDisabled {
+  background: #c4c4c4;
+}
+
+span.btnDisabled:hover {
+  background: #c48686;
 }
 
 img.imgIcon {
@@ -402,7 +402,7 @@ ul li.santa::before {
   height: 100%;
   overflow: auto;
   max-height: 75%;
-  box-shadow: 0 -25px 200px 200px rgba(255,255,255,0.4) inset;
+  box-shadow: 0 -25px 100px 100px rgba(255,255,255,0.35), 0 -25px 200px 200px rgba(255,255,255,0.4) inset;
 }
 
 .modal-content {
