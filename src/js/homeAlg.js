@@ -197,6 +197,9 @@ function updateUserToDB(totalErrors, friendEditInt, inviteEditInt){
 function collectUserBoughtGifts(){
   let userGiftArr = [];
   let userPrivateGiftArr = [];
+
+  userBoughtGifts = [];
+  userBoughtGiftsUsers = [];
   for(let i = 0; i < userArr.length; i++) {
     userGiftArr = userArr[i].giftList;
     userPrivateGiftArr = userArr[i].privateList;
@@ -658,24 +661,31 @@ window.onload = function instantiate() {
   }
 
   function checkGiftLimit() {
-    if (user.giftList != null)
-      if(user.giftList.length < giftLimit) {
-        addGift.innerHTML = "Add Gift";
-        addGift.className = "addBtn";
-        addGift.onclick = function () {
-          giftStorage = "";
-          privateList = "";
-          sessionStorage.setItem("privateList", JSON.stringify(privateList));
-          sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
-          navigation(8);//GiftAddUpdate
-        };
-      } else {
-        addGift.className += " btnDisabled";
-        addGift.innerHTML = "Gift Limit Reached!";
-        addGift.onclick = function () {
-          alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
-            "Please remove some gifts in order to create more!");
-        };
+    let disableAddBtn = false;
+
+    if (user.giftList != null) {
+      if (user.giftList.length >= giftLimit) {
+        disableAddBtn = true;
       }
+    }
+
+    if (disableAddBtn) {
+      addGift.className += " btnDisabled";
+      addGift.innerHTML = "Gift Limit Reached!";
+      addGift.onclick = function () {
+        alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
+          "Please remove some gifts in order to create more!");
+      };
+    } else {
+      addGift.innerHTML = "Add Gift";
+      addGift.className = "addBtn";
+      addGift.onclick = function () {
+        giftStorage = "";
+        privateList = "";
+        sessionStorage.setItem("privateList", JSON.stringify(privateList));
+        sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
+        navigation(8);//GiftAddUpdate
+      };
+    }
   }
 };
