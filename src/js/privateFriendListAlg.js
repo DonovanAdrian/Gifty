@@ -701,20 +701,27 @@ window.onload = function instantiate() {
   }
 
   function checkGiftLimit() {
-    if (giftUser.privateList != null)
-      if(giftUser.privateList.length < giftLimit) {
-        addGift.innerHTML = "Add Private Gift";
-        addGift.className = "boughtBtn";
-        addGift.onclick = function () {
-          navigation(8, undefined, true);
-        };
-      } else {
-        addGift.className += " btnDisabled";
-        addGift.innerHTML = "Gift Limit Reached!";
-        addGift.onclick = function () {
-          alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
-            "Please remove some gifts in order to create more!");
-        };
+    let disableAddBtn = false;
+
+    if (giftUser.privateList != null) {
+      if (giftUser.privateList.length >= giftLimit) {
+        disableAddBtn = true;
       }
+    }
+
+    if (disableAddBtn) {
+      addGift.className += " btnDisabled";
+      addGift.innerHTML = "Gift Limit Reached!";
+      addGift.onclick = function () {
+        alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
+          "Please remove some gifts in order to create more!");
+      };
+    } else {
+      addGift.innerHTML = "Add Private Gift";
+      addGift.className = "boughtBtn";
+      addGift.onclick = function () {
+        navigation(8, undefined, true);
+      };
+    }
   }
 };
