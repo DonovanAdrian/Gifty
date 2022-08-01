@@ -39,24 +39,7 @@ let noteSpan;
 
 
 function getCurrentUser(){
-  try {
-    user = JSON.parse(sessionStorage.validUser);
-    userArr = JSON.parse(sessionStorage.userArr);
-  } catch (err) {}
 
-  if(user != null) {
-    btnUpdate.innerHTML = "Loading...";
-    btnDelete.style.display = "block";
-    btnDelete.style.left = "50%";
-    btnDelete.style.transform = "translate(-50%)";
-    btnDelete.innerHTML = "Loading...";
-    backBtn.style.display = "block";
-    backBtn.style.left = "50%";
-    backBtn.style.transform = "translate(-50%)";
-    backBtn.innerHTML = "Loading...";
-
-    alert("Please note that you will be required to input your confirmation pin to continue.");
-  }
 }
 
 window.onload = function instantiate() {
@@ -72,7 +55,7 @@ window.onload = function instantiate() {
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
   confirmModal = document.getElementById('confirmModal');
-  confirmSpan = document.getElementsByClassName('closeConfirm');
+  confirmSpan = document.getElementById('closeConfirm');
   deleteConfirm = document.getElementById('deleteConfirm');
   deleteDeny = document.getElementById('deleteDeny');
   notificationModal = document.getElementById('notificationModal');
@@ -82,7 +65,22 @@ window.onload = function instantiate() {
   userAddUpdateElements = [nameField, userNameField, pinField, pinConfField, btnUpdate, btnDelete, backBtn,
     offlineModal, offlineSpan, confirmModal, confirmSpan, deleteConfirm, deleteDeny, notificationModal,
     notificationTitle, notificationInfo, noteSpan];
-  getCurrentUser();
+  getCurrentUserCommon();
+
+  if(user != null) {
+    btnUpdate.innerHTML = "Loading...";
+    btnDelete.style.display = "block";
+    btnDelete.style.left = "50%";
+    btnDelete.style.transform = "translate(-50%)";
+    btnDelete.innerHTML = "Loading...";
+    backBtn.style.display = "block";
+    backBtn.style.left = "50%";
+    backBtn.style.transform = "translate(-50%)";
+    backBtn.innerHTML = "Loading...";
+
+    alert("Please note that you will be required to input your confirmation pin to continue.");
+  }
+
   commonInitialization();
   verifyElementIntegrity(userAddUpdateElements);
 
@@ -391,7 +389,7 @@ function checkUserLimit() {
     btnUpdate.innerHTML = "Create User Profile";
     alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely, " +
       "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
-  } else {
+  } else if (user == undefined) {
     alert("Unfortunately this Gifty Database is full, so no more users can be created." +
       " Please contact the owner to obtain access.");
     window.location.href = "index.html";
