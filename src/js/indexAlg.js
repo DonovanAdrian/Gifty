@@ -22,6 +22,7 @@ let newGiftyMessage = "Please create a new user before trying to log into Gifty!
 let loginBool = false;
 let allowLogin = true;
 
+let user;
 let loginInitial;
 let userInitial;
 let limitsInitial;
