@@ -218,6 +218,9 @@ function getCurrentUserCommon(){
       consoleOutput = true;
       console.log("User: " + user.userName + " loaded in");
     } else if (restrictedPages.includes(pageName)) {
+      pageName = pageName.toLowerCase();
+      updateMaintenanceLog(pageName, "The user \"" + user.userName + "\" " +
+        "attempted to access a restricted page.");
       window.location.href = "home.html";
     }
 
