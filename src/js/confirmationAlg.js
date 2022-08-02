@@ -44,69 +44,57 @@ let userDeleteBtn;
 
 
 function getCurrentUser(){
-  let localConsoleOutput = false;
+  getCurrentUserCommon();
 
-  try {
-    user = JSON.parse(sessionStorage.validUser);
-    if(user.moderatorInt == 1)
-      localConsoleOutput = true;
-    if(localConsoleOutput)
-      console.log("User: " + user.userName + " loaded in");
-    if (user.invites == undefined) {
-      if(localConsoleOutput)
-        console.log("Invites Not Found");
-      deployListEmptyNotification("No Invites Found! You Already Accepted All Your Invites!");
-      inviteListEmptyBool = true;
-    } else if (user.invites != undefined) {
-      if (user.invites.length > 0) {
-        inviteNote.style.background = "#ff3923";
-      }
+  if (user.invites == undefined) {
+    if(consoleOutput)
+      console.log("Invites Not Found");
+    deployListEmptyNotification("No Invites Found! You Already Accepted All Your Invites!");
+    inviteListEmptyBool = true;
+  } else if (user.invites != undefined) {
+    if (user.invites.length > 0) {
+      inviteNote.style.background = "#ff3923";
     }
+  }
 
-    if (user.friends == undefined) {
-      if(localConsoleOutput)
-        console.log("Friends Not Found");
-    } else if (user.friends != undefined) {
-      if (user.friends.length < 100 && user.friends.length > 0) {
-        inviteNote.innerHTML = user.friends.length + " Friends";
-      }
+  if (user.friends == undefined) {
+    if(consoleOutput)
+      console.log("Friends Not Found");
+  } else if (user.friends != undefined) {
+    if (user.friends.length < 100 && user.friends.length > 0) {
+      inviteNote.innerHTML = user.friends.length + " Friends";
     }
+  }
 
-    if (user.readNotifications == undefined) {
-      if(localConsoleOutput)
-        console.log("Read Notifications Not Found");
-    } else {
-      readNotificationsBool = true;
-    }
+  if (user.readNotifications == undefined) {
+    if(consoleOutput)
+      console.log("Read Notifications Not Found");
+  } else {
+    readNotificationsBool = true;
+  }
 
-    if (user.notifications == undefined) {
-      if(localConsoleOutput)
-        console.log("Notifications Not Found");
-    } else if (user.notifications != undefined) {
-      if (readNotificationsBool){
-        if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
-          notificationBtn.src = "img/bellNotificationOn.png";
-          notificationBtn.onclick = function() {
-            navigation(6);//Notifications
-          }
-        } else {
-          notificationBtn.src = "img/bellNotificationOff.png";
-          notificationBtn.onclick = function() {
-            navigation(6);//Notifications
-          }
-        }
-      } else if (user.notifications.length > 0) {
+  if (user.notifications == undefined) {
+    if(consoleOutput)
+      console.log("Notifications Not Found");
+  } else if (user.notifications != undefined) {
+    if (readNotificationsBool){
+      if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
         notificationBtn.src = "img/bellNotificationOn.png";
         notificationBtn.onclick = function() {
           navigation(6);//Notifications
         }
+      } else {
+        notificationBtn.src = "img/bellNotificationOff.png";
+        notificationBtn.onclick = function() {
+          navigation(6);//Notifications
+        }
+      }
+    } else if (user.notifications.length > 0) {
+      notificationBtn.src = "img/bellNotificationOn.png";
+      notificationBtn.onclick = function() {
+        navigation(6);//Notifications
       }
     }
-    userArr = JSON.parse(sessionStorage.userArr);
-  } catch (err) {
-    if(localConsoleOutput)
-      console.log(err.toString());
-    window.location.href = "index.html";
   }
 }
 
