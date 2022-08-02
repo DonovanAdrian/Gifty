@@ -44,33 +44,23 @@ let userName;
 
 
 function getCurrentUser(){
-  try {
-    user = JSON.parse(sessionStorage.validUser);
-    console.log("User: " + user.userName + " loaded in");
-    if (user.invites == undefined) {
-      console.log("Invites Not Found");
-    } else if (user.invites != undefined) {
-      if (user.invites.length > 0) {
-        inviteNote.style.background = "#ff3923";
-      }
+  getCurrentUserCommon();
+
+  if (user.invites == undefined) {
+    console.log("Invites Not Found");
+  } else if (user.invites != undefined) {
+    if (user.invites.length > 0) {
+      inviteNote.style.background = "#ff3923";
     }
-    if (user.friends == undefined) {
-      if(localConsoleOutput)
-        console.log("Friends Not Found");
-    } else if (user.friends != undefined) {
-      if (user.friends.length < 100 && user.friends.length > 0) {
-        inviteNote.innerHTML = user.friends.length + " Friends";
-      }
-    }
-    if (user.moderatorInt == 0){
-      window.location.href = "home.html";
-    }
-    userArr = JSON.parse(sessionStorage.userArr);
-    sessionStorage.setItem("moderationSet", moderationSet);
-  } catch (err) {
-    console.log(err.toString());
-    window.location.href = "index.html";
   }
+  if (user.friends == undefined) {
+    console.log("Friends Not Found");
+  } else if (user.friends != undefined) {
+    if (user.friends.length < 100 && user.friends.length > 0) {
+      inviteNote.innerHTML = user.friends.length + " Friends";
+    }
+  }
+  sessionStorage.setItem("moderationSet", moderationSet);
 }
 
 window.onload = function instantiate() {
@@ -282,7 +272,7 @@ window.onload = function instantiate() {
     liItem.className = "gift";
     if (ticketData.details.includes("Attempting to delete user")) {
       liItem.className += " highSev";
-      ticketTitleText = "!!Attempt To Delete User!! " + ticketData.uid;
+      ticketTitleText = "Attempt To Delete User: " + ticketData.uid;
     } else if (ticketData.details.includes("Invalid Login")) {
       liItem.className += " highSev";
       ticketTitleText = "!!Invalid Login Attempt!! " + ticketData.uid;
@@ -292,7 +282,10 @@ window.onload = function instantiate() {
     } else if (ticketData.details.includes("attempted to log in")) {
       liItem.className += " highSev";
       ticketTitleText = "A Banned User Attempted Login: " + ticketData.uid;
-    } else if (ticketData.details.includes("forced the moderation modal to appear")) {
+    } else if (ticketData.details.includes("attempted to access a restricted page")) {
+      liItem.className += " highSev";
+      ticketTitleText = "A Restricted Page Was Accessed: " + ticketData.uid;
+    }else if (ticketData.details.includes("forced the moderation modal to appear")) {
       liItem.className += " highSev";
       ticketTitleText = "A Restricted Window Was Forced Open: " + ticketData.uid;
     } else if (ticketData.details.includes("Login disabled by")) {
