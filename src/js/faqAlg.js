@@ -22,35 +22,23 @@ let noteSpan;
 
 
 function getCurrentUser(){
-  let localConsoleOutput = false;
+  getCurrentUserCommon();
 
-  try {
-    user = JSON.parse(sessionStorage.validUser);
-    if(user.moderatorInt == 1)
-      localConsoleOutput = true;
-    if(localConsoleOutput)
-      console.log("User: " + user.userName + " loaded in");
-    if (user.invites == undefined) {
-      if(localConsoleOutput)
-        console.log("Invites Not Found");
-    } else if (user.invites != undefined) {
-      if (user.invites.length > 0) {
-        inviteNote.style.background = "#ff3923";
-      }
+  if (user.invites == undefined) {
+    if(consoleOutput)
+      console.log("Invites Not Found");
+  } else if (user.invites != undefined) {
+    if (user.invites.length > 0) {
+      inviteNote.style.background = "#ff3923";
     }
-    if (user.friends == undefined) {
-      if(localConsoleOutput)
-        console.log("Friends Not Found");
-    } else if (user.friends != undefined) {
-      if (user.friends.length < 100 && user.friends.length > 0) {
-        inviteNote.innerHTML = user.friends.length + " Friends";
-      }
+  }
+  if (user.friends == undefined) {
+    if(consoleOutput)
+      console.log("Friends Not Found");
+  } else if (user.friends != undefined) {
+    if (user.friends.length < 100 && user.friends.length > 0) {
+      inviteNote.innerHTML = user.friends.length + " Friends";
     }
-    userArr = JSON.parse(sessionStorage.userArr);
-  } catch (err) {
-    if(localConsoleOutput)
-      console.log(err.toString());
-    window.location.href = "index.html";
   }
 }
 
