@@ -11,7 +11,6 @@ let userArr = [];
 let familyArr = [];
 let loadedPCUserArr = [];
 
-let moderationSet = 1;
 let dataCounter = 0;
 let commonLoadingTimerInt = 0;
 
@@ -80,36 +79,26 @@ let initializedElementsArr = [];
 
 
 function getCurrentUser(){
-  try {
-    user = JSON.parse(sessionStorage.validUser);
-    console.log("User: " + user.userName + " loaded in");
-    if (user.invites == undefined) {
-      console.log("Invites Not Found");
-    } else if (user.invites != undefined) {
-      if (user.invites.length > 0) {
-        inviteNote.style.background = "#ff3923";
-      }
-    }
+  getCurrentUserCommon();
 
-    if (user.friends == undefined) {
-      if(localConsoleOutput)
-        console.log("Friends Not Found");
-    } else if (user.friends != undefined) {
-      if (user.friends.length < 100 && user.friends.length > 0) {
-        inviteNote.innerHTML = user.friends.length + " Friends";
-      }
+  if (user.invites == undefined) {
+    console.log("Invites Not Found");
+  } else if (user.invites != undefined) {
+    if (user.invites.length > 0) {
+      inviteNote.style.background = "#ff3923";
     }
-
-    if (user.moderatorInt == 0){
-      window.location.href = "home.html";
-    }
-    userArr = JSON.parse(sessionStorage.userArr);
-    sessionStorage.setItem("moderationSet", moderationSet);
-    familyData = JSON.parse(sessionStorage.familyData);
-  } catch (err) {
-    console.log(err.toString());
-    window.location.href = "index.html";
   }
+
+  if (user.friends == undefined) {
+    if(consoleOutput)
+      console.log("Friends Not Found");
+  } else if (user.friends != undefined) {
+    if (user.friends.length < 100 && user.friends.length > 0) {
+      inviteNote.innerHTML = user.friends.length + " Friends";
+    }
+  }
+
+  familyData = JSON.parse(sessionStorage.familyData);
 }
 
 window.onload = function instantiate() {
