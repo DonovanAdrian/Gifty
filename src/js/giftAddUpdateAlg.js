@@ -44,60 +44,47 @@ let noteSpan;
 
 
 function getCurrentUser(){
-  let localConsoleOutput = false;
+  getCurrentUserCommon();
 
-  try {
-    user = JSON.parse(sessionStorage.validUser);
-    privateList = JSON.parse(sessionStorage.privateList);
-    if(privateList == null || privateList == undefined || privateList == "") {
-      privateListBool = false;
-      if(user.moderatorInt == 1)
-        localConsoleOutput = true;
-      if(localConsoleOutput)
-        console.log("User: " + user.userName + " loaded in");
-      buttonText = "Back To Home";
-      giftNavigationInt = 2;
-    } else {
-      privateUser = JSON.parse(sessionStorage.validPrivateUser);
-      homeNote.className = "";
-      listNote.className = "active";
-      if(privateUser.moderatorInt == 1)
-        localConsoleOutput = true;
-      if(localConsoleOutput) {
-        console.log("User: " + privateUser.userName + " loaded in");
-        console.log("Friend: " + user.userName + " loaded in");
-      }
-      buttonText = "Back To Private List";
-      giftNavigationInt = 10;
+  privateList = JSON.parse(sessionStorage.privateList);
+  if(privateList == null || privateList == undefined || privateList == "") {
+    privateListBool = false;
+    buttonText = "Back To Home";
+    giftNavigationInt = 2;
+  } else {
+    privateUser = JSON.parse(sessionStorage.validPrivateUser);
+    homeNote.className = "";
+    listNote.className = "active";
+    if(privateUser.moderatorInt == 1)
+      consoleOutput = true;
+    if(consoleOutput) {
+      console.log("List Owner User: " + privateUser.userName + " loaded in");
     }
-    giftStorage = JSON.parse(sessionStorage.giftStorage);
-    if (giftStorage == null || giftStorage == undefined || giftStorage == "") {
-      giftPresent = false;
-    } else {
-      if(localConsoleOutput)
-        console.log("Gift: " + giftStorage + " found");
+    buttonText = "Back To Private List";
+    giftNavigationInt = 10;
+  }
+  giftStorage = JSON.parse(sessionStorage.giftStorage);
+  if (giftStorage == null || giftStorage == undefined || giftStorage == "") {
+    giftPresent = false;
+  } else {
+    if(consoleOutput)
+      console.log("Gift: " + giftStorage + " found");
+  }
+  if (user.invites == undefined) {
+    if(consoleOutput)
+      console.log("Invites Not Found");
+  } else if (user.invites != undefined) {
+    if (user.invites.length > 0) {
+      inviteNote.style.background = "#ff3923";
     }
-    if (user.invites == undefined) {
-      if(localConsoleOutput)
-        console.log("Invites Not Found");
-    } else if (user.invites != undefined) {
-      if (user.invites.length > 0) {
-        inviteNote.style.background = "#ff3923";
-      }
+  }
+  if (user.friends == undefined) {
+    if(consoleOutput)
+      console.log("Friends Not Found");
+  } else if (user.friends != undefined) {
+    if (user.friends.length < 100 && user.friends.length > 0) {
+      inviteNote.innerHTML = user.friends.length + " Friends";
     }
-    if (user.friends == undefined) {
-      if(localConsoleOutput)
-        console.log("Friends Not Found");
-    } else if (user.friends != undefined) {
-      if (user.friends.length < 100 && user.friends.length > 0) {
-        inviteNote.innerHTML = user.friends.length + " Friends";
-      }
-    }
-    userArr = JSON.parse(sessionStorage.userArr);
-  } catch (err) {
-    if(localConsoleOutput)
-      console.log(err.toString());
-    window.location.href = "index.html";
   }
 }
 
@@ -610,8 +597,8 @@ window.onload = function instantiate() {
     else if (invalidChar)
       invalidURLBool = true;
     else
-      if(consoleOutput)
-        console.log("Valid URL! " + tempURL);
+    if(consoleOutput)
+      console.log("Valid URL! " + tempURL);
 
     return tempURL;
   }
