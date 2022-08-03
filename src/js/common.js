@@ -6,26 +6,21 @@
 
 let buttonAlternatorTimer = 0;
 let buttonAlternatorInt = 0;
-
 let buttonOpacLim = 7;
 let logoutReminder = 300;
 let logoutLimit = 900;
 let consoleOutput = false;
-let pageName = "";
-
 let loadingTimerCancelled = false;
-
 let areYouStillThereBool = false;
 let areYouStillThereInit = false;
-
+let modalClosingBool = false;
+let ignoreFriends = false;
+let currentModalOpenObj = null;
+let currentModalOpen = "";
+let pageName = "";
 let closeModalTimer;
 let openModalTimer;
-let currentModalOpenObj = null;
-let modalClosingBool = false;
-
-let currentModalOpen = "";
 let currentTitle;
-
 let dataListChecker;
 let verifiedElements;
 let analytics;
@@ -213,22 +208,52 @@ function getCurrentUserCommon(){
   let restrictedPages = ["Backups", "Moderation", "ModerationQueue", "Family", "FamilyUpdate"];
 
   try {
-    user = JSON.parse(sessionStorage.validUser);
-    if (user.moderatorInt == 1) {
-      consoleOutput = true;
-      console.log("User: " + user.userName + " loaded in");
-    } else if (restrictedPages.includes(pageName)) {
-      pageName = pageName.toLowerCase();
-      updateMaintenanceLog(pageName, "The user \"" + user.userName + "\" " +
-        "attempted to access a restricted page.");
-      window.location.href = "home.html";
+    if (pageName != "UserAddUpdate") {
+      user = JSON.parse(sessionStorage.validUser);
+
+      if (user.moderatorInt == 1) {
+        consoleOutput = true;
+        console.log("User: " + user.userName + " loaded in");
+      } else if (restrictedPages.includes(pageName)) {
+        pageName = pageName.toLowerCase();
+        updateMaintenanceLog(pageName, "The user \"" + user.userName + "\" " +
+          "attempted to access a restricted page.");
+        navigation(2);
+      }
+
+      if (user.invites == undefined) {
+        if(consoleOutput)
+          console.log("Invites Not Found");
+      } else if (user.invites != undefined) {
+        if (user.invites.length > 0) {
+          inviteNote.style.background = "#ff3923";
+          if (pageName == "Invites") {
+            newInviteIcon.style.display = "block";
+            invitesFound = true;
+          }
+        }
+      }
+      if (pageName != "Invites" || pageName != "Lists") {
+        if (user.friends == undefined) {
+          if (consoleOutput)
+            console.log("Friends Not Found");
+        } else if (user.friends != undefined) {
+          if (user.friends.length < 100 && user.friends.length > 0) {
+            inviteNote.innerHTML = user.friends.length + " Friends";
+          }
+        }
+      }
+    } else {
+      try {
+        user = JSON.parse(sessionStorage.validUser);
+      } catch (err) {}
     }
 
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
     if(consoleOutput)
       console.log(err.toString());
-    window.location.href = "index.html";
+    navigation(1, false);
   }
 }
 
@@ -333,7 +358,6 @@ function signOut(){
 }
 
 function navigation(navNum, loginOverride, privateUserOverride) {
-
   if (loginOverride == undefined && privateUserOverride == undefined) {
     try {
       if (privateUser != null) {
@@ -355,7 +379,6 @@ function navigation(navNum, loginOverride, privateUserOverride) {
       sessionStorage.setItem("userArr", JSON.stringify(userArr));
     } catch (err) {}
   } else if (loginOverride == undefined && privateUserOverride) {
-    giftStorage = "";
     sessionStorage.setItem("privateList", JSON.stringify(giftUser));
     sessionStorage.setItem("validUser", JSON.stringify(giftUser));
     sessionStorage.setItem("validPrivateUser", JSON.stringify(user));
@@ -479,9 +502,6 @@ function closeModal(closeThisModal){
         clearInterval(closeModalTimer);
       }
     }, 10);
-
-
-
     window.onclick = function(event) {}
   } catch (err) {
     if(consoleOutput)
