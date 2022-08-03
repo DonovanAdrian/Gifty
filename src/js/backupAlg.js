@@ -60,27 +60,7 @@ let importBtn;
 
 
 
-function getCurrentUser(){
-  getCurrentUserCommon();
-
-  if (user.invites == undefined) {
-    console.log("Invites Not Found");
-  } else if (user.invites != undefined) {
-    if (user.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
-    }
-  }
-  if (user.friends == undefined) {
-    console.log("Friends Not Found");
-  } else if (user.friends != undefined) {
-    if (user.friends.length < 100 && user.friends.length > 0) {
-      inviteNote.innerHTML = user.friends.length + " Friends";
-    }
-  }
-}
-
 window.onload = function instantiate() {
-
   pageName = "Backups";
   dataListContainer = document.getElementById('dataListContainer');
   offlineModal = document.getElementById('offlineModal');
@@ -102,12 +82,19 @@ window.onload = function instantiate() {
   backupElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal, notificationTitle,
     notificationInfo, noteSpan, settingsNote, testData, backupSettings, backBtn, backupModal, backupSpan,
     lastBackup, exportBtn, importBtn];
-  getCurrentUser();
+
+  getCurrentUserCommon();
   commonInitialization();
   verifyElementIntegrity(backupElements);
 
-  databaseQuery();
+  alert("Please note that backup functionality is not yet available. Feel free to take a look around at what's" +
+    " currently available on this page and stay tuned!");
+  entireDB = firebase.database().ref("/");
+  backupInitial = firebase.database().ref("backup/");
+  userInitial = firebase.database().ref("users/");
+  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
+  databaseQuery();
   alternateButtonLabel(settingsNote, "Settings", "Backups");
 
   function generateBackupModal(){
@@ -120,10 +107,14 @@ window.onload = function instantiate() {
 
         exportBtn.onclick = function () {
           exportBackup();
+          alert("Please note that backup functionality is not yet available. Feel free to take a look around at what's" +
+            " currently available on this page and stay tuned!");
         }
+
         exportBtn.innerHTML = "Export Backup";
 
         importBtn.addEventListener('click', async () => {
+          /*
           try {
             [fileHandle] = await window.showOpenFilePicker();
             const file = await fileHandle.getFile();
@@ -141,10 +132,13 @@ window.onload = function instantiate() {
             }
           } catch (err) {
           }
+          */
+          alert("Please note that backup functionality is not yet available. Feel free to take a look around at what's" +
+            " currently available on this page and stay tuned!");
         });
         importBtn.innerHTML = "Import Backup";
-        exportBtn.className = "basicBtn";
-        importBtn.className = "basicBtn";
+        exportBtn.className = "basicBtn btnDisabled";
+        importBtn.className = "basicBtn btnDisabled";
       } else {
         lastBackup.innerHTML = "Last Backup: " + lastBackupWhen +
           "<br /><br /> Mobile Device Detected!<br /><br /> " +
@@ -165,22 +159,16 @@ window.onload = function instantiate() {
     backupSettings.innerHTML = "Backup Settings";
   }
 
-  initializeBackBtn();
-
   function initializeBackBtn() {
     backBtn.innerHTML = "Return To Settings";
-
     backBtn.onclick = function() {
       navigation(5);
     };
   }
 
-  function databaseQuery() {
-    entireDB = firebase.database().ref("/");
-    backupInitial = firebase.database().ref("backup/");
-    userInitial = firebase.database().ref("users/");
-    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+  initializeBackBtn();
 
+  function databaseQuery() {
     let fetchBackup = function (postRef) {
       postRef.once("value").then(function(snapshot) {
         if(snapshot.exists()) {
@@ -290,7 +278,6 @@ window.onload = function instantiate() {
 
     compileNLevelKeyElements(keyData);
     generateBackupNodeElement(keyName);
-
   }
 
   function generateBackupNodeElement(keyName){
