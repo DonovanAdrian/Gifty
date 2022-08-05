@@ -11,7 +11,6 @@ let inviteArr = [];
 let listeningFirebaseRefs = [];
 
 let readNotificationsBool = false;
-let inviteListEmptyBool = false;
 
 let dataCounter = 0;
 let commonLoadingTimerInt = 0;
@@ -19,6 +18,7 @@ let deleteInviteRun = 0;
 let localDelete = 0;
 
 let testData;
+let backBtn;
 let dataListContainer;
 let offlineSpan;
 let offlineModal;
@@ -47,23 +47,7 @@ function getCurrentUser(){
   getCurrentUserCommon();
 
   if (user.invites == undefined) {
-    if(consoleOutput)
-      console.log("Invites Not Found");
     deployListEmptyNotification("No Invites Found! You Already Accepted All Your Invites!");
-    inviteListEmptyBool = true;
-  } else if (user.invites != undefined) {
-    if (user.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
-    }
-  }
-
-  if (user.friends == undefined) {
-    if(consoleOutput)
-      console.log("Friends Not Found");
-  } else if (user.friends != undefined) {
-    if (user.friends.length < 100 && user.friends.length > 0) {
-      inviteNote.innerHTML = user.friends.length + " Friends";
-    }
   }
 
   if (user.readNotifications == undefined) {
@@ -99,9 +83,9 @@ function getCurrentUser(){
 }
 
 window.onload = function instantiate() {
-
   pageName = "Confirmation";
   testData = document.getElementById('testData');
+  backBtn = document.getElementById('backBtn');
   notificationBtn = document.getElementById('notificationButton');
   dataListContainer = document.getElementById('dataListContainer');
   offlineModal = document.getElementById('offlineModal');
@@ -121,20 +105,36 @@ window.onload = function instantiate() {
   confirmationElements = [testData, notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, inviteModal, closeInviteModal, userNameFld,
     userUNameFld, userShareCodeFld, userAcceptBtn, userDeleteBtn];
+
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(confirmationElements);
 
-  databaseQuery();
+  userInitial = firebase.database().ref("users/");
+  userFriends = firebase.database().ref("users/" + user.uid + "/friends");
+  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
-  alternateButtonLabel(inviteNote, user.friends.length + " Friends", "Confirm");
+  databaseQuery();
+  if (user.friends != null) {
+    if (user.friends.length != 0) {
+      alternateButtonLabel(inviteNote, user.friends.length + " Friends", "Confirm");
+    } else {
+      alternateButtonLabel(inviteNote, "Friends", "Confirm");
+    }
+  } else {
+    alternateButtonLabel(inviteNote, "Friends", "Confirm");
+  }
+
+  function initializeBackBtn() {
+    backBtn.innerHTML = "Return To Invites";
+    backBtn.onclick = function() {
+      navigation(4);
+    };
+  }
+
+  initializeBackBtn();
 
   function databaseQuery() {
-
-    userInitial = firebase.database().ref("users/");
-    userFriends = firebase.database().ref("users/" + user.uid + "/friends");
-    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
@@ -237,7 +237,7 @@ window.onload = function instantiate() {
         if (localDelete == 1) {
           localDelete = 0;
         } else {
-          location.reload();
+          navigation(11);
         }
       });
     };
@@ -252,13 +252,14 @@ window.onload = function instantiate() {
   }
 
   function createInviteElement(inviteKey){
+    let inviteData;
+
     try{
       testData.remove();
     } catch (err) {
       console.log("But it \"Doesn't Exist!!\"");
     }
 
-    let inviteData;
     for (let i = 0; i < userArr.length; i++){
       if(inviteKey == userArr[i].uid){
         inviteData = userArr[i];
@@ -281,6 +282,7 @@ window.onload = function instantiate() {
 
   function changeInviteElement(inviteKey){
     let inviteData;
+
     for (let i = 0; i < userArr.length; i++){
       if(inviteKey == userArr[i].uid){
         inviteData = userArr[i];
@@ -298,7 +300,6 @@ window.onload = function instantiate() {
   function initInviteElement(liItem, inviteData) {
     liItem.className = "gift";
     liItem.onclick = function (){
-
       if(inviteData.shareCode == undefined) {
         inviteData.shareCode = "This User Does Not Have A Share Code";
       }
@@ -379,9 +380,7 @@ window.onload = function instantiate() {
     }
 
     finalInviteData = [friendFriendArr, userFriendArr];
-
     firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
-
     deleteInvite(inviteData.uid, finalInviteData);
   }
 
@@ -445,7 +444,7 @@ window.onload = function instantiate() {
       user.invites = inviteArr;
       user.friends = finalInviteData[1];
 
-      if (dataCounter <= 4) {
+      if (dataCounter == 1) {
         deployListEmptyNotification("No Invites Found! You Already Accepted All Your Invites!");
       }
       document.getElementById("user" + uid).remove();
@@ -456,7 +455,6 @@ window.onload = function instantiate() {
         deleteInvite(uid, finalInviteData);
       } else {
         deleteInviteRun = 0;
-
         alert("The invite could not be added to your friend list! Please try again...");
       }
     }
