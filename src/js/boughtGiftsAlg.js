@@ -51,31 +51,6 @@ let userInvites;
 function getCurrentUser(){
   getCurrentUserCommon();
 
-  if (user.invites == undefined) {
-    if(consoleOutput)
-      console.log("Invites Not Found");
-  } else if (user.invites != undefined) {
-    if (user.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
-    }
-  }
-
-  if (user.friends == undefined) {
-    if(consoleOutput)
-      console.log("Friends Not Found");
-  } else if (user.friends != undefined) {
-    if (user.friends.length < 100 && user.friends.length > 0) {
-      inviteNote.innerHTML = user.friends.length + " Friends";
-    }
-  }
-
-  if (user.readNotifications == undefined) {
-    if(consoleOutput)
-      console.log("Read Notifications Not Found");
-  } else {
-    readNotificationsBool = true;
-  }
-
   if (user.readNotifications == undefined) {
     if(consoleOutput)
       console.log("Read Notifications Not Found");
@@ -106,12 +81,16 @@ function getCurrentUser(){
       }
     }
   }
-  userBoughtGiftsArr = JSON.parse(sessionStorage.boughtGifts);
-  userBoughtGiftsUsersArr = JSON.parse(sessionStorage.boughtGiftsUsers);
+
+  try {
+    userBoughtGiftsArr = JSON.parse(sessionStorage.boughtGifts);
+    userBoughtGiftsUsersArr = JSON.parse(sessionStorage.boughtGiftsUsers);
+  } catch (err) {
+    navigation(2);
+  }
 }
 
 window.onload = function instantiate() {
-
   pageName = "BoughtGifts";
   notificationBtn = document.getElementById('notificationBtn');
   dataListContainer = document.getElementById('dataListContainer');
@@ -135,27 +114,19 @@ window.onload = function instantiate() {
   boughtGiftElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, backBtn, inviteNote, homeNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, giftTitleFld, giftLinkFld, giftWhereFld,
     giftDescriptionFld, giftCreationDateFld, giftModal, closeGiftModal, testData];
+
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(boughtGiftElements);
+
+  userInitial = firebase.database().ref("users/");
+  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
   for(let i = 0; i < userArr.length; i++){
     userUserNames.push(userArr[i].userName);
   }
 
-  backBtn.innerHTML = "Back To Home";
-  backBtn.onclick = function() {
-    navigation(2);//Home
-  };
-
-  initializeGifts();
-
-  databaseQuery();
-
-  alternateButtonLabel(homeNote, "Home", "Bought");
-
   function initializeGifts(){
-
     if(userBoughtGiftsArr.length == userBoughtGiftsUsersArr.length) {
       for (let i = 0; i < userBoughtGiftsArr.length; i++) {
         createGiftElement(userBoughtGiftsArr[i], userBoughtGiftsUsersArr[i]);
@@ -167,11 +138,19 @@ window.onload = function instantiate() {
     }
   }
 
+  function initializeBackBtn(){
+    backBtn.innerHTML = "Back To Home";
+    backBtn.onclick = function() {
+      navigation(2);//Home
+    };
+  }
+
+  initializeBackBtn();
+  initializeGifts();
+  databaseQuery();
+  alternateButtonLabel(homeNote, "Home", "Bought");
+
   function databaseQuery() {
-
-    userInitial = firebase.database().ref("users/");
-    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
