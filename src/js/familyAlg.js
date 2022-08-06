@@ -49,29 +49,7 @@ let familyInitial;
 
 
 
-function getCurrentUser(){
-  getCurrentUserCommon();
-
-  if (user.invites == undefined) {
-    console.log("Invites Not Found");
-  } else if (user.invites != undefined) {
-    if (user.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
-    }
-  }
-
-  if (user.friends == undefined) {
-    if(consoleOutput)
-      console.log("Friends Not Found");
-  } else if (user.friends != undefined) {
-    if (user.friends.length < 100 && user.friends.length > 0) {
-      inviteNote.innerHTML = user.friends.length + " Friends";
-    }
-  }
-}
-
 window.onload = function instantiate() {
-
   pageName = "Family";
   inviteNote = document.getElementById('inviteNote');
   settingsNote = document.getElementById('settingsNote');
@@ -103,7 +81,8 @@ window.onload = function instantiate() {
     closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily, familyEdit,
     familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
     offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
-  getCurrentUser();
+
+  getCurrentUserCommon();
   commonInitialization();
   verifyElementIntegrity(familyElements);
 
@@ -112,12 +91,10 @@ window.onload = function instantiate() {
   familyInitial = firebase.database().ref("family/");
 
   databaseQuery();
-
   alternateButtonLabel(settingsNote, "Settings", "Family");
 
   function initializeCreateFamilyBtn() {
     createFamilyBtn.innerHTML = "Create Family";
-
     createFamilyBtn.onclick = function () {
       generateAddFamilyModal();
     };
@@ -125,14 +102,12 @@ window.onload = function instantiate() {
 
   function initializeBackBtn() {
     backBtn.innerHTML = "Return To Settings";
-
     backBtn.onclick = function() {
       navigation(5);
     };
   }
 
   initializeCreateFamilyBtn();
-
   initializeBackBtn();
 
   function generateAddFamilyModal(){
@@ -156,7 +131,6 @@ window.onload = function instantiate() {
   }
 
   function databaseQuery() {
-
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
@@ -355,7 +329,6 @@ window.onload = function instantiate() {
     firebase.database().ref("family/").child(uidToRemove).remove();
   }
 
-
   function removeFamilyElement(uid) {
     document.getElementById('family' + uid).remove();
 
@@ -369,8 +342,6 @@ window.onload = function instantiate() {
     let newUid = firebase.database().ref("family").push();
     newUid = newUid.toString();
     newUid = findUIDInString(newUid);
-    console.log(newUid);
-    console.log(familyName);
 
     firebase.database().ref("family/" + newUid).set({
       uid: newUid,
