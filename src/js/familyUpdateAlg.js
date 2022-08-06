@@ -78,31 +78,7 @@ let initializedElementsArr = [];
 
 
 
-function getCurrentUser(){
-  getCurrentUserCommon();
-
-  if (user.invites == undefined) {
-    console.log("Invites Not Found");
-  } else if (user.invites != undefined) {
-    if (user.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
-    }
-  }
-
-  if (user.friends == undefined) {
-    if(consoleOutput)
-      console.log("Friends Not Found");
-  } else if (user.friends != undefined) {
-    if (user.friends.length < 100 && user.friends.length > 0) {
-      inviteNote.innerHTML = user.friends.length + " Friends";
-    }
-  }
-
-  familyData = JSON.parse(sessionStorage.familyData);
-}
-
 window.onload = function instantiate() {
-
   pageName = "FamilyUpdate";
   inviteNote = document.getElementById('inviteNote');
   settingsNote = document.getElementById('settingsNote');
@@ -164,27 +140,28 @@ window.onload = function instantiate() {
     familySettingsModal, familySettingsTitle, closeFamilySettings, changeFamilyName, removeAllMembers,
     confirmMemberModal, closeConfirmMemberModal, confirmMemberTitle, confMemberUserName, addMemberConfirm,
     addMemberDeny, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
-  getCurrentUser();
+
+  getCurrentUserCommon();
   commonInitialization();
   verifyElementIntegrity(familyUpdateElements);
 
+  familyData = JSON.parse(sessionStorage.familyData);
   userInitial = firebase.database().ref("users/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
   familyInitial = firebase.database().ref("family/");
 
   databaseQuery();
-
   alternateButtonLabel(settingsNote, "Settings", "Family");
 
-  addMember.innerHTML = "Add Member";
-
-  addMember.onclick = function() {
-    generateAddMemberModal();
-  };
+  function initializeAddMemberBtn() {
+    addMember.innerHTML = "Add Member";
+    addMember.onclick = function() {
+      generateAddMemberModal();
+    };
+  }
 
   function initializeFamilySettingsBtn() {
     familySettings.innerHTML = "Family Settings";
-
     familySettings.onclick = function () {
       generateFamilySettingsModal();
     };
@@ -192,14 +169,13 @@ window.onload = function instantiate() {
 
   function initializeBackBtn() {
     backBtn.innerHTML = "Return To Family Page";
-
     backBtn.onclick = function() {
-      navigation(15);
+      navigation(15);//family.html
     };
   }
 
+  initializeAddMemberBtn();
   initializeFamilySettingsBtn();
-
   initializeBackBtn();
 
   if(familyData.members != null) {
@@ -267,20 +243,15 @@ window.onload = function instantiate() {
       addMemberInfo.innerHTML = "";
       familyMemberInp.value = "";
       closeModal(familyAddModal);
+      generateFamilySettingsModal();
     };
 
-    openModal(familyAddModal, "familyAddModal", true);
+    openModal(familyAddModal, "familyAddModal");
 
     closeFamilyAddModal.onclick = function() {
       addMemberInfo.innerHTML = "";
       closeModal(familyAddModal);
-    };
-
-    window.onclick = function(event) {
-      if (event.target == familyAddModal) {
-        addMemberInfo.innerHTML = "";
-        closeModal(familyAddModal);
-      }
+      generateFamilySettingsModal();
     };
   }
 
@@ -338,7 +309,7 @@ window.onload = function instantiate() {
 
     changeFamilyName.onclick = function() {
       closeModal(familySettingsModal);
-      generateFamilyNameModal();
+      generateFamilyNameModal(familyData.name);
     };
 
     removeAllMembers.onclick = function() {
@@ -353,13 +324,30 @@ window.onload = function instantiate() {
   }
 
   function removeAllFamilyMembers(familyRemove) {
+    let emptyFamily = false;
     let i = findUIDItemInArr(familyRemove.uid, familyArr);
-    familyArr[i].members = [];
+    if (familyArr[i].members != null) {
+      if (familyArr[i].members.length == 0) {
+        emptyFamily = true;
+      } else {
+        familyArr[i].members = [];
+        firebase.database().ref("family/" + familyRemove.uid).child("/members/").remove();
+      }
+    } else {
+      emptyFamily = true;
+    }
 
-    firebase.database().ref("family/" + familyRemove.uid).child("/members/").remove();
+    if (emptyFamily) {
+      alert("This family is empty, so no members can be removed!");
+    } else {
+      alert("All members were removed from this family! The page will now be redirected to the Family page. " +
+        "Press OK to continue...");
+      navigation(15);//family.html
+    }
   }
 
   function generateFamilyNameModal() {
+    familyNameInp.value = familyData.name;
     updateFamilyName.onclick = function() {
       if(familyNameInp.value != "" || (familyNameInp.value.includes(" ") &&
         isAlph(familyNameInp.value.charAt(0)))) {
@@ -370,19 +358,19 @@ window.onload = function instantiate() {
     };
 
     cancelFamilyName.onclick = function() {
-      familyNameInp = "";
       closeModal(familyNameModal);
+      generateFamilySettingsModal();
     };
 
     openModal(familyNameModal, "familyNameModal");
 
     closeFamilyNameModal.onclick = function() {
       closeModal(familyNameModal);
+      generateFamilySettingsModal();
     };
   }
 
   function databaseQuery() {
-
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
@@ -718,6 +706,8 @@ window.onload = function instantiate() {
     firebase.database().ref("family/" + familyData.uid).update({
       name:newFamilyName
     });
+    alert("The family name has been updated! The page will now be redirected to the Family page. " +
+      "Press OK to continue...");
     navigation(15);//family.html
   }
 
