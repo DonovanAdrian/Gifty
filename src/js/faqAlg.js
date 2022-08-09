@@ -21,29 +21,7 @@ let noteSpan;
 
 
 
-function getCurrentUser(){
-  getCurrentUserCommon();
-
-  if (user.invites == undefined) {
-    if(consoleOutput)
-      console.log("Invites Not Found");
-  } else if (user.invites != undefined) {
-    if (user.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
-    }
-  }
-  if (user.friends == undefined) {
-    if(consoleOutput)
-      console.log("Friends Not Found");
-  } else if (user.friends != undefined) {
-    if (user.friends.length < 100 && user.friends.length > 0) {
-      inviteNote.innerHTML = user.friends.length + " Friends";
-    }
-  }
-}
-
 window.onload = function instantiate() {
-
   pageName = "FAQ";
   emailBtn = document.getElementById('emailBtn');
   offlineModal = document.getElementById('offlineModal');
@@ -56,9 +34,11 @@ window.onload = function instantiate() {
   noteSpan = document.getElementById('closeNotification');
   faqElements = [emailBtn, offlineModal, offlineSpan, inviteNote, settingsNote, notificationModal, notificationTitle,
     notificationInfo, noteSpan];
-  getCurrentUser();
+
+  getCurrentUserCommon();
   commonInitialization();
   verifyElementIntegrity(faqElements);
+  alternateButtonLabel(settingsNote, "Settings", "FAQ");
 
   emailBtn.onclick = function () {
     let supportStr = genSupport();
@@ -99,6 +79,4 @@ window.onload = function instantiate() {
     let charSelect = alphabet.charAt(selector);
     return charSelect;
   }
-
-  alternateButtonLabel(settingsNote, "Settings", "FAQ");
 };
