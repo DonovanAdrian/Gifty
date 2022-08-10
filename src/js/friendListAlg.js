@@ -57,31 +57,15 @@ function getCurrentUser(){
   moderationSet = sessionStorage.getItem("moderationSet");
   giftUser = JSON.parse(sessionStorage.validGiftUser);
 
-  if(consoleOutput) {
+  if(consoleOutput)
     console.log("Friend: " + giftUser.userName + " loaded in");
-  }
+
   if (giftUser.giftList == undefined) {
     deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
     giftListEmptyBool = true;
   } else if (giftUser.giftList.length == 0) {
     deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
     giftListEmptyBool = true;
-  }
-  if (user.invites == undefined) {
-    if(consoleOutput)
-      console.log("Invites Not Found");
-  } else if (user.invites != undefined) {
-    if (user.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
-    }
-  }
-  if (user.friends == undefined) {
-    if(consoleOutput)
-      console.log("Friends Not Found");
-  } else if (user.friends != undefined) {
-    if (user.friends.length < 100 && user.friends.length > 0) {
-      inviteNote.innerHTML = user.friends.length + " Friends";
-    }
   }
 
   if (user.readNotifications == undefined) {
@@ -117,7 +101,6 @@ function getCurrentUser(){
 }
 
 window.onload = function instantiate() {
-
   pageName = "FriendList";
   notificationBtn = document.getElementById('notificationButton');
   dataListContainer = document.getElementById('dataListContainer');
@@ -145,33 +128,36 @@ window.onload = function instantiate() {
   friendListElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, noteSpan, backBtn, listNote,
     inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan, giftModal, closeGiftModal, giftTitle,
     giftLink, giftWhere, giftDescription, giftBought, giftCreationDate, giftBuy, giftDontBuy, testData];
+
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(friendListElements);
+
+  userBase = firebase.database().ref("users/");
+  userGifts = firebase.database().ref("users/" + giftUser.uid + "/giftList");
+  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+
+  databaseQuery();
+  alternateButtonLabel(listNote, "Gift Lists", "Public");
 
   for(let i = 0; i < userArr.length; i++){
     userUserNames.push(userArr[i].userName);
   }
 
-  backBtn.innerHTML = "Back To Gift Lists";
-  backBtn.onclick = function() {
-    if(moderationSet == 1){
-      navigation(14);//Moderation
-    } else {
-      navigation(3);//Lists
-    }
-  };
+  function initializeBackBtn() {
+    backBtn.innerHTML = "Back To Gift Lists";
+    backBtn.onclick = function () {
+      if (moderationSet == 1) {
+        navigation(14);//Moderation
+      } else {
+        navigation(3);//Lists
+      }
+    };
+  }
 
-  databaseQuery();
-
-  alternateButtonLabel(listNote, "Gift Lists", "Public");
+  initializeBackBtn();
 
   function databaseQuery() {
-
-    userBase = firebase.database().ref("users/");
-    userGifts = firebase.database().ref("users/" + giftUser.uid + "/giftList");
-    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
@@ -243,7 +229,7 @@ window.onload = function instantiate() {
       postRef.on('child_removed', function(data) {
         sessionStorage.setItem("validGiftUser", JSON.stringify(giftUser));
         sessionStorage.setItem("validUser", JSON.stringify(user));
-        location.reload();
+        navigation(9);
       });
     };
 
@@ -289,9 +275,6 @@ window.onload = function instantiate() {
   function checkGiftBuyer(buyer){
     let updateGiftToDB = true;
 
-    if(consoleOutput)
-      console.log("Checking for buyer error...");
-
     if(buyer == "" || buyer == null || buyer == undefined || userUserNames.includes(buyer)){
       updateGiftToDB = false;
       if(consoleOutput)
@@ -314,12 +297,9 @@ window.onload = function instantiate() {
 
   function createGiftElement(giftDescription, giftLink, giftReceived, giftReceivedBy, giftTitle, giftKey, giftWhere,
                              giftBuyer, giftUid, giftDate, giftMultiples){
-    if(consoleOutput)
-      console.log("Creating " + giftUid);
     try{
       testData.remove();
     } catch (err) {}
-
 
     let liItem = document.createElement("LI");
     liItem.id = "gift" + giftUid;
