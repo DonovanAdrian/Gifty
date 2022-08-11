@@ -63,33 +63,19 @@ function getCurrentUser(){
     buttonText = "Back To Private List";
     giftNavigationInt = 10;
   }
-  giftStorage = JSON.parse(sessionStorage.giftStorage);
+
+  try {
+    giftStorage = JSON.parse(sessionStorage.giftStorage);
+  } catch (err) {}
   if (giftStorage == null || giftStorage == undefined || giftStorage == "") {
     giftPresent = false;
   } else {
     if(consoleOutput)
       console.log("Gift: " + giftStorage + " found");
   }
-  if (user.invites == undefined) {
-    if(consoleOutput)
-      console.log("Invites Not Found");
-  } else if (user.invites != undefined) {
-    if (user.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
-    }
-  }
-  if (user.friends == undefined) {
-    if(consoleOutput)
-      console.log("Friends Not Found");
-  } else if (user.friends != undefined) {
-    if (user.friends.length < 100 && user.friends.length > 0) {
-      inviteNote.innerHTML = user.friends.length + " Friends";
-    }
-  }
 }
 
 window.onload = function instantiate() {
-
   pageName = "GiftAddUpdate";
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
@@ -109,9 +95,23 @@ window.onload = function instantiate() {
   giftAddUpdateElements = [offlineModal, offlineSpan, giftDescriptionInp, giftTitleInp, giftWhereInp, giftLinkInp,
     multiplePurchases, updateGift, homeNote, listNote, inviteNote, notificationModal, notificationTitle,
     notificationInfo, noteSpan];
+
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(giftAddUpdateElements);
+
+  if(!privateListBool) {
+    userGifts = firebase.database().ref("users/" + user.uid + "/giftList/");
+  } else {
+    try{
+      userGifts = firebase.database().ref("users/" + privateList.uid + "/privateList/");
+    } catch (err) {
+      if(consoleOutput)
+        console.log("Unable to connect to private list");
+    }
+  }
+
+  databaseQuery();
 
   function initializeBackBtn() {
     backBtn.innerHTML = buttonText;
@@ -136,24 +136,9 @@ window.onload = function instantiate() {
   }
 
   initializeBackBtn();
-
   initializeGiftAddBtn();
 
-  databaseQuery();
-
   function databaseQuery() {
-
-    if(!privateListBool) {
-      userGifts = firebase.database().ref("users/" + user.uid + "/giftList/");
-    } else {
-      try{
-        userGifts = firebase.database().ref("users/" + privateList.uid + "/privateList/");
-      } catch (err) {
-        if(consoleOutput)
-          console.log("Unable to connect to private list");
-      }
-    }
-
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         giftArr.push(data);
@@ -180,7 +165,7 @@ window.onload = function instantiate() {
           sessionStorage.setItem("privateList", JSON.stringify(privateList));
         }
         sessionStorage.setItem("validUser", JSON.stringify(user));
-        location.reload();
+        navigation(8);
       });
 
     };
@@ -590,7 +575,6 @@ window.onload = function instantiate() {
       validURLOverride = true;
       dotEnder = false;
     }
-
 
     if (tempURL == "" && isChar)
       invalidURLBool = true;
