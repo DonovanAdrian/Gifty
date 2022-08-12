@@ -65,25 +65,6 @@ function getCurrentUser(){
     deployListEmptyNotification("No Gifts Found! Add Some Gifts With The Button Below!");
     giftListEmptyBool = true;
   }
-  if (user.invites == undefined) {
-    if(consoleOutput)
-      console.log("Invites Not Found");
-  } else if (user.invites != undefined) {
-    if (user.invites.length > 0) {
-      invitesValidBool = true;
-    }
-  }
-  if (user.friends == undefined) {
-    if(consoleOutput)
-      console.log("Friends Not Found");
-  } else if (user.friends != undefined) {
-    if (user.friends.length > 0) {
-      friendsValidBool = true;
-    }
-    if (user.friends.length < 100 && user.friends.length > 0) {
-      inviteNote.innerHTML = user.friends.length + " Friends";
-    }
-  }
 
   if (user.readNotifications == undefined) {
     if(consoleOutput)
@@ -237,7 +218,6 @@ function collectUserBoughtGifts(){
 }
 
 window.onload = function instantiate() {
-
   pageName = "Home";
   notificationBtn = document.getElementById('notificationButton');
   dataListContainer = document.getElementById('dataListContainer');
@@ -263,33 +243,36 @@ window.onload = function instantiate() {
   homeElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, notificationModal, notificationTitle,
     notificationInfo, noteSpan, inviteNote, boughtGifts, addGift, giftModal, giftTitle, giftLink, giftWhere,
     giftDescription, giftCreationDate, giftUpdate, giftDelete, closeGiftModal, testData];
+
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(homeElements);
-
   checkUserErrors();
-
   collectUserBoughtGifts();
-  boughtGifts.innerHTML = "Bought Gifts";
-  boughtGifts.onclick = function(){
-    if(userBoughtGifts.length == 0){
-      alert("Buy Some Gifts From Some Users First!");
-    } else {
-      sessionStorage.setItem("boughtGifts", JSON.stringify(userBoughtGifts));
-      sessionStorage.setItem("boughtGiftsUsers", JSON.stringify(userBoughtGiftsUsers));
-      navigation(7);//BoughtGifts
-    }
-  };
+
+  userBase = firebase.database().ref("users/");
+  userGifts = firebase.database().ref("users/" + user.uid + "/giftList");
+  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+  limitsInitial = firebase.database().ref("limits/");
 
   databaseQuery();
 
+  function initializeBoughtGiftsBtn() {
+    boughtGifts.innerHTML = "Bought Gifts";
+    boughtGifts.onclick = function () {
+      if (userBoughtGifts.length == 0) {
+        alert("Buy Some Gifts From Some Users First!");
+      } else {
+        sessionStorage.setItem("boughtGifts", JSON.stringify(userBoughtGifts));
+        sessionStorage.setItem("boughtGiftsUsers", JSON.stringify(userBoughtGiftsUsers));
+        navigation(7);//BoughtGifts
+      }
+    };
+  }
+
+  initializeBoughtGiftsBtn();
+
   function databaseQuery() {
-
-    userBase = firebase.database().ref("users/");
-    userGifts = firebase.database().ref("users/" + user.uid + "/giftList");
-    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-    limitsInitial = firebase.database().ref("limits/");
-
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
@@ -346,7 +329,7 @@ window.onload = function instantiate() {
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
           data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
 
-        checkGiftLimitLite();
+        checkGiftLimit();
       });
 
       postRef.on('child_changed', function(data) {
@@ -358,7 +341,7 @@ window.onload = function instantiate() {
 
       postRef.on('child_removed', function(data) {
         sessionStorage.setItem("validUser", JSON.stringify(user));
-        location.reload();
+        navigation(2);
       });
     };
 
@@ -647,17 +630,6 @@ window.onload = function instantiate() {
     if(consoleOutput)
       console.log("Generating Notification");
     return (giftOwner + "," + giftTitle + "," + pageNameNote);
-  }
-
-  function checkGiftLimitLite() {
-    if(giftArr.length > giftLimit) {
-      addGift.className += " btnDisabled";
-      addGift.innerHTML = "Gift Limit Reached!";
-      addGift.onclick = function () {
-        alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
-          "Please remove some gifts in order to create more!");
-      };
-    }
   }
 
   function checkGiftLimit() {
