@@ -42,7 +42,6 @@ function fetchConfigFile(){
   let oFrame = document.getElementById("frmFile");
   let strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;
   let configFileInput = strRawContents.split("\n");
-
   let configInitializeInt = 0;
   let isComment;
   let apiKeyString = "";
@@ -160,7 +159,6 @@ function fetchConfigFile(){
 }
 
 window.onload = function instantiate() {
-
   pageName = "Index";
   username = document.getElementById('username');
   pin = document.getElementById('pin');
@@ -170,8 +168,8 @@ window.onload = function instantiate() {
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
   indexElements = [username, pin, loginBtn, loginInfo, signUpFld, offlineModal, offlineSpan];
-  verifyElementIntegrity(indexElements);
 
+  verifyElementIntegrity(indexElements);
   loginBtn.innerHTML = "Please Wait...";
   fetchConfigFile();
   backgroundAlternator();
@@ -293,6 +291,8 @@ function loginQuery() {
 }
 
 function initializeLoginBtns() {
+  userInitial = firebase.database().ref("users/");
+
   databaseQuery();
   pin.addEventListener("keypress", function(event){
     if (event.key === "Enter") {
@@ -308,8 +308,6 @@ function initializeLoginBtns() {
 }
 
 function databaseQuery() {
-  userInitial = firebase.database().ref("users/");
-
   let fetchPosts = function (postRef) {
     postRef.once("value").then(function(snapshot) {
       if (snapshot.exists()) {
@@ -489,7 +487,7 @@ function checkSignUp(){
 function signUp(){
   if(allowLogin || loginDisabledMsg.includes(newGiftyMessage)) {
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    window.location.href = "userAddUpdate.html";
+    navigation(13, false);
   } else {
     alert(loginDisabledMsg);
   }
