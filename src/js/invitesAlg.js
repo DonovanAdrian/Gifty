@@ -10,6 +10,7 @@ let friendArr = [];
 let listeningFirebaseRefs = [];
 let userArr = [];
 let commonFriendArr = [];
+let initializedUsers = [];
 
 let readNotificationsBool = false;
 let invitesFound = false;
@@ -19,6 +20,7 @@ let dataCounter = 0;
 let commonLoadingTimerInt = 0;
 
 let inviteListEmptyText = "";
+let deletePendingUid = "";
 
 let dataListContainer;
 let offlineSpan;
@@ -67,16 +69,6 @@ let cancelInvite;
 function getCurrentUser(){
   getCurrentUserCommon();
 
-  if (user.invites == undefined) {
-    if(consoleOutput)
-      console.log("Invites Not Found");
-  } else if (user.invites != undefined) {
-    if (user.invites.length > 0) {
-      newInviteIcon.style.display = "block";
-      inviteNote.style.background = "#ff3923";
-      invitesFound = true;
-    }
-  }
   if (user.friends == undefined) {
     if (invitesFound)
       inviteListEmptyText = "No Friends Found, But You Have Some Pending Invites!";
@@ -133,7 +125,6 @@ function getCurrentUser(){
 }
 
 window.onload = function instantiate() {
-
   pageName = "Invites";
   notificationBtn = document.getElementById('notificationButton');
   dataListContainer = document.getElementById('dataListContainer');
@@ -175,27 +166,31 @@ window.onload = function instantiate() {
     confUserName, inviteConfirm, inviteDeny, inviteNote, newInviteIcon, addUser, notificationModal, notificationTitle,
     notificationInfo, noteSpan, privateMessageModal, closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg,
     inviteModal, closeInviteModal, userName, userUName, userShareCode, sendPrivateMessage, userInviteRemove, testData];
+
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(inviteElements);
 
-  newInviteIcon.onclick = function() {
-    navigation(11);//Confirmation
-  };
-
-  addUser.innerHTML = "Invite User";
-  generateAddUserBtn();
-
-  evaluateCommonFriends();
+  userInitial = firebase.database().ref("users/");
+  userFriends = firebase.database().ref("users/" + user.uid + "/friends");
+  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
   databaseQuery();
 
+  function generateInviteIcon() {
+    newInviteIcon.onclick = function () {
+      navigation(11);//Confirmation
+    };
+  }
+
+  if (invitesFound) {
+    generateInviteIcon();
+  }
+  generateAddUserBtn();
+  evaluateCommonFriends();
+
+
   function databaseQuery() {
-
-    userInitial = firebase.database().ref("users/");
-    userFriends = firebase.database().ref("users/" + user.uid + "/friends");
-    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         globalNoteInt = 1;
@@ -217,7 +212,7 @@ window.onload = function instantiate() {
             console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           }
           userArr[i] = data.val();
-          if (findUIDItemInArr(data.key, friendArr, true)) {
+          if (initializedUsers.includes(data.key) && deletePendingUid != data.key) {
             changeFriendElement(data.key);
           }
         }
@@ -255,7 +250,7 @@ window.onload = function instantiate() {
 
       postRef.on('child_removed', function (data) {
         sessionStorage.setItem("validUser", JSON.stringify(user));
-        location.reload();
+        navigation(4);
       });
     };
 
@@ -299,7 +294,7 @@ window.onload = function instantiate() {
       }
 
     if(friendData != null) {
-      try{
+      try {
         testData.remove();
       } catch (err) {}
 
@@ -329,8 +324,8 @@ window.onload = function instantiate() {
     }
 
     if(friendData != null) {
-      let liItemUpdate = document.getElementById('user' + friendData.uid);
-      liItemUpdate.innerHTML = friendData.name;
+      console.log("Updating " + friendData.name);
+      let liItemUpdate = document.getElementById("user" + friendData.uid);
       if (friendData.moderatorInt > 0) {
         liItemUpdate.innerHTML = friendData.name + " (Moderator)";
       } else {
@@ -369,6 +364,10 @@ window.onload = function instantiate() {
         closeModal(inviteModal);
       };
     };
+
+    if (!initializedUsers.includes(friendData.uid)) {
+      initializedUsers.push(friendData.uid);
+    }
   }
 
   function generatePrivateMessageDialog(userData) {
@@ -382,7 +381,6 @@ window.onload = function instantiate() {
       privateMessageInp.value = "";
       closeModal(privateMessageModal);
       openModal(inviteModal, userData.uid);
-      alert("The Message Has Been Sent!");
     };
     cancelMsg.onclick = function (){
       privateMessageInp.value = "";
@@ -428,6 +426,7 @@ window.onload = function instantiate() {
         notifications: userNotificationArr
       });
     }
+    alert("The Message Has Been Sent!");
   }
 
   function deleteFriend(uid) {
@@ -435,6 +434,8 @@ window.onload = function instantiate() {
     let friendFriendArrBackup = [];
     let verifyDeleteBool = true;
     let toDelete = -1;
+
+    deletePendingUid = uid;
 
     for (let i = 0; i < friendArr.length; i++){
       if(friendArr[i] == uid) {
@@ -508,6 +509,13 @@ window.onload = function instantiate() {
       firebase.database().ref("users/" + uid).update({
         friends: friendFriendArr
       });
+
+      console.log(uid);
+      let i = initializedUsers.indexOf(uid);
+      if (i != -1) {
+        initializedUsers.splice(i, 1);
+      }
+      deletePendingUid = "";
     } else {
       firebase.database().ref("users/" + uid).update({
         friends: friendFriendArrBackup
@@ -531,11 +539,11 @@ window.onload = function instantiate() {
 
     if (userFriendLength > 3) {
       for (let i = 0; i < userFriendLength; i++) {
-        userFriendInt1 = findUIDItemInArr(user.friends[i], userArr);
+        userFriendInt1 = findUIDItemInArr(user.friends[i], userArr, true);
         userFriendData1 = userArr[userFriendInt1].friends;
 
         for (let a = 0; a < userFriendData1.length; a++) {
-          userFriendInt2 = findUIDItemInArr(user.friends[i], userArr);
+          userFriendInt2 = findUIDItemInArr(user.friends[i], userArr, true);
           userFriendData2 = userArr[userFriendInt2].friends;
           for (let b = 0; b < userFriendData2.length; b++) {
             if (userFriendData1[a] == userFriendData2[b]) {
@@ -602,7 +610,7 @@ window.onload = function instantiate() {
         for (let i = 0; i < userNameInp.value.length; i++) {
           if (userNameInp.value[i] >= '0' && userNameInp.value[i] <= '9') {
             containsInt = true;
-          } else if (userNameInp.value[i] >= '-') {
+          } else if (userNameInp.value[i] == '-') {
             dashCount++;
           }
 
@@ -670,7 +678,6 @@ window.onload = function instantiate() {
             inviteInfo.innerHTML = "That User Name Does Not Exist, Please Try Again!";
           }
         }
-        shareCodeBool = false;
       };
 
       cancelInvite.onclick = function() {
@@ -685,6 +692,8 @@ window.onload = function instantiate() {
         inviteInfo.innerHTML = "";
       };
     };
+    addUser.innerHTML = "Invite User";
+
     if(consoleOutput)
       console.log("Add Button Generated");
   }
