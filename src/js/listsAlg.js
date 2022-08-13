@@ -65,15 +65,6 @@ function getCurrentUser(){
     inviteNote.innerHTML = user.friends.length + " Friends";
   }
 
-  if (user.invites == undefined) {
-    if(consoleOutput)
-      console.log("Invites Not Found");
-  } else if (user.invites != undefined) {
-    if (user.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
-    }
-  }
-
   if (user.readNotifications == undefined) {
     if(consoleOutput)
       console.log("Read Notifications Not Found");
@@ -104,11 +95,11 @@ function getCurrentUser(){
       }
     }
   }
+
   sessionStorage.setItem("moderationSet", moderationSet);
 }
 
 window.onload = function instantiate() {
-
   pageName = "Lists";
   notificationBtn = document.getElementById('notificationButton');
   dataListContainer = document.getElementById('dataListContainer');
@@ -136,19 +127,19 @@ window.onload = function instantiate() {
     notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, secretSantaSignUp,
     testData, userTitle, publicList, privateList, sendPrivateMessage, closePrivateMessageModal, privateMessageInp,
     sendMsg, cancelMsg];
+
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(listsElements);
 
+  userBase = firebase.database().ref("users/");
+  userFriends = firebase.database().ref("users/" + user.uid + "/friends");
+  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+  autoSecretSanta = firebase.database().ref("secretSanta/");
+
   databaseQuery();
 
   function databaseQuery() {
-
-    userBase = firebase.database().ref("users/");
-    userFriends = firebase.database().ref("users/" + user.uid + "/friends");
-    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-    autoSecretSanta = firebase.database().ref("secretSanta/");
-
     let fetchSecretSanta = function (postRef) {
       postRef.once("value").then(function(snapshot) {
         if(snapshot.exists()) {
@@ -259,7 +250,7 @@ window.onload = function instantiate() {
 
       postRef.on('child_removed', function (data) {
         sessionStorage.setItem("validUser", JSON.stringify(user));
-        location.reload();
+        navigation(3);
       });
     };
 
