@@ -66,37 +66,7 @@ let cancelMsg;
 
 
 
-function getCurrentUser(){
-  try {
-    user = JSON.parse(sessionStorage.validUser);
-    console.log("User: " + user.userName + " loaded in");
-    if (user.invites == undefined) {
-      console.log("Invites Not Found");
-    } else if (user.invites != undefined) {
-      if (user.invites.length > 0) {
-        inviteNote.style.background = "#ff3923";
-      }
-    }
-    if (user.friends == undefined) {
-      console.log("Friends Not Found");
-    } else if (user.friends != undefined) {
-      if (user.friends.length < 100 && user.friends.length > 0) {
-        inviteNote.innerHTML = user.friends.length + " Friends";
-      }
-    }
-    if (user.moderatorInt == 0){
-      window.location.href = "home.html";
-    }
-    userArr = JSON.parse(sessionStorage.userArr);
-    sessionStorage.setItem("moderationSet", moderationSet);
-  } catch (err) {
-    console.log(err.toString());
-    window.location.href = "index.html";
-  }
-}
-
 window.onload = function instantiate() {
-
   pageName = "Moderation";
   dataListContainer = document.getElementById('dataListContainer');
   offlineModal = document.getElementById('offlineModal');
@@ -144,27 +114,30 @@ window.onload = function instantiate() {
     settingsNote, testData, closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends,
     userLastLogin, userScore, userPassword, userSecretSanta, moderatorOp, sendPrivateMessage, warnUser, banUser,
     closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
-  getCurrentUser();
+
+  sessionStorage.setItem("moderationSet", moderationSet);
+  getCurrentUserCommon();
   commonInitialization();
   verifyElementIntegrity(moderationElements);
 
+  userInitial = firebase.database().ref("users/");
+  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+  autoSecretSanta = firebase.database().ref("secretSanta/");
+  familyInitial = firebase.database().ref("family/");
+
   databaseQuery();
-
   alternateButtonLabel(settingsNote, "Settings", "Moderation");
-
   generateUserOptionsModal();
-
   userOptionsBtn.innerHTML = "User Options";
-
-  initializeBackBtn();
 
   function initializeBackBtn() {
     backBtn.innerHTML = "Return To Settings";
-
     backBtn.onclick = function() {
       navigation(5);
     };
   }
+
+  initializeBackBtn();
 
   function generatePrivateMessageDialog(userData, warnBool) {
     let warnCount;
@@ -255,12 +228,6 @@ window.onload = function instantiate() {
   }
 
   function databaseQuery() {
-
-    userInitial = firebase.database().ref("users/");
-    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-    autoSecretSanta = firebase.database().ref("secretSanta/");
-    familyInitial = firebase.database().ref("family/");
-
     let fetchFamilies = function (postRef){
       postRef.on('child_added', function (data) {
         familyArr.push(data.val());
@@ -627,6 +594,27 @@ window.onload = function instantiate() {
       closeUserModal.onclick = function() {
         closeModal(userModal);
       };
+
+      function manuallyOptInOut(userData){
+        if (userData.secretSanta != null) {
+          if (userData.secretSanta == 0) {
+            firebase.database().ref("users/" + userData.uid).update({
+              secretSanta: 1
+            });
+            alert(userData.name + " has been manually opted in to the Secret Santa Program!");
+          } else {
+            firebase.database().ref("users/" + userData.uid).update({
+              secretSanta: 0
+            });
+            alert(userData.name + " has been manually opted out of the Secret Santa Program!");
+          }
+        } else {
+          firebase.database().ref("users/" + userData.uid).update({
+            secretSanta: 0
+          });
+          alert(userData.name + " has been manually opted out of the Secret Santa Program!");
+        }
+      }
     };
   }
 
@@ -639,24 +627,3 @@ window.onload = function instantiate() {
     }
   }
 };
-
-function manuallyOptInOut(userData){
-  if (userData.secretSanta != null) {
-    if (userData.secretSanta == 0) {
-      firebase.database().ref("users/" + userData.uid).update({
-        secretSanta: 1
-      });
-      alert(userData.name + " has been manually opted in to the Secret Santa Program!");
-    } else {
-      firebase.database().ref("users/" + userData.uid).update({
-        secretSanta: 0
-      });
-      alert(userData.name + " has been manually opted out of the Secret Santa Program!");
-    }
-  } else {
-    firebase.database().ref("users/" + userData.uid).update({
-      secretSanta: 0
-    });
-    alert(userData.name + " has been manually opted out of the Secret Santa Program!");
-  }
-}
