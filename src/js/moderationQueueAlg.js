@@ -43,28 +43,7 @@ let userName;
 
 
 
-function getCurrentUser(){
-  getCurrentUserCommon();
-
-  if (user.invites == undefined) {
-    console.log("Invites Not Found");
-  } else if (user.invites != undefined) {
-    if (user.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
-    }
-  }
-  if (user.friends == undefined) {
-    console.log("Friends Not Found");
-  } else if (user.friends != undefined) {
-    if (user.friends.length < 100 && user.friends.length > 0) {
-      inviteNote.innerHTML = user.friends.length + " Friends";
-    }
-  }
-  sessionStorage.setItem("moderationSet", moderationSet);
-}
-
 window.onload = function instantiate() {
-
   pageName = "ModerationQueue";
   dataListContainer = document.getElementById('dataListContainer');
   nukeTickets = document.getElementById('nukeTickets');
@@ -88,12 +67,17 @@ window.onload = function instantiate() {
   moderationQueueElements = [dataListContainer, nukeTickets, backBtn, ticketModal, closeTicketModal, ticketTitle,
     ticketUID, ticketDetails, ticketLocation, ticketTime, deleteTicket, offlineModal, offlineSpan, inviteNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, testData];
-  getCurrentUser();
+
+  sessionStorage.setItem("moderationSet", moderationSet);
+  getCurrentUserCommon();
   commonInitialization();
   verifyElementIntegrity(moderationQueueElements);
 
-  databaseQuery();
+  userInitial = firebase.database().ref("users/");
+  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+  moderationTickets = firebase.database().ref("maintenance/");
 
+  databaseQuery();
   alternateButtonLabel(settingsNote, "Settings", "Moderation");
 
   function initializeNukeBtn() {
@@ -101,9 +85,8 @@ window.onload = function instantiate() {
       nukeTickets.innerHTML = "Remove All Tickets";
       nukeTickets.onclick = function () {
         firebase.database().ref("maintenance/").remove();
-
         ticketArr = [];
-        location.reload();
+        navigation(17);
       };
     } else {
       nukeTickets.innerHTML = "No Tickets To Remove!";
@@ -113,18 +96,14 @@ window.onload = function instantiate() {
 
   function initializeBackBtn() {
     backBtn.innerHTML = "Return To Settings";
-
     backBtn.onclick = function() {
       navigation(5);
     };
   }
 
+  initializeBackBtn();
+
   function databaseQuery() {
-
-    userInitial = firebase.database().ref("users/");
-    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-    moderationTickets = firebase.database().ref("maintenance/");
-
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
@@ -216,7 +195,6 @@ window.onload = function instantiate() {
         } else {
           deployListEmptyNotification("There Are No Items In The Moderation Queue!");
           initializeNukeBtn();
-          initializeBackBtn();
         }
       });
     };
@@ -249,7 +227,6 @@ window.onload = function instantiate() {
 
     if (dataCounter < 1) {
       initializeNukeBtn();
-      initializeBackBtn();
     }
     dataCounter++;
     if (dataCounter > buttonOpacLim) {
@@ -262,7 +239,6 @@ window.onload = function instantiate() {
     let editTicket = document.getElementById('ticket' + ticketData.uid);
 
     ticketTitleTextReturned = initModTicketElement(editTicket, ticketData);
-
     editTicket.innerHTML = ticketTitleTextReturned;
   }
 
@@ -396,7 +372,6 @@ window.onload = function instantiate() {
       if (dataCounter == 0){
         deployListEmptyNotification("There Are No Items In The Moderation Queue!");
         initializeNukeBtn();
-        initializeBackBtn();
       }
     } catch (err) {}
   }
