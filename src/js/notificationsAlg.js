@@ -49,66 +49,35 @@ let cancelMsg;
 
 
 function getCurrentUser(){
-  let localConsoleOutput = false;
+  getCurrentUserCommon();
 
-  try {
-    user = JSON.parse(sessionStorage.validUser);
-    if(user.moderatorInt == 1)
-      localConsoleOutput = true;
-    if(localConsoleOutput)
-      console.log("User: " + user.userName + " loaded in");
-    if (user.invites == undefined) {
-      if(localConsoleOutput)
-        console.log("Invites Not Found");
-    } else if (user.invites != undefined) {
-      if (user.invites.length > 0) {
-        inviteNote.style.background = "#ff3923";
-      }
-    }
-    if (user.friends == undefined) {
-      if(localConsoleOutput)
-        console.log("Friends Not Found");
-    } else if (user.friends != undefined) {
-      if (user.friends.length < 100 && user.friends.length > 0) {
-        inviteNote.innerHTML = user.friends.length + " Friends";
-      }
-    }
-    if(localConsoleOutput)
-      console.log(user.notifications);
-    if(user.notifications == undefined) {
-      if(localConsoleOutput)
-        console.log("Notifications Not Found");
-      deployListEmptyNotification("No Notifications Found!");
-      initializeNukeBtn();
-      notificationListEmptyBool = true;
+  if(user.notifications == undefined) {
+    if(consoleOutput)
+      console.log("Notifications Not Found");
+    deployListEmptyNotification("No Notifications Found!");
+    initializeNukeBtn();
+    notificationListEmptyBool = true;
+  } else {
+    let notificationOverride = sessionStorage.getItem("notificationOverride");
+    if (notificationOverride == undefined) {
+      if(consoleOutput)
+        console.log("Notifications Found");
     } else {
-      let notificationOverride = sessionStorage.getItem("notificationOverride");
-      if (notificationOverride == undefined) {
-        if(localConsoleOutput)
-          console.log("Notifications Found");
+      if (notificationOverride == "notificationArrEmpty") {
+        if(consoleOutput)
+          console.log("Notifications Empty");
+        deployListEmptyNotification("No Notifications Found!");
+        initializeNukeBtn();
+        notificationListEmptyBool = true;
       } else {
-        if (notificationOverride == "notificationArrEmpty") {
-          if(localConsoleOutput)
-            console.log("Notifications Empty");
-          deployListEmptyNotification("No Notifications Found!");
-          initializeNukeBtn();
-          notificationListEmptyBool = true;
-        } else {
-          if(localConsoleOutput)
-            console.log("Notifications Found");
-        }
+        if(consoleOutput)
+          console.log("Notifications Found");
       }
     }
-    userArr = JSON.parse(sessionStorage.userArr);
-  } catch (err) {
-    if(localConsoleOutput)
-      console.log(err.toString());
-    window.location.href = "index.html";
   }
 }
 
 window.onload = function instantiate() {
-
   pageName = "Notifications";
   dataListContainer = document.getElementById('dataListContainer');
   nukeNotifications = document.getElementById('nukeNotifications');
@@ -135,18 +104,18 @@ window.onload = function instantiate() {
     notificationModal, notificationTitle, notificationInfo, noteSpan, privateMessageModal, noteViewModal, testData,
     closeNoteViewModal, notificationViewTitle, notificationViewDetails, notificationViewPage, notificationViewDelete,
     privateMessageSpan, privateMessageInp, sendMsg, cancelMsg];
+
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(notificationsElements);
 
+  userReadNotifications = firebase.database().ref("users/" + user.uid + "/readNotifications");
+  userNotifications = firebase.database().ref("users/" + user.uid + "/notifications");
+  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+
   databaseQuery();
 
   function databaseQuery() {
-
-    userReadNotifications = firebase.database().ref("users/" + user.uid + "/readNotifications");
-    userNotifications = firebase.database().ref("users/" + user.uid + "/notifications");
-    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-
     let fetchReadNotifications = function (postRef){
       postRef.on('child_added', function (data) {
         if(!readNotificationArr.includes(data.val())) {
@@ -164,7 +133,7 @@ window.onload = function instantiate() {
 
       postRef.on('child_removed', function (data) {
         sessionStorage.setItem("validUser", JSON.stringify(user));
-        location.reload();
+        navigation(6);
       });
     };
 
@@ -182,7 +151,7 @@ window.onload = function instantiate() {
 
       postRef.on('child_removed', function (data) {
         sessionStorage.setItem("validUser", JSON.stringify(user));
-        location.reload();
+        navigation(6);
       });
     };
 
