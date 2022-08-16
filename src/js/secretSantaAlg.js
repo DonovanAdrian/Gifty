@@ -337,7 +337,6 @@ function hideSecretSanta() {
 }
 
 function autoHideSecretSanta(){
-
   let clearSecretSantaBool = false;
   let globalSecretSantaMessage = "";
 
