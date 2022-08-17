@@ -50,52 +50,24 @@ let limitsInitial;
 
 
 function getCurrentUser(){
-  let localConsoleOutput = false;
+  getCurrentUserCommon();
 
-  try {
-    user = JSON.parse(sessionStorage.validUser);
-    if(user.moderatorInt == 1)
-      localConsoleOutput = true;
-    allowLogin = JSON.parse(sessionStorage.allowLogin);
-    if(localConsoleOutput)
-      console.log("User: " + user.userName + " loaded in");
-    if (user.invites == undefined) {
-      if(localConsoleOutput)
-        console.log("Invites Not Found");
-    } else if (user.invites != undefined) {
-      if (user.invites.length > 0) {
-        inviteNote.style.background = "#ff3923";
-      }
-    }
-    if (user.friends == undefined) {
-      if(localConsoleOutput)
-        console.log("Friends Not Found");
-    } else if (user.friends != undefined) {
-      if (user.friends.length < 100 && user.friends.length > 0) {
-        inviteNote.innerHTML = user.friends.length + " Friends";
-      }
-    }
-    if (user.moderatorInt == 1) {
-      modBtn.style.display = "block";
-      modBtn.onclick = function () {
-        generateModerationModal();
-      };
+  if (user.moderatorInt == 1) {
+    modBtn.style.display = "block";
+    modBtn.onclick = function () {
+      generateModerationModal();
+    };
 
-      familyBtn.style.display = "block";
-      familyBtn.onclick = function () {
-        navigation(15);//Family
-      };
-    }
-    userArr = JSON.parse(sessionStorage.userArr);
-  } catch (err) {
-    if(localConsoleOutput)
-      console.log(err.toString());
-    window.location.href = "index.html";
+    familyBtn.style.display = "block";
+    familyBtn.onclick = function () {
+      navigation(15);//Family
+    };
   }
+
+  allowLogin = JSON.parse(sessionStorage.allowLogin);
 }
 
 window.onload = function instantiate() {
-
   pageName = "Settings";
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
@@ -132,24 +104,17 @@ window.onload = function instantiate() {
     closeDatabaseLimitsModal, giftLimitInp, userLimitInp, confirmLimits, cancelLimits, loginDisabledModal,
     closeLoginDisabledModal, loginDisabledInp, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled,
     notificationModal, notificationTitle, notificationInfo, noteSpan];
+
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(settingsElements);
 
-  editBtn.onclick = function (){
-    navigation(13);//UserAddUpdate
-  };
-
-  faqBtn.onclick = function (){
-    navigation(12);//FAQ
-  };
-
   if (user.moderatorInt == 1) {
+    loginInitial = firebase.database().ref("login/");
+    limitsInitial = firebase.database().ref("limits/");
     databaseQuery();
 
     function databaseQuery() {
-      loginInitial = firebase.database().ref("login/");
-      limitsInitial = firebase.database().ref("limits/");
 
       let fetchLogin = function (postRef) {
         postRef.on('child_added', function (data) {
@@ -210,6 +175,14 @@ window.onload = function instantiate() {
       listeningFirebaseRefs.push(limitsInitial);
     }
   }
+
+  editBtn.onclick = function (){
+    navigation(13, false);//UserAddUpdate
+  };
+
+  faqBtn.onclick = function (){
+    navigation(12);//FAQ
+  };
 
   let targetNode = document.getElementById('moderationModal');
   let observer = new MutationObserver(function(){
