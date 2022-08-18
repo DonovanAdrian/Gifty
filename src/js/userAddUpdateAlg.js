@@ -38,12 +38,7 @@ let noteSpan;
 
 
 
-function getCurrentUser(){
-
-}
-
 window.onload = function instantiate() {
-
   pageName = "UserAddUpdate";
   nameField = document.getElementById('nameField');
   userNameField = document.getElementById('userNameField');
@@ -65,6 +60,7 @@ window.onload = function instantiate() {
   userAddUpdateElements = [nameField, userNameField, pinField, pinConfField, btnUpdate, btnDelete, backBtn,
     offlineModal, offlineSpan, confirmModal, confirmSpan, deleteConfirm, deleteDeny, notificationModal,
     notificationTitle, notificationInfo, noteSpan];
+
   getCurrentUserCommon();
 
   if(user != null) {
@@ -77,8 +73,6 @@ window.onload = function instantiate() {
     backBtn.style.left = "50%";
     backBtn.style.transform = "translate(-50%)";
     backBtn.innerHTML = "Loading...";
-
-    alert("Please note that you will be required to input your confirmation pin to continue.");
   }
 
   commonInitialization();
@@ -92,13 +86,12 @@ window.onload = function instantiate() {
     }
   };
 
+  userInitial = firebase.database().ref("users/");
+  limitsInitial = firebase.database().ref("limits/");
+
   databaseQuery();
 
   function databaseQuery() {
-
-    userInitial = firebase.database().ref("users/");
-    limitsInitial = firebase.database().ref("limits/");
-
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         if (!userArr.includes(data.val())) {
@@ -174,6 +167,18 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(limitsInitial);
     listeningFirebaseRefs.push(userInitial);
   }
+
+  function checkUserLimit() {
+    if (userArr.length < userLimit && userArr.length != 0 && user == null) {
+      btnUpdate.innerHTML = "Create User Profile";
+      alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely, " +
+        "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
+    } else if (user == undefined) {
+      alert("Unfortunately this Gifty Database is full, so no more users can be created." +
+        " Please contact the owner to obtain access.");
+      navigation(1, false);
+    }
+  }
 };
 
 function deleteCheck(){
@@ -193,7 +198,7 @@ function deleteCheck(){
     btnUpdate.onclick = function(){};
     btnDelete.onclick = function(){};
     backBtn.onclick = function(){};
-    window.location.href = "index.html";
+    navigation(1, false);
   };
 
   deleteDeny.onclick = function () {
@@ -210,7 +215,6 @@ function deleteCheck(){
 }
 
 function updateUserToDB(){
-
   checkUserNames(userNameField.value);
 
   if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
@@ -291,11 +295,8 @@ function updateUserToDB(){
     btnUpdate.onclick = function(){};
     btnDelete.onclick = function(){};
     backBtn.onclick = function(){};
-    sessionStorage.setItem("validUser", JSON.stringify(user));
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    window.location.href = "settings.html";
+    navigation(5, true);
   }
-
 }
 
 function addUserToDB(){
@@ -346,26 +347,26 @@ function addUserToDB(){
     btnUpdate.onclick = function(){};
     btnDelete.onclick = function(){};
     backBtn.onclick = function(){};
-    window.location.href = "index.html";
+    navigation(1, false);
   }
-}
 
-function genShareCode(){
-  let tempShareCode = "";
-  for(let i = 1; i < 17; i++){
-    tempShareCode = tempShareCode + getRandomAlphabet();
-    if((i % 4) == 0 && i < 16){
-      tempShareCode = tempShareCode + "-";
+  function genShareCode(){
+    let tempShareCode = "";
+    for(let i = 1; i < 17; i++){
+      tempShareCode = tempShareCode + getRandomAlphabet();
+      if((i % 4) == 0 && i < 16){
+        tempShareCode = tempShareCode + "-";
+      }
     }
+    return tempShareCode;
   }
-  return tempShareCode;
-}
 
-function getRandomAlphabet(){
-  let alphabet = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
-  let selector = Math.floor((Math.random() * alphabet.length));
-  let charSelect = alphabet.charAt(selector);
-  return charSelect;
+  function getRandomAlphabet(){
+    let alphabet = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
+    let selector = Math.floor((Math.random() * alphabet.length));
+    let charSelect = alphabet.charAt(selector);
+    return charSelect;
+  }
 }
 
 function checkUserNames(userName){
@@ -381,17 +382,5 @@ function updateSuppressCheck(){
     updateUserToDB();
   } else {
     addUserToDB();
-  }
-}
-
-function checkUserLimit() {
-  if (userArr.length < userLimit && userArr.length != 0) {
-    btnUpdate.innerHTML = "Create User Profile";
-    alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely, " +
-      "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
-  } else if (user == undefined) {
-    alert("Unfortunately this Gifty Database is full, so no more users can be created." +
-      " Please contact the owner to obtain access.");
-    window.location.href = "index.html";
   }
 }
