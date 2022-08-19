@@ -14,7 +14,6 @@ let loadingTimerCancelled = false;
 let areYouStillThereBool = false;
 let areYouStillThereInit = false;
 let modalClosingBool = false;
-let ignoreFriends = false;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
@@ -353,7 +352,9 @@ function ohThereYouAre(){
 }
 
 function signOut(){
+  config = JSON.parse(sessionStorage.config);
   sessionStorage.clear();
+  sessionStorage.setItem("config", JSON.stringify(config));
   navigation(1, false);
 }
 
@@ -492,8 +493,8 @@ function closeModal(closeThisModal){
 
     clearInterval(closeModalTimer);
     closeModalTimer = setInterval(function(){
-      closeTimer = closeTimer + 10;
-      if(closeTimer >= 370){
+      closeTimer = closeTimer + 1;
+      if(closeTimer >= 140){
         closeTimer = 0;
         closeThisModal.style.display = "none";
         modalClosingBool = false;
@@ -501,7 +502,7 @@ function closeModal(closeThisModal){
           console.log("Modal Closed");
         clearInterval(closeModalTimer);
       }
-    }, 10);
+    }, 1);
     window.onclick = function(event) {}
   } catch (err) {
     if(consoleOutput)
@@ -684,4 +685,12 @@ function giftLinkRedirect(link) {
   }
 
   window.open(link, "_blank");
+}
+
+function generateNotificationString(senderUID, deleterUID, messageGiftTitle, pageNameStr){
+  let message;
+  message = "\"" + senderUID + "\",,,\"" + deleterUID + "\",,,\"" + messageGiftTitle + "\",,,\"" + pageNameStr + "\"";
+  if(consoleOutput)
+    console.log("Generating Notification String...");
+  return message;
 }
