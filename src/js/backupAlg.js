@@ -379,11 +379,14 @@ window.onload = function instantiate() {
     backupData = compileBackupData(backupData);
 
     let backupElement = document.createElement('a');
-    backupElement.href = "data:text/csv;charset=utf-8," + encodeURI(backupData);
-    backupElement.target = "_blank";
+    let backupFilename = "GiftyBackup" + simpleBackupDate + "-" + generateRandomShortString() + ".csv";
 
-    backupElement.download = "GiftyBackup" + simpleBackupDate + "-" + generateRandomShortString() + ".csv";
+    let blob = new Blob([backupData], {type: "text/plain"});
+    let url = window.URL.createObjectURL(blob);
+    backupElement.href = url;
+    backupElement.download = backupFilename;
     backupElement.click();
+    window.URL.revokeObjectURL(url);
 
     firebase.database().ref("backup/").update({
       backupWhen: backupDate
