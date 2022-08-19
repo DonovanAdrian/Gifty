@@ -218,6 +218,7 @@ window.onload = function instantiate() {
   function updateGiftToDB(){
     let newURL = verifyURLString(giftLinkInp.value);
     let clearReceivedByBool = false;
+    let notificationSent = false;
 
     if(giftTitleInp.value === "")
       alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
@@ -235,6 +236,7 @@ window.onload = function instantiate() {
                 if (userFound != -1)
                   addNotificationToDB(userArr[userFound], currentGift.title);
               }
+              notificationSent = true;
 
               clearReceivedByBool = true;
               currentGift.received = 0;
@@ -277,8 +279,6 @@ window.onload = function instantiate() {
               firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID + "/receivedBy").remove();
             }
           }
-
-          navigation(2);//Home
         } else {
           if (!multiplePurchases.checked && currentGift.multiples && currentGift.receivedBy.length != undefined) {
             if (currentGift.receivedBy.length != 0) {
@@ -288,6 +288,7 @@ window.onload = function instantiate() {
                 if (userFound != -1)
                   addNotificationToDB(userArr[userFound], currentGift.title);
               }
+              notificationSent = true;
 
               clearReceivedByBool = true;
               currentGift.received = 0;
@@ -337,12 +338,9 @@ window.onload = function instantiate() {
               firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID + "/receivedBy").remove();
             }
           }
-
-          sessionStorage.setItem("validGiftUser", JSON.stringify(user));
-          navigation(10);//PrivateFriendList
         }
 
-        if(currentGift.buyer != ""){
+        if(currentGift.buyer != "" && !notificationSent){
           let userFound = findUserNameItemInArr(currentGift.buyer, userArr);
           if(userFound != -1){
             if(privateListBool){
@@ -360,9 +358,28 @@ window.onload = function instantiate() {
             if(consoleOutput)
               console.log("User not found");
           }
+        } else if (currentGift.receivedBy != null && !notificationSent) {
+          for (let i = 0; i < currentGift.receivedBy.length; i++) {
+            let userFound = findUIDItemInArr(currentGift.receivedBy[i], userArr);
+            if(userFound != -1){
+              if(userArr[userFound].uid != user.uid) {
+                addNotificationToDB(userArr[userFound], currentGift.title);
+              }
+            } else {
+              if(consoleOutput)
+                console.log("User not found");
+            }
+          }
         } else {
           if(consoleOutput)
             console.log("No buyer, no notification needed");
+        }
+
+        if (!privateListBool) {
+          navigation(2);//Home
+        } else {
+          sessionStorage.setItem("validGiftUser", JSON.stringify(user));
+          navigation(10);//PrivateFriendList
         }
       } else {
         alert("There was an error updating the gift, please try again!");
@@ -397,7 +414,7 @@ window.onload = function instantiate() {
       giftOwner = privateList.uid;
     }
 
-    notificationString = generateNotificationString(giftOwner, giftTitle, pageNameNote);
+    notificationString = generateNotificationString(giftOwner,"", giftTitle, pageNameNote);
 
     if(buyerUserData.notifications != undefined){
       buyerUserNotifications = buyerUserData.notifications;
@@ -431,12 +448,6 @@ window.onload = function instantiate() {
           console.log("Added Notification To DB");
       }
     }
-  }
-
-  function generateNotificationString(giftOwner, giftTitle, pageNameNote){
-    if(consoleOutput)
-      console.log("Generating Notification");
-    return (giftOwner + "," + giftTitle + "," + pageNameNote);
   }
 
   function addGiftToDB(){
