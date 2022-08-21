@@ -590,7 +590,7 @@ window.onload = function instantiate() {
     let buyerUserNotifications = [];
     let buyerReadNotifications = [];
     let updateNotificationBool = false;
-    let notificationString = generateNotificationString(giftOwner, giftTitle, pageNameNote);
+    let notificationString = generateNotificationString(giftOwner, "", giftTitle, pageNameNote);
 
     if(buyerUserData.notifications != undefined){
       buyerUserNotifications = buyerUserData.notifications;
@@ -624,12 +624,6 @@ window.onload = function instantiate() {
           console.log("Added Notification To DB");
       }
     }
-  }
-
-  function generateNotificationString(giftOwner, giftTitle, pageNameNote){
-    if(consoleOutput)
-      console.log("Generating Notification");
-    return (giftOwner + "," + giftTitle + "," + pageNameNote);
   }
 
   function checkGiftLimit() {
