@@ -8,7 +8,7 @@ let indexElements = [];
 let listeningFirebaseRefs = [];
 let userArr = [];
 
-let config = {};
+let config;
 
 let userLimit = 100;
 let loginTry = 0;
@@ -40,8 +40,8 @@ let colorShifter;
 
 function fetchConfigFile(){
   let oFrame = document.getElementById("frmFile");
-  let strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;
-  let configFileInput = strRawContents.split("\n");
+  let strRawContents;
+  let configFileInput;
   let configInitializeInt = 0;
   let isComment;
   let apiKeyString = "";
@@ -52,6 +52,13 @@ function fetchConfigFile(){
   let messagingSenderIdString = "";
   let appIdString = "";
   let measurementIdString = "";
+  try {
+    strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;
+    configFileInput = strRawContents.split("\n");
+  } catch (err) {
+    alert("There was an error loading the webpage, please try refreshing the page and contacting an administrator!");
+    return;
+  }
 
   while (strRawContents.indexOf("\r") >= 0)
     strRawContents = strRawContents.replace("\r", "");
@@ -171,7 +178,15 @@ window.onload = function instantiate() {
 
   verifyElementIntegrity(indexElements);
   loginBtn.innerHTML = "Please Wait...";
-  fetchConfigFile();
+  try {
+    config = JSON.parse(sessionStorage.config);
+  } catch (err) {}
+  if (config == null) {
+    fetchConfigFile();
+  } else {
+    commonInitialization();
+    loginQuery();
+  }
   backgroundAlternator();
 
   function backgroundAlternator(){
@@ -213,6 +228,7 @@ function loginQuery() {
           if(data.key == "allowLogin") {
             if (data.val()) {
               loginBtn.innerHTML = "Log In";
+              username.focus();
               allowLogin = true;
             } else {
               loginBtn.innerHTML = "Log In Disabled";
@@ -227,6 +243,7 @@ function loginQuery() {
           if(data.key == "allowLogin") {
             if (data.val()) {
               loginBtn.innerHTML = "Log In";
+              username.focus();
               allowLogin = true;
             } else {
               loginBtn.innerHTML = "Log In Disabled";
@@ -272,6 +289,7 @@ function loginQuery() {
             "maintenance before logging in. Thank you for your patience!"
         });
         loginBtn.innerHTML = "Log In";
+        username.focus();
         allowLogin = true;
         sessionStorage.setItem("allowLogin", JSON.stringify(allowLogin));
 
