@@ -5,7 +5,7 @@
  */
 
 #fader {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -14,10 +14,16 @@
   pointer-events: none;
   background: white;
   animation-duration: 300ms;
+  -webkit-animation-duration: 300ms;
   animation-timing-function: ease-in-out;
 }
 
 @keyframes fade-out {
+  from { opacity: 1 }
+  to { opacity: 0 }
+}
+
+@-webkit-keyframes fade-out {
   from { opacity: 1 }
   to { opacity: 0 }
 }
@@ -27,14 +33,21 @@
   to { opacity: 1 }
 }
 
+@-webkit-keyframes fade-in {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+
 #fader.fade-out {
   opacity: 0;
   animation-name: fade-out;
+  -webkit-animation-name: fade-out;
 }
 
 #fader.fade-in {
   opacity: 1;
   animation-name: fade-in;
+  -webkit-animation-name: fade-in;
 }
 
 body {
@@ -74,7 +87,21 @@ p.faqInfSpec {
   font-family: Verdana;
 }
 
+p.giftInfLarge {
+  margin: 0;
+  padding-left: 5px;
+  padding-top: 10px;
+  font-family: Verdana;
+}
+
 p.giftInf {
+  margin: 0;
+  padding-left: 5px;
+  padding-top: 10px;
+  font-family: Verdana;
+}
+
+p.giftInfSmall {
   margin: 0;
   padding-left: 5px;
   padding-top: 10px;
@@ -88,10 +115,8 @@ input.giftInp {
 
 span.basicBtn {
   position: relative;
-  font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
 }
@@ -101,12 +126,26 @@ span.basicBtn:hover {
   color: #000;
 }
 
+span.dropdown {
+  /*This (and text size) will need to be updated based upon window size...*/
+  color: black;
+  font-family: Verdana;
+  display: none;
+  position: relative;
+  background-color: #f1f1f1;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+
+span.dropdown:hover {
+  background-color: #ddd;
+}
+
 span.boughtBtn {
   position: fixed;
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
 }
@@ -121,7 +160,6 @@ span.addBtn {
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
 }
@@ -136,7 +174,6 @@ span.settingsBtn {
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
 }
@@ -151,7 +188,6 @@ span.faqBtn {
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
 }
@@ -167,7 +203,6 @@ span.modBtn {
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
 }
@@ -183,7 +218,6 @@ span.familyBtn {
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
-  cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
 }
@@ -193,7 +227,7 @@ span.familyBtn:hover {
   color: #000;
 }
 
-img.newInvite {
+img.leftCornerImgHidden {
   position: fixed;
   left: 10px;
   bottom: 10px;
@@ -201,11 +235,17 @@ img.newInvite {
   transition: 0.3s;
 }
 
+img.leftCornerImg {
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  transition: 0.3s;
+}
+
 span.updateBtn {
   font-family: Verdana;
   background: #b0d4b0;
   color: #555;
-  cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
 }
@@ -219,7 +259,6 @@ span.giftBackBtn {
   font-family: Verdana;
   background: #d4b0b0;
   color: #555;
-  cursor: pointer;
   transition: 0.3s;
   border-radius: 0;
 }
@@ -293,7 +332,6 @@ ul.giftList {
 }
 
 ul li.gift {
-  cursor: pointer;
   position: relative;
   font-family: Verdana;
   list-style-type: none;
@@ -314,7 +352,6 @@ ul li:hover.gift {
 }
 
 ul li.spacer {
-  cursor: pointer;
   position: relative;
   font-family: Verdana;
   list-style-type: none;
@@ -396,12 +433,12 @@ ul li.santa::before {
   position: fixed;
   z-index: 1;
   padding-top: 50px;
+  padding-bottom: 2000px;
   left: 0;
   top: 0;
   width: 100%;
-  height: 100%;
+  height: 75%;
   overflow: auto;
-  max-height: 75%;
   box-shadow: 0 -25px 100px 100px rgba(255,255,255,0.35), 0 -25px 200px 200px rgba(255,255,255,0.4) inset;
 }
 
@@ -435,33 +472,50 @@ ul li.santa::before {
 
 .modal-content-close {
   -webkit-animation-name: animateclose;
-  -webkit-animation-duration: 0.4s;
+  -webkit-animation-duration: 900ms;
+  -webkit-transition-property: animateclose;
+  -webkit-transition-duration: 900ms;
   animation-name: animateclose;
-  animation-duration: 0.4s;
+  animation-duration: 800ms;
 }
 
 @-webkit-keyframes animateclose {
-  from {top:0; opacity:1}
-  to {top:-300px; opacity:0}
+  0% {top:0; opacity:1}
+  100% {top:-100%; opacity:0}
 }
 
 @keyframes animateclose {
-  from {top:0; opacity:1}
-  to {top:-300px; opacity:0}
+  0% {top:0; opacity:1}
+  100% {top:-100%; opacity:0}
+}
+
+.closeInvert {
+  color: black;
+  float: left;
+  font-size: 28px;
+  font-weight: bold;
+  transition: 0.4s;
+}
+
+.closeInvert:hover,
+.closeInvert:focus {
+  color: #555555;
+  text-decoration: none;
 }
 
 .close {
   color: white;
   float: right;
+  padding: 10px 5px;
   font-size: 28px;
   font-weight: bold;
+  transition: 0.4s;
 }
 
 .close:hover,
 .close:focus {
   color: #000;
   text-decoration: none;
-  cursor: pointer;
 }
 
 .modal-header {
@@ -480,6 +534,26 @@ ul li.santa::before {
   color: white;
 }
 
+.modal-footer-left {
+  float: left;
+  padding-left: 10px;
+  transition: 0.4s;
+}
+
+.modal-footer-left:hover {
+  color: black;
+}
+
+.modal-footer-right {
+  float: right;
+  padding-right: 10px;
+  transition: 0.4s;
+}
+
+.modal-footer-right:hover {
+  color:black;
+}
+
 @media screen and (min-width: 0px) and (max-width: 550px) {
   span.boughtBtn {
     left: 5px;
@@ -496,6 +570,11 @@ ul li.santa::before {
   }
 
   span.basicBtn {
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.dropdown {
     padding: 5px;
     font-size: 13px;
   }
@@ -534,8 +613,16 @@ ul li.santa::before {
     font-size: 13px;
   }
 
+  p.giftInfLarge {
+    font-size: 18px;
+  }
+
   p {
     font-size: 14px;
+  }
+
+  p.giftInfSmall {
+    font-size: 10px;
   }
 
   input.giftInp {
@@ -553,7 +640,12 @@ ul li.santa::before {
     height: 20px;
   }
 
-  img.newInvite {
+  img.leftCornerImgHidden {
+    width: 30px;
+    height: 30px;
+  }
+
+  img.leftCornerImg {
     width: 30px;
     height: 30px;
   }
@@ -567,6 +659,15 @@ ul li.santa::before {
   div.topnav ul li a {
     font-size: 13px;
     padding: 5px;
+  }
+
+  .close {
+    font-size: 22px;
+  }
+
+  .closeInvert {
+    padding: 10px 10px;
+    font-size: 20px;
   }
 
   .modal-header {
@@ -594,6 +695,11 @@ ul li.santa::before {
 
 @media screen and (min-width: 550px) and (max-width: 925px) {
   span.basicBtn {
+    padding: 7px;
+    font-size: 15px;
+  }
+
+  span.dropdown {
     padding: 7px;
     font-size: 15px;
   }
@@ -651,8 +757,16 @@ ul li.santa::before {
     font-size: 15px;
   }
 
+  p.giftInfLarge {
+    font-size: 19px;
+  }
+
   p {
     font-size: 15px;
+  }
+
+  p.giftInfSmall {
+    font-size: 11px;
   }
 
   img.notificationIcon {
@@ -660,13 +774,27 @@ ul li.santa::before {
     height: 30px;
   }
 
-  img.newInvite {
+  img.leftCornerImgHidden {
+    width: 40px;
+    height: 40px;
+  }
+
+  img.leftCornerImg {
     width: 40px;
     height: 40px;
   }
 
   .break{
     clear: both;
+  }
+
+  .close {
+    font-size: 24px;
+  }
+
+  .closeInvert {
+    padding: 11px 10px;
+    font-size: 22px;
   }
 
   .modal-header {
@@ -706,6 +834,11 @@ ul li.santa::before {
 
 @media screen and (min-width: 925px) and (max-width: 1500px) {
   span.basicBtn {
+    padding: 9px;
+    font-size: 17px;
+  }
+
+  span.dropdown {
     padding: 9px;
     font-size: 17px;
   }
@@ -763,8 +896,16 @@ ul li.santa::before {
     font-size: 17px;
   }
 
+  p.giftInfLarge {
+    font-size: 22px;
+  }
+
   p {
     font-size: 17px;
+  }
+
+  p.giftInfSmall {
+    font-size: 12px;
   }
 
   img.notificationIcon {
@@ -772,9 +913,23 @@ ul li.santa::before {
     height: 40px;
   }
 
-  img.newInvite {
+  img.leftCornerImgHidden {
     width: 50px;
     height: 50px;
+  }
+
+  img.leftCornerImg {
+    width: 50px;
+    height: 50px;
+  }
+
+  .close {
+    font-size: 28px;
+  }
+
+  .closeInvert {
+    padding: 12px 10px;
+    font-size: 24px;
   }
 
   .modal-header {
@@ -814,6 +969,11 @@ ul li.santa::before {
 
 @media screen and (min-width: 1500px) and (max-width: 2000px) {
   span.basicBtn {
+    padding: 11px;
+    font-size: 21px;
+  }
+
+  span.dropdown {
     padding: 11px;
     font-size: 21px;
   }
@@ -871,8 +1031,16 @@ ul li.santa::before {
     font-size: 21px;
   }
 
+  p.giftInfLarge {
+    font-size: 27px;
+  }
+
   p {
     font-size: 21px;
+  }
+
+  p.giftInfSmall {
+    font-size: 15px;
   }
 
   img.imgIcon {
@@ -888,9 +1056,23 @@ ul li.santa::before {
     height: 50px;
   }
 
-  img.newInvite {
+  img.leftCornerImgHidden {
     width: 65px;
     height: 65px;
+  }
+
+  img.leftCornerImg {
+    width: 65px;
+    height: 65px;
+  }
+
+  .close {
+    font-size: 36px;
+  }
+
+  .closeInvert {
+    padding: 13px 10px;
+    font-size: 30px;
   }
 
   .modal-header {
@@ -935,6 +1117,11 @@ ul li.santa::before {
     font-size: 23px;
   }
 
+  span.dropdown {
+    padding: 13px;
+    font-size: 23px;
+  }
+
   span.settingsBtn {
     padding: 13px;
     font-size: 23px;
@@ -988,8 +1175,16 @@ ul li.santa::before {
     font-size: 23px;
   }
 
+  p.giftInfLarge {
+    font-size: 29px;
+  }
+
   p {
     font-size: 23px;
+  }
+
+  p.giftInfSmall {
+    font-size: 17px;
   }
 
   img.imgIcon {
@@ -1005,9 +1200,23 @@ ul li.santa::before {
     height: 55px;
   }
 
-  img.newInvite {
+  img.leftCornerImgHidden {
     width: 75px;
     height: 75px;
+  }
+
+  img.leftCornerImg {
+    width: 75px;
+    height: 75px;
+  }
+
+  .close {
+    font-size: 40px;
+  }
+
+  .closeInvert {
+    padding: 14px 10px;
+    font-size: 34px;
   }
 
   .modal-header {
@@ -1052,6 +1261,11 @@ ul li.santa::before {
     font-size: 26px;
   }
 
+  span.dropdown {
+    padding: 13px;
+    font-size: 26px;
+  }
+
   span.settingsBtn {
     padding: 13px;
     font-size: 26px;
@@ -1105,8 +1319,16 @@ ul li.santa::before {
     font-size: 26px;
   }
 
+  p.giftInfLarge {
+    font-size: 33px;
+  }
+
   p {
     font-size: 26px;
+  }
+
+  p.giftInfSmall {
+    font-size: 19px;
   }
 
   img.imgIcon {
@@ -1122,9 +1344,23 @@ ul li.santa::before {
     height: 60px;
   }
 
-  img.newInvite {
+  img.leftCornerImgHidden {
     width: 80px;
     height: 80px;
+  }
+
+  img.leftCornerImg {
+    width: 80px;
+    height: 80px;
+  }
+
+  .close {
+    font-size: 46px;
+  }
+
+  .closeInvert {
+    padding: 15px 10px;
+    font-size: 40px;
   }
 
   .modal-header {
