@@ -14,6 +14,7 @@
   pointer-events: none;
   background: #870b0b;
   animation-duration: 600ms;
+  -webkit-animation-duration: 600ms;
   animation-timing-function: ease-in-out;
 }
 
@@ -30,18 +31,21 @@
 #fader.fade-out {
   opacity: 0;
   animation-name: fade-out;
+  -webkit-animation-name: fade-out;
 }
 
 #fader.fade-in {
   opacity: 1;
   animation-name: fade-in;
+  -webkit-animation-name: fade-in;
 }
 
 body {
   margin: 16px;
   background-color: #870b0b;
-  transition: 3.5s;
+  transition: 4s;
   animation: fadeInAnimation ease 1s;
+  -webkit-animation: fadeInAnimation ease 1s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
 }
