@@ -60,6 +60,7 @@ let confUserName;
 let inviteConfirm;
 let inviteDeny;
 let closeUserInviteModal;
+let addToBlackList;
 let inviteInfo;
 let addInvite;
 let cancelInvite;
@@ -133,6 +134,7 @@ window.onload = function instantiate() {
   userInviteModal = document.getElementById('userInviteModal');
   closeUserInviteModal = document.getElementById('closeUserInviteModal');
   userNameInp = document.getElementById('userNameInp');
+  addToBlackList = document.getElementById('addToBlackList');
   inviteInfo = document.getElementById('inviteInfo');
   addInvite = document.getElementById('addInvite');
   cancelInvite = document.getElementById('cancelInvite');
@@ -162,7 +164,7 @@ window.onload = function instantiate() {
   userInviteRemove = document.getElementById('userInviteRemove');
   testData = document.getElementById('testData');
   inviteElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, userInviteModal,
-    closeUserInviteModal, userNameInp, inviteInfo, addInvite, cancelInvite, confirmModal, closeConfirmModal,
+    closeUserInviteModal, userNameInp, addToBlackList, inviteInfo, addInvite, cancelInvite, confirmModal, closeConfirmModal,
     confUserName, inviteConfirm, inviteDeny, inviteNote, newInviteIcon, addUser, notificationModal, notificationTitle,
     notificationInfo, noteSpan, privateMessageModal, closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg,
     inviteModal, closeInviteModal, userName, userUName, userShareCode, sendPrivateMessage, userInviteRemove, testData];
@@ -376,11 +378,15 @@ window.onload = function instantiate() {
     privateMessageInp.placeholder = "Hey! Just to let you know...";
 
     sendMsg.onclick = function (){
-      message = generatePrivateMessage(user.uid, privateMessageInp.value);
-      addPrivateMessageToDB(userData, message);
-      privateMessageInp.value = "";
-      closeModal(privateMessageModal);
-      openModal(inviteModal, userData.uid);
+      if(privateMessageInp.value.includes(",,,")){
+        alert("Please do not use commas in the message. Thank you!");
+      } else {
+        message = generateNotificationString(user.uid, "", privateMessageInp.value, "");
+        addPrivateMessageToDB(userData, message);
+        privateMessageInp.value = "";
+        closeModal(privateMessageModal);
+        openModal(inviteModal, userData.uid);
+      }
     };
     cancelMsg.onclick = function (){
       privateMessageInp.value = "";
@@ -393,10 +399,6 @@ window.onload = function instantiate() {
     closePrivateMessageModal.onclick = function() {
       closeModal(privateMessageModal);
     };
-  }
-
-  function generatePrivateMessage(userUID, message){
-    return userUID + "@#$:" + message;
   }
 
   function addPrivateMessageToDB(userData, message) {
@@ -510,7 +512,6 @@ window.onload = function instantiate() {
         friends: friendFriendArr
       });
 
-      console.log(uid);
       let i = initializedUsers.indexOf(uid);
       if (i != -1) {
         initializedUsers.splice(i, 1);
@@ -532,6 +533,7 @@ window.onload = function instantiate() {
     let userFriendLength = 0;
     let commonFriends = 0;
     let commonFriendData;
+    let userBlackListCommon;
 
     if (user.friends != null) {
       userFriendLength = user.friends.length;
@@ -565,14 +567,22 @@ window.onload = function instantiate() {
           }
         }
 
-        if (commonFriendArr.length > 0) {
+        if (user.userBlackList != null) {
+          userBlackListCommon = user.userBlackList;
+        }
+
+        if (commonFriendArr.length > 0 && userBlackListCommon.length != commonFriendArr.length) {
           addUser.style.background = "#3be357";
+        } else {
+          addToBlackList.style.display = "none";
         }
       }
     }
   }
 
   function generateAddUserBtn(){
+    let commonFriendIndex;
+    let userBlackList = [];
     let friendUserNameList = [];
     let friendShareCodeList = [];
     let upperCaseUserArr = [];
@@ -588,8 +598,13 @@ window.onload = function instantiate() {
         }
       }
     }
+
     for (let b = 0; b < userArr.length; b++){
       upperCaseUserArr.push(userArr[b].userName.toUpperCase());
+    }
+
+    if (user.userBlackList != null) {
+      userBlackList = user.userBlackList;
     }
 
     addUser.onclick = function() {
@@ -597,8 +612,29 @@ window.onload = function instantiate() {
       addInvite.innerHTML = "Send Invite";
 
       if (commonFriendArr.length > 0) {
-        let i = findUIDItemInArr(commonFriendArr[0], userArr);
-        inviteInfo.innerHTML = "Suggested Friend: " + userArr[i].userName + " " + "(" + userArr[i].name + ")";
+        for (let z = 0; z < commonFriendArr.length; z++) {
+          commonFriendIndex = findUIDItemInArr(commonFriendArr[z], userArr);
+          if (commonFriendIndex != -1 && !userBlackList.includes(userArr[commonFriendIndex].uid)) {
+            inviteInfo.innerHTML = "Suggested Friend: " + userArr[commonFriendIndex].userName + " " + "(" + userArr[commonFriendIndex].name + ")";
+            inviteInfo.onclick = function() {
+              userNameInp.value = userArr[commonFriendIndex].userName;
+            };
+            addToBlackList.style.display = "block";
+            addToBlackList.onclick = function () {
+              if (!userBlackList.includes(userArr[commonFriendIndex].uid)) {
+                userBlackList.push(userArr[commonFriendIndex].uid);
+                firebase.database().ref("users/" + user.uid).update({
+                  userBlackList: userBlackList
+                });
+              }
+              user.userBlackList = userBlackList;
+              inviteInfo.innerHTML = "";
+              addToBlackList.style.display = "none";
+              addUser.style.background = "#ff4c4c";
+            };
+            break;
+          }
+        }
       }
 
       addInvite.onclick = function() {
@@ -636,28 +672,30 @@ window.onload = function instantiate() {
           }
         }
 
+        addToBlackList.style.display = "none";
+        addToBlackList.onclick = function() {};
         inviteInfo.innerHTML = "";
         if(userNameInp.value == ""){
           inviteInfo.innerHTML = "No User Name Or Share Code Provided, Please Try Again!";
         } else if (friendShareCodeList.includes(userNameInp.value) ||
           friendUserNameList.includes(userNameInp.value.toUpperCase())) {
-          inviteInfo.innerHTML = "That User Is Already Your Friend, Please Try Again!";
+          inviteInfo.innerHTML = userNameInp.value + " Is Already Your Friend, Please Try Again!";
         } else if (user.userName.toUpperCase() == userNameInp.value.toUpperCase() ||
           user.shareCode == userNameInp.value){
           inviteInfo.innerHTML = "You Cannot Invite Yourself, Please Try Again!";
         } else if (userLocation != -1) {
           try {
             if (user.invites.includes(userArr[userLocation].uid)) {
-              inviteInfo.innerHTML = "This User Already Sent You An Invite, Please Try Again!";
+              inviteInfo.innerHTML = userNameInp.value + " Already Sent You An Invite, Please Try Again!";
             } else if (userArr[userLocation].invites.includes(user.uid)) {
-              inviteInfo.innerHTML = "You Already Sent This User An Invite, Please Try Again!";
+              inviteInfo.innerHTML = "You Already Sent " + userNameInp.value + " An Invite, Please Try Again!";
             } else {
               generateConfirmDialog(userLocation);
             }
           } catch (err) {
             try {
               if (userArr[userLocation].invites.includes(user.uid)) {
-                inviteInfo.innerHTML = "You Already Sent This User An Invite, Please Try Again!";
+                inviteInfo.innerHTML = "You Already Sent " + userNameInp.value + " An Invite, Please Try Again!";
               } else {
                 generateConfirmDialog(userLocation);
               }
@@ -673,9 +711,9 @@ window.onload = function instantiate() {
           inviteInfo.innerHTML = "You're Just Mocking Me At This Point";
         } else {
           if (shareCodeBool) {
-            inviteInfo.innerHTML = "That Share Code Does Not Exist, Please Try Again!";
+            inviteInfo.innerHTML = "That Share Code, \"" + userNameInp.value + "\" Does Not Exist, Please Try Again!";
           } else {
-            inviteInfo.innerHTML = "That User Name Does Not Exist, Please Try Again!";
+            inviteInfo.innerHTML = "That User Name, \"" + userNameInp.value + "\" Does Not Exist, Please Try Again!";
           }
         }
       };
@@ -684,12 +722,16 @@ window.onload = function instantiate() {
         closeModal(userInviteModal);
         userNameInp.value = "";
         inviteInfo.innerHTML = "";
+        addToBlackList.style.display = "none";
+        addToBlackList.onclick = function() {};
       };
 
       closeUserInviteModal.onclick = function() {
         closeModal(userInviteModal);
         userNameInp.value = "";
         inviteInfo.innerHTML = "";
+        addToBlackList.style.display = "none";
+        addToBlackList.onclick = function() {};
       };
     };
     addUser.innerHTML = "Invite User";
@@ -712,6 +754,8 @@ window.onload = function instantiate() {
         closeModal(confirmModal);
         userNameInp.value = "";
         inviteInfo.innerHTML = "";
+        addToBlackList.style.display = "none";
+        addToBlackList.onclick = function() {};
       };
 
       inviteDeny.onclick = function () {
@@ -719,12 +763,16 @@ window.onload = function instantiate() {
         openModal(userInviteModal, "userInviteModal");
         userNameInp.value = "";
         inviteInfo.innerHTML = "";
+        addToBlackList.style.display = "none";
+        addToBlackList.onclick = function() {};
       };
 
       closeConfirmModal.onclick = function () {
         closeModal(confirmModal);
         userNameInp.value = "";
         inviteInfo.innerHTML = "";
+        addToBlackList.style.display = "none";
+        addToBlackList.onclick = function() {};
       };
 
       window.onclick = function (event) {
@@ -732,6 +780,8 @@ window.onload = function instantiate() {
           closeModal(confirmModal);
           userNameInp.value = "";
           inviteInfo.innerHTML = "";
+          addToBlackList.style.display = "none";
+          addToBlackList.onclick = function() {};
         }
       }
       openModal(confirmModal, "confirmUserModal", true);
@@ -777,27 +827,23 @@ window.onload = function instantiate() {
       commonFriendArr.splice(i, 1);
     }
 
-    let notificationString = generateNotificationString(user.name, "invites.html");
-    let invitedUserNotificiations;
+    let notificationString = generateNotificationString(user.uid,"","","");
+    let invitedUserNotifications;
     if(invitedUser.notifications == undefined){
-      invitedUserNotificiations = [];
+      invitedUserNotifications = [];
     } else {
-      invitedUserNotificiations = invitedUser.notifications;
+      invitedUserNotifications = invitedUser.notifications;
     }
-    invitedUserNotificiations.push(notificationString);
+    invitedUserNotifications.push(notificationString);
 
     if(invitedUser.notifications != undefined) {
       firebase.database().ref("users/" + invitedUser.uid).update({
-        notifications: invitedUserNotificiations
+        notifications: invitedUserNotifications
       });
     } else {
       if(consoleOutput)
         console.log("New Notifications List");
       firebase.database().ref("users/" + invitedUser.uid).update({notifications:{0:notificationString}});
     }
-  }
-
-  function generateNotificationString(invitedName, pageNameNote){
-    return (invitedName + "," + pageNameNote);
   }
 };
