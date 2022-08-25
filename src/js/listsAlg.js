@@ -12,6 +12,7 @@ let userArr = [];
 
 let readNotificationsBool = false;
 let friendListEmptyBool = false;
+let secretSantaInit = false;
 
 let secretSantaAssignErrorMsg = "refresh the page or ignore this message!";
 
@@ -148,6 +149,9 @@ window.onload = function instantiate() {
           postRef.on('child_added', function (data) {
             if(consoleOutput)
               console.log(data.key + " added");
+            if (secretSantaInit == false) {
+              secretSantaInit = true;
+            }
 
             initializeSecretSantaDataList(data);
           });
@@ -178,6 +182,7 @@ window.onload = function instantiate() {
             manualUpdates: false,
             santaState: 1
           });
+          fetchSecretSanta(autoSecretSanta);
         }
       });
     };
