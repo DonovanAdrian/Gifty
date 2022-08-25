@@ -114,7 +114,7 @@ https://firebase.google.com/docs/cli
       you will be storing the Gifty files, even temporarily. Once
       you have finished deploying though, you will be able to delete
       the folder, if desired.
-  -6, Once you have completed the console deployment, navigate
+  - 6, Once you have completed the console deployment, navigate
   to the new web address of your iteration of Gifty and give it
   a test drive! Create an account, make some gifts, and invite
   your family to start using it!
