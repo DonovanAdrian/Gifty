@@ -9,6 +9,7 @@ let listeningFirebaseRefs = [];
 let inviteArr = [];
 let userArr = [];
 let familyArr = [];
+let initializedUsers = [];
 
 let secretSantaAssignErrorMsg = "try again or look at the console for more details!";
 
@@ -16,13 +17,48 @@ let moderationSet = 1;
 let dataCounter = 0;
 let globalNoteInt = 0;
 let commonLoadingTimerInt = 0;
+let giftLimit = 0;
+let userLimit = 0;
+
+let secretSantaInit = false;
+
+let allowLogin = null;
+
+let loginDisabledMsg = "";
 
 let dataListContainer;
 let offlineSpan;
 let offlineModal;
 let privateMessageModal;
 let sendGlobalNotification;
+let nukeAllUserNotifications;
+let nukeAllUserScores;
+let loginFxnBtn;
+let limitsBtn;
+let databaseLimitsModal;
+let closeDatabaseLimitsModal;
+let giftLimitInp;
+let userLimitInp;
+let confirmLimits;
+let cancelLimits;
+let loginDisabledModal;
+let closeLoginDisabledModal;
+let loginDisabledInp;
+let resetDefaultLoginDisabledBtn;
+let confirmLoginDisabled;
+let cancelLoginDisabled;
+let userListDropDown;
+let showNone;
+let showUID;
+let showName;
+let showLastLogin;
+let showUserScore;
+let showShareCode;
+let showFriends;
+let showSantaSignUp;
+let showModerator;
 let user;
+let localListedUserData;
 let offlineTimer;
 let commonLoadingTimer;
 let userModal;
@@ -34,6 +70,7 @@ let inviteNote;
 let userInitial;
 let userInvites;
 let autoSecretSanta;
+let moderatorSettings;
 let familyInitial;
 let userOptionsBtn;
 let secretSantaModal;
@@ -63,6 +100,8 @@ let globalMsgTitle;
 let globalMsgInp;
 let sendMsg;
 let cancelMsg;
+let loginInitial;
+let limitsInitial;
 
 
 
@@ -78,6 +117,32 @@ window.onload = function instantiate() {
   noteSpan = document.getElementById('closeNotification');
   privateMessageModal = document.getElementById('privateMessageModal');
   sendGlobalNotification = document.getElementById('sendGlobalNotification');
+  nukeAllUserNotifications = document.getElementById('nukeAllUserNotifications');
+  nukeAllUserScores = document.getElementById('nukeAllUserScores');
+  loginFxnBtn = document.getElementById('loginFxnBtn');
+  limitsBtn = document.getElementById('limitsBtn');
+  databaseLimitsModal = document.getElementById('databaseLimitsModal');
+  closeDatabaseLimitsModal = document.getElementById('closeDatabaseLimitsModal');
+  giftLimitInp = document.getElementById('giftLimitInp');
+  userLimitInp = document.getElementById('userLimitInp');
+  confirmLimits = document.getElementById('confirmLimits');
+  cancelLimits = document.getElementById('cancelLimits');
+  loginDisabledModal = document.getElementById('loginDisabledModal');
+  closeLoginDisabledModal = document.getElementById('closeLoginDisabledModal');
+  loginDisabledInp = document.getElementById('loginDisabledInp');
+  resetDefaultLoginDisabledBtn = document.getElementById('resetDefaultLoginDisabledBtn');
+  confirmLoginDisabled = document.getElementById('confirmLoginDisabled');
+  cancelLoginDisabled = document.getElementById('cancelLoginDisabled');
+  userListDropDown = document.getElementById('userListDropDown');
+  showNone = document.getElementById('showNone');
+  showUID = document.getElementById('showUID');
+  showName = document.getElementById('showName');
+  showLastLogin = document.getElementById('showLastLogin');
+  showUserScore = document.getElementById('showUserScore');
+  showShareCode = document.getElementById('showShareCode');
+  showFriends = document.getElementById('showFriends');
+  showSantaSignUp = document.getElementById('showSantaSignUp');
+  showModerator = document.getElementById('showModerator');
   sendPrivateMessage = document.getElementById('sendPrivateMessage');
   userModal = document.getElementById('userModal');
   userOptionsBtn = document.getElementById('userOptionsBtn');
@@ -109,11 +174,15 @@ window.onload = function instantiate() {
   sendMsg = document.getElementById('sendMsg');
   cancelMsg = document.getElementById('cancelMsg');
   moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal, notificationTitle,
-    notificationInfo, noteSpan, privateMessageModal, sendGlobalNotification, sendPrivateMessage, userModal,
-    userOptionsBtn, secretSantaModal, santaModalSpan, secretSantaBtn, secretSantaShuffle, secretSantaAutoBtn,
-    settingsNote, testData, closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends,
-    userLastLogin, userScore, userPassword, userSecretSanta, moderatorOp, sendPrivateMessage, warnUser, banUser,
-    closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
+    notificationInfo, noteSpan, privateMessageModal, sendGlobalNotification, nukeAllUserNotifications,
+    nukeAllUserScores, loginFxnBtn, limitsBtn, databaseLimitsModal, closeDatabaseLimitsModal, giftLimitInp,
+    userLimitInp, confirmLimits, cancelLimits, loginDisabledModal, closeLoginDisabledModal, loginDisabledInp,
+    resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown, showNone, showUID,
+    showName, showLastLogin, showUserScore, showShareCode, showFriends, showSantaSignUp, showModerator,
+    sendPrivateMessage, userModal, userOptionsBtn, secretSantaModal, santaModalSpan, secretSantaBtn, secretSantaShuffle,
+    secretSantaAutoBtn, settingsNote, testData, closeUserModal, userName, userUID, userUserName, userGifts,
+    userPrivateGifts, userFriends, userLastLogin, userScore, userPassword, userSecretSanta, moderatorOp,
+    sendPrivateMessage, warnUser, banUser, closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
 
   sessionStorage.setItem("moderationSet", moderationSet);
   getCurrentUserCommon();
@@ -123,7 +192,10 @@ window.onload = function instantiate() {
   userInitial = firebase.database().ref("users/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
   autoSecretSanta = firebase.database().ref("secretSanta/");
+  moderatorSettings = firebase.database().ref("moderatorSettings/");
   familyInitial = firebase.database().ref("family/");
+  loginInitial = firebase.database().ref("login/");
+  limitsInitial = firebase.database().ref("limits/");
 
   databaseQuery();
   alternateButtonLabel(settingsNote, "Settings", "Moderation");
@@ -150,7 +222,7 @@ window.onload = function instantiate() {
     }
 
     sendMsg.onclick = function (){
-      if(globalMsgInp.value.includes(",")){
+      if(globalMsgInp.value.includes(",,,")){
         alert("Please do not use commas in the message. Thank you!");
       } else {
         addPrivateMessageToDB(userData, globalMsgInp.value);
@@ -187,6 +259,7 @@ window.onload = function instantiate() {
     } else {
       userNotificationArr = userData.notifications;
     }
+    message = generateNotificationString(">admin" + user.uid, "", message, "");
     userNotificationArr.push(message);
 
     if(userData.notifications == undefined) {
@@ -198,6 +271,244 @@ window.onload = function instantiate() {
     }
   }
 
+  function initializeShowUserData(showDataSelection) {
+    let listOfShowUserElements = [showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends,
+      showSantaSignUp, showModerator];
+    let showHideUserDataBool = false;
+
+    userListDropDown.innerHTML = "Select Listed User Data (" + showDataSelection + ")";;
+    userListDropDown.onclick = function() {
+      for (let i = 0; i < listOfShowUserElements.length; i++) {
+        if (showHideUserDataBool) {
+          listOfShowUserElements[i].style.display = "none";
+        } else {
+          listOfShowUserElements[i].style.display = "block";
+        }
+      }
+
+      if (showHideUserDataBool) {
+        showHideUserDataBool = false;
+      } else {
+        showHideUserDataBool = true;
+      }
+
+      showNone.onclick = function(){
+        updateDBWithShowUserData("None");
+      };
+      showUID.onclick = function(){
+        updateDBWithShowUserData("UID");
+      };
+      showName.onclick = function(){
+        updateDBWithShowUserData("Username");
+      };
+      showLastLogin.onclick = function(){
+        updateDBWithShowUserData("Login");
+      };
+      showUserScore.onclick = function(){
+        updateDBWithShowUserData("Score");
+      };
+      showShareCode.onclick = function(){
+        updateDBWithShowUserData("Share");
+      };
+      showFriends.onclick = function(){
+        updateDBWithShowUserData("Friends");
+      };
+      showSantaSignUp.onclick = function(){
+        updateDBWithShowUserData("Santa");
+      };
+      showModerator.onclick = function(){
+        updateDBWithShowUserData("Moderator");
+      };
+    };
+
+    function updateDBWithShowUserData(showUserDataItem) {
+      firebase.database().ref("moderatorSettings/").update({
+        listedUserData: showUserDataItem
+      });
+    }
+  }
+
+  function updateInitializedUsers(){
+    let tempElem;
+
+    for (let i = 0; i < initializedUsers.length; i++) {
+      tempElem = document.getElementById("user" + initializedUsers[i]);
+      tempElem.className = "gift";
+      tempElem.innerHTML = fetchUserData(initializedUsers[i]);
+    }
+
+    function fetchUserData(uid) {
+      let userIndex = findUIDItemInArr(uid, userArr, true);
+      let userData = userArr[userIndex];
+      let userDataName = userData.name;
+      let userDataString;
+
+      if (userData.ban == 1) {
+        tempElem.className = "gift highSev";
+        userDataString = userDataName + " - BANNED";
+      } else if (userData.warn >= 1) {
+        tempElem.className = "gift mediumSev";
+        userDataString = userDataName + " - WARNED: " + userData.warn;
+      } else {
+        switch (localListedUserData) {
+          case "None":
+            userDataString = userDataName;
+            break;
+          case "UID":
+            userDataString = userDataName + ": " + userData.uid;
+            break;
+          case "Username":
+            userDataString = userDataName + " - " + userData.userName;
+            break;
+          case "Login":
+            userDataString = userDataName;
+            if (userData.lastLogin != undefined) {
+              if (userData.lastLogin != "Never Logged In") {
+                let today = new Date();
+                let lastLoginDate = new Date(userData.lastLogin);
+                let lastLoginDateTrimmed = getMonthName(lastLoginDate.getMonth()) + " " + lastLoginDate.getDate() + ", " + lastLoginDate.getFullYear();
+                let lastLoginDiff = Math.floor((today - lastLoginDate) / (1000 * 3600 * 24));
+                userDataString = userDataName + " - " + lastLoginDateTrimmed;
+                if (lastLoginDiff < 15) {
+                  tempElem.className += " lowSev";
+                } else if (lastLoginDiff < 31) {
+                  tempElem.className += " mediumSev";
+                } else if (lastLoginDiff < 61) {
+                  tempElem.className += " highSev";
+                }
+              }
+            }
+            break;
+          case "Score":
+            userDataString = userDataName + " - 0";
+            if (userData.userScore != undefined) {
+              userDataString = userDataName + " - " + userData.userScore;
+              if (userData.userScore > 500) {
+                tempElem.className += " lowSev";
+              } else if (userData.userScore > 250) {
+                tempElem.className += " mediumSev";
+              } else if (userData.userScore > 50) {
+                tempElem.className += " highSev";
+              }
+            }
+            break;
+          case "Share":
+            if (userData.shareCode != undefined)
+              userDataString = userDataName + " - " + userData.shareCode;
+            else
+              userDataString = userDataName;
+            break;
+          case "Friends":
+            userDataString = userDataName;
+            if (userData.friends != undefined)
+              if (userData.friends.length > 1) {
+                userDataString = userDataName + " - " + userData.friends.length + " Friends";
+              } else if (userData.friends.length == 1) {
+                userDataString = userDataName + " - 1 Friend";
+              }
+            break;
+          case "Santa":
+            userDataString = userDataName;
+            if (localListedUserData == "Santa") {
+              if (userData.secretSanta != null) {
+                if (userData.secretSanta == 1 && currentState != 3) {
+                  tempElem.className += " santa";
+                  userDataString = userDataName + " - Signed Up!";
+                } else if (userData.secretSantaName != null) {
+                  if (userData.secretSantaName != "") {
+                    tempElem.className += " santa";
+                    userDataString = userDataName + " - Name Assigned!";
+                  } else if (userData.secretSanta == 1 && userData.secretSantaName == "") {
+                    tempElem.className += " highSev";
+                    userDataString = userDataName + " - NOT Assigned";
+                  }
+                }
+              }
+            }
+            break;
+          case "Moderator":
+            userDataString = userDataName;
+            if (userData.moderatorInt == 1) {
+              userDataString = userDataName + " - Moderator";
+              tempElem.className += " highSev";
+            }
+            break;
+          default:
+            console.log("Unknown User Data Input!");
+            break;
+        }
+      }
+
+      return userDataString;
+    }
+  }
+
+  function getMonthName(month) {
+    switch(month) {
+      case 0:
+        return "January";
+      case 1:
+        return "February";
+      case 2:
+        return "March";
+      case 3:
+        return "April";
+      case 4:
+        return "May";
+      case 5:
+        return "June";
+      case 6:
+        return "July";
+      case 7:
+        return "August";
+      case 8:
+        return "September";
+      case 9:
+        return "October";
+      case 10:
+        return "November";
+      case 11:
+        return "December";
+      default:
+        console.log("Invalid Month!");
+        break;
+    }
+  }
+
+  function initializeNukeNotification() {
+    nukeAllUserNotifications.innerHTML = "Remove All User's Notifications";
+    nukeAllUserNotifications.onclick = function () {
+      for (let i = 0; i < userArr.length; i++) {
+        if (userArr[i].notifications != null) {
+          userArr[i].notifications = null;
+          firebase.database().ref("users/" + userArr[i].uid + "/notifications/").remove();
+        }
+
+        if (userArr[i].readNotifications != null) {
+          userArr[i].readNotifications = null;
+          firebase.database().ref("users/" + userArr[i].uid + "/readNotifications/").remove();
+        }
+      }
+
+      alert("Every User's Notifications Have Been Removed!");
+    };
+  }
+
+  function initializeNukeScores() {
+    nukeAllUserScores.innerHTML = "Reset All User's Scores";
+    nukeAllUserScores.onclick = function () {
+      for (let i = 0; i < userArr.length; i++) {
+        userArr[i].userScore = 0;
+      }
+
+      for (let i = 0; i < userArr.length; i++) {
+        firebase.database().ref("users/" + userArr[i].uid + "/userScore/").remove();
+      }
+
+      alert("Every User's Score Has Been Reset!");
+    };
+  }
+
   function initializeGlobalNotification() {
     sendGlobalNotification.innerHTML = "Send Global Message";
     sendGlobalNotification.onclick = function (){
@@ -205,7 +516,7 @@ window.onload = function instantiate() {
       globalMsgTitle.innerHTML = "Enter Global Notification Below";
 
       sendMsg.onclick = function (){
-        if(globalMsgInp.value.includes(",")){
+        if(globalMsgInp.value.includes(",,,")){
           alert("Please do not use commas in the notification. Thank you!");
         } else {
           addGlobalMessageToDB(globalMsgInp.value);
@@ -227,6 +538,140 @@ window.onload = function instantiate() {
     };
   }
 
+  function initializeLoginBtn() {
+    if(allowLogin) {
+      loginFxnBtn.innerHTML = "Disable Login Function";
+    } else {
+      loginFxnBtn.innerHTML = "Enable Login Function";
+    }
+    loginFxnBtn.onclick = function(){
+      if (allowLogin) {
+        generateLoginDisabledModal();
+      } else {
+        loginFxnBtn.innerHTML = "Disable Login Function";
+        firebase.database().ref("login/").update({
+          allowLogin: true,
+          loginDisabledMsg: loginDisabledMsg
+        });
+        alert("Login Enabled!");
+        updateMaintenanceLog("settings", "Login enabled by the user \"" + user.userName + "\"");
+      }
+    };
+  }
+
+  function initializeLimitsBtn() {
+    limitsBtn.innerHTML = "Set Database Limits";
+    limitsBtn.onclick = function() {
+      generateLimitsModal();
+    };
+  }
+
+  function generateLimitsModal() {
+    closeModal(secretSantaModal);
+
+    giftLimitInp.value = giftLimit;
+    userLimitInp.value = userLimit;
+
+    confirmLimits.onclick = function (){
+      if (giftLimitInp.value == "" && userLimitInp.value == "") {
+        alert("Please Do Not Enter Empty Or Invalid Characters!");
+      } else if (!isNaN(giftLimitInp.value) && !isNaN(userLimitInp.value)) {
+        if (giftLimitInp.value > 0 && userLimitInp.value > 0) {
+          firebase.database().ref("limits/").update({
+            giftLimit: giftLimitInp.value,
+            userLimit: userLimitInp.value
+          });
+
+          alert("Database Limits Successfully Set!");
+          updateMaintenanceLog("settings", "Database limits set by the user \"" + user.userName
+            + "\" " + "to Gift Limit: " + giftLimitInp.value + " and User Limit: " + userLimitInp.value);
+
+          closeModal(databaseLimitsModal);
+          openModal(secretSantaModal, "secretSantaModal");
+        } else {
+          alert("Please Only Enter Numbers Greater Than Zero!");
+        }
+      } else {
+        alert("Please Only Enter Numbers Into The Fields!");
+      }
+    };
+
+    cancelLimits.onclick = function(){
+      closeModal(databaseLimitsModal);
+      openModal(secretSantaModal, "secretSantaModal");
+    };
+
+    closeDatabaseLimitsModal.onclick = function(){
+      closeModal(databaseLimitsModal);
+      openModal(secretSantaModal, "secretSantaModal");
+    };
+
+    window.onclick = function (event) {
+      if (event.target == databaseLimitsModal) {
+        closeModal(databaseLimitsModal);
+        openModal(secretSantaModal, "secretSantaModal");
+      }
+    }
+
+    openModal(databaseLimitsModal, "databaseLimitsModal", true);
+  }
+
+  function generateLoginDisabledModal() {
+    closeModal(secretSantaModal);
+
+    loginDisabledInp.value = loginDisabledMsg;
+
+    resetDefaultLoginDisabledBtn.onclick = function (){
+      loginDisabledInp.value = "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
+        "maintenance before logging in. Thank you for your patience!";
+      firebase.database().ref("login/").update({
+        allowLogin: allowLogin,
+        loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
+          "maintenance before logging in. Thank you for your patience!"
+      });
+      alert("Login Disabled Message Reset!");
+      updateMaintenanceLog("settings", "Login disabled message reset by the user \"" + user.userName
+        + "\"");
+    };
+
+    confirmLoginDisabled.onclick = function (){
+      if (loginDisabledInp.value == "") {
+        alert("Please Do Not Leave The Login Message Empty!");
+      } else {
+        loginFxnBtn.innerHTML = "Enable Login Function";
+        firebase.database().ref("login/").update({
+          allowLogin: false,
+          loginDisabledMsg: loginDisabledInp.value
+        });
+        alert("Login Disabled Message Set And Login Disabled!");
+        updateMaintenanceLog("settings", "Login disabled by the user \"" + user.userName + "\" " +
+          "with the following message: " + loginDisabledInp.value);
+
+        closeModal(loginDisabledModal);
+        openModal(secretSantaModal, "secretSantaModal");
+      }
+    };
+
+    cancelLoginDisabled.onclick = function(){
+      closeModal(loginDisabledModal);
+      openModal(secretSantaModal, "secretSantaModal");
+    };
+
+    closeLoginDisabledModal.onclick = function(){
+      closeModal(loginDisabledModal);
+      openModal(secretSantaModal, "secretSantaModal");
+    };
+
+    window.onclick = function (event) {
+      if (event.target == loginDisabledModal) {
+        closeModal(loginDisabledModal);
+        openModal(secretSantaModal, "secretSantaModal");
+      }
+    }
+
+    openModal(loginDisabledModal, "loginDisabledModal", true);
+  }
+
   function databaseQuery() {
     let fetchFamilies = function (postRef){
       postRef.on('child_added', function (data) {
@@ -246,12 +691,57 @@ window.onload = function instantiate() {
       });
     };
 
+    let fetchModeratorSettings = function (postRef) {
+      postRef.once("value").then(function(snapshot) {
+        if(snapshot.exists()) {
+          console.log("Moderator Settings Snapshot Exists!");
+          postRef.on('child_added', function (data) {
+            console.log(data.key + " added");
+
+            if (data.key == "listedUserData") {
+              localListedUserData = data.val();
+              initializeShowUserData(data.val());
+              updateInitializedUsers();
+            }
+          });
+
+          postRef.on('child_changed', function (data) {
+            console.log(data.key + " changed");
+
+            if (data.key == "listedUserData") {
+              localListedUserData = data.val();
+              initializeShowUserData(data.val());
+              updateInitializedUsers();
+            }
+          });
+
+          postRef.on('child_removed', function (data) {
+            console.log(data.key + " removed!");
+
+            firebase.database().ref("moderatorSettings/").update({
+              listedUserData: "None"
+            });
+          });
+        } else {
+          console.log("Initializing Moderator Settings In DB");
+
+          firebase.database().ref("moderatorSettings/").update({
+            listedUserData: "None"
+          });
+          fetchModeratorSettings(moderatorSettings);
+        }
+      });
+    };
+
     let fetchSecretSanta = function (postRef) {
       postRef.once("value").then(function(snapshot) {
         if(snapshot.exists()) {
           console.log("Secret Santa Snapshot Exists!");
           postRef.on('child_added', function (data) {
             console.log(data.key + " added");
+            if (secretSantaInit == false) {
+              secretSantaInit = true;
+            }
 
             initializeSecretSantaDataMod(data);
           });
@@ -271,7 +761,6 @@ window.onload = function instantiate() {
               santaState: 1
             });
           });
-
         } else {
           console.log("Initializing Secret Santa In DB");
 
@@ -280,6 +769,7 @@ window.onload = function instantiate() {
             manualUpdates: false,
             santaState: 1
           });
+          fetchSecretSanta(autoSecretSanta);
         }
       });
     };
@@ -291,6 +781,8 @@ window.onload = function instantiate() {
         if(globalNoteInt == 0) {
           globalNoteInt = 1;
           initializeGlobalNotification();
+          initializeNukeNotification();
+          initializeNukeScores();
         }
 
         let i = findUIDItemInArr(data.key, userArr, true);
@@ -310,6 +802,7 @@ window.onload = function instantiate() {
         if(userArr[i] != data.val() && i != -1){
           console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
           userArr[i] = data.val();
+          updateInitializedUsers();
         }
 
         if(data.key == user.uid){
@@ -362,15 +855,84 @@ window.onload = function instantiate() {
       });
     };
 
+    let fetchLogin = function (postRef) {
+      postRef.on('child_added', function (data) {
+        if (data.key == "allowLogin") {
+          allowLogin = data.val();
+        } else if (data.key == "loginDisabledMsg") {
+          loginDisabledMsg = data.val();
+        }
+        if (allowLogin != null && loginDisabledMsg != "") {
+          initializeLoginBtn();
+        }
+      });
+
+      postRef.on('child_changed', function (data) {
+        if (data.key == "allowLogin") {
+          allowLogin = data.val();
+        } else if (data.key == "loginDisabledMsg") {
+          loginDisabledMsg = data.val();
+        }
+        initializeLoginBtn();
+      });
+
+      postRef.on('child_removed', function (data) {
+        if (data.key == "allowLogin") {
+          allowLogin = true;
+        } else if (data.key == "loginDisabledMsg") {
+          loginDisabledMsg = "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
+            "maintenance before logging in. Thank you for your patience!";
+        }
+        initializeLoginBtn();
+      });
+    };
+
+    let fetchLimits = function (postRef) {
+      postRef.on('child_added', function (data) {
+        if (data.key == "userLimit") {
+          userLimit = data.val();
+        } else if (data.key == "giftLimit") {
+          giftLimit = data.val();
+        }
+        if (giftLimit > 0 && userLimit > 0) {
+          initializeLimitsBtn();
+        }
+      });
+
+      postRef.on('child_changed', function (data) {
+        if (data.key == "userLimit") {
+          userLimit = data.val();
+        } else if (data.key == "giftLimit") {
+          giftLimit = data.val();
+        }
+        initializeLimitsBtn();
+      });
+
+      postRef.on('child_removed', function (data) {
+        if (data.key == "userLimit") {
+          userLimit = 50;
+        } else if (data.key == "giftLimit") {
+          giftLimit = 100;
+        }
+        initializeLimitsBtn();
+      });
+    };
+
     fetchData(userInitial);
     fetchInvites(userInvites);
     fetchSecretSanta(autoSecretSanta);
+    fetchModeratorSettings(moderatorSettings);
     fetchFamilies(familyInitial);
+    fetchLogin(loginInitial);
+    fetchLimits(limitsInitial);
 
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(autoSecretSanta);
+    listeningFirebaseRefs.push(moderatorSettings);
     listeningFirebaseRefs.push(familyInitial);
+    listeningFirebaseRefs.push(loginInitial);
+    listeningFirebaseRefs.push(limitsInitial);
   }
 
   function createUserElement(userData){
@@ -383,30 +945,14 @@ window.onload = function instantiate() {
     liItem.id = "user" + userData.uid;
     initUserElement(liItem, userData);
 
-    if(userData.userScore != null) {
-      if (userData.ban > 0) {
-        textNode = document.createTextNode(userData.name + " - BANNED");
-      } else if (userData.warn > 0) {
-        textNode = document.createTextNode(userData.name + " - WARNED");
-      } else {
-        textNode = document.createTextNode(userData.name + " - " + userData.userScore);
-      }
-    } else {
-      if (userData.ban > 0) {
-        textNode = document.createTextNode(userData.name + " - BANNED");
-      } else if (userData.warn > 0) {
-        textNode = document.createTextNode(userData.name + " - WARNED");
-      } else {
-        textNode = document.createTextNode(userData.name);
-      }
-    }
-
+    textNode = document.createTextNode(userData.name);
     liItem.appendChild(textNode);
 
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     clearInterval(offlineTimer);
 
     dataCounter++;
+    initializedUsers.push(userData.uid);
     if (dataCounter > buttonOpacLim) {
       userOptionsBtn.style.opacity = ".75";
     }
@@ -414,40 +960,13 @@ window.onload = function instantiate() {
 
   function changeUserElement(userData) {
     let editUser = document.getElementById('user' + userData.uid);
-
-    if(userData.userScore != null) {
-      if (userData.ban > 0) {
-        editUser.innerHTML = userData.name + " - BANNED";
-      } else if (userData.warn > 0) {
-        editUser.innerHTML = userData.name + " - WARNED";
-      } else {
-        editUser.innerHTML = userData.name + " - " + userData.userScore;
-      }
-    } else {
-      if (userData.ban > 0) {
-        editUser.innerHTML = userData.name + " - BANNED";
-      } else if (userData.warn > 0) {
-        editUser.innerHTML = userData.name + " - WARNED";
-      } else {
-        editUser.innerHTML = userData.name;
-      }
-    }
+    updateInitializedUsers();
     initUserElement(editUser, userData);
   }
 
   function initUserElement(liItem, userData) {
     liItem.className = "gift";
-    if (userData.ban > 0) {
-      liItem.className += " checked";
-    } else if (userData.secretSanta != null) {
-      if (userData.secretSanta == 1 && currentState != 3) {
-        liItem.className += " santa";
-      } else if (userData.secretSantaName != null) {
-        if (userData.secretSantaName != "") {
-          liItem.className += " santa";
-        }
-      }
-    }
+
     liItem.onclick = function (){
       userName.innerHTML = userData.name;
       userUID.innerHTML = "UID: " + userData.uid;
@@ -620,6 +1139,8 @@ window.onload = function instantiate() {
 
   function removeUserElement(uid) {
     document.getElementById('user' + uid).remove();
+    let i = initializedUsers.indexOf(uid);
+    initializedUsers.splice(i , 1);
 
     dataCounter--;
     if (dataCounter == 0){
