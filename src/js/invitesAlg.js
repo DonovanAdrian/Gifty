@@ -535,8 +535,14 @@ window.onload = function instantiate() {
     let commonFriendData;
     let userBlackListCommon;
 
+    addToBlackList.style.display = "none";
+
     if (user.friends != null) {
       userFriendLength = user.friends.length;
+    }
+
+    if (user.userBlackList != null) {
+      userBlackListCommon = user.userBlackList;
     }
 
     if (userFriendLength > 3) {
@@ -567,14 +573,8 @@ window.onload = function instantiate() {
           }
         }
 
-        if (user.userBlackList != null) {
-          userBlackListCommon = user.userBlackList;
-        }
-
         if (commonFriendArr.length > 0 && userBlackListCommon.length != commonFriendArr.length) {
           addUser.style.background = "#3be357";
-        } else {
-          addToBlackList.style.display = "none";
         }
       }
     }
