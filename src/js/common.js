@@ -17,7 +17,7 @@ let modalClosingBool = false;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
-let closeModalTimer;
+let transparencyInterval;
 let openModalTimer;
 let currentTitle;
 let dataListChecker;
@@ -478,7 +478,9 @@ function openModal(openThisModal, modalName, ignoreBool){
 
 function closeModal(closeThisModal){
   try {
-    let closeTimer = 0;
+    let currentTransparency;
+    let closeTimerBufferTracker = 0;
+    let closeTimerBuffer = 10;
     currentModalOpenObj = null;
     currentModalOpen = "";
 
@@ -491,18 +493,28 @@ function closeModal(closeThisModal){
       return;
     }
 
-    clearInterval(closeModalTimer);
-    closeModalTimer = setInterval(function(){
-      closeTimer = closeTimer + 1;
-      if(closeTimer >= 140){
-        closeTimer = 0;
-        closeThisModal.style.display = "none";
-        modalClosingBool = false;
-        if(consoleOutput)
-          console.log("Modal Closed");
-        clearInterval(closeModalTimer);
+    clearInterval(transparencyInterval);
+    transparencyInterval = setInterval( function(){
+      if (closeTimerBufferTracker > closeTimerBuffer) {
+        currentTransparency = window.getComputedStyle(closeThisModal).getPropertyValue("opacity");
+        if (currentTransparency < 0.05) {
+          closeThisModal.style.display = "none";
+          modalClosingBool = false;
+          if (consoleOutput)
+            console.log("Modal Closed");
+          clearInterval(transparencyInterval);
+        } else if (currentTransparency == 1) {
+          closeThisModal.style.display = "none";
+          modalClosingBool = false;
+          if (consoleOutput)
+            console.log("Modal Closed...");
+          clearInterval(transparencyInterval);
+        }
       }
+
+      closeTimerBufferTracker++;
     }, 1);
+
     window.onclick = function(event) {}
   } catch (err) {
     if(consoleOutput)
