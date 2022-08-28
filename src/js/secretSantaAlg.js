@@ -32,6 +32,9 @@ let textCyclerLimiter = 0;
 
 let giftListInterval;
 
+let initializeInterval;
+let initIntervalTime = 0;
+
 let friendScoreNote = 0;
 let failureReason = "Unknown Error";
 let usersNotAssignedAlert = false;
@@ -39,6 +42,8 @@ let usersNotAssignedAlert = false;
 
 
 function initializeSecretSantaDataMod(data) {
+  triggerSantaIntegrityInterval();
+
   if(data.key == "automaticUpdates") {
     automaticControl = data.val();
   } else if (data.key == "santaState") {
@@ -48,6 +53,7 @@ function initializeSecretSantaDataMod(data) {
   }
 
   if (currentState != -1 && automaticControl != null && manualControl != null) {
+    clearInterval(initializeInterval);
     initializeSecretSantaButtons();
 
     if (automaticControl && !manualControl) {
@@ -57,6 +63,8 @@ function initializeSecretSantaDataMod(data) {
 }
 
 function initializeSecretSantaDataList(data) {
+  triggerSantaIntegrityInterval();
+
   if(data.key == "automaticUpdates") {
     automaticControl = data.val();
   } else if (data.key == "santaState") {
@@ -66,6 +74,7 @@ function initializeSecretSantaDataList(data) {
   }
 
   if (currentState != -1 && automaticControl != null && manualControl != null) {
+    clearInterval(initializeInterval);
     if (currentState != 1) {
       showSecretSanta();
     } else {
@@ -74,6 +83,34 @@ function initializeSecretSantaDataList(data) {
     if (automaticControl && !manualControl) {
       checkSecretSanta();
     }
+  }
+}
+
+function triggerSantaIntegrityInterval() {
+  clearInterval(initializeInterval);
+  if (secretSantaInit) {
+    initializeInterval = setInterval(function () {
+      initIntervalTime = initIntervalTime + 1;
+      if (initIntervalTime > 5) {
+        console.log("Correcting Missing Data");
+        if (automaticControl == null) {
+          automaticControl = false;
+        }
+        if (manualControl == null) {
+          manualControl = false;
+        }
+        if (currentState == -1) {
+          currentState = 1;
+        }
+
+        firebase.database().ref("secretSanta/").update({
+          automaticUpdates: automaticControl,
+          manualUpdates: manualControl,
+          santaState: currentState
+        });
+        clearInterval(initializeInterval);
+      }
+    }, 1000);
   }
 }
 
@@ -404,16 +441,18 @@ function checkForGlobalMessage() {
 
 function addGlobalMessageToDB(message) {
   let userNotificationArr = [];
+  let globalNotification = "";
   for (let i = 0; i < userArr.length; i++){
     if(userArr[i].notifications == undefined){
       userNotificationArr = [];
     } else {
       userNotificationArr = userArr[i].notifications;
     }
-    userNotificationArr.push(message);
+    globalNotification = generateNotificationString(">adminGlobal" + user.uid, "", message, "");
+    userNotificationArr.push(globalNotification);
 
     if(userArr[i].notifications == undefined) {
-      firebase.database().ref("users/" + userArr[i].uid).update({notifications:{0:message}});
+      firebase.database().ref("users/" + userArr[i].uid).update({notifications:{0:globalNotification}});
     } else {
       firebase.database().ref("users/" + userArr[i].uid).update({
         notifications: userNotificationArr
@@ -617,20 +656,23 @@ function generatePrivateMessageDialog(userData) {
   privateMessageInp.placeholder = "Hey! Just to let you know...";
 
   sendMsg.onclick = function (){
-    message = generatePrivateMessage(user.uid, privateMessageInp.value);
-    addPrivateMessageToDB(userData, message);
-    privateMessageInp.value = "";
-    closeModal(privateMessageModal);
-    openModal(userModal, userData.uid, true);
+    if(privateMessageInp.value.includes(",,,")){
+      alert("Please do not use commas in the message. Thank you!");
+    } else {
+      message = generateNotificationString(user.uid, "", privateMessageInp.value, "");
+      addPrivateMessageToDB(userData, message);
+      privateMessageInp.value = "";
+      closeModal(privateMessageModal);
+      openModal(userModal, userData.uid, true);
 
-    window.onclick = function(event) {
-      if (event.target == userModal) {
-        closeModal(userModal);
-        clearInterval(giftListInterval);
+      window.onclick = function (event) {
+        if (event.target == userModal) {
+          closeModal(userModal);
+          clearInterval(giftListInterval);
+        }
       }
+      alert("The Message Has Been Sent!");
     }
-
-    alert("The Message Has Been Sent!");
   };
   cancelMsg.onclick = function (){
     privateMessageInp.value = "";
@@ -650,10 +692,6 @@ function generatePrivateMessageDialog(userData) {
   closePrivateMessageModal.onclick = function() {
     closeModal(privateMessageModal);
   };
-}
-
-function generatePrivateMessage(userUID, message){
-  return userUID + "@#$:" + message;
 }
 
 function addPrivateMessageToDB(userData, message) {
