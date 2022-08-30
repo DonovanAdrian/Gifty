@@ -63,17 +63,39 @@ window.onload = function instantiate() {
 
   getCurrentUserCommon();
 
-  if(user != null) {
-    btnUpdate.innerHTML = "Loading...";
-    btnDelete.style.display = "block";
-    btnDelete.style.left = "50%";
-    btnDelete.style.transform = "translate(-50%)";
-    btnDelete.innerHTML = "Loading...";
+  function initializeBackBtn() {
     backBtn.style.display = "block";
     backBtn.style.left = "50%";
     backBtn.style.transform = "translate(-50%)";
     backBtn.innerHTML = "Loading...";
+    backBtn.onclick = function() {
+      navigation(5, true);
+    };
   }
+
+  function initializeDeleteUserBtn() {
+    btnDelete.style.display = "block";
+    btnDelete.style.left = "50%";
+    btnDelete.style.transform = "translate(-50%)";
+    btnDelete.innerHTML = "Loading...";
+    btnDelete.onclick = function() {
+      deleteCheck();
+    };
+  }
+
+  function initializeUpdateUserBtn() {
+    btnUpdate.innerHTML = "Loading...";
+    btnUpdate.onclick = function() {
+      updateSuppressCheck();
+    };
+  }
+
+  if(user != null) {
+    initializeBackBtn();
+    initializeDeleteUserBtn();
+  }
+
+  initializeUpdateUserBtn();
 
   commonInitialization();
   verifyElementIntegrity(userAddUpdateElements);
@@ -191,6 +213,13 @@ function deleteCheck(){
   deleteConfirm.onclick = function () {
     if(consoleOutput)
       console.log("Confirmed to delete user " + user.uid);
+
+    for (let i = 0; i < userArr.length; i++) {//todo
+      //check friend lists
+      //check invite lists
+      //check gift lists
+    }
+
     firebase.database().ref("users/").child(user.uid).remove();
     closeModal(confirmModal);
 
