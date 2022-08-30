@@ -127,7 +127,6 @@ span.basicBtn:hover {
 }
 
 span.dropdown {
-  /*This (and text size) will need to be updated based upon window size...*/
   color: black;
   font-family: Verdana;
   display: none;
