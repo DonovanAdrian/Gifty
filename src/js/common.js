@@ -324,31 +324,72 @@ function areYouStillThereNote(timeElapsed){
 }
 
 function ohThereYouAre(){
-  notificationInfo.innerHTML = "Welcome back, " + user.name;
-  notificationTitle.innerHTML = "Oh, There You Are!";
   document.title = "Oh, There You Are!";
+  deployNotificationModal("Oh, There You Are!", "Welcome back, " + user.name, true);
+}
 
-  let nowJ = 0;
-  let j = setInterval(function(){
-    nowJ = nowJ + 1000;
-    if(nowJ >= 3000){
-      closeModal(notificationModal);
-      areYouStillThereBool = false;
-      areYouStillThereInit = false;
-      document.title = currentTitle;
-      clearInterval(j);
+function deployNotificationModal(noteTitle, noteInfo, offlineTimerBool, customTime, customNavigation) {
+  let deployedNoteInterval;
+  let deployedNoteTimer = 0;
+  let navigationBool = true;
+
+  if (offlineTimerBool == null)
+    offlineTimerBool = false;
+  else if (offlineTimerBool)
+    areYouStillThereBool = false;
+
+  if (customTime == null)
+    customTime = 3;
+  else if (customTime.isNaN)
+    customTime = 3;
+
+  if (customNavigation == null)
+    navigationBool = false;
+  else if (customNavigation.isNaN)
+    navigationBool = false;
+
+  notificationInfo.innerHTML = noteInfo;
+  notificationTitle.innerHTML = noteTitle;
+  openModal(notificationModal, "noteModal", true);
+  console.log("Notification Deployed");
+
+  noteSpan.onclick = function() {
+    if (navigationBool) {
+      navigation(customNavigation);
     }
-  }, 1000);
+    closeModal(notificationModal);
+    clearInterval(deployedNoteInterval);
+  };
 
   window.onclick = function(event) {
     if (event.target == notificationModal) {
+      if (navigationBool) {
+        navigation(customNavigation);
+      }
       closeModal(notificationModal);
-      areYouStillThereBool = false;
-      areYouStillThereInit = false;
-      document.title = currentTitle;
-      clearInterval(j);
+      if (offlineTimerBool)
+        resetDefaultData();
+      clearInterval(deployedNoteInterval);
     }
   };
+
+  deployedNoteInterval = setInterval(function(){
+    deployedNoteTimer = deployedNoteTimer + 1;
+    if(deployedNoteTimer >= customTime){
+      if (navigationBool) {
+        navigation(customNavigation);
+      }
+      closeModal(notificationModal);
+      if (offlineTimerBool)
+        resetDefaultData();
+      clearInterval(deployedNoteInterval);
+    }
+  }, 1000);
+
+  function resetDefaultData() {
+    areYouStillThereInit = false;
+    document.title = currentTitle;
+  }
 }
 
 function signOut(){
@@ -481,8 +522,6 @@ function closeModal(closeThisModal){
     let currentTransparency;
     let closeTimerBufferTracker = 0;
     let closeTimerBuffer = 10;
-    currentModalOpenObj = null;
-    currentModalOpen = "";
 
     closeThisModal.classList.remove('modal-content-open');
     closeThisModal.classList.add('modal-content-close');
@@ -498,17 +537,9 @@ function closeModal(closeThisModal){
       if (closeTimerBufferTracker > closeTimerBuffer) {
         currentTransparency = window.getComputedStyle(closeThisModal).getPropertyValue("opacity");
         if (currentTransparency < 0.05) {
-          closeThisModal.style.display = "none";
-          modalClosingBool = false;
-          if (consoleOutput)
-            console.log("Modal Closed");
-          clearInterval(transparencyInterval);
+          closeModalFinal();
         } else if (currentTransparency == 1) {
-          closeThisModal.style.display = "none";
-          modalClosingBool = false;
-          if (consoleOutput)
-            console.log("Modal Closed...");
-          clearInterval(transparencyInterval);
+          closeModalFinal();
         }
       }
 
@@ -519,6 +550,19 @@ function closeModal(closeThisModal){
   } catch (err) {
     if(consoleOutput)
       console.log("Modal Not Open");
+  }
+
+  function closeModalFinal() {
+    closeThisModal.style.display = "none";
+    modalClosingBool = false;
+    if (consoleOutput)
+      if (currentModalOpen != "")
+        console.log(currentModalOpen + " Modal Closed");
+      else
+        console.log("Modal Closed");
+    currentModalOpenObj = null;
+    currentModalOpen = "";
+    clearInterval(transparencyInterval);
   }
 }
 
