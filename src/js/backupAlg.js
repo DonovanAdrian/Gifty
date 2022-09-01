@@ -87,8 +87,8 @@ window.onload = function instantiate() {
   commonInitialization();
   verifyElementIntegrity(backupElements);
 
-  alert("Please note that backup functionality is not yet available. Feel free to take a look around at what's" +
-    " currently available on this page and stay tuned!");
+  deployNotificationModal("Backup Functionality", "Please note that backup functionality is not yet available. Feel free to take a look around at what's" +
+    " currently available on this page and stay tuned!", false, 4);
   entireDB = firebase.database().ref("/");
   backupInitial = firebase.database().ref("backup/");
   userInitial = firebase.database().ref("users/");
@@ -106,9 +106,9 @@ window.onload = function instantiate() {
         lastBackup.innerHTML = "Last Backup: " + lastBackupWhen;
 
         exportBtn.onclick = function () {
-          exportBackup();
-          alert("Please note that backup functionality is not yet available. Feel free to take a look around at what's" +
-            " currently available on this page and stay tuned!");
+          //exportBackup();
+          deployNotificationModal("Backup Functionality", "Please note that backup functionality is not yet available. Feel free to take a look around at what's" +
+            " currently available on this page and stay tuned!", false, 4);
         }
 
         exportBtn.innerHTML = "Export Backup";
@@ -125,16 +125,16 @@ window.onload = function instantiate() {
                 const contents = await file.text();
                 importBackup(contents);
               } else {
-                alert("Please only import text or comma seperated variable files!");
+                deployNotificationModal("Import Error!", "Please only import text or comma seperated variable files!", false, 4);
               }
             } else {
-              alert("File Import Error! This backup file is not in the correct format! \n\nError Code: 100");
+              deployNotificationModal("Import Error!", "File Import Error! This backup file is not in the correct format! \n\nError Code: 100", false, 4);
             }
-          } catch (err) {
-          }
+          } catch (err) {}
           */
-          alert("Please note that backup functionality is not yet available. Feel free to take a look around at what's" +
-            " currently available on this page and stay tuned!");
+
+          deployNotificationModal("Backup Functionality", "Please note that backup functionality is not yet available. Feel free to take a look around at what's" +
+            " currently available on this page and stay tuned!", false, 4);
         });
         importBtn.innerHTML = "Import Backup";
         exportBtn.className = "basicBtn btnDisabled";
@@ -191,6 +191,7 @@ window.onload = function instantiate() {
           firebase.database().ref("backup/").update({
             backupWhen: "Never"
           });
+          fetchBackup(backupInitial);
         }
       });
     };
@@ -517,10 +518,10 @@ window.onload = function instantiate() {
       if (firstCol.length == secondCol.length && secondCol.length == thirdCol.length) {
         processBackupData(firstCol, secondCol, thirdCol);
       } else {
-        alert("File Import Error! This backup file is not in the correct format! \n\nError Code: 200");
+        deployNotificationModal("Import Error!", "File Import Error! This backup file is not in the correct format! \n\nError Code: 200", false, 4);
       }
     } else {
-      alert("File Import Error! This backup file is not in the correct format! \n\nError Code: 300");
+      deployNotificationModal("Import Error!", "File Import Error! This backup file is not in the correct format! \n\nError Code: 300", false, 4);
     }
   }
 
