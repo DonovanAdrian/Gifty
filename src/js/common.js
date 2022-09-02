@@ -333,6 +333,16 @@ function deployNotificationModal(noteTitle, noteInfo, offlineTimerBool, customTi
   let deployedNoteTimer = 0;
   let navigationBool = true;
 
+  if (noteTitle == null)
+    noteTitle = "Notification Title";
+  else if (noteTitle == "")
+    noteTitle = "Notification Title";
+
+  if (noteInfo == null)
+    noteInfo = "Notification Info";
+  else if (noteInfo == "")
+    noteInfo = "Notification Info";
+
   if (offlineTimerBool == null)
     offlineTimerBool = false;
   else if (offlineTimerBool)
