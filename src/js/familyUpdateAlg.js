@@ -338,11 +338,10 @@ window.onload = function instantiate() {
     }
 
     if (emptyFamily) {
-      alert("This family is empty, so no members can be removed!");
+      deployNotificationModal("Family Empty!", "This family is empty, so no members can be removed!");
     } else {
-      alert("All members were removed from this family! The page will now be redirected to the Family page. " +
-        "Press OK to continue...");
-      navigation(15);//family.html
+      deployNotificationModal("Member Removal Complete", "All members were removed from this family! " +
+        "The page will now be redirected to the Family page.", false, 4, 15);
     }
   }
 
@@ -560,7 +559,7 @@ window.onload = function instantiate() {
           familyMemberPCClear.className += " btnDisabled";
 
           familyMemberPCClear.onclick = function () {
-            alert("This button is disabled, please set a parent or child for this user first.");
+            deployNotificationModal("Button Disabled!", "This button is disabled, please set a parent or child for this user first.");
           };
         } else {
           cycleParentChildText(familyMemberData);
@@ -589,15 +588,15 @@ window.onload = function instantiate() {
         familyMemberPCClear.className += " btnDisabled";
 
         familyMemberParent.onclick = function () {
-          alert("This button is disabled, please add more members to this family first.");
+          deployNotificationModal("Button Disabled!", "This button is disabled, please add more members to this family first.");
         };
 
         familyMemberChild.onclick = function () {
-          alert("This button is disabled, please add more members to this family first.");
+          deployNotificationModal("Button Disabled!", "This button is disabled, please add more members to this family first.");
         };
 
         familyMemberPCClear.onclick = function () {
-          alert("This button is disabled, please add more members to this family first.");
+          deployNotificationModal("Button Disabled!", "This button is disabled, please add more members to this family first.");
         };
       }
 
@@ -651,9 +650,9 @@ window.onload = function instantiate() {
         parentUser: ""
       });
 
-      alert("Parent and Child Data Cleared!");
+      deployNotificationModal("Parent/Child Data Cleared", "The Parent and Child data has been successfully cleared from the database!");
     } else {
-      alert("Error! Parent and Child Data NOT Cleared...");
+      deployNotificationModal("Data Clear Error!", "The Parent and Child data was NOT cleared... Please try again.");
     }
   }
 
@@ -706,9 +705,8 @@ window.onload = function instantiate() {
     firebase.database().ref("family/" + familyData.uid).update({
       name:newFamilyName
     });
-    alert("The family name has been updated! The page will now be redirected to the Family page. " +
-      "Press OK to continue...");
-    navigation(15);//family.html
+    deployNotificationModal("Family Name Updated!", "The family name has been updated! The page will " +
+      "now be redirected to the Family page.", false, 4, 15);
   }
 
   function addFamilyMemberToDB(memberUID){
@@ -837,10 +835,12 @@ window.onload = function instantiate() {
           parentUser: ""
         });
       } else {
-        alert ("All parents have already been assigned. Please clear Parent/Child data to correct parent assignments.");
+        deployNotificationModal("Parent/Child Assignment Error", "All parents have already been " +
+          "assigned. Please clear Parent/Child data to correct parent assignments.", false, 4);
       }
     } else {
-      alert("There was an error updating the parent and child of this user, please try again!");
+      deployNotificationModal("Parent/Child Assignment Error!", "There was an error updating the " +
+        "parent and child of this user, please try again!", false, 4);
     }
 
     globalChildData = null;
