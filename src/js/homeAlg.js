@@ -261,7 +261,7 @@ window.onload = function instantiate() {
     boughtGifts.innerHTML = "Bought Gifts";
     boughtGifts.onclick = function () {
       if (userBoughtGifts.length == 0) {
-        alert("Buy Some Gifts From Some Users First!");
+        deployNotificationModal("No Bought Gifts!", "You haven't bought any gifts yet. Buy some gifts from some friends first!");
       } else {
         sessionStorage.setItem("boughtGifts", JSON.stringify(userBoughtGifts));
         sessionStorage.setItem("boughtGiftsUsers", JSON.stringify(userBoughtGiftsUsers));
@@ -511,7 +511,7 @@ window.onload = function instantiate() {
     let toDelete = -1;
 
     for (let i = 0; i < giftArr.length; i++){
-      if(title == giftArr[i].title) {
+      if(uid == giftArr[i].uid) {
         toDelete = i;
         break;
       }
@@ -521,7 +521,7 @@ window.onload = function instantiate() {
       giftArr.splice(toDelete, 1);
 
       for (let i = 0; i < giftArr.length; i++) {
-        if (title == giftArr[i].title) {
+        if (uid == giftArr[i].uid) {
           verifyDeleteBool = false;
           break;
         }
@@ -569,7 +569,7 @@ window.onload = function instantiate() {
       }
 
     } else {
-      alert("Delete failed, please try again later!");
+      deployNotificationModal("Gift Delete Failed!", "Delete failed, please try again later!");
     }
   }
 
@@ -639,8 +639,8 @@ window.onload = function instantiate() {
       addGift.className += " btnDisabled";
       addGift.innerHTML = "Gift Limit Reached!";
       addGift.onclick = function () {
-        alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
-          "Please remove some gifts in order to create more!");
+        deployNotificationModal("Gift Limit Reached!", "You have reached the limit of the number of " +
+          "gifts that you can create (" + giftLimit + "). Please remove some gifts in order to create more!", false, 4);
       };
     } else {
       addGift.innerHTML = "Add Gift";
