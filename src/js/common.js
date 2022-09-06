@@ -9,6 +9,8 @@ let buttonAlternatorInt = 0;
 let buttonOpacLim = 7;
 let logoutReminder = 300;
 let logoutLimit = 900;
+let deployedNoteTimer = 0;
+let setWindowNoteTimer = 0;
 let consoleOutput = false;
 let loadingTimerCancelled = false;
 let areYouStillThereBool = false;
@@ -17,7 +19,10 @@ let modalClosingBool = false;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
+let loginTimerInterval;
 let transparencyInterval;
+let deployedNoteInterval;
+let setWindowNoteInverval;
 let openModalTimer;
 let currentTitle;
 let dataListChecker;
@@ -258,21 +263,14 @@ function getCurrentUserCommon(){
 
 function loginTimer(){
   let loginNum = 0;
+  clearInterval(loginTimerInterval);
+
   currentTitle = document.title;
   if (user.moderatorInt == 1)
     logoutLimit = 1800;
   if(consoleOutput)
     console.log("Login Timer Started");
-  setInterval(function(){ //900 15 mins, 600 10 mins
-    document.onmousemove = resetTimer;
-    document.onkeypress = resetTimer;
-    document.onload = resetTimer;
-    document.onmousemove = resetTimer;
-    document.onmousedown = resetTimer;
-    document.ontouchstart = resetTimer;
-    document.onclick = resetTimer;
-    document.onscroll = resetTimer;
-    document.onkeypress = resetTimer;
+  loginTimerInterval = setInterval(function(){ //900 15 mins, 600 10 mins
     loginNum = loginNum + 1;
     if (loginNum >= logoutLimit){//default 900
       if(consoleOutput)
@@ -284,15 +282,6 @@ function loginTimer(){
       areYouStillThereNote(loginNum);
       areYouStillThereBool = true;
       document.title = "Where'd You Go?";
-    }
-    function resetTimer() {
-      if (areYouStillThereBool) {
-        if(consoleOutput)
-          console.log("User Active");
-        ohThereYouAre();
-        document.title = currentTitle;
-      }
-      loginNum = 0;
     }
   }, 1000);
 }
@@ -317,21 +306,42 @@ function areYouStillThereNote(timeElapsed){
 
   noteSpan.onclick = function() {
     closeModal(notificationModal);
+    clearInterval(loginTimerInterval);
     areYouStillThereBool = false;
     areYouStillThereInit = false;
     document.title = currentTitle;
+    if(consoleOutput)
+      console.log("User Active");
+    ohThereYouAre();
+  };
+
+  window.onclick = function(event) {
+    if (event.target == notificationModal) {
+      closeModal(notificationModal);
+      clearInterval(loginTimerInterval);
+      areYouStillThereBool = false;
+      areYouStillThereInit = false;
+      document.title = currentTitle;
+      if(consoleOutput)
+        console.log("User Active");
+      ohThereYouAre();
+    }
   };
 }
 
 function ohThereYouAre(){
   document.title = "Oh, There You Are!";
-  deployNotificationModal("Oh, There You Are!", "Welcome back, " + user.name, true);
+  deployNotificationModal(false,"Oh, There You Are!", "Welcome back, " + user.name, true);
 }
 
-function deployNotificationModal(noteTitle, noteInfo, offlineTimerBool, customTime, customNavigation) {
-  let deployedNoteInterval;
-  let deployedNoteTimer = 0;
+function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offlineTimerBool, customTime, customNavigation) {
   let navigationBool = true;
+  let previousModalName = "";
+  let previousModal;
+
+  deployedNoteTimer = 0;
+  setWindowNoteTimer = 0;
+  clearInterval(deployedNoteInterval);
 
   if (noteTitle == null)
     noteTitle = "Notification Title";
@@ -348,6 +358,17 @@ function deployNotificationModal(noteTitle, noteInfo, offlineTimerBool, customTi
   else if (offlineTimerBool)
     areYouStillThereBool = false;
 
+  if (reopenPreviousModal != null && currentModalOpenObj != null)
+    if (reopenPreviousModal) {
+      previousModal = currentModalOpenObj;
+      if (previousModalName != null)
+        previousModalName = currentModalOpen;
+      else
+        previousModalName = "previousModal";
+    }
+    else
+      reopenPreviousModal = false;
+
   if (customTime == null)
     customTime = 3;
   else if (customTime.isNaN)
@@ -357,6 +378,9 @@ function deployNotificationModal(noteTitle, noteInfo, offlineTimerBool, customTi
     navigationBool = false;
   else if (customNavigation.isNaN)
     navigationBool = false;
+  else
+  if (consoleOutput)
+    console.log("Navigation Ready");
 
   notificationInfo.innerHTML = noteInfo;
   notificationTitle.innerHTML = noteTitle;
@@ -365,40 +389,66 @@ function deployNotificationModal(noteTitle, noteInfo, offlineTimerBool, customTi
 
   noteSpan.onclick = function() {
     if (navigationBool) {
+      if (consoleOutput)
+        console.log("Notification Navigating....");
       navigation(customNavigation);
     }
     closeModal(notificationModal);
+    if (reopenPreviousModal != null)
+      if (reopenPreviousModal)
+        openModal(previousModal, previousModalName);
+    if (offlineTimerBool)
+      resetDefaultData();
     clearInterval(deployedNoteInterval);
+    clearInterval(setWindowNoteInverval);
   };
 
-  window.onclick = function(event) {
-    if (event.target == notificationModal) {
-      if (navigationBool) {
-        navigation(customNavigation);
-      }
-      closeModal(notificationModal);
-      if (offlineTimerBool)
-        resetDefaultData();
-      clearInterval(deployedNoteInterval);
+  setWindowNoteInverval = setInterval( function(){
+    setWindowNoteTimer = setWindowNoteTimer + 1;
+    if (currentModalOpen == "noteModal") {
+      window.onclick = function(event) {
+        if (event.target == notificationModal) {
+          if (navigationBool) {
+            if (consoleOutput)
+              console.log("Notification Navigating.....");
+            navigation(customNavigation);
+          }
+          closeModal(notificationModal);
+          if (reopenPreviousModal != null)
+            if (reopenPreviousModal)
+              openModal(previousModal, previousModalName);
+          if (offlineTimerBool)
+            resetDefaultData();
+          clearInterval(deployedNoteInterval);
+        }
+      };
+      clearInterval(setWindowNoteInverval);
     }
-  };
+  }, 10);
 
   deployedNoteInterval = setInterval(function(){
     deployedNoteTimer = deployedNoteTimer + 1;
     if(deployedNoteTimer >= customTime){
       if (navigationBool) {
+        if (consoleOutput)
+          console.log("Notification Navigating...");
         navigation(customNavigation);
       }
       closeModal(notificationModal);
+      if (reopenPreviousModal != null)
+        if (reopenPreviousModal)
+          openModal(previousModal, previousModalName);
       if (offlineTimerBool)
         resetDefaultData();
       clearInterval(deployedNoteInterval);
+      clearInterval(setWindowNoteInverval);
     }
   }, 1000);
 
   function resetDefaultData() {
     areYouStillThereInit = false;
     document.title = currentTitle;
+    loginTimer();
   }
 }
 
