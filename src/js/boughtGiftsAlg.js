@@ -133,7 +133,7 @@ window.onload = function instantiate() {
         dataCounter++;
       }
     } else {
-      deployNotificationModal("Critical Error!", "There has been a critical error, redirecting " +
+      deployNotificationModal(false, "Critical Error!", "There has been a critical error, redirecting " +
         "back home...", false, 4, 2);
     }
   }
