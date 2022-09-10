@@ -338,9 +338,9 @@ window.onload = function instantiate() {
     }
 
     if (emptyFamily) {
-      deployNotificationModal("Family Empty!", "This family is empty, so no members can be removed!");
+      deployNotificationModal(true, "Family Empty!", "This family is empty, so no members can be removed!");
     } else {
-      deployNotificationModal("Member Removal Complete", "All members were removed from this family! " +
+      deployNotificationModal(false, "Member Removal Complete", "All members were removed from this family! " +
         "The page will now be redirected to the Family page.", false, 4, 15);
     }
   }
@@ -559,7 +559,8 @@ window.onload = function instantiate() {
           familyMemberPCClear.className += " btnDisabled";
 
           familyMemberPCClear.onclick = function () {
-            deployNotificationModal("Button Disabled!", "This button is disabled, please set a parent or child for this user first.");
+            deployNotificationModal(true, "Button Disabled!", "This button is disabled, please set a parent " +
+              "or child for this user first.");
           };
         } else {
           cycleParentChildText(familyMemberData);
@@ -588,15 +589,18 @@ window.onload = function instantiate() {
         familyMemberPCClear.className += " btnDisabled";
 
         familyMemberParent.onclick = function () {
-          deployNotificationModal("Button Disabled!", "This button is disabled, please add more members to this family first.");
+          deployNotificationModal(true, "Button Disabled!", "This button is disabled, please add more " +
+            "members to this family first.");
         };
 
         familyMemberChild.onclick = function () {
-          deployNotificationModal("Button Disabled!", "This button is disabled, please add more members to this family first.");
+          deployNotificationModal(true, "Button Disabled!", "This button is disabled, please add more " +
+            "members to this family first.");
         };
 
         familyMemberPCClear.onclick = function () {
-          deployNotificationModal("Button Disabled!", "This button is disabled, please add more members to this family first.");
+          deployNotificationModal(true, "Button Disabled!", "This button is disabled, please add more " +
+            "members to this family first.");
         };
       }
 
@@ -650,9 +654,11 @@ window.onload = function instantiate() {
         parentUser: ""
       });
 
-      deployNotificationModal("Parent/Child Data Cleared", "The Parent and Child data has been successfully cleared from the database!");
+      deployNotificationModal(true, "Parent/Child Data Cleared", "The Parent and Child data has been " +
+        "successfully cleared from the database!");
     } else {
-      deployNotificationModal("Data Clear Error!", "The Parent and Child data was NOT cleared... Please try again.");
+      deployNotificationModal(true, "Data Clear Error!", "The Parent and Child data was NOT cleared... " +
+        "Please try again.");
     }
   }
 
@@ -705,7 +711,7 @@ window.onload = function instantiate() {
     firebase.database().ref("family/" + familyData.uid).update({
       name:newFamilyName
     });
-    deployNotificationModal("Family Name Updated!", "The family name has been updated! The page will " +
+    deployNotificationModal(false, "Family Name Updated!", "The family name has been updated! The page will " +
       "now be redirected to the Family page.", false, 4, 15);
   }
 
@@ -835,11 +841,11 @@ window.onload = function instantiate() {
           parentUser: ""
         });
       } else {
-        deployNotificationModal("Parent/Child Assignment Error", "All parents have already been " +
+        deployNotificationModal(true, "Parent/Child Assignment Error", "All parents have already been " +
           "assigned. Please clear Parent/Child data to correct parent assignments.", false, 4);
       }
     } else {
-      deployNotificationModal("Parent/Child Assignment Error!", "There was an error updating the " +
+      deployNotificationModal(true, "Parent/Child Assignment Error!", "There was an error updating the " +
         "parent and child of this user, please try again!", false, 4);
     }
 
