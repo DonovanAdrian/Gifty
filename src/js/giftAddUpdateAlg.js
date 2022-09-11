@@ -131,7 +131,7 @@ window.onload = function instantiate() {
       updateGift.innerHTML = "Add New Gift";
       updateGift.onclick = function () {
         addGiftToDB();
-      }
+      };
     }
   }
 
@@ -215,17 +215,23 @@ window.onload = function instantiate() {
     }
   }
 
-  function updateGiftToDB(){
+  function updateGiftToDB() {
     let newURL = verifyURLString(giftLinkInp.value);
     let clearReceivedByBool = false;
     let notificationSent = false;
 
-    if(giftTitleInp.value === "")
-      alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
-        "you!");
-    else if (invalidURLBool)
-      alert("It looks like you entered an invalid URL, please enter a valid URL or leave the field blank.");
-    else {
+    if (giftTitleInp.value.includes(",,,") || giftWhereInp.value.includes(",,,")
+      || giftDescriptionInp.value.includes(",,,")) {
+      deployNotificationModal(false, "Gift Error!", "Please do not include excess " +
+        "commas in any of the fields!");
+    } else if (giftTitleInp.value === "") {
+      deployNotificationModal(false, "Gift Title Blank!", "It looks like you left " +
+        "the title blank. Make sure you add a title so other people know what to get you!", false, 4);
+    } else if (invalidURLBool) {
+      deployNotificationModal(false, "Invalid Gift URL!", "It looks like you " +
+        "entered an invalid URL, please enter a valid URL or leave the field blank. If this is intentional, you can " +
+        "click \"Add Gift\", but the gift URL will not be saved.", false, 4);
+    } else {
       if(giftUID != -1) {
         if (!privateListBool) {
           if (!multiplePurchases.checked && currentGift.multiples && currentGift.receivedBy.length != undefined) {
@@ -382,7 +388,8 @@ window.onload = function instantiate() {
           navigation(10);//PrivateFriendList
         }
       } else {
-        alert("There was an error updating the gift, please try again!");
+        deployNotificationModal(false, "Gift Update Error!", "There was an error " +
+          "updating the gift, please try again!");
         if(consoleOutput)
           console.log(giftUID);
       }
@@ -474,12 +481,17 @@ window.onload = function instantiate() {
 
     if(invalidURL != newURL)
       invalidURLOverride = false;
-    if(giftTitleInp.value === "")
-      alert("It looks like you left the title blank. Make sure you add a title so other people know what to get " +
-        "you!");
-    else if (invalidURLBool && !invalidURLOverride) {
-      alert("It looks like you might have entered an invalid URL, double check to see if your url is valid and " +
-        "try again.");
+    if (giftTitleInp.value.includes(",,,") || giftWhereInp.value.includes(",,,")
+      || giftDescriptionInp.value.includes(",,,")) {
+      deployNotificationModal(false, "Gift Error!", "Please do not include excess " +
+        "commas in any of the fields!");
+    } else if (giftTitleInp.value === "") {
+      deployNotificationModal(false, "Gift Title Blank!", "It looks like you " +
+        "left the title blank. Make sure you add a title so other people know what to get you!", false, 4);
+    } else if (invalidURLBool && !invalidURLOverride) {
+      deployNotificationModal(false, "Invalid Gift URL!", "It looks like you " +
+        "entered an invalid URL, please enter a valid URL or leave the field blank. If this is intentional, you can " +
+        "click \"Add Gift\", but the gift URL will not be saved.", false, 4);
       invalidURLOverride = true;
       invalidURL = newURL;
     } else {
