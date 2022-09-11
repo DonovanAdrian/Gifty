@@ -407,7 +407,8 @@ window.onload = function instantiate() {
               buyer: user.userName
             });
           } else {
-            alert("This gift has already been marked as bought!");
+            deployNotificationModal(true, "Gift Already Bought!", "This gift has " +
+              "already been marked as bought!");
           }
         } else {
           if (giftReceivedBy.indexOf(user.uid) == -1) {
@@ -418,7 +419,8 @@ window.onload = function instantiate() {
               receivedBy: giftReceivedBy
             });
           } else {
-            alert("You can only buy this gift once!");
+            deployNotificationModal(true, "You Already Bought This!", "You can only " +
+              "buy this gift once!");
           }
         }
       };
@@ -431,11 +433,13 @@ window.onload = function instantiate() {
                 buyer: ""
               });
             } else {
-              alert("Only the buyer, " + giftBuyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-                "if this has been done in error.");
+              deployNotificationModal(true, "Gift Buy Error!", "Only the buyer, "
+                + giftBuyer + ", can " + "\"Un-Buy\" this gift. Please contact them to undo this action if this has " +
+                "been done in error.", false, 4);
             }
           } else {
-            alert("This gift has already been marked as \"Un-Bought\"!");
+            deployNotificationModal(true, "Gift Already Unbought!", "This gift has " +
+              "already been marked as \"Un-Bought\"!");
           }
         } else {
           let userBought = giftReceivedBy.indexOf(user.uid);
@@ -447,7 +451,8 @@ window.onload = function instantiate() {
               receivedBy: giftReceivedBy
             });
           } else {
-            alert("You haven't bought this gift!");
+            deployNotificationModal(true, "Gift Un-buy Error!", "You haven't bought " +
+              "this gift, so you can't un-buy it!");
           }
         }
       };
