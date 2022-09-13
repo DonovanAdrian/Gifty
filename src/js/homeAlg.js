@@ -261,7 +261,8 @@ window.onload = function instantiate() {
     boughtGifts.innerHTML = "Bought Gifts";
     boughtGifts.onclick = function () {
       if (userBoughtGifts.length == 0) {
-        deployNotificationModal("No Bought Gifts!", "You haven't bought any gifts yet. Buy some gifts from some friends first!");
+        deployNotificationModal(false, "No Bought Gifts!", "You haven't bought any " +
+          "gifts yet. Buy some gifts from some friends first!");
       } else {
         sessionStorage.setItem("boughtGifts", JSON.stringify(userBoughtGifts));
         sessionStorage.setItem("boughtGiftsUsers", JSON.stringify(userBoughtGiftsUsers));
@@ -569,7 +570,8 @@ window.onload = function instantiate() {
       }
 
     } else {
-      deployNotificationModal("Gift Delete Failed!", "Delete failed, please try again later!");
+      deployNotificationModal(true, "Gift Delete Failed!", "Delete failed, please " +
+        "try again later!");
     }
   }
 
@@ -639,8 +641,9 @@ window.onload = function instantiate() {
       addGift.className += " btnDisabled";
       addGift.innerHTML = "Gift Limit Reached!";
       addGift.onclick = function () {
-        deployNotificationModal("Gift Limit Reached!", "You have reached the limit of the number of " +
-          "gifts that you can create (" + giftLimit + "). Please remove some gifts in order to create more!", false, 4);
+        deployNotificationModal(false, "Gift Limit Reached!", "You have reached " +
+          "the limit of the number of gifts that you can create (" + giftLimit + "). Please remove some gifts in order " +
+          "to create more!", false, 4);
       };
     } else {
       addGift.innerHTML = "Add Gift";
