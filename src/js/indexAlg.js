@@ -56,7 +56,9 @@ function fetchConfigFile(){
     strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;
     configFileInput = strRawContents.split("\n");
   } catch (err) {
-    alert("There was an error loading the webpage, please try refreshing the page and contacting an administrator!");
+    deployNotificationModal(false, "Initialization Error!", "There was an error " +
+      "loading the webpage, please try refreshing the page and contacting an administrator!",
+      false, 4);
     return;
   }
 
@@ -124,7 +126,8 @@ function fetchConfigFile(){
   if(configInitializeInt == 8){
     if (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
       storageBucketString == "" || messagingSenderIdString == "" || appIdString == "" || measurementIdString == "") {
-      alert("Config not properly initialized! Please contact an administrator!");
+      deployNotificationModal(false, "Initialization Error!", "Config not properly " +
+        "initialized! Please contact an administrator!", false, 4);
     } else {
       config = {
         apiKey: apiKeyString,
@@ -144,7 +147,8 @@ function fetchConfigFile(){
   } else {
     if (configInitializeInt == 7 && (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
       storageBucketString == "" || messagingSenderIdString == "" || appIdString == "")) {
-      alert("Config not properly initialized! Please contact an administrator!");
+      deployNotificationModal(false, "Initialization Error!", "Config not properly " +
+        "initialized! Please contact an administrator!", false, 4);
     } else {
       console.log("WARNING: Missing measurementId. This variable is optional. Disregard if this is intentional.");
 
@@ -293,12 +297,11 @@ function loginQuery() {
         allowLogin = true;
         sessionStorage.setItem("allowLogin", JSON.stringify(allowLogin));
 
-        initializeLoginBtns();
-
         firebase.database().ref("limits/").update({
           giftLimit: 50,
           userLimit: 100
         });
+        fetchLogin(loginInitial);
       }
     });
   };
@@ -387,7 +390,8 @@ function login() {
             } else {
               if (showLoginAlert == 0) {
                 showLoginAlert++;
-                alert(loginDisabledMsg);
+                deployNotificationModal(false, "Login Disabled!", loginDisabledMsg,
+                  false, 4);
               }
             }
           }
@@ -467,7 +471,8 @@ function login() {
       else {
         if (showLoginAlert == 0) {
           showLoginAlert++;
-          alert(loginDisabledMsg);
+          deployNotificationModal(false, "Login Disabled!", loginDisabledMsg,
+            false, 4);
         }
       }
       if (username.value != "" && pin.value != "")
@@ -491,8 +496,9 @@ function checkSignUp(){
   if (userArr.length >= userLimit) {
     signUpFld.innerHTML = "Gifty Database Full! Existing Users Can Still Log In Above!";
     signUpFld.onclick = function(){
-      alert("Unfortunately this Gifty Database is full, so no more users can be created." +
-        " Please contact the owner to obtain access.");
+      deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
+        "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
+        false, 4);
     };
   } else {
     signUpFld.innerHTML = "Don't have an account? Click here!";
@@ -507,6 +513,7 @@ function signUp(){
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
     navigation(13, false);
   } else {
-    alert(loginDisabledMsg);
+    deployNotificationModal(false, "Login Disabled!", loginDisabledMsg,
+      false, 4);
   }
 }
