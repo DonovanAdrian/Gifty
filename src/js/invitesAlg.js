@@ -357,7 +357,7 @@ window.onload = function instantiate() {
 
       userInviteRemove.onclick = function () {
         closeModal(inviteModal);
-        deleteFriend(friendData.uid);
+        deleteFriend(friendData);
       };
 
       openModal(inviteModal, friendData.uid);
@@ -379,7 +379,8 @@ window.onload = function instantiate() {
 
     sendMsg.onclick = function (){
       if(privateMessageInp.value.includes(",,,")){
-        alert("Please do not use commas in the message. Thank you!");
+        deployNotificationModal(true, "Message Error!", "Please do not use commas " +
+          "in the message. Thank you!");
       } else {
         message = generateNotificationString(user.uid, "", privateMessageInp.value, "");
         addPrivateMessageToDB(userData, message);
@@ -428,14 +429,16 @@ window.onload = function instantiate() {
         notifications: userNotificationArr
       });
     }
-    alert("The Message Has Been Sent!");
+    deployNotificationModal(false, "Message Sent!", "Your message to " +
+      userData.userName + " was successfully delivered!");
   }
 
-  function deleteFriend(uid) {
+  function deleteFriend(delFriendData) {
     let userFriendArrBackup = friendArr;
     let friendFriendArrBackup = [];
     let verifyDeleteBool = true;
     let toDelete = -1;
+    let uid = delFriendData.uid;
 
     deletePendingUid = uid;
 
@@ -472,7 +475,10 @@ window.onload = function instantiate() {
       firebase.database().ref("users/" + user.uid).update({
         friends: userFriendArrBackup
       });
-      alert("Delete failed, please try again later! (user)");
+      deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
+        "able to be removed from your friend list. Please try again later!");
+      updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
+        delFriendData.userName + " and FAILED! (There was an issue with " + user.userName + "'s friend list)");
       return;
     }
 
@@ -521,7 +527,10 @@ window.onload = function instantiate() {
       firebase.database().ref("users/" + uid).update({
         friends: friendFriendArrBackup
       });
-      alert("Delete failed, please try again later! (friend)");
+      deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
+        "able to be removed from your friend list. Please try again later!");
+      updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
+        delFriendData.userName + " and FAILED! (There was an issue with " + delFriendData.userName + "'s friend list)");
     }
   }
 
@@ -786,7 +795,8 @@ window.onload = function instantiate() {
       }
       openModal(confirmModal, "confirmUserModal", true);
     } else {
-      alert("Error finding user, please contact the developer for assistance!");
+      deployNotificationModal(true, "User Finder Error!", "There was an error " +
+        "finding that user... Please contact the developer for assistance on the FAQ page!");
     }
   }
 
