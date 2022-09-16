@@ -249,6 +249,12 @@ window.onload = function instantiate() {
     if (ticketData.details.includes("Attempting to delete user")) {
       liItem.className += " highSev";
       ticketTitleText = "Attempt To Delete User: " + ticketData.uid;
+    } else if (ticketData.details.includes("attempted to remove friend")) {
+      liItem.className += " highSev";
+      ticketTitleText = "!!Friend Removal Error!! " + ticketData.uid;
+    } else if (ticketData.details.includes("attempted to add friend")) {
+      liItem.className += " highSev";
+      ticketTitleText = "!!Invite Removal Error!! " + ticketData.uid;
     } else if (ticketData.details.includes("Invalid Login")) {
       liItem.className += " highSev";
       ticketTitleText = "!!Invalid Login Attempt!! " + ticketData.uid;
@@ -318,8 +324,6 @@ window.onload = function instantiate() {
   function deleteModerationTicket (ticketData) {
     let verifyDeleteBool = true;
     let toDelete;
-    let ticketNoteInterval;
-    let ticketNoteTimer = 0;
 
     toDelete = findUIDItemInArr(ticketData.uid, ticketArr);
 
@@ -336,31 +340,11 @@ window.onload = function instantiate() {
       firebase.database().ref("maintenance/").child(ticketData.uid).remove();
       closeModal(ticketModal);
 
-      notificationInfo.innerHTML = "Ticket Deleted";
-      notificationTitle.innerHTML = "Moderation ticket " + ticketData.uid + " successfully deleted!";
-      openModal(notificationModal, "noteModal", true);
-
-      noteSpan.onclick = function() {
-        closeModal(notificationModal);
-        clearInterval(ticketNoteInterval);
-      };
-
-      window.onclick = function(event) {
-        if (event.target == notificationModal) {
-          closeModal(notificationModal);
-          clearInterval(ticketNoteInterval);
-        }
-      };
-
-      ticketNoteInterval = setInterval(function(){
-        ticketNoteTimer = ticketNoteTimer + 1000;
-        if(ticketNoteTimer >= 3000){
-          closeModal(notificationModal);
-          clearInterval(ticketNoteInterval);
-        }
-      }, 1000);
+      deployNotificationModal(false, "Ticket " + ticketData.uid + " Deleted!",
+        "The moderation ticket, " + ticketData.uid + ", has been successfully deleted.");
     } else {
-      alert("Delete failed, please try again later!");
+      deployNotificationModal(true, "Ticket Delete Failure!",
+        "The moderation ticket, " + ticketData.uid + ", was NOT deleted. Please try again later.");
     }
   }
 
