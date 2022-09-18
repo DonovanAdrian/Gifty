@@ -14,6 +14,7 @@ let listeningFirebaseRefs = [];
 
 let notificationListEmptyBool = false;
 let settingReadNotifications = false;
+let noteErrorBool = false;
 
 let dataCounter = 0;
 let commonLoadingTimerInt = 0;
@@ -190,106 +191,139 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 
+  function fetchNotificationData(createBool, noteToParse, liElem, noteKey) {
+    let noteSplit = noteToParse.split(",,,");
+    let noteSplitCount = 0;
+    let adminPM = false;
+    let globalPM = false;
+    let friendUserData;
+    let notificationDataTitle = "***Notification Load Error***";
+    let notificationDetails;
+    let notificationPage;
+
+    if (noteSplit.length >= 4) {
+      for (let i = 0; i < noteSplit.length; i++) {
+        noteSplit[i] = noteSplit[i].replaceAll('"', '');
+        if (noteSplit[i] != "") {
+          noteSplitCount++;
+        }
+      }
+
+      let senderUID = noteSplit[0];
+      let deleterUID = noteSplit[1];
+      let messageGiftTitle = noteSplit[2];
+      let pageNameNote = noteSplit[3];
+
+      if (senderUID.includes(">admin")) {
+        if (senderUID.includes("Global")) {
+          senderUID = senderUID.slice(12, senderUID.length);
+          globalPM = true;
+        } else {
+          senderUID = senderUID.slice(6, senderUID.length);
+          adminPM = true;
+        }
+      }
+
+      let i = findUIDItemInArr(senderUID, userArr, true);
+      if (i != -1) {
+        friendUserData = userArr[i];
+
+        if (noteSplitCount == 1) {//Type X, Invites
+          notificationDataTitle = friendUserData.name + " has sent you a friend invite!";
+          notificationDetails = friendUserData.name + " has sent you an invite to be added to each other's " +
+            "friend lists. Accepting this invite will allow you to view each other's gift lists!";
+          notificationPage = "invites.html";
+        } else if (noteSplitCount == 2) {//Type W, Messages/Announcements
+          notificationDetails = messageGiftTitle;
+          if (adminPM) {
+            notificationDataTitle = friendUserData.name + " sent you an administrative message";
+            notificationPage = "privateMessage";
+          } else if (globalPM) {
+            notificationDataTitle = friendUserData.name + " sent an announcement!";
+            notificationPage = "globalNotification";
+          } else {
+            notificationDataTitle = friendUserData.name + " sent you a private message!";
+            notificationPage = "privateMessage";
+          }
+        } else if (noteSplitCount == 3) {//Type Y, Gift Updates/Gift Deletion (Public)
+          if (pageNameNote == "friendList.html") {
+            notificationDataTitle = friendUserData.name + " updated a gift you bought!";
+            notificationDetails = friendUserData.name + "'s public gift, " + messageGiftTitle + ", was updated!";
+          } else if (pageNameNote == "privateFriendList.html") {
+            notificationDataTitle = friendUserData.name + "\'s private gift that you bought was updated!";
+            notificationDetails = friendUserData.name + "'s private gift, " + messageGiftTitle + ", was updated!";
+          } else if (pageNameNote == "deleteGift") {
+            notificationDataTitle = friendUserData.name + " deleted a gift you bought...";
+            notificationDetails = "The gift you bought for " + friendUserData.name + ", " + messageGiftTitle + ", was" +
+              " deleted from their public gift list...";
+          } else {
+            if (consoleOutput)
+              console.log("Notification Page Error, 1");
+            notificationPage = "noteERROR";
+          }
+          if (notificationPage != "noteError") {
+            notificationPage = pageNameNote;
+          }
+        } else if (noteSplitCount == 4) {//Z, Gift Deletion (Private)
+          let z = findUIDItemInArr(deleterUID, userArr, true);
+          if (z != -1) {
+            let deleterData = userArr[z];
+            notificationDataTitle = deleterData.name + " deleted a private gift you bought...";
+            notificationDetails = "The gift you bought for " + friendUserData.name + ", " + messageGiftTitle + ", was" +
+              " deleted by " + deleterData.name + " from " + friendUserData.name + "'s private gift list...";
+            notificationPage = pageNameNote;
+          } else {
+            if (consoleOutput)
+              console.log("DeleterUID not found!");
+            notificationPage = "noteERROR";
+          }
+        } else {
+          if (consoleOutput)
+            console.log("Unknown Notification String Received...");
+          notificationPage = "noteERROR";
+        }
+
+        initNotificationElement(liElem, notificationDataTitle, noteToParse, noteKey, notificationDetails,
+          notificationPage, friendUserData);
+      } else {
+        if (consoleOutput)
+          console.log("SenderUID not found!");
+        notificationPage = "noteERROR";
+        initNotificationElement(liElem, null, noteToParse, noteKey, null,
+          notificationPage, null);
+      }
+    } else {
+      if (consoleOutput)
+        console.log("Deprecated Notification Format!");
+      notificationPage = "noteERROR";
+      initNotificationElement(liElem, null, noteToParse, noteKey, null,
+        notificationPage, null);
+    }
+
+    if (createBool) {
+      let textNode = document.createTextNode(notificationDataTitle);
+      liElem.appendChild(textNode);
+      dataListContainer.insertBefore(liElem, dataListContainer.childNodes[0]);
+      clearInterval(commonLoadingTimer);
+      clearInterval(offlineTimer);
+
+      if (dataCounter < 1) {
+        initializeNukeBtn();
+      }
+      dataCounter++;
+    } else {
+      liElem.innerHTML = notificationDataTitle;
+    }
+  }
+
   function createNotificationElement(notificationString, notificationKey){
     try {
       testData.remove();
     } catch (err) {}
 
-    let friendUserData;
-    let notificationTitle;
-    let notificationDetails;
-    let notificationPage;
-    let notificationSplit = notificationString.split(",");
-    let pageNameNote;
-
-    if(notificationString.includes("@#$:")) {
-      let privateMessage = notificationString.split("@#$:");
-      let messageSender = privateMessage[0];
-
-      friendUserData = findFriendUserData(messageSender);
-      notificationTitle = "New Message From " + friendUserData.name;
-      notificationDetails = privateMessage[1];
-      notificationPage = "privateMessage";
-    } else {
-      if (notificationSplit.length == 1) {
-        notificationTitle = "New Message From An Administrator!";
-        notificationDetails = notificationSplit[0];
-        notificationPage = "globalNotification";
-      } else if (notificationSplit.length == 2) {
-        let invitedName = notificationSplit[0];
-        pageNameNote = notificationSplit[1];
-
-        notificationTitle = "You received an invite!";
-        notificationDetails = invitedName + " has sent you an invite!";
-        notificationPage = pageNameNote;
-      } else if (notificationSplit.length == 3) {
-        let giftOwner = notificationSplit[0];
-        let giftTitle = notificationSplit[1];
-        pageNameNote = notificationSplit[2];
-        if(consoleOutput)
-          console.log(giftOwner + " " + giftTitle + " " + pageNameNote);
-
-        friendUserData = findFriendUserData(giftOwner);
-        notificationPage = pageNameNote;
-
-        if (pageNameNote == "friendList.html") {
-          if (friendUserData != -1)
-            notificationTitle = friendUserData.name + " updated a gift you bought!";
-          else
-            notificationTitle = "A gift you bought was updated!";
-          notificationDetails = "The gift, " + giftTitle + ", was updated!";
-        } else if (pageNameNote == "privateFriendList.html") {
-          if (friendUserData != -1)
-            notificationTitle = friendUserData.name + "\'s private gift that you bought was updated!";
-          else
-            notificationTitle = "A private gift that you bought was updated!";
-          notificationDetails = "The gift, " + giftTitle + ", was updated!";
-        } else if (pageNameNote == "deleteGift") {
-          if (friendUserData != -1)
-            notificationTitle = friendUserData.name + " deleted a gift you bought!";
-          else
-            notificationTitle = "A gift you bought was deleted!";
-          notificationDetails = "The gift, " + giftTitle + ", was deleted...";
-        } else {
-          if(consoleOutput)
-            console.log("Notification Page Error, 1");
-        }
-      } else if (notificationSplit.length == 4) {
-        let giftOwner = notificationSplit[0];
-        let giftDeleter = notificationSplit[1];
-        let giftTitle = notificationSplit[2];
-        pageNameNote = notificationSplit[3];
-
-        friendUserData = findFriendUserData(giftOwner);
-
-        notificationPage = pageNameNote;
-
-        if (friendUserData != -1)
-          notificationTitle = friendUserData.name + "\'s private gift that you bought was deleted!";
-        else
-          notificationTitle = giftDeleter + " deleted a gift that you bought!";
-        notificationDetails = "The gift, " + giftTitle + ", was deleted by " + giftDeleter + "...";
-      } else {
-        if(consoleOutput)
-          console.log("Unknown Notification String Received...");
-      }
-    }
-
     let liItem = document.createElement("LI");
     liItem.id = "notification" + notificationKey;
-
-    initNotificationElement(liItem, notificationTitle, notificationString, notificationKey, notificationDetails,
-      notificationPage, friendUserData);
-    let textNode = document.createTextNode(notificationTitle);
-    liItem.appendChild(textNode);
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-    clearInterval(commonLoadingTimer);
-    clearInterval(offlineTimer);
-
-    if (dataCounter < 1) {
-      initializeNukeBtn();
-    }
-    dataCounter++;
+    fetchNotificationData(true, notificationString, liItem, notificationKey);
   }
 
   function changeNotificationElement(notificationString, notificationKey){
@@ -297,106 +331,35 @@ window.onload = function instantiate() {
       testData.remove();
     } catch (err) {}
 
-    let friendUserData;
-    let notificationTitle;
-    let notificationDetails;
-    let notificationPage;
-    let notificationSplit = notificationString.split(",");
-    let pageNameNote;
-
-    if(notificationString.includes("@#$:")) {
-      let privateMessage = notificationString.split("@#$:");
-      let messageSender = privateMessage[0];
-
-      friendUserData = findFriendUserData(messageSender);
-      notificationTitle = "New Message From " + friendUserData.name;
-      notificationDetails = privateMessage[1];
-      notificationPage = "privateMessage";
-    } else {
-      if (notificationSplit.length == 1) {
-        notificationTitle = "New Message From An Administrator!";
-        notificationDetails = notificationSplit[0];
-        notificationPage = "globalNotification";
-      } else if (notificationSplit.length == 2) {
-        let invitedName = notificationSplit[0];
-        pageNameNote = notificationSplit[1];
-        if(consoleOutput)
-          console.log(invitedName + " " + pageNameNote);
-
-        notificationTitle = "You received an invite!";
-        notificationDetails = invitedName + " has sent you an invite!";
-        notificationPage = pageNameNote;
-      } else if (notificationSplit.length == 3) {
-        let giftOwner = notificationSplit[0];
-        let giftTitle = notificationSplit[1];
-        pageNameNote = notificationSplit[2];
-        if(consoleOutput)
-          console.log(giftOwner + " " + giftTitle + " " + pageNameNote);
-
-        friendUserData = findFriendUserData(giftOwner);
-        notificationPage = pageNameNote;
-
-        if (pageNameNote == "friendList.html") {
-          if (friendUserData != -1)
-            notificationTitle = friendUserData.name + " updated a gift you bought!";
-          else
-            notificationTitle = "A gift you bought was updated!";
-          notificationDetails = "The gift, " + giftTitle + ", was updated!";
-        } else if (pageNameNote == "privateFriendList.html") {
-          if (friendUserData != -1)
-            notificationTitle = friendUserData.name + "\'s private gift that you bought was updated!";
-          else
-            notificationTitle = "A private gift that you bought was updated!";
-          notificationDetails = "The gift, " + giftTitle + ", was updated!";
-        } else if (pageNameNote == "deleteGift") {
-          if (friendUserData != -1)
-            notificationTitle = friendUserData.name + " deleted a gift you bought!";
-          else
-            notificationTitle = "A gift you bought was deleted!";
-          notificationDetails = "The gift, " + giftTitle + ", was deleted...";
-        } else {
-          if(consoleOutput)
-            console.log("Notification Page Error, 1");
-        }
-      } else if (notificationSplit.length == 4) {
-        let giftOwner = notificationSplit[0];
-        let giftDeleter = notificationSplit[1];
-        let giftTitle = notificationSplit[2];
-        pageNameNote = notificationSplit[3];
-
-        friendUserData = findFriendUserData(giftOwner);
-
-        notificationPage = pageNameNote;
-
-        if (friendUserData != -1)
-          notificationTitle = friendUserData.name + "\'s private gift that you bought was deleted!";
-        else
-          notificationTitle = giftDeleter + " deleted a gift that you bought!";
-        notificationDetails = "The gift, " + giftTitle + ", was deleted by " + giftDeleter + "...";
-      } else {
-        if(consoleOutput)
-          console.log("Unknown Notification String Received...");
-      }
-    }
-
     let liItemUpdate = document.getElementById('notification' + notificationKey);
     if (liItemUpdate != undefined) {
-      liItemUpdate.innerHTML = notificationTitle;
-      initNotificationElement(liItemUpdate, notificationTitle, notificationString, notificationKey, notificationDetails,
-        notificationPage, friendUserData);
+      fetchNotificationData(false, notificationString, liItemUpdate, notificationKey);
     }
   }
 
-  function initNotificationElement(liItem, notificationTitle, notificationString, notificationKey, notificationDetails,
+  function initNotificationElement(liItem, notificationElemTitle, notificationString, notificationKey, notificationDetails,
                                    notificationPage, friendUserData) {
     liItem.className = "gift";
     let warningCount;
-    if(readNotificationArr.includes(notificationString)) {
-      liItem.className += " checked";
+    if (notificationPage == "noteERROR") {
+      if (!noteErrorBool) {
+        noteErrorBool = true;
+        initializeNukeBtn();
+      }
+      liItem.className += " highSev";
+    } else {
+      if (readNotificationArr.includes(notificationString)) {
+        liItem.className += " checked";
+      }
     }
     liItem.onclick = function () {
-      notificationViewTitle.innerHTML = notificationTitle;
-      notificationViewDetails.innerHTML = notificationDetails;
+      if (notificationPage == "noteERROR") {
+        notificationViewTitle.innerHTML = "***Notification Load Error***";
+        notificationViewDetails.innerHTML = "The notification failed to load correctly, please contact a moderator!";
+      } else {
+        notificationViewTitle.innerHTML = notificationElemTitle;
+        notificationViewDetails.innerHTML = notificationDetails;
+      }
 
       if (notificationPage == "privateMessage" && friendUserData != -1) {
         notificationViewPage.innerHTML = "To reply to this message, click here!";
@@ -425,25 +388,31 @@ window.onload = function instantiate() {
         };
       } else if (notificationPage == "deleteGift") {
         notificationViewPage.innerHTML = "If this has been done in error, please contact the gift owner.";
-        notificationViewPage.onclick = function () {
-        };
+        notificationViewPage.onclick = function () {};
       } else if (notificationPage == "deleteGiftPrivate") {
         notificationViewPage.innerHTML = "If this has been done in error, please contact the person who deleted " +
           "the gift.";
-        notificationViewPage.onclick = function () {
-        };
+        notificationViewPage.onclick = function () {};
       } else {
         if(consoleOutput)
           console.log("Notification Page Error, 2");
-        notificationViewPage.innerHTML = "There was an error loading this link, contact an administrator.";
+        notificationViewPage.innerHTML = "Alternatively, send an email to Gifty support on the Settings > FAQ page!";
         notificationViewPage.onclick = function () {
+          navigation(12);//FAQ
         };
       }
 
-      notificationViewDelete.onclick = function () {
-        deleteNotification(notificationKey);
-        closeModal(noteViewModal);
-      };
+      if (notificationPage == "noteERROR") {
+        notificationViewDelete.onclick = function () {
+          deployNotificationModal(true, "Delete Function Unavailable!",
+            "There is an error within your notification, please contact a moderator to clear your notifications.");
+        };
+      } else {
+        notificationViewDelete.onclick = function () {
+          deleteNotification(notificationKey);
+          closeModal(noteViewModal);
+        };
+      }
 
       openModal(noteViewModal, notificationKey);
 
@@ -453,7 +422,7 @@ window.onload = function instantiate() {
 
       if (!readNotificationArr.includes(notificationString)) {
         readNotificationArr.push(notificationString);
-        if (notificationTitle == "New Message From An Administrator!") {
+        if (notificationElemTitle == "New Message From An Administrator!") {
           warningCount = user.warn;
 
           if (warningCount > 0) {
@@ -570,7 +539,7 @@ window.onload = function instantiate() {
 
       removeNotificationElement(uid);
     } else {
-      alert("Notification Not Deleted, Please Try Again!");
+      deployNotificationModal(true, "Delete Error!", "Notification Not Deleted, Please Try Again!");
     }
   }
 
@@ -599,16 +568,24 @@ window.onload = function instantiate() {
 
 function initializeNukeBtn() {
   if (notificationArr.length > 0) {
-    nukeNotifications.innerHTML = "Remove All Notifications";
-    nukeNotifications.onclick = function() {
-      firebase.database().ref("users/" + user.uid + "/notifications/").remove();
-      if (user.readNotifications != null) {
-        firebase.database().ref("users/" + user.uid + "/readNotifications/").remove();
-      }
+    if (!noteErrorBool) {
+      nukeNotifications.innerHTML = "Remove All Notifications";
+      nukeNotifications.onclick = function () {
+        firebase.database().ref("users/" + user.uid + "/notifications/").remove();
+        if (user.readNotifications != null) {
+          firebase.database().ref("users/" + user.uid + "/readNotifications/").remove();
+        }
 
-      notificationArr = [];
-      navigation(2);//Home
-    };
+        notificationArr = [];
+        navigation(2);//Home
+      };
+    } else {
+      nukeNotifications.innerHTML = "Notification Removal Disabled!";
+      nukeNotifications.onclick = function () {
+        deployNotificationModal(false, "Deleting Notifications Unavailable!",
+          "There is an error within your notifications, please contact a moderator to clear your notifications.");
+      };
+    }
   } else {
     nukeNotifications.innerHTML = "No Notifications To Remove!";
     nukeNotifications.onclick = function() {};
