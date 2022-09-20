@@ -461,15 +461,15 @@ window.onload = function instantiate() {
       giftDelete.onclick = function(){
         if (creator == user.userName || creator == null || creator == undefined) {
           updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
-          deleteGiftElement(key, title, buyer);
+          deleteGiftElement(key, title, uid, buyer, receivedBy);
         } else {
           if (creator == ""){
             updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
-            deleteGiftElement(key, title, buyer);
+            deleteGiftElement(key, title, uid, buyer, receivedBy);
           } else {
             updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
-            alert("Only the creator, " + creator + ", can delete this gift. Please contact them to delete this gift " +
-              "if it needs to be removed.");
+            deployNotificationModal(true, "Gift Delete Failed!", "Only the creator, " + creator + ", can " +
+              "delete this gift. Please contact them to delete this gift if it needs to be removed.", false, 4);
           }
         }
       };
@@ -482,7 +482,7 @@ window.onload = function instantiate() {
               buyer: user.userName
             });
           } else {
-            alert("This gift has already been marked as bought!");
+            deployNotificationModal(true, "Gift Already Bought!", "This gift has already been marked as bought!");
           }
         } else {
           if (receivedBy.indexOf(user.uid) == -1) {
@@ -493,7 +493,7 @@ window.onload = function instantiate() {
               receivedBy: receivedBy
             });
           } else {
-            alert("You can only buy this gift once!");
+            deployNotificationModal(true, "You Already Bought This!", "You can only buy this gift once!");
           }
         }
       };
@@ -513,12 +513,13 @@ window.onload = function instantiate() {
                   buyer: ""
                 });
               } else {
-                alert("Only the buyer, " + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action " +
-                  "if this has been done in error.");
+                deployNotificationModal(true, "Gift Buy Error!", "Only the buyer, " + buyer + ", can " +
+                  "\"Un-Buy\" this gift. Please contact them to undo this action if this has been done in error.",
+                  false, 4);
               }
             }
           } else {
-            alert("This gift has already been marked as \"Un-Bought\"!");
+            deployNotificationModal(true, "Gift Already Un-Bought!", "This gift has already been marked as \"Un-Bought\"!");
           }
         } else {
           let userBought = receivedBy.indexOf(user.uid);
@@ -530,7 +531,8 @@ window.onload = function instantiate() {
               receivedBy: receivedBy
             });
           } else {
-            alert("You haven't bought this gift!");
+            deployNotificationModal(true, "Gift Un-Buy Error!", "You haven't bought this gift, so you can't" +
+              " un-buy it!");
           }
         }
       };
@@ -559,12 +561,12 @@ window.onload = function instantiate() {
     navigation(8, undefined, true);
   }
 
-  function deleteGiftElement(key, title, buyer) {
+  function deleteGiftElement(key, title, uid, buyer, receivedBy) {
     let verifyDeleteBool = true;
     let toDelete = -1;
 
     for (let i = 0; i < giftArr.length; i++){
-      if(title == giftArr[i].title) {
+      if(uid == giftArr[i].uid) {
         toDelete = i;
         break;
       }
@@ -574,7 +576,7 @@ window.onload = function instantiate() {
       giftArr.splice(toDelete, 1);
 
       for (let i = 0; i < giftArr.length; i++) {
-        if (title == giftArr[i].title) {
+        if (uid == giftArr[i].uid) {
           verifyDeleteBool = false;
           break;
         }
@@ -592,18 +594,31 @@ window.onload = function instantiate() {
         let userFound = findUserNameItemInArr(buyer, userArr);
         if(userFound != -1){
           if(userArr[userFound].uid != user.uid) {
-            addNotificationToDB(userArr[userFound], user.name, title);
+            addNotificationToDB(userArr[userFound], user.uid, title);
           }
         } else {
           if(consoleOutput)
             console.log("User not found");
+        }
+      } else if (receivedBy != null) {
+        for (let i = 0; i < receivedBy.length; i++) {
+          let userFound = findUIDItemInArr(receivedBy[i], userArr);
+          if(userFound != -1){
+            if(userArr[userFound].uid != user.uid) {
+              addNotificationToDB(userArr[userFound], user.uid, title);
+            }
+          } else {
+            if(consoleOutput)
+              console.log("User not found");
+          }
         }
       } else {
         if(consoleOutput)
           console.log("No buyer, no notification needed");
       }
     } else {
-      alert("Delete failed, please try again later!");
+      deployNotificationModal(true, "Gift Delete Failed!", "Delete failed, please try again later!");
+      updateMaintenanceLog("privateFriendList", "");
     }
   }
 
@@ -660,19 +675,13 @@ window.onload = function instantiate() {
     }
   }
 
-  function generateNotificationString(giftOwner, giftDeleter, giftTitle, pageNameNote){
-    if(consoleOutput)
-      console.log("Generating Notification");
-    return (giftOwner + "," + giftDeleter + "," + giftTitle + "," + pageNameNote);
-  }
-
   function checkGiftLimitLite() {
     if(giftArr.length >= giftLimit) {
       addGift.className += " btnDisabled";
       addGift.innerHTML = "Gift Limit Reached!";
       addGift.onclick = function () {
-        alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
-          "Please remove some gifts in order to create more!");
+        deployNotificationModal(false, "Gift Limit Reached!", "You have reached the limit of the number of " +
+          "gifts that you can create (" + giftLimit + "). Please remove some gifts in order to create more!", false, 4);
       };
     }
   }
@@ -690,8 +699,8 @@ window.onload = function instantiate() {
       addGift.className += " btnDisabled";
       addGift.innerHTML = "Gift Limit Reached!";
       addGift.onclick = function () {
-        alert("You have reached the limit of the number of gifts that you can create (" + giftLimit + "). " +
-          "Please remove some gifts in order to create more!");
+        deployNotificationModal(false, "Gift Limit Reached!", "You have reached the limit of the number of " +
+          "gifts that you can create (" + giftLimit + "). Please remove some gifts in order to create more!", false, 4);
       };
     } else {
       addGift.innerHTML = "Add Private Gift";
