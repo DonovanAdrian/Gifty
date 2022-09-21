@@ -156,8 +156,8 @@ function changeSecretSantaState(manualChange) {
       if (checkIfSantaSignUp() && !checkIfSantaActive()) {
         createSecretSantaNames();
       } else if (!checkIfSantaSignUp() && !checkIfSantaActive() && pageName == "Moderation") {
-        alert ("Not enough people have signed up for Secret Santa yet! At least 3 people need to be signed up in " +
-          "order to assign names");
+        deployNotificationModal(true, "Secret Santa Error!", "Not enough people have signed up for Secret " +
+          "Santa yet! At least 3 people need to be signed up in order to assign names", false, 4);
       } else {
         console.log("Hm, this wasn't supposed to happen!");
       }
@@ -343,15 +343,15 @@ function showSecretSanta(){
             secretSanta: 1
           });
           user.secretSanta = 1;
-          alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
-            " Santa Recipient!");
+          deployNotificationModal(false, "Opted In!", "You Have Been Opted Into Secret Santa! The Secret Santa " +
+            "Will Start Soon, Check Back Soon For Your Secret Santa Recipient!", false, 4);
           secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
         } else {
           firebase.database().ref("users/" + user.uid).update({
             secretSanta: 0
           });
           user.secretSanta = 0;
-          alert("You Have Opted Out Of Secret Santa.");
+          deployNotificationModal(false, "Opted Out!", "You Have Opted Out Of Secret Santa.");
           secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
         }
       } else {
@@ -359,8 +359,8 @@ function showSecretSanta(){
           secretSanta: 1
         });
         user.secretSanta = 1;
-        alert("You Have Been Opted Into Secret Santa! The Secret Santa Will Start Soon, Check Back Soon For Your Secret" +
-          " Santa Recipient!");
+        deployNotificationModal(false, "Opted In!", "You Have Been Opted Into Secret Santa! The Secret Santa " +
+          "Will Start Soon, Check Back Soon For Your Secret Santa Recipient!", false, 4);
         secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
       }
       sessionStorage.setItem("validUser", JSON.stringify(user));
@@ -657,7 +657,7 @@ function generatePrivateMessageDialog(userData) {
 
   sendMsg.onclick = function (){
     if(privateMessageInp.value.includes(",,,")){
-      alert("Please do not use commas in the message. Thank you!");
+      deployNotificationModal(true, "Message Error!", "Please do not use commas in the message. Thank you!");
     } else {
       message = generateNotificationString(user.uid, "", privateMessageInp.value, "");
       addPrivateMessageToDB(userData, message);
@@ -671,7 +671,7 @@ function generatePrivateMessageDialog(userData) {
           clearInterval(giftListInterval);
         }
       }
-      alert("The Message Has Been Sent!");
+      deployNotificationModal(false, "Message Sent!", "Your message to " + userData.userName + " was successfully delivered!");
     }
   };
   cancelMsg.onclick = function (){
@@ -739,9 +739,9 @@ function createSecretSantaNames(){
   tempUserArr = [];
 
   if (familyArr.length == 0 && (pageName == "Moderation")) {
-    alert("It seems that you don't have any families created yet!\n\n" +
-      "If you have more than 3 users on Gifty, assign them to a family before" +
-      "attempting to assign them Secret Santa names!");
+    deployNotificationModal(true, "Secret Santa Error!", "You don't have any families created yet!\n\n" +
+      "If you have more than 3 users on Gifty, assign them to a family before attempting to assign them Secret Santa names!",
+      false, 4);
     return;
   }
 
@@ -774,18 +774,21 @@ function createSecretSantaNames(){
   }
 
   if (tempUserArr.length < 3 || tempUserArr.length == 0 && (pageName == "Moderation")) {
-    alert("The signed up users DO NOT have enough friends! No users will be assigned names");
+    deployNotificationModal(true, "Secret Santa Error!", "The signed up users DO NOT have enough friends! No " +
+      "users will be assigned names", false, 4);
     return;
   } else if (checkFriendLists() && tempUserArr.length > 2 && (pageName == "Moderation")) {
-    alert("Some users did not have any friends, so they will NOT be assigned a name!");
+    deployNotificationModal(true, "Secret Santa Error!", "Some users did not have any friends, so they will " +
+      "NOT be assigned a name!", false, 4);
     friendScoreNote++;
   }
 
   for (let i = 0; i < optInFamilyArr.length; i++) {
     if (optInFamilyStatsArr[i] < 3) {
       if (!ignoreFamilySet && currentState == 2 && pageName == "Moderation") {
-        alert("There is a family with less than three users signed up!\n\n\nYou have 10 SECONDS to press the button again" +
-          " if you are okay with this. The users in question will NOT be assigned names.");
+        deployNotificationModal(true, "Secret Santa Notice!", "There is a family with less than three users " +
+          "signed up!\n\n\nYou have 10 SECONDS to press the button again if you are okay with this. The users in " +
+          "question will NOT be assigned names.", false, 5);
         startIgnoreFamilySetTimer();
         tempUserArr = [];
         assignedNameUsers = [];
@@ -817,7 +820,8 @@ function createSecretSantaNames(){
           if (!santaNamesAssigned) {
             if (consoleOutput) {
               if (pageName == "Moderation")
-                alert("There was an error assigning Secret Santa names. Please " + secretSantaAssignErrorMsg);
+                deployNotificationModal(true, "Secret Santa Error!", "There was an error assigning Secret " +
+                  "Santa names. Please " + secretSantaAssignErrorMsg, false, 4);
 
               console.log("*************************\n\nSecret Santa Assignments NOT COMPLETE" +
                 "\n\nFailure Reason: " + failureReason + "\n\n*************************");
@@ -838,8 +842,9 @@ function createSecretSantaNames(){
           skippedFamilies.push(optInFamilyArr[i]);
         }
       } else if (!ignoreFamilySet && currentState == 2 && pageName == "Moderation") {
-        alert("There is a family with less than three eligible users!\n\n\nYou have 10 SECONDS to press the button again" +
-          " if you are okay with this. The users in question will NOT be assigned names.");
+        deployNotificationModal(true, "Secret Santa Notice!", "There is a family with less than three " +
+          "eligible users!\n\n\nYou have 10 SECONDS to press the button again if you are okay with this. The users in " +
+          "question will NOT be assigned names.", false, 5);
         startIgnoreFamilySetTimer();
         tempUserArr = [];
         assignedNameUsers = [];
@@ -888,9 +893,9 @@ function createSecretSantaNames(){
         console.log("*************************\n\nSecret Santa Assignments Complete!\n\n*************************");
       }
       if (usersNotAssignedAlert) {
-        alert("Some or all of the signed up users don't have enough mutual friends! NO users were assigned for one or more families...\n\n" +
-          "Tips:\n-Your users need to invite more friends to their lists\n-Split up your users into separate family" +
-          " lists");
+        deployNotificationModal(true, "Secret Santa Error!", "Some or all of the signed up users don't have " +
+          "enough mutual friends! NO users were assigned for one or more families...\n\n Tips:\n-Your users need to " +
+          "invite more friends to their lists\n-Split up your users into separate family lists", false, 6);
         usersNotAssignedAlert = false;
       }
       if (pageName == "Lists") {
@@ -902,7 +907,8 @@ function createSecretSantaNames(){
     } else {
       if (consoleOutput) {
         if (pageName == "Moderation")
-          alert("There was an error assigning Secret Santa names automatically. Please " + secretSantaAssignErrorMsg);
+          deployNotificationModal(true, "Secret Santa Error!", "There was an error assigning Secret " +
+            "Santa names. Please " + secretSantaAssignErrorMsg, false, 4);
 
         console.log("*************************\n\nSecret Santa Assignments NOT COMPLETE" +
           "\n\nFailure Reason: " + failureReason + "\n\n*************************");
