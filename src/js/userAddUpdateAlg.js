@@ -193,12 +193,12 @@ window.onload = function instantiate() {
   function checkUserLimit() {
     if (userArr.length < userLimit && userArr.length != 0 && user == null) {
       btnUpdate.innerHTML = "Create User Profile";
-      alert("Alert! Make sure that you use pins that you have never used before! The pins will be stored securely, " +
-        "but in the case of an unforseen attack, this will be additional protection for your personal accounts.");
+      deployNotificationModal(false, "Secure Pin Notice!", "Alert! Please use a pin you have never used before." +
+        " No computer system is 100% secure, so your due diligence as a user will be critical in protecting your pins.",
+        false, 4);
     } else if (user == undefined) {
-      alert("Unfortunately this Gifty Database is full, so no more users can be created." +
-        " Please contact the owner to obtain access.");
-      navigation(1, false);
+      deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this Gifty Database is full, so no more users can be created." +
+        " Please contact the owner to obtain access. Redirecting back to login...", false, 4, 1);
     }
   }
 };
@@ -214,11 +214,13 @@ function deleteCheck(){
     if(consoleOutput)
       console.log("Confirmed to delete user " + user.uid);
 
+    /*
     for (let i = 0; i < userArr.length; i++) {//todo
       //check friend lists
       //check invite lists
       //check gift lists
     }
+     */
 
     firebase.database().ref("users/").child(user.uid).remove();
     closeModal(confirmModal);
@@ -246,15 +248,21 @@ function deleteCheck(){
 function updateUserToDB(){
   checkUserNames(userNameField.value);
 
-  if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
-    alert("It looks like you left some fields blank. Make sure you have your full name, username, a pin, and " +
-      "a confirmed pin below.");
+  if (nameField.value.includes(",,,") || userNameField.value.includes(",,,")) {
+    deployNotificationModal(false, "User Error!", "Please do not include excess " +
+      "commas in any of the fields!");
+  } else if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
+    deployNotificationModal(false, "Empty Fields Error!", "It looks like you left some fields blank. Make " +
+      "sure you have your full name, username, a pin, and a confirmed pin below.", false, 4);
   } else if (pinConfField.value !== pinField.value){
-    alert("It looks like the pins you entered are not the same");
+    deployNotificationModal(false, "Pin Mismatch Error!", "It looks like the pins you entered are NOT the same." +
+      " Please re-type your pins to ensure they are identical.", false, 4);
   } else if (!isNaN(pinField.value) == false) {
-    alert("It looks like the pins you entered are not numeric, please make sure that they are numbers only");
+    deployNotificationModal(false, "Pin Number Error!", "It looks like the pins you entered are not numeric, " +
+      "please only enter numbers for your pin!", false, 4);
   } else if (userNameBool == false && user == null){
-    alert("It looks like the User Name you chose is already taken, please choose another.");
+    deployNotificationModal(false, "User Name Taken!", "It looks like the User Name you chose is already taken," +
+      " please choose another.", false, 4);
     userNameBool = true;
   } else {
     injectUserArr(userArr);
@@ -336,15 +344,21 @@ function addUserToDB(){
 
   checkUserNames(userNameField.value);
 
-  if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
-    alert("It looks like you left some fields blank. Make sure you have your full name, username, a pin, and " +
-      "a confirmed pin below.");
+  if (nameField.value.includes(",,,") || userNameField.value.includes(",,,")) {
+    deployNotificationModal(false, "User Error!", "Please do not include excess " +
+      "commas in any of the fields!");
+  } else if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
+    deployNotificationModal(false, "Empty Fields Error!", "It looks like you left some fields blank. Make " +
+      "sure you have your full name, username, a pin, and a confirmed pin below.", false, 4);
   } else if (pinConfField.value !== pinField.value){
-    alert("It looks like the pins you entered are not the same");
+    deployNotificationModal(false, "Pin Mismatch Error!", "It looks like the pins you entered are NOT the same." +
+      " Please re-type your pins to ensure they are identical.", false, 4);
   } else if (!isNaN(pinField.value) == false) {
-    alert("It looks like the pins you entered are not numeric, please make sure that they are numbers only");
+    deployNotificationModal(false, "Pin Number Error!", "It looks like the pins you entered are not numeric, " +
+      "please only enter numbers for your pin!", false, 4);
   } else if (userNameBool == false){
-    alert("It looks like the User Name you chose is already taken, please choose another.");
+    deployNotificationModal(false, "User Name Taken!", "It looks like the User Name you chose is already taken," +
+      " please choose another.", false, 4);
     userNameBool = true;
   } else {
     let newUid = firebase.database().ref("users").push();
