@@ -121,17 +121,17 @@ a {
 }
 
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 2; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 50px;
+  padding-bottom: 2000px;
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  width: 100%;
+  height: 75%;
+  overflow: auto;
+  box-shadow: 0 -25px 100px 100px rgba(255,255,255,0.35), 0 -25px 200px 200px rgba(255,255,255,0.4) inset;
 }
 
 .modal-content {
@@ -142,11 +142,14 @@ a {
   padding: 0;
   border: 1px solid #888;
   width: 80%;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  box-shadow: 0px 30px 30px 10px rgba(0,0,0,0.4);
+}
+
+.modal-content-open {
   -webkit-animation-name: animatetop;
   -webkit-animation-duration: 0.4s;
   animation-name: animatetop;
-  animation-duration: 0.4s
+  animation-duration: 0.4s;
 }
 
 @-webkit-keyframes animatetop {
@@ -157,6 +160,25 @@ a {
 @keyframes animatetop {
   from {top:-300px; opacity:0}
   to {top:0; opacity:1}
+}
+
+.modal-content-close {
+  -webkit-animation-name: animateclose;
+  -webkit-animation-duration: 900ms;
+  -webkit-transition-property: animateclose;
+  -webkit-transition-duration: 900ms;
+  animation-name: animateclose;
+  animation-duration: 800ms;
+}
+
+@-webkit-keyframes animateclose {
+  0% {top:0; opacity:1}
+  100% {top:-100%; opacity:0}
+}
+
+@keyframes animateclose {
+  0% {top:0; opacity:1}
+  100% {top:-100%; opacity:0}
 }
 
 .modal-header {
@@ -175,6 +197,26 @@ a {
   padding-bottom: 50px;
   background-color: #5cb85c;
   color: white;
+}
+
+.modal-footer-left {
+  float: left;
+  padding-left: 10px;
+  transition: 0.4s;
+}
+
+.modal-footer-left:hover {
+  color: black;
+}
+
+.modal-footer-right {
+  float: right;
+  padding-right: 10px;
+  transition: 0.4s;
+}
+
+.modal-footer-right:hover {
+  color:black;
 }
 
 .close {
@@ -216,31 +258,55 @@ button {
   .loginContainer {
     top: 45px;
   }
+
   .fadeOutItemA {
     top: 45px;
   }
+
   input {
     width: 125px;
   }
+
   button {
     width: 145px;
   }
+
   img.imgIcon {
     width: 150px;
     height: 150px;
     transition: 0.3s;
   }
+
   input {
     font-size: 9px;
   }
+
   button {
     font-size: 9px;
   }
+
   p {
-    font-size: 9px;
+    font-size: 14px;
   }
+
   a {
-    font-size: 9px;
+    font-size: 14px;
+  }
+
+  .close {
+    font-size: 22px;
+  }
+
+  .modal-header {
+    font-size: 11px;
+  }
+
+  .modal-body {
+    font-size: 13px;
+  }
+
+  .modal-footer {
+    font-size: 13px;
   }
 }
 
@@ -248,30 +314,54 @@ button {
   .loginContainer {
     top: 100px;
   }
+
   .fadeOutItemA {
     top: 100px;
   }
+
   input {
     width: 200px;
   }
+
   button {
     width: 220px;
   }
+
   img.imgIcon {
     width: 200px;
     height: 200px;
     transition: 0.3s;
   }
+
   input {
-    font-size: 13px;
+    font-size: 15px;
   }
+
   button {
-    font-size: 13px;
+    font-size: 15px;
   }
+
   p {
-    font-size: 13px;
+    font-size: 15px;
   }
+
   a {
+    font-size: 15px;
+  }
+
+  .close {
+    font-size: 24px;
+  }
+
+  .modal-header {
+    font-size: 12px;
+  }
+
+  .modal-body {
+    font-size: 10px;
+  }
+
+  .modal-footer {
     font-size: 13px;
   }
 }
@@ -280,30 +370,54 @@ button {
   .loginContainer {
     top: 175px;
   }
+
   .fadeOutItemA {
     top: 175px;
   }
+
   input {
     width: 300px;
   }
+
   button {
     width: 320px;
   }
+
   img.imgIcon {
     width: 300px;
     height: 300px;
     transition: 0.3s;
   }
+
   input {
-    font-size: 15px;
+    font-size: 17px;
   }
+
   button {
-    font-size: 15px;
+    font-size: 17px;
   }
+
   p {
-    font-size: 15px;
+    font-size: 17px;
   }
+
   a {
+    font-size: 17px;
+  }
+
+  .close {
+    font-size: 28px;
+  }
+
+  .modal-header {
+    font-size: 14px;
+  }
+
+  .modal-body {
+    font-size: 12px;
+  }
+
+  .modal-footer {
     font-size: 15px;
   }
 }
@@ -312,63 +426,113 @@ button {
   .loginContainer {
     top: 275px;
   }
+
   .fadeOutItemA {
     top: 275px;
   }
+
   input {
     width: 500px;
   }
+
   button {
     width: 520px;
   }
+
   img.imgIcon {
     width: 550px;
     height: 550px;
     transition: 0.3s;
   }
+
   input {
-    font-size: 17px;
+    font-size: 21px;
   }
+
   button {
-    font-size: 17px;
+    font-size: 21px;
   }
+
   p {
-    font-size: 17px;
+    font-size: 21px;
   }
+
   a {
-    font-size: 17px;
+    font-size: 21px;
+  }
+
+  .close {
+    font-size: 36px;
+  }
+
+  .modal-header {
+    font-size: 18px;
+  }
+
+  .modal-body {
+    font-size: 16px;
+  }
+
+  .modal-footer {
+    font-size: 19px;
+    padding-bottom: 60px;
   }
 }
 
-@media screen and (min-width: 1000px) and (max-width: 2000px) {
+@media screen and (min-width: 1000px) and (max-width: 1800px) {
   .loginContainer {
     top: 375px;
   }
+
   .fadeOutItemA {
     top: 375px;
   }
+
   input {
     width: 900px;
   }
+
   button {
     width: 920px;
   }
+
   img.imgIcon {
     width: 750px;
     height: 750px;
     transition: 0.3s;
   }
+
   input {
-    font-size: 21px;
+    font-size: 23px;
   }
+
   button {
-    font-size: 21px;
+    font-size: 23px;
   }
+
   p {
-    font-size: 21px;
+    font-size: 23px;
   }
+
   a {
+    font-size: 23px;
+  }
+
+  .close {
+    font-size: 40px;
+  }
+
+  .modal-header {
+    font-size: 20px;
+  }
+
+  .modal-body {
+    font-size: 18px;
+  }
+
+  .modal-footer {
     font-size: 21px;
+    padding-bottom: 70px;
   }
 }
 
@@ -376,30 +540,55 @@ button {
   .loginContainer {
     top: 475px;
   }
+
   .fadeOutItemA {
     top: 475px;
   }
+
   input {
     width: 1700px;
   }
+
   button {
     width: 1720px;
   }
+
   img.imgIcon {
     width: 950px;
     height: 950px;
     transition: 0.3s;
   }
+
   input {
-    font-size: 25px;
+    font-size: 26px;
   }
+
   button {
-    font-size: 25px;
+    font-size: 26px;
   }
+
   p {
-    font-size: 25px;
+    font-size: 26px;
   }
+
   a {
-    font-size: 25px;
+    font-size: 26px;
+  }
+
+  .close {
+    font-size: 46px;
+  }
+
+  .modal-header {
+    font-size: 23px;
+  }
+
+  .modal-body {
+    font-size: 21px;
+  }
+
+  .modal-footer {
+    font-size: 24px;
+    padding-bottom: 80px;
   }
 }
