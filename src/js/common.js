@@ -250,6 +250,10 @@ function getCurrentUserCommon(){
     } else {
       try {
         user = JSON.parse(sessionStorage.validUser);
+        if (user.moderatorInt == 1) {
+          consoleOutput = true;
+          console.log("User: " + user.userName + " loaded in");
+        }
       } catch (err) {}
     }
 
