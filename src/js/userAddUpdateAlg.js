@@ -215,6 +215,8 @@ function deleteCheck(){
   openModal(confirmModal, "confirmModal");
 
   deleteConfirm.onclick = function () {
+    alert("User Deletion Is Not Currently Functional, Please Try Again Later");
+    /*
     if(consoleOutput)
       console.log("Confirmed to delete user " + user.uid);
 
@@ -237,11 +239,10 @@ function deleteCheck(){
             console.log(deleteCleanupUser.friends)//todo
             deleteCleanupUser.friends.splice(friendDelIndex, 1);
             console.log(deleteCleanupUser.friends)
-            /*//todo
+
             firebase.database().ref("users/" + deleteCleanupUser.uid).update({
               friends: deleteCleanupUser.friends
             });
-             */
           }
         }
 
@@ -251,11 +252,10 @@ function deleteCheck(){
           console.log(deleteCleanupUser.invites)//todo
           deleteCleanupUser.invites.splice(inviteDelIndex, 1);
           console.log(deleteCleanupUser.invites)
-          /*//todo
+
           firebase.database().ref("users/" + deleteCleanupUser.uid).update({
             invites: deleteCleanupUser.invites
           });
-           */
         }
 
         if (deleteCleanupUser.giftList != null) {
@@ -290,14 +290,12 @@ function deleteCheck(){
             deleteBuyerBool = false;
           }
 
-          /*//todo
           if (deleteChangeBool) {
             firebase.database().ref("users/" + deleteCleanupUser.uid).update({
               giftList: deleteCleanupUser.giftList
             });
             deleteChangeBool = false;
           }
-           */
         }
 
         if (deleteCleanupUser.privateList != null) {
@@ -354,14 +352,12 @@ function deleteCheck(){
             deleteBuyerBool = false;
           }
 
-          /*//todo
           if (deleteChangeBool) {
             firebase.database().ref("users/" + deleteCleanupUser.uid).update({
               privateList: deleteCleanupUser.privateList
             });
             deleteChangeBool = false;
           }
-           */
         }
       }
     }
@@ -370,17 +366,16 @@ function deleteCheck(){
     //firebase.database().ref("users/").child(user.uid).remove();
     closeModal(confirmModal);
 
-    /* //todo same as above
     btnDelete.innerHTML = "Please Wait...";
     btnUpdate.onclick = function(){};
     btnDelete.onclick = function(){};
     backBtn.onclick = function(){};
     navigation(1, false);
-     */
     if(consoleOutput) {
       console.log("");
       console.log("Completed deleting user " + user.uid);
     }
+   */
   };
 
   deleteDeny.onclick = function () {
