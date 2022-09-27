@@ -434,11 +434,11 @@ window.onload = function instantiate() {
   }
 
   function deleteFriend(delFriendData) {
-    let userFriendArrBackup = friendArr;
-    let friendFriendArrBackup = [];
     let verifyDeleteBool = true;
+    let verifyDeleteBoolFriend = true;
     let toDelete = -1;
     let uid = delFriendData.uid;
+    let friendFriendArr;
 
     deletePendingUid = uid;
 
@@ -462,19 +462,8 @@ window.onload = function instantiate() {
       verifyDeleteBool = false;
     }
 
-    if(verifyDeleteBool){
-      removeFriendElement(uid);
-      user.friends = friendArr;
-      generateAddUserBtn();
-
-      firebase.database().ref("users/" + user.uid).update({
-        friends: friendArr
-      });
-    } else {
+    if (!verifyDeleteBool) {
       friendArr = user.friends;
-      firebase.database().ref("users/" + user.uid).update({
-        friends: userFriendArrBackup
-      });
       deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
         "able to be removed from your friend list. Please try again later!");
       updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
@@ -482,18 +471,16 @@ window.onload = function instantiate() {
       return;
     }
 
-    verifyDeleteBool = true;
     toDelete = -1;
-    let friendFriendArr;
 
-    for (let i = 0; i < userArr.length; i++){
+    for (let i = 0; i < userArr.length; i++) {
       if(userArr[i].uid == uid) {
         friendFriendArr = userArr[i].friends;
-        friendFriendArrBackup = friendFriendArr;
         break;
       }
     }
-    for (let i = 0; i < friendFriendArr.length; i++){
+
+    for (let i = 0; i < friendFriendArr.length; i++) {
       if (friendFriendArr[i] == user.uid){
         toDelete = i;
         break;
@@ -505,28 +492,33 @@ window.onload = function instantiate() {
 
       for (let i = 0; i < friendFriendArr.length; i++) {
         if (friendFriendArr[i] == user.uid) {
-          verifyDeleteBool = false;
+          verifyDeleteBoolFriend = false;
           break;
         }
       }
     } else {
-      verifyDeleteBool = false;
+      verifyDeleteBoolFriend = false;
     }
 
-    if(verifyDeleteBool){
-      firebase.database().ref("users/" + uid).update({
-        friends: friendFriendArr
+    if (verifyDeleteBoolFriend && verifyDeleteBool) {
+      firebase.database().ref("users/" + user.uid).update({
+        friends: friendArr
       });
 
       let i = initializedUsers.indexOf(uid);
       if (i != -1) {
         initializedUsers.splice(i, 1);
       }
-      deletePendingUid = "";
-    } else {
+
       firebase.database().ref("users/" + uid).update({
-        friends: friendFriendArrBackup
+        friends: friendFriendArr
       });
+
+      deletePendingUid = "";
+      removeFriendElement(uid);
+      user.friends = friendArr;
+      generateAddUserBtn();
+    } else {
       deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
         "able to be removed from your friend list. Please try again later!");
       updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
