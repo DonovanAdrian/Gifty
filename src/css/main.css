@@ -427,6 +427,10 @@ ul li.santa::before {
   width: 7px;
 }
 
+.notificationIcon {
+  transition-duration: 1s;
+}
+
 .modal {
   display: none;
   position: fixed;
