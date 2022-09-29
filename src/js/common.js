@@ -630,6 +630,42 @@ function closeModal(closeThisModal){
   }
 }
 
+function flickerNotification(){
+  let flickerTimer = 0;
+  let flickerAlternator = 0;
+  let normalFilter = "grayscale(0%)";
+  let applyFilter = "grayscale(75%)";
+  let normalOpacity = "1";
+  let applyOpacity = "0.75";
+  if (consoleOutput)
+    console.log("Notification Feature Active");
+  notificationBtn.src = "img/bellNotificationOn.png";
+  setInterval(function(){
+    flickerTimer = flickerTimer + 1000;
+    if(flickerTimer >= 1000){
+      flickerTimer = 0;
+      flickerAlternator++;
+      if(flickerAlternator == 0) {
+        notificationBtn.style.filter = applyFilter;
+        notificationBtn.style.opacity = applyOpacity;
+      } else if (flickerAlternator == 1) {
+        notificationBtn.style.filter = normalFilter;
+        notificationBtn.style.opacity = normalOpacity;
+      } else if (flickerAlternator == 2) {
+        notificationBtn.style.filter = applyFilter;
+        notificationBtn.style.opacity = applyOpacity;
+      } else if (flickerAlternator <= 7) {
+        notificationBtn.style.filter = normalFilter;
+        notificationBtn.style.opacity = normalOpacity;
+      } else {
+        flickerAlternator = 0;
+        notificationBtn.style.filter = applyFilter;
+        notificationBtn.style.opacity = applyOpacity;
+      }
+    }
+  }, 750);
+}
+
 function alternateButtonLabel(button, parentLabel, childLabel){
   let nowConfirm = 0;
   let alternator = 0;
