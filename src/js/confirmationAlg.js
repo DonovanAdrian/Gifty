@@ -63,7 +63,7 @@ function getCurrentUser(){
   } else if (user.notifications != undefined) {
     if (readNotificationsBool){
       if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
-        notificationBtn.src = "img/bellNotificationOn.png";
+        flickerNotification();
         notificationBtn.onclick = function() {
           navigation(6);//Notifications
         }
@@ -74,7 +74,7 @@ function getCurrentUser(){
         }
       }
     } else if (user.notifications.length > 0) {
-      notificationBtn.src = "img/bellNotificationOn.png";
+      flickerNotification();
       notificationBtn.onclick = function() {
         navigation(6);//Notifications
       }
