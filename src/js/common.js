@@ -654,7 +654,13 @@ function flickerNotification(){
       } else if (flickerAlternator == 2) {
         notificationBtn.style.filter = applyFilter;
         notificationBtn.style.opacity = applyOpacity;
-      } else if (flickerAlternator <= 7) {
+      } else if (flickerAlternator == 3) {
+        notificationBtn.style.filter = normalFilter;
+        notificationBtn.style.opacity = normalOpacity;
+      } else if (flickerAlternator == 4) {
+        notificationBtn.style.filter = applyFilter;
+        notificationBtn.style.opacity = applyOpacity;
+      } else if (flickerAlternator <= 12) {
         notificationBtn.style.filter = normalFilter;
         notificationBtn.style.opacity = normalOpacity;
       } else {
