@@ -299,7 +299,8 @@ function loginQuery() {
 
         firebase.database().ref("limits/").update({
           giftLimit: 50,
-          userLimit: 100
+          userLimit: 100,
+          giftURLLimit: ""
         });
         fetchLogin(loginInitial);
       }
