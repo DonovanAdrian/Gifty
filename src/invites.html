@@ -13,11 +13,11 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/main.css?v=2022-05-10" rel="stylesheet" type="text/css"/>
+  <link href="css/main.css?v=2022-08-02" rel="stylesheet" type="text/css"/>
   <title>Friend List</title>
 
-  <script src="js/invitesAlg.js?v=2022-05-10" type="text/javascript"></script>
-  <script src="js/common.js?v=2022-05-10" type="text/javascript"></script>
+  <script src="js/invitesAlg.js?v=2022-08-02" type="text/javascript"></script>
+  <script src="js/common.js?v=2022-08-02" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -50,7 +50,7 @@
   <img class="notificationIcon" id="notificationButton" src="img/bellNotificationOff.png" alt="View Notifications">
 </div>
 
-<img src="img/newInvite.png" class="newInvite" id="newInviteIcon" alt="You Have A New Invite! Click Here To View Your Pending Invites">
+<img src="img/newInvite.png" class="leftCornerImgHidden" id="newInviteIcon" alt="You Have A New Invite! Click Here To View Your Pending Invites">
 
 <div id="inviteModal" class="modal">
   <div class="modal-content">
@@ -69,8 +69,8 @@
 
     <!--Modal Footer-->
     <div class="modal-footer">
-      <h3 style="float: left;padding-left: 10px" id="sendPrivateMessage" alt="Send This Friend A Message">Send Message</h3>
-      <h3 style="float: right;padding-right: 10px" id="userInviteRemove" alt="Remove This User From Your Friend's List">Unfriend</h3>
+      <h3 class="modal-footer-left" id="sendPrivateMessage" alt="Send This Friend A Message">Send Message</h3>
+      <h3 class="modal-footer-right" id="userInviteRemove" alt="Remove This User From Your Friend's List">Unfriend</h3>
     </div>
   </div>
 </div>
@@ -88,13 +88,15 @@
     <div class="modal-body">
       <p></p>
       <input type="text" id="userNameInp" placeholder="User Name" class="giftInp" alt="Enter The User Name Of The User You Want To Invite To Your Friend's List">
-      <p id="inviteInfo"></p>
+      <p class="closeInvert" id="addToBlackList">&times;</p><p id="inviteInfo"></p>
+      <p class="giftInfSmall">Your Own Share Code Can Be Found On The "Settings" Page!</p>
+      <br>
     </div>
 
     <!--Modal Footer-->
     <div class="modal-footer">
-      <h3 style="float: left;padding-left: 10px" id="addInvite" alt="Send This User An Invite">Add</h3>
-      <h3 style="float: right;padding-right: 10px" id="cancelInvite" alt="Cancel Sending This User An Invite">Cancel</h3>
+      <h3 class="modal-footer-left" id="addInvite" alt="Send This User An Invite">Add</h3>
+      <h3 class="modal-footer-right" id="cancelInvite" alt="Cancel Sending This User An Invite">Cancel</h3>
     </div>
   </div>
 </div>
@@ -117,8 +119,8 @@
 
     <!--Modal Footer-->
     <div class="modal-footer">
-      <h3 style="float: left;padding-left: 10px" id="sendMsg" alt="Send The Above Message">Send</h3>
-      <h3 style="float: right;padding-right: 10px" id="cancelMsg" alt="Cancel Sending The Above Message">Cancel</h3>
+      <h3 class="modal-footer-left" id="sendMsg" alt="Send The Above Message">Send</h3>
+      <h3 class="modal-footer-right" id="cancelMsg" alt="Cancel Sending The Above Message">Cancel</h3>
     </div>
   </div>
 </div>
@@ -139,8 +141,8 @@
 
     <!--Modal Footer-->
     <div class="modal-footer">
-      <h3 style="float: left;padding-left: 10px" id="inviteConfirm" alt="Send This User An Invite">Yes</h3>
-      <h3 style="float: right;padding-right: 10px" id="inviteDeny" alt="This Is Not The User I Wanted To Invite">No</h3>
+      <h3 class="modal-footer-left" id="inviteConfirm" alt="Send This User An Invite">Yes</h3>
+      <h3 class="modal-footer-right" id="inviteDeny" alt="This Is Not The User I Wanted To Invite">No</h3>
     </div>
   </div>
 </div>
