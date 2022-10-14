@@ -13,13 +13,13 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/main.css?v=2022-05-10" rel="stylesheet" type="text/css"/>
+  <link href="css/main.css?v=2022-08-02" rel="stylesheet" type="text/css"/>
   <title>Moderation</title>
 
-  <script src="js/passOp.js?v=2022-05-10" type="text/javascript"></script>
-  <script src="js/moderationAlg.js?v=2022-05-10" type="text/javascript"></script>
-  <script src="js/secretSantaAlg.js?v=2022-05-10" type="text/javascript"></script>
-  <script src="js/common.js?v=2022-05-10" type="text/javascript"></script>
+  <script src="js/passOp.js?v=2022-08-02" type="text/javascript"></script>
+  <script src="js/moderationAlg.js?v=2022-08-02" type="text/javascript"></script>
+  <script src="js/secretSantaAlg.js?v=2022-08-02" type="text/javascript"></script>
+  <script src="js/common.js?v=2022-08-02" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -46,7 +46,7 @@
   <li class="spacer"></li>
 </ul>
 
-<span class="boughtBtn" id="userOptionsBtn" alt="Moderation Options">Loading... Please Wait</span>
+<img src="img/settingsIcon.png" class="leftCornerImg" id="userOptionsBtn" alt="Moderation Settings">
 
 <span class="addBtn" id="backBtn" alt="Return To Settings">Loading... Please Wait</span>
 
@@ -76,8 +76,8 @@
 
     <!--Modal Footer-->
     <div class="modal-footer">
-      <h3 style="float: left;padding-left: 10px" id="warnUser">Warn</h3>
-      <h3 style="float: right;padding-right: 10px" id="banUser">Ban</h3>
+      <h3 class="modal-footer-left" id="warnUser">Warn</h3>
+      <h3 class="modal-footer-right" id="banUser">Ban</h3>
     </div>
   </div>
 </div>
@@ -100,8 +100,8 @@
 
     <!--Modal Footer-->
     <div class="modal-footer">
-      <h3 style="float: left;padding-left: 10px" id="sendMsg">Send</h3>
-      <h3 style="float: right;padding-right: 10px" id="cancelMsg">Cancel</h3>
+      <h3 class="modal-footer-left" id="sendMsg">Send</h3>
+      <h3 class="modal-footer-right" id="cancelMsg">Cancel</h3>
     </div>
   </div>
 </div>
@@ -111,11 +111,52 @@
     <!--Modal Header-->
     <div class="modal-header">
       <span class="close" id="secretSantaSpan">&times;</span>
-      <h2>User Options</h2>
+      <h2>Moderation Settings</h2>
     </div>
 
     <!--Modal Body-->
     <div class="modal-body">
+      <p>Database Options:</p>
+      <span class="basicBtn" id="nukeAllUserNotifications" alt="Remove All User's Notifications">Loading Nuke Button...</span>
+      <br/>
+      <br/>
+      <br/>
+      <span class="basicBtn" id="nukeAllUserScores" alt="Reset All User's Scores">Loading Reset Button...</span>
+      <br/>
+      <br/>
+      <br/>
+      <span class="basicBtn" id="loginFxnBtn" alt="Disable Or Enable Login Functionality">Loading...</span>
+      <br/>
+      <br/>
+      <br/>
+      <span class="basicBtn" id="giftLinkBtn" alt="Disable Or Enable Gift URL Limiter">Loading...</span>
+      <br/>
+      <br/>
+      <br/>
+      <span class="basicBtn" id="limitsBtn" alt="Set Database Limits">Loading...</span>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <p>General Options:</p>
+      <span class="basicBtn" id="userListDropDown" alt="Select User Data To Show">Loading User List Options...</span>
+      <span class="dropdown" id="showNone" alt="Show Nothing" style="display: none">None</span>
+      <span class="dropdown" id="showUID" alt="Show UID" style="display: none">UID</span>
+      <span class="dropdown" id="showName" alt="Show Username" style="display: none">Username</span>
+      <span class="dropdown" id="showLastLogin" alt="Show Last Login" style="display: none">Last Login</span>
+      <span class="dropdown" id="showUserScore" alt="Show User Score" style="display: none">User Score</span>
+      <span class="dropdown" id="showShareCode" alt="Show Share Code" style="display: none">Share Code</span>
+      <span class="dropdown" id="showFriends" alt="Show Number of Friends" style="display: none">Friend Amount</span>
+      <span class="dropdown" id="showSantaSignUp" alt="Show Santa Sign Up" style="display: none">Santa Sign Up</span>
+      <span class="dropdown" id="showModerator" alt="Show Moderator Status" style="display: none">Moderator Status</span>
+      <br/>
+      <br/>
+      <br/>
+      <span class="basicBtn" id="sendGlobalNotification" alt="Send a Global Notification To All Users">Loading Message Button...</span>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
       <p>Secret Santa Options:</p>
       <span class="basicBtn" id="secretSantaBtn" alt="Cycle Secret Santa State">Loading Secret Santa Button...</span>
       <br/>
@@ -128,10 +169,33 @@
       <span class="basicBtn" id="secretSantaAutoBtn" alt="Enable Or Disable Automatic Control">Loading Auto Button...</span>
       <br/>
       <br/>
+      <p class="giftInfSmall">*When automatic control is enabled, the button text will change to show the next trigger date.</p>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<div id="loginDisabledModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeLoginDisabledModal">&times;</span>
+      <h2 id="loginDisabledTitle">Set Login Disabled Message Below</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p id="loginDisabledDesc">Login Disabled Message:</p>
+      <input type="text" id="loginDisabledInp" placeholder="Set Login Disabled Message" class="giftInp" alt="Set the login disabled text" maxlength="150">
+      <p id="loginDisabledInfo">Set A Custom Alert Upon Attempted Login</p>
       <br/>
       <br/>
-      <p>General Options:</p>
-      <span class="basicBtn" id="sendGlobalNotification">Loading Message Button...</span><!--Check this on page-->
+      <span class="basicBtn" id="resetDefaultLoginDisabledBtn" alt="Reset To Default Login Message">Reset To Default Alert</span>
       <br/>
       <br/>
       <br/>
@@ -139,6 +203,36 @@
 
     <!--Modal Footer-->
     <div class="modal-footer">
+      <h3 class="modal-footer-left" id="confirmLoginDisabled" alt="Confirm Message">Confirm & Disable</h3>
+      <h3 class="modal-footer-right" id="cancelLoginDisabled" alt="Cancel Message">Cancel</h3>
+    </div>
+  </div>
+</div>
+
+<div id="databaseLimitsModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeDatabaseLimitsModal">&times;</span>
+      <h2>Set Database Limits Below</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p>Gift Limit:</p>
+      <input type="number" id="giftLimitInp" placeholder="Set Gift Limit Per User" class="giftInp" alt="Set the amount of gifts that a given user is able to create" maxlength="4">
+      <p>Set Gift Limit Per User</p>
+      <br>
+      <p>User Limit:</p>
+      <input type="number" id="userLimitInp" placeholder="Set User Limit For Database" class="giftInp" alt="Set the amount of users that can be created in this database" maxlength="4">
+      <p>Set User Limit For Database</p>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3 class="modal-footer-left" id="confirmLimits" alt="Confirm Settings">Confirm</h3>
+      <h3 class="modal-footer-right" id="cancelLimits" alt="Cancel Settings">Cancel</h3>
     </div>
   </div>
 </div>
