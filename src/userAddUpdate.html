@@ -13,12 +13,12 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/login.css?v=2022-05-10" rel="stylesheet" type="text/css"/>
+  <link href="css/login.css?v=2022-08-02" rel="stylesheet" type="text/css"/>
   <title>User Options</title>
 
-  <script src="js/passOp.js?v=2022-05-10" type="text/javascript"></script>
-  <script src="js/userAddUpdateAlg.js?v=2022-05-10" type="text/javascript"></script>
-  <script src="js/common.js?v=2022-05-10" type="text/javascript"></script>
+  <script src="js/passOp.js?v=2022-08-02" type="text/javascript"></script>
+  <script src="js/userAddUpdateAlg.js?v=2022-08-02" type="text/javascript"></script>
+  <script src="js/common.js?v=2022-08-02" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -30,13 +30,13 @@
 <svg id="fader"></svg>
 
 <div class="loginContainer">
-  <button style="display: none; position: relative" onclick="navigation(5)" id="backBtn">Loading...</button>
+  <button style="display: none; position: relative" id="backBtn">Loading...</button>
   <input type="text" placeholder="Full Name" id="nameField" maxlength="40" alt="Enter Your Full Name">
   <input type="text" placeholder="User Name" id="userNameField" maxlength="25" alt="Enter Your User Name">
   <input type="number" placeholder="Enter Pin" id="pinField" maxlength="15" alt="Enter Your Pin">
   <input type="number" placeholder="Confirm Pin" id="pinConfField" maxlength="15" alt="Confirm Your Pin">
-  <button onclick="updateSuppressCheck()" id="updateUser" alt="Update User Into Database">Loading...</button>
-  <button style="display: none; position: relative" onclick="deleteCheck()" id="deleteUser" alt="Delete Your User Account">Loading...</button>
+  <button id="updateUser" alt="Update User Into Database">Loading...</button>
+  <button style="display: none; position: relative" id="deleteUser" alt="Delete Your User Account">Loading...</button>
   <p id="loginInfo" style="color:red"></p>
 </div>
 
@@ -76,8 +76,8 @@
 
     <!--Modal Footer-->
     <div class="modal-footer">
-      <h3 style="float: left;padding-left: 10px" id="deleteConfirm">Yes</h3>
-      <h3 style="float: right;padding-right: 10px" id="deleteDeny">No</h3>
+      <h3 class="modal-footer-left" id="deleteConfirm">Yes</h3>
+      <h3 class="modal-footer-right" id="deleteDeny">No</h3>
     </div>
   </div>
 </div>
