@@ -13,11 +13,11 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/main.css?v=2022-05-10" rel="stylesheet" type="text/css"/>
+  <link href="css/main.css?v=2022-08-02" rel="stylesheet" type="text/css"/>
   <title>Settings</title>
 
-  <script src="js/settingsAlg.js?v=2022-05-10" type="text/javascript"></script>
-  <script src="js/common.js?v=2022-05-10" type="text/javascript"></script>
+  <script src="js/settingsAlg.js?v=2022-08-02" type="text/javascript"></script>
+  <script src="js/common.js?v=2022-08-02" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -40,6 +40,26 @@
 <svg id="fader"></svg>
 
 <div class="settingsContainer"><br/><br/>
+  <p class="giftInfLarge">Your Account Info</p>
+  <hr style="width: 35%; height:2px; border-width:0; color:gray; background-color:gray">
+  <p class="giftInfSmall" style="font-style: italic">Click/Tap on each item below for more information!</p>
+  <br>
+  <p class="giftInf" style="font-style: italic" id="usernameInfo">Username:</p>
+  <p class="giftInf" id="usernameDisplay">Loading Username...</p>
+  <br>
+  <p class="giftInf" style="font-style: italic" id="nameInfo">Name:</p>
+  <p class="giftInf" id="nameDisplay">Loading Name...</p>
+  <br>
+  <p class="giftInf" style="font-style: italic" id="shareCodeInfo">Share Code:</p>
+  <p class="giftInf" id="shareCodeDisplay">Loading Share Code...</p>
+  <br>
+  <p class="giftInf" style="font-style: italic" id="userScoreInfo">User Score:</p>
+  <p class="giftInf" id="userScoreDisplay">Loading User Score...</p>
+  <br>
+  <br>
+  <hr style="width: 35%; height:2px; border-width:0; color:gray; background-color:gray">
+  <br>
+  <br>
   <span class="settingsBtn" id="edit" alt="Edit Your Account">Edit Account Info</span> <!--Settings Button A--><br/><br/><br/>
   <span class="settingsBtn" id="faq" alt="View Help And Frequently Asked Questions">Help/FAQ</span> <!--Settings Button B--><br/><br/><br/>
 </div>
@@ -59,11 +79,11 @@
     <!--Modal Body-->
     <div class="modal-body">
       <br/>
-      <span class="basicBtn" id="moderationQueueBtn" alt="View System Audit Queue">Loading...</span>
+      <span class="basicBtn" id="moderationQueueBtn" alt="View System Audit Log">Loading...</span>
       <br/>
       <br/>
       <br/>
-      <span class="basicBtn" id="userListBtn" alt="View User List And Secret Santa Settings">Loading...</span>
+      <span class="basicBtn" id="userListBtn" alt="View User List And Database Settings">Loading...</span>
       <br/>
       <br/>
       <br/>
@@ -71,78 +91,11 @@
       <br/>
       <br/>
       <br/>
-      <br/>
-      <br/>
-      <span class="basicBtn" id="loginFxnBtn" alt="Disable Or Enable Login Functionality">Loading...</span>
-      <br/>
-      <br/>
-      <br/>
-      <span class="basicBtn" id="limitsBtn" alt="Set Database Limits">Loading...</span>
-      <br/>
-      <br/>
-      <br/>
     </div>
 
     <!--Modal Footer-->
     <div class="modal-footer">
-    </div>
-  </div>
-</div>
-
-<div id="loginDisabledModal" class="modal">
-  <div class="modal-content">
-
-    <!--Modal Header-->
-    <div class="modal-header">
-      <span class="close" id="closeLoginDisabledModal">&times;</span>
-      <h2>Set Login Disabled Message Below</h2>
-    </div>
-
-    <!--Modal Body-->
-    <div class="modal-body">
-      <p>Gift Limit:</p>
-      <input type="text" id="loginDisabledInp" placeholder="Set Login Disabled Message" class="giftInp" alt="Set the login disabled text" maxlength="150">
-      <p>Set A Custom Alert Upon Attempted Login</p>
-      <br/>
-      <br/>
-      <span class="basicBtn" id="resetDefaultLoginDisabledBtn" alt="Reset To Default Login Message">Reset To Default Alert</span>
-      <br/>
-      <br/>
-      <br/>
-    </div>
-
-    <!--Modal Footer-->
-    <div class="modal-footer">
-      <h3 style="float: left;padding-left: 10px" id="confirmLoginDisabled" alt="Confirm Message">Confirm</h3>
-      <h3 style="float: right;padding-right: 10px" id="cancelLoginDisabled" alt="Cancel Message">Cancel</h3>
-    </div>
-  </div>
-</div>
-
-<div id="databaseLimitsModal" class="modal">
-  <div class="modal-content">
-
-    <!--Modal Header-->
-    <div class="modal-header">
-      <span class="close" id="closeDatabaseLimitsModal">&times;</span>
-      <h2>Set Database Limits Below</h2>
-    </div>
-
-    <!--Modal Body-->
-    <div class="modal-body">
-      <p>Gift Limit:</p>
-      <input type="number" id="giftLimitInp" placeholder="Set Gift Limit Per User" class="giftInp" alt="Set the amount of gifts that a given user is able to create" maxlength="4">
-      <p>Set Gift Limit Per User</p>
-      <br>
-      <p>User Limit:</p>
-      <input type="number" id="userLimitInp" placeholder="Set User Limit For Database" class="giftInp" alt="Set the amount of users that can be created in this database" maxlength="4">
-      <p>Set User Limit For Database</p>
-    </div>
-
-    <!--Modal Footer-->
-    <div class="modal-footer">
-      <h3 style="float: left;padding-left: 10px" id="confirmLimits" alt="Confirm Settings">Confirm</h3>
-      <h3 style="float: right;padding-right: 10px" id="cancelLimits" alt="Cancel Settings">Cancel</h3>
+      <p></p>
     </div>
   </div>
 </div>
