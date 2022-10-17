@@ -534,7 +534,7 @@ window.onload = function instantiate() {
     let userFriendLength = 0;
     let commonFriends = 0;
     let commonFriendData;
-    let userBlackListCommon;
+    let userBlackListCommon = [];
 
     addToBlackList.style.display = "none";
 
