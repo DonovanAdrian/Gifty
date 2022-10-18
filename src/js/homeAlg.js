@@ -8,8 +8,10 @@ let homeElements = [];
 let listeningFirebaseRefs = [];
 let userArr = [];
 let giftArr = [];
+let oldGiftArr = [];
 let inviteArr = [];
 let userBoughtGifts = [];
+let initializedGifts = [];
 let userBoughtGiftsUsers = [];
 
 let invitesValidBool = false;
@@ -17,6 +19,8 @@ let friendsValidBool = false;
 let readNotificationsBool = false;
 let updateUserBool = false;
 let giftListEmptyBool = false;
+let giftDeleteLocal = false;
+let potentialRemoval = false;
 
 let giftLimit = 50;
 let dataCounter = 0;
@@ -41,6 +45,12 @@ let giftCreationDate;
 let giftUpdate;
 let giftDelete;
 let closeGiftModal;
+let confirmModal;
+let closeConfirmModal;
+let confirmTitle;
+let confirmContent;
+let confirmBtn;
+let denyBtn;
 let notificationModal;
 let notificationInfo;
 let notificationTitle;
@@ -223,6 +233,12 @@ window.onload = function instantiate() {
   dataListContainer = document.getElementById('dataListContainer');
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
+  confirmModal = document.getElementById('confirmModal');
+  closeConfirmModal = document.getElementById('closeConfirmModal');
+  confirmTitle = document.getElementById('confirmTitle');
+  confirmContent = document.getElementById('confirmContent');
+  confirmBtn = document.getElementById('confirmBtn');
+  denyBtn = document.getElementById('denyBtn');
   notificationModal = document.getElementById('notificationModal');
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
@@ -240,9 +256,10 @@ window.onload = function instantiate() {
   giftDelete = document.getElementById('giftDelete');
   closeGiftModal = document.getElementById('closeGiftModal');
   testData = document.getElementById('testData');
-  homeElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, notificationModal, notificationTitle,
-    notificationInfo, noteSpan, inviteNote, boughtGifts, addGift, giftModal, giftTitle, giftLink, giftWhere,
-    giftDescription, giftCreationDate, giftUpdate, giftDelete, closeGiftModal, testData];
+  homeElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, confirmModal, closeConfirmModal,
+    confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal, notificationTitle, notificationInfo,
+    noteSpan, inviteNote, boughtGifts, addGift, giftModal, giftTitle, giftLink, giftWhere, giftDescription,
+    giftCreationDate, giftUpdate, giftDelete, closeGiftModal, testData];
 
   getCurrentUser();
   commonInitialization();
@@ -308,6 +325,11 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
+          giftArr = user.giftList;
+          if (potentialRemoval) {
+            findRemovedGift(oldGiftArr, user.giftList);
+            potentialRemoval = false;
+          }
           if(consoleOutput)
             console.log("Current User Updated");
         }
@@ -328,21 +350,28 @@ window.onload = function instantiate() {
         giftArr.push(data.val());
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
+          data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
 
         checkGiftLimit();
       });
 
       postRef.on('child_changed', function(data) {
-        giftArr[data.key] = data.val();
+        if (initializedGifts.includes(data.val().uid)) {
+          giftArr[data.key] = data.val();
 
-        changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.key, data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
+          changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
+            data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
+        }
       });
 
       postRef.on('child_removed', function(data) {
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        navigation(2);
+        if (!giftDeleteLocal) {
+          potentialRemoval = true;
+          oldGiftArr = [];
+          for (let i = 0; i < giftArr.length; i++) {
+            oldGiftArr.push(giftArr[i]);
+          }
+        }
       });
     };
 
@@ -410,7 +439,32 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(limitsInitial);
   }
 
-  function createGiftElement(description, link, received, title, key, where, uid, date, buyer){
+  function findRemovedGift(oldArr, newArr) {
+    let giftToRemove = null;
+    let foundInInner = false;
+
+    for (let a = 0; a < oldArr.length; a++) {
+      for (let b = 0; b < newArr.length; b++) {
+        if (oldArr[a].uid == newArr[b].uid) {
+          foundInInner = true;
+          break;
+        }
+      }
+      if (!foundInInner) {
+        giftToRemove = oldArr[a];
+        break;
+      } else {
+        foundInInner = false;
+      }
+    }
+    if (giftToRemove != null) {
+      removeGiftElement(giftToRemove.uid);
+      let i = initializedGifts.indexOf(giftToRemove.uid);
+      initializedGifts.splice(i, 1);
+    }
+  }
+
+  function createGiftElement(description, link, received, title, where, uid, date, buyer){
     try{
       testData.remove();
     } catch (err) {}
@@ -418,7 +472,7 @@ window.onload = function instantiate() {
     let liItem = document.createElement("LI");
     liItem.id = "gift" + uid;
 
-    initGiftElement(liItem, description, link, received, title, key, where, uid, date, buyer);
+    initGiftElement(liItem, description, link, received, title, where, uid, date, buyer);
 
     let textNode = document.createTextNode(title);
     liItem.appendChild(textNode);
@@ -427,18 +481,19 @@ window.onload = function instantiate() {
     clearInterval(offlineTimer);
 
     dataCounter++;
+    initializedGifts.push(uid);
     if (dataCounter > buttonOpacLim)
       boughtGifts.style.opacity = ".75";
   }
 
-  function changeGiftElement(description, link, received, title, key, where, uid, date, buyer) {
+  function changeGiftElement(description, link, received, title, where, uid, date, buyer) {
     let editGift = document.getElementById('gift' + uid);
     editGift.innerHTML = title;
 
-    initGiftElement(description, link, received, title, key, where, uid, date, buyer);
+    initGiftElement(description, link, received, title, where, uid, date, buyer);
   }
 
-  function initGiftElement(liItem, description, link, received, title, key, where, uid, date, buyer) {
+  function initGiftElement(liItem, description, link, received, title, where, uid, date, buyer) {
     liItem.className = "gift";
     liItem.onclick = function (){
       if (link != ""){
@@ -472,12 +527,12 @@ window.onload = function instantiate() {
         giftCreationDate.innerHTML = "Creation date not available";
       }
       giftUpdate.onclick = function(){
-        updateMaintenanceLog("home", "Attempting to update gift: " + title + " " + key + " " + user.userName);
+        updateMaintenanceLog("home", "Attempting to update gift: " + title + " " + uid + " " + user.userName);
         updateGiftElement(uid);
       };
       giftDelete.onclick = function(){
-        updateMaintenanceLog("home", "Attempting to delete gift: " + title + " " + key + " " + user.userName);
-        deleteGiftElement(key, title, uid, buyer);
+        updateMaintenanceLog("home", "Attempting to delete gift: " + title + " " + uid + " " + user.userName);
+        confirmDeletion(title, uid, buyer);
       };
 
       openModal(giftModal, uid);
@@ -489,6 +544,7 @@ window.onload = function instantiate() {
   }
 
   function removeGiftElement(uid) {
+    console.log("Remove gift " + uid);
     document.getElementById('gift' + uid).remove();
 
     checkGiftLimit();
@@ -507,7 +563,35 @@ window.onload = function instantiate() {
     navigation(8);//GiftAddUpdate
   }
 
-  function deleteGiftElement(key, title, uid, buyer) {
+  function confirmDeletion(title, uid, buyer) {
+    confirmTitle.innerHTML = "Confirm Gift Delete";
+    confirmContent.innerHTML = "Are you sure you want to delete your gift, " + title + "?";
+
+    confirmBtn.onclick = function() {
+      closeModal(confirmModal);
+      deleteGiftElement(title, uid, buyer);
+    };
+
+    denyBtn.onclick = function() {
+      closeModal(confirmModal);
+      openModal(giftModal, "giftModal");
+    }
+
+    openModal(confirmModal, "confirmModal", true);
+
+    closeConfirmModal.onclick = function() {
+      closeModal(confirmModal);
+      openModal(giftModal, "giftModal");
+    };
+
+    window.onclick = function(event) {
+      if (event.target == confirmModal) {
+        closeModal(confirmModal);
+      }
+    };
+  }
+
+  function deleteGiftElement(title, uid, buyer) {
     let verifyDeleteBool = true;
     let toDelete = -1;
 
@@ -532,29 +616,19 @@ window.onload = function instantiate() {
     }
 
     if(verifyDeleteBool){
+      let i = initializedGifts.indexOf(uid);
+      initializedGifts.splice(i, 1);
+      giftDeleteLocal = true;
       removeGiftElement(uid);
+
       firebase.database().ref("users/" + user.uid).update({
         giftList: giftArr
       });
 
       closeModal(giftModal);
 
-      notificationInfo.innerHTML = "Gift Deleted";
-      notificationTitle.innerHTML = "Gift " + title + " successfully deleted!";
-      openModal(notificationModal, "noteModal");
-
-      noteSpan.onclick = function() {
-        closeModal(notificationModal);
-      };
-
-      let nowJ = 0;
-      let j = setInterval(function(){
-        nowJ = nowJ + 1000;
-        if(nowJ >= 3000){
-          closeModal(notificationModal);
-          clearInterval(j);
-        }
-      }, 1000);
+      deployNotificationModal(false, "Gift Deleted", "Gift " + title +
+        " successfully deleted!");
 
       if(buyer != ""){
         let userFound = findUserNameItemInArr(buyer, userArr);
@@ -568,10 +642,11 @@ window.onload = function instantiate() {
         if(consoleOutput)
           console.log("No buyer, no notification needed");
       }
-
+      giftDeleteLocal = false;
     } else {
       deployNotificationModal(true, "Gift Delete Failed!", "Delete failed, please " +
         "try again later!");
+      updateMaintenanceLog("home", "Gift delete failed for user " + user.userName + "'s public list, gift " + uid);
     }
   }
 
