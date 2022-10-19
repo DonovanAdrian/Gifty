@@ -273,6 +273,15 @@ window.onload = function instantiate() {
     } else if (ticketData.details.includes("Login disabled by")) {
       liItem.className += " highSev";
       ticketTitleText = "Login Disabled: " + ticketData.uid;
+    } else if (ticketData.details.includes("Gift delete failed")) {
+      liItem.className += " highSev";
+      ticketTitleText = "Gift Delete Failed: " + ticketData.uid;
+    } else if (ticketData.details.includes("URL Limiter disabled by")) {
+      liItem.className += " mediumSev";
+      ticketTitleText = "URL Limits Disabled: " + ticketData.uid;
+    } else if (ticketData.details.includes("URL Limiter set by")) {
+      liItem.className += " mediumSev";
+      ticketTitleText = "URL Limits Set: " + ticketData.uid;
     } else if (ticketData.details.includes("Database limits set by")) {
       liItem.className += " mediumSev";
       ticketTitleText = "Database Limits Set: " + ticketData.uid;
