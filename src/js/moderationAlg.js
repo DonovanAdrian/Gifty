@@ -25,6 +25,7 @@ let secretSantaInit = false;
 let allowLogin = null;
 
 let loginDisabledMsg = "";
+let giftURLLimit = "";
 
 let dataListContainer;
 let offlineSpan;
@@ -34,6 +35,7 @@ let sendGlobalNotification;
 let nukeAllUserNotifications;
 let nukeAllUserScores;
 let loginFxnBtn;
+let giftLinkBtn;
 let limitsBtn;
 let databaseLimitsModal;
 let closeDatabaseLimitsModal;
@@ -42,8 +44,11 @@ let userLimitInp;
 let confirmLimits;
 let cancelLimits;
 let loginDisabledModal;
+let loginDisabledTitle;
 let closeLoginDisabledModal;
+let loginDisabledDesc;
 let loginDisabledInp;
+let loginDisabledInfo;
 let resetDefaultLoginDisabledBtn;
 let confirmLoginDisabled;
 let cancelLoginDisabled;
@@ -120,6 +125,7 @@ window.onload = function instantiate() {
   nukeAllUserNotifications = document.getElementById('nukeAllUserNotifications');
   nukeAllUserScores = document.getElementById('nukeAllUserScores');
   loginFxnBtn = document.getElementById('loginFxnBtn');
+  giftLinkBtn = document.getElementById('giftLinkBtn');
   limitsBtn = document.getElementById('limitsBtn');
   databaseLimitsModal = document.getElementById('databaseLimitsModal');
   closeDatabaseLimitsModal = document.getElementById('closeDatabaseLimitsModal');
@@ -128,8 +134,11 @@ window.onload = function instantiate() {
   confirmLimits = document.getElementById('confirmLimits');
   cancelLimits = document.getElementById('cancelLimits');
   loginDisabledModal = document.getElementById('loginDisabledModal');
+  loginDisabledTitle = document.getElementById('loginDisabledTitle');
   closeLoginDisabledModal = document.getElementById('closeLoginDisabledModal');
+  loginDisabledDesc = document.getElementById('loginDisabledDesc');
   loginDisabledInp = document.getElementById('loginDisabledInp');
+  loginDisabledInfo = document.getElementById('loginDisabledInfo');
   resetDefaultLoginDisabledBtn = document.getElementById('resetDefaultLoginDisabledBtn');
   confirmLoginDisabled = document.getElementById('confirmLoginDisabled');
   cancelLoginDisabled = document.getElementById('cancelLoginDisabled');
@@ -175,14 +184,15 @@ window.onload = function instantiate() {
   cancelMsg = document.getElementById('cancelMsg');
   moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal, notificationTitle,
     notificationInfo, noteSpan, privateMessageModal, sendGlobalNotification, nukeAllUserNotifications,
-    nukeAllUserScores, loginFxnBtn, limitsBtn, databaseLimitsModal, closeDatabaseLimitsModal, giftLimitInp,
-    userLimitInp, confirmLimits, cancelLimits, loginDisabledModal, closeLoginDisabledModal, loginDisabledInp,
-    resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown, showNone, showUID,
-    showName, showLastLogin, showUserScore, showShareCode, showFriends, showSantaSignUp, showModerator,
-    sendPrivateMessage, userModal, userOptionsBtn, secretSantaModal, santaModalSpan, secretSantaBtn, secretSantaShuffle,
-    secretSantaAutoBtn, settingsNote, testData, closeUserModal, userName, userUID, userUserName, userGifts,
-    userPrivateGifts, userFriends, userLastLogin, userScore, userPassword, userSecretSanta, moderatorOp,
-    sendPrivateMessage, warnUser, banUser, closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
+    nukeAllUserScores, loginFxnBtn, giftLinkBtn, limitsBtn, databaseLimitsModal, closeDatabaseLimitsModal, giftLimitInp,
+    userLimitInp, confirmLimits, cancelLimits, loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal,
+    loginDisabledDesc, loginDisabledInp, loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled,
+    cancelLoginDisabled, userListDropDown, showNone, showUID, showName, showLastLogin, showUserScore, showShareCode,
+    showFriends, showSantaSignUp, showModerator, sendPrivateMessage, userModal, userOptionsBtn, secretSantaModal,
+    santaModalSpan, secretSantaBtn, secretSantaShuffle, secretSantaAutoBtn, settingsNote, testData, closeUserModal,
+    userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends, userLastLogin, userScore, userPassword,
+    userSecretSanta, moderatorOp, sendPrivateMessage, warnUser, banUser, closePrivateMessageModal, globalMsgTitle,
+    globalMsgInp, sendMsg, cancelMsg];
 
   sessionStorage.setItem("moderationSet", moderationSet);
   getCurrentUserCommon();
@@ -554,7 +564,7 @@ window.onload = function instantiate() {
     }
     loginFxnBtn.onclick = function(){
       if (allowLogin) {
-        generateLoginDisabledModal();
+        generateLoginDisabledModal(false);
       } else {
         loginFxnBtn.innerHTML = "Disable Login Function";
         firebase.database().ref("login/").update({
@@ -563,7 +573,7 @@ window.onload = function instantiate() {
         });
         deployNotificationModal(false, "Login Enabled!", "Login functionality has " +
           "been successfully enabled!");
-        updateMaintenanceLog("settings", "Login enabled by the user \"" + user.userName + "\"");
+        updateMaintenanceLog("moderation", "Login enabled by the user \"" + user.userName + "\"");
       }
     };
   }
@@ -572,6 +582,13 @@ window.onload = function instantiate() {
     limitsBtn.innerHTML = "Set Database Limits";
     limitsBtn.onclick = function() {
       generateLimitsModal();
+    };
+  }
+
+  function initializeURLLimitsBtn() {
+    giftLinkBtn.innerHTML = "Enable/Disable Gift URL Limiter";
+    giftLinkBtn.onclick = function() {
+      generateLoginDisabledModal(true);
     };
   }
 
@@ -594,11 +611,11 @@ window.onload = function instantiate() {
 
           deployNotificationModal(false, "Limits Set!",
             "Database Limits Successfully Set!");
-          updateMaintenanceLog("settings", "Database limits set by the user \"" + user.userName
+          updateMaintenanceLog("moderation", "Database limits set by the user \"" + user.userName
             + "\" " + "to Gift Limit: " + giftLimitInp.value + " and User Limit: " + userLimitInp.value);
 
           closeModal(databaseLimitsModal);
-          openModal(secretSantaModal, "secretSantaModal");
+          openModal(secretSantaModal, "userOptionsModal");
         } else {
           deployNotificationModal(true, "Invalid Limits!",
             "Please Only Enter Numbers Greater Than Zero!");
@@ -611,81 +628,151 @@ window.onload = function instantiate() {
 
     cancelLimits.onclick = function(){
       closeModal(databaseLimitsModal);
-      openModal(secretSantaModal, "secretSantaModal");
+      openModal(secretSantaModal, "userOptionsModal");
     };
 
     closeDatabaseLimitsModal.onclick = function(){
       closeModal(databaseLimitsModal);
-      openModal(secretSantaModal, "secretSantaModal");
+      openModal(secretSantaModal, "userOptionsModal");
     };
 
     window.onclick = function (event) {
       if (event.target == databaseLimitsModal) {
         closeModal(databaseLimitsModal);
-        openModal(secretSantaModal, "secretSantaModal");
+        openModal(secretSantaModal, "userOptionsModal");
       }
     }
 
     openModal(databaseLimitsModal, "databaseLimitsModal", true);
   }
 
-  function generateLoginDisabledModal() {
+  function generateLoginDisabledModal(urlLimitBool) {
     closeModal(secretSantaModal);
 
-    loginDisabledInp.value = loginDisabledMsg;
-
-    resetDefaultLoginDisabledBtn.onclick = function (){
-      loginDisabledInp.value = "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-        "maintenance before logging in. Thank you for your patience!";
-      firebase.database().ref("login/").update({
-        allowLogin: allowLogin,
-        loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-          "maintenance before logging in. Thank you for your patience!"
-      });
-      deployNotificationModal(false, "Login Message Updated!",
-        "Login Disabled Message Successfully Reset!");
-      updateMaintenanceLog("settings", "Login disabled message reset by the user \"" + user.userName
-        + "\"");
-    };
-
-    confirmLoginDisabled.onclick = function (){
-      if (loginDisabledInp.value == "") {
-        deployNotificationModal(true, "Login Message Error!",
-          "Please Do Not Leave The Login Message Empty!");
+    if (urlLimitBool) {
+      loginDisabledTitle.innerHTML = "Set Custom URL Limiter String";
+      loginDisabledDesc.innerHTML = "URL Limiter String:";
+      loginDisabledInp.value = giftURLLimit;
+      loginDisabledInp.placeholder = "Set Custom URL Limiter";
+      loginDisabledInfo.innerHTML = "Set A Custom List Of Acceptable URL Domains (i.e., amazon,amzn,bestbuy,barnesandnoble)";
+      if (giftURLLimit == "") {
+        resetDefaultLoginDisabledBtn.innerHTML = "Enable Default URL Limiter";
+        confirmLoginDisabled.innerHTML = "Confirm & Enable";
       } else {
-        loginFxnBtn.innerHTML = "Enable Login Function";
+        resetDefaultLoginDisabledBtn.innerHTML = "Disable URL Limiter";
+        confirmLoginDisabled.innerHTML = "Confirm & Update";
+      }
+    } else {
+      loginDisabledTitle.innerHTML = "Set Login Disabled Message Below";
+      loginDisabledDesc.innerHTML = "Login Disabled Message:";
+      loginDisabledInp.value = loginDisabledMsg;
+      loginDisabledInp.placeholder = "Set Login Disabled Message";
+      loginDisabledInfo.innerHTML = "Set A Custom Alert Upon Attempted Login";
+      resetDefaultLoginDisabledBtn.innerHTML = "Reset To Default Alert";
+      confirmLoginDisabled.innerHTML = "Confirm & Disable";
+    }
+
+    if (urlLimitBool) {
+      if (giftURLLimit == "") {
+        resetDefaultLoginDisabledBtn.onclick = function () {
+          checkCSVURL("amazon,amzn,bestbuy,barnesandnoble", true);
+        };
+      } else {
+        resetDefaultLoginDisabledBtn.onclick = function () {
+          checkCSVURL("", true);
+        };
+      }
+
+      confirmLoginDisabled.onclick = function() {
+        checkCSVURL(loginDisabledInp.value, false);
+      };
+    } else {
+      resetDefaultLoginDisabledBtn.onclick = function () {
+        loginDisabledInp.value = "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
+          "maintenance before logging in. Thank you for your patience!";
         firebase.database().ref("login/").update({
-          allowLogin: false,
-          loginDisabledMsg: loginDisabledInp.value
+          allowLogin: allowLogin,
+          loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
+            "maintenance before logging in. Thank you for your patience!"
         });
         deployNotificationModal(false, "Login Message Updated!",
-          "Login Disabled Message Set And Login Disabled!");
-        updateMaintenanceLog("settings", "Login disabled by the user \"" + user.userName + "\" " +
-          "with the following message: " + loginDisabledInp.value);
+          "Login Disabled Message Successfully Reset!");
+        updateMaintenanceLog("moderation", "Login disabled message reset by the user \"" + user.userName
+          + "\"");
+      };
 
-        closeModal(loginDisabledModal);
-        openModal(secretSantaModal, "secretSantaModal");
-      }
-    };
+      confirmLoginDisabled.onclick = function () {
+        if (loginDisabledInp.value == "") {
+          deployNotificationModal(true, "Login Message Error!",
+            "Please Do Not Leave The Login Message Empty!");
+        } else {
+          loginFxnBtn.innerHTML = "Enable Login Function";
+          firebase.database().ref("login/").update({
+            allowLogin: false,
+            loginDisabledMsg: loginDisabledInp.value
+          });
+          deployNotificationModal(false, "Login Message Updated!",
+            "Login Disabled Message Set And Login Disabled!");
+          updateMaintenanceLog("moderation", "Login disabled by the user \"" + user.userName + "\" " +
+            "with the following message: " + loginDisabledInp.value);
+
+          closeModal(loginDisabledModal);
+          openModal(secretSantaModal, "userOptionsModal");
+        }
+      };
+    }
 
     cancelLoginDisabled.onclick = function(){
       closeModal(loginDisabledModal);
-      openModal(secretSantaModal, "secretSantaModal");
+      openModal(secretSantaModal, "userOptionsModal");
     };
 
     closeLoginDisabledModal.onclick = function(){
       closeModal(loginDisabledModal);
-      openModal(secretSantaModal, "secretSantaModal");
+      openModal(secretSantaModal, "userOptionsModal");
     };
 
     window.onclick = function (event) {
       if (event.target == loginDisabledModal) {
         closeModal(loginDisabledModal);
-        openModal(secretSantaModal, "secretSantaModal");
+        openModal(secretSantaModal, "userOptionsModal");
       }
     }
 
     openModal(loginDisabledModal, "loginDisabledModal", true);
+  }
+
+  function checkCSVURL(urlString, override) {
+    urlString = urlString.replace(" ", "");
+    if (urlString[0] == ',') {
+      urlString = urlString.split("");
+      urlString.splice(0);
+      urlString = urlString.join("");
+    }
+    if (urlString[urlString.length-1] == ',') {
+      urlString = urlString.split("");
+      urlString.splice( urlString.length-1, urlString.length);
+      urlString = urlString.join("");
+    }
+    if (urlString == "" && !override) {
+      deployNotificationModal(true, "URL String Error!", "The URL Limiter Is NOT currently active. If you wish to enable it, please enter a non-empty string", false, 4);
+    } else if (urlString.includes(',,')) {
+      deployNotificationModal(true, "URL String Error!", "Please do not include more than one comma");
+    } else if (urlString.includes('.')) {
+      deployNotificationModal(true, "URL String Error!", "Please do not include full URLs, only specific parts of a URL like \"www\" or \"bestbuy\".");
+    } else {
+      firebase.database().ref("limits/").update({
+        giftURLLimit: urlString
+      });
+      if (override) {
+        updateMaintenanceLog("moderation", "URL Limiter disabled by the user \"" + user.userName);
+        deployNotificationModal(false, "URL Limiter Disabled!", "The URL Limiter has been disabled!");
+      } else {
+        updateMaintenanceLog("moderation", "URL Limiter set by the user \"" + user.userName + "\" " +
+          "with the following string: " + urlString);
+        deployNotificationModal(false, "URL Limiter Set!", "Your URL Limiter was successfully set! From now on, only gifts with your specified limiter(s) will be allowed.", false, 4);
+      }
+    }
   }
 
   function databaseQuery() {
@@ -909,6 +996,9 @@ window.onload = function instantiate() {
           userLimit = data.val();
         } else if (data.key == "giftLimit") {
           giftLimit = data.val();
+        } else if (data.key == "giftURLLimit") {
+          giftURLLimit = data.val();
+          initializeURLLimitsBtn();
         }
         if (giftLimit > 0 && userLimit > 0) {
           initializeLimitsBtn();
@@ -918,19 +1008,27 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         if (data.key == "userLimit") {
           userLimit = data.val();
+          initializeLimitsBtn();
         } else if (data.key == "giftLimit") {
           giftLimit = data.val();
+          initializeLimitsBtn();
+        } else if (data.key == "giftURLLimit") {
+          giftURLLimit = data.val();
+          initializeURLLimitsBtn();
         }
-        initializeLimitsBtn();
       });
 
       postRef.on('child_removed', function (data) {
         if (data.key == "userLimit") {
           userLimit = 50;
+          initializeLimitsBtn();
         } else if (data.key == "giftLimit") {
           giftLimit = 100;
+          initializeLimitsBtn();
+        } else if (data.key == "giftURLLimit") {
+          giftURLLimit = "";
+          initializeURLLimitsBtn();
         }
-        initializeLimitsBtn();
       });
     };
 
