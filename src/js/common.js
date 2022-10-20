@@ -13,8 +13,10 @@ let deployedNoteTimer = 0;
 let setWindowNoteTimer = 0;
 let consoleOutput = false;
 let loadingTimerCancelled = false;
+let userCreationOverride = false;
 let areYouStillThereBool = false;
 let areYouStillThereInit = false;
+let notificationDeployed = false;
 let modalClosingBool = false;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
@@ -249,6 +251,9 @@ function getCurrentUserCommon(){
       }
     } else {
       try {
+        userCreationOverride = JSON.parse(sessionStorage.userCreationOverride);
+      } catch (err) {}
+      try {
         user = JSON.parse(sessionStorage.validUser);
         if (user.moderatorInt == 1) {
           consoleOutput = true;
@@ -388,8 +393,12 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offli
 
   notificationInfo.innerHTML = noteInfo;
   notificationTitle.innerHTML = noteTitle;
-  openModal(notificationModal, "noteModal", true);
-  console.log("Notification Deployed");
+  if (!notificationDeployed) {
+    openModal(notificationModal, "noteModal", true);
+    if (pageName != "Index" || consoleOutput)
+      console.log("Notification Deployed");
+  }
+  notificationDeployed = true;
 
   noteSpan.onclick = function() {
     if (navigationBool) {
@@ -397,6 +406,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offli
         console.log("Notification Navigating....");
       navigation(customNavigation);
     }
+    notificationDeployed = false;
     closeModal(notificationModal);
     if (reopenPreviousModal != null)
       if (reopenPreviousModal)
@@ -417,6 +427,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offli
               console.log("Notification Navigating.....");
             navigation(customNavigation);
           }
+          notificationDeployed = false;
           closeModal(notificationModal);
           if (reopenPreviousModal != null)
             if (reopenPreviousModal)
@@ -438,6 +449,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offli
           console.log("Notification Navigating...");
         navigation(customNavigation);
       }
+      notificationDeployed = false;
       closeModal(notificationModal);
       if (reopenPreviousModal != null)
         if (reopenPreviousModal)
