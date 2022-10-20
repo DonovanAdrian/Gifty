@@ -178,7 +178,12 @@ window.onload = function instantiate() {
   signUpFld = document.getElementById('signUpFld');
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
-  indexElements = [username, pin, loginBtn, loginInfo, signUpFld, offlineModal, offlineSpan];
+  notificationModal = document.getElementById('notificationModal');
+  notificationTitle = document.getElementById('notificationTitle');
+  notificationInfo = document.getElementById('notificationInfo');
+  noteSpan = document.getElementById('closeNotification');
+  indexElements = [username, pin, loginBtn, loginInfo, signUpFld, offlineModal, offlineSpan, notificationModal,
+    notificationTitle, notificationInfo, noteSpan];
 
   verifyElementIntegrity(indexElements);
   loginBtn.innerHTML = "Please Wait...";
@@ -369,42 +374,7 @@ function databaseQuery() {
 function login() {
   let validUserInt = 0;
 
-  for(let i = 0; i < userArr.length; i++){
-    if(userArr[i].userName.toLowerCase() == username.value.toLowerCase()){
-      try {
-        if(decode(userArr[i].encodeStr) == pin.value){
-          if(allowLogin) {
-            if (userArr[i].ban == 0) {
-              loginBool = true;
-              validUserInt = i;
-              break;
-            } else {
-              loginInfo.innerHTML = "Login Error Occurred... Please Contact A Moderator!";
-              updateMaintenanceLog("index", "Banned user " + userArr[i].userName + " attempted to log in!");
-              return;
-            }
-          } else {
-            if(userArr[i].moderatorInt == 1) {
-              loginBool = true;
-              validUserInt = i;
-              break;
-            } else {
-              if (showLoginAlert == 0) {
-                showLoginAlert++;
-                deployNotificationModal(false, "Login Disabled!", loginDisabledMsg,
-                  false, 4);
-              }
-            }
-          }
-        }
-      } catch (err) {
-        console.log("The following error occurred:");
-        console.log(err);
-        loginInfo.innerHTML = "Login Error Occurred. Please Contact A Moderator!";
-        updateMaintenanceLog("index", "Login Error: " + username.value.toLowerCase() + " " + pin.value.toString() + " - " + err);
-      }
-    }
-  }
+  validUserInt = authenticate();
   if (loginBool === true){
     let today = new Date();
     let UTCmm = today.getUTCMinutes();
@@ -484,6 +454,49 @@ function login() {
   }
 }
 
+function authenticate() {
+  let validAuthUserInt = 0;
+
+  for(let i = 0; i < userArr.length; i++){
+    if(userArr[i].userName.toLowerCase() == username.value.toLowerCase()){
+      try {
+        if(decode(userArr[i].encodeStr) == pin.value){
+          if(allowLogin) {
+            if (userArr[i].ban == 0) {
+              loginBool = true;
+              validAuthUserInt = i;
+              break;
+            } else {
+              loginInfo.innerHTML = "Login Error Occurred... Please Contact A Moderator!";
+              updateMaintenanceLog("index", "Banned user " + userArr[i].userName + " attempted to log in!");
+              return;
+            }
+          } else {
+            if(userArr[i].moderatorInt == 1) {
+              loginBool = true;
+              validAuthUserInt = i;
+              break;
+            } else {
+              if (showLoginAlert == 0) {
+                showLoginAlert++;
+                deployNotificationModal(false, "Login Disabled!", loginDisabledMsg,
+                  false, 4);
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.log("The following error occurred:");
+        console.log(err);
+        loginInfo.innerHTML = "Login Error Occurred. Please Contact A Moderator!";
+        updateMaintenanceLog("index", "Login Error: " + username.value.toLowerCase() + " " + pin.value.toString() + " - " + err);
+      }
+    }
+  }
+
+  return validAuthUserInt;
+}
+
 function checkSignUpLite(){
   if (userArr.length < userLimit) {
     signUpFld.innerHTML = "Don't have an account? Click here!";
@@ -494,12 +507,18 @@ function checkSignUpLite(){
 }
 
 function checkSignUp(){
+  let validUserTempInt = 0;
   if (userArr.length >= userLimit) {
     signUpFld.innerHTML = "Gifty Database Full! Existing Users Can Still Log In Above!";
     signUpFld.onclick = function(){
-      deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
-        "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
-        false, 4);
+      validUserTempInt = authenticate();
+      if (loginBool === true && userArr[validUserTempInt].moderatorInt == 1) {
+        signUp(true);
+      } else {
+        deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
+          "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
+          false, 4);
+      }
     };
   } else {
     signUpFld.innerHTML = "Don't have an account? Click here!";
@@ -509,12 +528,17 @@ function checkSignUp(){
   }
 }
 
-function signUp(){
-  if(allowLogin || loginDisabledMsg.includes(newGiftyMessage)) {
+function signUp(override){
+  if (override == null)
+    override = false;
+
+  if((allowLogin || loginDisabledMsg.includes(newGiftyMessage)) || override) {
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
+    sessionStorage.setItem("userCreationOverride", JSON.stringify(override));
     navigation(13, false);
   } else {
-    deployNotificationModal(false, "Login Disabled!", loginDisabledMsg,
+    deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
+      "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
       false, 4);
   }
 }
