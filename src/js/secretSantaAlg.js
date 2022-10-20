@@ -8,12 +8,14 @@ let automaticControl = null;
 let manualControl = null;
 let currentState = -1;
 let tempUserArr = [];
+let prioritizedUserArr = [];
 let assignedNameUsers = [];
 let assignedUsers = [];
 let removedUsers = [];
 
 let ignoreFamilySet = false;
 let showSecretTextCycler = false;
+let debugUserAssignmentsBool = false;
 
 let currentDate = new Date();
 let currentYear = currentDate.getFullYear();
@@ -152,12 +154,13 @@ function changeSecretSantaState(manualChange) {
     case 3:
       if (consoleOutput)
         console.log("State 3: Active");
-      currentState = 3;
       if (checkIfSantaSignUp() && !checkIfSantaActive()) {
         createSecretSantaNames();
+        currentState = 3;
       } else if (!checkIfSantaSignUp() && !checkIfSantaActive() && pageName == "Moderation") {
         deployNotificationModal(true, "Secret Santa Error!", "Not enough people have signed up for Secret " +
           "Santa yet! At least 3 people need to be signed up in order to assign names", false, 4);
+        currentState = 2;
       } else {
         console.log("Hm, this wasn't supposed to happen!");
       }
@@ -232,10 +235,10 @@ function secretSantaButtonManager(buttonPressed) {
         updateSecretSantaToDB("manual");
       }
       if (currentState == 2) {
-        changeSecretSantaState(0);
+        changeSecretSantaState(0);//Cycle Through Normal States
         initializeSecretSantaButtons();
       } else {
-        changeSecretSantaState(0);
+        changeSecretSantaState(0);//Cycle Through Normal States
         initializeSecretSantaButtons();
       }
       break;
@@ -278,13 +281,13 @@ function checkSecretSanta(){
         console.log("Automatic Control Not Needed, But Enabled");
         break;
       case 1:
-        changeSecretSantaState(1);
+        changeSecretSantaState(1);//Manually Set To State 1, Idle
         if (pageName == "Lists") {
           autoHideSecretSanta();
         }
         break;
       case 2:
-        changeSecretSantaState(2);
+        changeSecretSantaState(2);//Manually Set To State 2, Ready
         if (pageName == "Lists") {
           showSecretSanta();
         }
@@ -295,7 +298,7 @@ function checkSecretSanta(){
         }
 
         if (!checkIfSantaActive()) {
-          changeSecretSantaState(3);
+          changeSecretSantaState(3);//Manually Set To State 3, Active
         }
         break;
       default:
@@ -798,11 +801,20 @@ function createSecretSantaNames(){
         skippedFamilies.push(optInFamilyArr[i]);
       }
     } else {
+      for (let x = 0; x < prioritizedUserArr.length; x++) {
+        let priUserIndex = optInFamilyArr[i].members.indexOf(prioritizedUserArr[x].uid);
+        if (priUserIndex != -1) {
+          familySet.push(prioritizedUserArr[x]);
+        }
+      }
       for (let a = 0; a < optInFamilyArr[i].members.length; a++) {
         let famSetUserIndex = findUIDItemInArr(optInFamilyArr[i].members[a], tempUserArr, true);
-        if (famSetUserIndex != -1)
+        let priUserIndex = findUIDItemInArr(optInFamilyArr[i].members[a], prioritizedUserArr, true);
+        if (famSetUserIndex != -1 && priUserIndex == -1)
           familySet.push(tempUserArr[famSetUserIndex]);
       }
+      prioritizedUserArr = [];
+      console.log(familySet);
 
       potentialMatchesArr = buildPotentialMatchesArray(familySet);
       if (potentialMatchesArr.length > 3) {
@@ -1221,6 +1233,7 @@ function buildPotentialMatchesArray(usersToAssign) {
     } else {
       removedUsersArr.push(usersToAssign[a]);
       removedUsersReasonsArr.push(removedUsersString);
+      prioritizedUserArr.push(usersToAssign[a]);
       userIndex = findUIDItemInArr(usersToAssign[a].uid, tempUserArr, true);
       tempUserArr.splice(userIndex, 1);
 
@@ -1330,14 +1343,42 @@ function updateAllUsersToDBSantaNums(){
 }
 
 function updateAllUsersToDBSantaNames(){
+  let commitOutput = false;
+
   for(let i = 0; i < userArr.length; i++) {
+    if (userArr[i].secretSanta == 1 && userArr[i].secretSantaName == null) {
+      if (consoleOutput) {
+        console.log("");
+        console.log(userArr[i].userName + " Signed Up But Was Not Assigned A Name! Check The Above Log For The Reasons Why.");
+        commitOutput = true;
+      }
+    } else if (userArr[i].secretSanta == 1 && userArr[i].secretSantaName == "") {
+      if (consoleOutput) {
+        console.log("");
+        console.log(userArr[i].userName + " Signed Up But Was Not Assigned A Name! Check The Above Log For The Reasons Why.");
+        commitOutput = true;
+      }
+    } else if (userArr[i].secretSanta == 1 && userArr[i].secretSantaName != "") {
+      if (consoleOutput) {
+        console.log("");
+        let assignedUserIndex = findUIDItemInArr(userArr[i].secretSantaName, userArr, true);
+        if (assignedUserIndex != -1 && debugUserAssignmentsBool)
+          console.log(userArr[i].userName + " Was Assigned To " + userArr[assignedUserIndex].userName + "!");
+        else
+          console.log(userArr[i].userName + " Was Assigned A Name!");
+        commitOutput = true;
+      }
+    }
     if (userArr[i].secretSantaName != null) {
       firebase.database().ref("users/" + userArr[i].uid).update({
         secretSantaName: userArr[i].secretSantaName
       });
     } else {
-      if (consoleOutput)
+      if (consoleOutput) {
         console.log("Failed To Update Name " + userArr[i].name);
+      }
     }
+    if (commitOutput)
+      commitOutput = false;
   }
 }
