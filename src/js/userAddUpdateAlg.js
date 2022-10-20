@@ -191,14 +191,16 @@ window.onload = function instantiate() {
   }
 
   function checkUserLimit() {
-    if (userArr.length < userLimit && userArr.length != 0 && user == null) {
+    if (userArr.length < userLimit && userArr.length != 0 && user == undefined) {
       btnUpdate.innerHTML = "Create User Profile";
       deployNotificationModal(false, "Secure Pin Notice!", "Alert! Please use a pin you have never used before." +
         " No computer system is 100% secure, so your due diligence as a user will be critical in protecting your pins.",
         false, 4);
-    } else if (user == undefined) {
+    } else if (user == undefined && !userCreationOverride) {
       deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this Gifty Database is full, so no more users can be created." +
         " Please contact the owner to obtain access. Redirecting back to login...", false, 4, 1);
+    } else {
+      btnUpdate.innerHTML = "Create User Profile";
     }
   }
 };
@@ -210,13 +212,14 @@ function deleteCheck(){
   let deleteBuyerBool = false;
   updateMaintenanceLog("userAddUpdate", "Attempting to delete user: " + user.userName);
 
+  deployNotificationModal(false, "Account Delete Disabled!", "Account deletion is currently disabled." +
+    " Please try again later!", false, 5);
+  /*
   if(consoleOutput)
     console.log(user.uid + " will be deleted. Are you sure?");
   openModal(confirmModal, "confirmModal");
 
   deleteConfirm.onclick = function () {
-    alert("User Deletion Is Not Currently Functional, Please Try Again Later");
-    /*
     if(consoleOutput)
       console.log("Confirmed to delete user " + user.uid);
 
@@ -239,7 +242,7 @@ function deleteCheck(){
             console.log(deleteCleanupUser.friends)//todo
             deleteCleanupUser.friends.splice(friendDelIndex, 1);
             console.log(deleteCleanupUser.friends)
-
+            //todo
             firebase.database().ref("users/" + deleteCleanupUser.uid).update({
               friends: deleteCleanupUser.friends
             });
@@ -252,7 +255,7 @@ function deleteCheck(){
           console.log(deleteCleanupUser.invites)//todo
           deleteCleanupUser.invites.splice(inviteDelIndex, 1);
           console.log(deleteCleanupUser.invites)
-
+          //todo
           firebase.database().ref("users/" + deleteCleanupUser.uid).update({
             invites: deleteCleanupUser.invites
           });
@@ -290,6 +293,7 @@ function deleteCheck(){
             deleteBuyerBool = false;
           }
 
+          //todo
           if (deleteChangeBool) {
             firebase.database().ref("users/" + deleteCleanupUser.uid).update({
               giftList: deleteCleanupUser.giftList
@@ -352,6 +356,7 @@ function deleteCheck(){
             deleteBuyerBool = false;
           }
 
+          //todo
           if (deleteChangeBool) {
             firebase.database().ref("users/" + deleteCleanupUser.uid).update({
               privateList: deleteCleanupUser.privateList
@@ -366,6 +371,7 @@ function deleteCheck(){
     //firebase.database().ref("users/").child(user.uid).remove();
     closeModal(confirmModal);
 
+    //todo same as above
     btnDelete.innerHTML = "Please Wait...";
     btnUpdate.onclick = function(){};
     btnDelete.onclick = function(){};
@@ -375,7 +381,6 @@ function deleteCheck(){
       console.log("");
       console.log("Completed deleting user " + user.uid);
     }
-   */
   };
 
   deleteDeny.onclick = function () {
@@ -408,6 +413,8 @@ function deleteCheck(){
 
     return tempFriendReturn;
   }
+  */
+
 }
 
 function updateUserToDB(){
