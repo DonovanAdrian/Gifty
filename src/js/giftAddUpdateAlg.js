@@ -148,6 +148,7 @@ window.onload = function instantiate() {
           giftLimit = data.val();
         } else if (data.key == "giftURLLimit") {
           giftURLLimit = data.val();
+          giftURLLimit = giftURLLimit.split(",");
         }
       });
 
@@ -156,6 +157,7 @@ window.onload = function instantiate() {
           giftLimit = data.val();
         } else if (data.key == "giftURLLimit") {
           giftURLLimit = data.val();
+          giftURLLimit = giftURLLimit.split(",");
         }
       });
 
@@ -250,12 +252,16 @@ window.onload = function instantiate() {
     let newURL = verifyURLString(giftLinkInp.value);
     let clearReceivedByBool = false;
     let notificationSent = false;
-    let giftLimitBool = false;
+    let giftLimitBool = true;
 
-    for (let i = 0; i < giftURLLimit.length; i++) {
-      if (newURL.includes(giftURLLimit[i])) {
-        giftLimitBool = true;
+    if (giftURLLimit != "") {
+      for (let i = 0; i < giftURLLimit.length; i++) {
+        if (newURL.includes(giftURLLimit[i])) {
+          giftLimitBool = false;
+        }
       }
+    } else {
+      giftLimitBool = false;
     }
 
     if(invalidURL != newURL)
@@ -267,7 +273,7 @@ window.onload = function instantiate() {
     } else if (giftTitleInp.value === "") {
       deployNotificationModal(false, "Gift Title Blank!", "It looks like you left " +
         "the title blank. Make sure you add a title so other people know what to get you!", false, 4);
-    } else if (giftLimitBool) {
+    } else if (giftLimitBool && newURL != "") {
       deployNotificationModal(false, "Invalid Gift URL!", "It looks like the URL" +
         " you are trying to use is restricted by moderators. Please use a different link or leave it blank!", false, 4);
     } else if (invalidURLBool && !invalidURLOverride) {
@@ -513,10 +519,14 @@ window.onload = function instantiate() {
     let currentUserScore;
     let giftLimitBool = true;
 
-    for (let i = 0; i < giftURLLimit.length; i++) {
-      if (newURL.includes(giftURLLimit[i])) {
-        giftLimitBool = false;
+    if (giftURLLimit != "") {
+      for (let i = 0; i < giftURLLimit.length; i++) {
+        if (newURL.includes(giftURLLimit[i])) {
+          giftLimitBool = false;
+        }
       }
+    } else {
+      giftLimitBool = false;
     }
 
     if(invalidURL != newURL)
@@ -528,7 +538,7 @@ window.onload = function instantiate() {
     } else if (giftTitleInp.value === "") {
       deployNotificationModal(false, "Gift Title Blank!", "It looks like you " +
         "left the title blank. Make sure you add a title so other people know what to get you!", false, 4);
-    } else if (giftLimitBool) {
+    } else if (giftLimitBool && newURL != "") {
       deployNotificationModal(false, "Invalid Gift URL!", "It looks like the URL" +
         " you are trying to use is restricted by moderators. Please use a different link or leave it blank!", false, 4);
     } else if (invalidURLBool && !invalidURLOverride) {
