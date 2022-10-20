@@ -7,6 +7,7 @@
 let giftAddUpdateElements = [];
 let listeningFirebaseRefs = [];
 let giftArr = [];
+let giftURLLimit = [];
 
 let giftPresent = true;
 let privateListBool = true;
@@ -36,6 +37,7 @@ let listNote;
 let inviteNote;
 let currentGift;
 let userGifts;
+let limitsInitial;
 let notificationModal;
 let notificationInfo;
 let notificationTitle;
@@ -100,6 +102,7 @@ window.onload = function instantiate() {
   commonInitialization();
   verifyElementIntegrity(giftAddUpdateElements);
 
+  limitsInitial = firebase.database().ref("limits/");
   if(!privateListBool) {
     userGifts = firebase.database().ref("users/" + user.uid + "/giftList/");
   } else {
@@ -139,6 +142,32 @@ window.onload = function instantiate() {
   initializeGiftAddBtn();
 
   function databaseQuery() {
+    let fetchLimits = function (postRef) {
+      postRef.on('child_added', function (data) {
+        if (data.key == "giftLimit") {
+          giftLimit = data.val();
+        } else if (data.key == "giftURLLimit") {
+          giftURLLimit = data.val();
+        }
+      });
+
+      postRef.on('child_changed', function (data) {
+        if (data.key == "giftLimit") {
+          giftLimit = data.val();
+        } else if (data.key == "giftURLLimit") {
+          giftURLLimit = data.val();
+        }
+      });
+
+      postRef.on('child_removed', function (data) {
+        if (data.key == "giftLimit") {
+          giftLimit = 100;
+        } else if (data.key == "giftURLLimit") {
+          giftURLLimit = "";
+        }
+      });
+    };
+
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         giftArr.push(data);
@@ -171,8 +200,10 @@ window.onload = function instantiate() {
     };
 
     fetchData(userGifts);
+    fetchLimits(limitsInitial);
 
     listeningFirebaseRefs.push(userGifts);
+    listeningFirebaseRefs.push(limitsInitial);
   }
 
   function initializeData() {
@@ -219,7 +250,16 @@ window.onload = function instantiate() {
     let newURL = verifyURLString(giftLinkInp.value);
     let clearReceivedByBool = false;
     let notificationSent = false;
+    let giftLimitBool = false;
 
+    for (let i = 0; i < giftURLLimit.length; i++) {
+      if (newURL.includes(giftURLLimit[i])) {
+        giftLimitBool = true;
+      }
+    }
+
+    if(invalidURL != newURL)
+      invalidURLOverride = false;
     if (giftTitleInp.value.includes(",,,") || giftWhereInp.value.includes(",,,")
       || giftDescriptionInp.value.includes(",,,")) {
       deployNotificationModal(false, "Gift Error!", "Please do not include excess " +
@@ -227,10 +267,15 @@ window.onload = function instantiate() {
     } else if (giftTitleInp.value === "") {
       deployNotificationModal(false, "Gift Title Blank!", "It looks like you left " +
         "the title blank. Make sure you add a title so other people know what to get you!", false, 4);
-    } else if (invalidURLBool) {
+    } else if (giftLimitBool) {
+      deployNotificationModal(false, "Invalid Gift URL!", "It looks like the URL" +
+        " you are trying to use is restricted by moderators. Please use a different link or leave it blank!", false, 4);
+    } else if (invalidURLBool && !invalidURLOverride) {
       deployNotificationModal(false, "Invalid Gift URL!", "It looks like you " +
         "entered an invalid URL, please enter a valid URL or leave the field blank. If this is intentional, you can " +
         "click \"Add Gift\", but the gift URL will not be saved.", false, 4);
+      invalidURLOverride = true;
+      invalidURL = newURL;
     } else {
       if(giftUID != -1) {
         if (!privateListBool) {
@@ -466,17 +511,12 @@ window.onload = function instantiate() {
     let creationDate = mm + "/" + dd + "/" + yy;
     let newURL = verifyURLString(giftLinkInp.value);
     let currentUserScore;
+    let giftLimitBool = true;
 
-    if (user.userScore == null) {
-      user.userScore = 0;
-    }
-
-    user.userScore = user.userScore + 2;
-    currentUserScore = user.userScore;
-
-    if(!privateListBool) {
-      currentUserScore = user.userScore + 2
-      user.userScore = user.userScore + 2;
+    for (let i = 0; i < giftURLLimit.length; i++) {
+      if (newURL.includes(giftURLLimit[i])) {
+        giftLimitBool = false;
+      }
     }
 
     if(invalidURL != newURL)
@@ -488,6 +528,9 @@ window.onload = function instantiate() {
     } else if (giftTitleInp.value === "") {
       deployNotificationModal(false, "Gift Title Blank!", "It looks like you " +
         "left the title blank. Make sure you add a title so other people know what to get you!", false, 4);
+    } else if (giftLimitBool) {
+      deployNotificationModal(false, "Invalid Gift URL!", "It looks like the URL" +
+        " you are trying to use is restricted by moderators. Please use a different link or leave it blank!", false, 4);
     } else if (invalidURLBool && !invalidURLOverride) {
       deployNotificationModal(false, "Invalid Gift URL!", "It looks like you " +
         "entered an invalid URL, please enter a valid URL or leave the field blank. If this is intentional, you can " +
@@ -495,6 +538,18 @@ window.onload = function instantiate() {
       invalidURLOverride = true;
       invalidURL = newURL;
     } else {
+      if (user.userScore == null) {
+        user.userScore = 0;
+      }
+
+      user.userScore = user.userScore + 2;
+      currentUserScore = user.userScore;
+
+      if(!privateListBool) {
+        currentUserScore = user.userScore + 2
+        user.userScore = user.userScore + 2;
+      }
+
       if(!privateListBool) {
         let newUid = firebase.database().ref("users/" + user.uid + "/giftList/" + uid).push();
         newUid = newUid.toString();
