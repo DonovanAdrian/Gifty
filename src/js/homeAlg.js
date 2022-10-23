@@ -327,7 +327,7 @@ window.onload = function instantiate() {
           user = data.val();
           giftArr = user.giftList;
           if (potentialRemoval) {
-            findRemovedGift(oldGiftArr, user.giftList);
+            findRemovedGift(oldGiftArr, giftArr);
             potentialRemoval = false;
           }
           if(consoleOutput)
