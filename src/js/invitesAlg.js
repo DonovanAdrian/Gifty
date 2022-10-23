@@ -26,7 +26,7 @@ let dataListContainer;
 let offlineSpan;
 let offlineModal;
 let userInviteModal;
-let confirmModal;
+let confirmUserModal;
 let addUser;
 let user;
 let newInviteIcon;
@@ -55,7 +55,7 @@ let closePrivateMessageModal;
 let privateMessageInp;
 let sendMsg;
 let cancelMsg;
-let closeConfirmModal;
+let closeConfirmUserModal;
 let confUserName;
 let inviteConfirm;
 let inviteDeny;
@@ -138,8 +138,8 @@ window.onload = function instantiate() {
   inviteInfo = document.getElementById('inviteInfo');
   addInvite = document.getElementById('addInvite');
   cancelInvite = document.getElementById('cancelInvite');
-  confirmModal = document.getElementById('confirmModal');
-  closeConfirmModal = document.getElementById('closeConfirmModal');
+  confirmUserModal = document.getElementById('confirmUserModal');
+  closeConfirmUserModal = document.getElementById('closeConfirmUserModal');
   confUserName = document.getElementById('confUserName');
   inviteConfirm = document.getElementById('inviteConfirm');
   inviteDeny = document.getElementById('inviteDeny');
@@ -164,7 +164,7 @@ window.onload = function instantiate() {
   userInviteRemove = document.getElementById('userInviteRemove');
   testData = document.getElementById('testData');
   inviteElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, userInviteModal,
-    closeUserInviteModal, userNameInp, addToBlackList, inviteInfo, addInvite, cancelInvite, confirmModal, closeConfirmModal,
+    closeUserInviteModal, userNameInp, addToBlackList, inviteInfo, addInvite, cancelInvite, confirmUserModal, closeConfirmUserModal,
     confUserName, inviteConfirm, inviteDeny, inviteNote, newInviteIcon, addUser, notificationModal, notificationTitle,
     notificationInfo, noteSpan, privateMessageModal, closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg,
     inviteModal, closeInviteModal, userName, userUName, userShareCode, sendPrivateMessage, userInviteRemove, testData];
@@ -752,7 +752,7 @@ window.onload = function instantiate() {
 
       inviteConfirm.onclick = function () {
         inviteUserDB(userArr[userLocation]);
-        closeModal(confirmModal);
+        closeModal(confirmUserModal);
         userNameInp.value = "";
         inviteInfo.innerHTML = "";
         addToBlackList.style.display = "none";
@@ -760,7 +760,7 @@ window.onload = function instantiate() {
       };
 
       inviteDeny.onclick = function () {
-        closeModal(confirmModal);
+        closeModal(confirmUserModal);
         openModal(userInviteModal, "userInviteModal");
         userNameInp.value = "";
         inviteInfo.innerHTML = "";
@@ -768,8 +768,8 @@ window.onload = function instantiate() {
         addToBlackList.onclick = function() {};
       };
 
-      closeConfirmModal.onclick = function () {
-        closeModal(confirmModal);
+      closeConfirmUserModal.onclick = function () {
+        closeModal(confirmUserModal);
         userNameInp.value = "";
         inviteInfo.innerHTML = "";
         addToBlackList.style.display = "none";
@@ -777,15 +777,15 @@ window.onload = function instantiate() {
       };
 
       window.onclick = function (event) {
-        if (event.target == confirmModal) {
-          closeModal(confirmModal);
+        if (event.target == confirmUserModal) {
+          closeModal(confirmUserModal);
           userNameInp.value = "";
           inviteInfo.innerHTML = "";
           addToBlackList.style.display = "none";
           addToBlackList.onclick = function() {};
         }
       }
-      openModal(confirmModal, "confirmUserModal", true);
+      openModal(confirmUserModal, "confirmUserModal", true);
     } else {
       deployNotificationModal(true, "User Finder Error!", "There was an error " +
         "finding that user... Please contact the developer for assistance on the FAQ page!");
