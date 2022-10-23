@@ -437,7 +437,10 @@ function updateUserToDB(){
       " please choose another.", false, 4);
     userNameBool = true;
   } else {
+    userUpdateOverride = true;
     injectUserArr(userArr);
+    user.name = nameField.value;
+    user.userName = userNameField.value;
     let encodeKey = encode(pinField.value);
     firebase.database().ref("users/" + user.uid).update({
       name: nameField.value,
