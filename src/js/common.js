@@ -12,6 +12,7 @@ let logoutLimit = 900;
 let deployedNoteTimer = 0;
 let setWindowNoteTimer = 0;
 let consoleOutput = false;
+let userUpdateOverride = false;
 let loadingTimerCancelled = false;
 let userCreationOverride = false;
 let areYouStillThereBool = false;
@@ -244,8 +245,10 @@ function getCurrentUserCommon(){
           if (consoleOutput)
             console.log("Friends Not Found");
         } else if (user.friends != undefined) {
-          if (user.friends.length < 100 && user.friends.length > 0) {
+          if (user.friends.length < 100 && user.friends.length > 1) {
             inviteNote.innerHTML = user.friends.length + " Friends";
+          } else if (user.friends.length == 1) {
+            inviteNote.innerHTML = "1 Friend";
           }
         }
       }
@@ -502,6 +505,11 @@ function navigation(navNum, loginOverride, privateUserOverride) {
     sessionStorage.setItem("validPrivateUser", JSON.stringify(user));
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
     sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
+  } else if (userUpdateOverride != undefined) {
+    if (userUpdateOverride) {
+      sessionStorage.setItem("validUser", JSON.stringify(user));
+      sessionStorage.setItem("userArr", JSON.stringify(userArr));
+    }
   }
 
   let navLocations = [
