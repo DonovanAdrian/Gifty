@@ -764,9 +764,13 @@ window.onload = function instantiate() {
       firebase.database().ref("limits/").update({
         giftURLLimit: urlString
       });
-      if (override) {
+      if (urlString == "" && override) {
         updateMaintenanceLog("moderation", "URL Limiter disabled by the user \"" + user.userName);
         deployNotificationModal(false, "URL Limiter Disabled!", "The URL Limiter has been disabled!");
+      } else if (urlString == "amazon,amzn,bestbuy,barnesandnoble" && override) {
+        updateMaintenanceLog("moderation", "Default URL Limiter set by the user \"" + user.userName + "\" " +
+          "with the following string: " + urlString);
+        deployNotificationModal(false, "Default URL Limiter Set!", "The Default URL Limiter was successfully set! From now on, only gifts with the default limiters will be allowed.", false, 4);
       } else {
         updateMaintenanceLog("moderation", "URL Limiter set by the user \"" + user.userName + "\" " +
           "with the following string: " + urlString);
@@ -1091,7 +1095,11 @@ window.onload = function instantiate() {
         userGifts.innerHTML = "This User Has No Gifts";
       }
       if(userData.privateList != undefined){
-        userPrivateGifts.innerHTML = "# Private Gifts: " + userData.privateList.length;
+        if(userData.uid == user.uid) {
+          userPrivateGifts.innerHTML = "# Private Gifts: ???";
+        } else {
+          userPrivateGifts.innerHTML = "# Private Gifts: " + userData.privateList.length;
+        }
       } else {
         userPrivateGifts.innerHTML = "This User Has No Private Gifts";
       }
@@ -1112,7 +1120,7 @@ window.onload = function instantiate() {
       }
       userPassword.innerHTML = "Click On Me To View Password";
 
-      if (checkIfSantaSignUp() && currentState != 3) {
+      if (currentState == 2) {
         if(userData.secretSanta != undefined) {
           if (userData.secretSanta == 0) {
             userSecretSanta.innerHTML = "Click To Opt Into Secret Santa";
@@ -1128,7 +1136,7 @@ window.onload = function instantiate() {
         userSecretSanta.onclick = function() {
           manuallyOptInOut(userData);
         };
-      } else if (currentState == 3) {
+      } else if (currentState == 3 && userData.secretSanta == 1) {
         if (userData.secretSantaName == "") {
           userSecretSanta.innerHTML = "This User Was Not Assigned A Name!";
           userSecretSanta.style.color = "#000";
@@ -1142,6 +1150,10 @@ window.onload = function instantiate() {
             userSecretSanta.onclick = function(){};
           };
         }
+      } else if (currentState == 3 && userData.secretSanta == 0) {
+        userSecretSanta.innerHTML = "This User Did Not Sign Up For Secret Santa";
+        userSecretSanta.style.color = "#000";
+        userSecretSanta.onclick = function(){};
       } else {
         userSecretSanta.innerHTML = "Secret Santa Is Not Active!";
         userSecretSanta.style.color = "#000";
@@ -1177,13 +1189,13 @@ window.onload = function instantiate() {
           firebase.database().ref("users/" + userData.uid).update({
             ban: 0
           });
-          deployNotificationModal(true, "Unbanned User!",
+          deployNotificationModal(false, "Unbanned User!",
             userData.name + " has been unbanned!");
         } else {
           firebase.database().ref("users/" + userData.uid).update({
             ban: 1
           });
-          deployNotificationModal(true, "Banned User!",
+          deployNotificationModal(false, "Banned User!",
             userData.name + " has been banned!");
         }
       };
@@ -1198,7 +1210,7 @@ window.onload = function instantiate() {
             deployNotificationModal(true, "User Info",
               "You cannot adjust your own role");
           } else {
-            deployNotificationModal(true, "Moderator Role Revoked",
+            deployNotificationModal(false, "Moderator Role Revoked",
               "Revoked role for " + userData.userName);
             firebase.database().ref("users/" + userData.uid).update({
               moderatorInt: 0
@@ -1217,7 +1229,7 @@ window.onload = function instantiate() {
             firebase.database().ref("users/" + userData.uid).update({
               moderatorInt: 1
             });
-            deployNotificationModal(true, "Moderator Role Granted",
+            deployNotificationModal(false, "Moderator Role Granted",
               "Granted role for " + userData.userName);
             closeModal(userModal);
           }
@@ -1247,20 +1259,20 @@ window.onload = function instantiate() {
             firebase.database().ref("users/" + userData.uid).update({
               secretSanta: 1
             });
-            deployNotificationModal(true, "Secret Santa Opted In!",
+            deployNotificationModal(false, "Secret Santa Opted In!",
               userData.name + " has been manually opted in to the Secret Santa Program!");
           } else {
             firebase.database().ref("users/" + userData.uid).update({
               secretSanta: 0
             });
-            deployNotificationModal(true, "Secret Santa Opted Out!",
+            deployNotificationModal(false, "Secret Santa Opted Out!",
               userData.name + " has been manually opted out of the Secret Santa Program!");
           }
         } else {
           firebase.database().ref("users/" + userData.uid).update({
             secretSanta: 0
           });
-          deployNotificationModal(true, "Secret Santa Opted Out!",
+          deployNotificationModal(false, "Secret Santa Opted Out!",
             userData.name + " has been manually opted out of the Secret Santa Program!");
         }
       }
