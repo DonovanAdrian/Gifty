@@ -115,15 +115,20 @@ window.onload = function instantiate() {
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
   databaseQuery();
-  if (user.friends != null) {
-    if (user.friends.length != 0) {
-      alternateButtonLabel(inviteNote, user.friends.length + " Friends", "Confirm");
-    } else {
-      alternateButtonLabel(inviteNote, "Friends", "Confirm");
-    }
-  } else {
+  let setBlank = true;
+
+  if (user.friends != null)
+    if (user.friends.length != 0)
+      if (user.friends.length == 1) {
+        alternateButtonLabel(inviteNote, "1 Friend", "Confirm");
+        setBlank = false;
+      } else if (user.friends.length < 100) {
+        alternateButtonLabel(inviteNote, user.friends.length + " Friends", "Confirm");
+        setBlank = false;
+      }
+
+  if (setBlank)
     alternateButtonLabel(inviteNote, "Friends", "Confirm");
-  }
 
   function initializeBackBtn() {
     backBtn.innerHTML = "Return To Invites";
