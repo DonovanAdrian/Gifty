@@ -58,6 +58,12 @@ let giftBuy;
 let giftDontBuy;
 let giftEdit;
 let giftDelete;
+let confirmModal;
+let closeConfirmModal;
+let confirmTitle;
+let confirmContent;
+let confirmBtn;
+let denyBtn;
 
 
 
@@ -122,6 +128,12 @@ window.onload = function instantiate() {
   dataListContainer = document.getElementById('dataListContainer');
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
+  confirmModal = document.getElementById('confirmModal');
+  closeConfirmModal = document.getElementById('closeConfirmModal');
+  confirmTitle = document.getElementById('confirmTitle');
+  confirmContent = document.getElementById('confirmContent');
+  confirmBtn = document.getElementById('confirmBtn');
+  denyBtn = document.getElementById('denyBtn');
   notificationModal = document.getElementById('notificationModal');
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
@@ -144,9 +156,10 @@ window.onload = function instantiate() {
   giftEdit = document.getElementById('giftEdit');
   giftDelete = document.getElementById('giftDelete');
   privateFriendListElements = [notificationBtn, giftCreationDate, dataListContainer, offlineModal, offlineSpan,
-    notificationModal, notificationTitle, notificationInfo, noteSpan, inviteNote, listNote, addGift, backBtn, giftModal,
-    testData, closeGiftModal, giftTitle, giftLink, giftWhere, giftDescription, giftCreator, giftBought, giftBuy,
-    giftDontBuy, giftEdit, giftDelete];
+    confirmModal, closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal,
+    notificationTitle, notificationInfo, noteSpan, inviteNote, listNote, addGift, backBtn, giftModal, testData,
+    closeGiftModal, giftTitle, giftLink, giftWhere, giftDescription, giftCreator, giftBought, giftBuy, giftDontBuy,
+    giftEdit, giftDelete];
 
   getCurrentUser();
   commonInitialization();
@@ -514,11 +527,11 @@ window.onload = function instantiate() {
       giftDelete.onclick = function(){
         if (creator == user.userName || creator == null || creator == undefined) {
           updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
-          deleteGiftElement(key, title, uid, buyer, receivedBy);
+          confirmDeletion(key, title, uid, buyer, receivedBy);
         } else {
           if (creator == ""){
             updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
-            deleteGiftElement(key, title, uid, buyer, receivedBy);
+            confirmDeletion(key, title, uid, buyer, receivedBy);
           } else {
             updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
             deployNotificationModal(true, "Gift Delete Failed!", "Only the creator, " + creator + ", can " +
@@ -616,6 +629,34 @@ window.onload = function instantiate() {
   function updateGiftElement(uid) {
     giftStorage = uid;
     navigation(8, undefined, true);
+  }
+
+  function confirmDeletion(key, title, uid, buyer, receivedBy) {
+    confirmTitle.innerHTML = "Confirm Gift Delete";
+    confirmContent.innerHTML = "Are you sure you want to delete your gift, " + title + "?";
+
+    confirmBtn.onclick = function() {
+      closeModal(confirmModal);
+      deleteGiftElement(key, title, uid, buyer, receivedBy);
+    };
+
+    denyBtn.onclick = function() {
+      closeModal(confirmModal);
+      openModal(giftModal, "giftModal");
+    }
+
+    openModal(confirmModal, "confirmModal", true);
+
+    closeConfirmModal.onclick = function() {
+      closeModal(confirmModal);
+      openModal(giftModal, "giftModal");
+    };
+
+    window.onclick = function(event) {
+      if (event.target == confirmModal) {
+        closeModal(confirmModal);
+      }
+    };
   }
 
   function deleteGiftElement(key, title, uid, buyer, receivedBy) {
