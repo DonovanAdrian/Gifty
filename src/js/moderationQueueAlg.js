@@ -244,66 +244,69 @@ window.onload = function instantiate() {
 
   function initModTicketElement (liItem, ticketData) {
     let ticketTitleText = "";
+    let ticketTitleSuffix = "";
 
     liItem.className = "gift";
     if (ticketData.details.includes("Attempting to delete user")) {
       liItem.className += " highSev";
-      ticketTitleText = "Attempt To Delete User: " + ticketData.uid;
+      ticketTitleSuffix = " - Attempt To Delete User";
     } else if (ticketData.details.includes("attempted to remove friend")) {
       liItem.className += " highSev";
-      ticketTitleText = "!!Friend Removal Error!! " + ticketData.uid;
+      ticketTitleSuffix = " - !!Friend Removal Error!!";
     } else if (ticketData.details.includes("attempted to add friend")) {
       liItem.className += " highSev";
-      ticketTitleText = "!!Invite Removal Error!! " + ticketData.uid;
+      ticketTitleSuffix = " - !!Invite Removal Error!!";
     } else if (ticketData.details.includes("Invalid Login")) {
       liItem.className += " highSev";
-      ticketTitleText = "!!Invalid Login Attempt!! " + ticketData.uid;
+      ticketTitleSuffix = " - !!Invalid Login Attempt!!";
     } else if (ticketData.details.includes("Login Error")) {
       liItem.className += " highSev";
-      ticketTitleText = "!!Login Error!! " + ticketData.uid;
+      ticketTitleSuffix = " - !!Login Error!!";
     } else if (ticketData.details.includes("attempted to log in")) {
       liItem.className += " highSev";
-      ticketTitleText = "A Banned User Attempted Login: " + ticketData.uid;
+      ticketTitleSuffix = " - A Banned User Attempted Login";
     } else if (ticketData.details.includes("attempted to access a restricted page")) {
       liItem.className += " highSev";
-      ticketTitleText = "A Restricted Page Was Accessed: " + ticketData.uid;
+      ticketTitleSuffix = " - A Restricted Page Was Accessed";
     }else if (ticketData.details.includes("forced the moderation modal to appear")) {
       liItem.className += " highSev";
-      ticketTitleText = "A Restricted Window Was Forced Open: " + ticketData.uid;
+      ticketTitleSuffix = " - A Restricted Window Was Forced Open";
     } else if (ticketData.details.includes("Login disabled by")) {
       liItem.className += " highSev";
-      ticketTitleText = "Login Disabled: " + ticketData.uid;
+      ticketTitleSuffix = " - Login Disabled";
     } else if (ticketData.details.includes("Gift delete failed")) {
       liItem.className += " highSev";
-      ticketTitleText = "Gift Delete Failed: " + ticketData.uid;
+      ticketTitleSuffix = " - Gift Delete Failed";
     } else if (ticketData.details.includes("URL Limiter disabled by")) {
       liItem.className += " mediumSev";
-      ticketTitleText = "URL Limits Disabled: " + ticketData.uid;
+      ticketTitleSuffix = " - URL Limits Disabled";
     } else if (ticketData.details.includes("URL Limiter set by")) {
       liItem.className += " mediumSev";
-      ticketTitleText = "URL Limits Set: " + ticketData.uid;
+      ticketTitleSuffix = " - URL Limits Set";
     } else if (ticketData.details.includes("Database limits set by")) {
       liItem.className += " mediumSev";
-      ticketTitleText = "Database Limits Set: " + ticketData.uid;
+      ticketTitleSuffix = " - Database Limits Set";
     } else if (ticketData.details.includes("Attempting to delete gift")) {
       liItem.className += " lowSev";
-      ticketTitleText = "Attempt To Delete Gift: " + ticketData.uid;
+      ticketTitleSuffix = " - Attempt To Delete Gift";
     } else if (ticketData.details.includes("has opened their warning")) {
       liItem.className += " mediumSev";
-      ticketTitleText = "A Warned User Was Successfully Notified: " + ticketData.uid;
+      ticketTitleSuffix = " - A Warned User Was Successfully Notified";
     } else if (ticketData.details.includes("Login disabled message reset by")) {
       liItem.className += " lowSev";
-      ticketTitleText = "Login Message Reset: " + ticketData.uid;
+      ticketTitleSuffix = " - Login Message Reset";
     } else if (ticketData.details.includes("Login enabled by")) {
       liItem.className += " lowSev";
-      ticketTitleText = "Login Enabled: " + ticketData.uid;
+      ticketTitleSuffix = " - Login Enabled";
     } else if (ticketData.details.includes("Attempting to update gift")) {
       liItem.className += " lowSev";
-      ticketTitleText = "Attempt To Update Gift: " + ticketData.uid;
+      ticketTitleSuffix = " - Attempt To Update Gift";
     } else {
       liItem.className += " highSev";
-      ticketTitleText = "No Data Available!";
+      ticketTitleSuffix = " - Ticket Title Unavailable, Open For More Details!";
     }
+
+    ticketTitleText = ticketData.time + ticketTitleSuffix;
 
     liItem.onclick = function (){
       ticketTitle.innerHTML = ticketTitleText;
