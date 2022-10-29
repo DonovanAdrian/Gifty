@@ -318,6 +318,13 @@ window.onload = function instantiate() {
       removeGiftElement(giftToRemove.uid);
       let i = initializedGifts.indexOf(giftToRemove.uid);
       initializedGifts.splice(i, 1);
+      if (giftToRemove.uid == currentModalOpen) {
+        closeModal(giftModal);
+        if (!giftUpdateLocal) {
+          deployNotificationModal(false, "Gift Deleted!", "The gift you were viewing " +
+            "was deleted by " + giftUser.name + "! This gift is no longer available to view...", false, 4);
+        }
+      }
     }
   }
 
