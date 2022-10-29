@@ -109,8 +109,9 @@ window.onload = function instantiate() {
     try{
       userGifts = firebase.database().ref("users/" + privateList.uid + "/privateList/");
     } catch (err) {
-      if(consoleOutput)
-        console.log("Unable to connect to private list");
+      updateMaintenanceLog("privateList", user.uid + " failed to connect to the private list owned by " + privateList.uid + "!");
+      deployNotificationModal(false, "Gift List Error!", "There was an error connecting to " +
+        privateList.uid + "'s private list! Please notify a moderator about this issue!", false, 5, 3);
     }
   }
 
@@ -441,8 +442,11 @@ window.onload = function instantiate() {
       } else {
         deployNotificationModal(false, "Gift Update Error!", "There was an error " +
           "updating the gift, please try again!");
-        if(consoleOutput)
-          console.log(giftUID);
+        if (!privateListBool) {
+          updateMaintenanceLog("home", "Gift update failed for user " + user.userName + "'s public list, gift " + giftUID);
+        } else {
+          updateMaintenanceLog("home", "Gift update failed for user " + privateList.uid + "'s private list, gift " + giftUID);
+        }
       }
     }
     invalidURLBool = false;
