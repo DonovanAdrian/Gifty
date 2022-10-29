@@ -274,9 +274,15 @@ window.onload = function instantiate() {
     } else if (ticketData.details.includes("Login disabled by")) {
       liItem.className += " highSev";
       ticketTitleSuffix = " - Login Disabled";
+    } else if (ticketData.details.includes("failed to connect to the private list owned by")) {
+      liItem.className += " highSev";
+      ticketTitleSuffix = " - Gift List Connection Failed";
     } else if (ticketData.details.includes("Gift delete failed")) {
       liItem.className += " highSev";
       ticketTitleSuffix = " - Gift Delete Failed";
+    } else if (ticketData.details.includes("Gift update failed for user")) {
+      liItem.className += " highSev";
+      ticketTitleSuffix = " - Gift Update Failed";
     } else if (ticketData.details.includes("URL Limiter disabled by")) {
       liItem.className += " mediumSev";
       ticketTitleSuffix = " - URL Limits Disabled";
@@ -286,9 +292,6 @@ window.onload = function instantiate() {
     } else if (ticketData.details.includes("Database limits set by")) {
       liItem.className += " mediumSev";
       ticketTitleSuffix = " - Database Limits Set";
-    } else if (ticketData.details.includes("Attempting to delete gift")) {
-      liItem.className += " lowSev";
-      ticketTitleSuffix = " - Attempt To Delete Gift";
     } else if (ticketData.details.includes("has opened their warning")) {
       liItem.className += " mediumSev";
       ticketTitleSuffix = " - A Warned User Was Successfully Notified";
@@ -298,9 +301,6 @@ window.onload = function instantiate() {
     } else if (ticketData.details.includes("Login enabled by")) {
       liItem.className += " lowSev";
       ticketTitleSuffix = " - Login Enabled";
-    } else if (ticketData.details.includes("Attempting to update gift")) {
-      liItem.className += " lowSev";
-      ticketTitleSuffix = " - Attempt To Update Gift";
     } else {
       liItem.className += " highSev";
       ticketTitleSuffix = " - Ticket Title Unavailable, Open For More Details!";
