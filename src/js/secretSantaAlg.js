@@ -327,7 +327,7 @@ function showSecretSanta(){
         if (user.secretSantaName != "") {
           let i = findUIDItemInArr(user.secretSantaName, userArr, true);
           secretSantaData = userArr[i];
-          secretSantaSignUp.innerHTML = userArr[i].name;
+          secretSantaSignUp.innerHTML = "Your Secret Santa:<br/>" + userArr[i].name;
         }
       }
     }
