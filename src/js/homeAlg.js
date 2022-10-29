@@ -527,11 +527,9 @@ window.onload = function instantiate() {
         giftCreationDate.innerHTML = "Creation date not available";
       }
       giftUpdate.onclick = function(){
-        updateMaintenanceLog("home", "Attempting to update gift: " + title + " " + uid + " " + user.userName);
         updateGiftElement(uid);
       };
       giftDelete.onclick = function(){
-        updateMaintenanceLog("home", "Attempting to delete gift: " + title + " " + uid + " " + user.userName);
         confirmDeletion(title, uid, buyer);
       };
 
