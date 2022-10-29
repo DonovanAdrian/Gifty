@@ -825,12 +825,24 @@ function deployListEmptyNotification(dataItemText){
 
 function updateMaintenanceLog(locationData, detailsData) {
   let today = new Date();
-  let UTChh = today.getUTCHours();
-  let UTCmm = today.getUTCMinutes();
-  let UTCss = today.getUTCSeconds();
-  let dd = today.getUTCDate();
-  let mm = today.getMonth()+1;
-  let yy = today.getFullYear();
+  let UTChh = today.getUTCHours() + "";
+  let UTCmm = today.getUTCMinutes() + "";
+  let UTCss = today.getUTCSeconds() + "";
+  let dd = today.getUTCDate() + "";
+  let mm = today.getMonth() + 1 + "";
+  let yy = today.getFullYear() + "";
+
+  if (UTChh.length == 1)
+    UTChh = "0" + UTChh
+  if (UTCmm.length == 1)
+    UTCmm = "0" + UTCmm
+  if (UTCss.length == 1)
+    UTCss = "0" + UTCss
+  if (dd.length == 1)
+    dd = "0" + dd
+  if (mm.length == 1)
+    mm = "0" + mm
+
   let timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
   let newUid = firebase.database().ref("maintenance").push();
   newUid = newUid.toString();
