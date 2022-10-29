@@ -379,6 +379,13 @@ window.onload = function instantiate() {
       removeGiftElement(giftToRemove.uid);
       let i = initializedGifts.indexOf(giftToRemove.uid);
       initializedGifts.splice(i, 1);
+      if (giftToRemove.uid == currentModalOpen) {
+        closeModal(giftModal);
+        if (!giftUpdateLocal) {
+          deployNotificationModal(false, "Gift Deleted!", "The gift you were viewing " +
+            "was deleted by " + giftToRemove.creator + "! This gift is no longer available to view...", false, 4);
+        }
+      }
     }
   }
 
@@ -521,19 +528,15 @@ window.onload = function instantiate() {
         giftCreationDate.innerHTML = "Creation date not available";
       }
       giftEdit.onclick = function(){
-        updateMaintenanceLog("privateList", "Attempting to update gift:" + title + " " + key + " " + user.userName);
         updateGiftElement(uid);
       };
       giftDelete.onclick = function(){
         if (creator == user.userName || creator == null || creator == undefined) {
-          updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
           confirmDeletion(key, title, uid, buyer, receivedBy);
         } else {
           if (creator == ""){
-            updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
             confirmDeletion(key, title, uid, buyer, receivedBy);
           } else {
-            updateMaintenanceLog("privateList", "Attempting to delete gift:" + title + " " + key + " " + user.userName);
             deployNotificationModal(true, "Gift Delete Failed!", "Only the creator, " + creator + ", can " +
               "delete this gift. Please contact them to delete this gift if it needs to be removed.", false, 4);
           }
