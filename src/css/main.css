@@ -157,6 +157,7 @@ span.boughtBtn:hover {
 span.addBtn {
   position: fixed;
   font-family: Verdana;
+  text-align: right;
   background: #ff8e8e;
   color: #FFF;
   transition: 0.3s;
