@@ -212,9 +212,6 @@ function deleteCheck(){
   let deleteBuyerBool = false;
   updateMaintenanceLog("userAddUpdate", "Attempting to delete user: " + user.userName);
 
-  deployNotificationModal(false, "Account Delete Disabled!", "Account deletion is currently disabled." +
-    " Please try again later!", false, 5);
-  /*
   if(consoleOutput)
     console.log(user.uid + " will be deleted. Are you sure?");
   openModal(confirmModal, "confirmModal");
@@ -223,26 +220,14 @@ function deleteCheck(){
     if(consoleOutput)
       console.log("Confirmed to delete user " + user.uid);
 
-    for (let i = 0; i < userArr.length; i++) {//todo
+    for (let i = 0; i < userArr.length; i++) {
       if (userArr[i].uid != user.uid) {
         deleteCleanupUser = userArr[i];
 
-        console.log("");
-        console.log("");
-        console.log("----------------------------");
-        console.log("UserArr Length: " + userArr.length);
-        console.log("Index: " + i);
-        console.log("CHECKING THE FOLLOWING USER:")
-        console.log(deleteCleanupUser.userName)
-        console.log(deleteCleanupUser.uid)
         if (deleteCleanupUser.friends != null) {
           let friendDelIndex = deleteCleanupUser.friends.indexOf(user.uid);
           if (deleteCleanupUser.friends[friendDelIndex] == user.uid) {
-            console.log("Updating Friends")
-            console.log(deleteCleanupUser.friends)//todo
             deleteCleanupUser.friends.splice(friendDelIndex, 1);
-            console.log(deleteCleanupUser.friends)
-            //todo
             firebase.database().ref("users/" + deleteCleanupUser.uid).update({
               friends: deleteCleanupUser.friends
             });
@@ -251,49 +236,39 @@ function deleteCheck(){
 
         if (deleteCleanupUser.invites != null) {
           let inviteDelIndex = deleteCleanupUser.invites.indexOf(user.uid);
-          console.log("Updating Invites")
-          console.log(deleteCleanupUser.invites)//todo
-          deleteCleanupUser.invites.splice(inviteDelIndex, 1);
-          console.log(deleteCleanupUser.invites)
-          //todo
-          firebase.database().ref("users/" + deleteCleanupUser.uid).update({
-            invites: deleteCleanupUser.invites
-          });
+          if (deleteCleanupUser.invites[inviteDelIndex] == user.uid) {
+            deleteCleanupUser.invites.splice(inviteDelIndex, 1);
+            firebase.database().ref("users/" + deleteCleanupUser.uid).update({
+              invites: deleteCleanupUser.invites
+            });
+          }
         }
 
         if (deleteCleanupUser.giftList != null) {
-          for (let a = 0; a < deleteCleanupUser.giftList.length; a++) {
-            if (deleteCleanupUser.giftList[a].buyer != undefined) {
-              if (deleteCleanupUser.giftList[a].buyer == user.userName) {
-                console.log("Updating Buyer")
-                console.log(deleteCleanupUser.giftList[a])
-                console.log(deleteCleanupUser.giftList[a].buyer)//todo
-                deleteCleanupUser.giftList[a].received = 0;
-                deleteCleanupUser.giftList[a].buyer = "";
-                console.log(deleteCleanupUser.giftList[a].buyer)
+          for (let delUserGiftIndex = 0; delUserGiftIndex < deleteCleanupUser.giftList.length; delUserGiftIndex++) {
+            if (deleteCleanupUser.giftList[delUserGiftIndex].buyer != undefined) {
+              if (deleteCleanupUser.giftList[delUserGiftIndex].buyer == user.userName) {
+                deleteCleanupUser.giftList[delUserGiftIndex].received = 0;
+                deleteCleanupUser.giftList[delUserGiftIndex].buyer = "";
                 deleteChangeBool = true;
                 deleteBuyerBool = true;
               }
             }
-            if (!deleteBuyerBool)
-              if (deleteCleanupUser.giftList[a].received != undefined) {
-                if (deleteCleanupUser.giftList[a].received < 0) {
-                  let z = deleteCleanupUser.giftList[a].receivedBy.indexOf(user.uid);
-                  if (z != -1) {
-                    console.log("Updating Received By")
-                    console.log(deleteCleanupUser.giftList[a])
-                    console.log(deleteCleanupUser.giftList[a].receivedBy)//todo
-                    deleteCleanupUser.giftList[a].receivedBy.splice(z, 1);
-                    deleteCleanupUser.giftList[a].received++;
-                    console.log(deleteCleanupUser.giftList[a].receivedBy)
+            if (!deleteBuyerBool) {
+              if (deleteCleanupUser.giftList[delUserGiftIndex].received != undefined) {
+                if (deleteCleanupUser.giftList[delUserGiftIndex].received < 0) {
+                  let delUserRcvdIndex = deleteCleanupUser.giftList[delUserGiftIndex].receivedBy.indexOf(user.uid);
+                  if (deleteCleanupUser.giftList[delUserGiftIndex].receivedBy[delUserRcvdIndex] == user.uid) {
+                    deleteCleanupUser.giftList[delUserGiftIndex].receivedBy.splice(delUserRcvdIndex, 1);
+                    deleteCleanupUser.giftList[delUserGiftIndex].received++;
                     deleteChangeBool = true;
                   }
                 }
               }
+            }
             deleteBuyerBool = false;
           }
 
-          //todo
           if (deleteChangeBool) {
             firebase.database().ref("users/" + deleteCleanupUser.uid).update({
               giftList: deleteCleanupUser.giftList
@@ -303,60 +278,42 @@ function deleteCheck(){
         }
 
         if (deleteCleanupUser.privateList != null) {
-          //ForLoopNeeded, use above giftList as base for this once above is complete
-          //Add gift creator removal as well...
-          //  Create "getFriendReplacement" function to get most active friend
-          //  If no friends, remove gift entirely (return null)
-
-          for (let a = 0; a < deleteCleanupUser.privateList.length; a++) {
-            if (deleteCleanupUser.privateList[a].buyer != undefined) {
-              if (deleteCleanupUser.privateList[a].buyer == user.userName) {
-                console.log("Updating Buyer")
-                console.log(deleteCleanupUser.privateList[a])
-                console.log(deleteCleanupUser.privateList[a].buyer)//todo
-                deleteCleanupUser.privateList[a].received = 0;
-                deleteCleanupUser.privateList[a].buyer = "";
-                console.log(deleteCleanupUser.privateList[a].buyer)
+          for (let delUserGiftIndex = 0; delUserGiftIndex < deleteCleanupUser.privateList.length; delUserGiftIndex++) {
+            if (deleteCleanupUser.privateList[delUserGiftIndex].buyer != undefined) {
+              if (deleteCleanupUser.privateList[delUserGiftIndex].buyer == user.userName) {
+                deleteCleanupUser.privateList[delUserGiftIndex].received = 0;
+                deleteCleanupUser.privateList[delUserGiftIndex].buyer = "";
                 deleteChangeBool = true;
                 deleteBuyerBool = true;
               }
             }
-            if (!deleteBuyerBool)
-              if (deleteCleanupUser.privateList[a].received != undefined) {
-                if (deleteCleanupUser.privateList[a].received < 0) {
-                  let z = deleteCleanupUser.privateList[a].receivedBy.indexOf(user.uid);
-                  if (z != -1) {
-                    console.log("Updating Received By")
-                    console.log(deleteCleanupUser.privateList[a]);
-                    console.log(deleteCleanupUser.privateList[a].receivedBy)//todo
-                    deleteCleanupUser.privateList[a].receivedBy.splice(z, 1);
-                    deleteCleanupUser.privateList[a].received++;
-                    console.log(deleteCleanupUser.privateList[a].receivedBy)
-                    deleteChangeBool = true;
-                  }
-                }
-                if (deleteCleanupUser.privateList[a].creator != undefined) {
-                  if (deleteCleanupUser.privateList[a].creator == user.userName) {
-                    console.log("Updating Creator")
-                    console.log(deleteCleanupUser.privateList[a]);
-                    console.log(deleteCleanupUser.privateList[a].creator)//todo
-                    replacementCreatorUser = getFriendReplacement(deleteCleanupUser);
-                    if (replacementCreatorUser != null) {
-                      deleteCleanupUser.privateList[a].creator = replacementCreatorUser.userName;
-                      console.log(deleteCleanupUser.privateList[a].creator);
-                    } else {
-                      console.log("Deleting Gift")
-                      deleteCleanupUser.privateList.splice(a, 1);
-                      a--;
-                    }
+            if (!deleteBuyerBool) {
+              if (deleteCleanupUser.privateList[delUserGiftIndex].received != undefined) {
+                if (deleteCleanupUser.privateList[delUserGiftIndex].received < 0) {
+                  let delUserRcvdIndex = deleteCleanupUser.privateList[delUserGiftIndex].receivedBy.indexOf(user.uid);
+                  if (deleteCleanupUser.privateList[delUserGiftIndex].receivedBy[delUserRcvdIndex] == user.uid) {
+                    deleteCleanupUser.privateList[delUserGiftIndex].receivedBy.splice(delUserRcvdIndex, 1);
+                    deleteCleanupUser.privateList[delUserGiftIndex].received++;
                     deleteChangeBool = true;
                   }
                 }
               }
+            }
+            if (deleteCleanupUser.privateList[delUserGiftIndex].creator != undefined) {
+              if (deleteCleanupUser.privateList[delUserGiftIndex].creator == user.userName) {
+                replacementCreatorUser = getFriendReplacement(deleteCleanupUser);
+                if (replacementCreatorUser != null) {
+                  deleteCleanupUser.privateList[delUserGiftIndex].creator = replacementCreatorUser.userName;
+                } else {
+                  deleteCleanupUser.privateList.splice(delUserGiftIndex, 1);
+                  delUserGiftIndex--;
+                }
+                deleteChangeBool = true;
+              }
+            }
             deleteBuyerBool = false;
           }
 
-          //todo
           if (deleteChangeBool) {
             firebase.database().ref("users/" + deleteCleanupUser.uid).update({
               privateList: deleteCleanupUser.privateList
@@ -367,11 +324,9 @@ function deleteCheck(){
       }
     }
 
-    //todo (Removing removal functionality until above cleanup is tested)
-    //firebase.database().ref("users/").child(user.uid).remove();
+    firebase.database().ref("users/").child(user.uid).remove();
     closeModal(confirmModal);
 
-    //todo same as above
     btnDelete.innerHTML = "Please Wait...";
     btnUpdate.onclick = function(){};
     btnDelete.onclick = function(){};
@@ -396,7 +351,7 @@ function deleteCheck(){
   };
 
   function getFriendReplacement(friendNeededUser) {
-    let tempFriendReturn;
+    let tempFriendReturn = null;
     let userReplacementIndex = -1;
     let tempFriendReplacementScore = 0;
 
@@ -413,8 +368,6 @@ function deleteCheck(){
 
     return tempFriendReturn;
   }
-  */
-
 }
 
 function updateUserToDB(){
