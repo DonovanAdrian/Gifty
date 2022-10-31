@@ -475,7 +475,6 @@ window.onload = function instantiate() {
   }
 
   function deleteFriend(delFriendData) {
-    let deleteCleanupUser;
     let replacementCreatorUser;
     let deleteChangeBool = false;
     let deleteBuyerBool = false;
@@ -545,91 +544,15 @@ window.onload = function instantiate() {
       verifyDeleteBoolFriend = false;
     }
 
+    let deleteUserIndex = findUIDItemInArr(uid, userArr);
+    if (deleteUserIndex != -1) {
+      cleanUpGifts(userArr[deleteUserIndex], user);
+      cleanUpGifts(user, userArr[deleteUserIndex]);
+    } else {
+      verifyDeleteBool = false;
+    }
+
     if (verifyDeleteBoolFriend && verifyDeleteBool) {
-      for (let i = 0; i < userArr.length; i++) {
-        if (userArr[i].uid != user.uid) {
-          deleteCleanupUser = userArr[i];
-
-          if (deleteCleanupUser.giftList != null) {
-            for (let delUserGiftIndex = 0; delUserGiftIndex < deleteCleanupUser.giftList.length; delUserGiftIndex++) {
-              if (deleteCleanupUser.giftList[delUserGiftIndex].buyer != undefined) {
-                if (deleteCleanupUser.giftList[delUserGiftIndex].buyer == user.userName) {
-                  deleteCleanupUser.giftList[delUserGiftIndex].received = 0;
-                  deleteCleanupUser.giftList[delUserGiftIndex].buyer = "";
-                  deleteChangeBool = true;
-                  deleteBuyerBool = true;
-                }
-              }
-              if (!deleteBuyerBool) {
-                if (deleteCleanupUser.giftList[delUserGiftIndex].received != undefined) {
-                  if (deleteCleanupUser.giftList[delUserGiftIndex].received < 0) {
-                    let delUserRcvdIndex = deleteCleanupUser.giftList[delUserGiftIndex].receivedBy.indexOf(user.uid);
-                    if (deleteCleanupUser.giftList[delUserGiftIndex].receivedBy[delUserRcvdIndex] == user.uid) {
-                      deleteCleanupUser.giftList[delUserGiftIndex].receivedBy.splice(delUserRcvdIndex, 1);
-                      deleteCleanupUser.giftList[delUserGiftIndex].received++;
-                      deleteChangeBool = true;
-                    }
-                  }
-                }
-              }
-              deleteBuyerBool = false;
-            }
-
-            if (deleteChangeBool) {
-              firebase.database().ref("users/" + deleteCleanupUser.uid).update({
-                giftList: deleteCleanupUser.giftList
-              });
-              deleteChangeBool = false;
-            }
-          }
-
-          if (deleteCleanupUser.privateList != null) {
-            for (let delUserGiftIndex = 0; delUserGiftIndex < deleteCleanupUser.privateList.length; delUserGiftIndex++) {
-              if (deleteCleanupUser.privateList[delUserGiftIndex].buyer != undefined) {
-                if (deleteCleanupUser.privateList[delUserGiftIndex].buyer == user.userName) {
-                  deleteCleanupUser.privateList[delUserGiftIndex].received = 0;
-                  deleteCleanupUser.privateList[delUserGiftIndex].buyer = "";
-                  deleteChangeBool = true;
-                  deleteBuyerBool = true;
-                }
-              }
-              if (!deleteBuyerBool) {
-                if (deleteCleanupUser.privateList[delUserGiftIndex].received != undefined) {
-                  if (deleteCleanupUser.privateList[delUserGiftIndex].received < 0) {
-                    let delUserRcvdIndex = deleteCleanupUser.privateList[delUserGiftIndex].receivedBy.indexOf(user.uid);
-                    if (deleteCleanupUser.privateList[delUserGiftIndex].receivedBy[delUserRcvdIndex] == user.uid) {
-                      deleteCleanupUser.privateList[delUserGiftIndex].receivedBy.splice(delUserRcvdIndex, 1);
-                      deleteCleanupUser.privateList[delUserGiftIndex].received++;
-                      deleteChangeBool = true;
-                    }
-                  }
-                }
-              }
-              if (deleteCleanupUser.privateList[delUserGiftIndex].creator != undefined) {
-                if (deleteCleanupUser.privateList[delUserGiftIndex].creator == user.userName) {
-                  replacementCreatorUser = getFriendReplacement(deleteCleanupUser);
-                  if (replacementCreatorUser != null) {
-                    deleteCleanupUser.privateList[delUserGiftIndex].creator = replacementCreatorUser.userName;
-                  } else {
-                    deleteCleanupUser.privateList.splice(delUserGiftIndex, 1);
-                    delUserGiftIndex--;
-                  }
-                  deleteChangeBool = true;
-                }
-              }
-              deleteBuyerBool = false;
-            }
-
-            if (deleteChangeBool) {
-              firebase.database().ref("users/" + deleteCleanupUser.uid).update({
-                privateList: deleteCleanupUser.privateList
-              });
-              deleteChangeBool = false;
-            }
-          }
-        }
-      }
-
       firebase.database().ref("users/" + user.uid).update({
         friends: friendArr
       });
@@ -654,6 +577,105 @@ window.onload = function instantiate() {
         "able to be removed from your friend list. Please try again later!");
       updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
         delFriendData.userName + " and FAILED! (There was an issue with " + delFriendData.userName + "'s friend list)");
+    }
+
+    function cleanUpGifts(listOwner, listViewer) {
+      if (listOwner.giftList != null) {
+        for (let delUserGiftIndex = 0; delUserGiftIndex < listOwner.giftList.length; delUserGiftIndex++) {
+          if (listOwner.giftList[delUserGiftIndex].buyer != undefined) {
+            if (listOwner.giftList[delUserGiftIndex].buyer == listViewer.userName) {
+              listOwner.giftList[delUserGiftIndex].received = 0;
+              listOwner.giftList[delUserGiftIndex].buyer = "";
+              deleteChangeBool = true;
+              deleteBuyerBool = true;
+            }
+          }
+          if (!deleteBuyerBool) {
+            if (listOwner.giftList[delUserGiftIndex].received != undefined) {
+              if (listOwner.giftList[delUserGiftIndex].received < 0) {
+                let delUserRcvdIndex = listOwner.giftList[delUserGiftIndex].receivedBy.indexOf(listViewer.uid);
+                if (listOwner.giftList[delUserGiftIndex].receivedBy[delUserRcvdIndex] == listViewer.uid) {
+                  listOwner.giftList[delUserGiftIndex].receivedBy.splice(delUserRcvdIndex, 1);
+                  listOwner.giftList[delUserGiftIndex].received++;
+                  deleteChangeBool = true;
+                }
+              }
+            }
+          }
+          deleteBuyerBool = false;
+        }
+
+        if (deleteChangeBool) {
+          firebase.database().ref("users/" + listOwner.uid).update({
+            giftList: listOwner.giftList
+          });
+          deleteChangeBool = false;
+        }
+      }
+
+      if (listOwner.privateList != null) {
+        for (let delUserGiftIndex = 0; delUserGiftIndex < listOwner.privateList.length; delUserGiftIndex++) {
+          if (listOwner.privateList[delUserGiftIndex].buyer != undefined) {
+            if (listOwner.privateList[delUserGiftIndex].buyer == listViewer.userName) {
+              listOwner.privateList[delUserGiftIndex].received = 0;
+              listOwner.privateList[delUserGiftIndex].buyer = "";
+              deleteChangeBool = true;
+              deleteBuyerBool = true;
+            }
+          }
+          if (!deleteBuyerBool) {
+            if (listOwner.privateList[delUserGiftIndex].received != undefined) {
+              if (listOwner.privateList[delUserGiftIndex].received < 0) {
+                let delUserRcvdIndex = listOwner.privateList[delUserGiftIndex].receivedBy.indexOf(listViewer.uid);
+                if (listOwner.privateList[delUserGiftIndex].receivedBy[delUserRcvdIndex] == listViewer.uid) {
+                  listOwner.privateList[delUserGiftIndex].receivedBy.splice(delUserRcvdIndex, 1);
+                  listOwner.privateList[delUserGiftIndex].received++;
+                  deleteChangeBool = true;
+                }
+              }
+            }
+          }
+          if (listOwner.privateList[delUserGiftIndex].creator != undefined) {
+            if (listOwner.privateList[delUserGiftIndex].creator == listViewer.userName) {
+              replacementCreatorUser = getFriendReplacement(listOwner);
+              if (replacementCreatorUser != null) {
+                listOwner.privateList[delUserGiftIndex].creator = replacementCreatorUser.userName;
+              } else {
+                listOwner.privateList.splice(delUserGiftIndex, 1);
+                delUserGiftIndex--;
+              }
+              deleteChangeBool = true;
+            }
+          }
+          deleteBuyerBool = false;
+        }
+
+        if (deleteChangeBool) {
+          firebase.database().ref("users/" + listOwner.uid).update({
+            privateList: listOwner.privateList
+          });
+          deleteChangeBool = false;
+        }
+      }
+    }
+
+    function getFriendReplacement(friendNeededUser) {
+      let tempFriendReturn = null;
+      let userReplacementIndex = -1;
+      let tempFriendReplacementScore = 0;
+
+      if (friendNeededUser.friends.length > 0)
+        for (let i = 0; i < friendNeededUser.friends.length; i++) {
+          userReplacementIndex = findUIDItemInArr(friendNeededUser.friends[i], userArr, true);
+          if (userReplacementIndex != -1) {
+            if (userArr[userReplacementIndex].userScore > tempFriendReplacementScore) {
+              tempFriendReturn = userArr[userReplacementIndex];
+              tempFriendReplacementScore = userArr[userReplacementIndex].userScore;
+            }
+          }
+        }
+
+      return tempFriendReturn;
     }
   }
 
