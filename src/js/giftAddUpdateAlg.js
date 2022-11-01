@@ -580,10 +580,10 @@ window.onload = function instantiate() {
           creationDate: creationDate,
           multiples: multiplePurchases.checked
         });
-
-        navigation(2);//Home
+        deployNotificationModal(false, "Gift Added!", "The gift, " +
+          giftTitleInp.value + ", has been successfully added to your gift list! Redirecting " +
+          "back to home...", false, 5, 2);
       } else {
-
         let newUid = firebase.database().ref("users/" + user.uid + "/privateList/" + uid).push();
         newUid = newUid.toString();
         newUid = findUIDInString(newUid);
@@ -601,7 +601,9 @@ window.onload = function instantiate() {
           multiples: multiplePurchases.checked
         });
         sessionStorage.setItem("validGiftUser", JSON.stringify(user));
-        navigation(10);//PrivateFriendList
+        deployNotificationModal(false, "Private Gift Added!", "The gift, " +
+          giftTitleInp.value + ", has been successfully added to " + user.name + "'s private gift list! Redirecting " +
+          "back to their private list...", false, 5, 10);
       }
     }
     invalidURLBool = false;

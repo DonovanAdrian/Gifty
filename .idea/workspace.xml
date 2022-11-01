@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="77ae722c-e8b2-463c-8bb6-522420418add" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/confirmation.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/confirmation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/giftAddUpdateAlg.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +58,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -384,7 +392,7 @@
       <workItem from="1643595807040" duration="50120000" />
       <workItem from="1649198063196" duration="4713000" />
       <workItem from="1649648592380" duration="27457000" />
-      <workItem from="1665460345745" duration="34478000" />
+      <workItem from="1665460345745" duration="35306000" />
     </task>
     <servers />
   </component>
