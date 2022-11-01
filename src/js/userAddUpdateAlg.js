@@ -331,11 +331,12 @@ function deleteCheck(){
     btnUpdate.onclick = function(){};
     btnDelete.onclick = function(){};
     backBtn.onclick = function(){};
-    navigation(1, false);
     if(consoleOutput) {
       console.log("");
       console.log("Completed deleting user " + user.uid);
     }
+    deployNotificationModal(false, "User Account Deleted!", "Your account has been " +
+      "successfully deleted. Redirecting back to Login...", false, 5, 1, false);
   };
 
   deleteDeny.onclick = function () {
@@ -460,7 +461,8 @@ function updateUserToDB(){
     btnUpdate.onclick = function(){};
     btnDelete.onclick = function(){};
     backBtn.onclick = function(){};
-    navigation(5, true);
+    deployNotificationModal(false, "User Account Updated!", "Your account has been " +
+      "successfully updated. Redirecting back to Settings...", false, 5, 5, true);
   }
 }
 
@@ -518,7 +520,8 @@ function addUserToDB(){
     btnUpdate.onclick = function(){};
     btnDelete.onclick = function(){};
     backBtn.onclick = function(){};
-    navigation(1, false);
+    deployNotificationModal(false, "User Account Created!", "Your account has been " +
+      "successfully created! Redirecting back to Login...", false, 5, 1, false);
   }
 
   function genShareCode(){
