@@ -319,7 +319,7 @@ window.onload = function instantiate() {
       };
 
       userDeleteBtn.onclick = function(){
-        deleteInvite(inviteData.uid);
+        confirmDeletion(inviteData);
         closeModal(inviteModal);
       };
 
@@ -395,6 +395,34 @@ window.onload = function instantiate() {
     deleteInvite(inviteData, finalInviteData);
   }
 
+  function confirmDeletion(delInviteData) {
+    confirmTitle.innerHTML = "Confirm Invite Removal";
+    confirmContent.innerHTML = "Are you sure you want to remove your invite, " + delInviteData.name + "?";
+
+    confirmBtn.onclick = function() {
+      closeModal(confirmModal);
+      deleteInvite(delInviteData);
+    };
+
+    denyBtn.onclick = function() {
+      closeModal(confirmModal);
+      openModal(inviteModal, delInviteData.uid);
+    }
+
+    openModal(confirmModal, "confirmModal", true);
+
+    closeConfirmModal.onclick = function() {
+      closeModal(confirmModal);
+      openModal(inviteModal, delInviteData.uid);
+    };
+
+    window.onclick = function(event) {
+      if (event.target == confirmModal) {
+        closeModal(confirmModal);
+      }
+    };
+  }
+
   function deleteInvite(inviteData, finalInviteData) {
     let verifyDeleteBool = true;
     let toDelete;
@@ -435,36 +463,45 @@ window.onload = function instantiate() {
         invites: inviteArr
       });
 
-      if(consoleOutput) {
-        console.log("Updating Friend's Friend List To DB:");
-        console.log(finalInviteData[0]);
+      if (finalInviteData != null) {
+        if(consoleOutput) {
+          console.log("Updating Friend's Friend List To DB:");
+          console.log(finalInviteData[0]);
+        }
+
+        firebase.database().ref("users/" + uid).update({
+          friends: finalInviteData[0]
+        });
+
+        if(consoleOutput) {
+          console.log("Updating User's Friend List To DB:");
+          console.log(finalInviteData[1]);
+        }
+
+        firebase.database().ref("users/" + user.uid).update({
+          friends: finalInviteData[1]
+        });
+
+        user.invites = inviteArr;
+        user.friends = finalInviteData[1];
       }
-
-      firebase.database().ref("users/" + uid).update({
-        friends: finalInviteData[0]
-      });
-
-      if(consoleOutput) {
-        console.log("Updating User's Friend List To DB:");
-        console.log(finalInviteData[1]);
-      }
-
-      firebase.database().ref("users/" + user.uid).update({
-        friends: finalInviteData[1]
-      });
-
-      user.invites = inviteArr;
-      user.friends = finalInviteData[1];
 
       if (dataCounter == 1) {
         deployListEmptyNotification("No Invites Found! You Already Accepted All Your Invites!");
       }
       document.getElementById("user" + uid).remove();
       dataCounter--;
+      if (finalInviteData != null) {
+        deployNotificationModal(false, "Invite Accepted!", "Your invite from " +
+          inviteData.name + " was successfully ACCEPTED!");
+      } else {
+        deployNotificationModal(false, "Invite Deleted!", "Your invite from " +
+          inviteData.name + " was successfully DELETED!");
+      }
     } else {
       if (deleteInviteRun < 3) {
         deleteInviteRun++;
-        deleteInvite(uid, finalInviteData);
+        deleteInvite(inviteData, finalInviteData);
       } else {
         deleteInviteRun = 0;
         deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
