@@ -542,7 +542,6 @@ window.onload = function instantiate() {
           }
         }
       };
-      giftBuy.innerHTML = "Click on me to buy the gift!";
       giftBuy.onclick = function(){
         giftUpdateLocal = true;
         if (!multipleBool) {
@@ -568,7 +567,6 @@ window.onload = function instantiate() {
         }
         giftUpdateLocal = false;
       };
-      giftDontBuy.innerHTML = "Click on me to un-buy the gift!";
       giftDontBuy.onclick = function(){
         giftUpdateLocal = true;
         if (!multipleBool) {
@@ -631,7 +629,8 @@ window.onload = function instantiate() {
 
   function updateGiftElement(uid) {
     giftStorage = uid;
-    navigation(8, undefined, true);
+    privateUserOverride = true;
+    navigation(8);
   }
 
   function confirmDeletion(key, title, uid, buyer, receivedBy) {
@@ -818,7 +817,8 @@ window.onload = function instantiate() {
       addGift.innerHTML = "Add Private Gift";
       addGift.className = "boughtBtn";
       addGift.onclick = function () {
-        navigation(8, undefined, true);
+        privateUserOverride = true;
+        navigation(8);
       };
     }
   }
