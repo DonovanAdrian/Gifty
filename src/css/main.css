@@ -113,6 +113,10 @@ input.giftInp {
   padding-left: 10px;
 }
 
+span {
+  display: inline-block;
+}
+
 span.basicBtn {
   position: relative;
   background: #ff8e8e;
@@ -122,6 +126,20 @@ span.basicBtn {
 }
 
 span.basicBtn:hover {
+  background-color: #ff4c4c;
+  color: #000;
+}
+
+span.basicBtnRight {
+  position: relative;
+  background: #ff8e8e;
+  float: right;
+  color: #FFF;
+  transition: 0.3s;
+  border-radius: 0;
+}
+
+span.basicBtnRight:hover {
   background-color: #ff4c4c;
   color: #000;
 }
@@ -533,13 +551,13 @@ ul li.santa::before {
 }
 
 .modal-footer {
-  padding-bottom: 50px;
   background-color: #5cb85c;
   color: white;
 }
 
 .modal-footer-left {
   float: left;
+  padding-right: 10px;
   padding-left: 10px;
   transition: 0.4s;
 }
@@ -551,6 +569,7 @@ ul li.santa::before {
 .modal-footer-right {
   float: right;
   padding-right: 10px;
+  padding-left: 10px;
   transition: 0.4s;
 }
 
@@ -558,7 +577,7 @@ ul li.santa::before {
   color:black;
 }
 
-@media screen and (min-width: 0px) and (max-width: 550px) {
+@media screen and (min-width: 0px) and (max-width: 360px) {
   span.boughtBtn {
     left: 5px;
     bottom: 5px;
@@ -574,6 +593,159 @@ ul li.santa::before {
   }
 
   span.basicBtn {
+    line-height: 25px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.basicBtnRight {
+    line-height: 25px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.dropdown {
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.settingsBtn {
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.faqBtn {
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.modBtn {
+    right: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.familyBtn {
+    left: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.updateBtn {
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.giftBackBtn {
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  p.giftInfLarge {
+    font-size: 18px;
+  }
+
+  p {
+    font-size: 14px;
+  }
+
+  p.giftInfSmall {
+    font-size: 10px;
+  }
+
+  input.giftInp {
+    width: 200px;
+    font-size: 13px;
+  }
+
+  div.cropIcon {
+    overflow: hidden;
+    max-width: 600px;
+  }
+
+  img.notificationIcon {
+    padding-bottom: 45px;
+    width: 20px;
+    height: 20px;
+  }
+
+  img.leftCornerImgHidden {
+    width: 30px;
+    height: 30px;
+  }
+
+  img.leftCornerImg {
+    width: 30px;
+    height: 30px;
+  }
+
+  div.topnav ul li.right,
+  div.topnav ul li {
+    float: none;
+    padding: 0;
+  }
+
+  div.topnav ul li a {
+    font-size: 13px;
+    padding: 5px;
+  }
+
+  .close {
+    font-size: 22px;
+  }
+
+  .closeInvert {
+    padding: 10px 10px;
+    font-size: 20px;
+  }
+
+  .modal-header {
+    font-size: 11px;
+  }
+
+  .modal-body {
+    font-size: 13px;
+  }
+
+  .modal-footer {
+    padding-bottom: 50px;
+    font-size: 10px;
+  }
+
+  ul li.gift {
+    padding: 10px 6px 10px 30px;
+    font-size: 13px;
+  }
+
+  ul li.spacer {
+    padding: 25px 6px 25px 30px;
+    font-size: 13px;
+  }
+}
+
+@media screen and (min-width: 360px) and (max-width: 550px) {
+  span.boughtBtn {
+    left: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.addBtn {
+    right: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.basicBtn {
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.basicBtnRight {
     padding: 5px;
     font-size: 13px;
   }
@@ -683,7 +855,8 @@ ul li.santa::before {
   }
 
   .modal-footer {
-    font-size: 13px;
+    padding-bottom: 45px;
+    font-size: 12px;
   }
 
   ul li.gift {
@@ -699,6 +872,11 @@ ul li.santa::before {
 
 @media screen and (min-width: 550px) and (max-width: 925px) {
   span.basicBtn {
+    padding: 7px;
+    font-size: 15px;
+  }
+
+  span.basicBtnRight {
     padding: 7px;
     font-size: 15px;
   }
@@ -810,6 +988,7 @@ ul li.santa::before {
   }
 
   .modal-footer {
+    padding-bottom: 55px;
     font-size: 13px;
   }
 
@@ -838,6 +1017,11 @@ ul li.santa::before {
 
 @media screen and (min-width: 925px) and (max-width: 1500px) {
   span.basicBtn {
+    padding: 9px;
+    font-size: 17px;
+  }
+
+  span.basicBtnRight {
     padding: 9px;
     font-size: 17px;
   }
@@ -945,6 +1129,7 @@ ul li.santa::before {
   }
 
   .modal-footer {
+    padding-bottom: 60px;
     font-size: 15px;
   }
 
@@ -973,6 +1158,11 @@ ul li.santa::before {
 
 @media screen and (min-width: 1500px) and (max-width: 2000px) {
   span.basicBtn {
+    padding: 11px;
+    font-size: 21px;
+  }
+
+  span.basicBtnRight {
     padding: 11px;
     font-size: 21px;
   }
@@ -1088,8 +1278,8 @@ ul li.santa::before {
   }
 
   .modal-footer {
+    padding-bottom: 65px;
     font-size: 19px;
-    padding-bottom: 60px;
   }
 
   div.topnav ul li.right,
@@ -1117,6 +1307,11 @@ ul li.santa::before {
 
 @media screen and (min-width: 2000px) and (max-width: 2700px) {
   span.basicBtn {
+    padding: 13px;
+    font-size: 23px;
+  }
+
+  span.basicBtnRight {
     padding: 13px;
     font-size: 23px;
   }
@@ -1232,8 +1427,8 @@ ul li.santa::before {
   }
 
   .modal-footer {
-    font-size: 21px;
     padding-bottom: 70px;
+    font-size: 21px;
   }
 
   div.topnav ul li.right,
@@ -1261,6 +1456,11 @@ ul li.santa::before {
 
 @media screen and (min-width: 2700px) {
   span.basicBtn {
+    padding: 13px;
+    font-size: 26px;
+  }
+
+  span.basicBtnRight {
     padding: 13px;
     font-size: 26px;
   }
@@ -1376,8 +1576,8 @@ ul li.santa::before {
   }
 
   .modal-footer {
-    font-size: 24px;
     padding-bottom: 80px;
+    font-size: 24px;
   }
 
   div.topnav ul li.right,
