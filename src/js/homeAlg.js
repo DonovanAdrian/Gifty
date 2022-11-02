@@ -12,6 +12,7 @@ let oldGiftArr = [];
 let inviteArr = [];
 let userBoughtGifts = [];
 let initializedGifts = [];
+let userBoughtGiftsUIDs = [];
 let userBoughtGiftsUsers = [];
 
 let invitesValidBool = false;
@@ -190,6 +191,7 @@ function collectUserBoughtGifts(){
   let userPrivateGiftArr = [];
 
   userBoughtGifts = [];
+  userBoughtGiftsUIDs = [];
   userBoughtGiftsUsers = [];
   for(let i = 0; i < userArr.length; i++) {
     userGiftArr = userArr[i].giftList;
@@ -200,11 +202,13 @@ function collectUserBoughtGifts(){
       for (let a = 0; a < userGiftArr.length; a++) {
         if (userGiftArr[a].buyer == user.userName) {
           userBoughtGifts.push(userGiftArr[a]);
+          userBoughtGiftsUIDs.push(userArr[i].uid);
           userBoughtGiftsUsers.push(userArr[i].name);
         }
         if (userGiftArr[a].receivedBy != undefined)
           if (userGiftArr[a].receivedBy.includes(user.uid)) {
             userBoughtGifts.push(userGiftArr[a]);
+            userBoughtGiftsUIDs.push(userArr[i].uid);
             userBoughtGiftsUsers.push(userArr[i].name + " (Multiple Purchase Gift)");
           }
       }
@@ -215,11 +219,13 @@ function collectUserBoughtGifts(){
       for (let b = 0; b < userPrivateGiftArr.length; b++) {
         if (userPrivateGiftArr[b].buyer == user.userName) {
           userBoughtGifts.push(userPrivateGiftArr[b]);
+          userBoughtGiftsUIDs.push(userArr[i].uid);
           userBoughtGiftsUsers.push(userArr[i].name + " (Private List)");
         }
         if (userPrivateGiftArr[b].receivedBy != undefined)
           if (userPrivateGiftArr[b].receivedBy.includes(user.uid)) {
             userBoughtGifts.push(userPrivateGiftArr[b]);
+            userBoughtGiftsUIDs.push(userArr[i].uid);
             userBoughtGiftsUsers.push(userArr[i].name + " (Private List, Multiple Purchase Gift)");
           }
       }
@@ -282,6 +288,7 @@ window.onload = function instantiate() {
           "gifts yet. Buy some gifts from some friends first!");
       } else {
         sessionStorage.setItem("boughtGifts", JSON.stringify(userBoughtGifts));
+        sessionStorage.setItem("boughtGiftsUIDs", JSON.stringify(userBoughtGiftsUIDs));
         sessionStorage.setItem("boughtGiftsUsers", JSON.stringify(userBoughtGiftsUsers));
         navigation(7);//BoughtGifts
       }
