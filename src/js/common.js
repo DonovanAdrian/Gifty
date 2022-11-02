@@ -15,6 +15,7 @@ let consoleOutput = false;
 let userUpdateOverride = false;
 let loadingTimerCancelled = false;
 let userCreationOverride = false;
+let privateUserOverride = false;
 let areYouStillThereBool = false;
 let areYouStillThereInit = false;
 let notificationDeployed = false;
@@ -346,7 +347,7 @@ function ohThereYouAre(){
   deployNotificationModal(false,"Oh, There You Are!", "Welcome back, " + user.name, true);
 }
 
-function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offlineTimerBool, customTime, customNavigation) {
+function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offlineTimerBool, customTime, customNavigation, customNavParam) {
   let navigationBool = true;
   let previousModalName = "";
   let previousModal;
@@ -407,7 +408,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offli
     if (navigationBool) {
       if (consoleOutput)
         console.log("Notification Navigating....");
-      navigation(customNavigation);
+      navigation(customNavigation, customNavParam);
     }
     notificationDeployed = false;
     closeModal(notificationModal);
@@ -428,7 +429,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offli
           if (navigationBool) {
             if (consoleOutput)
               console.log("Notification Navigating.....");
-            navigation(customNavigation);
+            navigation(customNavigation, customNavParam);
           }
           notificationDeployed = false;
           closeModal(notificationModal);
@@ -450,7 +451,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offli
       if (navigationBool) {
         if (consoleOutput)
           console.log("Notification Navigating...");
-        navigation(customNavigation);
+        navigation(customNavigation, customNavParam);
       }
       notificationDeployed = false;
       closeModal(notificationModal);
@@ -478,8 +479,8 @@ function signOut(){
   navigation(1, false);
 }
 
-function navigation(navNum, loginOverride, privateUserOverride) {
-  if (loginOverride == undefined && privateUserOverride == undefined) {
+function navigation(navNum, loginOverride) {
+  if (loginOverride == undefined && !privateUserOverride) {
     try {
       if (privateUser != null) {
         if (consoleOutput)
