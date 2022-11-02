@@ -319,19 +319,21 @@ function showSecretSanta(){
     }
   } else {
     if (user.secretSanta == 0 && currentState == 2) {
+      secretSantaSignUp.style.display = "block";
       secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
     } else if (user.secretSanta == 1 && currentState == 2) {
+      secretSantaSignUp.style.display = "block";
       secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
     } else if (user.secretSanta == 1 && currentState == 3) {
       if (user.secretSantaName != null) {
         if (user.secretSantaName != "") {
           let i = findUIDItemInArr(user.secretSantaName, userArr, true);
           secretSantaData = userArr[i];
-          secretSantaSignUp.innerHTML = "Your Secret Santa:<br/>" + userArr[i].name;
+          secretSantaSignUp.style.display = "block";
+          secretSantaSignUp.innerHTML = "Your Assigned Name:<br/>" + userArr[i].name;
         }
       }
     }
-    secretSantaSignUp.style.display = "block";
   }
 
   secretSantaSignUp.onclick = function() {
