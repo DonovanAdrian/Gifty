@@ -9,6 +9,7 @@ let listeningFirebaseRefs = [];
 let inviteArr = [];
 let userUserNames = [];
 let userBoughtGiftsArr = [];
+let userBoughtGiftsUIDs = [];
 let userBoughtGiftsUsersArr = [];
 let initializedGiftsArr = [];
 let itemColor = [" highSev", " mediumSev", " lowSev"];
@@ -31,6 +32,7 @@ let giftLinkFld;
 let giftWhereFld;
 let giftDescriptionFld;
 let giftCreationDateFld;
+let viewListBtn;
 let giftModal;
 let closeGiftModal;
 let notificationModal;
@@ -84,6 +86,7 @@ function getCurrentUser(){
 
   try {
     userBoughtGiftsArr = JSON.parse(sessionStorage.boughtGifts);
+    userBoughtGiftsUIDs = JSON.parse(sessionStorage.boughtGiftsUIDs);
     userBoughtGiftsUsersArr = JSON.parse(sessionStorage.boughtGiftsUsers);
   } catch (err) {
     navigation(2);
@@ -108,12 +111,13 @@ window.onload = function instantiate() {
   giftWhereFld = document.getElementById('giftWhereFld');
   giftDescriptionFld = document.getElementById('giftDescriptionFld');
   giftCreationDateFld = document.getElementById('giftCreationDateFld');
+  viewListBtn = document.getElementById('viewListBtn');
   giftModal = document.getElementById('giftModal');
   closeGiftModal = document.getElementById('closeGiftModal');
   testData = document.getElementById('testData');
   boughtGiftElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, backBtn, inviteNote, homeNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, giftTitleFld, giftLinkFld, giftWhereFld,
-    giftDescriptionFld, giftCreationDateFld, giftModal, closeGiftModal, testData];
+    giftDescriptionFld, giftCreationDateFld, viewListBtn, giftModal, closeGiftModal, testData];
 
   getCurrentUser();
   commonInitialization();
@@ -129,7 +133,7 @@ window.onload = function instantiate() {
   function initializeGifts(){
     if(userBoughtGiftsArr.length == userBoughtGiftsUsersArr.length) {
       for (let i = 0; i < userBoughtGiftsArr.length; i++) {
-        createGiftElement(userBoughtGiftsArr[i], userBoughtGiftsUsersArr[i]);
+        createGiftElement(userBoughtGiftsArr[i], userBoughtGiftsUIDs[i], userBoughtGiftsUsersArr[i]);
         dataCounter++;
       }
     } else {
@@ -237,7 +241,7 @@ window.onload = function instantiate() {
       for (let i = 0; i < userBoughtGiftsArr.length; i++) {
         let a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newGiftList);
         if (a != -1) {
-          checkGiftData(userBoughtGiftsArr[i], newGiftList[a], updatedUserData.name);
+          checkGiftData(userBoughtGiftsArr[i], newGiftList[a], userBoughtGiftsUIDs[i], updatedUserData.name);
         }
       }
     }
@@ -247,13 +251,13 @@ window.onload = function instantiate() {
       for (let i = 0; i < userBoughtGiftsArr.length; i++) {
         let a = findUIDItemInArr(userBoughtGiftsArr[i], newPrivateGiftList);
         if (a != -1) {
-          checkGiftData(userBoughtGiftsArr[i], newPrivateGiftList[a], updatedUserData.name);
+          checkGiftData(userBoughtGiftsArr[i], newPrivateGiftList[a], userBoughtGiftsUIDs[i], updatedUserData.name);
         }
       }
     }
   }
 
-  function checkGiftData(currentGiftData, newGiftData, giftOwner){
+  function checkGiftData(currentGiftData, newGiftData, giftOwnerUID, giftOwner){
     let updateGiftBool = false;
     if(currentGiftData.description != newGiftData.description) {
       updateGiftBool = true;
@@ -272,11 +276,11 @@ window.onload = function instantiate() {
       if (newGiftData.uid == currentModalOpen){
         closeModal(giftModal);
       }
-      changeGiftElement(newGiftData, giftOwner);
+      changeGiftElement(newGiftData, giftOwnerUID, giftOwner);
     }
   }
 
-  function createGiftElement(giftData, giftOwner){
+  function createGiftElement(giftData, giftOwnerUID, giftOwner){
     let giftOwnerTrim = "";
     try{
       testData.remove();
@@ -284,7 +288,7 @@ window.onload = function instantiate() {
 
     let liItem = document.createElement("LI");
     liItem.id = "gift" + giftData.uid;
-    initGiftElement(liItem, giftData, giftOwner);
+    initGiftElement(liItem, giftData, giftOwnerUID, giftOwner);
     for (let i = 0; i < giftOwner.length; i++) {
       if (giftOwner[i] != "(") {
         giftOwnerTrim = giftOwnerTrim + giftOwner[i];
@@ -310,15 +314,18 @@ window.onload = function instantiate() {
     lastUser = giftOwnerTrim;
   }
 
-  function changeGiftElement(giftData, giftOwner){
+  function changeGiftElement(giftData, giftOwnerUID, giftOwner){
     if(consoleOutput)
       console.log("Updating " + giftData.uid);
     let editGift = document.getElementById('gift' + giftData.uid);
     editGift.innerHTML = giftData.title + " - for " + giftOwner;
-    initGiftElement(editGift, giftData, giftOwner);
+    initGiftElement(editGift, giftData, giftOwnerUID, giftOwner);
   }
 
-  function initGiftElement(liItem, giftData, giftOwner) {
+  function initGiftElement(liItem, giftData, giftOwnerUID, giftOwner) {
+    let giftOwnerIndex = findUIDItemInArr(giftOwnerUID, userArr);
+    let giftOwnerData = userArr[giftOwnerIndex];
+
     liItem.className = "gift";
     liItem.onclick = function (){
       if (giftData.link != ""){
@@ -349,6 +356,25 @@ window.onload = function instantiate() {
         }
       } else {
         giftCreationDateFld.innerHTML = "Creation date not available";
+      }
+
+      if (giftOwnerIndex != -1) {
+        if (giftOwner.includes('Private')) {
+          viewListBtn.innerHTML = "View " + giftOwnerData.name + "'s Private List";
+          viewListBtn.onclick = function(){
+            sessionStorage.setItem("validGiftUser", JSON.stringify(giftOwnerData));
+            navigation(10);
+          };
+        } else {
+          viewListBtn.innerHTML = "View " + giftOwnerData.name + "'s Public List";
+          viewListBtn.onclick = function(){
+            sessionStorage.setItem("validGiftUser", JSON.stringify(giftOwnerData));
+            navigation(9);
+          };
+        }
+      } else {
+        viewListBtn.innerHTML = "";
+        viewListBtn.onclick = function(){};
       }
 
       openModal(giftModal, giftData.uid);
