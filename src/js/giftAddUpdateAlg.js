@@ -60,7 +60,7 @@ function getCurrentUser(){
     if(privateUser.moderatorInt == 1)
       consoleOutput = true;
     if(consoleOutput) {
-      console.log("List Owner User: " + privateUser.userName + " loaded in");
+      console.log("User: " + privateUser.userName + " loaded in");
     }
     buttonText = "Back To Private List";
     giftNavigationInt = 10;
@@ -337,6 +337,9 @@ window.onload = function instantiate() {
               firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID + "/receivedBy").remove();
             }
           }
+          if (currentGift.userScore != undefined) {
+            firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID + "/userScore").remove();
+          }
         } else {
           if (!multiplePurchases.checked && currentGift.multiples && currentGift.receivedBy.length != undefined) {
             if (currentGift.receivedBy.length != 0) {
@@ -396,6 +399,9 @@ window.onload = function instantiate() {
               firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID + "/receivedBy").remove();
             }
           }
+          if (currentGift.userScore != undefined) {
+            firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID + "/userScore").remove();
+          }
         }
 
         if(currentGift.buyer != "" && !notificationSent){
@@ -434,10 +440,14 @@ window.onload = function instantiate() {
         }
 
         if (!privateListBool) {
-          navigation(2);//Home
+          deployNotificationModal(false, "Gift Updated!", "The gift, " +
+            giftTitleInp.value + ", has been successfully updated in your gift list! Redirecting " +
+            "back to home...", false, 3, 2);
         } else {
           sessionStorage.setItem("validGiftUser", JSON.stringify(user));
-          navigation(10);//PrivateFriendList
+          deployNotificationModal(false, "Private Gift Updated!", "The gift, " +
+            giftTitleInp.value + ", has been successfully updated in " + user.name + "'s private gift list! Redirecting " +
+            "back to their private list...", false, 3, 10);
         }
       } else {
         deployNotificationModal(false, "Gift Update Error!", "There was an error " +
@@ -552,19 +562,18 @@ window.onload = function instantiate() {
       invalidURLOverride = true;
       invalidURL = newURL;
     } else {
-      if (user.userScore == null) {
-        user.userScore = 0;
-      }
-
-      user.userScore = user.userScore + 2;
-      currentUserScore = user.userScore;
-
       if(!privateListBool) {
-        currentUserScore = user.userScore + 2
+        if (user.userScore == null) {
+          user.userScore = 0;
+        }
+
         user.userScore = user.userScore + 2;
-      }
+        currentUserScore = user.userScore;
 
-      if(!privateListBool) {
+        firebase.database().ref("users/" + user.uid).update({
+          userScore: currentUserScore
+        });
+
         let newUid = firebase.database().ref("users/" + user.uid + "/giftList/" + uid).push();
         newUid = newUid.toString();
         newUid = findUIDInString(newUid);
@@ -574,7 +583,6 @@ window.onload = function instantiate() {
           where: giftWhereInp.value,
           received: 0,
           uid: newUid,
-          userScore: currentUserScore,
           buyer: "",
           description: giftDescriptionInp.value,
           creationDate: creationDate,
@@ -582,8 +590,18 @@ window.onload = function instantiate() {
         });
         deployNotificationModal(false, "Gift Added!", "The gift, " +
           giftTitleInp.value + ", has been successfully added to your gift list! Redirecting " +
-          "back to home...", false, 5, 2);
+          "back to home...", false, 3, 2);
       } else {
+        if (privateUser.userScore == null) {
+          privateUser.userScore = 0;
+        }
+
+        privateUser.userScore = privateUser.userScore + 4;
+        currentUserScore = privateUser.userScore;
+
+        firebase.database().ref("users/" + privateUser.uid).update({
+          userScore: currentUserScore
+        });
         let newUid = firebase.database().ref("users/" + user.uid + "/privateList/" + uid).push();
         newUid = newUid.toString();
         newUid = findUIDInString(newUid);
@@ -593,7 +611,6 @@ window.onload = function instantiate() {
           where: giftWhereInp.value,
           received: 0,
           uid: newUid,
-          userScore: currentUserScore,
           buyer: "",
           description: giftDescriptionInp.value,
           creationDate: creationDate,
@@ -603,7 +620,7 @@ window.onload = function instantiate() {
         sessionStorage.setItem("validGiftUser", JSON.stringify(user));
         deployNotificationModal(false, "Private Gift Added!", "The gift, " +
           giftTitleInp.value + ", has been successfully added to " + user.name + "'s private gift list! Redirecting " +
-          "back to their private list...", false, 5, 10);
+          "back to their private list...", false, 3, 10);
       }
     }
     invalidURLBool = false;
