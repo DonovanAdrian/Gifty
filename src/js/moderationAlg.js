@@ -21,7 +21,7 @@ let giftLimit = 0;
 let userLimit = 0;
 
 let secretSantaInit = false;
-
+let userUpdateLocal = false;
 let allowLogin = null;
 
 let loginDisabledMsg = "";
@@ -67,6 +67,12 @@ let localListedUserData;
 let offlineTimer;
 let commonLoadingTimer;
 let userModal;
+let confirmModal;
+let closeConfirmModal;
+let confirmTitle;
+let confirmContent;
+let confirmBtn;
+let denyBtn;
 let notificationModal;
 let notificationInfo;
 let notificationTitle;
@@ -116,6 +122,12 @@ window.onload = function instantiate() {
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
   inviteNote = document.getElementById('inviteNote');
+  confirmModal = document.getElementById('confirmModal');
+  closeConfirmModal = document.getElementById('closeConfirmModal');
+  confirmTitle = document.getElementById('confirmTitle');
+  confirmContent = document.getElementById('confirmContent');
+  confirmBtn = document.getElementById('confirmBtn');
+  denyBtn = document.getElementById('denyBtn');
   notificationModal = document.getElementById('notificationModal');
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
@@ -182,17 +194,17 @@ window.onload = function instantiate() {
   globalMsgInp = document.getElementById('globalMsgInp');
   sendMsg = document.getElementById('sendMsg');
   cancelMsg = document.getElementById('cancelMsg');
-  moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal, notificationTitle,
-    notificationInfo, noteSpan, privateMessageModal, sendGlobalNotification, nukeAllUserNotifications,
-    nukeAllUserScores, loginFxnBtn, giftLinkBtn, limitsBtn, databaseLimitsModal, closeDatabaseLimitsModal, giftLimitInp,
-    userLimitInp, confirmLimits, cancelLimits, loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal,
-    loginDisabledDesc, loginDisabledInp, loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled,
-    cancelLoginDisabled, userListDropDown, showNone, showUID, showName, showLastLogin, showUserScore, showShareCode,
-    showFriends, showSantaSignUp, showModerator, sendPrivateMessage, userModal, userOptionsBtn, secretSantaModal,
-    santaModalSpan, secretSantaBtn, secretSantaShuffle, secretSantaAutoBtn, settingsNote, testData, closeUserModal,
-    userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends, userLastLogin, userScore, userPassword,
-    userSecretSanta, moderatorOp, sendPrivateMessage, warnUser, banUser, closePrivateMessageModal, globalMsgTitle,
-    globalMsgInp, sendMsg, cancelMsg];
+  moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, confirmModal, closeConfirmModal,
+    confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal, notificationTitle, notificationInfo, noteSpan,
+    privateMessageModal, sendGlobalNotification, nukeAllUserNotifications, nukeAllUserScores, loginFxnBtn, giftLinkBtn,
+    limitsBtn, databaseLimitsModal, closeDatabaseLimitsModal, giftLimitInp, userLimitInp, confirmLimits, cancelLimits,
+    loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal, loginDisabledDesc, loginDisabledInp,
+    loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown,
+    showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends, showSantaSignUp,
+    showModerator, sendPrivateMessage, userModal, userOptionsBtn, secretSantaModal, santaModalSpan, secretSantaBtn,
+    secretSantaShuffle, secretSantaAutoBtn, settingsNote, testData, closeUserModal, userName, userUID, userUserName,
+    userGifts, userPrivateGifts, userFriends, userLastLogin, userScore, userPassword, userSecretSanta, moderatorOp,
+    sendPrivateMessage, warnUser, banUser, closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
 
   sessionStorage.setItem("moderationSet", moderationSet);
   getCurrentUserCommon();
@@ -236,6 +248,7 @@ window.onload = function instantiate() {
         deployNotificationModal(true, "Message Error!", "Please do not use commas " +
           "in the message. Thank you!");
       } else {
+        userUpdateLocal = true;
         addPrivateMessageToDB(userData, globalMsgInp.value);
         globalMsgInp.value = "";
         closeModal(privateMessageModal);
@@ -252,6 +265,7 @@ window.onload = function instantiate() {
           deployNotificationModal(false, "Message Sent!",
             "The Private Message Has Been Sent!");
         }
+        userUpdateLocal = false;
       }
     };
     cancelMsg.onclick = function (){
@@ -266,8 +280,60 @@ window.onload = function instantiate() {
     };
   }
 
+  function confirmOperation(operationTitle, operationContent, operationType, operationData, previousModal, previousModalTitle) {
+    confirmTitle.innerHTML = operationTitle;
+    confirmContent.innerHTML = operationContent;
+
+    confirmBtn.onclick = function() {
+      userUpdateLocal = true;
+      if (operationType == "banUser") {
+        firebase.database().ref("users/" + operationData.uid).update({
+          ban: 1
+        });
+        deployNotificationModal(false, "Banned User!",
+          operationData.name + " has been banned!");
+      } else if (operationType == "modRevoke") {
+        firebase.database().ref("users/" + operationData.uid).update({
+          moderatorInt: 0
+        });
+        deployNotificationModal(false, "Moderator Role Revoked",
+          "Revoked role for " + operationData.userName);
+      } else if (operationType == "modGrant") {
+        firebase.database().ref("users/" + operationData.uid).update({
+          moderatorInt: 1
+        });
+        deployNotificationModal(false, "Moderator Role Granted",
+          "Granted role for " + operationData.userName);
+      } else if (operationType == "showPass") {
+        userPassword.innerHTML = decode(operationData.encodeStr);
+        openModal(previousModal, previousModalTitle);
+      }
+      closeModal(confirmModal);
+      userUpdateLocal = false;
+    };
+
+    denyBtn.onclick = function() {
+      closeModal(confirmModal);
+      openModal(previousModal, previousModalTitle);
+    }
+
+    openModal(confirmModal, "confirmModal", true);
+
+    closeConfirmModal.onclick = function() {
+      closeModal(confirmModal);
+      openModal(previousModal, previousModalTitle);
+    };
+
+    window.onclick = function(event) {
+      if (event.target == confirmModal) {
+        closeModal(confirmModal);
+      }
+    };
+  }
+
   function addPrivateMessageToDB(userData, message) {
     let userNotificationArr = [];
+    userUpdateLocal = true;
     if(userData.notifications == undefined){
       userNotificationArr = [];
     } else {
@@ -283,6 +349,7 @@ window.onload = function instantiate() {
         notifications: userNotificationArr
       });
     }
+    userUpdateLocal = false;
   }
 
   function initializeShowUserData(showDataSelection) {
@@ -492,6 +559,7 @@ window.onload = function instantiate() {
   function initializeNukeNotification() {
     nukeAllUserNotifications.innerHTML = "Remove All User's Notifications";
     nukeAllUserNotifications.onclick = function () {
+      userUpdateLocal = true;
       for (let i = 0; i < userArr.length; i++) {
         if (userArr[i].notifications != null) {
           userArr[i].notifications = null;
@@ -506,12 +574,14 @@ window.onload = function instantiate() {
 
       deployNotificationModal(false, "Notification Removal Successful!",
         "Every User's Notifications Have Been Successfully Removed!");
+      userUpdateLocal = false;
     };
   }
 
   function initializeNukeScores() {
     nukeAllUserScores.innerHTML = "Reset All User's Scores";
     nukeAllUserScores.onclick = function () {
+      userUpdateLocal = true;
       for (let i = 0; i < userArr.length; i++) {
         userArr[i].userScore = 0;
       }
@@ -522,6 +592,7 @@ window.onload = function instantiate() {
 
       deployNotificationModal(false, "User Scores Reset!",
         "Every User's Score Has Been Successfully Reset!");
+      userUpdateLocal = false;
     };
   }
 
@@ -918,7 +989,8 @@ window.onload = function instantiate() {
         }
 
         if(currentModalOpen == data.key) {
-          closeModal(userModal);
+          deployNotificationModal(false, "User Updated!", "The user you were " +
+            "viewing was updated! Please reopen the window to view the changes.", false, 5);
         }
       });
 
@@ -932,7 +1004,8 @@ window.onload = function instantiate() {
         }
 
         if(currentModalOpen == data.key) {
-          closeModal(userModal);
+          deployNotificationModal(false, "User Removed!", "The user you were " +
+            "viewing was deleted!", false, 5);
         }
       });
     };
@@ -940,20 +1013,15 @@ window.onload = function instantiate() {
     let fetchInvites = function (postRef) {
       postRef.on('child_added', function (data) {
         inviteArr.push(data.val());
-
         inviteNote.style.background = "#ff3923";
       });
 
       postRef.on('child_changed', function (data) {
-        console.log(inviteArr);
         inviteArr[data.key] = data.val();
-        console.log(inviteArr);
       });
 
       postRef.on('child_removed', function (data) {
-        console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        console.log(inviteArr);
 
         if (inviteArr.length == 0) {
           console.log("Invite List Removed");
@@ -1083,6 +1151,7 @@ window.onload = function instantiate() {
   }
 
   function initUserElement(liItem, userData) {
+    let showPassBool = false;
     liItem.className = "gift";
 
     liItem.onclick = function (){
@@ -1179,24 +1248,31 @@ window.onload = function instantiate() {
         }
       };
       userPassword.onclick = function() {
-        userPassword.innerHTML = decode(userData.encodeStr);
+        if (!showPassBool) {
+          confirmOperation("Show Password?", "Are you sure you wish to view " +
+            userData.name + "'s password?", "showPass", userData, userModal, userData.uid);
+          showPassBool = true;
+        } else {
+          userPassword.innerHTML = "Click On Me To View Password";
+          showPassBool = false;
+        }
       };
       warnUser.onclick = function(){
         generatePrivateMessageDialog(userData, true);
       };
       banUser.onclick = function(){
+        userUpdateLocal = true;
         if (userData.ban == 1) {
           firebase.database().ref("users/" + userData.uid).update({
             ban: 0
           });
           deployNotificationModal(false, "Unbanned User!",
             userData.name + " has been unbanned!");
+          userUpdateLocal = false;
         } else {
-          firebase.database().ref("users/" + userData.uid).update({
-            ban: 1
-          });
-          deployNotificationModal(false, "Banned User!",
-            userData.name + " has been banned!");
+          confirmOperation("Ban " + userData.name + "?", "While this CAN be undone, this " +
+            "should only be used for serious offenses. Consider using warnings first, if not already done... Are you " +
+            "sure you wish to ban " + userData.name + "?", "banUser", userData, userModal, userData.uid);
         }
       };
       if (userData.uid == "-L__dcUyFssV44G9stxY" && user.uid != "-L__dcUyFssV44G9stxY") {
@@ -1210,12 +1286,9 @@ window.onload = function instantiate() {
             deployNotificationModal(true, "User Info",
               "You cannot adjust your own role");
           } else {
-            deployNotificationModal(false, "Moderator Role Revoked",
-              "Revoked role for " + userData.userName);
-            firebase.database().ref("users/" + userData.uid).update({
-              moderatorInt: 0
-            });
-            closeModal(userModal);
+            confirmOperation("Revoke " + userData.name + "'s Moderator Role?",
+              "Are you sure you'd like to revoke " +
+              userData.name + " from being a moderator?", "modRevoke", userData, userModal, userData.uid);
           }
         };
       } else {
@@ -1226,12 +1299,9 @@ window.onload = function instantiate() {
             deployNotificationModal(true, "User Info",
               "You cannot adjust your own role");
           } else {
-            firebase.database().ref("users/" + userData.uid).update({
-              moderatorInt: 1
-            });
-            deployNotificationModal(false, "Moderator Role Granted",
-              "Granted role for " + userData.userName);
-            closeModal(userModal);
+            confirmOperation("Grant " + userData.name + " Moderator Role?",
+              "A moderator is powerful on Gifty, are you sure you'd like to grant " +
+              userData.name + " a moderator role?", "modGrant", userData, userModal, userData.uid);
           }
         };
       }
@@ -1254,6 +1324,7 @@ window.onload = function instantiate() {
       };
 
       function manuallyOptInOut(userData){
+        userUpdateLocal = true;
         if (userData.secretSanta != null) {
           if (userData.secretSanta == 0) {
             firebase.database().ref("users/" + userData.uid).update({
@@ -1275,6 +1346,7 @@ window.onload = function instantiate() {
           deployNotificationModal(false, "Secret Santa Opted Out!",
             userData.name + " has been manually opted out of the Secret Santa Program!");
         }
+        userUpdateLocal = false;
       }
     };
   }
