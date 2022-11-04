@@ -7,6 +7,7 @@
 let inviteElements = [];
 let inviteArr = [];
 let friendArr = [];
+let oldFriendArr = [];
 let listeningFirebaseRefs = [];
 let userArr = [];
 let commonFriendArr = [];
@@ -14,6 +15,8 @@ let initializedUsers = [];
 
 let readNotificationsBool = false;
 let invitesFound = false;
+let potentialRemoval = false;
+let friendDeleteLocal = false;
 let friendListEmptyBool = false;
 
 let dataCounter = 0;
@@ -234,6 +237,11 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
+          friendArr = user.friends;
+          if (potentialRemoval) {
+            findRemovedUser(oldFriendArr, friendArr);
+            potentialRemoval = false;
+          }
           if(consoleOutput)
             console.log("Current User Updated");
         }
@@ -264,8 +272,13 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_removed', function (data) {
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        navigation(4);
+        if (!friendDeleteLocal) {
+          potentialRemoval = true;
+          oldFriendArr = [];
+          for (let i = 0; i < friendArr.length; i++) {
+            oldFriendArr.push(friendArr[i]);
+          }
+        }
       });
     };
 
@@ -297,6 +310,31 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userFriends);
     listeningFirebaseRefs.push(userInvites);
+  }
+
+  function findRemovedUser(oldArr, newArr) {
+    let userToRemove = null;
+    let foundInInner = false;
+
+    for (let a = 0; a < oldArr.length; a++) {
+      for (let b = 0; b < newArr.length; b++) {
+        if (oldArr[a].uid == newArr[b].uid) {
+          foundInInner = true;
+          break;
+        }
+      }
+      if (!foundInInner) {
+        userToRemove = oldArr[a];
+        break;
+      } else {
+        foundInInner = false;
+      }
+    }
+    if (userToRemove != null) {
+      removeFriendElement(userToRemove.uid);
+      let i = initializedUsers.indexOf(userToRemove.uid);
+      initializedUsers.splice(i, 1);
+    }
   }
 
   function createFriendElement(friendKey){
@@ -553,6 +591,7 @@ window.onload = function instantiate() {
     }
 
     if (verifyDeleteBoolFriend && verifyDeleteBool) {
+      friendDeleteLocal = true;
       firebase.database().ref("users/" + user.uid).update({
         friends: friendArr
       });
@@ -572,6 +611,7 @@ window.onload = function instantiate() {
       generateAddUserBtn();
       deployNotificationModal(false, "Friend Removed!", "The user " + delFriendData.name +
         " has been successfully removed from your friend list!");
+      friendDeleteLocal = false;
     } else {
       deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
         "able to be removed from your friend list. Please try again later!");
