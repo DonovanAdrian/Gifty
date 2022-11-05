@@ -6,6 +6,7 @@
 
 let moderationQueueElements = [];
 let listeningFirebaseRefs = [];
+let initializedTickets = [];
 let inviteArr = [];
 let userArr = [];
 let ticketArr = [];
@@ -85,8 +86,13 @@ window.onload = function instantiate() {
       nukeTickets.innerHTML = "Remove All Tickets";
       nukeTickets.onclick = function () {
         firebase.database().ref("maintenance/").remove();
+        for (let i = 0; i < initializedTickets.length; i++) {
+          try {
+            removeModerationTicket(initializedTickets[i]);
+          } catch(err) {}
+        }
+        initializedTickets = [];
         ticketArr = [];
-        navigation(17);
       };
     } else {
       nukeTickets.innerHTML = "No Tickets To Remove!";
@@ -184,6 +190,8 @@ window.onload = function instantiate() {
 
           postRef.on("child_removed", function (data) {
             console.log(data.key + " Removed!");
+            let x = initializedTickets.indexOf(data.key);
+            initializedTickets.splice(x, 1);
             removeModerationTicket(data.key);
 
             let i = findUIDItemInArr(data.key, ticketArr);
@@ -349,6 +357,10 @@ window.onload = function instantiate() {
     }
 
     if (verifyDeleteBool) {
+      let i = initializedTickets.indexOf(ticketData.uid);
+      initializedTickets.splice(i, 1);
+      removeModerationTicket(ticketData.uid);
+
       firebase.database().ref("maintenance/").child(ticketData.uid).remove();
       closeModal(ticketModal);
 
