@@ -93,6 +93,8 @@ window.onload = function instantiate() {
         }
         initializedTickets = [];
         ticketArr = [];
+        nukeTickets.innerHTML = "No Tickets To Remove!";
+        nukeTickets.onclick = function () {};
       };
     } else {
       nukeTickets.innerHTML = "No Tickets To Remove!";
@@ -147,20 +149,15 @@ window.onload = function instantiate() {
     let fetchInvites = function (postRef) {
       postRef.on('child_added', function (data) {
         inviteArr.push(data.val());
-
         inviteNote.style.background = "#ff3923";
       });
 
       postRef.on('child_changed', function (data) {
-        console.log(inviteArr);
         inviteArr[data.key] = data.val();
-        console.log(inviteArr);
       });
 
       postRef.on('child_removed', function (data) {
-        console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        console.log(inviteArr);
 
         if (inviteArr.length == 0) {
           console.log("Invite List Removed");
@@ -201,8 +198,10 @@ window.onload = function instantiate() {
             }
           });
         } else {
+          firebase.database().ref("maintenance/").update({});
           deployListEmptyNotification("There Are No Items In The Moderation Queue!");
           initializeNukeBtn();
+          fetchModerationQueue(moderationTickets);
         }
       });
     };
@@ -218,7 +217,7 @@ window.onload = function instantiate() {
 
   function createModerationTicket (ticketData) {
     try {
-      testData.remove();
+      document.getElementById('testData').remove();
     } catch (err) {}
 
     let ticketTitleTextReturned;
