@@ -316,23 +316,27 @@ window.onload = function instantiate() {
     let userToRemove = null;
     let foundInInner = false;
 
-    for (let a = 0; a < oldArr.length; a++) {
-      for (let b = 0; b < newArr.length; b++) {
-        if (oldArr[a].uid == newArr[b].uid) {
-          foundInInner = true;
-          break;
+    if (newArr == undefined && oldArr.length == 1) {
+      userToRemove = oldArr[0];
+    } else {
+      for (let a = 0; a < oldArr.length; a++) {
+        for (let b = 0; b < newArr.length; b++) {
+          if (oldArr[a] == newArr[b]) {
+            foundInInner = true;
+            break;
+          }
         }
-      }
-      if (!foundInInner) {
-        userToRemove = oldArr[a];
-        break;
-      } else {
-        foundInInner = false;
+        if (!foundInInner) {
+          userToRemove = oldArr[a];
+          break;
+        } else {
+          foundInInner = false;
+        }
       }
     }
     if (userToRemove != null) {
-      removeFriendElement(userToRemove.uid);
-      let i = initializedUsers.indexOf(userToRemove.uid);
+      removeFriendElement(userToRemove);
+      let i = initializedUsers.indexOf(userToRemove);
       initializedUsers.splice(i, 1);
     }
   }
