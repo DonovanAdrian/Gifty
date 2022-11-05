@@ -29,6 +29,7 @@ let giftStorage;
 let user;
 let addGift;
 let backBtn;
+let swapList;
 let offlineSpan;
 let offlineModal;
 let giftUser;
@@ -142,6 +143,7 @@ window.onload = function instantiate() {
   listNote = document.getElementById('listNote');
   addGift = document.getElementById('addGift');
   backBtn = document.getElementById('backBtn');
+  swapList = document.getElementById('swapList');
   giftModal = document.getElementById('giftModal');
   testData = document.getElementById('testData');
   closeGiftModal = document.getElementById('closeGiftModal');
@@ -157,9 +159,9 @@ window.onload = function instantiate() {
   giftDelete = document.getElementById('giftDelete');
   privateFriendListElements = [notificationBtn, giftCreationDate, dataListContainer, offlineModal, offlineSpan,
     confirmModal, closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal,
-    notificationTitle, notificationInfo, noteSpan, inviteNote, listNote, addGift, backBtn, giftModal, testData,
-    closeGiftModal, giftTitle, giftLink, giftWhere, giftDescription, giftCreator, giftBought, giftBuy, giftDontBuy,
-    giftEdit, giftDelete];
+    notificationTitle, notificationInfo, noteSpan, inviteNote, listNote, addGift, backBtn, swapList, giftModal,
+    testData, closeGiftModal, giftTitle, giftLink, giftWhere, giftDescription, giftCreator, giftBought, giftBuy,
+    giftDontBuy, giftEdit, giftDelete];
 
   getCurrentUser();
   commonInitialization();
@@ -177,6 +179,14 @@ window.onload = function instantiate() {
     userUserNames.push(userArr[i].userName);
   }
 
+  function initializeSwapBtn() {
+    swapList.innerHTML = "View " + giftUser.name + "'s <br/>Public List";
+    swapList.onclick = function () {
+      sessionStorage.setItem("validGiftUser", JSON.stringify(giftUser));
+      navigation(9);
+    };
+  }
+
   function initializeBackBtn() {
     backBtn.innerHTML = "Back To Gift Lists";
     backBtn.onclick = function () {
@@ -189,6 +199,7 @@ window.onload = function instantiate() {
   }
 
   initializeBackBtn();
+  initializeSwapBtn();
 
   function databaseQuery() {
     let fetchData = function (postRef) {
@@ -430,8 +441,10 @@ window.onload = function instantiate() {
     clearInterval(offlineTimer);
     dataCounter++;
     initializedGifts.push(uid);
-    if (dataCounter > buttonOpacLim)
+    if (dataCounter > buttonOpacLim) {
       addGift.style.opacity = ".75";
+      swapList.style.opacity = ".75";
+    }
   }
 
   function changeGiftElement(description, link, received, receivedBy, title, key, where, uid, date, buyer, creator,
@@ -815,7 +828,7 @@ window.onload = function instantiate() {
       };
     } else {
       addGift.innerHTML = "Add Private Gift";
-      addGift.className = "boughtBtn";
+      addGift.className = "addBtnB";
       addGift.onclick = function () {
         privateUserOverride = true;
         navigation(8);
