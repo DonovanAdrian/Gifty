@@ -148,6 +148,14 @@ window.onload = function instantiate() {
     userUserNames.push(userArr[i].userName);
   }
 
+  function initializeSwapBtn() {
+    swapList.innerHTML = "View " + giftUser.name + "'s <br/>Private List";
+    swapList.onclick = function () {
+      sessionStorage.setItem("validGiftUser", JSON.stringify(giftUser));
+      navigation(10);
+    };
+  }
+
   function initializeBackBtn() {
     backBtn.innerHTML = "Back To Gift Lists";
     backBtn.onclick = function () {
@@ -160,6 +168,7 @@ window.onload = function instantiate() {
   }
 
   initializeBackBtn();
+  initializeSwapBtn();
 
   function databaseQuery() {
     let fetchData = function (postRef) {
@@ -367,6 +376,9 @@ window.onload = function instantiate() {
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
     dataCounter++;
+    if (dataCounter > buttonOpacLim) {
+      swapList.style.opacity = ".75";
+    }
     initializedGifts.push(giftUid);
   }
 
