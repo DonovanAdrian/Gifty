@@ -67,10 +67,13 @@ div.faqContainer {
 }
 
 div.centeredImage {
+  text-align: center;
+  width: 100%;
+  margin: auto;
   position: fixed;
   display: block;
   bottom: 5px;
-  left: 50%;
+  z-index: 1;
 }
 
 p.faqInf {
@@ -151,7 +154,7 @@ span.dropdown {
   position: relative;
   background-color: #f1f1f1;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 2;
+  z-index: 4;
 }
 
 span.dropdown:hover {
@@ -165,6 +168,7 @@ span.boughtBtn {
   color: #FFF;
   transition: 0.3s;
   border-radius: 0;
+  z-index: 2;
 }
 
 span.boughtBtn:hover {
@@ -180,9 +184,26 @@ span.addBtn {
   color: #FFF;
   transition: 0.3s;
   border-radius: 0;
+  z-index: 2;
 }
 
 span.addBtn:hover {
+  background-color: #ff4c4c;
+  color: #000;
+}
+
+span.addBtnB {
+  position: fixed;
+  font-family: Verdana;
+  text-align: right;
+  background: #ff8e8e;
+  color: #FFF;
+  transition: 0.3s;
+  border-radius: 0;
+  z-index: 2;
+}
+
+span.addBtnB:hover {
   background-color: #ff4c4c;
   color: #000;
 }
@@ -194,6 +215,7 @@ span.settingsBtn {
   color: #FFF;
   transition: 0.3s;
   border-radius: 0;
+  z-index: 2;
 }
 
 span.settingsBtn:hover {
@@ -208,6 +230,7 @@ span.faqBtn {
   color: #FFF;
   transition: 0.3s;
   border-radius: 0;
+  z-index: 2;
 }
 
 span.faqBtn:hover {
@@ -223,6 +246,7 @@ span.modBtn {
   color: #FFF;
   transition: 0.3s;
   border-radius: 0;
+  z-index: 2;
 }
 
 span.modBtn:hover {
@@ -238,6 +262,7 @@ span.familyBtn {
   color: #FFF;
   transition: 0.3s;
   border-radius: 0;
+  z-index: 2;
 }
 
 span.familyBtn:hover {
@@ -251,6 +276,7 @@ img.leftCornerImgHidden {
   bottom: 10px;
   display: none;
   transition: 0.3s;
+  z-index: 2;
 }
 
 img.leftCornerImg {
@@ -258,6 +284,7 @@ img.leftCornerImg {
   left: 10px;
   bottom: 10px;
   transition: 0.3s;
+  z-index: 2;
 }
 
 span.updateBtn {
@@ -453,7 +480,7 @@ ul li.santa::before {
 .modal {
   display: none;
   position: fixed;
-  z-index: 1;
+  z-index: 3;
   padding-top: 50px;
   padding-bottom: 2000px;
   left: 0;
@@ -588,6 +615,13 @@ ul li.santa::before {
   span.addBtn {
     right: 5px;
     bottom: 5px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.addBtnB {
+    right: 5px;
+    bottom: 80px;
     padding: 5px;
     font-size: 13px;
   }
@@ -736,6 +770,13 @@ ul li.santa::before {
   span.addBtn {
     right: 5px;
     bottom: 5px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.addBtnB {
+    right: 5px;
+    bottom: 50px;
     padding: 5px;
     font-size: 13px;
   }
@@ -924,6 +965,13 @@ ul li.santa::before {
     font-size: 15px;
   }
 
+  span.addBtnB {
+    right: 7px;
+    bottom: 60px;
+    padding: 7px;
+    font-size: 15px;
+  }
+
   span.updateBtn {
     padding: 7px;
     font-size: 15px;
@@ -1069,6 +1117,13 @@ ul li.santa::before {
     font-size: 17px;
   }
 
+  span.addBtnB {
+    right: 9px;
+    bottom: 70px;
+    padding: 9px;
+    font-size: 17px;
+  }
+
   span.updateBtn {
     padding: 9px;
     font-size: 17px;
@@ -1206,6 +1261,13 @@ ul li.santa::before {
   span.addBtn {
     right: 11px;
     bottom: 11px;
+    padding: 11px;
+    font-size: 21px;
+  }
+
+  span.addBtnB {
+    right: 11px;
+    bottom: 80px;
     padding: 11px;
     font-size: 21px;
   }
@@ -1359,6 +1421,13 @@ ul li.santa::before {
     font-size: 23px;
   }
 
+  span.addBtnB {
+    right: 13px;
+    bottom: 85px;
+    padding: 13px;
+    font-size: 23px;
+  }
+
   span.updateBtn {
     padding: 13px;
     font-size: 23px;
@@ -1504,6 +1573,13 @@ ul li.santa::before {
   span.addBtn {
     right: 13px;
     bottom: 13px;
+    padding: 13px;
+    font-size: 26px;
+  }
+
+  span.addBtnB {
+    right: 13px;
+    bottom: 90px;
     padding: 13px;
     font-size: 26px;
   }
