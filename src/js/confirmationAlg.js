@@ -8,14 +8,17 @@ let confirmationElements = [];
 let userArr = [];
 let friendArr = [];
 let inviteArr = [];
+let oldInviteArr = [];
 let listeningFirebaseRefs = [];
+let initializedUsers = [];
 
 let readNotificationsBool = false;
+let inviteDeleteLocal = false;
+let potentialRemoval = false;
 
 let dataCounter = 0;
 let commonLoadingTimerInt = 0;
 let deleteInviteRun = 0;
-let localDelete = 0;
 
 let testData;
 let backBtn;
@@ -47,7 +50,7 @@ function getCurrentUser(){
   getCurrentUserCommon();
 
   if (user.invites == undefined) {
-    deployListEmptyNotification("No Invites Found! You Already Accepted All Your Invites!");
+    deployListEmptyNotification("No Invites Found! You've Reviewed All Your Invites!");
   }
 
   if (user.readNotifications == undefined) {
@@ -166,6 +169,11 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
+          inviteArr = user.invites;
+          if (potentialRemoval) {
+            findRemovedUser(oldInviteArr, inviteArr);
+            potentialRemoval = false;
+          }
           if(consoleOutput)
             console.log("Current User Updated");
         }
@@ -194,33 +202,15 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        if(consoleOutput) {
-          console.log(friendArr);
-        }
         friendArr[data.key] = data.val();
-        if(consoleOutput) {
-          console.log(friendArr);
-          console.log(user.friends);
-        }
         if (user.friends != null)
           user.friends[data.key] = data.val();
-        if(consoleOutput)
-          console.log(user.friends);
       });
 
       postRef.on('child_removed', function (data) {
-        if(consoleOutput) {
-          console.log(friendArr);
-        }
         friendArr.splice(data.key, 1);
-        if(consoleOutput) {
-          console.log(friendArr);
-          console.log(user.friends);
-        }
         if (user.friends != null)
           user.friends.splice(data.key, 1);
-        if(consoleOutput)
-          console.log(user.friends);
       });
     };
 
@@ -235,14 +225,18 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         inviteArr[data.key] = data.val();
 
-        changeInviteElement(data.val());
+        if (initializedUsers.includes(data.key)) {
+          changeInviteElement(data.val());
+        }
       });
 
       postRef.on('child_removed', function () {
-        if (localDelete == 1) {
-          localDelete = 0;
-        } else {
-          navigation(11);
+        if (!inviteDeleteLocal) {
+          potentialRemoval = true;
+          oldInviteArr = [];
+          for (let i = 0; i < inviteArr.length; i++) {
+            oldInviteArr.push(inviteArr[i]);
+          }
         }
       });
     };
@@ -254,6 +248,35 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userFriends);
     listeningFirebaseRefs.push(userInvites);
+  }
+
+  function findRemovedUser(oldArr, newArr) {
+    let userToRemove = null;
+    let foundInInner = false;
+
+    if (newArr == undefined && oldArr.length == 1) {
+      userToRemove = oldArr[0];
+    } else {
+      for (let a = 0; a < oldArr.length; a++) {
+        for (let b = 0; b < newArr.length; b++) {
+          if (oldArr[a] == newArr[b]) {
+            foundInInner = true;
+            break;
+          }
+        }
+        if (!foundInInner) {
+          userToRemove = oldArr[a];
+          break;
+        } else {
+          foundInInner = false;
+        }
+      }
+    }
+    if (userToRemove != null) {
+      removeInviteElement(userToRemove);
+      let i = initializedUsers.indexOf(userToRemove);
+      initializedUsers.splice(i, 1);
+    }
   }
 
   function createInviteElement(inviteKey){
@@ -329,6 +352,10 @@ window.onload = function instantiate() {
         closeModal(inviteModal);
       };
     };
+
+    if (!initializedUsers.includes(inviteData.uid)) {
+      initializedUsers.push(inviteData.uid);
+    }
   }
 
   function addInvite(inviteData){
@@ -446,6 +473,12 @@ window.onload = function instantiate() {
     }
 
     if(verifyDeleteBool){
+      inviteDeleteLocal = true;
+      let i = initializedUsers.indexOf(uid);
+      if (i != -1) {
+        initializedUsers.splice(i, 1);
+      }
+
       let note = findUIDItemInArr(uid, userArr);
       if(user.notifications != undefined)
         for(let x = 0; x < user.notifications.length; x++)
@@ -458,7 +491,6 @@ window.onload = function instantiate() {
         console.log(inviteArr);
       }
 
-      localDelete = 1;
       firebase.database().ref("users/" + user.uid).update({
         invites: inviteArr
       });
@@ -486,18 +518,15 @@ window.onload = function instantiate() {
         user.friends = finalInviteData[1];
       }
 
-      if (dataCounter == 1) {
-        deployListEmptyNotification("No Invites Found! You Already Accepted All Your Invites!");
-      }
-      document.getElementById("user" + uid).remove();
-      dataCounter--;
+      removeInviteElement(uid);
       if (finalInviteData != null) {
         deployNotificationModal(false, "Invite Accepted!", "Your invite from " +
-          inviteData.name + " was successfully ACCEPTED!");
+          inviteData.name + " was successfully accepted!");
       } else {
         deployNotificationModal(false, "Invite Deleted!", "Your invite from " +
-          inviteData.name + " was successfully DELETED!");
+          inviteData.name + " was successfully deleted!");
       }
+      inviteDeleteLocal = false;
     } else {
       if (deleteInviteRun < 3) {
         deleteInviteRun++;
@@ -509,6 +538,15 @@ window.onload = function instantiate() {
         updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
           inviteData.userName + " and FAILED! (There was an issue with " + user.userName + "'s locally stored friend list)");
       }
+    }
+  }
+
+  function removeInviteElement(uid) {
+    document.getElementById('user' + uid).remove();
+
+    dataCounter--;
+    if (dataCounter == 0) {
+      deployListEmptyNotification("No Invites Found! You've Reviewed All Your Invites!");
     }
   }
 
