@@ -6,6 +6,7 @@
 
 let settingsElements = [];
 let listeningFirebaseRefs = [];
+let inviteArr = [];
 let userArr = [];
 
 let settingsUserScore = 0;
@@ -37,6 +38,7 @@ let notificationModal;
 let notificationInfo;
 let notificationTitle;
 let noteSpan;
+let userInvites;
 
 
 
@@ -182,6 +184,36 @@ window.onload = function instantiate() {
   initializeEditBtn();
   initializeFAQBtn();
   initializeUserInfo();
+
+  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+
+  databaseQuery();
+
+  function databaseQuery() {
+    let fetchInvites = function (postRef) {
+      postRef.on('child_added', function (data) {
+        inviteArr.push(data.val());
+        inviteNote.style.background = "#ff3923";
+      });
+
+      postRef.on('child_changed', function (data) {
+        inviteArr[data.key] = data.val();
+      });
+
+      postRef.on('child_removed', function (data) {
+        inviteArr.splice(data.key, 1);
+
+        if (inviteArr.length == 0) {
+          if (consoleOutput)
+            console.log("Invite List Removed");
+          inviteNote.style.background = "#008222";
+        }
+      });
+    };
+
+    fetchInvites(userInvites);
+    listeningFirebaseRefs.push(userInvites);
+  }
 
   let targetNode = document.getElementById('moderationModal');
   let observer = new MutationObserver(function(){
