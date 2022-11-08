@@ -159,7 +159,7 @@ function changeSecretSantaState(manualChange) {
         currentState = 3;
       } else if (!checkIfSantaSignUp() && !checkIfSantaActive() && pageName == "Moderation") {
         deployNotificationModal(true, "Secret Santa Error!", "Not enough people have signed up for Secret " +
-          "Santa yet! At least 3 people need to be signed up in order to assign names", false, 4);
+          "Santa yet! At least 3 people need to be signed up in order to assign names", 4);
         currentState = 2;
       } else {
         console.log("Hm, this wasn't supposed to happen!");
@@ -349,7 +349,7 @@ function showSecretSanta(){
           });
           user.secretSanta = 1;
           deployNotificationModal(false, "Opted In!", "You Have Been Opted Into Secret Santa! The Secret Santa " +
-            "Will Start Soon, Check Back Soon For Your Secret Santa Recipient!", false, 4);
+            "Will Start Soon, Check Back Soon For Your Secret Santa Recipient!", 4);
           secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
         } else {
           firebase.database().ref("users/" + user.uid).update({
@@ -365,7 +365,7 @@ function showSecretSanta(){
         });
         user.secretSanta = 1;
         deployNotificationModal(false, "Opted In!", "You Have Been Opted Into Secret Santa! The Secret Santa " +
-          "Will Start Soon, Check Back Soon For Your Secret Santa Recipient!", false, 4);
+          "Will Start Soon, Check Back Soon For Your Secret Santa Recipient!", 4);
         secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
       }
       sessionStorage.setItem("validUser", JSON.stringify(user));
@@ -746,7 +746,7 @@ function createSecretSantaNames(){
   if (familyArr.length == 0 && (pageName == "Moderation")) {
     deployNotificationModal(true, "Secret Santa Error!", "You don't have any families created yet!\n\n" +
       "If you have more than 3 users on Gifty, assign them to a family before attempting to assign them Secret Santa names!",
-      false, 4);
+      4);
     return;
   }
 
@@ -780,11 +780,11 @@ function createSecretSantaNames(){
 
   if (tempUserArr.length < 3 || tempUserArr.length == 0 && (pageName == "Moderation")) {
     deployNotificationModal(true, "Secret Santa Error!", "The signed up users DO NOT have enough friends! No " +
-      "users will be assigned names", false, 4);
+      "users will be assigned names", 4);
     return;
   } else if (checkFriendLists() && tempUserArr.length > 2 && (pageName == "Moderation")) {
     deployNotificationModal(true, "Secret Santa Error!", "Some users did not have any friends, so they will " +
-      "NOT be assigned a name!", false, 4);
+      "NOT be assigned a name!", 4);
     friendScoreNote++;
   }
 
@@ -793,7 +793,7 @@ function createSecretSantaNames(){
       if (!ignoreFamilySet && currentState == 2 && pageName == "Moderation") {
         deployNotificationModal(true, "Secret Santa Notice!", "There is a family with less than three users " +
           "signed up!\n\n\nYou have 10 SECONDS to press the button again if you are okay with this. The users in " +
-          "question will NOT be assigned names.", false, 5);
+          "question will NOT be assigned names.", 5);
         startIgnoreFamilySetTimer();
         tempUserArr = [];
         assignedNameUsers = [];
@@ -835,7 +835,7 @@ function createSecretSantaNames(){
             if (consoleOutput) {
               if (pageName == "Moderation")
                 deployNotificationModal(true, "Secret Santa Error!", "There was an error assigning Secret " +
-                  "Santa names. Please " + secretSantaAssignErrorMsg, false, 4);
+                  "Santa names. Please " + secretSantaAssignErrorMsg, 4);
 
               console.log("*************************\n\nSecret Santa Assignments NOT COMPLETE" +
                 "\n\nFailure Reason: " + failureReason + "\n\n*************************");
@@ -858,7 +858,7 @@ function createSecretSantaNames(){
       } else if (!ignoreFamilySet && currentState == 2 && pageName == "Moderation") {
         deployNotificationModal(true, "Secret Santa Notice!", "There is a family with less than three " +
           "eligible users!\n\n\nYou have 10 SECONDS to press the button again if you are okay with this. The users in " +
-          "question will NOT be assigned names.", false, 5);
+          "question will NOT be assigned names.", 5);
         startIgnoreFamilySetTimer();
         tempUserArr = [];
         assignedNameUsers = [];
@@ -909,7 +909,7 @@ function createSecretSantaNames(){
       if (usersNotAssignedAlert) {
         deployNotificationModal(true, "Secret Santa Error!", "Some or all of the signed up users don't have " +
           "enough mutual friends! NO users were assigned for one or more families...\n\n Tips:\n-Your users need to " +
-          "invite more friends to their lists\n-Split up your users into separate family lists", false, 6);
+          "invite more friends to their lists\n-Split up your users into separate family lists", 6);
         usersNotAssignedAlert = false;
       }
       if (pageName == "Lists") {
@@ -922,7 +922,7 @@ function createSecretSantaNames(){
       if (consoleOutput) {
         if (pageName == "Moderation")
           deployNotificationModal(true, "Secret Santa Error!", "There was an error assigning Secret " +
-            "Santa names. Please " + secretSantaAssignErrorMsg, false, 4);
+            "Santa names. Please " + secretSantaAssignErrorMsg, 4);
 
         console.log("*************************\n\nSecret Santa Assignments NOT COMPLETE" +
           "\n\nFailure Reason: " + failureReason + "\n\n*************************");
