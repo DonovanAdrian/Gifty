@@ -7,8 +7,8 @@
 let buttonAlternatorTimer = 0;
 let buttonAlternatorInt = 0;
 let buttonOpacLim = 7;
-let logoutReminder = 300;
-let logoutLimit = 900;
+let logoutReminder = 300; //default 300, 300 5 mins
+let logoutLimit = 900; //default 900, 900 15 mins, 600 10 mins
 let deployedNoteTimer = 0;
 let setWindowNoteTimer = 0;
 let consoleOutput = false;
@@ -24,6 +24,7 @@ let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
 let loginTimerInterval;
+let ohThereYouInterval;
 let transparencyInterval;
 let deployedNoteInterval;
 let setWindowNoteInverval;
@@ -343,11 +344,22 @@ function areYouStillThereNote(timeElapsed){
 }
 
 function ohThereYouAre(){
+  let ohThereYouTimer = 0;
+  let ohThereYouLimit = 3;
+
   document.title = "Oh, There You Are!";
-  deployNotificationModal(false,"Oh, There You Are!", "Welcome back, " + user.name, true);
+  ohThereYouInterval = setInterval(function(){
+    ohThereYouTimer = ohThereYouTimer + 1;
+    if (ohThereYouTimer >= ohThereYouLimit){
+      clearInterval(ohThereYouInterval);
+      areYouStillThereInit = false;
+      document.title = currentTitle;
+      loginTimer();
+    }
+  }, 1000);
 }
 
-function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offlineTimerBool, customTime, customNavigation, customNavParam) {
+function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, customTime, customNavigation, customNavParam) {
   let navigationBool = true;
   let previousModalName = "";
   let previousModal;
@@ -365,11 +377,6 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offli
     noteInfo = "Notification Info";
   else if (noteInfo == "")
     noteInfo = "Notification Info";
-
-  if (offlineTimerBool == null)
-    offlineTimerBool = false;
-  else if (offlineTimerBool)
-    areYouStillThereBool = false;
 
   if (reopenPreviousModal != null && currentModalOpenObj != null)
     if (reopenPreviousModal) {
@@ -415,8 +422,6 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offli
     if (reopenPreviousModal != null)
       if (reopenPreviousModal)
         openModal(previousModal, previousModalName);
-    if (offlineTimerBool)
-      resetDefaultData();
     clearInterval(deployedNoteInterval);
     clearInterval(setWindowNoteInverval);
   };
@@ -436,8 +441,6 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offli
           if (reopenPreviousModal != null)
             if (reopenPreviousModal)
               openModal(previousModal, previousModalName);
-          if (offlineTimerBool)
-            resetDefaultData();
           clearInterval(deployedNoteInterval);
         }
       };
@@ -458,18 +461,10 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, offli
       if (reopenPreviousModal != null)
         if (reopenPreviousModal)
           openModal(previousModal, previousModalName);
-      if (offlineTimerBool)
-        resetDefaultData();
       clearInterval(deployedNoteInterval);
       clearInterval(setWindowNoteInverval);
     }
   }, 1000);
-
-  function resetDefaultData() {
-    areYouStillThereInit = false;
-    document.title = currentTitle;
-    loginTimer();
-  }
 }
 
 function signOut(){
