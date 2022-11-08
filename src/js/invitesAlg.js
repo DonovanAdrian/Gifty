@@ -196,9 +196,15 @@ window.onload = function instantiate() {
   databaseQuery();
 
   function generateInviteIcon() {
+    newInviteIcon.style.display = "block";
     newInviteIcon.onclick = function () {
       navigation(11);//Confirmation
     };
+  }
+
+  function disableInviteIcon() {
+    newInviteIcon.style.display = "none";
+    newInviteIcon.onclick = function () {};
   }
 
   if (invitesFound) {
@@ -284,6 +290,7 @@ window.onload = function instantiate() {
 
     let fetchInvites = function (postRef) {
       postRef.on('child_added', function (data) {
+        generateInviteIcon();
         inviteArr.push(data.val());
       });
 
@@ -297,7 +304,7 @@ window.onload = function instantiate() {
         if (inviteArr.length == 0) {
           if(consoleOutput)
             console.log("Invite List Removed");
-          newInviteIcon.style.display = "none";
+          disableInviteIcon();
           inviteNote.style.background = "#008222";
         }
       });
