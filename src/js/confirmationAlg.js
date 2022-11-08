@@ -516,6 +516,7 @@ window.onload = function instantiate() {
 
         user.invites = inviteArr;
         user.friends = finalInviteData[1];
+        sessionStorage.setItem("validUser", JSON.stringify(user));
       }
 
       removeInviteElement(uid);
