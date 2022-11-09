@@ -169,7 +169,11 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
-          inviteArr = user.invites;
+          if (user.invites != undefined) {
+            inviteArr = user.invites;
+          } else {
+            inviteArr = [];
+          }
           if (potentialRemoval) {
             findRemovedUser(oldInviteArr, inviteArr);
             potentialRemoval = false;
@@ -254,7 +258,7 @@ window.onload = function instantiate() {
     let userToRemove = null;
     let foundInInner = false;
 
-    if (newArr == undefined && oldArr.length == 1) {
+    if (newArr.length == 0 && oldArr.length == 1) {
       userToRemove = oldArr[0];
     } else {
       for (let a = 0; a < oldArr.length; a++) {
@@ -283,7 +287,7 @@ window.onload = function instantiate() {
     let inviteData;
 
     try{
-      testData.remove();
+      document.getElementById('testData').remove();
     } catch (err) {
       console.log("But it \"Doesn't Exist!!\"");
     }
@@ -390,7 +394,7 @@ window.onload = function instantiate() {
 
     if (!friendFriendArr.includes(user.uid)) {
       deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
-        "friend list! Please try again...", false, 4);
+        "friend list! Please try again...", 4);
       updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
         inviteData.userName + " and FAILED! (There was an issue with " + inviteData.userName + "'s friend list)");
       return;
@@ -406,7 +410,7 @@ window.onload = function instantiate() {
 
     if (!userFriendArr.includes(inviteData.uid)) {
       deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
-        "friend list! Please try again...", false, 4);
+        "friend list! Please try again...", 4);
       updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
         inviteData.userName + " and FAILED! (There was an issue with " + user.userName + "'s friend list)");
       return;
@@ -535,7 +539,7 @@ window.onload = function instantiate() {
       } else {
         deleteInviteRun = 0;
         deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
-          "friend list! Please try again...", false, 4);
+          "friend list! Please try again...", 4);
         updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
           inviteData.userName + " and FAILED! (There was an issue with " + user.userName + "'s locally stored friend list)");
       }
