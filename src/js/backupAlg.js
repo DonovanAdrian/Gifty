@@ -88,7 +88,7 @@ window.onload = function instantiate() {
   verifyElementIntegrity(backupElements);
 
   deployNotificationModal(false, "Backup Functionality", "Please note that backup functionality is not yet available. Feel free to take a look around at what's" +
-    " currently available on this page and stay tuned!", false, 4);
+    " currently available on this page and stay tuned!",4);
   entireDB = firebase.database().ref("/");
   backupInitial = firebase.database().ref("backup/");
   userInitial = firebase.database().ref("users/");
@@ -109,7 +109,7 @@ window.onload = function instantiate() {
           //exportBackup();
           deployNotificationModal(true, "Backup Functionality", "Please note that backup functionality is " +
             "not yet available. Feel free to take a look around at what's currently available on this page and stay " +
-            "tuned!", false, 4);
+            "tuned!", 4);
         }
 
         exportBtn.innerHTML = "Export Backup";
@@ -127,18 +127,18 @@ window.onload = function instantiate() {
                 importBackup(contents);
               } else {
                 deployNotificationModal(true, "Import Error!", "Please only import text or comma seperated " +
-                  "variable files!", false, 4);
+                  "variable files!", 4);
               }
             } else {
               deployNotificationModal(true, "Import Error!", "File Import Error! This backup file is not in " +
-                "the correct format! \n\nError Code: 100", false, 4);
+                "the correct format! \n\nError Code: 100", 4);
             }
           } catch (err) {}
           */
 
           deployNotificationModal(true, "Backup Functionality", "Please note that backup functionality is " +
             "not yet available. Feel free to take a look around at what's currently available on this page and stay " +
-            "tuned!", false, 4);
+            "tuned!", 4);
         });
         importBtn.innerHTML = "Import Backup";
         exportBtn.className = "basicBtn btnDisabled";
@@ -523,11 +523,11 @@ window.onload = function instantiate() {
         processBackupData(firstCol, secondCol, thirdCol);
       } else {
         deployNotificationModal(true, "Import Error!", "File Import Error! This backup file is not in the " +
-          "correct format! \n\nError Code: 200", false, 4);
+          "correct format! \n\nError Code: 200", 4);
       }
     } else {
       deployNotificationModal(true, "Import Error!", "File Import Error! This backup file is not in the" +
-        "correct format! \n\nError Code: 300", false, 4);
+        "correct format! \n\nError Code: 300", 4);
     }
   }
 
