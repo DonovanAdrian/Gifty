@@ -260,7 +260,7 @@ window.onload = function instantiate() {
           });
           deployNotificationModal(false, "Warning Sent!", userData.name +
             " Has Been Warned! Once The User Reads The Warning, Their Warning Will Be Removed.",
-            false, 4);
+            4);
         } else {
           deployNotificationModal(false, "Message Sent!",
             "The Private Message Has Been Sent!");
@@ -826,26 +826,32 @@ window.onload = function instantiate() {
       urlString = urlString.join("");
     }
     if (urlString == "" && !override) {
-      deployNotificationModal(true, "URL String Error!", "The URL Limiter Is NOT currently active. If you wish to enable it, please enter a non-empty string", false, 4);
+      deployNotificationModal(true, "URL String Error!", "The URL Limiter Is NOT " +
+        "currently active. If you wish to enable it, please enter a non-empty string", 4);
     } else if (urlString.includes(',,')) {
-      deployNotificationModal(true, "URL String Error!", "Please do not include more than one comma");
+      deployNotificationModal(true, "URL String Error!", "Please do not include " +
+        "more than one comma");
     } else if (urlString.includes('.')) {
-      deployNotificationModal(true, "URL String Error!", "Please do not include full URLs, only specific parts of a URL like \"www\" or \"bestbuy\".");
+      deployNotificationModal(true, "URL String Error!", "Please do not include " +
+        "full URLs, only specific parts of a URL like \"www\" or \"bestbuy\".");
     } else {
       firebase.database().ref("limits/").update({
         giftURLLimit: urlString
       });
       if (urlString == "" && override) {
         updateMaintenanceLog("moderation", "URL Limiter disabled by the user \"" + user.userName);
-        deployNotificationModal(false, "URL Limiter Disabled!", "The URL Limiter has been disabled!");
+        deployNotificationModal(false, "URL Limiter Disabled!", "The URL Limiter " +
+          "has been disabled!");
       } else if (urlString == "amazon,amzn,bestbuy,barnesandnoble" && override) {
-        updateMaintenanceLog("moderation", "Default URL Limiter set by the user \"" + user.userName + "\" " +
-          "with the following string: " + urlString);
-        deployNotificationModal(false, "Default URL Limiter Set!", "The Default URL Limiter was successfully set! From now on, only gifts with the default limiters will be allowed.", false, 4);
+        updateMaintenanceLog("moderation", "Default URL Limiter set by the user \"" +
+          user.userName + "\" " + "with the following string: " + urlString);
+        deployNotificationModal(false, "Default URL Limiter Set!", "The Default " +
+          "URL Limiter was successfully set! From now on, only gifts with the default limiters will be allowed.", 4);
       } else {
         updateMaintenanceLog("moderation", "URL Limiter set by the user \"" + user.userName + "\" " +
           "with the following string: " + urlString);
-        deployNotificationModal(false, "URL Limiter Set!", "Your URL Limiter was successfully set! From now on, only gifts with your specified limiter(s) will be allowed.", false, 4);
+        deployNotificationModal(false, "URL Limiter Set!", "Your URL Limiter was " +
+          "successfully set! From now on, only gifts with your specified limiter(s) will be allowed.", 4);
       }
     }
   }
@@ -990,7 +996,7 @@ window.onload = function instantiate() {
 
         if(currentModalOpen == data.key) {
           deployNotificationModal(false, "User Updated!", "The user you were " +
-            "viewing was updated! Please reopen the window to view the changes.", false, 5);
+            "viewing was updated! Please reopen the window to view the changes.", 5);
         }
       });
 
@@ -1005,7 +1011,7 @@ window.onload = function instantiate() {
 
         if(currentModalOpen == data.key) {
           deployNotificationModal(false, "User Removed!", "The user you were " +
-            "viewing was deleted!", false, 5);
+            "viewing was deleted!", 5);
         }
       });
     };
@@ -1268,12 +1274,12 @@ window.onload = function instantiate() {
           });
           deployNotificationModal(false, "Unbanned User!",
             userData.name + " has been unbanned!");
-          userUpdateLocal = false;
         } else {
           confirmOperation("Ban " + userData.name + "?", "While this CAN be undone, this " +
             "should only be used for serious offenses. Consider using warnings first, if not already done... Are you " +
             "sure you wish to ban " + userData.name + "?", "banUser", userData, userModal, userData.uid);
         }
+        userUpdateLocal = false;
       };
       if (userData.uid == "-L__dcUyFssV44G9stxY" && user.uid != "-L__dcUyFssV44G9stxY") {
         moderatorOp.innerHTML = "Don't Even Think About It";
