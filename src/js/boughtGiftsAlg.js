@@ -138,7 +138,7 @@ window.onload = function instantiate() {
       }
     } else {
       deployNotificationModal(false, "Critical Error!", "There has been a critical error, redirecting " +
-        "back home...", false, 4, 2);
+        "back home...", 4, 2);
     }
   }
 
