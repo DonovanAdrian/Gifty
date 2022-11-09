@@ -111,7 +111,7 @@ window.onload = function instantiate() {
     } catch (err) {
       updateMaintenanceLog("privateList", user.uid + " failed to connect to the private list owned by " + privateList.uid + "!");
       deployNotificationModal(false, "Gift List Error!", "There was an error connecting to " +
-        privateList.uid + "'s private list! Please notify a moderator about this issue!", false, 5, 3);
+        privateList.uid + "'s private list! Please notify a moderator about this issue!", 5, 3);
     }
   }
 
@@ -273,14 +273,14 @@ window.onload = function instantiate() {
         "commas in any of the fields!");
     } else if (giftTitleInp.value === "") {
       deployNotificationModal(false, "Gift Title Blank!", "It looks like you left " +
-        "the title blank. Make sure you add a title so other people know what to get you!", false, 4);
+        "the title blank. Make sure you add a title so other people know what to get you!", 4);
     } else if (giftLimitBool && newURL != "") {
       deployNotificationModal(false, "Invalid Gift URL!", "It looks like the URL" +
-        " you are trying to use is restricted by moderators. Please use a different link or leave it blank!", false, 4);
+        " you are trying to use is restricted by moderators. Please use a different link or leave it blank!", 4);
     } else if (invalidURLBool && !invalidURLOverride) {
       deployNotificationModal(false, "Invalid Gift URL!", "It looks like you " +
         "entered an invalid URL, please enter a valid URL or leave the field blank. If this is intentional, you can " +
-        "click \"Add Gift\", but the gift URL will not be saved.", false, 4);
+        "click \"Add Gift\", but the gift URL will not be saved.", 4);
       invalidURLOverride = true;
       invalidURL = newURL;
     } else {
@@ -442,12 +442,12 @@ window.onload = function instantiate() {
         if (!privateListBool) {
           deployNotificationModal(false, "Gift Updated!", "The gift, " +
             giftTitleInp.value + ", has been successfully updated in your gift list! Redirecting " +
-            "back to home...", false, 3, 2);
+            "back to home...",3, 2);
         } else {
           sessionStorage.setItem("validGiftUser", JSON.stringify(user));
           deployNotificationModal(false, "Private Gift Updated!", "The gift, " +
             giftTitleInp.value + ", has been successfully updated in " + user.name + "'s private gift list! Redirecting " +
-            "back to their private list...", false, 3, 10);
+            "back to their private list...", 3, 10);
         }
       } else {
         deployNotificationModal(false, "Gift Update Error!", "There was an error " +
@@ -551,14 +551,14 @@ window.onload = function instantiate() {
         "commas in any of the fields!");
     } else if (giftTitleInp.value === "") {
       deployNotificationModal(false, "Gift Title Blank!", "It looks like you " +
-        "left the title blank. Make sure you add a title so other people know what to get you!", false, 4);
+        "left the title blank. Make sure you add a title so other people know what to get you!", 4);
     } else if (giftLimitBool && newURL != "") {
       deployNotificationModal(false, "Invalid Gift URL!", "It looks like the URL" +
-        " you are trying to use is restricted by moderators. Please use a different link or leave it blank!", false, 4);
+        " you are trying to use is restricted by moderators. Please use a different link or leave it blank!", 4);
     } else if (invalidURLBool && !invalidURLOverride) {
       deployNotificationModal(false, "Invalid Gift URL!", "It looks like you " +
         "entered an invalid URL, please enter a valid URL or leave the field blank. If this is intentional, you can " +
-        "click \"Add Gift\", but the gift URL will not be saved.", false, 4);
+        "click \"Add Gift\", but the gift URL will not be saved.", 4);
       invalidURLOverride = true;
       invalidURL = newURL;
     } else {
@@ -590,7 +590,7 @@ window.onload = function instantiate() {
         });
         deployNotificationModal(false, "Gift Added!", "The gift, " +
           giftTitleInp.value + ", has been successfully added to your gift list! Redirecting " +
-          "back to home...", false, 3, 2);
+          "back to home...", 3, 2);
       } else {
         if (privateUser.userScore == null) {
           privateUser.userScore = 0;
@@ -620,7 +620,7 @@ window.onload = function instantiate() {
         sessionStorage.setItem("validGiftUser", JSON.stringify(user));
         deployNotificationModal(false, "Private Gift Added!", "The gift, " +
           giftTitleInp.value + ", has been successfully added to " + user.name + "'s private gift list! Redirecting " +
-          "back to their private list...", false, 3, 10);
+          "back to their private list...", 3, 10);
       }
     }
     invalidURLBool = false;
