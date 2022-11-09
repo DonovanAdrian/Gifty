@@ -243,10 +243,10 @@ window.onload = function instantiate() {
             if (!giftUpdateLocal) {
               if (previousBoughtStatus != currentBoughtStatus) {
                 deployNotificationModal(false, "Gift Updated!", "The gift you were viewing " +
-                  "was bought or un-bought by someone! Please reopen the gift to view the changes.", false, 4);
+                  "was bought or un-bought by someone! Please reopen the gift to view the changes.", 4);
               } else {
                 deployNotificationModal(false, "Gift Updated!", "The gift you were viewing " +
-                  "was updated by " + giftUser.name + "! Please reopen the gift to view the changes.", false, 4);
+                  "was updated by " + giftUser.name + "! Please reopen the gift to view the changes.", 4);
               }
             }
           }
@@ -331,7 +331,7 @@ window.onload = function instantiate() {
         closeModal(giftModal);
         if (!giftUpdateLocal) {
           deployNotificationModal(false, "Gift Deleted!", "The gift you were viewing " +
-            "was deleted by " + giftUser.name + "! This gift is no longer available to view...", false, 4);
+            "was deleted by " + giftUser.name + "! This gift is no longer available to view...", 4);
         }
       }
     }
@@ -507,7 +507,7 @@ window.onload = function instantiate() {
             } else {
               deployNotificationModal(true, "Gift Buy Error!", "Only the buyer, "
                 + giftBuyer + ", can " + "\"Un-Buy\" this gift. Please contact them to undo this action if this has " +
-                "been done in error.", false, 4);
+                "been done in error.", 4);
             }
           } else {
             deployNotificationModal(true, "Gift Already Unbought!", "This gift has " +
