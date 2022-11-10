@@ -279,10 +279,10 @@ window.onload = function instantiate() {
             if (!giftUpdateLocal) {
               if (previousBoughtStatus != currentBoughtStatus) {
                 deployNotificationModal(false, "Gift Updated!", "The gift you were viewing " +
-                  "was bought or un-bought by someone! Please reopen the gift to view the changes.", false, 4);
+                  "was bought or un-bought by someone! Please reopen the gift to view the changes.", 4);
               } else {
                 deployNotificationModal(false, "Gift Updated!", "The gift you were viewing " +
-                  "was updated by another user! Please reopen the gift to view the changes.", false, 5);
+                  "was updated by another user! Please reopen the gift to view the changes.", 5);
               }
             }
           }
@@ -394,7 +394,7 @@ window.onload = function instantiate() {
         closeModal(giftModal);
         if (!giftUpdateLocal) {
           deployNotificationModal(false, "Gift Deleted!", "The gift you were viewing " +
-            "was deleted by " + giftToRemove.creator + "! This gift is no longer available to view...", false, 4);
+            "was deleted by " + giftToRemove.creator + "! This gift is no longer available to view...", 4);
         }
       }
     }
@@ -551,7 +551,7 @@ window.onload = function instantiate() {
             confirmDeletion(key, title, uid, buyer, receivedBy);
           } else {
             deployNotificationModal(true, "Gift Delete Failed!", "Only the creator, " + creator + ", can " +
-              "delete this gift. Please contact them to delete this gift if it needs to be removed.", false, 4);
+              "delete this gift. Please contact them to delete this gift if it needs to be removed.", 4);
           }
         }
       };
@@ -564,7 +564,8 @@ window.onload = function instantiate() {
               buyer: user.userName
             });
           } else {
-            deployNotificationModal(true, "Gift Already Bought!", "This gift has already been marked as bought!");
+            deployNotificationModal(true, "Gift Already Bought!", "This gift has " +
+              "already been marked as bought!");
           }
         } else {
           if (receivedBy.indexOf(user.uid) == -1) {
@@ -575,7 +576,8 @@ window.onload = function instantiate() {
               receivedBy: receivedBy
             });
           } else {
-            deployNotificationModal(true, "You Already Bought This!", "You can only buy this gift once!");
+            deployNotificationModal(true, "You Already Bought This!", "You can " +
+              "only buy this gift once!");
           }
         }
         giftUpdateLocal = false;
@@ -596,13 +598,14 @@ window.onload = function instantiate() {
                   buyer: ""
                 });
               } else {
-                deployNotificationModal(true, "Gift Buy Error!", "Only the buyer, " + buyer + ", can " +
-                  "\"Un-Buy\" this gift. Please contact them to undo this action if this has been done in error.",
-                  false, 4);
+                deployNotificationModal(true, "Gift Buy Error!", "Only the buyer, "
+                  + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action if this has been done " +
+                  "in error.", 4);
               }
             }
           } else {
-            deployNotificationModal(true, "Gift Already Un-Bought!", "This gift has already been marked as \"Un-Bought\"!");
+            deployNotificationModal(true, "Gift Already Un-Bought!", "This gift " +
+              "has already been marked as \"Un-Bought\"!");
           }
         } else {
           let userBought = receivedBy.indexOf(user.uid);
@@ -614,8 +617,8 @@ window.onload = function instantiate() {
               receivedBy: receivedBy
             });
           } else {
-            deployNotificationModal(true, "Gift Un-Buy Error!", "You haven't bought this gift, so you can't" +
-              " un-buy it!");
+            deployNotificationModal(true, "Gift Un-Buy Error!", "You haven't bought " +
+              "this gift, so you can't un-buy it!");
           }
         }
         giftUpdateLocal = false;
@@ -741,8 +744,10 @@ window.onload = function instantiate() {
       }
       giftDeleteLocal = false;
     } else {
-      deployNotificationModal(true, "Gift Delete Failed!", "Delete failed, please try again later!");
-      updateMaintenanceLog("privateFriendList", "Gift delete failed for user " + giftUser.userName + "'s private list, gift " + uid);
+      deployNotificationModal(true, "Gift Delete Failed!", "Delete failed, please " +
+        "try again later!");
+      updateMaintenanceLog("privateFriendList", "Gift delete failed for user " +
+        giftUser.userName + "'s private list, gift " + uid);
     }
   }
 
@@ -804,8 +809,9 @@ window.onload = function instantiate() {
       addGift.className += " btnDisabled";
       addGift.innerHTML = "Gift Limit Reached!";
       addGift.onclick = function () {
-        deployNotificationModal(false, "Gift Limit Reached!", "You have reached the limit of the number of " +
-          "gifts that you can create (" + giftLimit + "). Please remove some gifts in order to create more!", false, 4);
+        deployNotificationModal(false, "Gift Limit Reached!", "You have reached the " +
+          "limit of the number of gifts that you can create (" + giftLimit + "). Please remove some gifts in order to " +
+          "create more!", 4);
       };
     }
   }
@@ -823,8 +829,9 @@ window.onload = function instantiate() {
       addGift.className += " btnDisabled";
       addGift.innerHTML = "Gift Limit Reached!";
       addGift.onclick = function () {
-        deployNotificationModal(false, "Gift Limit Reached!", "You have reached the limit of the number of " +
-          "gifts that you can create (" + giftLimit + "). Please remove some gifts in order to create more!", false, 4);
+        deployNotificationModal(false, "Gift Limit Reached!", "You have reached the " +
+          "limit of the number of gifts that you can create (" + giftLimit + "). Please remove some gifts in order to " +
+          "create more!", 4);
       };
     } else {
       addGift.innerHTML = "Add Private Gift";
