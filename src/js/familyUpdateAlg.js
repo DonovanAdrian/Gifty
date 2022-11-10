@@ -341,7 +341,7 @@ window.onload = function instantiate() {
       deployNotificationModal(true, "Family Empty!", "This family is empty, so no members can be removed!");
     } else {
       deployNotificationModal(false, "Member Removal Complete", "All members were removed from this family! " +
-        "The page will now be redirected to the Family page.", false, 4, 15);
+        "The page will now be redirected to the Family page.", 4, 15);
     }
   }
 
@@ -712,7 +712,7 @@ window.onload = function instantiate() {
       name:newFamilyName
     });
     deployNotificationModal(false, "Family Name Updated!", "The family name has been updated! The page will " +
-      "now be redirected to the Family page.", false, 4, 15);
+      "now be redirected to the Family page.", 4, 15);
   }
 
   function addFamilyMemberToDB(memberUID){
@@ -842,11 +842,11 @@ window.onload = function instantiate() {
         });
       } else {
         deployNotificationModal(true, "Parent/Child Assignment Error", "All parents have already been " +
-          "assigned. Please clear Parent/Child data to correct parent assignments.", false, 4);
+          "assigned. Please clear Parent/Child data to correct parent assignments.", 4);
       }
     } else {
       deployNotificationModal(true, "Parent/Child Assignment Error!", "There was an error updating the " +
-        "parent and child of this user, please try again!", false, 4);
+        "parent and child of this user, please try again!", 4);
     }
 
     globalChildData = null;
