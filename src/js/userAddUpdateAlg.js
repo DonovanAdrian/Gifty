@@ -195,10 +195,10 @@ window.onload = function instantiate() {
       btnUpdate.innerHTML = "Create User Profile";
       deployNotificationModal(false, "Secure Pin Notice!", "Alert! Please use a pin you have never used before." +
         " No computer system is 100% secure, so your due diligence as a user will be critical in protecting your pins.",
-        false, 4);
+        4);
     } else if (user == undefined && !userCreationOverride) {
       deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this Gifty Database is full, so no more users can be created." +
-        " Please contact the owner to obtain access. Redirecting back to login...", false, 4, 1);
+        " Please contact the owner to obtain access. Redirecting back to login...", 4, 1);
     } else {
       btnUpdate.innerHTML = "Create User Profile";
     }
@@ -336,7 +336,7 @@ function deleteCheck(){
       console.log("Completed deleting user " + user.uid);
     }
     deployNotificationModal(false, "User Account Deleted!", "Your account has been " +
-      "successfully deleted. Redirecting back to Login...", false, 5, 1, false);
+      "successfully deleted. Redirecting back to Login...", 5, 1, false);
   };
 
   deleteDeny.onclick = function () {
@@ -379,16 +379,16 @@ function updateUserToDB(){
       "commas in any of the fields!");
   } else if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
     deployNotificationModal(false, "Empty Fields Error!", "It looks like you left some fields blank. Make " +
-      "sure you have your full name, username, a pin, and a confirmed pin below.", false, 4);
+      "sure you have your full name, username, a pin, and a confirmed pin below.", 4);
   } else if (pinConfField.value !== pinField.value){
     deployNotificationModal(false, "Pin Mismatch Error!", "It looks like the pins you entered are NOT the same." +
-      " Please re-type your pins to ensure they are identical.", false, 4);
+      " Please re-type your pins to ensure they are identical.", 4);
   } else if (!isNaN(pinField.value) == false) {
     deployNotificationModal(false, "Pin Number Error!", "It looks like the pins you entered are not numeric, " +
-      "please only enter numbers for your pin!", false, 4);
+      "please only enter numbers for your pin!", 4);
   } else if (userNameBool == false && user == null){
     deployNotificationModal(false, "User Name Taken!", "It looks like the User Name you chose is already taken," +
-      " please choose another.", false, 4);
+      " please choose another.", 4);
     userNameBool = true;
   } else {
     userUpdateOverride = true;
@@ -462,7 +462,7 @@ function updateUserToDB(){
     btnDelete.onclick = function(){};
     backBtn.onclick = function(){};
     deployNotificationModal(false, "User Account Updated!", "Your account has been " +
-      "successfully updated. Redirecting back to Settings...", false, 5, 5, true);
+      "successfully updated. Redirecting back to Settings...", 5, 5, true);
   }
 }
 
@@ -479,16 +479,16 @@ function addUserToDB(){
       "commas in any of the fields!");
   } else if (nameField.value === "" || userNameField.value === "" || pinField.value === "" || pinConfField.value === ""){
     deployNotificationModal(false, "Empty Fields Error!", "It looks like you left some fields blank. Make " +
-      "sure you have your full name, username, a pin, and a confirmed pin below.", false, 4);
+      "sure you have your full name, username, a pin, and a confirmed pin below.", 4);
   } else if (pinConfField.value !== pinField.value){
     deployNotificationModal(false, "Pin Mismatch Error!", "It looks like the pins you entered are NOT the same." +
-      " Please re-type your pins to ensure they are identical.", false, 4);
+      " Please re-type your pins to ensure they are identical.", 4);
   } else if (!isNaN(pinField.value) == false) {
     deployNotificationModal(false, "Pin Number Error!", "It looks like the pins you entered are not numeric, " +
-      "please only enter numbers for your pin!", false, 4);
+      "please only enter numbers for your pin!", 4);
   } else if (userNameBool == false){
     deployNotificationModal(false, "User Name Taken!", "It looks like the User Name you chose is already taken," +
-      " please choose another.", false, 4);
+      " please choose another.", 4);
     userNameBool = true;
   } else {
     let newUid = firebase.database().ref("users").push();
@@ -521,7 +521,7 @@ function addUserToDB(){
     btnDelete.onclick = function(){};
     backBtn.onclick = function(){};
     deployNotificationModal(false, "User Account Created!", "Your account has been " +
-      "successfully created! Redirecting back to Login...", false, 5, 1, false);
+      "successfully created! Redirecting back to Login...", 5, 1, false);
   }
 
   function genShareCode(){
