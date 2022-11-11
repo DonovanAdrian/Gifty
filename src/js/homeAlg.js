@@ -723,7 +723,7 @@ window.onload = function instantiate() {
       addGift.onclick = function () {
         deployNotificationModal(false, "Gift Limit Reached!", "You have reached " +
           "the limit of the number of gifts that you can create (" + giftLimit + "). Please remove some gifts in order " +
-          "to create more!", false, 4);
+          "to create more!", 4);
       };
     } else {
       addGift.innerHTML = "Add Gift";
