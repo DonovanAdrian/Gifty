@@ -311,24 +311,28 @@ function checkSecretSanta(){
   }
 }
 
+function setSecretSantaBtnDefault(secretButtonText) {
+  notificationBtn.className = "notificationIcon noteBasicBuffer";
+  secretSantaSignUp.style.display = "block";
+  secretSantaSignUp.innerHTML = secretButtonText;
+}
+
 function showSecretSanta(){
   if (user.secretSanta == null) {
     if (currentState == 2) {
-      secretSantaSignUp.style.display = "block";
-      secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
+      setSecretSantaBtnDefault("Sign Up For Secret Santa");
     }
   } else {
     if (user.secretSanta == 0 && currentState == 2) {
-      secretSantaSignUp.style.display = "block";
-      secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
+      setSecretSantaBtnDefault("Sign Up For Secret Santa");
     } else if (user.secretSanta == 1 && currentState == 2) {
-      secretSantaSignUp.style.display = "block";
-      secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
+      setSecretSantaBtnDefault("Opt-Out Of Secret Santa");
     } else if (user.secretSanta == 1 && currentState == 3) {
       if (user.secretSantaName != null) {
         if (user.secretSantaName != "") {
           let i = findUIDItemInArr(user.secretSantaName, userArr, true);
           secretSantaData = userArr[i];
+          notificationBtn.className = "notificationIcon noteExtraBuffer";
           secretSantaSignUp.style.display = "block";
           secretSantaSignUp.innerHTML = "Your Assigned Name:<br/>" + userArr[i].name;
         }
@@ -374,6 +378,7 @@ function showSecretSanta(){
 }
 
 function hideSecretSanta() {
+  notificationBtn.className = "notificationIcon";
   secretSantaSignUp.style.display = "none";
   secretSantaSignUp.onclick = function () {};
 }
