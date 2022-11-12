@@ -93,14 +93,8 @@ function getCurrentUser(){
       inviteListEmptyText = "No Friends Found! Invite Some Friends With The Button Below!";
     deployListEmptyNotification(inviteListEmptyText);
     friendListEmptyBool = true;
-  } else if (user.friends != undefined) {
-    if (user.friends.length < 100 && user.friends.length > 0) {
-      inviteNote.innerHTML = user.friends.length + " Friends";
-    }
-  } else {
-    if(consoleOutput)
-      console.log("Friends Found!");
   }
+  updateFriendNav(user.friends);
 
   if (user.readNotifications == undefined) {
     if(consoleOutput)
@@ -243,6 +237,7 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
+          updateFriendNav(user.friends);
           friendArr = user.friends;
           if (potentialRemoval) {
             findRemovedUser(oldFriendArr, friendArr);
@@ -320,30 +315,12 @@ window.onload = function instantiate() {
   }
 
   function findRemovedUser(oldArr, newArr) {
-    let userToRemove = null;
-    let foundInInner = false;
+    let removedUserIndex = -1;
 
-    if (newArr == undefined && oldArr.length == 1) {
-      userToRemove = oldArr[0];
-    } else {
-      for (let a = 0; a < oldArr.length; a++) {
-        for (let b = 0; b < newArr.length; b++) {
-          if (oldArr[a] == newArr[b]) {
-            foundInInner = true;
-            break;
-          }
-        }
-        if (!foundInInner) {
-          userToRemove = oldArr[a];
-          break;
-        } else {
-          foundInInner = false;
-        }
-      }
-    }
-    if (userToRemove != null) {
-      removeFriendElement(userToRemove);
-      let i = initializedUsers.indexOf(userToRemove);
+    removedUserIndex = findRemovedData(oldArr, newArr);
+    if (removedUserIndex != -1) {
+      removeFriendElement(oldArr[removedUserIndex]);
+      let i = initializedUsers.indexOf(oldArr[removedUserIndex]);
       initializedUsers.splice(i, 1);
     }
   }
