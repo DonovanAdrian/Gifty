@@ -242,18 +242,7 @@ function getCurrentUserCommon(){
           }
         }
       }
-      if (pageName != "Invites" || pageName != "Lists") {
-        if (user.friends == undefined) {
-          if (consoleOutput)
-            console.log("Friends Not Found");
-        } else if (user.friends != undefined) {
-          if (user.friends.length < 100 && user.friends.length > 1) {
-            inviteNote.innerHTML = user.friends.length + " Friends";
-          } else if (user.friends.length == 1) {
-            inviteNote.innerHTML = "1 Friend";
-          }
-        }
-      }
+      updateFriendNav(user.friends);
     } else {
       try {
         userCreationOverride = JSON.parse(sessionStorage.userCreationOverride);
@@ -784,6 +773,33 @@ function findUIDItemInArr(item, array, override){
   return -1;
 }
 
+function findRemovedData(oldArr, newArr) {
+  let foundInInner = false;
+
+  if (newArr == undefined) {
+    newArr = [];
+  }
+
+  if (newArr.length == 0 && oldArr.length == 1) {
+    return 0;
+  } else {
+    for (let a = 0; a < oldArr.length; a++) {
+      for (let b = 0; b < newArr.length; b++) {
+        if (oldArr[a] == newArr[b]) {
+          foundInInner = true;
+          break;
+        }
+      }
+      if (!foundInInner) {
+        return a;
+      }
+      foundInInner = false;
+    }
+  }
+
+  return -1;
+}
+
 function deployListEmptyNotification(dataItemText){
   let giftElements = document.getElementsByClassName("gift");
   let elementFoundBool = false;
@@ -816,6 +832,18 @@ function deployListEmptyNotification(dataItemText){
     let textNode = document.createTextNode(dataItemText);
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+  }
+}
+
+function updateFriendNav(friendListData) {
+  if (friendListData != undefined) {
+    if (user.friends.length < 100 && user.friends.length > 1) {
+      inviteNote.innerHTML = user.friends.length + " Friends";
+    } else if (user.friends.length == 1) {
+      inviteNote.innerHTML = "1 Friend";
+    }
+  } else {
+    inviteNote.innerHTML = "Friends";
   }
 }
 
