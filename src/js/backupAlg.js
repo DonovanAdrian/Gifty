@@ -236,6 +236,7 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         if(data.key == user.uid){
           user = data.val();
+          updateFriendNav(user.friends);
           console.log("Current User Updated");
         }
       });
