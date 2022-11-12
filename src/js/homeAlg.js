@@ -332,6 +332,7 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
+          updateFriendNav(user.friends);
           giftArr = user.giftList;
           if (potentialRemoval) {
             findRemovedGift(oldGiftArr, giftArr);
@@ -447,26 +448,12 @@ window.onload = function instantiate() {
   }
 
   function findRemovedGift(oldArr, newArr) {
-    let giftToRemove = null;
-    let foundInInner = false;
+    let removedGiftIndex = -1;
 
-    for (let a = 0; a < oldArr.length; a++) {
-      for (let b = 0; b < newArr.length; b++) {
-        if (oldArr[a].uid == newArr[b].uid) {
-          foundInInner = true;
-          break;
-        }
-      }
-      if (!foundInInner) {
-        giftToRemove = oldArr[a];
-        break;
-      } else {
-        foundInInner = false;
-      }
-    }
-    if (giftToRemove != null) {
-      removeGiftElement(giftToRemove.uid);
-      let i = initializedGifts.indexOf(giftToRemove.uid);
+    removedGiftIndex = findRemovedData(oldArr, newArr);
+    if (removedGiftIndex != -1) {
+      removeGiftElement(oldArr[removedGiftIndex].uid);
+      let i = initializedGifts.indexOf(oldArr[removedGiftIndex].uid);
       initializedGifts.splice(i, 1);
     }
   }
