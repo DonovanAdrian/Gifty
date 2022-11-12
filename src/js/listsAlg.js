@@ -62,9 +62,8 @@ function getCurrentUser(){
   } else if (user.friends.length == 0) {
     deployListEmptyNotification("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
     friendListEmptyBool = true;
-  } else if (user.friends.length < 100 && user.friends.length > 0) {
-    inviteNote.innerHTML = user.friends.length + " Friends";
   }
+  updateFriendNav(user.friends);
 
   if (user.readNotifications == undefined) {
     if(consoleOutput)
@@ -221,6 +220,7 @@ window.onload = function instantiate() {
           }
 
           user = data.val();
+          updateFriendNav(user.friends);
           if(consoleOutput)
             console.log("Current User Updated");
         }
