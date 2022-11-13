@@ -180,6 +180,7 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
+          updateFriendNav(user.friends);
           if(consoleOutput)
             console.log("Current User Updated");
         }
