@@ -615,7 +615,7 @@ ul li.santa::before {
   color:black;
 }
 
-@media screen and (min-width: 0px) and (max-width: 360px) {
+@media screen and (min-width: 0px) and (max-width: 425px) {
   span.boughtBtn {
     left: 5px;
     bottom: 5px;
@@ -710,8 +710,15 @@ ul li.santa::before {
     max-width: 600px;
   }
 
-  img.notificationIcon {
+  img.noteExtraBuffer {
     padding-bottom: 45px;
+  }
+
+  img.noteBasicBuffer {
+    padding-bottom: 30px;
+  }
+
+  img.notificationIcon {
     width: 20px;
     height: 20px;
   }
@@ -770,7 +777,7 @@ ul li.santa::before {
   }
 }
 
-@media screen and (min-width: 360px) and (max-width: 650px) {
+@media screen and (min-width: 425px) and (max-width: 650px) {
   span.boughtBtn {
     left: 5px;
     bottom: 5px;
