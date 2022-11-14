@@ -29,6 +29,7 @@ let transparencyInterval;
 let deployedNoteInterval;
 let setWindowNoteInverval;
 let openModalTimer;
+let alternateButtonTimer;
 let currentTitle;
 let dataListChecker;
 let verifiedElements;
@@ -215,6 +216,7 @@ function initializeDB(config) {
 
 function getCurrentUserCommon(){
   let restrictedPages = ["Backups", "Moderation", "ModerationQueue", "Family", "FamilyUpdate"];
+  let notificationPages = ["Home", "BoughtGifts", "Confirmation", "FriendList", "Invites", "Lists", "PrivateFriendList"];
 
   try {
     if (pageName != "UserAddUpdate") {
@@ -230,19 +232,11 @@ function getCurrentUserCommon(){
         navigation(2);
       }
 
-      if (user.invites == undefined) {
-        if(consoleOutput)
-          console.log("Invites Not Found");
-      } else if (user.invites != undefined) {
-        if (user.invites.length > 0) {
-          inviteNote.style.background = "#ff3923";
-          if (pageName == "Invites") {
-            newInviteIcon.style.display = "block";
-            invitesFound = true;
-          }
-        }
+      if (notificationPages.includes(pageName)) {
+        checkNotifications();
       }
-      updateFriendNav(user.friends);
+      checkInvites();
+      updateFriendNav(user.friends, true);
     } else {
       try {
         userCreationOverride = JSON.parse(sessionStorage.userCreationOverride);
@@ -258,9 +252,91 @@ function getCurrentUserCommon(){
 
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
+    try {
+      const config = JSON.parse(sessionStorage.config);
+      initializeDB(config);
+      updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString());
+    } catch (err) {}
     if(consoleOutput)
       console.log(err.toString());
     navigation(1, false);
+  }
+}
+
+function checkNotifications() {
+  if (user.readNotifications == undefined) {
+    if(consoleOutput)
+      console.log("Read Notifications Not Found");
+  } else {
+    readNotificationsBool = true;
+  }
+
+  notificationBtn.className = "notificationIcon noteBasicBuffer";
+  if (user.notifications == undefined) {
+    if(consoleOutput)
+      console.log("Notifications Not Found");
+  } else if (user.notifications != undefined) {
+    if (readNotificationsBool){
+      if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
+        flickerNotification();
+        notificationBtn.onclick = function() {
+          navigation(6);//Notifications
+        }
+      } else {
+        notificationBtn.src = "img/bellNotificationOff.png";
+        notificationBtn.onclick = function() {
+          navigation(6);//Notifications
+        }
+      }
+    } else if (user.notifications.length > 0) {
+      flickerNotification();
+      notificationBtn.onclick = function() {
+        navigation(6);//Notifications
+      }
+    }
+  }
+}
+
+function checkInvites() {
+  if (user.invites == undefined) {
+    if(consoleOutput)
+      console.log("Invites Not Found");
+  } else if (user.invites != undefined) {
+    if (user.invites.length > 0) {
+      inviteNote.style.background = "#ff3923";
+      if (pageName == "Invites") {
+        newInviteIcon.style.display = "block";
+        invitesFound = true;
+      }
+    }
+  }
+}
+
+function updateFriendNav(friendListData, initIgnore) {
+  let giftUserPages = ["FriendList", "PrivateFriendList"];
+
+  if (initIgnore == undefined) {
+    if (giftUserPages.includes(pageName)) {
+      initIgnore = false;
+    } else {
+      initIgnore = true;
+    }
+  }
+
+  if (friendListData != undefined) {
+    if (giftUserPages.includes(pageName) && !initIgnore) {
+      if (friendListData.indexOf(giftUser.uid) == -1) {
+        navigation(3);
+      }
+    }
+
+    if (friendListData.length < 100 && friendListData.length > 1) {
+      inviteNote.innerHTML = friendListData.length + " Friends";
+    } else if (friendListData.length == 1) {
+      inviteNote.innerHTML = "1 Friend";
+    }
+  } else {
+    inviteNote.innerHTML = "Friends";
   }
 }
 
@@ -680,9 +756,10 @@ function flickerNotification(){
 function alternateButtonLabel(button, parentLabel, childLabel){
   let nowConfirm = 0;
   let alternator = 0;
+  clearInterval(alternateButtonTimer);
   if (consoleOutput)
-    console.log(childLabel + " Button Feature Active");
-  setInterval(function(){
+    console.log(childLabel + " Button Feature Set");
+  alternateButtonTimer = setInterval(function(){
     nowConfirm = nowConfirm + 1000;
     if(nowConfirm >= 3000){
       nowConfirm = 0;
@@ -773,21 +850,31 @@ function findUIDItemInArr(item, array, override){
   return -1;
 }
 
-function findRemovedData(oldArr, newArr) {
+function findRemovedData(oldRemovalArr, newRemovalArr, ignoreUID) {
   let foundInInner = false;
 
-  if (newArr == undefined) {
-    newArr = [];
+  if (newRemovalArr == undefined) {
+    newRemovalArr = [];
+  }
+  if (ignoreUID == undefined) {
+    ignoreUID = false;
   }
 
-  if (newArr.length == 0 && oldArr.length == 1) {
+  if (newRemovalArr.length == 0 && oldRemovalArr.length == 1) {
     return 0;
   } else {
-    for (let a = 0; a < oldArr.length; a++) {
-      for (let b = 0; b < newArr.length; b++) {
-        if (oldArr[a] == newArr[b]) {
-          foundInInner = true;
-          break;
+    for (let a = 0; a < oldRemovalArr.length; a++) {
+      for (let b = 0; b < newRemovalArr.length; b++) {
+        if (ignoreUID) {
+          if (oldRemovalArr[a] == newRemovalArr[b]) {
+            foundInInner = true;
+            break;
+          }
+        } else {
+          if (oldRemovalArr[a].uid == newRemovalArr[b].uid) {
+            foundInInner = true;
+            break;
+          }
         }
       }
       if (!foundInInner) {
@@ -832,18 +919,6 @@ function deployListEmptyNotification(dataItemText){
     let textNode = document.createTextNode(dataItemText);
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-  }
-}
-
-function updateFriendNav(friendListData) {
-  if (friendListData != undefined) {
-    if (user.friends.length < 100 && user.friends.length > 1) {
-      inviteNote.innerHTML = user.friends.length + " Friends";
-    } else if (user.friends.length == 1) {
-      inviteNote.innerHTML = "1 Friend";
-    }
-  } else {
-    inviteNote.innerHTML = "Friends";
   }
 }
 
