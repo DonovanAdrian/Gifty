@@ -63,39 +63,6 @@ function getCurrentUser(){
     deployListEmptyNotification("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
     friendListEmptyBool = true;
   }
-  updateFriendNav(user.friends);
-
-  if (user.readNotifications == undefined) {
-    if(consoleOutput)
-      console.log("Read Notifications Not Found");
-  } else {
-    readNotificationsBool = true;
-  }
-
-  if (user.notifications == undefined) {
-    if(consoleOutput)
-      console.log("Notifications Not Found");
-  } else if (user.notifications != undefined) {
-    if (readNotificationsBool){
-      if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
-        flickerNotification();
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      } else {
-        notificationBtn.src = "img/bellNotificationOff.png";
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      }
-    } else if (user.notifications.length > 0) {
-      flickerNotification();
-      notificationBtn.onclick = function() {
-        navigation(6);//Notifications
-      }
-    }
-  }
-
   sessionStorage.setItem("moderationSet", moderationSet);
 }
 
