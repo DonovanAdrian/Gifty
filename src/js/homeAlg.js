@@ -76,37 +76,6 @@ function getCurrentUser(){
     deployListEmptyNotification("No Gifts Found! Add Some Gifts With The Button Below!");
     giftListEmptyBool = true;
   }
-
-  if (user.readNotifications == undefined) {
-    if(consoleOutput)
-      console.log("Read Notifications Not Found");
-  } else {
-    readNotificationsBool = true;
-  }
-
-  if (user.notifications == undefined) {
-    if(consoleOutput)
-      console.log("Notifications Not Found");
-  } else if (user.notifications != undefined) {
-    if (readNotificationsBool){
-      if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
-        flickerNotification();
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      } else {
-        notificationBtn.src = "img/bellNotificationOff.png";
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      }
-    } else if (user.notifications.length > 0) {
-      flickerNotification();
-      notificationBtn.onclick = function() {
-        navigation(6);//Notifications
-      }
-    }
-  }
 }
 
 function checkUserErrors(){
@@ -455,6 +424,7 @@ window.onload = function instantiate() {
       removeGiftElement(oldArr[removedGiftIndex].uid);
       let i = initializedGifts.indexOf(oldArr[removedGiftIndex].uid);
       initializedGifts.splice(i, 1);
+      oldGiftArr.splice(removedGiftIndex, 1);
     }
   }
 
