@@ -51,37 +51,8 @@ function getCurrentUser(){
 
   if (user.invites == undefined) {
     deployListEmptyNotification("No Invites Found! You've Reviewed All Your Invites!");
-  }
-
-  if (user.readNotifications == undefined) {
-    if(consoleOutput)
-      console.log("Read Notifications Not Found");
-  } else {
-    readNotificationsBool = true;
-  }
-
-  if (user.notifications == undefined) {
-    if(consoleOutput)
-      console.log("Notifications Not Found");
-  } else if (user.notifications != undefined) {
-    if (readNotificationsBool){
-      if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
-        flickerNotification();
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      } else {
-        notificationBtn.src = "img/bellNotificationOff.png";
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      }
-    } else if (user.notifications.length > 0) {
-      flickerNotification();
-      notificationBtn.onclick = function() {
-        navigation(6);//Notifications
-      }
-    }
+  } else if (user.invites.length == 0) {
+    deployListEmptyNotification("No Invites Found! You've Reviewed All Your Invites!");
   }
 }
 
@@ -118,20 +89,24 @@ window.onload = function instantiate() {
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
   databaseQuery();
-  let setBlank = true;
+  updateConfirmationButton(user.friends)
 
-  if (user.friends != null)
-    if (user.friends.length != 0)
-      if (user.friends.length == 1) {
-        alternateButtonLabel(inviteNote, "1 Friend", "Confirm");
-        setBlank = false;
-      } else if (user.friends.length < 100) {
-        alternateButtonLabel(inviteNote, user.friends.length + " Friends", "Confirm");
-        setBlank = false;
-      }
+  function updateConfirmationButton(confirmFriendData) {
+    let setBlank = true;
 
-  if (setBlank)
-    alternateButtonLabel(inviteNote, "Friends", "Confirm");
+    if (confirmFriendData != null)
+      if (confirmFriendData.length != 0)
+        if (confirmFriendData.length == 1) {
+          alternateButtonLabel(inviteNote, "1 Friend", "Confirm");
+          setBlank = false;
+        } else if (confirmFriendData.length < 100) {
+          alternateButtonLabel(inviteNote, confirmFriendData.length + " Friends", "Confirm");
+          setBlank = false;
+        }
+
+    if (setBlank)
+      alternateButtonLabel(inviteNote, "Friends", "Confirm");
+  }
 
   function initializeBackBtn() {
     backBtn.innerHTML = "Return To Invites";
@@ -169,6 +144,8 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
+          updateConfirmationButton(user.friends);
+
           if (user.invites != undefined) {
             inviteArr = user.invites;
           } else {
@@ -255,31 +232,14 @@ window.onload = function instantiate() {
   }
 
   function findRemovedUser(oldArr, newArr) {
-    let userToRemove = null;
-    let foundInInner = false;
+    let removedUserIndex = -1;
 
-    if (newArr.length == 0 && oldArr.length == 1) {
-      userToRemove = oldArr[0];
-    } else {
-      for (let a = 0; a < oldArr.length; a++) {
-        for (let b = 0; b < newArr.length; b++) {
-          if (oldArr[a] == newArr[b]) {
-            foundInInner = true;
-            break;
-          }
-        }
-        if (!foundInInner) {
-          userToRemove = oldArr[a];
-          break;
-        } else {
-          foundInInner = false;
-        }
-      }
-    }
-    if (userToRemove != null) {
-      removeInviteElement(userToRemove);
-      let i = initializedUsers.indexOf(userToRemove);
+    removedUserIndex = findRemovedData(oldArr, newArr, true);
+    if (removedUserIndex != -1) {
+      removeInviteElement(oldArr[removedUserIndex]);
+      let i = initializedUsers.indexOf(oldArr[removedUserIndex]);
       initializedUsers.splice(i, 1);
+      oldInviteArr.splice(removedUserIndex, 1);
     }
   }
 
