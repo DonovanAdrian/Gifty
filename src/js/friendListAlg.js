@@ -71,37 +71,6 @@ function getCurrentUser(){
     deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
     giftListEmptyBool = true;
   }
-
-  if (user.readNotifications == undefined) {
-    if(consoleOutput)
-      console.log("Read Notifications Not Found");
-  } else {
-    readNotificationsBool = true;
-  }
-
-  if (user.notifications == undefined) {
-    if(consoleOutput)
-      console.log("Notifications Not Found");
-  } else if (user.notifications != undefined) {
-    if (readNotificationsBool){
-      if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
-        flickerNotification();
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      } else {
-        notificationBtn.src = "img/bellNotificationOff.png";
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      }
-    } else if (user.notifications.length > 0) {
-      flickerNotification();
-      notificationBtn.onclick = function() {
-        navigation(6);//Notifications
-      }
-    }
-  }
 }
 
 window.onload = function instantiate() {
@@ -191,7 +160,7 @@ window.onload = function instantiate() {
           userArr[i] = data.val();
         }
 
-        if(data.key == giftUser.uid){
+        if (data.key == giftUser.uid) {
           giftUser = data.val();
           giftArr = giftUser.giftList;
           if (potentialRemoval) {
@@ -200,6 +169,11 @@ window.onload = function instantiate() {
           }
           if(consoleOutput)
             console.log("Current Gift User Updated");
+        } else if (data.key == user.uid) {
+          user = data.val();
+          updateFriendNav(user.friends);
+          if(consoleOutput)
+            console.log("Current User Updated");
         }
       });
 
@@ -306,34 +280,21 @@ window.onload = function instantiate() {
   }
 
   function findRemovedGift(oldArr, newArr) {
-    let giftToRemove = null;
-    let foundInInner = false;
+    let removedGiftIndex = -1;
 
-    for (let a = 0; a < oldArr.length; a++) {
-      for (let b = 0; b < newArr.length; b++) {
-        if (oldArr[a].uid == newArr[b].uid) {
-          foundInInner = true;
-          break;
-        }
-      }
-      if (!foundInInner) {
-        giftToRemove = oldArr[a];
-        break;
-      } else {
-        foundInInner = false;
-      }
-    }
-    if (giftToRemove != null) {
-      removeGiftElement(giftToRemove.uid);
-      let i = initializedGifts.indexOf(giftToRemove.uid);
+    removedGiftIndex = findRemovedData(oldArr, newArr);
+    if (removedGiftIndex != -1) {
+      removeGiftElement(oldArr[removedGiftIndex].uid);
+      let i = initializedGifts.indexOf(oldArr[removedGiftIndex].uid);
       initializedGifts.splice(i, 1);
-      if (giftToRemove.uid == currentModalOpen) {
+      if (oldArr[removedGiftIndex].uid == currentModalOpen) {
         closeModal(giftModal);
         if (!giftUpdateLocal) {
           deployNotificationModal(false, "Gift Deleted!", "The gift you were viewing " +
             "was deleted by " + giftUser.name + "! This gift is no longer available to view...", 4);
         }
       }
+      oldGiftArr.splice(removedGiftIndex, 1);
     }
   }
 
