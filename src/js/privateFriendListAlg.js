@@ -6,6 +6,7 @@
 
 let privateFriendListElements = [];
 let listeningFirebaseRefs = [];
+let userArr = [];
 let giftArr = [];
 let oldGiftArr = [];
 let inviteArr = [];
@@ -88,37 +89,6 @@ function getCurrentUser(){
   } else if (giftUser.privateList.length == 0) {
     deployListEmptyNotification("No Gifts Found! Add Some Gifts With The Button Below!");
     giftListEmptyBool = true;
-  }
-
-  if (user.readNotifications == undefined) {
-    if(consoleOutput)
-      console.log("Read Notifications Not Found");
-  } else {
-    readNotificationsBool = true;
-  }
-
-  if (user.notifications == undefined) {
-    if(consoleOutput)
-      console.log("Notifications Not Found");
-  } else if (user.notifications != undefined) {
-    if (readNotificationsBool){
-      if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
-        flickerNotification();
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      } else {
-        notificationBtn.src = "img/bellNotificationOff.png";
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      }
-    } else if (user.notifications.length > 0) {
-      flickerNotification();
-      notificationBtn.onclick = function() {
-        navigation(6);//Notifications
-      }
-    }
   }
 }
 
@@ -222,7 +192,7 @@ window.onload = function instantiate() {
           userArr[i] = data.val();
         }
 
-        if(data.key == giftUser.uid){
+        if (data.key == giftUser.uid) {
           giftUser = data.val();
           giftArr = giftUser.privateList;
           if (potentialRemoval) {
@@ -231,6 +201,11 @@ window.onload = function instantiate() {
           }
           if(consoleOutput)
             console.log("Current Gift User Updated");
+        } else if (data.key == user.uid) {
+          user = data.val();
+          updateFriendNav(user.friends);
+          if(consoleOutput)
+            console.log("Current User Updated");
         }
       });
 
@@ -383,6 +358,7 @@ window.onload = function instantiate() {
             "was deleted by " + oldArr[removedGiftIndex].creator + "! This gift is no longer available to view...", 4);
         }
       }
+      oldGiftArr.splice(removedGiftIndex, 1);
     }
   }
 
