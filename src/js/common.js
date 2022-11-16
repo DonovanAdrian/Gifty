@@ -177,15 +177,28 @@ function commonInitialization(){
   if (dataListChecker != null) {
     commonLoadingTimer = setInterval(function(){
       commonLoadingTimerInt = commonLoadingTimerInt + 1000;
-      if(commonLoadingTimerInt >= 2000){
+      if (commonLoadingTimerInt >= 10000) {
+        if (testData != undefined) {
+          testData.innerHTML = "Loading Error! Please Contact A Moderator!";
+        } else {
+          if (consoleOutput)
+            console.log("Timer Error Issued");
+          if (user != null) {
+            updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced By " + user.name);
+          } else {
+            updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced!");
+          }
+        }
+        clearInterval(commonLoadingTimer);
+      } else if (commonLoadingTimerInt >= 2000) {
         if (testData == undefined){
+          clearInterval(commonLoadingTimer);
           if(consoleOutput)
             console.log("TestData Missing. Loading Properly.");
         } else {
           if (!loadingTimerCancelled)
             testData.innerHTML = "Loading... Please Wait...";
         }
-        clearInterval(commonLoadingTimer);
       }
     }, 1000);
   }
@@ -212,6 +225,38 @@ function initializeDB(config) {
       let uid = user.uid;
     }
   });
+
+  if (pageName != "Index" && !(pageName == "UserAddUpdate" && user == null)) {
+    databaseCommonPulse();
+  }
+}
+
+function databaseCommonPulse() {
+  let commonUserValidPulse = firebase.database().ref("users/" + user.uid);
+  let fetchCommonData = function (postRef) {
+    postRef.on('child_added', function (data) {
+      if (data.key == "ban") {
+        if (data.val() != 0) {
+          signOut();
+        }
+      }
+    });
+
+    postRef.on('child_changed', function (data) {
+      if (data.key == "ban") {
+        if (data.val() != 0) {
+          signOut();
+        }
+      }
+    });
+
+    postRef.on('child_removed', function (data) {
+      signOut();
+    });
+  };
+
+  fetchCommonData(commonUserValidPulse);
+  listeningFirebaseRefs.push(commonUserValidPulse);
 }
 
 function getCurrentUserCommon(){
