@@ -20,6 +20,7 @@ let newGiftyMessage = "Please create a new user before trying to log into Gifty!
   "button and fill out the form to make a user account.";
 
 let loginBool = false;
+let banOverride = false;
 let allowLogin = true;
 
 let user;
@@ -58,7 +59,7 @@ function fetchConfigFile(){
   } catch (err) {
     deployNotificationModal(false, "Initialization Error!", "There was an error " +
       "loading the webpage, please try refreshing the page and contacting an administrator!",
-      false, 4);
+      4);
     return;
   }
 
@@ -127,7 +128,7 @@ function fetchConfigFile(){
     if (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
       storageBucketString == "" || messagingSenderIdString == "" || appIdString == "" || measurementIdString == "") {
       deployNotificationModal(false, "Initialization Error!", "Config not properly " +
-        "initialized! Please contact an administrator!", false, 4);
+        "initialized! Please contact an administrator!", 4);
     } else {
       config = {
         apiKey: apiKeyString,
@@ -148,7 +149,7 @@ function fetchConfigFile(){
     if (configInitializeInt == 7 && (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
       storageBucketString == "" || messagingSenderIdString == "" || appIdString == "")) {
       deployNotificationModal(false, "Initialization Error!", "Config not properly " +
-        "initialized! Please contact an administrator!", false, 4);
+        "initialized! Please contact an administrator!", 4);
     } else {
       console.log("WARNING: Missing measurementId. This variable is optional. Disregard if this is intentional.");
 
@@ -432,7 +433,7 @@ function login() {
         navigation(2, true);
       }
     }, 1000);
-  } else if (loginBool === false) {
+  } else if (loginBool === false && !banOverride) {
     if (loginTry < loginThreshold) {
       loginTry++;
       login();
@@ -443,7 +444,7 @@ function login() {
         if (showLoginAlert == 0) {
           showLoginAlert++;
           deployNotificationModal(false, "Login Disabled!", loginDisabledMsg,
-            false, 4);
+            4);
         }
       }
       if (username.value != "" && pin.value != "")
@@ -452,6 +453,7 @@ function login() {
       showLoginAlert = 0;
     }
   }
+  banOverride = false;
 }
 
 function authenticate() {
@@ -467,6 +469,7 @@ function authenticate() {
               validAuthUserInt = i;
               break;
             } else {
+              banOverride = true;
               loginInfo.innerHTML = "Login Error Occurred... Please Contact A Moderator!";
               updateMaintenanceLog("index", "Banned user " + userArr[i].userName + " attempted to log in!");
               return;
@@ -480,7 +483,7 @@ function authenticate() {
               if (showLoginAlert == 0) {
                 showLoginAlert++;
                 deployNotificationModal(false, "Login Disabled!", loginDisabledMsg,
-                  false, 4);
+                  4);
               }
             }
           }
@@ -517,7 +520,7 @@ function checkSignUp(){
       } else {
         deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
           "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
-          false, 4);
+          4);
       }
     };
   } else {
@@ -539,6 +542,6 @@ function signUp(override){
   } else {
     deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
       "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
-      false, 4);
+      4);
   }
 }
