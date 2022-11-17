@@ -431,6 +431,9 @@ window.onload = function instantiate() {
         tempElem.className = "gift mediumSev";
         userDataString = userDataName + " - WARNED: " + userData.warn;
       } else {
+        if (userData.ban == 0) {
+          userDataString = userDataName;
+        }
         switch (localListedUserData) {
           case "None":
             userDataString = userDataName;
@@ -972,6 +975,8 @@ window.onload = function instantiate() {
         let i = findUIDItemInArr(data.key, userArr, true);
         if(userArr[i] != data.val() && i != -1){
           userArr[i] = data.val();
+        } else {
+          userArr.push(data.val());
         }
 
         if(data.key == user.uid){
@@ -995,7 +1000,7 @@ window.onload = function instantiate() {
           console.log("Current User Updated");
         }
 
-        if(currentModalOpen == data.key) {
+        if(currentModalOpen == data.key && !userUpdateLocal) {
           deployNotificationModal(false, "User Updated!", "The user you were " +
             "viewing was updated! Please reopen the window to view the changes.", 5);
         }
@@ -1131,7 +1136,7 @@ window.onload = function instantiate() {
   function createUserElement(userData){
     let textNode;
     try{
-      testData.remove();
+      document.getElementById('testData').remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
@@ -1153,7 +1158,6 @@ window.onload = function instantiate() {
 
   function changeUserElement(userData) {
     let editUser = document.getElementById('user' + userData.uid);
-    updateInitializedUsers();
     initUserElement(editUser, userData);
   }
 
