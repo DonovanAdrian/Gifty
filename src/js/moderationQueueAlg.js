@@ -117,6 +117,8 @@ window.onload = function instantiate() {
         let i = findUIDItemInArr(data.key, userArr, true);
         if(userArr[i] != data.val() && i != -1){
           userArr[i] = data.val();
+        } else {
+          userArr.push(data.val());
         }
 
         if(data.key == user.uid){
@@ -255,7 +257,10 @@ window.onload = function instantiate() {
     let ticketTitleSuffix = "";
 
     liItem.className = "gift";
-    if (ticketData.details.includes("Attempting to delete user")) {
+    if (ticketData.details.includes("Critical Error")) {
+      liItem.className += " highSev";
+      ticketTitleSuffix = " - !!Critical Error Occurred!!";
+    } else if (ticketData.details.includes("Attempting to delete user")) {
       liItem.className += " highSev";
       ticketTitleSuffix = " - Attempt To Delete User";
     } else if (ticketData.details.includes("attempted to remove friend")) {
