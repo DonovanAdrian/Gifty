@@ -272,6 +272,8 @@ window.onload = function instantiate() {
         let i = findUIDItemInArr(data.key, userArr, true);
         if(userArr[i] != data.val() && i != -1){
           userArr[i] = data.val();
+        } else {
+          userArr.push(data.val());
         }
 
         if(data.key == user.uid){
@@ -430,7 +432,7 @@ window.onload = function instantiate() {
 
   function createGiftElement(description, link, received, title, where, uid, date, buyer){
     try{
-      testData.remove();
+      document.getElementById('testData').remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
