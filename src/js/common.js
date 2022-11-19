@@ -184,7 +184,7 @@ function commonInitialization(){
           if (consoleOutput)
             console.log("Timer Error Issued");
           if (user != null) {
-            updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced By " + user.name);
+            updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced By " + user.userName);
           } else {
             updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced!");
           }
@@ -251,7 +251,9 @@ function databaseCommonPulse() {
     });
 
     postRef.on('child_removed', function (data) {
-      signOut();
+      if (data.key == "ban") {
+        signOut();
+      }
     });
   };
 
