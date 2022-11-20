@@ -311,37 +311,82 @@ function getCurrentUserCommon(){
 }
 
 function checkNotifications() {
-  if (user.readNotifications == undefined) {
-    if(consoleOutput)
-      console.log("Read Notifications Not Found");
-  } else {
-    readNotificationsBool = true;
-  }
+  let readNotificationsBool = false;
 
   notificationBtn.className = "notificationIcon noteBasicBuffer";
   if (user.notifications == undefined) {
-    if(consoleOutput)
-      console.log("Notifications Not Found");
-  } else if (user.notifications != undefined) {
+    notificationBtn.src = "img/bellNotificationOff.png";
+    notificationBtn.onclick = function() {}
+  } else {
+    if (user.notifications[0].read != undefined) {
+      readNotificationsBool = checkReadNotes(false);
+    } else {
+      readNotificationsBool = checkReadNotes(true);
+    }
+
     if (readNotificationsBool){
-      if (user.notifications.length > 0 && user.readNotifications.length < user.notifications.length) {
-        flickerNotification();
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      } else {
-        notificationBtn.src = "img/bellNotificationOff.png";
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      }
-    } else if (user.notifications.length > 0) {
       flickerNotification();
       notificationBtn.onclick = function() {
         navigation(6);//Notifications
       }
+    } else if (user.notifications.length > 0) {
+      notificationBtn.src = "img/bellNotificationOff.png";
+      notificationBtn.onclick = function() {
+        navigation(6);//Notifications
+      }
+    } else if (user.notifications.length == 0) {
+      notificationBtn.src = "img/bellNotificationOff.png";
+      notificationBtn.onclick = function() {}
     }
   }
+}
+
+function checkReadNotes(updateNotes) {
+  let readNoteFound = false;
+  let legacyReadBool = false;
+  let legacyReadOverride = 0;
+
+  if (!updateNotes) {
+    for (let i = 0; i < user.notifications; i++) {
+      if (user.notifications.read == 1) {
+        return true;
+      }
+    }
+  } else {
+    if (user.readNotifications != undefined)
+      legacyReadBool = true;
+
+    for (let i = 0; i < user.notifications; i++) {
+      if (legacyReadBool) {
+        if (user.readNotifications.indexOf(user.notifications[i]) != -1) {
+          legacyReadOverride = 1;
+          readNoteFound = true;
+        }
+      }
+      generateNewUID(i, user.notifications[i], legacyReadOverride);
+      legacyReadOverride = 0;
+    }
+  }
+
+  return readNoteFound;
+}
+
+function generateNewUID(noteKey, noteString, readOverride) {
+  if (readOverride == undefined)
+    readOverride = 0
+  else
+    readOverride = 1
+
+  let newUid = firebase.database().ref("users/" + user.uid + "/notifications/" + noteKey).push();
+  newUid = newUid.toString();
+  newUid = findUIDInString(newUid);
+  firebase.database().ref("users/" + user.uid + "/notifications/" + noteKey).update({
+    uid: newUid,
+    data: noteString,
+    read: readOverride
+  });
+
+  return newUid;
 }
 
 function checkInvites() {
