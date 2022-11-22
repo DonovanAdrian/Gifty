@@ -9,11 +9,13 @@ let userArr = [];
 let inviteArr = [];
 let notificationArr = [];
 let notificationKeyArr = [];
-let readNotificationArr = [];
+let oldNotificationArr = [];
 let listeningFirebaseRefs = [];
+let initializedNotifications = [];
 
 let notificationListEmptyBool = false;
-let settingReadNotifications = false;
+let notificationDeleteLocal = false;
+let potentialRemoval = false;
 let noteErrorBool = false;
 
 let dataCounter = 0;
@@ -24,6 +26,7 @@ let nukeNotifications;
 let offlineSpan;
 let offlineModal;
 let user;
+let userBase;
 let userReadNotifications;
 let userNotifications;
 let userInvites;
@@ -58,23 +61,6 @@ function getCurrentUser(){
     deployListEmptyNotification("No Notifications Found!");
     initializeNukeBtn();
     notificationListEmptyBool = true;
-  } else {
-    let notificationOverride = sessionStorage.getItem("notificationOverride");
-    if (notificationOverride == undefined) {
-      if(consoleOutput)
-        console.log("Notifications Found");
-    } else {
-      if (notificationOverride == "notificationArrEmpty") {
-        if(consoleOutput)
-          console.log("Notifications Empty");
-        deployListEmptyNotification("No Notifications Found!");
-        initializeNukeBtn();
-        notificationListEmptyBool = true;
-      } else {
-        if(consoleOutput)
-          console.log("Notifications Found");
-      }
-    }
   }
 }
 
@@ -110,6 +96,7 @@ window.onload = function instantiate() {
   commonInitialization();
   verifyElementIntegrity(notificationsElements);
 
+  userBase = firebase.database().ref("users/");
   userReadNotifications = firebase.database().ref("users/" + user.uid + "/readNotifications");
   userNotifications = firebase.database().ref("users/" + user.uid + "/notifications");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
@@ -119,47 +106,43 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchReadNotifications = function (postRef){
       postRef.on('child_added', function (data) {
-        if(!readNotificationArr.includes(data.val())) {
-          readNotificationArr.push(data.val());
-        }
-        if (notificationArr.includes(data.val())){
-          let liItemUpdate = document.getElementById('notification' + notificationArr.indexOf(data.val()));
-          liItemUpdate.className += " checked";
-        }
+        firebase.database().ref("users/" + user.uid + "/readNotifications/").remove();
       });
-
-      postRef.on('child_changed', function (data) {
-        readNotificationArr[data.key] = data.val();
-      });
-
-      postRef.on('child_removed', function (data) {
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        navigation(6);
-      });
-    };
+    }
 
     let fetchNotifications = function (postRef) {
       postRef.on('child_added', function (data) {
-        notificationArr.push(data.val());
-        notificationKeyArr.push(data.key);
-        createNotificationElement(data.val(), data.key);
+        if (data.val().uid != undefined) {
+          notificationArr.push(data.val());
+          notificationKeyArr.push(data.val().uid);
+          createNotificationElement(data.val().data, data.val().uid, data.val().read, data.key);
+        } else {
+          let newUid = generateNewUID(data.key, data.val());
+          notificationArr.push(data.val());
+          notificationKeyArr.push(newUid);
+          createNotificationElement(data.val(), newUid, 0, data.key);
+        }
       });
 
       postRef.on('child_changed', function (data) {
         notificationArr[data.key] = data.val();
-        changeNotificationElement(data.val(), data.key);
+        changeNotificationElement(data.val().data, data.val().uid, data.val().read, data.key);
       });
 
       postRef.on('child_removed', function (data) {
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        navigation(6);
+        if (!notificationDeleteLocal) {
+          potentialRemoval = true;
+          oldNotificationArr = [];
+          for (let i = 0; i < notificationArr.length; i++) {
+            oldNotificationArr.push(notificationArr[i]);
+          }
+        }
       });
     };
 
     let fetchInvites = function (postRef) {
       postRef.on('child_added', function (data) {
         inviteArr.push(data.val());
-
         inviteNote.style.background = "#ff3923";
       });
 
@@ -182,16 +165,75 @@ window.onload = function instantiate() {
       });
     };
 
+    let fetchData = function (postRef) {
+      postRef.on('child_added', function (data) {
+        let i = findUIDItemInArr(data.key, userArr, true);
+        if(userArr[i] != data.val() && i != -1){
+          userArr[i] = data.val();
+        } else {
+          userArr.push(data.val());
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+        }
+      });
+
+      postRef.on('child_changed', function (data) {
+        let i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() && i != -1){
+          if(consoleOutput)
+            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+          userArr[i] = data.val();
+        }
+
+        if(data.key == user.uid){
+          user = data.val();
+          updateFriendNav(user.friends);
+          notificationArr = user.notifications;
+          if (potentialRemoval) {
+            findRemovedNotification(oldNotificationArr, notificationArr);
+            potentialRemoval = false;
+          }
+          if(consoleOutput)
+            console.log("Current User Updated");
+        }
+      });
+
+      postRef.on('child_removed', function (data) {
+        let i = findUIDItemInArr(data.key, userArr);
+        if(userArr[i] != data.val() && i != -1){
+          if(consoleOutput)
+            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          userArr.splice(i, 1);
+        }
+      });
+    };
+
     fetchReadNotifications(userReadNotifications);
     fetchNotifications(userNotifications);
     fetchInvites(userInvites);
+    fetchData(userBase);
 
-    listeningFirebaseRefs.push(userReadNotifications);
     listeningFirebaseRefs.push(userNotifications);
     listeningFirebaseRefs.push(userInvites);
+    listeningFirebaseRefs.push(userBase);
   }
 
-  function fetchNotificationData(createBool, noteToParse, liElem, noteKey) {
+  function findRemovedNotification(oldArr, newArr) {
+    let removedNotificationIndex = -1;
+
+    removedNotificationIndex = findRemovedData(oldArr, newArr);
+    if (removedNotificationIndex != -1) {
+      removeNotificationElement(oldArr[removedNotificationIndex].uid);
+      let i = initializedNotifications.indexOf(oldArr[removedNotificationIndex].uid);
+      initializedNotifications.splice(i, 1);
+      oldNotificationArr.splice(removedNotificationIndex, 1);
+    }
+  }
+
+  function fetchNotificationData(createBool, liElem, notificationData, noteKey) {
+    let noteToParse = notificationData.data;
     let noteSplit = noteToParse.split(",,,");
     let noteSplitCount = 0;
     let adminPM = false;
@@ -283,21 +325,19 @@ window.onload = function instantiate() {
           notificationPage = "noteERROR";
         }
 
-        initNotificationElement(liElem, notificationDataTitle, noteToParse, noteKey, notificationDetails,
-          notificationPage, friendUserData);
+        initNotificationElement(liElem, notificationPage, notificationData, notificationDataTitle,
+          notificationDetails, friendUserData, noteKey);
       } else {
         if (consoleOutput)
           console.log("SenderUID not found!");
-        notificationPage = "noteERROR";
-        initNotificationElement(liElem, null, noteToParse, noteKey, null,
-          notificationPage, null);
+        notificationPage = "noteErrorUser";
+        initNotificationElement(liElem, notificationPage, notificationData);
       }
     } else {
       if (consoleOutput)
         console.log("Deprecated Notification Format!");
-      notificationPage = "noteERROR";
-      initNotificationElement(liElem, null, noteToParse, noteKey, null,
-        notificationPage, null);
+      notificationPage = "noteErrorLegacy";
+      initNotificationElement(liElem, notificationPage, notificationData);
     }
 
     if (createBool) {
@@ -311,56 +351,58 @@ window.onload = function instantiate() {
         initializeNukeBtn();
       }
       dataCounter++;
+      initializedNotifications.push(notificationData.uid);
     } else {
       liElem.innerHTML = notificationDataTitle;
     }
   }
 
-  function createNotificationElement(notificationString, notificationKey){
+  function createNotificationElement(notificationData, notificationKey){
     try {
       testData.remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
-    liItem.id = "notification" + notificationKey;
-    fetchNotificationData(true, notificationString, liItem, notificationKey);
+    liItem.id = "notification" + notificationData.uid;
+    fetchNotificationData(true, liItem, notificationData, notificationKey);
   }
 
-  function changeNotificationElement(notificationString, notificationKey){
+  function changeNotificationElement(notificationData, notificationKey){
     try {
       testData.remove();
     } catch (err) {}
 
-    let liItemUpdate = document.getElementById('notification' + notificationKey);
+    let liItemUpdate = document.getElementById('notification' + notificationData.uid);
     if (liItemUpdate != undefined) {
-      fetchNotificationData(false, notificationString, liItemUpdate, notificationKey);
+      fetchNotificationData(false, liItemUpdate, notificationData, notificationKey);
     }
   }
 
-  function initNotificationElement(liItem, notificationElemTitle, notificationString, notificationKey, notificationDetails,
-                                   notificationPage, friendUserData) {
-    liItem.className = "gift";
+  function initNotificationElement(liItem, notificationPage, notificationData, notificationElemTitle,
+                                   notificationDetails, friendUserData, noteKey) {
     let warningCount;
-    if (notificationPage == "noteERROR") {
-      if (!noteErrorBool) {
-        noteErrorBool = true;
-        initializeNukeBtn();
-      }
-      liItem.className += " highSev";
-    } else {
-      if (readNotificationArr.includes(notificationString)) {
+    liItem.className = "gift";
+
+    if (noteKey != null) {
+      if (notificationData.read == 1) {
         liItem.className += " checked";
       }
-    }
-    liItem.onclick = function () {
-      if (notificationPage == "noteERROR") {
-        notificationViewTitle.innerHTML = "***Notification Load Error***";
-        notificationViewDetails.innerHTML = "The notification failed to load correctly, please contact a moderator!";
-      } else {
-        notificationViewTitle.innerHTML = notificationElemTitle;
-        notificationViewDetails.innerHTML = notificationDetails;
+      notificationViewTitle.innerHTML = notificationElemTitle;
+      notificationViewDetails.innerHTML = notificationDetails;
+    } else {
+      if (notificationPage == "noteErrorUser") {
+        notificationViewTitle.innerHTML = "Notification From A Deleted User";
+        notificationViewDetails.innerHTML = "Unfortunately the user that sent this notification deleted their profile...";
+      } else if (notificationPage == "noteErrorLegacy") {
+        if (!noteErrorBool) {
+          noteErrorBool = true;
+          initializeNukeBtn();
+        }
       }
+      liItem.className += " highSev";
+    }
 
+    liItem.onclick = function () {
       if (notificationPage == "privateMessage" && friendUserData != -1) {
         notificationViewPage.innerHTML = "To reply to this message, click here!";
         notificationViewPage.onclick = function(){
@@ -402,26 +444,29 @@ window.onload = function instantiate() {
         };
       }
 
-      if (notificationPage == "noteERROR") {
+      if (notificationPage == "noteErrorLegacy") {
         notificationViewDelete.onclick = function () {
           deployNotificationModal(true, "Delete Function Unavailable!",
             "There is an error within your notification, please contact a moderator to clear your notifications.");
         };
       } else {
         notificationViewDelete.onclick = function () {
-          deleteNotification(notificationKey);
+          deleteNotification(notificationData.uid);
           closeModal(noteViewModal);
         };
       }
 
-      openModal(noteViewModal, notificationKey);
+      openModal(noteViewModal, notificationData.uid);
 
       closeNoteViewModal.onclick = function () {
         closeModal(noteViewModal);
       };
 
-      if (!readNotificationArr.includes(notificationString)) {
-        readNotificationArr.push(notificationString);
+      if (notificationData.read == 0) {
+        firebase.database().ref("users/" + user.uid + "/notifications/" + noteKey).update({
+          read: 1
+        });
+
         if (notificationElemTitle == "New Message From An Administrator!") {
           warningCount = user.warn;
 
@@ -435,21 +480,6 @@ window.onload = function instantiate() {
 
           updateMaintenanceLog("notifications", "The user " + user.userName + " has opened their warning");
         }
-
-        if (!settingReadNotifications) {
-          settingReadNotifications = true;
-
-          for (let i = 0; i < notificationArr.length; i++) {
-            if (notificationArr[i] == notificationString) {
-              changeNotificationElement(notificationString, notificationKeyArr[i]);
-            }
-          }
-
-          settingReadNotifications = false;
-        }
-
-        user.readNotifications = readNotificationArr;
-        updateReadNotificationToDB();
       }
     };
   }
@@ -499,35 +529,31 @@ window.onload = function instantiate() {
     }
   }
 
-  function findFriendUserData(giftOwnerUID) {
-    let i = findUIDItemInArr(giftOwnerUID, userArr, true);
-    if (i != -1){
-      return userArr[i];
-    }
-    return i;
-  }
-
   function deleteNotification(uid) {
-    let deleteNotificationBool = true;
+    let verifyDeleteBool = true;
+    let toDelete = -1;
+
     if(consoleOutput)
       console.log("Deleting " + uid);
 
-    let toDelete = readNotificationArr.indexOf(notificationArr[uid]);
-    readNotificationArr.splice(toDelete, 1);
+    toDelete = findUIDItemInArr(uid, notificationArr, true);
+    if (toDelete != -1) {
+      notificationArr.splice(toDelete, 1);
+      notificationKeyArr.splice(toDelete, 1);
 
-    for (let i = 0; i < readNotificationArr.length; i++){
-      if(readNotificationArr[i] == notificationArr[uid]){
-        deleteNotificationBool = false;
+      for (let i = 0; i < notificationArr.length; i++) {
+        if (notificationArr[i] == notificationArr[uid]) {
+          verifyDeleteBool = false;
+        }
       }
+    } else {
+      verifyDeleteBool = false;
     }
 
-    if(deleteNotificationBool) {
-      notificationArr.splice(uid, 1);
-      notificationKeyArr.splice(uid, 1);
-
-      if (notificationArr.length == 0) {
-        sessionStorage.setItem("notificationOverride", "notificationArrEmpty");
-      }
+    if(verifyDeleteBool) {
+      let i = initializedNotifications.indexOf(uid);
+      initializedNotifications.splice(i, 1);
+      notificationDeleteLocal = true;
 
       user.notifications = notificationArr;
 
@@ -535,11 +561,11 @@ window.onload = function instantiate() {
         notifications: notificationArr
       });
 
-      updateReadNotificationToDB();
-
       removeNotificationElement(uid);
+      notificationDeleteLocal = false;
     } else {
       deployNotificationModal(true, "Delete Error!", "Notification Not Deleted, Please Try Again!");
+      updateMaintenanceLog("notifications", "Notification delete failed for user " + user.userName + ". It's UID is " + uid);
     }
   }
 
@@ -552,18 +578,6 @@ window.onload = function instantiate() {
       initializeNukeBtn();
     }
   }
-
-  function updateReadNotificationToDB(){
-    if (user.readNotifications != undefined) {
-      firebase.database().ref("users/" + user.uid).update({
-        readNotifications: readNotificationArr
-      });
-    } else {
-      if(consoleOutput)
-        console.log("New Read Notifications List");
-      firebase.database().ref("users/" + user.uid).update({readNotifications:{0:readNotificationArr}});
-    }
-  }
 };
 
 function initializeNukeBtn() {
@@ -572,9 +586,6 @@ function initializeNukeBtn() {
       nukeNotifications.innerHTML = "Remove All Notifications";
       nukeNotifications.onclick = function () {
         firebase.database().ref("users/" + user.uid + "/notifications/").remove();
-        if (user.readNotifications != null) {
-          firebase.database().ref("users/" + user.uid + "/readNotifications/").remove();
-        }
 
         notificationArr = [];
         navigation(2);//Home
