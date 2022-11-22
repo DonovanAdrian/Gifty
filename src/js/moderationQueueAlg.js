@@ -290,6 +290,9 @@ window.onload = function instantiate() {
     } else if (ticketData.details.includes("failed to connect to the private list owned by")) {
       liItem.className += " highSev";
       ticketTitleSuffix = " - Gift List Connection Failed";
+    } else if (ticketData.details.includes("Notification delete failed")) {
+      liItem.className += " highSev";
+      ticketTitleSuffix = " - Notification Delete Failed";
     } else if (ticketData.details.includes("Gift delete failed")) {
       liItem.className += " highSev";
       ticketTitleSuffix = " - Gift Delete Failed";
