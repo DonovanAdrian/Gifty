@@ -17,7 +17,6 @@ let userBoughtGiftsUsers = [];
 
 let invitesValidBool = false;
 let friendsValidBool = false;
-let readNotificationsBool = false;
 let updateUserBool = false;
 let giftListEmptyBool = false;
 let giftDeleteLocal = false;
@@ -278,18 +277,7 @@ window.onload = function instantiate() {
 
         if(data.key == user.uid){
           user = data.val();
-          if (data.val().notifications == undefined) {
-            notificationBtn.src = "img/bellNotificationOff.png";
-            notificationBtn.onclick = function () {}
-          } else if (data.val().readNotifications == undefined){
-            if(consoleOutput)
-              console.log("No Read Notifications");
-          } else if (data.val().readNotifications.length == data.val().notifications.length) {
-            notificationBtn.src = "img/bellNotificationOff.png";
-            notificationBtn.onclick = function() {
-              navigation(6);//Notifications
-            }
-          }
+          checkNotifications();
         }
       });
 
@@ -629,31 +617,30 @@ window.onload = function instantiate() {
     let pageNameNote = "deleteGift";
     let giftOwner = user.uid;
     let buyerUserNotifications = [];
-    let buyerReadNotifications = [];
     let updateNotificationBool = false;
+    let notificationFoundBool = false;
     let notificationString = generateNotificationString(giftOwner, "", giftTitle, pageNameNote);
 
     if(buyerUserData.notifications != undefined){
       buyerUserNotifications = buyerUserData.notifications;
-    }
-    if(buyerUserData.readNotifications != undefined){
-      buyerReadNotifications = buyerUserData.readNotifications;
-    }
+      for (let i = 0; i < buyerUserNotifications.length; i++) {
+        if (buyerUserNotifications[i].data == notificationString) {
+          buyerUserNotifications[i].read = 0;
+          updateNotificationBool = true;
+          break;
+        }
+      }
 
-    if (!buyerUserNotifications.includes(notificationString)) {
-      buyerUserNotifications.push(notificationString);
-      updateNotificationBool = true;
-    } else if (buyerReadNotifications.includes(notificationString)) {
-      let i = buyerReadNotifications.indexOf(notificationString);
-      buyerReadNotifications.splice(i, 1);
-      updateNotificationBool = true;
+      if (!notificationFoundBool) {
+        buyerUserNotifications.push(notificationString);
+        updateNotificationBool = true;
+      }
     }
 
     if (updateNotificationBool) {
       if (buyerUserData.notifications != undefined) {
         firebase.database().ref("users/" + buyerUserData.uid).update({
-          notifications: buyerUserNotifications,
-          readNotifications: buyerReadNotifications
+          notifications: buyerUserNotifications
         });
         if (consoleOutput)
           console.log("Added New Notification To DB");
