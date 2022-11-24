@@ -6,6 +6,7 @@
 
 let giftAddUpdateElements = [];
 let listeningFirebaseRefs = [];
+let userArr = [];
 let giftArr = [];
 let giftURLLimit = [];
 
@@ -476,10 +477,10 @@ window.onload = function instantiate() {
   function addNotificationToDB(buyerUserData, giftTitle){
     let pageNameNote = "friendList.html";
     let giftOwner = user.uid;
-    let notificationString;
     let buyerUserNotifications = [];
-    let buyerReadNotifications = [];
     let updateNotificationBool = false;
+    let notificationFoundBool = false;
+    let notificationString;
 
     if(privateListBool){
       pageNameNote = "privateFriendList.html";
@@ -490,25 +491,24 @@ window.onload = function instantiate() {
 
     if(buyerUserData.notifications != undefined){
       buyerUserNotifications = buyerUserData.notifications;
-    }
-    if(buyerUserData.readNotifications != undefined){
-      buyerReadNotifications = buyerUserData.readNotifications;
-    }
+      for (let i = 0; i < buyerUserNotifications.length; i++) {
+        if (buyerUserNotifications[i].data == notificationString) {
+          buyerUserNotifications[i].read = 0;
+          updateNotificationBool = true;
+          break;
+        }
+      }
 
-    if (!buyerUserNotifications.includes(notificationString)) {
-      buyerUserNotifications.push(notificationString);
-      updateNotificationBool = true;
-    } else if (buyerReadNotifications.includes(notificationString)) {
-      let i = buyerReadNotifications.indexOf(notificationString);
-      buyerReadNotifications.splice(i, 1);
-      updateNotificationBool = true;
+      if (!notificationFoundBool) {
+        buyerUserNotifications.push(notificationString);
+        updateNotificationBool = true;
+      }
     }
 
     if (updateNotificationBool) {
       if (buyerUserData.notifications != undefined) {
         firebase.database().ref("users/" + buyerUserData.uid).update({
-          notifications: buyerUserNotifications,
-          readNotifications: buyerReadNotifications
+          notifications: buyerUserNotifications
         });
         if (consoleOutput)
           console.log("Added New Notification To DB");
