@@ -12,7 +12,6 @@ let oldInviteArr = [];
 let listeningFirebaseRefs = [];
 let initializedUsers = [];
 
-let readNotificationsBool = false;
 let inviteDeleteLocal = false;
 let potentialRemoval = false;
 
@@ -123,6 +122,8 @@ window.onload = function instantiate() {
         let i = findUIDItemInArr(data.key, userArr, true);
         if(userArr[i] != data.val() && i != -1){
           userArr[i] = data.val();
+        } else {
+          userArr.push(data.val());
         }
 
         if(data.key == user.uid){
@@ -443,12 +444,23 @@ window.onload = function instantiate() {
         initializedUsers.splice(i, 1);
       }
 
-      let note = findUIDItemInArr(uid, userArr);
+      let inviteNoteIndex = findUIDItemInArr(uid, userArr);
+      let noteSplit = [];
+      let noteSplitCount = 0;
       if(user.notifications != undefined)
         for(let x = 0; x < user.notifications.length; x++)
-          if(user.notifications[x].includes(userArr[note].name))
-            if(user.notifications[x].split(",").length == 2)
-              setReadNotification(x);
+          if(user.notifications[x].data.includes(userArr[inviteNoteIndex].name)) {
+            for (let i = 0; i < noteSplit.length; i++) {
+              noteSplit[i] = noteSplit[i].replaceAll('"', '');
+              if (noteSplit[i] != "") {
+                noteSplitCount++;
+              }
+            }
+            if (noteSplitCount == 1)
+              firebase.database().ref("users/" + user.uid + "/notifications/" + x).update({
+                read: 1
+              });
+          }
 
       if(consoleOutput) {
         console.log("New User Invites:");
@@ -512,22 +524,6 @@ window.onload = function instantiate() {
     dataCounter--;
     if (dataCounter == 0) {
       deployListEmptyNotification("No Invites Found! You've Reviewed All Your Invites!");
-    }
-  }
-
-  function setReadNotification(uid) {
-    let readNotificationArr = user.readNotifications;
-
-    if (readNotificationArr != undefined) {
-      let toSet = readNotificationArr.indexOf(user.notifications[uid]);
-      if(toSet == -1){
-        readNotificationArr.push(user.notifications[uid]);
-        firebase.database().ref("users/" + user.uid).update({
-          readNotifications: readNotificationArr
-        });
-      }
-    } else {
-      firebase.database().ref("users/" + user.uid).update({readNotifications:{0:user.notifications[uid]}});
     }
   }
 };
