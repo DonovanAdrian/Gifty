@@ -20,6 +20,7 @@ let areYouStillThereBool = false;
 let areYouStillThereInit = false;
 let notificationDeployed = false;
 let modalClosingBool = false;
+let checkNoteOnDBInit = false;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
@@ -229,6 +230,9 @@ function initializeDB(config) {
   if (pageName != "Index" && !(pageName == "UserAddUpdate" && user == null)) {
     databaseCommonPulse();
   }
+  if (checkNoteOnDBInit) {
+    checkNotifications();
+  }
 }
 
 function databaseCommonPulse() {
@@ -280,7 +284,7 @@ function getCurrentUserCommon(){
       }
 
       if (notificationPages.includes(pageName)) {
-        checkNotifications();
+        checkNoteOnDBInit = true;
       }
       checkInvites();
       updateFriendNav(user.friends, true);
@@ -356,13 +360,18 @@ function checkReadNotes(updateNotes) {
     if (user.readNotifications != undefined)
       legacyReadBool = true;
 
-    for (let i = 0; i < user.notifications; i++) {
+    for (let i = 0; i < user.notifications.length; i++) {
       if (legacyReadBool) {
         if (user.readNotifications.indexOf(user.notifications[i]) != -1) {
+          console.log("Read");
           legacyReadOverride = 1;
           readNoteFound = true;
+        } else {
+          console.log("Unread");
+          legacyReadOverride = 0;
         }
       }
+      console.log(i + " " + user.notifications[i] + " " + legacyReadOverride);
       generateNewUID(i, user.notifications[i], legacyReadOverride);
       legacyReadOverride = 0;
     }
@@ -374,8 +383,6 @@ function checkReadNotes(updateNotes) {
 function generateNewUID(noteKey, noteString, readOverride) {
   if (readOverride == undefined)
     readOverride = 0
-  else
-    readOverride = 1
 
   let newUid = firebase.database().ref("users/" + user.uid + "/notifications/" + noteKey).push();
   newUid = newUid.toString();
