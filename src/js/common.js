@@ -165,7 +165,7 @@ function commonInitialization(){
           loginBtn.innerHTML = "No Internet!";
           allowLogin = false;
           loginDisabledMsg = "It seems that you are offline! Please connect to the internet to be able to " +
-            "use Gifty properly!";
+              "use Gifty properly!";
         }
       }
     }, 1000);
@@ -279,7 +279,7 @@ function getCurrentUserCommon(){
       } else if (restrictedPages.includes(pageName)) {
         pageName = pageName.toLowerCase();
         updateMaintenanceLog(pageName, "The user \"" + user.userName + "\" " +
-          "attempted to access a restricted page.");
+            "attempted to access a restricted page.");
         navigation(2);
       }
 
@@ -363,16 +363,13 @@ function checkReadNotes(updateNotes) {
     for (let i = 0; i < user.notifications.length; i++) {
       if (legacyReadBool) {
         if (user.readNotifications.indexOf(user.notifications[i]) != -1) {
-          console.log("Read");
           legacyReadOverride = 1;
           readNoteFound = true;
         } else {
-          console.log("Unread");
           legacyReadOverride = 0;
         }
       }
-      console.log(i + " " + user.notifications[i] + " " + legacyReadOverride);
-      generateNewUID(i, user.notifications[i], legacyReadOverride);
+      generateNewNoteUID(i, user.notifications[i], legacyReadOverride);
       legacyReadOverride = 0;
     }
   }
@@ -380,7 +377,22 @@ function checkReadNotes(updateNotes) {
   return readNoteFound;
 }
 
-function generateNewUID(noteKey, noteString, readOverride) {
+function addNotificationToDB (recipientData, notificationString) {
+  let recipientNotes = recipientData.notifications;
+  if (recipientNotes == undefined)
+    recipientNotes = [];
+  let uid = recipientNotes.length;
+  let newUid = firebase.database().ref("users/" + recipientData.uid + "/notifications/" + uid).push();
+  newUid = newUid.toString();
+  newUid = findUIDInString(newUid);
+  firebase.database().ref("users/" + recipientData.uid + "/notifications/" + uid).set({
+    uid: newUid,
+    data: notificationString,
+    read: 0
+  });
+}
+
+function generateNewNoteUID (noteKey, noteString, readOverride) {
   if (readOverride == undefined)
     readOverride = 0
 
@@ -479,7 +491,7 @@ function areYouStillThereNote(timeElapsed){
     areYouStillThereInit = true;
   }
   notificationInfo.innerHTML = "You have been inactive for 5 minutes, you will be logged out in " + timeMins
-    + ":" + timeSecs + "!";
+      + ":" + timeSecs + "!";
   notificationTitle.innerHTML = "Are You Still There?";
 
   noteSpan.onclick = function() {
