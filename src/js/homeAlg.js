@@ -253,7 +253,7 @@ window.onload = function instantiate() {
     boughtGifts.onclick = function () {
       if (userBoughtGifts.length == 0) {
         deployNotificationModal(false, "No Bought Gifts!", "You haven't bought any " +
-          "gifts yet. Buy some gifts from some friends first!");
+            "gifts yet. Buy some gifts from some friends first!");
       } else {
         sessionStorage.setItem("boughtGifts", JSON.stringify(userBoughtGifts));
         sessionStorage.setItem("boughtGiftsUIDs", JSON.stringify(userBoughtGiftsUIDs));
@@ -317,7 +317,7 @@ window.onload = function instantiate() {
         giftArr.push(data.val());
 
         createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-          data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
+            data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
 
         checkGiftLimit();
       });
@@ -327,7 +327,7 @@ window.onload = function instantiate() {
           giftArr[data.key] = data.val();
 
           changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-            data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
+              data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
         }
       });
 
@@ -580,12 +580,12 @@ window.onload = function instantiate() {
       closeModal(giftModal);
 
       deployNotificationModal(false, "Gift Deleted", "Gift " + title +
-        " successfully deleted!");
+          " successfully deleted!");
 
       if(buyer != ""){
         let userFound = findUserNameItemInArr(buyer, userArr);
         if(userFound != -1){
-          addNotificationToDB(userArr[userFound], title);
+          addDeleteNoteToDB(userArr[userFound], title);
         } else {
           if(consoleOutput)
             console.log("User not found");
@@ -597,7 +597,7 @@ window.onload = function instantiate() {
       giftDeleteLocal = false;
     } else {
       deployNotificationModal(true, "Gift Delete Failed!", "Delete failed, please " +
-        "try again later!");
+          "try again later!");
       updateMaintenanceLog("home", "Gift delete failed for user " + user.userName + "'s public list, gift " + uid);
     }
   }
@@ -613,7 +613,7 @@ window.onload = function instantiate() {
     return -1;
   }
 
-  function addNotificationToDB(buyerUserData, giftTitle){
+  function addDeleteNoteToDB(buyerUserData, giftTitle){
     let pageNameNote = "deleteGift";
     let giftOwner = user.uid;
     let buyerUserNotifications = [];
@@ -627,30 +627,22 @@ window.onload = function instantiate() {
         if (buyerUserNotifications[i].data == notificationString) {
           buyerUserNotifications[i].read = 0;
           updateNotificationBool = true;
+          notificationFoundBool = true;
           break;
         }
       }
 
       if (!notificationFoundBool) {
-        buyerUserNotifications.push(notificationString);
-        updateNotificationBool = true;
+        addNotificationToDB(buyerUserData, notificationString);
       }
+    } else {
+      addNotificationToDB(buyerUserData, notificationString);
     }
 
     if (updateNotificationBool) {
-      if (buyerUserData.notifications != undefined) {
-        firebase.database().ref("users/" + buyerUserData.uid).update({
-          notifications: buyerUserNotifications
-        });
-        if (consoleOutput)
-          console.log("Added New Notification To DB");
-      } else {
-        if (consoleOutput)
-          console.log("New Notifications List");
-        firebase.database().ref("users/" + buyerUserData.uid).update({notifications: {0: notificationString}});
-        if (consoleOutput)
-          console.log("Added Notification To DB");
-      }
+      firebase.database().ref("users/" + buyerUserData.uid).update({
+        notifications: buyerUserNotifications
+      });
     }
   }
 
@@ -668,8 +660,8 @@ window.onload = function instantiate() {
       addGift.innerHTML = "Gift Limit Reached!";
       addGift.onclick = function () {
         deployNotificationModal(false, "Gift Limit Reached!", "You have reached " +
-          "the limit of the number of gifts that you can create (" + giftLimit + "). Please remove some gifts in order " +
-          "to create more!", 4);
+            "the limit of the number of gifts that you can create (" + giftLimit + "). Please remove some gifts in order " +
+            "to create more!", 4);
       };
     } else {
       addGift.innerHTML = "Add Gift";
