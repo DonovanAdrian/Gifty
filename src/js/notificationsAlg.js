@@ -115,12 +115,17 @@ window.onload = function instantiate() {
         if (data.val().uid != undefined) {
           notificationArr.push(data.val());
           notificationKeyArr.push(data.val().uid);
-          createNotificationElement(data.val().data, data.val().uid, data.val().read, data.key);
+          createNotificationElement(data.val(), data.key);
         } else {
-          let newUid = generateNewUID(data.key, data.val());
+          let newUid = generateNewNoteUID(data.key, data.val());
           notificationArr.push(data.val());
           notificationKeyArr.push(newUid);
-          createNotificationElement(data.val(), newUid, 0, data.key);
+          let notificationData = {
+            data: data.val(),
+            read: 0,
+            uid: newUid
+          };
+          createNotificationElement(notificationData, data.key);
         }
       });
 
@@ -273,7 +278,7 @@ window.onload = function instantiate() {
         if (noteSplitCount == 1) {//Type X, Invites
           notificationDataTitle = friendUserData.name + " has sent you a friend invite!";
           notificationDetails = friendUserData.name + " has sent you an invite to be added to each other's " +
-            "friend lists. Accepting this invite will allow you to view each other's gift lists!";
+              "friend lists. Accepting this invite will allow you to view each other's gift lists!";
           notificationPage = "invites.html";
         } else if (noteSplitCount == 2) {//Type W, Messages/Announcements
           notificationDetails = messageGiftTitle;
@@ -297,7 +302,7 @@ window.onload = function instantiate() {
           } else if (pageNameNote == "deleteGift") {
             notificationDataTitle = friendUserData.name + " deleted a gift you bought...";
             notificationDetails = "The gift you bought for " + friendUserData.name + ", " + messageGiftTitle + ", was" +
-              " deleted from their public gift list...";
+                " deleted from their public gift list...";
           } else {
             if (consoleOutput)
               console.log("Notification Page Error, 1");
@@ -312,7 +317,7 @@ window.onload = function instantiate() {
             let deleterData = userArr[z];
             notificationDataTitle = deleterData.name + " deleted a private gift you bought...";
             notificationDetails = "The gift you bought for " + friendUserData.name + ", " + messageGiftTitle + ", was" +
-              " deleted by " + deleterData.name + " from " + friendUserData.name + "'s private gift list...";
+                " deleted by " + deleterData.name + " from " + friendUserData.name + "'s private gift list...";
             notificationPage = pageNameNote;
           } else {
             if (consoleOutput)
@@ -326,7 +331,7 @@ window.onload = function instantiate() {
         }
 
         initNotificationElement(liElem, notificationPage, notificationData, notificationDataTitle,
-          notificationDetails, friendUserData, noteKey);
+            notificationDetails, friendUserData, noteKey);
       } else {
         if (consoleOutput)
           console.log("SenderUID not found!");
@@ -433,7 +438,7 @@ window.onload = function instantiate() {
         notificationViewPage.onclick = function () {};
       } else if (notificationPage == "deleteGiftPrivate") {
         notificationViewPage.innerHTML = "If this has been done in error, please contact the person who deleted " +
-          "the gift.";
+            "the gift.";
         notificationViewPage.onclick = function () {};
       } else {
         if(consoleOutput)
@@ -447,7 +452,7 @@ window.onload = function instantiate() {
       if (notificationPage == "noteErrorLegacy") {
         notificationViewDelete.onclick = function () {
           deployNotificationModal(true, "Delete Function Unavailable!",
-            "There is an error within your notification, please contact a moderator to clear your notifications.");
+              "There is an error within your notification, please contact a moderator to clear your notifications.");
         };
       } else {
         notificationViewDelete.onclick = function () {
@@ -594,7 +599,7 @@ function initializeNukeBtn() {
       nukeNotifications.innerHTML = "Notification Removal Disabled!";
       nukeNotifications.onclick = function () {
         deployNotificationModal(false, "Deleting Notifications Unavailable!",
-          "There is an error within your notifications, please contact a moderator to clear your notifications.");
+            "There is an error within your notifications, please contact a moderator to clear your notifications.");
       };
     }
   } else {
