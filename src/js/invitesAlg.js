@@ -13,7 +13,6 @@ let userArr = [];
 let commonFriendArr = [];
 let initializedUsers = [];
 
-let readNotificationsBool = false;
 let invitesFound = false;
 let potentialRemoval = false;
 let friendDeleteLocal = false;
@@ -184,6 +183,8 @@ window.onload = function instantiate() {
         let i = findUIDItemInArr(data.key, userArr, true);
         if(userArr[i] != data.val() && i != -1){
           userArr[i] = data.val();
+        } else {
+          userArr.push(data.val());
         }
 
         if(data.key == user.uid){
@@ -305,7 +306,7 @@ window.onload = function instantiate() {
 
     if(friendData != null) {
       try {
-        testData.remove();
+        document.getElementById('testData').remove();
       } catch (err) {}
 
       let liItem = document.createElement("LI");
@@ -388,13 +389,11 @@ window.onload = function instantiate() {
     sendMsg.onclick = function (){
       if(privateMessageInp.value.includes(",,,")){
         deployNotificationModal(true, "Message Error!", "Please do not use commas " +
-          "in the message. Thank you!");
+            "in the message. Thank you!");
       } else {
         message = generateNotificationString(user.uid, "", privateMessageInp.value, "");
         addPrivateMessageToDB(userData, message);
         privateMessageInp.value = "";
-        closeModal(privateMessageModal);
-        openModal(inviteModal, userData.uid);
       }
     };
     cancelMsg.onclick = function (){
@@ -411,34 +410,17 @@ window.onload = function instantiate() {
   }
 
   function addPrivateMessageToDB(userData, message) {
-    let userNotificationArr;
     let currentUserScore;
 
-    if (user.userScore == null) {
+    if (user.userScore == null)
       user.userScore = 0;
-    }
-
     user.userScore = user.userScore + 1;
     currentUserScore = user.userScore;
-
-    if(userData.notifications == undefined){
-      userNotificationArr = [];
-    } else {
-      userNotificationArr = userData.notifications;
-    }
-    userNotificationArr.push(message);
-
     firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
 
-    if(userData.notifications == undefined) {
-      firebase.database().ref("users/" + userData.uid).update({notifications:{0:message}});
-    } else {
-      firebase.database().ref("users/" + userData.uid).update({
-        notifications: userNotificationArr
-      });
-    }
+    addNotificationToDB(userData, message);
     deployNotificationModal(false, "Message Sent!", "Your message to " +
-      userData.userName + " was successfully delivered!");
+        userData.userName + " was successfully delivered!");
   }
 
   function confirmDeletion(delFriendData) {
@@ -504,9 +486,9 @@ window.onload = function instantiate() {
     if (!verifyDeleteBool) {
       friendArr = user.friends;
       deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
-        "able to be removed from your friend list. Please try again later!");
+          "able to be removed from your friend list. Please try again later!");
       updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
-        delFriendData.userName + " and FAILED! (There was an issue with " + user.userName + "'s friend list)");
+          delFriendData.userName + " and FAILED! (There was an issue with " + user.userName + "'s friend list)");
       return;
     }
 
@@ -567,13 +549,13 @@ window.onload = function instantiate() {
       user.friends = friendArr;
       generateAddUserBtn();
       deployNotificationModal(false, "Friend Removed!", "The user " + delFriendData.name +
-        " has been successfully removed from your friend list!");
+          " has been successfully removed from your friend list!");
       friendDeleteLocal = false;
     } else {
       deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
-        "able to be removed from your friend list. Please try again later!");
+          "able to be removed from your friend list. Please try again later!");
       updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
-        delFriendData.userName + " and FAILED! (There was an issue with " + delFriendData.userName + "'s friend list)");
+          delFriendData.userName + " and FAILED! (There was an issue with " + delFriendData.userName + "'s friend list)");
     }
 
     function cleanUpGifts(listOwner, listViewer) {
@@ -829,10 +811,10 @@ window.onload = function instantiate() {
         if(userNameInp.value == ""){
           inviteInfo.innerHTML = "No User Name Or Share Code Provided, Please Try Again!";
         } else if (friendShareCodeList.includes(userNameInp.value) ||
-          friendUserNameList.includes(userNameInp.value.toUpperCase())) {
+            friendUserNameList.includes(userNameInp.value.toUpperCase())) {
           inviteInfo.innerHTML = userNameInp.value + " Is Already Your Friend, Please Try Again!";
         } else if (user.userName.toUpperCase() == userNameInp.value.toUpperCase() ||
-          user.shareCode == userNameInp.value){
+            user.shareCode == userNameInp.value){
           inviteInfo.innerHTML = "You Cannot Invite Yourself, Please Try Again!";
         } else if (userLocation != -1) {
           try {
@@ -938,7 +920,7 @@ window.onload = function instantiate() {
       openModal(confirmUserModal, "confirmUserModal", true);
     } else {
       deployNotificationModal(true, "User Finder Error!", "There was an error " +
-        "finding that user... Please contact the developer for assistance on the FAQ page!");
+          "finding that user... Please contact the developer for assistance on the FAQ page!");
     }
   }
 
@@ -956,12 +938,9 @@ window.onload = function instantiate() {
   }
 
   function inviteUserDB(invitedUser) {
-    let invitedUserInvites;
-
-    if(invitedUser.invites == undefined || invitedUser.invites == null){
+    let invitedUserInvites = invitedUser.invites;
+    if(invitedUser.invites == undefined){
       invitedUserInvites = [];
-    } else {
-      invitedUserInvites = invitedUser.invites;
     }
     invitedUserInvites.push(user.uid);
 
@@ -981,24 +960,8 @@ window.onload = function instantiate() {
     }
 
     let notificationString = generateNotificationString(user.uid,"","","");
-    let invitedUserNotifications;
-    if(invitedUser.notifications == undefined){
-      invitedUserNotifications = [];
-    } else {
-      invitedUserNotifications = invitedUser.notifications;
-    }
-    invitedUserNotifications.push(notificationString);
-
-    if(invitedUser.notifications != undefined) {
-      firebase.database().ref("users/" + invitedUser.uid).update({
-        notifications: invitedUserNotifications
-      });
-    } else {
-      if(consoleOutput)
-        console.log("New Notifications List");
-      firebase.database().ref("users/" + invitedUser.uid).update({notifications:{0:notificationString}});
-    }
+    addNotificationToDB(invitedUser, notificationString);
     deployNotificationModal(false, "Invite Sent!", "Your invite to " +
-      invitedUser.name + " was successfully sent!");
+        invitedUser.name + " was successfully sent!");
   }
 };
