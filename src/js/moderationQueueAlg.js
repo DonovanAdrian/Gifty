@@ -263,6 +263,9 @@ window.onload = function instantiate() {
     } else if (ticketData.details.includes("Attempting to delete user")) {
       liItem.className += " highSev";
       ticketTitleSuffix = " - Attempt To Delete User";
+    } else if (ticketData.details.includes("A user experienced degraded performance")) {
+      liItem.className += " highSev";
+      ticketTitleSuffix = " - Degraded Performance Experienced";
     } else if (ticketData.details.includes("attempted to remove friend")) {
       liItem.className += " highSev";
       ticketTitleSuffix = " - !!Friend Removal Error!!";
@@ -373,10 +376,10 @@ window.onload = function instantiate() {
       closeModal(ticketModal);
 
       deployNotificationModal(false, "Ticket " + ticketData.uid + " Deleted!",
-        "The moderation ticket, " + ticketData.uid + ", has been successfully deleted.");
+          "The moderation ticket, " + ticketData.uid + ", has been successfully deleted.");
     } else {
       deployNotificationModal(true, "Ticket Delete Failure!",
-        "The moderation ticket, " + ticketData.uid + ", was NOT deleted. Please try again later.");
+          "The moderation ticket, " + ticketData.uid + ", was NOT deleted. Please try again later.");
     }
   }
 
