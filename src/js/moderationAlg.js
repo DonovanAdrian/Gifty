@@ -246,7 +246,7 @@ window.onload = function instantiate() {
     sendMsg.onclick = function (){
       if(globalMsgInp.value.includes(",,,")){
         deployNotificationModal(true, "Message Error!", "Please do not use commas " +
-          "in the message. Thank you!");
+            "in the message. Thank you!");
       } else {
         userUpdateLocal = true;
         addPrivateMessageToDB(userData, globalMsgInp.value);
@@ -259,11 +259,11 @@ window.onload = function instantiate() {
             warn: warnCount
           });
           deployNotificationModal(false, "Warning Sent!", userData.name +
-            " Has Been Warned! Once The User Reads The Warning, Their Warning Will Be Removed.",
-            4);
+              " Has Been Warned! Once The User Reads The Warning, Their Warning Will Be Removed.",
+              4);
         } else {
           deployNotificationModal(false, "Message Sent!",
-            "The Private Message Has Been Sent!");
+              "The Private Message Has Been Sent!");
         }
         userUpdateLocal = false;
       }
@@ -291,19 +291,19 @@ window.onload = function instantiate() {
           ban: 1
         });
         deployNotificationModal(false, "Banned User!",
-          operationData.name + " has been banned!");
+            operationData.name + " has been banned!");
       } else if (operationType == "modRevoke") {
         firebase.database().ref("users/" + operationData.uid).update({
           moderatorInt: 0
         });
         deployNotificationModal(false, "Moderator Role Revoked",
-          "Revoked role for " + operationData.userName);
+            "Revoked role for " + operationData.userName);
       } else if (operationType == "modGrant") {
         firebase.database().ref("users/" + operationData.uid).update({
           moderatorInt: 1
         });
         deployNotificationModal(false, "Moderator Role Granted",
-          "Granted role for " + operationData.userName);
+            "Granted role for " + operationData.userName);
       } else if (operationType == "showPass") {
         userPassword.innerHTML = decode(operationData.encodeStr);
         openModal(previousModal, previousModalTitle);
@@ -332,23 +332,9 @@ window.onload = function instantiate() {
   }
 
   function addPrivateMessageToDB(userData, message) {
-    let userNotificationArr = [];
     userUpdateLocal = true;
-    if(userData.notifications == undefined){
-      userNotificationArr = [];
-    } else {
-      userNotificationArr = userData.notifications;
-    }
     message = generateNotificationString(">admin" + user.uid, "", message, "");
-    userNotificationArr.push(message);
-
-    if(userData.notifications == undefined) {
-      firebase.database().ref("users/" + userData.uid).update({notifications:{0:message}});
-    } else {
-      firebase.database().ref("users/" + userData.uid).update({
-        notifications: userNotificationArr
-      });
-    }
+    addNotificationToDB(userData, message);
     userUpdateLocal = false;
   }
 
@@ -576,7 +562,7 @@ window.onload = function instantiate() {
       }
 
       deployNotificationModal(false, "Notification Removal Successful!",
-        "Every User's Notifications Have Been Successfully Removed!");
+          "Every User's Notifications Have Been Successfully Removed!");
       userUpdateLocal = false;
     };
   }
@@ -594,7 +580,7 @@ window.onload = function instantiate() {
       }
 
       deployNotificationModal(false, "User Scores Reset!",
-        "Every User's Score Has Been Successfully Reset!");
+          "Every User's Score Has Been Successfully Reset!");
       userUpdateLocal = false;
     };
   }
@@ -608,13 +594,13 @@ window.onload = function instantiate() {
       sendMsg.onclick = function (){
         if(globalMsgInp.value.includes(",,,")){
           deployNotificationModal(true, "Message Error!", "Please do not use commas " +
-            "in the notification. Thank you!");
+              "in the notification. Thank you!");
         } else {
           addGlobalMessageToDB(globalMsgInp.value);
           globalMsgInp.value = "";
           closeModal(privateMessageModal);
           deployNotificationModal(false, "Message Sent!",
-            "The Global Message Has Been Sent!");
+              "The Global Message Has Been Sent!");
         }
       };
       cancelMsg.onclick = function (){
@@ -646,7 +632,7 @@ window.onload = function instantiate() {
           loginDisabledMsg: loginDisabledMsg
         });
         deployNotificationModal(false, "Login Enabled!", "Login functionality has " +
-          "been successfully enabled!");
+            "been successfully enabled!");
         updateMaintenanceLog("moderation", "Login enabled by the user \"" + user.userName + "\"");
       }
     };
@@ -675,7 +661,7 @@ window.onload = function instantiate() {
     confirmLimits.onclick = function (){
       if (giftLimitInp.value == "" && userLimitInp.value == "") {
         deployNotificationModal(true, "Invalid Limits!",
-          "Please Do Not Enter Empty Or Invalid Characters!");
+            "Please Do Not Enter Empty Or Invalid Characters!");
       } else if (!isNaN(giftLimitInp.value) && !isNaN(userLimitInp.value)) {
         if (giftLimitInp.value > 0 && userLimitInp.value > 0) {
           firebase.database().ref("limits/").update({
@@ -684,19 +670,19 @@ window.onload = function instantiate() {
           });
 
           deployNotificationModal(false, "Limits Set!",
-            "Database Limits Successfully Set!");
+              "Database Limits Successfully Set!");
           updateMaintenanceLog("moderation", "Database limits set by the user \"" + user.userName
-            + "\" " + "to Gift Limit: " + giftLimitInp.value + " and User Limit: " + userLimitInp.value);
+              + "\" " + "to Gift Limit: " + giftLimitInp.value + " and User Limit: " + userLimitInp.value);
 
           closeModal(databaseLimitsModal);
           openModal(secretSantaModal, "userOptionsModal");
         } else {
           deployNotificationModal(true, "Invalid Limits!",
-            "Please Only Enter Numbers Greater Than Zero!");
+              "Please Only Enter Numbers Greater Than Zero!");
         }
       } else {
         deployNotificationModal(true, "Invalid Limits!",
-          "Please Only Enter Numbers Into The Fields!");
+            "Please Only Enter Numbers Into The Fields!");
       }
     };
 
@@ -763,22 +749,22 @@ window.onload = function instantiate() {
     } else {
       resetDefaultLoginDisabledBtn.onclick = function () {
         loginDisabledInp.value = "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-          "maintenance before logging in. Thank you for your patience!";
+            "maintenance before logging in. Thank you for your patience!";
         firebase.database().ref("login/").update({
           allowLogin: allowLogin,
           loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-            "maintenance before logging in. Thank you for your patience!"
+              "maintenance before logging in. Thank you for your patience!"
         });
         deployNotificationModal(false, "Login Message Updated!",
-          "Login Disabled Message Successfully Reset!");
+            "Login Disabled Message Successfully Reset!");
         updateMaintenanceLog("moderation", "Login disabled message reset by the user \"" + user.userName
-          + "\"");
+            + "\"");
       };
 
       confirmLoginDisabled.onclick = function () {
         if (loginDisabledInp.value == "") {
           deployNotificationModal(true, "Login Message Error!",
-            "Please Do Not Leave The Login Message Empty!");
+              "Please Do Not Leave The Login Message Empty!");
         } else {
           loginFxnBtn.innerHTML = "Enable Login Function";
           firebase.database().ref("login/").update({
@@ -786,9 +772,9 @@ window.onload = function instantiate() {
             loginDisabledMsg: loginDisabledInp.value
           });
           deployNotificationModal(false, "Login Message Updated!",
-            "Login Disabled Message Set And Login Disabled!");
+              "Login Disabled Message Set And Login Disabled!");
           updateMaintenanceLog("moderation", "Login disabled by the user \"" + user.userName + "\" " +
-            "with the following message: " + loginDisabledInp.value);
+              "with the following message: " + loginDisabledInp.value);
 
           closeModal(loginDisabledModal);
           openModal(secretSantaModal, "userOptionsModal");
@@ -830,13 +816,13 @@ window.onload = function instantiate() {
     }
     if (urlString == "" && !override) {
       deployNotificationModal(true, "URL String Error!", "The URL Limiter Is NOT " +
-        "currently active. If you wish to enable it, please enter a non-empty string", 4);
+          "currently active. If you wish to enable it, please enter a non-empty string", 4);
     } else if (urlString.includes(',,')) {
       deployNotificationModal(true, "URL String Error!", "Please do not include " +
-        "more than one comma");
+          "more than one comma");
     } else if (urlString.includes('.')) {
       deployNotificationModal(true, "URL String Error!", "Please do not include " +
-        "full URLs, only specific parts of a URL like \"www\" or \"bestbuy\".");
+          "full URLs, only specific parts of a URL like \"www\" or \"bestbuy\".");
     } else {
       firebase.database().ref("limits/").update({
         giftURLLimit: urlString
@@ -844,17 +830,17 @@ window.onload = function instantiate() {
       if (urlString == "" && override) {
         updateMaintenanceLog("moderation", "URL Limiter disabled by the user \"" + user.userName);
         deployNotificationModal(false, "URL Limiter Disabled!", "The URL Limiter " +
-          "has been disabled!");
+            "has been disabled!");
       } else if (urlString == "amazon,amzn,bestbuy,barnesandnoble" && override) {
         updateMaintenanceLog("moderation", "Default URL Limiter set by the user \"" +
-          user.userName + "\" " + "with the following string: " + urlString);
+            user.userName + "\" " + "with the following string: " + urlString);
         deployNotificationModal(false, "Default URL Limiter Set!", "The Default " +
-          "URL Limiter was successfully set! From now on, only gifts with the default limiters will be allowed.", 4);
+            "URL Limiter was successfully set! From now on, only gifts with the default limiters will be allowed.", 4);
       } else {
         updateMaintenanceLog("moderation", "URL Limiter set by the user \"" + user.userName + "\" " +
-          "with the following string: " + urlString);
+            "with the following string: " + urlString);
         deployNotificationModal(false, "URL Limiter Set!", "Your URL Limiter was " +
-          "successfully set! From now on, only gifts with your specified limiter(s) will be allowed.", 4);
+            "successfully set! From now on, only gifts with your specified limiter(s) will be allowed.", 4);
       }
     }
   }
@@ -1002,7 +988,7 @@ window.onload = function instantiate() {
 
         if(currentModalOpen == data.key && !userUpdateLocal) {
           deployNotificationModal(false, "User Updated!", "The user you were " +
-            "viewing was updated! Please reopen the window to view the changes.", 5);
+              "viewing was updated! Please reopen the window to view the changes.", 5);
         }
       });
 
@@ -1017,7 +1003,7 @@ window.onload = function instantiate() {
 
         if(currentModalOpen == data.key) {
           deployNotificationModal(false, "User Removed!", "The user you were " +
-            "viewing was deleted!", 5);
+              "viewing was deleted!", 5);
         }
       });
     };
@@ -1068,7 +1054,7 @@ window.onload = function instantiate() {
           allowLogin = true;
         } else if (data.key == "loginDisabledMsg") {
           loginDisabledMsg = "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-            "maintenance before logging in. Thank you for your patience!";
+              "maintenance before logging in. Thank you for your patience!";
         }
         initializeLoginBtn();
       });
@@ -1243,7 +1229,7 @@ window.onload = function instantiate() {
       userGifts.onclick = function() {
         if(userData.uid == user.uid){
           deployNotificationModal(true, "User Info",
-            "Navigate to the home page to see your gifts!");
+              "Navigate to the home page to see your gifts!");
         } else {
           sessionStorage.setItem("validGiftUser", JSON.stringify(userData));
           navigation(9);//FriendList
@@ -1252,7 +1238,7 @@ window.onload = function instantiate() {
       userPrivateGifts.onclick = function() {
         if(userData.uid == user.uid){
           deployNotificationModal(true, "User Info",
-            "You aren't allowed to see your private gifts!");
+              "You aren't allowed to see your private gifts!");
         } else {
           sessionStorage.setItem("validGiftUser", JSON.stringify(userData));
           navigation(10);//PrivateFriendList
@@ -1261,7 +1247,7 @@ window.onload = function instantiate() {
       userPassword.onclick = function() {
         if (!showPassBool) {
           confirmOperation("Show Password?", "Are you sure you wish to view " +
-            userData.name + "'s password?", "showPass", userData, userModal, userData.uid);
+              userData.name + "'s password?", "showPass", userData, userModal, userData.uid);
           showPassBool = true;
         } else {
           userPassword.innerHTML = "Click On Me To View Password";
@@ -1278,11 +1264,11 @@ window.onload = function instantiate() {
             ban: 0
           });
           deployNotificationModal(false, "Unbanned User!",
-            userData.name + " has been unbanned!");
+              userData.name + " has been unbanned!");
         } else {
           confirmOperation("Ban " + userData.name + "?", "While this CAN be undone, this " +
-            "should only be used for serious offenses. Consider using warnings first, if not already done... Are you " +
-            "sure you wish to ban " + userData.name + "?", "banUser", userData, userModal, userData.uid);
+              "should only be used for serious offenses. Consider using warnings first, if not already done... Are you " +
+              "sure you wish to ban " + userData.name + "?", "banUser", userData, userModal, userData.uid);
         }
         userUpdateLocal = false;
       };
@@ -1295,11 +1281,11 @@ window.onload = function instantiate() {
         moderatorOp.onclick = function() {
           if(userData.uid == user.uid){
             deployNotificationModal(true, "User Info",
-              "You cannot adjust your own role");
+                "You cannot adjust your own role");
           } else {
             confirmOperation("Revoke " + userData.name + "'s Moderator Role?",
-              "Are you sure you'd like to revoke " +
-              userData.name + " from being a moderator?", "modRevoke", userData, userModal, userData.uid);
+                "Are you sure you'd like to revoke " +
+                userData.name + " from being a moderator?", "modRevoke", userData, userModal, userData.uid);
           }
         };
       } else {
@@ -1308,11 +1294,11 @@ window.onload = function instantiate() {
         moderatorOp.onclick = function() {
           if(userData.userName == user.userName){
             deployNotificationModal(true, "User Info",
-              "You cannot adjust your own role");
+                "You cannot adjust your own role");
           } else {
             confirmOperation("Grant " + userData.name + " Moderator Role?",
-              "A moderator is powerful on Gifty, are you sure you'd like to grant " +
-              userData.name + " a moderator role?", "modGrant", userData, userModal, userData.uid);
+                "A moderator is powerful on Gifty, are you sure you'd like to grant " +
+                userData.name + " a moderator role?", "modGrant", userData, userModal, userData.uid);
           }
         };
       }
@@ -1342,20 +1328,20 @@ window.onload = function instantiate() {
               secretSanta: 1
             });
             deployNotificationModal(false, "Secret Santa Opted In!",
-              userData.name + " has been manually opted in to the Secret Santa Program!");
+                userData.name + " has been manually opted in to the Secret Santa Program!");
           } else {
             firebase.database().ref("users/" + userData.uid).update({
               secretSanta: 0
             });
             deployNotificationModal(false, "Secret Santa Opted Out!",
-              userData.name + " has been manually opted out of the Secret Santa Program!");
+                userData.name + " has been manually opted out of the Secret Santa Program!");
           }
         } else {
           firebase.database().ref("users/" + userData.uid).update({
             secretSanta: 0
           });
           deployNotificationModal(false, "Secret Santa Opted Out!",
-            userData.name + " has been manually opted out of the Secret Santa Program!");
+              userData.name + " has been manually opted out of the Secret Santa Program!");
         }
         userUpdateLocal = false;
       }
