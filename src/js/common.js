@@ -4,14 +4,19 @@
  * with written consent under any circumstance.
  */
 
+let listenDBOpType = [];
+let listenExpectedUIDs = [];
 let buttonAlternatorTimer = 0;
 let buttonAlternatorInt = 0;
 let buttonOpacLim = 7;
 let logoutReminder = 300; //default 300, 300 5 mins
 let logoutLimit = 900; //default 900, 900 15 mins, 600 10 mins
+let maxListenForDB = 10;
 let deployedNoteTimer = 0;
 let setWindowNoteTimer = 0;
+let listenForDBTimer = 0;
 let consoleOutput = false;
+let dbOperationInProgress = false;
 let userUpdateOverride = false;
 let loadingTimerCancelled = false;
 let userCreationOverride = false;
@@ -21,6 +26,7 @@ let areYouStillThereInit = false;
 let notificationDeployed = false;
 let modalClosingBool = false;
 let checkNoteOnDBInit = false;
+let emptyListNoteDeployed = false;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
@@ -29,6 +35,7 @@ let ohThereYouInterval;
 let transparencyInterval;
 let deployedNoteInterval;
 let setWindowNoteInverval;
+let listenForDBInterval;
 let openModalTimer;
 let alternateButtonTimer;
 let currentTitle;
@@ -175,7 +182,7 @@ function commonInitialization(){
     closeModal(offlineModal);
   };
 
-  if (dataListChecker != null) {
+  if (dataListChecker != null && !emptyListNoteDeployed) {
     commonLoadingTimer = setInterval(function(){
       commonLoadingTimerInt = commonLoadingTimerInt + 1000;
       if (commonLoadingTimerInt >= 10000) {
@@ -315,7 +322,7 @@ function getCurrentUserCommon(){
 }
 
 function checkNotifications() {
-  let readNotificationsBool = false;
+  let readNotificationsBool = true;
 
   notificationBtn.className = "notificationIcon noteBasicBuffer";
   if (user.notifications == undefined) {
@@ -328,7 +335,7 @@ function checkNotifications() {
       readNotificationsBool = checkReadNotes(true);
     }
 
-    if (readNotificationsBool){
+    if (!readNotificationsBool){
       flickerNotification();
       notificationBtn.onclick = function() {
         navigation(6);//Notifications
@@ -346,14 +353,14 @@ function checkNotifications() {
 }
 
 function checkReadNotes(updateNotes) {
-  let readNoteFound = false;
+  let readNoteFound = true;
   let legacyReadBool = false;
   let legacyReadOverride = 0;
 
   if (!updateNotes) {
-    for (let i = 0; i < user.notifications; i++) {
-      if (user.notifications.read == 1) {
-        return true;
+    for (let i = 0; i < user.notifications.length; i++) {
+      if (user.notifications[i].read == 0) {
+        return false;
       }
     }
   } else {
@@ -364,9 +371,9 @@ function checkReadNotes(updateNotes) {
       if (legacyReadBool) {
         if (user.readNotifications.indexOf(user.notifications[i]) != -1) {
           legacyReadOverride = 1;
-          readNoteFound = true;
         } else {
           legacyReadOverride = 0;
+          readNoteFound = false;
         }
       }
       generateNewNoteUID(i, user.notifications[i], legacyReadOverride);
@@ -425,6 +432,12 @@ function checkInvites() {
 
 function updateFriendNav(friendListData, initIgnore) {
   let giftUserPages = ["FriendList", "PrivateFriendList"];
+  let notificationPages = ["Home", "BoughtGifts", "Confirmation", "FriendList", "Invites", "Lists", "PrivateFriendList"];
+
+  if (notificationPages.includes(pageName))
+    try {
+      checkNotifications();
+    } catch (err) {}
 
   if (initIgnore == undefined) {
     if (giftUserPages.includes(pageName)) {
@@ -582,7 +595,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
   notificationTitle.innerHTML = noteTitle;
   if (!notificationDeployed) {
     openModal(notificationModal, "noteModal", true);
-    if (pageName != "Index" || consoleOutput)
+    if (pageName != "Index" && consoleOutput)
       console.log("Notification Deployed");
   }
   notificationDeployed = true;
@@ -644,85 +657,95 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
 }
 
 function signOut(){
-  config = JSON.parse(sessionStorage.config);
-  sessionStorage.clear();
-  sessionStorage.setItem("config", JSON.stringify(config));
-  navigation(1, false);
+  if (!dbOperationInProgress) {
+    config = JSON.parse(sessionStorage.config);
+    sessionStorage.clear();
+    sessionStorage.setItem("config", JSON.stringify(config));
+    navigation(1, false);
+  } else {
+    deployNotificationModal(false, "Pending Operation In Progress",
+        "Please do not navigate until your changes are saved!", 4);
+  }
 }
 
 function navigation(navNum, loginOverride) {
-  if (loginOverride == undefined && !privateUserOverride) {
-    try {
-      if (privateUser != null) {
+  if (!dbOperationInProgress) {
+    if (loginOverride == undefined && !privateUserOverride) {
+      try {
+        if (privateUser != null) {
+          if (consoleOutput)
+            console.log("***Private***");
+          sessionStorage.setItem("validUser", JSON.stringify(privateUser));
+        } else {
+          if (consoleOutput)
+            console.log("***Normal***");
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+        }
+      } catch (err) {
         if (consoleOutput)
-          console.log("***Private***");
-        sessionStorage.setItem("validUser", JSON.stringify(privateUser));
-      } else {
-        if (consoleOutput)
-          console.log("***Normal***");
+          console.log("***Normal + Catch***");
         sessionStorage.setItem("validUser", JSON.stringify(user));
       }
-    } catch (err) {
-      if (consoleOutput)
-        console.log("***Normal + Catch***");
-      sessionStorage.setItem("validUser", JSON.stringify(user));
+
+      try {
+        sessionStorage.setItem("userArr", JSON.stringify(userArr));
+      } catch (err) {}
+    } else if (loginOverride == undefined && privateUserOverride) {
+      sessionStorage.setItem("privateList", JSON.stringify(giftUser));
+      sessionStorage.setItem("validUser", JSON.stringify(giftUser));
+      sessionStorage.setItem("validPrivateUser", JSON.stringify(user));
+      sessionStorage.setItem("userArr", JSON.stringify(userArr));
+      sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
+    } else if (userUpdateOverride != undefined) {
+      if (userUpdateOverride) {
+        sessionStorage.setItem("validUser", JSON.stringify(user));
+        sessionStorage.setItem("userArr", JSON.stringify(userArr));
+      }
     }
 
-    try {
-      sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    } catch (err) {}
-  } else if (loginOverride == undefined && privateUserOverride) {
-    sessionStorage.setItem("privateList", JSON.stringify(giftUser));
-    sessionStorage.setItem("validUser", JSON.stringify(giftUser));
-    sessionStorage.setItem("validPrivateUser", JSON.stringify(user));
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
-  } else if (userUpdateOverride != undefined) {
-    if (userUpdateOverride) {
-      sessionStorage.setItem("validUser", JSON.stringify(user));
-      sessionStorage.setItem("userArr", JSON.stringify(userArr));
+    let navLocations = [
+      "404.html",//0
+      "index.html",//1
+      "home.html",//2
+      "lists.html",//3
+      "invites.html",//4
+      "settings.html",//5
+      "notifications.html",//6
+      "boughtGifts.html",//7
+      "giftAddUpdate.html",//8
+      "friendList.html",//9
+      "privateFriendList.html",//10
+      "confirmation.html", //11
+      "faq.html",//12
+      "userAddUpdate.html",//13
+      "moderation.html",//14
+      "family.html",//15
+      "familyUpdate.html",//16
+      "moderationQueue.html",//17
+      "backup.html"];//18
+
+    if (navNum >= navLocations.length)
+      navNum = 0;
+
+    if(consoleOutput)
+      console.log("Navigating to " + navLocations[navNum]);
+
+    let fader = document.getElementById('fader');
+    let listener = function () {
+      fader.removeEventListener('animationend', listener);
+      window.location.href = navLocations[navNum];
+    };
+    fader.addEventListener('animationend', listener);
+    if (loginOverride) {
+      fader.style.background = "white";
+    } else if (loginOverride != undefined) {
+      fader.style.background = "#870b0b";
     }
+    fader.classList.add('fade-in');
+  } else {
+    deployNotificationModal(false, "Pending Operation In Progress",
+        "Please do not navigate until your changes are saved!", 4);
   }
-
-  let navLocations = [
-    "404.html",//0
-    "index.html",//1
-    "home.html",//2
-    "lists.html",//3
-    "invites.html",//4
-    "settings.html",//5
-    "notifications.html",//6
-    "boughtGifts.html",//7
-    "giftAddUpdate.html",//8
-    "friendList.html",//9
-    "privateFriendList.html",//10
-    "confirmation.html", //11
-    "faq.html",//12
-    "userAddUpdate.html",//13
-    "moderation.html",//14
-    "family.html",//15
-    "familyUpdate.html",//16
-    "moderationQueue.html",//17
-    "backup.html"];//18
-
-  if (navNum >= navLocations.length)
-    navNum = 0;
-
-  if(consoleOutput)
-    console.log("Navigating to " + navLocations[navNum]);
-
-  let fader = document.getElementById('fader');
-  let listener = function() {
-    fader.removeEventListener('animationend', listener);
-    window.location.href = navLocations[navNum];
-  };
-  fader.addEventListener('animationend', listener);
-  if (loginOverride) {
-    fader.style.background = "white";
-  } else if (loginOverride != undefined) {
-    fader.style.background = "#870b0b";
-  }
-  fader.classList.add('fade-in');
 }
 
 function openModal(openThisModal, modalName, ignoreBool){
@@ -1031,6 +1054,7 @@ function deployListEmptyNotification(dataItemText){
     liItem.appendChild(textNode);
     dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
   }
+  emptyListNoteDeployed = true;
 }
 
 function updateMaintenanceLog(locationData, detailsData) {
