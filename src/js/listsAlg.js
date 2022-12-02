@@ -10,7 +10,6 @@ let friendArr = [];
 let listeningFirebaseRefs = [];
 let userArr = [];
 
-let readNotificationsBool = false;
 let friendListEmptyBool = false;
 let secretSantaInit = false;
 
@@ -158,6 +157,8 @@ window.onload = function instantiate() {
         let i = findUIDItemInArr(data.key, userArr, true);
         if(userArr[i] != data.val() && i != -1){
           userArr[i] = data.val();
+        } else {
+          userArr.push(data.val());
         }
 
         if(data.key == user.uid){
@@ -278,7 +279,7 @@ window.onload = function instantiate() {
 
     if(friendData != null){
       try {
-        testData.remove();
+        document.getElementById('testData').remove();
       } catch (err) {}
 
       let userUid = friendData.uid;
