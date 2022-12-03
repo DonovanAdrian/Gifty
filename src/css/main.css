@@ -121,35 +121,38 @@ span {
 }
 
 span.basicBtn {
+  border-radius: 4px;
   font-weight: bold;
   position: relative;
   background: #ff8e8e;
   color: #FFF;
   transition: 0.3s;
-  border-radius: 0;
 }
 
 span.basicBtn:hover {
+  border-radius: 12px;
   background-color: #ff4c4c;
   color: #000;
 }
 
 span.basicBtnRight {
+  border-radius: 4px;
   font-weight: bold;
   position: relative;
   background: #ff8e8e;
   float: right;
   color: #FFF;
   transition: 0.3s;
-  border-radius: 0;
 }
 
 span.basicBtnRight:hover {
+  border-radius: 12px;
   background-color: #ff4c4c;
   color: #000;
 }
 
 span.dropdown {
+  border-radius: 4px;
   color: black;
   font-family: Verdana;
   display: none;
@@ -160,26 +163,29 @@ span.dropdown {
 }
 
 span.dropdown:hover {
+  border-radius: 12px;
   background-color: #ddd;
 }
 
 span.boughtBtn {
+  border-radius: 4px;
   font-weight: bold;
   position: fixed;
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
   transition: 0.3s;
-  border-radius: 0;
   z-index: 2;
 }
 
 span.boughtBtn:hover {
+  border-radius: 12px;
   background-color: #ff4c4c;
   color: #000;
 }
 
 span.addBtn {
+  border-radius: 4px;
   font-weight: bold;
   position: fixed;
   font-family: Verdana;
@@ -187,16 +193,17 @@ span.addBtn {
   background: #ff8e8e;
   color: #FFF;
   transition: 0.3s;
-  border-radius: 0;
   z-index: 2;
 }
 
 span.addBtn:hover {
+  border-radius: 12px;
   background-color: #ff4c4c;
   color: #000;
 }
 
 span.addBtnB {
+  border-radius: 4px;
   font-weight: bold;
   position: fixed;
   font-family: Verdana;
@@ -204,47 +211,50 @@ span.addBtnB {
   background: #ff8e8e;
   color: #FFF;
   transition: 0.3s;
-  border-radius: 0;
   z-index: 2;
 }
 
 span.addBtnB:hover {
+  border-radius: 12px;
   background-color: #ff4c4c;
   color: #000;
 }
 
 span.settingsBtn {
+  border-radius: 4px;
   font-weight: bold;
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
   transition: 0.3s;
-  border-radius: 0;
   z-index: 2;
 }
 
 span.settingsBtn:hover {
+  border-radius: 12px;
   background-color: #ff4c4c;
   color: #000;
 }
 
 span.faqBtn {
+  border-radius: 4px;
   font-weight: bold;
   margin: 50px;
   font-family: Verdana;
   background: #ff8e8e;
   color: #FFF;
   transition: 0.3s;
-  border-radius: 0;
   z-index: 2;
 }
 
 span.faqBtn:hover {
+  border-radius: 12px;
   background-color: #ff4c4c;
   color: #000;
 }
 
 span.modBtn {
+  border-radius: 4px;
   font-weight: bold;
   display: none;
   position: fixed;
@@ -252,16 +262,17 @@ span.modBtn {
   background: #ff8e8e;
   color: #FFF;
   transition: 0.3s;
-  border-radius: 0;
   z-index: 2;
 }
 
 span.modBtn:hover {
+  border-radius: 12px;
   background-color: #ff4c4c;
   color: #000;
 }
 
 span.familyBtn {
+  border-radius: 4px;
   font-weight: bold;
   display: none;
   position: fixed;
@@ -269,11 +280,11 @@ span.familyBtn {
   background: #ff8e8e;
   color: #FFF;
   transition: 0.3s;
-  border-radius: 0;
   z-index: 2;
 }
 
 span.familyBtn:hover {
+  border-radius: 12px;
   background-color: #ff4c4c;
   color: #000;
 }
@@ -296,38 +307,42 @@ img.leftCornerImg {
 }
 
 span.updateBtn {
+  border-radius: 4px;
   font-weight: bold;
   font-family: Verdana;
   background: #b0d4b0;
   color: #555;
   transition: 0.3s;
-  border-radius: 0;
 }
 
 span.updateBtn:hover {
+  border-radius: 12px;
   background-color: #00d639;
   color: #000;
 }
 
 span.giftBackBtn {
+  border-radius: 4px;
   font-weight: bold;
   font-family: Verdana;
   background: #d4b0b0;
   color: #555;
   transition: 0.3s;
-  border-radius: 0;
 }
 
 span.giftBackBtn:hover {
+  border-radius: 12px;
   background-color: #ff4c4c;
   color: #000;
 }
 
 span.btnDisabled {
+  border-radius: 4px;
   background: #c4c4c4;
 }
 
 span.btnDisabled:hover {
+  border-radius: 12px;
   background: #c48686;
 }
 
@@ -349,6 +364,7 @@ div.topnav ul{
 }
 
 div.topnav ul li a {
+  border-radius: 4px;
   font-weight: bold;
   background-color: #008222;
   display: block;
@@ -359,19 +375,23 @@ div.topnav ul li a {
 }
 
 div.topnav ul li a:hover:not(.active) {
+  border-radius: 12px;
   background-color: #00d639;
   color: black;
 }
 
 div.topnav ul li a.active {
+  border-radius: 8px;
   background-color: #00d138;
 }
 
 div.topnav ul li a.signOut {
+  border-radius: 4px;
   background-color: #ff3923;
 }
 
 div.topnav ul li a.signOut:hover:not(.active) {
+  border-radius: 12px;
   background-color: #f96554;
 }
 
@@ -503,6 +523,7 @@ ul li.santa::before {
 }
 
 .modal-content {
+  border-radius: 14px;
   font-family: Verdana;
   position: relative;
   background-color: #fefefe;
@@ -579,6 +600,8 @@ ul li.santa::before {
 }
 
 .modal-header {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
   padding: 2px 16px;
   background-color: #5cb85c;
   color: white;
@@ -589,6 +612,8 @@ ul li.santa::before {
 }
 
 .modal-footer {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
   background-color: #5cb85c;
   color: white;
 }
