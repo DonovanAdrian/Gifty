@@ -130,8 +130,9 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
+        console.log("Changed Notification" + data.val().uid + " " + data.val().read);
         notificationArr[data.key] = data.val();
-        changeNotificationElement(data.val().data, data.val().uid, data.val().read, data.key);
+        changeNotificationElement(data.val(), data.key);
       });
 
       postRef.on('child_removed', function (data) {
@@ -156,15 +157,8 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_removed', function (data) {
-        if(consoleOutput)
-          console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        if(consoleOutput)
-          console.log(inviteArr);
-
         if (inviteArr.length == 0) {
-          if(consoleOutput)
-            console.log("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -329,7 +323,6 @@ window.onload = function instantiate() {
             console.log("Unknown Notification String Received...");
           notificationPage = "noteERROR";
         }
-
         initNotificationElement(liElem, notificationPage, notificationData, notificationDataTitle,
             notificationDetails, friendUserData, noteKey);
       } else {
@@ -392,22 +385,25 @@ window.onload = function instantiate() {
       if (notificationData.read == 1) {
         liItem.className += " checked";
       }
-      notificationViewTitle.innerHTML = notificationElemTitle;
-      notificationViewDetails.innerHTML = notificationDetails;
     } else {
-      if (notificationPage == "noteErrorUser") {
-        notificationViewTitle.innerHTML = "Notification From A Deleted User";
-        notificationViewDetails.innerHTML = "Unfortunately the user that sent this notification deleted their profile...";
-      } else if (notificationPage == "noteErrorLegacy") {
-        if (!noteErrorBool) {
-          noteErrorBool = true;
-          initializeNukeBtn();
-        }
-      }
       liItem.className += " highSev";
     }
 
     liItem.onclick = function () {
+      if (noteKey != null) {
+        notificationViewTitle.innerHTML = notificationElemTitle;
+        notificationViewDetails.innerHTML = notificationDetails;
+      } else {
+        if (notificationPage == "noteErrorUser") {
+          notificationViewTitle.innerHTML = "Notification From A Deleted User";
+          notificationViewDetails.innerHTML = "Unfortunately the user that sent this notification deleted their profile...";
+        } else if (notificationPage == "noteErrorLegacy") {
+          if (!noteErrorBool) {
+            noteErrorBool = true;
+            initializeNukeBtn();
+          }
+        }
+      }
       if (notificationPage == "privateMessage" && friendUserData != -1) {
         notificationViewPage.innerHTML = "To reply to this message, click here!";
         notificationViewPage.onclick = function(){
