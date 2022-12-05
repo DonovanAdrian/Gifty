@@ -257,7 +257,7 @@ window.onload = function instantiate() {
     let ticketTitleSuffix = "";
 
     liItem.className = "gift";
-    if (ticketData.details.includes("Critical Error")) {
+    if (ticketData.details.includes("Critical Error") || ticketData.details.includes("Critical Initialization Error")) {
       liItem.className += " highSev";
       ticketTitleSuffix = " - !!Critical Error Occurred!!";
     } else if (ticketData.details.includes("Attempting to delete user")) {
