@@ -132,7 +132,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        let i = findUIDItemInArr(data.key, userArr);
+        let i = findUIDItemInArr(data.key, userArr, true);
         if(userArr[i] != data.val() && i != -1){
           if(consoleOutput)
             console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
@@ -146,7 +146,7 @@ window.onload = function instantiate() {
         if(data.key == user.uid){
           user = data.val();
           updateConfirmationButton(user.friends);
-
+          checkNotifications();
           if (user.invites != undefined) {
             inviteArr = user.invites;
           } else {
@@ -347,17 +347,19 @@ window.onload = function instantiate() {
       friendFriendArr = inviteData.friends;
     }
 
-    friendFriendArr.push(user.uid);
-    if(consoleOutput) {
-      console.log("Added current user (" + user.uid + ") to friend's Friend List:");
-      console.log(friendFriendArr);
+    if (!friendFriendArr.includes(user.uid)) {
+      friendFriendArr.push(user.uid);
+      if (consoleOutput) {
+        console.log("Added current user (" + user.uid + ") to friend's Friend List:");
+        console.log(friendFriendArr);
+      }
     }
 
     if (!friendFriendArr.includes(user.uid)) {
       deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
-        "friend list! Please try again...", 4);
+          "friend list! Please try again...", 4);
       updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
-        inviteData.userName + " and FAILED! (There was an issue with " + inviteData.userName + "'s friend list)");
+          inviteData.userName + " and FAILED! (There was an issue with " + inviteData.userName + "'s friend list)");
       return;
     }
 
@@ -367,13 +369,19 @@ window.onload = function instantiate() {
       userFriendArr = friendArr;
     }
 
-    userFriendArr.push(inviteData.uid);
+    if (!userFriendArr.includes(inviteData.uid)) {
+      userFriendArr.push(inviteData.uid);
+      if (consoleOutput) {
+        console.log("Added friend user (" + inviteData.uid + ") to current user's Friend List:");
+        console.log(userFriendArr);
+      }
+    }
 
     if (!userFriendArr.includes(inviteData.uid)) {
       deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
-        "friend list! Please try again...", 4);
+          "friend list! Please try again...", 4);
       updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
-        inviteData.userName + " and FAILED! (There was an issue with " + user.userName + "'s friend list)");
+          inviteData.userName + " and FAILED! (There was an issue with " + user.userName + "'s friend list)");
       return;
     }
 
@@ -429,9 +437,10 @@ window.onload = function instantiate() {
 
     if(toDelete != -1) {
       inviteArr.splice(toDelete, 1);
-
-      if (inviteArr.includes(uid)) {
-        verifyDeleteBool = false;
+      for (let i = 0; i < inviteArr.length; i++) {
+        if (inviteArr[i] == uid) {
+          verifyDeleteBool = false;
+        }
       }
     } else {
       verifyDeleteBool = false;
@@ -444,12 +453,18 @@ window.onload = function instantiate() {
         initializedUsers.splice(i, 1);
       }
 
+      if (consoleOutput) {
+        console.log("New User Invites:");
+        console.log(inviteArr);
+      }
+
       let inviteNoteIndex = findUIDItemInArr(uid, userArr);
       let noteSplit = [];
       let noteSplitCount = 0;
       if(user.notifications != undefined)
-        for(let x = 0; x < user.notifications.length; x++)
-          if(user.notifications[x].data.includes(userArr[inviteNoteIndex].name)) {
+        for(let x = 0; x < user.notifications.length; x++) {
+          if (user.notifications[x].data.includes(userArr[inviteNoteIndex].uid)) {
+            noteSplit = user.notifications[x].data.split(",,,");
             for (let i = 0; i < noteSplit.length; i++) {
               noteSplit[i] = noteSplit[i].replaceAll('"', '');
               if (noteSplit[i] != "") {
@@ -461,10 +476,13 @@ window.onload = function instantiate() {
                 read: 1
               });
           }
+          noteSplitCount = 0;
+        }
 
-      if(consoleOutput) {
-        console.log("New User Invites:");
-        console.log(inviteArr);
+      for (let i = 0; i < inviteArr.length; i++) {
+        if (inviteArr[i] == uid) {
+          inviteArr.splice(i, 1);
+        }
       }
 
       firebase.database().ref("users/" + user.uid).update({
@@ -498,10 +516,10 @@ window.onload = function instantiate() {
       removeInviteElement(uid);
       if (finalInviteData != null) {
         deployNotificationModal(false, "Invite Accepted!", "Your invite from " +
-          inviteData.name + " was successfully accepted!");
+            inviteData.name + " was successfully accepted!");
       } else {
         deployNotificationModal(false, "Invite Deleted!", "Your invite from " +
-          inviteData.name + " was successfully deleted!");
+            inviteData.name + " was successfully deleted!");
       }
       inviteDeleteLocal = false;
     } else {
@@ -511,9 +529,9 @@ window.onload = function instantiate() {
       } else {
         deleteInviteRun = 0;
         deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
-          "friend list! Please try again...", 4);
+            "friend list! Please try again...", 4);
         updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
-          inviteData.userName + " and FAILED! (There was an issue with " + user.userName + "'s locally stored friend list)");
+            inviteData.userName + " and FAILED! (There was an issue with " + user.userName + "'s locally stored friend list)");
       }
     }
   }
