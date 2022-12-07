@@ -12,6 +12,8 @@ let listeningFirebaseRefs = [];
 let userArr = [];
 let commonFriendArr = [];
 let initializedUsers = [];
+let friendUserNameList = [];
+let friendShareCodeList = [];
 
 let invitesFound = false;
 let potentialRemoval = false;
@@ -207,6 +209,7 @@ window.onload = function instantiate() {
         if(data.key == user.uid){
           user = data.val();
           updateFriendNav(user.friends);
+          refreshFriendInviteArrays();
           friendArr = user.friends;
           if (potentialRemoval) {
             findRemovedUser(oldFriendArr, friendArr);
@@ -335,7 +338,6 @@ window.onload = function instantiate() {
     }
 
     if(friendData != null) {
-      console.log("Updating " + friendData.name);
       let liItemUpdate = document.getElementById("user" + friendData.uid);
       if (friendData.moderatorInt > 0) {
         liItemUpdate.innerHTML = friendData.name + " (Moderator)";
@@ -547,7 +549,7 @@ window.onload = function instantiate() {
       deletePendingUid = "";
       removeFriendElement(uid);
       user.friends = friendArr;
-      generateAddUserBtn();
+      refreshFriendInviteArrays();
       deployNotificationModal(false, "Friend Removed!", "The user " + delFriendData.name +
           " has been successfully removed from your friend list!");
       friendDeleteLocal = false;
@@ -713,12 +715,9 @@ window.onload = function instantiate() {
     }
   }
 
-  function generateAddUserBtn(){
-    let commonFriendIndex;
-    let userBlackList = [];
-    let friendUserNameList = [];
-    let friendShareCodeList = [];
-    let upperCaseUserArr = [];
+  function refreshFriendInviteArrays() {
+    friendUserNameList = [];
+    friendShareCodeList = [];
 
     if(user.friends != undefined || user.friends != null) {
       for (let i = 0; i < user.friends.length; i++) {
@@ -731,6 +730,14 @@ window.onload = function instantiate() {
         }
       }
     }
+  }
+
+  function generateAddUserBtn(){
+    let commonFriendIndex;
+    let userBlackList = [];
+    let upperCaseUserArr = [];
+
+    refreshFriendInviteArrays();
 
     for (let b = 0; b < userArr.length; b++){
       upperCaseUserArr.push(userArr[b].userName.toUpperCase());
