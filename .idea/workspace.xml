@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="77ae722c-e8b2-463c-8bb6-522420418add" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/js/invitesAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/invitesAlg.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/notificationsAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/notificationsAlg.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,7 +199,11 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "node.js.selected.package.tslint": "(autodetect)"
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -383,6 +388,7 @@
       <workItem from="1665460345745" duration="85723000" />
       <workItem from="1669353441044" duration="1184000" />
       <workItem from="1669356510922" duration="12043000" />
+      <workItem from="1670387139567" duration="627000" />
     </task>
     <servers />
   </component>

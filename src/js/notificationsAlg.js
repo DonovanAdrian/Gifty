@@ -327,7 +327,7 @@ window.onload = function instantiate() {
             notificationDetails, friendUserData, noteKey);
       } else {
         if (consoleOutput)
-          console.log("SenderUID not found!");
+          console.log("SenderUID not found for notification UID " + notificationData.uid);
         notificationPage = "noteErrorUser";
         initNotificationElement(liElem, notificationPage, notificationData);
       }
