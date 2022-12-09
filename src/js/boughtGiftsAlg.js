@@ -14,8 +14,6 @@ let userBoughtGiftsUsersArr = [];
 let initializedGiftsArr = [];
 let itemColor = [" highSev", " mediumSev", " lowSev"];
 
-let readNotificationsBool = false;
-
 let dataCounter = 0;
 let moderationSet = -1;
 let commonLoadingTimerInt = 0;
@@ -52,37 +50,6 @@ let userInvites;
 
 function getCurrentUser(){
   getCurrentUserCommon();
-
-  if (user.readNotifications == undefined) {
-    if(consoleOutput)
-      console.log("Read Notifications Not Found");
-  } else {
-    readNotificationsBool = true;
-  }
-
-  if (user.notifications == undefined) {
-    if(consoleOutput)
-      console.log("Notifications Not Found");
-  } else if (user.notifications != undefined) {
-    if (readNotificationsBool){
-      if (user.notifications.length > 0 && user.readNotifications.length != user.notifications.length) {
-        flickerNotification();
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      } else {
-        notificationBtn.src = "img/bellNotificationOff.png";
-        notificationBtn.onclick = function() {
-          navigation(6);//Notifications
-        }
-      }
-    } else if (user.notifications.length > 0) {
-      flickerNotification();
-      notificationBtn.onclick = function() {
-        navigation(6);//Notifications
-      }
-    }
-  }
 
   try {
     userBoughtGiftsArr = JSON.parse(sessionStorage.boughtGifts);
@@ -138,7 +105,7 @@ window.onload = function instantiate() {
       }
     } else {
       deployNotificationModal(false, "Critical Error!", "There has been a critical error, redirecting " +
-        "back home...", 4, 2);
+          "back home...", 4, 2);
     }
   }
 
@@ -161,6 +128,8 @@ window.onload = function instantiate() {
         if(userArr[i] != data.val() && i != -1){
           checkGiftLists(data.val());
           userArr[i] = data.val();
+        } else {
+          userArr.push(data.val());
         }
 
         if(data.key == user.uid){
@@ -284,7 +253,7 @@ window.onload = function instantiate() {
   function createGiftElement(giftData, giftOwnerUID, giftOwner){
     let giftOwnerTrim = "";
     try{
-      testData.remove();
+      document.getElementById('testData').remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
@@ -297,6 +266,7 @@ window.onload = function instantiate() {
         break;
       }
     }
+    giftOwnerTrim = giftOwnerTrim.replace(" ", "");
     if (lastUser != giftOwnerTrim) {
       if (colorIndex < 2) {
         colorIndex++;
