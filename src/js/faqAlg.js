@@ -7,6 +7,7 @@
 let faqElements = [];
 let userArr = [];
 let supportArr = [];
+let listeningFirebaseRefs = [];
 
 let offlineSpan;
 let offlineModal;
@@ -43,7 +44,7 @@ window.onload = function instantiate() {
   emailBtn.onclick = function () {
     let supportStr = genSupport();
     window.open('mailto:gifty.application@gmail.com?subject=Gifty Support #' + supportStr +
-      '&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, ' + user.userName);
+        '&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, ' + user.userName);
   };
 
   function genSupport() {
