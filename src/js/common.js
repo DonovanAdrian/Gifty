@@ -4,13 +4,18 @@
  * with written consent under any circumstance.
  */
 
+//User Configurable Variables
+let logoutReminder = 300; //default 300, 300 5 mins
+let logoutLimit = 900; //default 900, 900 15 mins, 600 10 mins
+let debugElementIntegrity = false;
+
 let listenDBOpType = [];
 let listenExpectedUIDs = [];
+let globalDBKeyChangesArr = [];
+let globalDBDataChangesArr = [];
 let buttonAlternatorTimer = 0;
 let buttonAlternatorInt = 0;
 let buttonOpacLim = 7;
-let logoutReminder = 300; //default 300, 300 5 mins
-let logoutLimit = 900; //default 900, 900 15 mins, 600 10 mins
 let maxListenForDB = 10;
 let deployedNoteTimer = 0;
 let setWindowNoteTimer = 0;
@@ -27,6 +32,7 @@ let notificationDeployed = false;
 let modalClosingBool = false;
 let checkNoteOnDBInit = false;
 let emptyListNoteDeployed = false;
+let listeningForDBChanges = false;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
@@ -46,42 +52,44 @@ let analytics;
 
 
 function verifyElementIntegrity(arr){
-  verifiedElements = [];
+  if (debugElementIntegrity) {
+    verifiedElements = [];
 
-  try {
-    if (arr.length < 1)
-      if(consoleOutput)
-        console.log("Element List Empty!");
-  } catch (err) {
-    if(consoleOutput)
-      console.log("Element List Empty!");
-    arr = [];
-  }
-
-  if(consoleOutput)
-    console.log("Checking " + arr.length + " Elements...");
-
-  for(let i = 0; i < arr.length; i++){
     try {
-      if (arr[i].innerHTML == undefined) {
+      if (arr.length < 1)
         if (consoleOutput)
-          console.log("WARNING: " + i + " UNDEFINED!");
-      } else if (arr[i].innerHTML == null) {
-        if (consoleOutput)
-          console.log("WARNING: " + i + " NULL!");
-      } else {
-        verifiedElements.push(arr[i]);
-        if (consoleOutput)
-          console.log("Verified Element!");
-      }
+          console.log("Element List Empty!");
     } catch (err) {
-      if(consoleOutput)
-        console.log("ERROR: Element " + i + " " + err.toString());
+      if (consoleOutput)
+        console.log("Element List Empty!");
+      arr = [];
     }
-  }
 
-  if(consoleOutput)
-    console.log("Verified " + verifiedElements.length + " Elements!");
+    if (consoleOutput)
+      console.log("Checking " + arr.length + " Elements...");
+
+    for (let i = 0; i < arr.length; i++) {
+      try {
+        if (arr[i].innerHTML == undefined) {
+          if (consoleOutput)
+            console.log("WARNING: " + i + " UNDEFINED!");
+        } else if (arr[i].innerHTML == null) {
+          if (consoleOutput)
+            console.log("WARNING: " + i + " NULL!");
+        } else {
+          verifiedElements.push(arr[i]);
+          if (consoleOutput)
+            console.log("Verified Element!");
+        }
+      } catch (err) {
+        if (consoleOutput)
+          console.log("ERROR: Element " + i + " " + err.toString());
+      }
+    }
+
+    if (consoleOutput)
+      console.log("Verified " + verifiedElements.length + " Elements!");
+  }
 }
 
 function fadeInPage() {
@@ -110,6 +118,8 @@ function initializeFadeOut() {
 }
 
 function commonInitialization(){
+  let commonDBInitCount = 0;
+  let commonDBInitLimit = 5;
   if (consoleOutput) {
     let today = new Date();
     console.log(today);
@@ -130,8 +140,13 @@ function commonInitialization(){
 
     dbInitInterval = setInterval(function(){
       dbInitTimer = dbInitTimer + 1000;
-      if(dbInitTimer >= 3000){
+      if (dbInitTimer >= 5000 && commonDBInitCount < commonDBInitLimit) {
+        commonDBInitCount++;
         initializeDB(config);
+        clearInterval(dbInitInterval);
+      } else if (commonDBInitCount >= commonDBInitLimit) {
+        console.log("ERROR! There were significant issues experienced trying to initialize the connection to the " +
+            "database! Please refresh the page or test your connection!");
         clearInterval(dbInitInterval);
       }
     }, 1000);
@@ -432,12 +447,6 @@ function checkInvites() {
 
 function updateFriendNav(friendListData, initIgnore) {
   let giftUserPages = ["FriendList", "PrivateFriendList"];
-  let notificationPages = ["Home", "BoughtGifts", "Confirmation", "FriendList", "Invites", "Lists", "PrivateFriendList"];
-
-  if (notificationPages.includes(pageName))
-    try {
-      checkNotifications();
-    } catch (err) {}
 
   if (initIgnore == undefined) {
     if (giftUserPages.includes(pageName)) {
@@ -665,6 +674,178 @@ function signOut(){
   } else {
     deployNotificationModal(false, "Pending Operation In Progress",
         "Please do not navigate until your changes are saved!", 4);
+  }
+}
+
+function findObjectChanges(objInputOld, objInputNew, limiterBool) {
+  let objectKeysChanged = [];
+  let objectDataChanged = [];
+
+  if (limiterBool == undefined)
+    limiterBool = false;
+
+  for (let oldObjKey in objInputOld) {
+    if (!objInputOld.hasOwnProperty(oldObjKey)) continue;
+
+    let oldObjValue = objInputOld[oldObjKey];
+    let newObjValue = objInputNew[oldObjKey];
+    if (oldObjValue == undefined || newObjValue == undefined) {
+      objectKeysChanged.push(oldObjKey);
+      objectDataChanged.push(newObjValue);
+    } else {
+      if (oldObjValue != newObjValue) {
+        if (oldObjValue.length == undefined) {
+          objectKeysChanged.push(oldObjKey);
+          objectDataChanged.push(newObjValue);
+        } else {
+          let arrDataChanged = checkArrayChanges(oldObjValue, newObjValue);
+          if (typeof arrDataChanged != "boolean") {
+            objectKeysChanged.push(oldObjKey);
+            objectDataChanged.push(arrDataChanged);
+          } else if (arrDataChanged) {
+            objectKeysChanged.push(oldObjKey);
+            objectDataChanged.push(newObjValue);
+          }
+        }
+      }
+    }
+  }
+
+  if (!limiterBool) {
+    if (consoleOutput)
+      if (objectKeysChanged.length != 0) {
+        console.log("Key(s) Changed:");
+        console.log(objectKeysChanged);
+        console.log(objectDataChanged);
+      }
+
+    for (let i = 0; i < objectKeysChanged.length; i++) {
+      globalDBKeyChangesArr.push(objectKeysChanged[i]);
+      globalDBDataChangesArr.push(objectDataChanged[i]);
+    }
+  }
+
+  return objectKeysChanged;
+}
+
+function checkArrayChanges(oldArrInput, newArrInput) {
+  let changedArrItems = [];
+
+  if (oldArrInput == undefined && newArrInput == undefined) {
+    return false;
+  } else if (oldArrInput == undefined || newArrInput == undefined) {
+    return true;
+  } else if (oldArrInput.length == undefined && newArrInput.length == undefined) {
+    return false;
+  } else if (oldArrInput.length == undefined || newArrInput.length == undefined) {
+    return true;
+  } else if (oldArrInput.length != newArrInput.length) {
+    return true;
+  }
+
+  for (let i = 0; i < oldArrInput.length; i++) {
+    if (typeof oldArrInput[i] != "object") {
+      if (oldArrInput[i] != newArrInput[i]) {
+        return true;
+      }
+    } else {
+      changedArrItems = findObjectChanges(oldArrInput[i], newArrInput[i], true);
+      if (changedArrItems.length != 0) {
+        if (oldArrInput[i].uid != undefined)
+          return oldArrInput[i].uid;
+        else
+          return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function listenForDBChanges(dbChangeType, expectedUID) {
+  listenDBOpType.push(dbChangeType);
+  listenExpectedUIDs.push(expectedUID);
+
+  listeningForDBChanges = true;
+  clearInterval(listenForDBInterval);
+  listenForDBTimer = 0;
+  listenForDBInterval = setInterval(function(){
+    listenForDBTimer = listenForDBTimer + 1;
+    if (globalDBKeyChangesArr.length != 0) {
+      if (consoleOutput)
+        console.log("Checking For Changes...");
+      checkGlobalDBChanges();
+    }
+    if(listenForDBTimer >= maxListenForDB){
+      dbOperationInProgress = false;
+      deployNotificationModal(false, "Pending Operation Failed!",
+          "Your pending changes were NOT successfully saved. You may have a slow connection or be " +
+          "experiencing an error. Please try again or contact a moderator!", 5);
+      updateMaintenanceLog(pageName, "A user experienced degraded performance or an error with " +
+          dbChangeType + " and UID " + expectedUID);
+      clearInterval(listenForDBInterval);
+      listeningForDBChanges = false;
+      listenForDBTimer = 0;
+    }
+  }, 1000);
+}
+
+function checkGlobalDBChanges() {
+  if (globalDBKeyChangesArr.length != 0)
+    for (let i = 0; i < globalDBKeyChangesArr.length; i++) {
+      if (listenExpectedUIDs.length != 0)
+        getDBOpType(globalDBDataChangesArr[i], globalDBKeyChangesArr[i]);
+      else
+        break;
+    }
+}
+
+function getDBOpType(dataChangeInput, keyChangeInput) {
+  switch (keyChangeInput) {
+    case "giftList":
+    case "privateList":
+      cancelDBChangeListener("Buy", dataChangeInput);
+      break;
+  }
+}
+
+function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
+  let updateArrs = false;
+  let receivedUIDCount = 0;
+  let removalLocation = 0;
+
+  if (overrideBool == undefined) {
+    overrideBool = false;
+  }
+
+  for (let i = 0; i < listenExpectedUIDs.length; i++) {
+    if (listenExpectedUIDs[i] == receivedUID) {
+      if (listenDBOpType[i] == expectedChange) {
+        updateArrs = true;
+        removalLocation = i;
+      }
+      receivedUIDCount++;
+    }
+  }
+
+  if (receivedUIDCount == 1 && overrideBool) {
+    updateArrs = true;
+  }
+
+  if (updateArrs) {
+    listenExpectedUIDs.splice(removalLocation, 1);
+    listenDBOpType.splice(removalLocation, 1);
+
+    if (listenExpectedUIDs.length == 0) {
+      if (consoleOutput)
+        console.log("All Expected Changes Received!");
+      clearInterval(listenForDBInterval);
+      listeningForDBChanges = false;
+      listenExpectedUIDs = [];
+      listenDBOpType = [];
+      globalDBKeyChangesArr = [];
+      globalDBDataChangesArr = [];
+    }
   }
 }
 
@@ -943,6 +1124,24 @@ function isAlph(rChar){
     default:
       return false;
   }
+}
+
+function findFirstNameInFullName(nameInpStr){
+  let firstNameFound = nameInpStr;
+  let returnFirstName = "";
+  for (let i = 0; i < nameInpStr.length; i++) {
+    if (nameInpStr[i] != " ") {
+      returnFirstName = returnFirstName + nameInpStr[i];
+    } else {
+      break;
+    }
+  }
+
+  if (returnFirstName == "") {
+    returnFirstName = firstNameFound;
+  }
+
+  return returnFirstName;
 }
 
 function findUIDInString(input){
