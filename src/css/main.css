@@ -949,7 +949,7 @@ ul li.santa::before {
   }
 
   ul li.spacer {
-    padding: 25px 6px 25px 30px;
+    padding: 35px 6px 25px 30px;
     font-size: 13px;
   }
 }
@@ -1101,7 +1101,7 @@ ul li.santa::before {
   }
 
   ul li.spacer {
-    padding: 25px 6px 25px 30px;
+    padding: 45px 6px 25px 30px;
     font-size: 15px;
   }
 }
@@ -1249,7 +1249,7 @@ ul li.santa::before {
   }
 
   ul li.spacer {
-    padding: 30px 8px 30px 40px;
+    padding: 55px 8px 30px 40px;
     font-size: 17px;
   }
 }
@@ -1405,7 +1405,7 @@ ul li.santa::before {
   }
 
   ul li.spacer {
-    padding: 35px 8px 35px 40px;
+    padding: 55px 8px 35px 40px;
     font-size: 22px;
   }
 }
@@ -1561,7 +1561,7 @@ ul li.santa::before {
   }
 
   ul li.spacer {
-    padding: 40px 8px 40px 40px;
+    padding: 65px 8px 40px 40px;
     font-size: 24px;
   }
 }
@@ -1717,7 +1717,7 @@ ul li.santa::before {
   }
 
   ul li.spacer {
-    padding: 40px 8px 40px 40px;
+    padding: 75px 8px 40px 40px;
     font-size: 27px;
   }
 }
