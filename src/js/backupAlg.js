@@ -88,7 +88,7 @@ window.onload = function instantiate() {
   verifyElementIntegrity(backupElements);
 
   deployNotificationModal(false, "Backup Functionality", "Please note that backup functionality is not yet available. Feel free to take a look around at what's" +
-    " currently available on this page and stay tuned!",4);
+      " currently available on this page and stay tuned!",4);
   entireDB = firebase.database().ref("/");
   backupInitial = firebase.database().ref("backup/");
   userInitial = firebase.database().ref("users/");
@@ -108,8 +108,8 @@ window.onload = function instantiate() {
         exportBtn.onclick = function () {
           //exportBackup();
           deployNotificationModal(true, "Backup Functionality", "Please note that backup functionality is " +
-            "not yet available. Feel free to take a look around at what's currently available on this page and stay " +
-            "tuned!", 4);
+              "not yet available. Feel free to take a look around at what's currently available on this page and stay " +
+              "tuned!", 4);
         }
 
         exportBtn.innerHTML = "Export Backup";
@@ -137,16 +137,16 @@ window.onload = function instantiate() {
           */
 
           deployNotificationModal(true, "Backup Functionality", "Please note that backup functionality is " +
-            "not yet available. Feel free to take a look around at what's currently available on this page and stay " +
-            "tuned!", 4);
+              "not yet available. Feel free to take a look around at what's currently available on this page and stay " +
+              "tuned!", 4);
         });
         importBtn.innerHTML = "Import Backup";
         exportBtn.className = "basicBtn btnDisabled";
         importBtn.className = "basicBtn btnDisabled";
       } else {
         lastBackup.innerHTML = "Last Backup: " + lastBackupWhen +
-          "<br /><br /> Mobile Device Detected!<br /><br /> " +
-          "Mobile Devices Are Not Allowed To Export Or Import Backups.";
+            "<br /><br /> Mobile Device Detected!<br /><br /> " +
+            "Mobile Devices Are Not Allowed To Export Or Import Backups.";
 
         exportBtn.className += " btnDisabled";
         exportBtn.innerHTML = "Export Backup Disabled";
@@ -228,16 +228,44 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-        if(data.key == user.uid){
-          user = data.val();
+        let i = findUIDItemInArr(data.key, userArr, true);
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            userArr[i] = data.val();
+
+            if (data.key == user.uid) {
+              user = data.val();
+            }
+          }
+        } else {
+          userArr.push(data.val());
+
+          if (data.key == user.uid) {
+            user = data.val();
+          }
         }
       });
 
       postRef.on('child_changed', function (data) {
-        if(data.key == user.uid){
-          user = data.val();
-          updateFriendNav(user.friends);
-          console.log("Current User Updated");
+        let i = findUIDItemInArr(data.key, userArr, true);
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            userArr[i] = data.val();
+
+            if(data.key == user.uid){
+              user = data.val();
+              updateFriendNav(user.friends);
+              if(consoleOutput)
+                console.log("Current User Updated");
+            }
+          }
+        }
+      });
+
+      postRef.on('child_removed', function (data) {
+        let i = findUIDItemInArr(data.key, userArr);
+        if (i != -1) {
+          userArr.splice(i, 1);
         }
       });
     };
@@ -279,7 +307,7 @@ window.onload = function instantiate() {
 
   function createKeyElement(keyName, keyData) {
     try {
-      testData.remove();
+      document.getElementById('testData').remove();
     } catch (err) {}
 
     compileNLevelKeyElements(keyData);
@@ -524,11 +552,11 @@ window.onload = function instantiate() {
         processBackupData(firstCol, secondCol, thirdCol);
       } else {
         deployNotificationModal(true, "Import Error!", "File Import Error! This backup file is not in the " +
-          "correct format! \n\nError Code: 200", 4);
+            "correct format! \n\nError Code: 200", 4);
       }
     } else {
       deployNotificationModal(true, "Import Error!", "File Import Error! This backup file is not in the" +
-        "correct format! \n\nError Code: 300", 4);
+          "correct format! \n\nError Code: 300", 4);
     }
   }
 
@@ -687,7 +715,7 @@ window.onload = function instantiate() {
         primaryHandOffObj = tempObj;
         console.log(primaryHandOffObj);
         if (Object.keys(secondaryHandOffObj).length !== 0 && Object.keys(primaryHandOffObj).length == 3 &&
-          level == 2) {
+            level == 2) {
           secondaryHandOffObj[parentStringArr[parentStringArr.length - 1]] = primaryHandOffObj;
           primaryHandOffObj = secondaryHandOffObj;
           secondaryHandOffObj = {};
@@ -695,7 +723,7 @@ window.onload = function instantiate() {
           console.log(primaryHandOffObj);
         }
       } else if (Object.keys(secondaryHandOffObj).length !== 0 && Object.keys(primaryHandOffObj).length == 0 &&
-        parentStringArr.length == 1) {
+          parentStringArr.length == 1) {
         primaryHandOffObj = secondaryHandOffObj;
         secondaryHandOffObj = {};
         console.log(primaryHandOffObj);
