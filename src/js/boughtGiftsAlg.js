@@ -12,7 +12,7 @@ let userBoughtGiftsArr = [];
 let userBoughtGiftsUIDs = [];
 let userBoughtGiftsUsersArr = [];
 let initializedGiftsArr = [];
-let itemColor = [" highSev", " mediumSev", " lowSev"];
+let itemColor = [" highSev", " lowSev"];
 
 let dataCounter = 0;
 let moderationSet = -1;
@@ -209,7 +209,7 @@ window.onload = function instantiate() {
     if(newGiftList == undefined){}
     else if(newGiftList != undefined) {
       for (let i = 0; i < userBoughtGiftsArr.length; i++) {
-        let a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newGiftList);
+        let a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newGiftList, true);
         if (a != -1) {
           checkGiftData(userBoughtGiftsArr[i], newGiftList[a], userBoughtGiftsUIDs[i], updatedUserData.name);
         }
@@ -252,6 +252,7 @@ window.onload = function instantiate() {
 
   function createGiftElement(giftData, giftOwnerUID, giftOwner){
     let giftOwnerTrim = "";
+    let previousGiftOwnerTrim = "";
     try{
       document.getElementById('testData').remove();
     } catch (err) {}
@@ -261,14 +262,15 @@ window.onload = function instantiate() {
     initGiftElement(liItem, giftData, giftOwnerUID, giftOwner);
     for (let i = 0; i < giftOwner.length; i++) {
       if (giftOwner[i] != "(") {
+        previousGiftOwnerTrim = giftOwnerTrim;
         giftOwnerTrim = giftOwnerTrim + giftOwner[i];
       } else {
+        giftOwnerTrim = previousGiftOwnerTrim;
         break;
       }
     }
-    giftOwnerTrim = giftOwnerTrim.replace(" ", "");
     if (lastUser != giftOwnerTrim) {
-      if (colorIndex < 2) {
+      if (colorIndex < itemColor.length - 1) {
         colorIndex++;
       } else {
         colorIndex = 0;
@@ -294,7 +296,7 @@ window.onload = function instantiate() {
   }
 
   function initGiftElement(liItem, giftData, giftOwnerUID, giftOwner) {
-    let giftOwnerIndex = findUIDItemInArr(giftOwnerUID, userArr);
+    let giftOwnerIndex = findUIDItemInArr(giftOwnerUID, userArr, true);
     let giftOwnerData = userArr[giftOwnerIndex];
 
     liItem.className = "gift";
