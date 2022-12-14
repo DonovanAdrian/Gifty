@@ -8,6 +8,7 @@
 let logoutReminder = 300; //default 300, 300 5 mins
 let logoutLimit = 900; //default 900, 900 15 mins, 600 10 mins
 let debugElementIntegrity = false;
+let redirectWarningBool = true;
 
 let listenDBOpType = [];
 let listenExpectedUIDs = [];
@@ -22,6 +23,7 @@ let setWindowNoteTimer = 0;
 let listenForDBTimer = 0;
 let consoleOutput = false;
 let dbOperationInProgress = false;
+let showSuccessfulDBOperation = false;
 let userUpdateOverride = false;
 let loadingTimerCancelled = false;
 let userCreationOverride = false;
@@ -32,7 +34,6 @@ let notificationDeployed = false;
 let modalClosingBool = false;
 let checkNoteOnDBInit = false;
 let emptyListNoteDeployed = false;
-let listeningForDBChanges = false;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
@@ -147,6 +148,11 @@ function commonInitialization(){
       } else if (commonDBInitCount >= commonDBInitLimit) {
         console.log("ERROR! There were significant issues experienced trying to initialize the connection to the " +
             "database! Please refresh the page or test your connection!");
+        try {
+          deployNotificationModal(false, "Database Connection Error!", "It appears " +
+              "that you are experiencing connection issues! Ensure that you have a fast connection, then close and " +
+              "reopen this browser tab.", 6);
+        } catch (err) {}
         clearInterval(dbInitInterval);
       }
     }, 1000);
@@ -200,7 +206,7 @@ function commonInitialization(){
   if (dataListChecker != null && !emptyListNoteDeployed) {
     commonLoadingTimer = setInterval(function(){
       commonLoadingTimerInt = commonLoadingTimerInt + 1000;
-      if (commonLoadingTimerInt >= 10000) {
+      if (commonLoadingTimerInt >= 15000) {
         if (testData != undefined) {
           testData.innerHTML = "Loading Error! Please Contact A Moderator!";
         } else {
@@ -674,6 +680,7 @@ function signOut(){
   } else {
     deployNotificationModal(false, "Pending Operation In Progress",
         "Please do not navigate until your changes are saved!", 4);
+    showSuccessfulDBOperation = true;
   }
 }
 
@@ -766,7 +773,8 @@ function listenForDBChanges(dbChangeType, expectedUID) {
   listenDBOpType.push(dbChangeType);
   listenExpectedUIDs.push(expectedUID);
 
-  listeningForDBChanges = true;
+  dbOperationInProgress = true;
+
   clearInterval(listenForDBInterval);
   listenForDBTimer = 0;
   listenForDBInterval = setInterval(function(){
@@ -777,6 +785,7 @@ function listenForDBChanges(dbChangeType, expectedUID) {
       checkGlobalDBChanges();
     }
     if(listenForDBTimer >= maxListenForDB){
+      showSuccessfulDBOperation = false;
       dbOperationInProgress = false;
       deployNotificationModal(false, "Pending Operation Failed!",
           "Your pending changes were NOT successfully saved. You may have a slow connection or be " +
@@ -784,7 +793,6 @@ function listenForDBChanges(dbChangeType, expectedUID) {
       updateMaintenanceLog(pageName, "A user experienced degraded performance or an error with " +
           dbChangeType + " and UID " + expectedUID);
       clearInterval(listenForDBInterval);
-      listeningForDBChanges = false;
       listenForDBTimer = 0;
     }
   }, 1000);
@@ -839,8 +847,14 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
     if (listenExpectedUIDs.length == 0) {
       if (consoleOutput)
         console.log("All Expected Changes Received!");
+      if (showSuccessfulDBOperation) {
+        deployNotificationModal(false, "Pending Operation Completed!",
+            "Your pending change was successfully saved! Thank you for your patience, you may now navigate " +
+            "to other pages.", 4);
+      }
       clearInterval(listenForDBInterval);
-      listeningForDBChanges = false;
+      showSuccessfulDBOperation = false;
+      dbOperationInProgress = false;
       listenExpectedUIDs = [];
       listenDBOpType = [];
       globalDBKeyChangesArr = [];
@@ -926,6 +940,7 @@ function navigation(navNum, loginOverride) {
   } else {
     deployNotificationModal(false, "Pending Operation In Progress",
         "Please do not navigate until your changes are saved!", 4);
+    showSuccessfulDBOperation = true;
   }
 }
 
@@ -1016,7 +1031,7 @@ function closeModal(closeThisModal){
     closeThisModal.style.display = "none";
     modalClosingBool = false;
     if (consoleOutput)
-      if (currentModalOpen != "")
+      if (currentModalOpen != "" && currentModalOpen != undefined)
         console.log(currentModalOpen + " Modal Closed");
       else
         console.log("Modal Closed");
@@ -1307,11 +1322,44 @@ function setAlternatingButtonText(initialStringA, altStringA, alternatingBtnA,
 }
 
 function giftLinkRedirect(link) {
-  if(!link.includes("https://") && !link.includes("http://")){
-    link = "http://" + link;
-  }
+  if (redirectWarningBool) {
+    let prevGiftModal = currentModalOpenObj;
+    confirmTitle.innerHTML = "Redirecting Away From Gifty!";
+    confirmContent.innerHTML = "You are about to go to the following webpage:<br/><br/>" + link + "<br/><br/>Are you sure?";
 
-  window.open(link, "_blank");
+    confirmBtn.onclick = function () {
+      if (!link.includes("https://") && !link.includes("http://")) {
+        link = "http://" + link;
+      }
+      window.open(link, "_blank");
+
+      closeModal(confirmModal);
+      openModal(prevGiftModal, "giftModal");
+    };
+
+    denyBtn.onclick = function () {
+      closeModal(confirmModal);
+      openModal(prevGiftModal, "giftModal");
+    };
+
+    openModal(confirmModal, "confirmModal", true);
+
+    closeConfirmModal.onclick = function () {
+      closeModal(confirmModal);
+      openModal(prevGiftModal, "giftModal");
+    };
+
+    window.onclick = function (event) {
+      if (event.target == confirmModal) {
+        closeModal(confirmModal);
+      }
+    };
+  } else {
+    if (!link.includes("https://") && !link.includes("http://")) {
+      link = "http://" + link;
+    }
+    window.open(link, "_blank");
+  }
 }
 
 function generateNotificationString(senderUID, deleterUID, messageGiftTitle, pageNameStr){
