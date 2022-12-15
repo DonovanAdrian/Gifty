@@ -120,50 +120,64 @@ window.onload = function instantiate() {
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
-        if(userArr[i] != data.val() && i != -1){
-          userArr[i] = data.val();
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            userArr[i] = data.val();
+
+            if (data.key == user.uid) {
+              user = data.val();
+              updateConfirmationButton(user.friends);
+              checkNotifications();
+            }
+          }
         } else {
           userArr.push(data.val());
-        }
 
-        if(data.key == user.uid){
-          user = data.val();
+          if (data.key == user.uid) {
+            user = data.val();
+            updateConfirmationButton(user.friends);
+            checkNotifications();
+          }
         }
       });
 
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
-        if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput)
-            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
-          userArr[i] = data.val();
-        }
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            if (consoleOutput)
+              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            userArr[i] = data.val();
 
-        if(data.key == currentModalOpen) {
-          closeModal(inviteModal);
-        }
+            if(data.key == currentModalOpen) {
+              closeModal(inviteModal);
+              deployNotificationModal(false, data.val().name + " Updated!",
+                  data.val().name + " was updated! Please reopen the window to see the changes.");
+            }
 
-        if(data.key == user.uid){
-          user = data.val();
-          updateConfirmationButton(user.friends);
-          checkNotifications();
-          if (user.invites != undefined) {
-            inviteArr = user.invites;
-          } else {
-            inviteArr = [];
+            if(data.key == user.uid){
+              user = data.val();
+              updateConfirmationButton(user.friends);
+              checkNotifications();
+              if (user.invites != undefined) {
+                inviteArr = user.invites;
+              } else {
+                inviteArr = [];
+              }
+              if (potentialRemoval) {
+                findRemovedUser(oldInviteArr, inviteArr);
+                potentialRemoval = false;
+              }
+              if(consoleOutput)
+                console.log("Current User Updated");
+            }
           }
-          if (potentialRemoval) {
-            findRemovedUser(oldInviteArr, inviteArr);
-            potentialRemoval = false;
-          }
-          if(consoleOutput)
-            console.log("Current User Updated");
         }
       });
 
       postRef.on('child_removed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() && i != -1){
+        if (i != -1) {
           if(consoleOutput) {
             console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           }
