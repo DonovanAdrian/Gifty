@@ -192,7 +192,7 @@ window.onload = function instantiate() {
 
     addFamilyMember.onclick = function() {
       if(familyMemberInp.value != "" || (familyMemberInp.value.includes(" ") &&
-        isAlph(familyMemberInp.value.charAt(0)))) {
+          isAlph(familyMemberInp.value.charAt(0)))) {
         for (let i = 0; i < userArr.length; i++) {
           if (familyMemberInp.value.toLowerCase() == userArr[i].userName.toLowerCase()) {
             for (let z = 0; z < familyArr.length; z++) {
@@ -211,8 +211,8 @@ window.onload = function instantiate() {
                 if (!familyData.members.includes(userArr[i].uid)) {
                   closeModal(familyAddModal);
                   generateConfirmDataModal("Did you mean " + userArr[i].name + "?",
-                    "Confirm Member Name Below",
-                    "user", userArr[i].uid);
+                      "Confirm Member Name Below",
+                      "user", userArr[i].uid);
                 } else {
                   console.log("User is already in THIS family!");
                   addMemberInfo.innerHTML = "That user is already added to this family, please try another!";
@@ -220,8 +220,8 @@ window.onload = function instantiate() {
               else {
                 closeModal(familyAddModal);
                 generateConfirmDataModal("Did you mean " + userArr[i].name + "?",
-                  "Confirm Member Name Below",
-                  "user", userArr[i].uid);
+                    "Confirm Member Name Below",
+                    "user", userArr[i].uid);
               }
             } else {
               console.log("User is already in ANOTHER family!");
@@ -341,7 +341,7 @@ window.onload = function instantiate() {
       deployNotificationModal(true, "Family Empty!", "This family is empty, so no members can be removed!");
     } else {
       deployNotificationModal(false, "Member Removal Complete", "All members were removed from this family! " +
-        "The page will now be redirected to the Family page.", 4, 15);
+          "The page will now be redirected to the Family page.", 4, 15);
     }
   }
 
@@ -349,7 +349,7 @@ window.onload = function instantiate() {
     familyNameInp.value = familyData.name;
     updateFamilyName.onclick = function() {
       if(familyNameInp.value != "" || (familyNameInp.value.includes(" ") &&
-        isAlph(familyNameInp.value.charAt(0)))) {
+          isAlph(familyNameInp.value.charAt(0)))) {
         changeFamilyNameInDB(familyNameInp.value);
         familyNameInp.value = "";
         closeModal(familyNameModal);
@@ -373,51 +373,74 @@ window.onload = function instantiate() {
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
-        if(i != -1) {
-          userArr[i] = data.val();
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            userArr[i] = data.val();
 
-          if (familyData.members != null) {
-            for (let b = 0; b < familyData.members.length; b++) {
-              if (userArr[i].uid == familyData.members[b]) {
-                createFamilyMemberElement(userArr[i]);
+            if (data.key == user.uid) {
+              user = data.val();
+            }
+
+            if (familyData.members != null) {
+              for (let b = 0; b < familyData.members.length; b++) {
+                if (userArr[i].uid == familyData.members[b]) {
+                  createFamilyMemberElement(userArr[i]);
+                }
               }
             }
           }
-        }
+        } else {
+          userArr.push(data.val());
 
-        if(data.key == user.uid)
-          user = data.val();
+          if (data.key == user.uid) {
+            user = data.val();
+          }
+        }
       });
 
       postRef.on('child_changed', function (data) {
+        let i = findUIDItemInArr(data.key, userArr, true);
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            if (consoleOutput)
+              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            userArr[i] = data.val();
 
-        let i = findUIDItemInArr(data.key, userArr);
-        if(i != -1) {
-          userArr[i] = data.val();
+            for (let b = 0; b < familyData.members.length; b++)
+              if (userArr[i].uid == familyData.members[b])
+                changeFamilyMemberElement(userArr[i]);
 
-          for (let b = 0; b < familyData.members.length; b++)
-            if (userArr[i].uid == familyData.members[b])
-              changeFamilyMemberElement(userArr[i]);
+            if(data.key == currentModalOpen) {
+              closeModal(currentModalOpenObj);
+              deployNotificationModal(false, data.val().name + " Updated!",
+                  data.val().name + " was updated! Please reopen the window to see the changes.");
+            }
+
+            if (data.key == user.uid) {
+              user = data.val();
+              updateFriendNav(user.friends);
+              if(consoleOutput)
+                console.log("Current User Updated");
+            }
+          }
         }
-
-        if(data.key == user.uid)
-          user = data.val();
-
-        if(data.key == currentModalOpen)
-          closeModal(currentModalOpenObj);
       });
 
       postRef.on('child_removed', function (data) {
-        if(data.key == currentModalOpen)
+        if(data.key == currentModalOpen) {
           closeModal(currentModalOpenObj);
+          deployNotificationModal(false, data.val().name + " Removed!",
+              data.val().name + " was removed! This user is no longer accessible.");
+        }
 
         try {
           document.getElementById("family" + data.key).remove();
         } catch (err) {}
 
         let i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() && i != -1)
+        if (i != -1) {
           userArr.splice(i, 1);
+        }
       });
     };
 
@@ -501,7 +524,7 @@ window.onload = function instantiate() {
 
   function createFamilyMemberElement(familyMemberData){
     try {
-      testData.remove();
+      document.getElementById('testData').remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
@@ -552,7 +575,7 @@ window.onload = function instantiate() {
         };
 
         if ((familyMemberData.parentUser == null && familyMemberData.childUser == null) ||
-          (familyMemberData.parentUser == "" && familyMemberData.childUser == "")) {
+            (familyMemberData.parentUser == "" && familyMemberData.childUser == "")) {
           familyMemberParent.innerHTML = "Set Parent";
           familyMemberChild.innerHTML = "Set Child";
           familyMemberPCClear.innerHTML = "Button Disabled";
@@ -560,7 +583,7 @@ window.onload = function instantiate() {
 
           familyMemberPCClear.onclick = function () {
             deployNotificationModal(true, "Button Disabled!", "This button is disabled, please set a parent " +
-              "or child for this user first.");
+                "or child for this user first.");
           };
         } else {
           cycleParentChildText(familyMemberData);
@@ -590,17 +613,17 @@ window.onload = function instantiate() {
 
         familyMemberParent.onclick = function () {
           deployNotificationModal(true, "Button Disabled!", "This button is disabled, please add more " +
-            "members to this family first.");
+              "members to this family first.");
         };
 
         familyMemberChild.onclick = function () {
           deployNotificationModal(true, "Button Disabled!", "This button is disabled, please add more " +
-            "members to this family first.");
+              "members to this family first.");
         };
 
         familyMemberPCClear.onclick = function () {
           deployNotificationModal(true, "Button Disabled!", "This button is disabled, please add more " +
-            "members to this family first.");
+              "members to this family first.");
         };
       }
 
@@ -655,10 +678,10 @@ window.onload = function instantiate() {
       });
 
       deployNotificationModal(true, "Parent/Child Data Cleared", "The Parent and Child data has been " +
-        "successfully cleared from the database!");
+          "successfully cleared from the database!");
     } else {
       deployNotificationModal(true, "Data Clear Error!", "The Parent and Child data was NOT cleared... " +
-        "Please try again.");
+          "Please try again.");
     }
   }
 
@@ -684,7 +707,7 @@ window.onload = function instantiate() {
 
     parentChildInterval = setInterval(function(){
       setAlternatingButtonText(parentInitText, parentAltText, familyMemberParent,
-        childInitText, childAltText, familyMemberChild);
+          childInitText, childAltText, familyMemberChild);
     }, 1000);
 
     familyMemberParent.onclick = function () {
@@ -712,7 +735,7 @@ window.onload = function instantiate() {
       name:newFamilyName
     });
     deployNotificationModal(false, "Family Name Updated!", "The family name has been updated! The page will " +
-      "now be redirected to the Family page.", 4, 15);
+        "now be redirected to the Family page.", 4, 15);
   }
 
   function addFamilyMemberToDB(memberUID){
@@ -753,8 +776,8 @@ window.onload = function instantiate() {
       familyPCTitle.innerHTML = "Choose A Parent";
     }
     familyPCText.innerHTML = "In order to prevent parents and their YOUNG children from being paired with" +
-      " each other during Secret Santa, please choose " + parentChildData.name + "\'s " + parentChild +
-      " user from the list below.";
+        " each other during Secret Santa, please choose " + parentChildData.name + "\'s " + parentChild +
+        " user from the list below.";
 
     familyPCBack.onclick = function() {
       closeModal(familyPCModal);
@@ -795,7 +818,7 @@ window.onload = function instantiate() {
 
       for (let i = 0; i < userArr.length; i++) {
         if (userArr[i].uid != parentChildOmit.uid && findUIDItemInArr(userArr[i].uid, loadedPCUserArr) == -1 &&
-          familyData.members.indexOf(userArr[i].uid) != -1) {
+            familyData.members.indexOf(userArr[i].uid) != -1) {
           let liItem = document.createElement("LI");
           liItem.id = userArr[i].uid;
           liItem.className = "gift";
@@ -807,14 +830,14 @@ window.onload = function instantiate() {
               globalChildData = userArr[i];
               globalParentData = parentChildOmit;
               generateConfirmDataModal("Are you sure you want " + parentChildOmit.name
-                + "\'s child to be " + userArr[i].name + "?",
-                "Confirm The Child Selection", "parentChild", null);
+                  + "\'s child to be " + userArr[i].name + "?",
+                  "Confirm The Child Selection", "parentChild", null);
             } else if (parentChild == "parent") {
               globalChildData = parentChildOmit;
               globalParentData = userArr[i];
               generateConfirmDataModal("Are you sure you want " + parentChildOmit.name
-                + "\'s parent to be " + userArr[i].name + "?",
-                "Confirm The Parent Selection", "parentChild", null);
+                  + "\'s parent to be " + userArr[i].name + "?",
+                  "Confirm The Parent Selection", "parentChild", null);
             }
           };
 
@@ -842,11 +865,11 @@ window.onload = function instantiate() {
         });
       } else {
         deployNotificationModal(true, "Parent/Child Assignment Error", "All parents have already been " +
-          "assigned. Please clear Parent/Child data to correct parent assignments.", 4);
+            "assigned. Please clear Parent/Child data to correct parent assignments.", 4);
       }
     } else {
       deployNotificationModal(true, "Parent/Child Assignment Error!", "There was an error updating the " +
-        "parent and child of this user, please try again!", 4);
+          "parent and child of this user, please try again!", 4);
     }
 
     globalChildData = null;
