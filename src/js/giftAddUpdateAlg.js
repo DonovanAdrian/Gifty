@@ -176,7 +176,7 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         giftArr.push(data);
 
-        if(data.val().uid == giftStorage){
+        if (data.val().uid == giftStorage) {
           giftUID = data.key;
           if(privateListBool){
             currentGift = data.val();
@@ -188,17 +188,16 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         giftArr[data.key] = data;
 
-        if(data.val().uid == giftStorage){
+        if (data.val().uid == giftStorage) {
           currentGift = data.val();
         }
       });
 
       postRef.on('child_removed', function (data) {
-        if(privateListBool){
-          sessionStorage.setItem("privateList", JSON.stringify(privateList));
+        if (data.val().uid == giftStorage) {
+          deployNotificationModal(false, "Current Gift Removed!", "Unfortunately " +
+              "the gift you were editing was removed. Navigating to previous page...", 5, giftNavigationInt);
         }
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        navigation(8);
       });
 
     };
@@ -441,13 +440,13 @@ window.onload = function instantiate() {
         }
 
         if (!privateListBool) {
-          deployNotificationModal(false, "Gift Updated!", "The gift, " +
-              giftTitleInp.value + ", has been successfully updated in your gift list! Redirecting " +
+          deployNotificationModal(false, "Gift Updated!", "The gift, \"" +
+              giftTitleInp.value + "\", has been successfully updated in your gift list! Redirecting " +
               "back to home...",3, 2);
         } else {
           sessionStorage.setItem("validGiftUser", JSON.stringify(user));
-          deployNotificationModal(false, "Private Gift Updated!", "The gift, " +
-              giftTitleInp.value + ", has been successfully updated in " + user.name + "'s private gift list! Redirecting " +
+          deployNotificationModal(false, "Private Gift Updated!", "The gift, \"" +
+              giftTitleInp.value + "\", has been successfully updated in " + user.name + "'s private gift list! Redirecting " +
               "back to their private list...", 3, 10);
         }
       } else {
