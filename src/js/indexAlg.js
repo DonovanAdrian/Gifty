@@ -17,7 +17,7 @@ let loginThreshold = 3;
 
 let loginDisabledMsg = "";
 let newGiftyMessage = "Please create a new user before trying to log into Gifty! Click on the text below the login " +
-  "button and fill out the form to make a user account.";
+    "button and fill out the form to make a user account.";
 
 let loginBool = false;
 let banOverride = false;
@@ -58,8 +58,8 @@ function fetchConfigFile(){
     configFileInput = strRawContents.split("\n");
   } catch (err) {
     deployNotificationModal(false, "Initialization Error!", "There was an error " +
-      "loading the webpage, please try refreshing the page and contacting an administrator!",
-      4);
+        "loading the webpage, please try refreshing the page and contacting an administrator!",
+        4);
     return;
   }
 
@@ -126,9 +126,9 @@ function fetchConfigFile(){
 
   if(configInitializeInt == 8){
     if (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
-      storageBucketString == "" || messagingSenderIdString == "" || appIdString == "" || measurementIdString == "") {
+        storageBucketString == "" || messagingSenderIdString == "" || appIdString == "" || measurementIdString == "") {
       deployNotificationModal(false, "Initialization Error!", "Config not properly " +
-        "initialized! Please contact an administrator!", 4);
+          "initialized! Please contact an administrator!", 4);
     } else {
       config = {
         apiKey: apiKeyString,
@@ -147,9 +147,9 @@ function fetchConfigFile(){
     }
   } else {
     if (configInitializeInt == 7 && (apiKeyString == "" || authDomainString == "" || databaseURLString == "" || projectIdString == "" ||
-      storageBucketString == "" || messagingSenderIdString == "" || appIdString == "")) {
+        storageBucketString == "" || messagingSenderIdString == "" || appIdString == "")) {
       deployNotificationModal(false, "Initialization Error!", "Config not properly " +
-        "initialized! Please contact an administrator!", 4);
+          "initialized! Please contact an administrator!", 4);
     } else {
       console.log("WARNING: Missing measurementId. This variable is optional. Disregard if this is intentional.");
 
@@ -296,7 +296,7 @@ function loginQuery() {
         firebase.database().ref("login/").update({
           allowLogin: true,
           loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-            "maintenance before logging in. Thank you for your patience!"
+              "maintenance before logging in. Thank you for your patience!"
         });
         loginBtn.innerHTML = "Log In";
         username.focus();
@@ -340,7 +340,7 @@ function databaseQuery() {
     postRef.once("value").then(function(snapshot) {
       if (snapshot.exists()) {
         postRef.on('child_added', function (data) {
-          if (!userArr.includes(data.val()))
+          if (findUIDItemInArr(data.key, userArr, true) == -1)
             userArr.push(data.val());
 
           checkSignUp();
@@ -348,7 +348,7 @@ function databaseQuery() {
 
         postRef.on('child_changed', function (data) {
           let i = findUIDItemInArr(data.key, userArr);
-          if (userArr[i] != data.val() && i != -1) {
+          if (i != -1) {
             userArr[i] = data.val();
           }
 
@@ -357,7 +357,9 @@ function databaseQuery() {
 
         postRef.on('child_removed', function (data) {
           let i = findUIDItemInArr(data.key, userArr);
-          userArr.splice(i, 1);
+          if (i != -1) {
+            userArr.splice(i, 1);
+          }
         });
       } else {
         loginBtn.innerHTML = "Create A New User First!";
@@ -444,7 +446,7 @@ function login() {
         if (showLoginAlert == 0) {
           showLoginAlert++;
           deployNotificationModal(false, "Login Disabled!", loginDisabledMsg,
-            4);
+              4);
         }
       }
       if (username.value != "" && pin.value != "")
@@ -483,7 +485,7 @@ function authenticate() {
               if (showLoginAlert == 0) {
                 showLoginAlert++;
                 deployNotificationModal(false, "Login Disabled!", loginDisabledMsg,
-                  4);
+                    4);
               }
             }
           }
@@ -519,8 +521,8 @@ function checkSignUp(){
         signUp(true);
       } else {
         deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
-          "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
-          4);
+            "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
+            4);
       }
     };
   } else {
@@ -541,7 +543,7 @@ function signUp(override){
     navigation(13, false);
   } else {
     deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
-      "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
-      4);
+        "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
+        4);
   }
 }
