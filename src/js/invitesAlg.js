@@ -183,46 +183,59 @@ window.onload = function instantiate() {
         globalNoteInt = 1;
 
         let i = findUIDItemInArr(data.key, userArr, true);
-        if(userArr[i] != data.val() && i != -1){
-          userArr[i] = data.val();
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            userArr[i] = data.val();
+
+            if (data.key == user.uid) {
+              user = data.val();
+              checkNotifications();
+              updateFriendNav(user.friends);
+            }
+          }
         } else {
           userArr.push(data.val());
-        }
 
-        if(data.key == user.uid){
-          user = data.val();
+          if (data.key == user.uid) {
+            user = data.val();
+            checkNotifications();
+            updateFriendNav(user.friends);
+          }
         }
       });
 
       postRef.on('child_changed', function (data) {
-        let i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput) {
-            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
-          }
-          userArr[i] = data.val();
-          if (initializedUsers.includes(data.key) && deletePendingUid != data.key) {
-            changeFriendElement(data.key);
-          }
-        }
+        let i = findUIDItemInArr(data.key, userArr, true);
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            if (consoleOutput)
+              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            userArr[i] = data.val();
 
-        if(data.key == user.uid){
-          user = data.val();
-          updateFriendNav(user.friends);
-          refreshFriendInviteArrays();
-          friendArr = user.friends;
-          if (potentialRemoval) {
-            findRemovedUser(oldFriendArr, friendArr);
-            potentialRemoval = false;
+            if (initializedUsers.includes(data.key) && deletePendingUid != data.key) {
+              changeFriendElement(data.key);
+            }
+
+            if(data.key == user.uid){
+              user = data.val();
+              checkNotifications();
+              updateFriendNav(user.friends);
+              refreshFriendInviteArrays();
+              friendArr = user.friends;
+              if (potentialRemoval) {
+                findRemovedUser(oldFriendArr, friendArr);
+                potentialRemoval = false;
+              }
+              if(consoleOutput)
+                console.log("Current User Updated");
+            }
           }
-          if(consoleOutput)
-            console.log("Current User Updated");
         }
       });
 
       postRef.on('child_removed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() && i != -1){
+        if (i != -1) {
           if(consoleOutput) {
             console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           }
