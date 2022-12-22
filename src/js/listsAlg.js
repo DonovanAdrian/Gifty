@@ -109,11 +109,7 @@ window.onload = function instantiate() {
     let fetchSecretSanta = function (postRef) {
       postRef.once("value").then(function(snapshot) {
         if(snapshot.exists()) {
-          if(consoleOutput)
-            console.log("Secret Santa Snapshot Exists!");
           postRef.on('child_added', function (data) {
-            if(consoleOutput)
-              console.log(data.key + " added");
             if (secretSantaInit == false) {
               secretSantaInit = true;
             }
@@ -155,48 +151,55 @@ window.onload = function instantiate() {
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
-        if(userArr[i] != data.val() && i != -1){
-          userArr[i] = data.val();
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            userArr[i] = data.val();
+
+            if (data.key == user.uid) {
+              user = data.val();
+              checkNotifications();
+            }
+          }
         } else {
           userArr.push(data.val());
-        }
 
-        if(data.key == user.uid){
-          user = data.val();
+          if (data.key == user.uid) {
+            user = data.val();
+            checkNotifications();
+          }
         }
       });
 
       postRef.on('child_changed', function (data) {
-        let i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() && i != -1){
-          if(consoleOutput)
-            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
-          userArr[i] = data.val();
+        let i = findUIDItemInArr(data.key, userArr, true);
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            if (consoleOutput)
+              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            userArr[i] = data.val();
 
-          if(friendArr.includes(data.key)){
-            changeFriendElement(friendArr[friendArr.indexOf(data.key)]);
-          }
-        }
+            if(data.key == user.uid){
+              if (currentState != undefined) {
+                if (currentState != 1) {
+                  showSecretSanta();
+                } else {
+                  hideSecretSanta();
+                }
+              }
 
-        if(data.key == user.uid){
-          if (user.secretSanta != data.val().secretSanta) {
-            if (data.val().secretSanta == 1) {
-              secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
-            } else {
-              secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
+              user = data.val();
+              checkNotifications();
+              updateFriendNav(user.friends);
+              if(consoleOutput)
+                console.log("Current User Updated");
             }
           }
-
-          user = data.val();
-          updateFriendNav(user.friends);
-          if(consoleOutput)
-            console.log("Current User Updated");
         }
       });
 
       postRef.on('child_removed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() && i != -1){
+        if (i != -1) {
           if(consoleOutput)
             console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
