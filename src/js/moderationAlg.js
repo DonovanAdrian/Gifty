@@ -959,51 +959,61 @@ window.onload = function instantiate() {
         }
 
         let i = findUIDItemInArr(data.key, userArr, true);
-        if(userArr[i] != data.val() && i != -1){
-          userArr[i] = data.val();
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            userArr[i] = data.val();
+
+            if (data.key == user.uid) {
+              user = data.val();
+              updateFriendNav(user.friends);
+            }
+          }
         } else {
           userArr.push(data.val());
-        }
 
-        if(data.key == user.uid){
-          user = data.val();
+          if (data.key == user.uid) {
+            user = data.val();
+            updateFriendNav(user.friends);
+          }
         }
       });
 
       postRef.on('child_changed', function (data) {
-        changeUserElement(data.val());
+        let i = findUIDItemInArr(data.key, userArr, true);
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            if (consoleOutput)
+              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            userArr[i] = data.val();
+            changeUserElement(data.val());
+            updateInitializedUsers();
 
-        let i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() && i != -1){
-          console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
-          userArr[i] = data.val();
-          updateInitializedUsers();
-        }
+            if(currentModalOpen == data.key && !userUpdateLocal) {
+              deployNotificationModal(false, "User Updated!", "The user you were " +
+                  "viewing was updated! Please reopen the window to view the changes.", 5);
+            }
 
-        if(data.key == user.uid){
-          user = data.val();
-          updateFriendNav(user.friends);
-          console.log("Current User Updated");
-        }
-
-        if(currentModalOpen == data.key && !userUpdateLocal) {
-          deployNotificationModal(false, "User Updated!", "The user you were " +
-              "viewing was updated! Please reopen the window to view the changes.", 5);
+            if (data.key == user.uid) {
+              user = data.val();
+              updateFriendNav(user.friends);
+              if(consoleOutput)
+                console.log("Current User Updated");
+            }
+          }
         }
       });
 
       postRef.on('child_removed', function (data) {
-        removeUserElement(data.val().uid);
-
         let i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() && i != -1){
+        if (i != -1) {
           console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
-        }
+          removeUserElement(data.val().uid);
 
-        if(currentModalOpen == data.key) {
-          deployNotificationModal(false, "User Removed!", "The user you were " +
-              "viewing was deleted!", 5);
+          if(currentModalOpen == data.key) {
+            deployNotificationModal(false, "User Removed!", "The user you were " +
+                "viewing was deleted!", 5);
+          }
         }
       });
     };
