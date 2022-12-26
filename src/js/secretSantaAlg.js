@@ -320,15 +320,20 @@ function setSecretSantaBtnDefault(secretButtonText) {
 }
 
 function showSecretSanta(){
+  let initializeSecretBtnOnClick = false;
+
   if (user.secretSanta == null) {
     if (currentState == 2) {
       setSecretSantaBtnDefault("Sign Up For Secret Santa");
+      initializeSecretBtnOnClick = true;
     }
   } else {
     if (user.secretSanta == 0 && currentState == 2) {
       setSecretSantaBtnDefault("Sign Up For Secret Santa");
+      initializeSecretBtnOnClick = true;
     } else if (user.secretSanta == 1 && currentState == 2) {
       setSecretSantaBtnDefault("Opt-Out Of Secret Santa");
+      initializeSecretBtnOnClick = true;
     } else if (user.secretSanta == 1 && currentState == 3) {
       if (user.secretSantaName != null) {
         if (user.secretSantaName != "") {
@@ -338,24 +343,42 @@ function showSecretSanta(){
           secretSantaSignUp.style.display = "block";
           currentUserSecretAssignment = userArr[i].name;
           secretSantaSignUp.innerHTML = "Click Here To Show<br/>Your Assigned Name!";
+          initializeSecretBtnOnClick = true;
         }
       }
     }
   }
 
-  secretSantaSignUp.onclick = function() {
-    if (currentState == 3 && user.secretSantaName != null) {
-      if (user.secretSantaName != "") {
-        if (hideSecretSantaName) {
-          hideSecretSantaName = false;
-          secretSantaSignUp.innerHTML = "Your Assigned Name:<br/>" + currentUserSecretAssignment;
-        } else {
-          generateSecretSantaModal();
+  if (initializeSecretBtnOnClick) {
+    secretSantaSignUp.onclick = function () {
+      if (currentState == 3 && user.secretSantaName != null) {
+        if (user.secretSantaName != "") {
+          if (hideSecretSantaName) {
+            hideSecretSantaName = false;
+            secretSantaSignUp.innerHTML = "Your Assigned Name:<br/>" + currentUserSecretAssignment;
+          } else {
+            generateSecretSantaModal();
+          }
         }
-      }
-    } else {
-      if (user.secretSanta != null) {
-        if (user.secretSanta == 0) {
+      } else {
+        if (user.secretSanta != null) {
+          if (user.secretSanta == 0) {
+            firebase.database().ref("users/" + user.uid).update({
+              secretSanta: 1
+            });
+            user.secretSanta = 1;
+            deployNotificationModal(false, "Opted In!", "You Have Been Opted Into Secret Santa! The Secret Santa " +
+                "Will Start Soon, Check Back Soon For Your Secret Santa Recipient!", 4);
+            secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
+          } else {
+            firebase.database().ref("users/" + user.uid).update({
+              secretSanta: 0
+            });
+            user.secretSanta = 0;
+            deployNotificationModal(false, "Opted Out!", "You Have Opted Out Of Secret Santa.");
+            secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
+          }
+        } else {
           firebase.database().ref("users/" + user.uid).update({
             secretSanta: 1
           });
@@ -363,26 +386,11 @@ function showSecretSanta(){
           deployNotificationModal(false, "Opted In!", "You Have Been Opted Into Secret Santa! The Secret Santa " +
               "Will Start Soon, Check Back Soon For Your Secret Santa Recipient!", 4);
           secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
-        } else {
-          firebase.database().ref("users/" + user.uid).update({
-            secretSanta: 0
-          });
-          user.secretSanta = 0;
-          deployNotificationModal(false, "Opted Out!", "You Have Opted Out Of Secret Santa.");
-          secretSantaSignUp.innerHTML = "Sign Up For Secret Santa";
         }
-      } else {
-        firebase.database().ref("users/" + user.uid).update({
-          secretSanta: 1
-        });
-        user.secretSanta = 1;
-        deployNotificationModal(false, "Opted In!", "You Have Been Opted Into Secret Santa! The Secret Santa " +
-            "Will Start Soon, Check Back Soon For Your Secret Santa Recipient!", 4);
-        secretSantaSignUp.innerHTML = "Opt-Out Of Secret Santa";
+        sessionStorage.setItem("validUser", JSON.stringify(user));
       }
-      sessionStorage.setItem("validUser", JSON.stringify(user));
-    }
-  };
+    };
+  }
 }
 
 function hideSecretSanta() {
