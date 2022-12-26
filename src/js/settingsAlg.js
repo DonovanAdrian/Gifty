@@ -38,6 +38,7 @@ let notificationModal;
 let notificationInfo;
 let notificationTitle;
 let noteSpan;
+let userBase;
 let userInvites;
 
 
@@ -185,11 +186,60 @@ window.onload = function instantiate() {
   initializeFAQBtn();
   initializeUserInfo();
 
+  userBase = firebase.database().ref("users/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
   databaseQuery();
 
   function databaseQuery() {
+    let fetchData = function (postRef) {
+      postRef.on('child_added', function (data) {
+        let i = findUIDItemInArr(data.key, userArr, true);
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            userArr[i] = data.val();
+
+            if (data.key == user.uid) {
+              user = data.val();
+              updateFriendNav(user.friends);
+            }
+          }
+        } else {
+          userArr.push(data.val());
+
+          if (data.key == user.uid) {
+            user = data.val();
+            updateFriendNav(user.friends);
+          }
+        }
+      });
+
+      postRef.on('child_changed', function (data) {
+        let i = findUIDItemInArr(data.key, userArr, true);
+        if (i != -1) {
+          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+            userArr[i] = data.val();
+
+            if(data.key == user.uid){
+              user = data.val();
+              updateFriendNav(user.friends);
+              if(consoleOutput)
+                console.log("Current User Updated");
+            }
+          }
+        }
+      });
+
+      postRef.on('child_removed', function (data) {
+        let i = findUIDItemInArr(data.key, userArr);
+        if (i != -1) {
+          if(consoleOutput)
+            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          userArr.splice(i, 1);
+        }
+      });
+    };
+
     let fetchInvites = function (postRef) {
       postRef.on('child_added', function (data) {
         inviteArr.push(data.val());
@@ -211,7 +261,9 @@ window.onload = function instantiate() {
       });
     };
 
+    fetchData(userBase);
     fetchInvites(userInvites);
+    listeningFirebaseRefs.push(userBase);
     listeningFirebaseRefs.push(userInvites);
   }
 
@@ -219,8 +271,8 @@ window.onload = function instantiate() {
   let observer = new MutationObserver(function(){
     if(targetNode.style.display != 'none' && user.moderatorInt != 1){
       updateMaintenanceLog("settings", "The user \"" + user.userName + "\" " +
-        "forced the moderation modal to appear. Functionality and button text is NOT available to the user when forced " +
-        "open, but please advise.");
+          "forced the moderation modal to appear. Functionality and button text is NOT available to the user when forced " +
+          "open, but please advise.");
     }
   });
   observer.observe(targetNode, { attributes: true, childList: true });
