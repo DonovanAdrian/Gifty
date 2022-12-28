@@ -55,8 +55,17 @@ function getCurrentUser(){
     userBoughtGiftsArr = JSON.parse(sessionStorage.boughtGifts);
     userBoughtGiftsUIDs = JSON.parse(sessionStorage.boughtGiftsUIDs);
     userBoughtGiftsUsersArr = JSON.parse(sessionStorage.boughtGiftsUsers);
+    if (userBoughtGiftsArr.length == 0 && userBoughtGiftsUIDs.length == 0 && userBoughtGiftsUsersArr.length == 0) {
+      deployListEmptyNotification("No Gifts Found! Buy Some Gifts From Some Friends First!");
+    } else if (userBoughtGiftsArr.length == 0 || userBoughtGiftsUIDs.length == 0 || userBoughtGiftsUsersArr.length == 0) {
+      deployNotificationModal(false, "Bought Gifts Loading Error!", "There was an " +
+          "error loading this page! Please come back to this page once you have bought some gifts. Redirecting back " +
+          "home...", 5, 2);
+    }
   } catch (err) {
-    navigation(2);
+    deployNotificationModal(false, "Bought Gifts Loading Error!", "There was an " +
+        "error loading this page! Please come back to this page once you have bought some gifts. Redirecting back " +
+        "home...", 5, 2);
   }
 }
 
@@ -101,7 +110,6 @@ window.onload = function instantiate() {
     if(userBoughtGiftsArr.length == userBoughtGiftsUsersArr.length) {
       for (let i = 0; i < userBoughtGiftsArr.length; i++) {
         createGiftElement(userBoughtGiftsArr[i], userBoughtGiftsUIDs[i], userBoughtGiftsUsersArr[i]);
-        dataCounter++;
       }
     } else {
       deployNotificationModal(false, "Critical Error!", "There has been a critical error, redirecting " +
@@ -125,39 +133,54 @@ window.onload = function instantiate() {
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
-        if(userArr[i] != data.val() && i != -1){
-          checkGiftLists(data.val());
-          userArr[i] = data.val();
+        let previousUserData;
+        if(i != -1){
+          localObjectChanges = findObjectChanges(userArr[i], data.val());
+          if (localObjectChanges.length != 0) {
+            previousUserData = userArr[i];
+            userArr[i] = data.val();
+
+            if(data.key == user.uid){
+              user = data.val();
+              checkNotifications();
+              updateFriendNav(user.friends);
+            } else {
+              checkGiftLists(data.val(), previousUserData);
+            }
+          }
         } else {
           userArr.push(data.val());
-        }
-
-        if(data.key == user.uid){
-          user = data.val();
         }
       });
 
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() && i != -1){
-          checkGiftLists(data.val());
+        let previousUserData;
+        if(i != -1){
+          localObjectChanges = findObjectChanges(userArr[i], data.val());
 
-          if(consoleOutput)
-            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
-          userArr[i] = data.val();
-        }
+          if (localObjectChanges.length != 0) {
+            if(consoleOutput)
+              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            previousUserData = userArr[i];
+            userArr[i] = data.val();
 
-        if(data.key == user.uid){
-          user = data.val();
-          updateFriendNav(user.friends);
-          if(consoleOutput)
-            console.log("Current User Updated");
+            if(data.key == user.uid){
+              user = data.val();
+              checkNotifications();
+              updateFriendNav(user.friends);
+              if(consoleOutput)
+                console.log("Current User Updated");
+            } else {
+              checkGiftLists(data.val(), previousUserData);
+            }
+          }
         }
       });
 
       postRef.on('child_removed', function (data) {
         let i = findUIDItemInArr(data.key, userArr);
-        if(userArr[i] != data.val() && i != -1){
+        if(i != -1){
           if(consoleOutput)
             console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
@@ -202,16 +225,117 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 
-  function checkGiftLists(updatedUserData){
+  function checkGiftLists(updatedUserData, oldUserData){
+    let oldGiftList = oldUserData.giftList;
+    let oldPrivateGiftList = oldUserData.privateList;
     let newGiftList = updatedUserData.giftList;
     let newPrivateGiftList = updatedUserData.privateList;
+    let removedGiftIndex = -1;
+
+    if (oldGiftList == undefined)
+      oldGiftList = [];
+    if (oldPrivateGiftList == undefined)
+      oldPrivateGiftList = [];
+    if (newGiftList == undefined)
+      newGiftList = [];
+    if (newPrivateGiftList == undefined)
+      newPrivateGiftList = [];
+
+    for (let i = 0; i < newGiftList.length; i++) {
+      let a = findUIDItemInArr(newGiftList[i].uid, userBoughtGiftsArr, true);
+      if (a == -1) {
+        if (newGiftList[i].buyer != "") {
+          if (newGiftList[i].buyer == user.userName) {
+            userBoughtGiftsArr.push(newGiftList[i]);
+            userBoughtGiftsUIDs.push(updatedUserData.uid);
+            userBoughtGiftsUsersArr.push(updatedUserData.name);
+            createGiftElement(newGiftList[i], updatedUserData.uid, updatedUserData.name);
+          }
+        } else if (newGiftList[i].receivedBy != undefined)
+          if (newGiftList[i].receivedBy.includes(user.uid)) {
+            userBoughtGiftsArr.push(newGiftList[i]);
+            userBoughtGiftsUIDs.push(updatedUserData.uid);
+            userBoughtGiftsUsersArr.push(updatedUserData.name + " (Multiple Purchase Gift)");
+            createGiftElement(newGiftList[i], updatedUserData.uid, updatedUserData.name + " (Multiple Purchase Gift)");
+          }
+      } else {
+        if (newGiftList[i].buyer == "" && newGiftList[i].receivedBy == undefined) {
+          userBoughtGiftsArr.splice(a, 1);
+          userBoughtGiftsUIDs.splice(a, 1);
+          userBoughtGiftsUsersArr.splice(a, 1);
+          removeGiftElement(newGiftList[i].uid);
+        } else if (newGiftList[i].receivedBy != undefined)
+          if (!newGiftList[i].receivedBy.includes(user.uid)) {
+            userBoughtGiftsArr.splice(a, 1);
+            userBoughtGiftsUIDs.splice(a, 1);
+            userBoughtGiftsUsersArr.splice(a, 1);
+            removeGiftElement(newGiftList[i].uid);
+          }
+      }
+    }
+
+    removedGiftIndex = findRemovedData(oldGiftList, newGiftList);
+    if (removedGiftIndex != -1) {
+      let b = findUIDItemInArr(oldGiftList[removedGiftIndex].uid, userBoughtGiftsArr, true);
+      if (b != -1) {
+        userBoughtGiftsArr.splice(b, 1);
+        userBoughtGiftsUIDs.splice(b, 1);
+        userBoughtGiftsUsersArr.splice(b, 1);
+        removeGiftElement(oldGiftList[removedGiftIndex].uid);
+      }
+    }
+
+    for (let i = 0; i < newPrivateGiftList.length; i++) {
+      let a = findUIDItemInArr(newPrivateGiftList[i].uid, userBoughtGiftsArr, true);
+      if (a == -1) {
+        if (newPrivateGiftList[i].buyer != "") {
+          if (newPrivateGiftList[i].buyer == user.userName) {
+            userBoughtGiftsArr.push(newPrivateGiftList[i]);
+            userBoughtGiftsUIDs.push(updatedUserData.uid);
+            userBoughtGiftsUsersArr.push(updatedUserData.name + " (Private List)");
+            console.log(userBoughtGiftsArr);
+            createGiftElement(newPrivateGiftList[i], updatedUserData.uid, updatedUserData.name + " (Private List)");
+          }
+        } else if (newPrivateGiftList[i].receivedBy != undefined)
+          if (newPrivateGiftList[i].receivedBy.includes(user.uid)) {
+            userBoughtGiftsArr.push(newPrivateGiftList[i]);
+            userBoughtGiftsUIDs.push(updatedUserData.uid);
+            userBoughtGiftsUsersArr.push(updatedUserData.name + " (Private List, Multiple Purchase Gift)");
+            createGiftElement(newPrivateGiftList[i], updatedUserData.uid, updatedUserData.name + " (Private List, Multiple Purchase Gift)");
+          }
+      } else {
+        if (newPrivateGiftList[i].buyer == "" && newPrivateGiftList[i].receivedBy == undefined) {
+          userBoughtGiftsArr.splice(a, 1);
+          userBoughtGiftsUIDs.splice(a, 1);
+          userBoughtGiftsUsersArr.splice(a, 1);
+          removeGiftElement(newPrivateGiftList[i].uid);
+        } else if (newPrivateGiftList[i].receivedBy != undefined)
+          if (!newPrivateGiftList[i].receivedBy.includes(user.uid)) {
+            userBoughtGiftsArr.splice(a, 1);
+            userBoughtGiftsUIDs.splice(a, 1);
+            userBoughtGiftsUsersArr.splice(a, 1);
+            removeGiftElement(newPrivateGiftList[i].uid);
+          }
+      }
+    }
+
+    removedGiftIndex = findRemovedData(oldPrivateGiftList, newPrivateGiftList);
+    if (removedGiftIndex != -1) {
+      let b = findUIDItemInArr(oldPrivateGiftList[removedGiftIndex].uid, userBoughtGiftsArr, true);
+      if (b != -1) {
+        userBoughtGiftsArr.splice(b, 1);
+        userBoughtGiftsUIDs.splice(b, 1);
+        userBoughtGiftsUsersArr.splice(b, 1);
+        removeGiftElement(oldPrivateGiftList[removedGiftIndex].uid);
+      }
+    }
 
     if(newGiftList == undefined){}
     else if(newGiftList != undefined) {
       for (let i = 0; i < userBoughtGiftsArr.length; i++) {
         let a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newGiftList, true);
         if (a != -1) {
-          checkGiftData(userBoughtGiftsArr[i], newGiftList[a], userBoughtGiftsUIDs[i], updatedUserData.name);
+          checkGiftData(userBoughtGiftsArr[i], newGiftList[a], userBoughtGiftsUIDs[i], userBoughtGiftsUsersArr[i]);
         }
       }
     }
@@ -219,16 +343,29 @@ window.onload = function instantiate() {
     if(newPrivateGiftList == undefined){}
     else if(newPrivateGiftList.length != undefined) {
       for (let i = 0; i < userBoughtGiftsArr.length; i++) {
-        let a = findUIDItemInArr(userBoughtGiftsArr[i], newPrivateGiftList);
+        let a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newPrivateGiftList, true);
         if (a != -1) {
-          checkGiftData(userBoughtGiftsArr[i], newPrivateGiftList[a], userBoughtGiftsUIDs[i], updatedUserData.name);
+          checkGiftData(userBoughtGiftsArr[i], newPrivateGiftList[a], userBoughtGiftsUIDs[i], userBoughtGiftsUsersArr[i]);
         }
       }
     }
   }
 
+  function removeGiftElement(uid) {
+    console.log("Remove gift " + uid);
+    document.getElementById('gift' + uid).remove();
+
+    dataCounter--;
+    if (dataCounter == 0){
+      deployListEmptyNotification("No Gifts Found! Buy Some Gifts From Some Friends First!");
+    }
+  }
+
   function checkGiftData(currentGiftData, newGiftData, giftOwnerUID, giftOwner){
     let updateGiftBool = false;
+    let giftOwnerTrim = "";
+    let previousGiftOwnerTrim = "";
+
     if(currentGiftData.description != newGiftData.description) {
       updateGiftBool = true;
     }
@@ -244,7 +381,26 @@ window.onload = function instantiate() {
 
     if(updateGiftBool) {
       if (newGiftData.uid == currentModalOpen){
-        closeModal(giftModal);
+        for (let i = 0; i < giftOwner.length; i++) {
+          if (giftOwner[i] != "(") {
+            previousGiftOwnerTrim = giftOwnerTrim;
+            giftOwnerTrim = giftOwnerTrim + giftOwner[i];
+          } else {
+            giftOwnerTrim = previousGiftOwnerTrim;
+            break;
+          }
+        }
+        if (giftOwner.includes("Private")) {
+          deployNotificationModal(false, "Gift Updated!", giftOwnerTrim + "'s " +
+              "private gift was updated! Please reopen the gift to view the changes.", 5);
+        } else {
+          deployNotificationModal(false, "Gift Updated!", "The gift you were viewing " +
+              "was updated by " + giftOwnerTrim + "! Please reopen the gift to view the changes.", 5);
+        }
+      }
+      let i = findUIDItemInArr(currentGiftData.uid, userBoughtGiftsArr, true);
+      if (i != -1) {
+        userBoughtGiftsArr[i] = newGiftData;
       }
       changeGiftElement(newGiftData, giftOwnerUID, giftOwner);
     }
@@ -259,7 +415,7 @@ window.onload = function instantiate() {
 
     let liItem = document.createElement("LI");
     liItem.id = "gift" + giftData.uid;
-    initGiftElement(liItem, giftData, giftOwnerUID, giftOwner);
+    initGiftElement(liItem, giftData, giftOwnerUID, giftOwner, true);
     for (let i = 0; i < giftOwner.length; i++) {
       if (giftOwner[i] != "(") {
         previousGiftOwnerTrim = giftOwnerTrim;
@@ -285,6 +441,7 @@ window.onload = function instantiate() {
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
     lastUser = giftOwnerTrim;
+    dataCounter++;
   }
 
   function changeGiftElement(giftData, giftOwnerUID, giftOwner){
@@ -292,14 +449,15 @@ window.onload = function instantiate() {
       console.log("Updating " + giftData.uid);
     let editGift = document.getElementById('gift' + giftData.uid);
     editGift.innerHTML = giftData.title + " - for " + giftOwner;
-    initGiftElement(editGift, giftData, giftOwnerUID, giftOwner);
+    initGiftElement(editGift, giftData, giftOwnerUID, giftOwner, false);
   }
 
-  function initGiftElement(liItem, giftData, giftOwnerUID, giftOwner) {
+  function initGiftElement(liItem, giftData, giftOwnerUID, giftOwner, createGiftBool) {
     let giftOwnerIndex = findUIDItemInArr(giftOwnerUID, userArr, true);
     let giftOwnerData = userArr[giftOwnerIndex];
 
-    liItem.className = "gift";
+    if (createGiftBool)
+      liItem.className = "gift";
     liItem.onclick = function (){
       if (giftData.link != ""){
         giftLinkFld.innerHTML = "Click me to go to the webpage!";
