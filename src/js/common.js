@@ -14,14 +14,17 @@ let listenDBOpType = [];
 let listenExpectedUIDs = [];
 let globalDBKeyChangesArr = [];
 let globalDBDataChangesArr = [];
+let loadedModalElements = [];
+let localObjectChanges = [];
 let buttonAlternatorTimer = 0;
 let buttonAlternatorInt = 0;
 let buttonOpacLim = 7;
 let maxListenForDB = 10;
 let deployedNoteTimer = 0;
-let setWindowNoteTimer = 0;
 let listenForDBTimer = 0;
+let unsavedChangesNav = 0;
 let consoleOutput = false;
+let unsavedChanges = false;
 let dbOperationInProgress = false;
 let showSuccessfulDBOperation = false;
 let userUpdateOverride = false;
@@ -37,11 +40,11 @@ let emptyListNoteDeployed = false;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
+let unsavedChangesOverride;
 let loginTimerInterval;
 let ohThereYouInterval;
 let transparencyInterval;
 let deployedNoteInterval;
-let setWindowNoteInverval;
 let listenForDBInterval;
 let openModalTimer;
 let alternateButtonTimer;
@@ -49,6 +52,7 @@ let currentTitle;
 let dataListChecker;
 let verifiedElements;
 let analytics;
+let privateUser;
 
 
 
@@ -301,7 +305,7 @@ function getCurrentUserCommon(){
     if (pageName != "UserAddUpdate") {
       user = JSON.parse(sessionStorage.validUser);
 
-      if (user.moderatorInt == 1) {
+      if (user.moderatorInt == 1 && privateUser == undefined) {
         consoleOutput = true;
         console.log("User: " + user.userName + " loaded in");
       } else if (restrictedPages.includes(pageName)) {
@@ -569,7 +573,6 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
   let previousModal;
 
   deployedNoteTimer = 0;
-  setWindowNoteTimer = 0;
   clearInterval(deployedNoteInterval);
 
   if (noteTitle == null)
@@ -627,30 +630,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
       if (reopenPreviousModal)
         openModal(previousModal, previousModalName);
     clearInterval(deployedNoteInterval);
-    clearInterval(setWindowNoteInverval);
   };
-
-  setWindowNoteInverval = setInterval( function(){
-    setWindowNoteTimer = setWindowNoteTimer + 1;
-    if (currentModalOpen == "noteModal") {
-      window.onclick = function(event) {
-        if (event.target == notificationModal) {
-          if (navigationBool) {
-            if (consoleOutput)
-              console.log("Notification Navigating.....");
-            navigation(customNavigation, customNavParam);
-          }
-          notificationDeployed = false;
-          closeModal(notificationModal);
-          if (reopenPreviousModal != null)
-            if (reopenPreviousModal)
-              openModal(previousModal, previousModalName);
-          clearInterval(deployedNoteInterval);
-        }
-      };
-      clearInterval(setWindowNoteInverval);
-    }
-  }, 10);
 
   deployedNoteInterval = setInterval(function(){
     deployedNoteTimer = deployedNoteTimer + 1;
@@ -666,12 +646,36 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
         if (reopenPreviousModal)
           openModal(previousModal, previousModalName);
       clearInterval(deployedNoteInterval);
-      clearInterval(setWindowNoteInverval);
     }
   }, 1000);
+
+  window.onclick = function(event) {
+    if (event.target == notificationModal) {
+      if (navigationBool) {
+        if (consoleOutput)
+          console.log("Notification Navigating.....");
+        navigation(customNavigation, customNavParam);
+      }
+      notificationDeployed = false;
+      closeModal(notificationModal);
+      if (reopenPreviousModal != null)
+        if (reopenPreviousModal)
+          openModal(previousModal, previousModalName);
+      clearInterval(deployedNoteInterval);
+    }
+  };
 }
 
 function signOut(){
+  if (unsavedChanges) {
+    if (pageName == "GiftAddUpdate") {
+      unsavedChangesNav = 1;
+      unsavedChangesOverride = false;
+      deployConfirmationModal("Unsaved Changes!", "You have unsaved changes! " +
+          "Would you like to continue?");
+      return;
+    }
+  }
   if (!dbOperationInProgress) {
     config = JSON.parse(sessionStorage.config);
     sessionStorage.clear();
@@ -791,7 +795,7 @@ function listenForDBChanges(dbChangeType, expectedUID) {
           "Your pending changes were NOT successfully saved. You may have a slow connection or be " +
           "experiencing an error. Please try again or contact a moderator!", 5);
       updateMaintenanceLog(pageName, "A user experienced degraded performance or an error with " +
-          dbChangeType + " and UID " + expectedUID);
+          dbChangeType + " Operation and UID " + expectedUID);
       clearInterval(listenForDBInterval);
       listenForDBTimer = 0;
     }
@@ -863,7 +867,48 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
   }
 }
 
+function deployConfirmationModal(unsavedChangesTitle, unsavedChangesContent) {
+  confirmTitle.innerHTML = unsavedChangesTitle;
+  confirmContent.innerHTML = unsavedChangesContent;
+
+  confirmBtn.onclick = function () {
+    if (pageName == "GiftAddUpdate") {
+      if (unsavedChanges) {
+        unsavedChanges = false;
+        navigation(unsavedChangesNav, unsavedChangesOverride);
+      }
+    }
+    closeModal(confirmModal);
+  };
+
+  denyBtn.onclick = function () {
+    closeModal(confirmModal);
+  };
+
+  openModal(confirmModal, "confirmModal", true);
+
+  closeConfirmModal.onclick = function () {
+    closeModal(confirmModal);
+  };
+
+  window.onclick = function (event) {
+    if (event.target == confirmModal) {
+      closeModal(confirmModal);
+    }
+  };
+}
+
 function navigation(navNum, loginOverride) {
+  console.log(unsavedChanges);
+  if (unsavedChanges) {
+    if (pageName == "GiftAddUpdate") {
+      console.log(unsavedChanges);
+      unsavedChangesNav = navNum;
+      deployConfirmationModal("Unsaved Changes!", "You have unsaved changes! " +
+          "Would you like to continue?");
+      return;
+    }
+  }
   if (!dbOperationInProgress) {
     if (loginOverride == undefined && !privateUserOverride) {
       try {
