@@ -121,7 +121,8 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
-          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+          localObjectChanges = findObjectChanges(userArr[i], data.val());
+          if (localObjectChanges.length != 0) {
             userArr[i] = data.val();
 
             if (data.key == user.uid) {
@@ -144,7 +145,8 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
-          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+          localObjectChanges = findObjectChanges(userArr[i], data.val());
+          if (localObjectChanges.length != 0) {
             if (consoleOutput)
               console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
