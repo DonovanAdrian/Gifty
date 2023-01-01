@@ -159,7 +159,8 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
-          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+          localObjectChanges = findObjectChanges(userArr[i], data.val());
+          if (localObjectChanges.length != 0) {
             userArr[i] = data.val();
 
             if (data.key == user.uid) {
@@ -186,7 +187,8 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
-          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+          localObjectChanges = findObjectChanges(userArr[i], data.val());
+          if (localObjectChanges.length != 0) {
             if (consoleOutput)
               console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
@@ -392,6 +394,7 @@ window.onload = function instantiate() {
     let giftUid = giftData.uid;
     let giftDate = giftData.creationDate;
     let giftMultiples = giftData.multiples;
+    let tempGiftBuyer = "";
 
     liItem.className = "gift";
     if(giftReceivedData == 1) {
@@ -437,10 +440,17 @@ window.onload = function instantiate() {
         giftWhere.innerHTML = "There was no location provided";
       }
       if(giftReceivedData == 1){
-        if(giftBuyer == undefined){
+        if(giftBuyer == undefined || giftBuyer == ""){
           giftBought.innerHTML = "This gift has been bought";
         } else {
-          giftBought.innerHTML = "This gift was bought by " + giftBuyer;
+          if (giftBuyer == user.userName)
+            giftBought.innerHTML = "This gift was bought by you!";
+          else {
+            tempGiftBuyer = fetchNameByUserName(giftBuyer);
+            if (tempGiftBuyer == null)
+              tempGiftBuyer = giftBuyer;
+            giftBought.innerHTML = "This gift was bought by " + tempGiftBuyer;
+          }
         }
       } else {
         if (giftMultiples == undefined || giftReceivedData == 0) {
@@ -484,13 +494,14 @@ window.onload = function instantiate() {
     };
   }
 
-  function removeGiftElement(uid) {
-    document.getElementById('gift' + uid).remove();
-
-    dataCounter--;
-    if (dataCounter == 0){
-      deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
+  function fetchNameByUserName(userNameInput) {
+    for (let i = 0; i < userArr.length; i++) {
+      if (userNameInput == userArr[i].userName) {
+        return userArr[i].name;
+      }
     }
+
+    return null;
   }
 
   function buyGiftToDB(pubUid, key, multiples, received, receivedBy, unBuyBool, buyer) {
@@ -564,5 +575,14 @@ window.onload = function instantiate() {
     }
 
     giftUpdateLocal = false;
+  }
+
+  function removeGiftElement(uid) {
+    document.getElementById('gift' + uid).remove();
+
+    dataCounter--;
+    if (dataCounter == 0){
+      deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
+    }
   }
 };
