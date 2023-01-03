@@ -9,24 +9,33 @@ let listeningFirebaseRefs = [];
 let userArr = [];
 let giftArr = [];
 let giftURLLimit = [];
+let changedLocalGiftEditFields = [];
 
 let giftPresent = true;
 let privateListBool = true;
 let invalidURLBool = false;
 let invalidURLOverride = false;
+let giftChangeReloadNeeded = false;
+let localGiftAddUpdate = false;
 
 let invalidURL = "";
 let buttonText = "";
+let previousTitle = "";
+let previousLink = "";
+let previousWhere = "";
+let previousDescription = "";
+let previousMultiple = "";
+let giftChangesStr = "";
 
 let giftUID = -1;
 let giftNavigationInt = 0;
+let giftChangeReloadCount = 0;
 
 let giftStorage;
 let privateList;
 let offlineSpan;
 let offlineModal;
 let user;
-let privateUser;
 let giftDescriptionInp;
 let giftTitleInp;
 let giftWhereInp;
@@ -43,12 +52,16 @@ let notificationModal;
 let notificationInfo;
 let notificationTitle;
 let noteSpan;
+let confirmModal;
+let closeConfirmModal;
+let confirmTitle;
+let confirmContent;
+let confirmBtn;
+let denyBtn;
 
 
 
 function getCurrentUser(){
-  getCurrentUserCommon();
-
   privateList = JSON.parse(sessionStorage.privateList);
   if(privateList == null || privateList == undefined || privateList == "") {
     privateListBool = false;
@@ -58,14 +71,16 @@ function getCurrentUser(){
     privateUser = JSON.parse(sessionStorage.validPrivateUser);
     homeNote.className = "";
     listNote.className = "active";
-    if(privateUser.moderatorInt == 1)
+    if (privateUser.moderatorInt == 1)
       consoleOutput = true;
     if(consoleOutput) {
-      console.log("User: " + privateUser.userName + " loaded in");
+      console.log("Private User: " + privateUser.userName + " loaded in");
     }
     buttonText = "Back To Private List";
     giftNavigationInt = 10;
   }
+
+  getCurrentUserCommon();
 
   try {
     giftStorage = JSON.parse(sessionStorage.giftStorage);
@@ -82,6 +97,12 @@ window.onload = function instantiate() {
   pageName = "GiftAddUpdate";
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
+  confirmModal = document.getElementById('confirmModal');
+  closeConfirmModal = document.getElementById('closeConfirmModal');
+  confirmTitle = document.getElementById('confirmTitle');
+  confirmContent = document.getElementById('confirmContent');
+  confirmBtn = document.getElementById('confirmBtn');
+  denyBtn = document.getElementById('denyBtn');
   giftDescriptionInp = document.getElementById('giftDescriptionInp');
   giftTitleInp = document.getElementById('giftTitleInp');
   giftWhereInp = document.getElementById('giftWhereInp');
@@ -95,9 +116,9 @@ window.onload = function instantiate() {
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
-  giftAddUpdateElements = [offlineModal, offlineSpan, giftDescriptionInp, giftTitleInp, giftWhereInp, giftLinkInp,
-    multiplePurchases, updateGift, homeNote, listNote, inviteNote, notificationModal, notificationTitle,
-    notificationInfo, noteSpan];
+  giftAddUpdateElements = [offlineModal, offlineSpan, confirmModal, closeConfirmModal, confirmTitle, confirmContent,
+    confirmBtn, denyBtn, giftDescriptionInp, giftTitleInp, giftWhereInp, giftLinkInp, multiplePurchases, updateGift,
+    homeNote, listNote, inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan];
 
   getCurrentUser();
   commonInitialization();
@@ -133,6 +154,13 @@ window.onload = function instantiate() {
         updateGiftToDB();
       }
     } else {
+      currentGift = {
+        title:"",
+        link:"",
+        where:"",
+        description:""
+      }
+      initializeGiftFieldListeners();
       updateGift.innerHTML = "Add New Gift";
       updateGift.onclick = function () {
         addGiftToDB();
@@ -178,9 +206,8 @@ window.onload = function instantiate() {
 
         if (data.val().uid == giftStorage) {
           giftUID = data.key;
-          if(privateListBool){
-            currentGift = data.val();
-          }
+          currentGift = data.val();
+          initializeGiftFieldListeners();
           initializeData();
         }
       });
@@ -189,7 +216,26 @@ window.onload = function instantiate() {
         giftArr[data.key] = data;
 
         if (data.val().uid == giftStorage) {
+          previousTitle = currentGift.title;
+          previousLink = currentGift.link;
+          previousWhere = currentGift.where;
+          previousDescription = currentGift.description;
+          previousMultiple = currentGift.multiples;
           currentGift = data.val();
+          giftChangesStr = updateGiftAndBuildChangesString();
+          if (!localGiftAddUpdate)
+            if (giftChangeReloadNeeded) {
+              deployGiftChangesConfirmModal("Notice: Gift Updated!", "Fields that " +
+                  "you recently updated have been changed by someone else:<br/><br/>" + giftChangesStr +
+                  "<br/><br/>Would you like to reload all the input fields with the new changes?" +
+                  "<br/>(Note: If you do not reload, someone else's changes may be overwritten!)");
+              giftChangeReloadNeeded = false;
+              giftChangeReloadCount++;
+            } else {
+              deployNotificationModal(false, "Gift Updated!", "Someone else updated " +
+                  "the following fields while you have been here:<br/><br/>" + giftChangesStr + "<br/><br/>Please note " +
+                  "that no action is needed on your part! You may continue updating as needed.", 6);
+            }
         }
       });
 
@@ -199,7 +245,6 @@ window.onload = function instantiate() {
               "the gift you were editing was removed. Navigating to previous page...", 5, giftNavigationInt);
         }
       });
-
     };
 
     fetchData(userGifts);
@@ -209,10 +254,142 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(limitsInitial);
   }
 
+  function deployGiftChangesConfirmModal(confirmChangesTitle, confirmChangesContent) {
+    confirmTitle.innerHTML = confirmChangesTitle;
+    confirmContent.innerHTML = confirmChangesContent;
+
+    confirmBtn.onclick = function () {
+      reloadAllFields();
+      closeModal(confirmModal);
+    };
+
+    denyBtn.onclick = function () {
+      closeModal(confirmModal);
+    };
+
+    openModal(confirmModal, "confirmModal", true);
+
+    closeConfirmModal.onclick = function () {
+      closeModal(confirmModal);
+    };
+
+    window.onclick = function (event) {
+      if (event.target == confirmModal) {
+        closeModal(confirmModal);
+      }
+    };
+  }
+
+  function reloadAllFields() {
+    giftTitleInp.value = currentGift.title;
+    giftLinkInp.value = currentGift.link;
+    giftWhereInp.value = currentGift.where;
+    giftDescriptionInp.value = currentGift.description;
+    multiplePurchases.checked = currentGift.multiples;
+  }
+
+  function updateGiftAndBuildChangesString() {
+    let tempGiftChanges = "";
+
+    if (previousTitle != currentGift.title) {
+      tempGiftChanges = "Title";
+      if (!changedLocalGiftEditFields.includes("Title")) {
+        giftTitleInp.value = currentGift.title;
+      } else {
+        giftChangeReloadNeeded = true;
+      }
+    }
+    if (previousLink != currentGift.link) {
+      if (tempGiftChanges == "") {
+        tempGiftChanges = "Link";
+      } else {
+        tempGiftChanges = tempGiftChanges + ", Link";
+      }
+      if (!changedLocalGiftEditFields.includes("Link")) {
+        giftLinkInp.value = currentGift.link;
+      } else {
+        giftChangeReloadNeeded = true;
+      }
+    }
+    if (previousWhere != currentGift.where) {
+      if (tempGiftChanges == "") {
+        tempGiftChanges = "Location";
+      } else {
+        tempGiftChanges = tempGiftChanges + ", Location";
+      }
+      if (!changedLocalGiftEditFields.includes("Location")) {
+        giftWhereInp.value = currentGift.where;
+      } else {
+        giftChangeReloadNeeded = true;
+      }
+    }
+    if (previousDescription != currentGift.description) {
+      if (tempGiftChanges == "") {
+        tempGiftChanges = "Description";
+      } else {
+        tempGiftChanges = tempGiftChanges + ", Description";
+      }
+      if (!changedLocalGiftEditFields.includes("Description")) {
+        giftDescriptionInp.value = currentGift.description;
+      } else {
+        giftChangeReloadNeeded = true;
+      }
+    }
+    if (previousMultiple != currentGift.multiples) {
+      if (tempGiftChanges == "") {
+        tempGiftChanges = "Multiples";
+      } else {
+        tempGiftChanges = tempGiftChanges + ", Multiples";
+      }
+      if (!changedLocalGiftEditFields.includes("Multiples")) {
+        multiplePurchases.checked = currentGift.multiples;
+      } else {
+        giftChangeReloadNeeded = true;
+      }
+    }
+
+    return tempGiftChanges;
+  }
+
+  function initializeGiftFieldListeners() {
+    giftTitleInp.onblur = function() {
+      if (giftTitleInp.value != currentGift.title && !changedLocalGiftEditFields.includes("Title")) {
+        changedLocalGiftEditFields.push("Title");
+        unsavedChanges = true;
+      }
+    };
+
+    giftLinkInp.onblur = function() {
+      if (giftLinkInp.value != currentGift.link && !changedLocalGiftEditFields.includes("Link")) {
+        changedLocalGiftEditFields.push("Link");
+        unsavedChanges = true;
+      }
+    };
+
+    giftWhereInp.onblur = function() {
+      if (giftWhereInp.value != currentGift.where && !changedLocalGiftEditFields.includes("Location")) {
+        changedLocalGiftEditFields.push("Location");
+        unsavedChanges = true;
+      }
+    };
+
+    giftDescriptionInp.onblur = function() {
+      if (giftDescriptionInp.value != currentGift.description && !changedLocalGiftEditFields.includes("Description")) {
+        changedLocalGiftEditFields.push("Description");
+        unsavedChanges = true;
+      }
+    };
+
+    multiplePurchases.onclick = function() {
+      if (multiplePurchases.checked != currentGift.multiples && !changedLocalGiftEditFields.includes("Multiples")) {
+        changedLocalGiftEditFields.push("Multiples");
+        unsavedChanges = true;
+      }
+    };
+  }
+
   function initializeData() {
     if(giftPresent) {
-      getGift();
-
       giftTitleInp.value = currentGift.title;
       if (currentGift.link == "")
         giftLinkInp.placeholder = "No Link Was Provided";
@@ -228,24 +405,6 @@ window.onload = function instantiate() {
         giftDescriptionInp.value = currentGift.description;
       if (currentGift.multiples != null)
         multiplePurchases.checked = currentGift.multiples;
-    }
-  }
-
-  function getGift() {
-    if(!privateListBool) {
-      for (let i = 0; i < user.giftList.length; i++) {
-        if (user.giftList[i].uid == giftStorage) {
-          currentGift = user.giftList[i];
-          break;
-        }
-      }
-    } else {
-      for (let i = 0; i < user.privateList.length; i++) {
-        if (privateList.privateList[i].uid == giftStorage) {
-          currentGift = privateList.privateList[i];
-          break;
-        }
-      }
     }
   }
 
@@ -285,6 +444,8 @@ window.onload = function instantiate() {
       invalidURL = newURL;
     } else {
       if(giftUID != -1) {
+        unsavedChanges = false;
+        localGiftAddUpdate = true;
         if (!privateListBool) {
           if (!multiplePurchases.checked && currentGift.multiples && currentGift.receivedBy.length != undefined) {
             if (currentGift.receivedBy.length != 0) {
@@ -550,6 +711,8 @@ window.onload = function instantiate() {
       invalidURLOverride = true;
       invalidURL = newURL;
     } else {
+      unsavedChanges = false;
+      localGiftAddUpdate = true;
       if(!privateListBool) {
         if (user.userScore == null) {
           user.userScore = 0;
