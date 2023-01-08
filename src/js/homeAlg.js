@@ -123,7 +123,10 @@ function checkYearlyReview() {
 
 function reviewUserGifts() {
   let tempGiftReviewArr = [];
-  let tempUserGifts = user.giftList;
+  let tempUserGifts = [];
+
+  if (user.giftList != undefined)
+    tempUserGifts = user.giftList;
 
   for (let i = 0; i < tempUserGifts.length; i++) {
     if (tempUserGifts[i].creationDate < (currentYear - 1) || tempUserGifts[i].received != 0) {
