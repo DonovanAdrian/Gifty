@@ -178,7 +178,8 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
-          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+          localObjectChanges = findObjectChanges(userArr[i], data.val());
+          if (localObjectChanges.length != 0) {
             userArr[i] = data.val();
 
             if (data.key == user.uid) {
@@ -205,7 +206,8 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
-          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+          localObjectChanges = findObjectChanges(userArr[i], data.val());
+          if (localObjectChanges.length != 0) {
             if (consoleOutput)
               console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
@@ -446,6 +448,7 @@ window.onload = function instantiate() {
     let pGiftDate = pGiftData.creationDate;
     let pGiftCreator = pGiftData.creator;
     let pGiftMultiples = pGiftData.multiples;
+    let tempPGiftBuyer = "";
 
     liItem.className = "gift";
     if(pGiftReceived == 1) {
@@ -478,10 +481,18 @@ window.onload = function instantiate() {
         };
       }
       if(pGiftReceived == 1){
-        if(pGiftBuyer == undefined){
+        if(pGiftBuyer == undefined || pGiftBuyer == ""){
           giftBought.innerHTML = "This gift has been bought";
         } else {
-          giftBought.innerHTML = "This gift was bought by " + pGiftBuyer;
+          if (pGiftBuyer == user.userName)
+            giftBought.innerHTML = "This gift was bought by you!";
+          else {
+            console.log(pGiftBuyer);
+            tempPGiftBuyer = fetchNameByUserName(pGiftBuyer);
+            if (tempPGiftBuyer == null)
+              tempPGiftBuyer = pGiftBuyer;
+            giftBought.innerHTML = "This gift was bought by " + tempPGiftBuyer;
+          }
         }
       } else {
         if (pGiftMultiples == undefined || pGiftReceived == 0) {
@@ -556,6 +567,16 @@ window.onload = function instantiate() {
         closeModal(giftModal);
       };
     };
+  }
+
+  function fetchNameByUserName(userNameInput) {
+    for (let i = 0; i < userArr.length; i++) {
+      if (userNameInput == userArr[i].userName) {
+        return userArr[i].name;
+      }
+    }
+
+    return null;
   }
 
   function buyGiftToDB(priUid, key, multiples, received, receivedBy, unBuyBool, buyer) {
