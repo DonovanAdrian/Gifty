@@ -251,10 +251,11 @@ function secretSantaButtonManager(buttonPressed) {
 }
 
 function disableSecretSanta() {
+  savePriorSecretSantaNames();
   removeSecretSantaNames();
   if(consoleOutput)
     console.log("Removed Secret Santa Names!");
-  updateAllUsersToDBSantaNames();
+  updateAllUsersToDBSantaNames(true);
 
   removeSecretSantaNums();
   if(consoleOutput)
@@ -720,8 +721,11 @@ function createSecretSantaNames(){
   let optInFamInt = 0;
   let errorsFound = 0;
   let errorsFoundLim = 10;
+  let priorUserAssignmentRetry = 3;
   let namesReadyBool = true;
   let santaNamesAssigned = false;
+  let priorLoopRetry = true;
+  let priorLoopOutcome = "";
 
   tempUserArr = [];
 
@@ -798,59 +802,92 @@ function createSecretSantaNames(){
           familySet.push(tempUserArr[famSetUserIndex]);
       }
       prioritizedUserArr = [];
-      console.log(familySet);
 
-      potentialMatchesArr = buildPotentialMatchesArray(familySet);
-      if (potentialMatchesArr.length > 3) {
-        if (!checkBuiltArray(potentialMatchesArr)) {
-          while (errorsFound < errorsFoundLim) {
-            if (assignUsersSecretSantaNames(potentialMatchesArr)) {
-              santaNamesAssigned = true;
-              break;
-            } else {
-              errorsFound++;
-              assignedNameUsers = [];
-              assignedUsers = [];
-            }
-          }
-          if (!santaNamesAssigned) {
-            if (consoleOutput) {
-              if (pageName == "Moderation")
-                deployNotificationModal(true, "Secret Santa Error!", "There was an error assigning Secret " +
-                    "Santa names. Please " + secretSantaAssignErrorMsg, 4);
-
-              console.log("*************************\n\nSecret Santa Assignments NOT COMPLETE" +
-                  "\n\nFailure Reason: " + failureReason + "\n\n*************************");
-            }
-            failureReason = "Unknown Error";
-            tempUserArr = [];
-            assignedNameUsers = [];
-            assignedUsers = [];
-            namesReadyBool = false;
-          } else {
-            assignedFamilies.push(optInFamilyArr[i].name);
-            familySet = [];
-          }
-          santaNamesAssigned = false;
-          errorsFound = 0;
-        } else {
-          usersNotAssignedAlert = true;
-          skippedFamilies.push(optInFamilyArr[i]);
+      for (let p = 0; p < priorUserAssignmentRetry; p++) {
+        priorLoopOutcome = coreAssignUserFunction(i);
+        if (priorLoopOutcome == "Normal Return") {
+          priorLoopRetry = false;
+          return;
+        } else if (priorLoopOutcome == "Break Loop") {
+          priorLoopRetry = false;
+          break;
+        } else if (priorLoopOutcome == "Assignment Incomplete") {
+          if (consoleOutput)
+            console.log("\n\nFailed An Assignment... Retrying...\n\n");
         }
-      } else if (!ignoreFamilySet && currentState == 2 && pageName == "Moderation") {
-        deployNotificationModal(true, "Secret Santa Notice!", "There is a family with less than three " +
-            "eligible users!\n\n\nYou have 10 SECONDS to press the button again if you are okay with this. The users in " +
-            "question will NOT be assigned names.", 5);
-        startIgnoreFamilySetTimer();
-        tempUserArr = [];
-        assignedNameUsers = [];
-        assignedUsers = [];
-        return;
-      } else {
-        skippedFamilies.push(optInFamilyArr[i]);
+      }
+      if (priorLoopRetry) {
+        if (consoleOutput)
+          console.log("Retrying Without Prior Assignment Considerations...");
+        priorLoopRetry = false;
+        priorLoopOutcome = coreAssignUserFunction(i);
+        if (priorLoopOutcome == "Normal Return") {
+          return;
+        } else if (priorLoopOutcome == "Assignment Incomplete") {
+          if (consoleOutput)
+            console.log("\n\nFailed Final Assignment...\n\n");
+        }
       }
     }
     familySet = [];
+  }
+
+  function coreAssignUserFunction(optInFamilyArrIndex) {
+    potentialMatchesArr = buildPotentialMatchesArray(familySet);
+    if (potentialMatchesArr.length > 3) {
+      if (!checkBuiltArray(potentialMatchesArr)) {
+        while (errorsFound < errorsFoundLim) {
+          if (assignUsersSecretSantaNames(potentialMatchesArr)) {
+            santaNamesAssigned = true;
+            break;
+          } else {
+            errorsFound++;
+            assignedNameUsers = [];
+            assignedUsers = [];
+          }
+        }
+        if (!santaNamesAssigned) {
+          if (consoleOutput) {
+            if (pageName == "Moderation" && !priorLoopRetry)
+              deployNotificationModal(true, "Secret Santa Error!", "There was an error assigning Secret " +
+                  "Santa names. Please " + secretSantaAssignErrorMsg, 4);
+
+            console.log("*************************\n\nSecret Santa Assignments NOT COMPLETE" +
+                "\n\nFailure Reason: " + failureReason + "\n\n*************************");
+          }
+          failureReason = "Unknown Error";
+          tempUserArr = [];
+          assignedNameUsers = [];
+          assignedUsers = [];
+          namesReadyBool = false;
+          santaNamesAssigned = false;
+          errorsFound = 0;
+          return "Assignment Incomplete";
+        } else {
+          assignedFamilies.push(optInFamilyArr[optInFamilyArrIndex].name);
+          familySet = [];
+          santaNamesAssigned = false;
+          errorsFound = 0;
+          return "Break Loop";
+        }
+      } else {
+        usersNotAssignedAlert = true;
+        skippedFamilies.push(optInFamilyArr[optInFamilyArrIndex]);
+        return "Break Loop";
+      }
+    } else if (!ignoreFamilySet && currentState == 2 && pageName == "Moderation") {
+      deployNotificationModal(true, "Secret Santa Notice!", "There is a family with less than three " +
+          "eligible users!\n\n\nYou have 10 SECONDS to press the button again if you are okay with this. The users in " +
+          "question will NOT be assigned names.", 5);
+      startIgnoreFamilySetTimer();
+      tempUserArr = [];
+      assignedNameUsers = [];
+      assignedUsers = [];
+      return "Normal Return";
+    } else {
+      skippedFamilies.push(optInFamilyArr[optInFamilyArrIndex]);
+      return "Break Loop";
+    }
   }
 
   if (namesReadyBool) {
@@ -883,7 +920,7 @@ function createSecretSantaNames(){
       }
 
       updateAllUsersToDBSantaNums();
-      updateAllUsersToDBSantaNames();
+      updateAllUsersToDBSantaNames(false);
 
       if (consoleOutput) {
         console.log("*************************\n\nSecret Santa Assignments Complete!\n\n*************************");
@@ -1201,10 +1238,14 @@ function buildPotentialMatchesArray(usersToAssign) {
     for (let b = 0; b < tempAssignArr.length; b++) {
       if (usersToAssign[a].uid != tempAssignArr[b].uid) {//This user should NOT be the same user
         if (checkFriend(tempAssignArr[b].uid, usersToAssign[a])) {//These users MUST be friends
-          if (!checkRelation(tempAssignArr[b].uid, usersToAssign[a])) {//These users CANNOT be parent/child
-            tempPotentialMatchesArr.push(tempAssignArr[b]);
+          if (!checkPrior(tempAssignArr[b].uid, usersToAssign[a])) {//Ideally, these users cannot be previously assigned
+            if (!checkRelation(tempAssignArr[b].uid, usersToAssign[a])) {//These users CANNOT be parent/child
+              tempPotentialMatchesArr.push(tempAssignArr[b]);
+            } else {
+              removedUsersString += "-" + tempAssignArr[b].name + " is related to this user\n";
+            }
           } else {
-            removedUsersString += "-" + tempAssignArr[b].name + " is related to this user\n";
+            removedUsersString += "-" + tempAssignArr[b].name + " was assigned to this user last year\n";
           }
         } else {
           removedUsersString += "-" + tempAssignArr[b].name + " is not friends with this user\n";
@@ -1282,6 +1323,18 @@ function buildPotentialMatchesArray(usersToAssign) {
 
     return friendBool;
   }
+
+  function checkPrior(selectedUser, staticUser) {
+    let priorBool = false;
+
+    try {
+      if (staticUser.secretSantaNamePrior == selectedUser) {
+        priorBool = true;
+      }
+    } catch (err) {}
+
+    return priorBool;
+  }
 }
 
 function generateUserOptionsModal(){
@@ -1294,6 +1347,21 @@ function generateUserOptionsModal(){
   };
 }
 
+function savePriorSecretSantaNames(){
+  let updatePriorNames = false;
+
+  for (let i = 0; i < userArr.length; i++)
+    if (userArr[i].secretSantaName != "") {
+      userArr[i].secretSantaNamePrior = userArr[i].secretSantaName;
+      updatePriorNames = true;
+    }
+
+  if (updatePriorNames)
+    updateAllUsersToDBSantaNamesPrior();
+
+  sessionStorage.setItem("userArr", JSON.stringify(userArr));
+}
+
 function removeSecretSantaNames(){
   for (let i = 0; i < userArr.length; i++)
     userArr[i].secretSantaName = "";
@@ -1304,6 +1372,30 @@ function removeSecretSantaNums(){
   for (let i = 0; i < userArr.length; i++)
     userArr[i].secretSanta = 0;
   sessionStorage.setItem("userArr", JSON.stringify(userArr));
+}
+
+function updateAllUsersToDBSantaNamesPrior(){
+  for(let i = 0; i < userArr.length; i++) {
+    if (userArr[i].secretSantaNamePrior != undefined) {
+      if (userArr[i].secretSantaNamePrior != "") {
+        if (consoleOutput) {
+          console.log("");
+          let assignedUserIndex = findUIDItemInArr(userArr[i].secretSantaNamePrior, userArr, true);
+          if (assignedUserIndex != -1 && debugUserAssignmentsBool)
+            console.log(userArr[i].userName + " Was Previously Assigned To " + userArr[assignedUserIndex].userName + "!");
+          else
+            console.log(userArr[i].userName + " Was Previously Assigned A Name!");
+        }
+      }
+    } else {
+      userArr[i].secretSantaNamePrior = "";
+    }
+    if (userArr[i].secretSantaNamePrior != undefined) {
+      firebase.database().ref("users/" + userArr[i].uid).update({
+        secretSantaNamePrior: userArr[i].secretSantaNamePrior
+      });
+    }
+  }
 }
 
 function updateAllUsersToDBSantaNums(){
@@ -1326,31 +1418,28 @@ function updateAllUsersToDBSantaNums(){
   }
 }
 
-function updateAllUsersToDBSantaNames(){
-  let commitOutput = false;
-
+function updateAllUsersToDBSantaNames(disablingNamesOutputOverride){
   for(let i = 0; i < userArr.length; i++) {
-    if (userArr[i].secretSanta == 1 && userArr[i].secretSantaName == null) {
-      if (consoleOutput) {
-        console.log("");
-        console.log(userArr[i].userName + " Signed Up But Was Not Assigned A Name! Check The Above Log For The Reasons Why.");
-        commitOutput = true;
-      }
-    } else if (userArr[i].secretSanta == 1 && userArr[i].secretSantaName == "") {
-      if (consoleOutput) {
-        console.log("");
-        console.log(userArr[i].userName + " Signed Up But Was Not Assigned A Name! Check The Above Log For The Reasons Why.");
-        commitOutput = true;
-      }
-    } else if (userArr[i].secretSanta == 1 && userArr[i].secretSantaName != "") {
-      if (consoleOutput) {
-        console.log("");
-        let assignedUserIndex = findUIDItemInArr(userArr[i].secretSantaName, userArr, true);
-        if (assignedUserIndex != -1 && debugUserAssignmentsBool)
-          console.log(userArr[i].userName + " Was Assigned To " + userArr[assignedUserIndex].userName + "!");
-        else
-          console.log(userArr[i].userName + " Was Assigned A Name!");
-        commitOutput = true;
+    if (!disablingNamesOutputOverride) {
+      if (userArr[i].secretSanta == 1 && userArr[i].secretSantaName == null) {
+        if (consoleOutput) {
+          console.log("");
+          console.log(userArr[i].userName + " Signed Up But Was Not Assigned A Name! Check The Above Log For The Reasons Why.");
+        }
+      } else if (userArr[i].secretSanta == 1 && userArr[i].secretSantaName == "") {
+        if (consoleOutput) {
+          console.log("");
+          console.log(userArr[i].userName + " Signed Up But Was Not Assigned A Name! Check The Above Log For The Reasons Why.");
+        }
+      } else if (userArr[i].secretSanta == 1 && userArr[i].secretSantaName != "") {
+        if (consoleOutput) {
+          console.log("");
+          let assignedUserIndex = findUIDItemInArr(userArr[i].secretSantaName, userArr, true);
+          if (assignedUserIndex != -1 && debugUserAssignmentsBool)
+            console.log(userArr[i].userName + " Was Assigned To " + userArr[assignedUserIndex].userName + "!");
+          else
+            console.log(userArr[i].userName + " Was Assigned A Name!");
+        }
       }
     }
     if (userArr[i].secretSantaName != null) {
@@ -1362,7 +1451,5 @@ function updateAllUsersToDBSantaNames(){
         console.log("Failed To Update Name " + userArr[i].name);
       }
     }
-    if (commitOutput)
-      commitOutput = false;
   }
 }
