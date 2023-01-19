@@ -118,7 +118,8 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
-          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+          localObjectChanges = findObjectChanges(userArr[i], data.val());
+          if (localObjectChanges.length != 0) {
             userArr[i] = data.val();
 
             if (user != null)
@@ -153,7 +154,8 @@ window.onload = function instantiate() {
       postRef.on('child_changed', function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
-          if (findObjectChanges(userArr[i], data.val()).length != 0) {
+          localObjectChanges = findObjectChanges(userArr[i], data.val());
+          if (localObjectChanges.length != 0) {
             userArr[i] = data.val();
             userNameArr[i] = data.val().userName;
 
@@ -465,6 +467,11 @@ function updateUserToDB(){
         secretSantaName: user.secretSantaName
       });
     }
+    if(user.yearlyReview != undefined) {
+      firebase.database().ref("users/" + user.uid).update({
+        yearlyReview: user.yearlyReview
+      });
+    }
 
     btnUpdate.innerHTML = "Please Wait...";
     btnUpdate.onclick = function(){};
@@ -477,6 +484,8 @@ function updateUserToDB(){
 
 function addUserToDB(){
   let moderatorSetter = 0;
+  let currentDate = new Date();
+  let currentYear = currentDate.getFullYear();
 
   if(userArr.length == 0)
     moderatorSetter = 1;
@@ -522,7 +531,8 @@ function addUserToDB(){
       warn: 0,
       shareCode: shareCodeNew,
       secretSanta: 0,
-      secretSantaName: ""
+      secretSantaName: "",
+      yearlyReview: currentYear
     });
 
     btnUpdate.innerHTML = "Please Wait...";
