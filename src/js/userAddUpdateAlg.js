@@ -467,6 +467,11 @@ function updateUserToDB(){
         secretSantaName: user.secretSantaName
       });
     }
+    if (user.secretSantaNamePrior != undefined) {
+      firebase.database().ref("users/" + user.uid).update({
+        secretSantaNamePrior: user.secretSantaNamePrior
+      });
+    }
     if(user.yearlyReview != undefined) {
       firebase.database().ref("users/" + user.uid).update({
         yearlyReview: user.yearlyReview
@@ -532,6 +537,7 @@ function addUserToDB(){
       shareCode: shareCodeNew,
       secretSanta: 0,
       secretSantaName: "",
+      secretSantaNamePrior: "",
       yearlyReview: currentYear
     });
 
