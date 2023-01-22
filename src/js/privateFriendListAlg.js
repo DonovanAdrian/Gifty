@@ -487,7 +487,6 @@ window.onload = function instantiate() {
           if (pGiftBuyer == user.userName)
             giftBought.innerHTML = "This gift was bought by you!";
           else {
-            console.log(pGiftBuyer);
             tempPGiftBuyer = fetchNameByUserName(pGiftBuyer);
             if (tempPGiftBuyer == null)
               tempPGiftBuyer = pGiftBuyer;
@@ -549,7 +548,10 @@ window.onload = function instantiate() {
           if (pGiftCreator == ""){
             confirmDeletion(pGiftKey, pGiftTitle, pGiftUid, pGiftBuyer, pGiftReceivedBy);
           } else {
-            deployNotificationModal(true, "Gift Delete Failed!", "Only the creator, " + pGiftCreator + ", can " +
+            let tempGiftCreator = fetchNameByUserName(pGiftCreator);
+            if (tempGiftCreator == null)
+              tempGiftCreator = pGiftCreator;
+            deployNotificationModal(true, "Gift Delete Failed!", "Only the creator, " + tempGiftCreator + ", can " +
                 "delete this gift. Please contact them to delete this gift if it needs to be removed.", 4);
           }
         }
@@ -608,10 +610,14 @@ window.onload = function instantiate() {
         else if (received == 0)
           deployNotificationModal(true, "Gift Already Un-Bought!", "This gift " +
               "has already been marked as \"Un-Bought\"!");
-        else
+        else {
+          let tempGiftBuyer = fetchNameByUserName(buyer);
+          if (tempGiftBuyer == null)
+            tempGiftBuyer = buyer;
           deployNotificationModal(true, "Gift Buy Error!", "Only the buyer, "
-              + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action if this has been done " +
+              + tempGiftBuyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action if this has been done " +
               "in error.", 4);
+        }
       }
       if (updateToDB) {
         firebase.database().ref("users/" + giftUser.uid + "/privateList/" + key).update({
