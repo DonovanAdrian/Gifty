@@ -129,7 +129,8 @@ function reviewUserGifts() {
     tempUserGifts = user.giftList;
 
   for (let i = 0; i < tempUserGifts.length; i++) {
-    if (tempUserGifts[i].creationDate < (currentYear - 1) || tempUserGifts[i].received != 0) {
+    if (tempUserGifts[i].creationDate < (currentYear - 1) || tempUserGifts[i].creationDate == undefined
+        || tempUserGifts[i].received != 0) {
       tempGiftReviewArr.push(tempUserGifts[i]);
     }
   }
