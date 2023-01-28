@@ -381,12 +381,11 @@ window.onload = function instantiate() {
             if (data.key == user.uid) {
               user = data.val();
             }
-
-            if (familyData.members != null) {
-              for (let b = 0; b < familyData.members.length; b++) {
-                if (userArr[i].uid == familyData.members[b]) {
-                  createFamilyMemberElement(userArr[i]);
-                }
+          }
+          if (familyData.members != null) {
+            for (let b = 0; b < familyData.members.length; b++) {
+              if (userArr[i].uid == familyData.members[b]) {
+                createFamilyMemberElement(userArr[i]);
               }
             }
           }
