@@ -213,18 +213,17 @@ function commonInitialization(){
       if (commonLoadingTimerInt >= 15000) {
         if (testData != undefined) {
           testData.innerHTML = "Loading Error! Please Contact A Moderator!";
+        }
+        if (consoleOutput)
+          console.log("Timer Error Issued");
+        if (user != null) {
+          updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced By " + user.userName);
         } else {
-          if (consoleOutput)
-            console.log("Timer Error Issued");
-          if (user != null) {
-            updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced By " + user.userName);
-          } else {
-            updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced!");
-          }
+          updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced!");
         }
         clearInterval(commonLoadingTimer);
       } else if (commonLoadingTimerInt >= 2000) {
-        if (testData == undefined){
+        if (document.getElementById('testData') == undefined){
           clearInterval(commonLoadingTimer);
           if(consoleOutput)
             console.log("TestData Missing. Loading Properly.");
