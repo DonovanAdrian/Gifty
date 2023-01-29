@@ -470,7 +470,7 @@ function addGlobalMessageToDB(message) {
   let globalNotification = "";
   for (let i = 0; i < userArr.length; i++){
     globalNotification = generateNotificationString(">adminGlobal" + user.uid, "", message, "");
-    addNotificationToDB(userArr[i].uid, globalNotification);
+    addNotificationToDB(userArr[i], globalNotification);
   }
 }
 
