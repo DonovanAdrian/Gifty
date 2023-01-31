@@ -457,6 +457,11 @@ function updateUserToDB(){
         notifications: user.notifications
       });
     }
+    if (user.settingsScoreBlock != undefined) {
+      firebase.database().ref("users/" + user.uid).update({
+        settingsScoreBlock: user.settingsScoreBlock
+      });
+    }
     if (user.secretSanta != undefined) {
       firebase.database().ref("users/" + user.uid).update({
         secretSanta: user.secretSanta
@@ -535,6 +540,7 @@ function addUserToDB(){
       uid: newUid,
       warn: 0,
       shareCode: shareCodeNew,
+      settingsScoreBlock: 0,
       secretSanta: 0,
       secretSantaName: "",
       secretSantaNamePrior: "",
