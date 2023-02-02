@@ -109,16 +109,7 @@ window.onload = function instantiate() {
   }
 
   function initializeUserInfo() {
-    usernameDisplay.innerHTML = user.userName;
-    nameDisplay.innerHTML = user.name;
-    if (user.shareCode != null)
-      shareCodeDisplay.innerHTML = user.shareCode;
-    else
-      shareCodeDisplay.innerHTML = "You do not have a share code...";
-    if (user.userScore != null)
-      userScoreDisplay.innerHTML = user.userScore;
-    else
-      userScoreDisplay.innerHTML = "You do not have a user score...";
+    updateSettingsUserData();
 
     usernameInfo.onclick = function() {displayUserDataAlert(0)};
     usernameDisplay.onclick = function() {displayUserDataAlert(0)};
@@ -133,19 +124,24 @@ window.onload = function instantiate() {
   function displayUserDataAlert(userDataItem) {
     let extraText = "";
 
-    if (settingsUserScore < settingsUserScoreLimit) {
+    if (user.settingsScoreBlock == null) {
+      user.settingsScoreBlock = 0;
+    }
+
+    if (settingsUserScore < settingsUserScoreLimit && user.settingsScoreBlock == 0) {
       settingsUserScore++;
 
       if (settingsUserScore == settingsUserScoreLimit) {
-        extraText = "\n\n\n...NOW you've done it! No more points for you! >:(";
+        extraText = "<br\><br\><br\>...NOW you've done it! No more points for you! >:(";
+        updateUserScore(true);
       } else if (settingsUserScore >= 7) {
-        extraText = "\n\n\n...Don't get greedy now!";
-        updateUserScore();
+        extraText = "<br\><br\><br\>...Don't get greedy now!";
+        updateUserScore(false);
       } else if (settingsUserScore >= 5) {
-        extraText = "\n\n\n...Yes... You can click on these text icons to get more points!";
-        updateUserScore();
+        extraText = "<br\><br\><br\>...Yes... You can click on these text icons to get more points!";
+        updateUserScore(false);
       } else {
-        updateUserScore();
+        updateUserScore(false);
       }
     }
 
@@ -168,18 +164,26 @@ window.onload = function instantiate() {
     }
   }
 
-  function updateUserScore(){
+  function updateUserScore(limitHit){
     let currentUserScore;
 
-    if (user.userScore == null) {
-      user.userScore = 0;
+    if (user.settingsScoreBlock == 0) {
+      if (user.userScore == null) {
+        user.userScore = 0;
+      }
+
+      user.userScore = user.userScore + 1;
+      currentUserScore = user.userScore;
+
+      firebase.database().ref("users/" + user.uid).update({
+        userScore: currentUserScore,
+        settingsScoreBlock: user.settingsScoreBlock
+      });
+    } else if (limitHit) {
+      firebase.database().ref("users/" + user.uid).update({
+        settingsScoreBlock: 1
+      });
     }
-
-    user.userScore = user.userScore + 1;
-    currentUserScore = user.userScore;
-
-    userScoreDisplay.innerHTML = user.userScore;
-    firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
   }
 
   initializeEditBtn();
@@ -203,6 +207,7 @@ window.onload = function instantiate() {
             if (data.key == user.uid) {
               user = data.val();
               updateFriendNav(user.friends);
+              updateSettingsUserData();
             }
           }
         } else {
@@ -211,6 +216,7 @@ window.onload = function instantiate() {
           if (data.key == user.uid) {
             user = data.val();
             updateFriendNav(user.friends);
+            updateSettingsUserData();
           }
         }
       });
@@ -225,6 +231,7 @@ window.onload = function instantiate() {
             if(data.key == user.uid){
               user = data.val();
               updateFriendNav(user.friends);
+              updateSettingsUserData();
               if(consoleOutput)
                 console.log("Current User Updated");
             }
@@ -279,6 +286,19 @@ window.onload = function instantiate() {
   });
   observer.observe(targetNode, { attributes: true, childList: true });
 };
+
+function updateSettingsUserData() {
+  usernameDisplay.innerHTML = user.userName;
+  nameDisplay.innerHTML = user.name;
+  if (user.shareCode != null)
+    shareCodeDisplay.innerHTML = user.shareCode;
+  else
+    shareCodeDisplay.innerHTML = "You do not have a share code...";
+  if (user.userScore != null)
+    userScoreDisplay.innerHTML = user.userScore;
+  else
+    userScoreDisplay.innerHTML = "You do not have a user score...";
+}
 
 function generateModerationModal(){
   moderationQueueBtn.innerHTML = "System Audit Log";
