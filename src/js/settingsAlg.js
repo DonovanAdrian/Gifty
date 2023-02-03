@@ -179,7 +179,8 @@ window.onload = function instantiate() {
         userScore: currentUserScore,
         settingsScoreBlock: user.settingsScoreBlock
       });
-    } else if (limitHit) {
+    }
+    if (limitHit) {
       firebase.database().ref("users/" + user.uid).update({
         settingsScoreBlock: 1
       });
