@@ -898,7 +898,6 @@ function deployConfirmationModal(unsavedChangesTitle, unsavedChangesContent) {
 }
 
 function navigation(navNum, loginOverride) {
-  console.log(unsavedChanges);
   if (unsavedChanges) {
     if (pageName == "GiftAddUpdate") {
       console.log(unsavedChanges);
@@ -1412,4 +1411,10 @@ function generateNotificationString(senderUID, deleterUID, messageGiftTitle, pag
   if(consoleOutput)
     console.log("Generating Notification String...");
   return message;
+}
+
+function addReviewDays(date, days) {
+  const tempDate = new Date(Number(date));
+  tempDate.setDate(date.getDate() + days);
+  return tempDate;
 }
