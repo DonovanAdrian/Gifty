@@ -394,6 +394,7 @@ function login() {
       currentUserScore = 10;
     }
 
+    checkLastLoginForReview(userArr[validUserInt]);
     loginInfo.style.color = "#fff";
     if (userArr[validUserInt].firstLogin == 1) {
       if (userArr[validUserInt].warn == 0) {
@@ -546,4 +547,27 @@ function signUp(override){
         "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
         4);
   }
+}
+
+function checkLastLoginForReview(user) {
+  let userLastLogin = user.lastLogin;
+  let lastLoginReviewValid = false;
+  let currentDate = new Date();
+  let tempLogin = "";
+  let lastLoginDate;
+
+  for (let i = 0; i < userLastLogin.length; i++) {
+    if (userLastLogin[i] != " ") {
+      tempLogin = tempLogin + userLastLogin[i];
+    } else {
+      break;
+    }
+  }
+
+  lastLoginDate = tempLogin.split("/");
+  let finalLastLoginDate = new Date(lastLoginDate[2], lastLoginDate[0] - 1, lastLoginDate[1]);
+  if (finalLastLoginDate < addReviewDays(currentDate, -15)) {
+    lastLoginReviewValid = true;
+  }
+  sessionStorage.setItem("lastLoginReviewValid", JSON.stringify(lastLoginReviewValid));
 }
