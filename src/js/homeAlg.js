@@ -30,6 +30,7 @@ let giftListEmptyBool = false;
 let giftDeleteLocal = false;
 let potentialRemoval = false;
 let setYearlyReviewBool = false;
+let setNextYearReviewBool = false;
 
 let giftLimit = 50;
 let dataCounter = 0;
@@ -98,25 +99,29 @@ function getCurrentUser(){
 
 function checkYearlyReview() {
   let tempVettedUserGifts = reviewUserGifts();
+  let lastLoginReviewValid = JSON.parse(sessionStorage.lastLoginReviewValid);
+
+  if (user.yearlyReview == undefined) {
+    user.yearlyReview = 0;
+  }
+
   if (tempVettedUserGifts.length > 0) {
-    if (user.yearlyReview != undefined) {
-      if (user.yearlyReview < currentYear && currentDate > reviewDate) {
-        reviewGifts.style.display = "block";
-        reviewGifts.innerHTML = "Review Gifts";
-        reviewGifts.onclick = function () {
-          initializeYearlyReview();
-        };
-        if (user.yearlyReview != 0) {
-          initializeYearlyReview();
-        }
-      }
-    } else {
+    if (user.yearlyReview > currentYear) {
+      if (consoleOutput)
+        console.log("User Does Not Need Yearly Review! Skipping...");
+    } else if (user.yearlyReview < currentYear && currentDate > reviewDate) {
       reviewGifts.style.display = "block";
       reviewGifts.innerHTML = "Review Gifts";
       reviewGifts.onclick = function () {
         initializeYearlyReview();
       };
-      initializeYearlyReview();
+      if (user.yearlyReview != 0) {
+        initializeYearlyReview();
+      }
+    }
+  } else if (currentDate > addReviewDays(reviewDate, 30) && user.yearlyReview < currentYear) {
+    if (lastLoginReviewValid) {
+      setNextYearReviewBool = true;
     }
   }
 }
@@ -130,7 +135,7 @@ function reviewUserGifts() {
 
   for (let i = 0; i < tempUserGifts.length; i++) {
     if (tempUserGifts[i].creationDate < (currentYear - 1) || tempUserGifts[i].creationDate == undefined
-        || tempUserGifts[i].received != 0) {
+        || tempUserGifts[i].creationDate == "" || tempUserGifts[i].received != 0) {
       tempGiftReviewArr.push(tempUserGifts[i]);
     }
   }
@@ -529,6 +534,11 @@ window.onload = function instantiate() {
   if (setYearlyReviewBool) {
     firebase.database().ref("users/" + user.uid).update({
       yearlyReview: 0
+    });
+  }
+  if (setNextYearReviewBool) {
+    firebase.database().ref("users/" + user.uid).update({
+      yearlyReview: currentYear
     });
   }
 
