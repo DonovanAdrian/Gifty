@@ -394,10 +394,12 @@ function login() {
       currentUserScore = 10;
     }
 
-    checkLastLoginForReview(userArr[validUserInt]);
+
     loginInfo.style.color = "#fff";
     if (userArr[validUserInt].firstLogin == 1) {
-      if (userArr[validUserInt].warn == 0) {
+      if (checkLastLoginForReview(userArr[validUserInt])) {
+        loginInfo.innerHTML = "It's Been A While, " + userArr[validUserInt].name + "!";
+      } else if (userArr[validUserInt].warn == 0) {
         loginInfo.innerHTML = "Welcome Back, " + userArr[validUserInt].name + "!";
       } else {
         loginInfo.innerHTML = "You have a pending WARNING, please check your notifications!";
@@ -550,11 +552,17 @@ function signUp(override){
 }
 
 function checkLastLoginForReview(user) {
-  let userLastLogin = user.lastLogin;
+  let userLastLogin;
   let lastLoginReviewValid = false;
   let currentDate = new Date();
   let tempLogin = "";
   let lastLoginDate;
+
+  if (user.lastLogin == undefined) {
+    userLastLogin = currentDate;
+  } else {
+    userLastLogin = user.lastLogin;
+  }
 
   for (let i = 0; i < userLastLogin.length; i++) {
     if (userLastLogin[i] != " ") {
@@ -570,4 +578,5 @@ function checkLastLoginForReview(user) {
     lastLoginReviewValid = true;
   }
   sessionStorage.setItem("lastLoginReviewValid", JSON.stringify(lastLoginReviewValid));
+  return lastLoginReviewValid;
 }
