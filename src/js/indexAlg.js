@@ -398,9 +398,9 @@ function login() {
     loginInfo.style.color = "#fff";
     if (userArr[validUserInt].firstLogin == 1) {
       if (checkLastLoginForReview(userArr[validUserInt])) {
-        loginInfo.innerHTML = "It's Been A While, " + userArr[validUserInt].name + "!";
+        loginInfo.innerHTML = loginTextRandomizer(true) + userArr[validUserInt].name + "!";
       } else if (userArr[validUserInt].warn == 0) {
-        loginInfo.innerHTML = "Welcome Back, " + userArr[validUserInt].name + "!";
+        loginInfo.innerHTML = loginTextRandomizer(false) + userArr[validUserInt].name + "!";
       } else {
         loginInfo.innerHTML = "You have a pending WARNING, please check your notifications!";
       }
@@ -579,4 +579,27 @@ function checkLastLoginForReview(user) {
   }
   sessionStorage.setItem("lastLoginReviewValid", JSON.stringify(lastLoginReviewValid));
   return lastLoginReviewValid;
+}
+
+function loginTextRandomizer(inactiveUser) {
+  let selection;
+  let selector;
+  let inactiveResponses = ["It's Been A While, ", "I Missed You, ", "Long Time No See, ", "I Haven't Seen You In Ages, ",
+    "How Long Has It Been, ", "You're Alive, ", "So The Prodigal Son Returns, ", "Well Look What The Cat Dragged In, ",
+    "Well If It Isn't "];
+  let activeResponses = ["Hey, ", "Good To See You, ", "Welcome Back, ", "Greetings, ", "Access Granted, ", "Hello, ",
+    "Great To See You, ", "How Have You Been, ", "Hola, ", "Guten Tag, ", "Bonjour, ", "Hej, ", "Howdy, ", "Aloha, ",
+    "Yo Yo Yo, ", "What's Kickin' Chicken, ", "Hey There, ", "Why Hello There, ", "'Ello, ", "Heeeeeeeeeeeeeey, ",
+    "I've Been Trying To Reach You About Your Extended Warranty, ", "Ciao, ", "Que Pasa, ", "It's You, ",
+    "How You Doin', ", "Yo, ", "Whaddup, ", "You're Looking Great Today, ", "Have A Fantastic Day, "];
+
+  if (inactiveUser) {
+    selector = Math.floor((Math.random() * inactiveResponses.length));
+    selection = inactiveResponses[selector];
+  } else {
+    selector = Math.floor((Math.random() * activeResponses.length));
+    selection = activeResponses[selector];
+  }
+
+  return selection;
 }
