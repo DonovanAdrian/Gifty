@@ -116,6 +116,14 @@ input.giftInp {
   padding-left: 10px;
 }
 
+textarea.giftInp {
+  margin: 0;
+  padding-left: 10px;
+  border-color: #d9d9d9;
+  border-radius: 4px;
+  resize: none;
+}
+
 span {
   display: inline-block;
 }
@@ -179,6 +187,25 @@ span.boughtBtn {
 }
 
 span.boughtBtn:hover {
+  border-radius: 12px;
+  background-color: #ff4c4c;
+  color: #000;
+}
+
+span.boughtBtnB {
+  display: none;
+  border-radius: 4px;
+  font-weight: bold;
+  position: fixed;
+  font-family: Verdana;
+  text-align: left;
+  background: #ff8e8e;
+  color: #FFF;
+  transition: 0.3s;
+  z-index: 2;
+}
+
+span.boughtBtnB:hover {
   border-radius: 12px;
   background-color: #ff4c4c;
   color: #000;
@@ -648,6 +675,13 @@ ul li.santa::before {
     font-size: 13px;
   }
 
+  span.boughtBtnB {
+    left: 5px;
+    bottom: 80px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
   span.addBtn {
     right: 5px;
     bottom: 5px;
@@ -726,6 +760,11 @@ ul li.santa::before {
   }
 
   input.giftInp {
+    width: 200px;
+    font-size: 13px;
+  }
+
+  textarea.giftInp {
     width: 200px;
     font-size: 13px;
   }
@@ -810,6 +849,13 @@ ul li.santa::before {
     font-size: 13px;
   }
 
+  span.boughtBtnB {
+    left: 5px;
+    bottom: 50px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
   span.addBtn {
     right: 5px;
     bottom: 5px;
@@ -886,6 +932,11 @@ ul li.santa::before {
   }
 
   input.giftInp {
+    width: 200px;
+    font-size: 13px;
+  }
+
+  textarea.giftInp {
     width: 200px;
     font-size: 13px;
   }
@@ -1001,6 +1052,13 @@ ul li.santa::before {
     font-size: 15px;
   }
 
+  span.boughtBtnB {
+    left: 7px;
+    bottom: 60px;
+    padding: 7px;
+    font-size: 15px;
+  }
+
   span.addBtn {
     right: 7px;
     bottom: 7px;
@@ -1026,6 +1084,11 @@ ul li.santa::before {
   }
 
   input.giftInp {
+    width: 300px;
+    font-size: 15px;
+  }
+
+  textarea.giftInp {
     width: 300px;
     font-size: 15px;
   }
@@ -1153,6 +1216,13 @@ ul li.santa::before {
     font-size: 17px;
   }
 
+  span.boughtBtnB {
+    left: 9px;
+    bottom: 70px;
+    padding: 9px;
+    font-size: 17px;
+  }
+
   span.addBtn {
     right: 9px;
     bottom: 9px;
@@ -1178,6 +1248,11 @@ ul li.santa::before {
   }
 
   input.giftInp {
+    width: 550px;
+    font-size: 17px;
+  }
+
+  textarea.giftInp {
     width: 550px;
     font-size: 17px;
   }
@@ -1301,6 +1376,13 @@ ul li.santa::before {
     font-size: 21px;
   }
 
+  span.boughtBtnB {
+    right: 11px;
+    bottom: 80px;
+    padding: 11px;
+    font-size: 21px;
+  }
+
   span.addBtn {
     right: 11px;
     bottom: 11px;
@@ -1326,6 +1408,11 @@ ul li.santa::before {
   }
 
   input.giftInp {
+    width: 700px;
+    font-size: 21px;
+  }
+
+  textarea.giftInp {
     width: 700px;
     font-size: 21px;
   }
@@ -1405,7 +1492,7 @@ ul li.santa::before {
   }
 
   ul li.spacer {
-    padding: 55px 8px 35px 40px;
+    padding: 65px 8px 35px 40px;
     font-size: 22px;
   }
 }
@@ -1457,6 +1544,13 @@ ul li.santa::before {
     font-size: 23px;
   }
 
+  span.boughtBtnB {
+    left: 13px;
+    bottom: 85px;
+    padding: 13px;
+    font-size: 23px;
+  }
+
   span.addBtn {
     right: 13px;
     bottom: 13px;
@@ -1482,6 +1576,11 @@ ul li.santa::before {
   }
 
   input.giftInp {
+    width: 1200px;
+    font-size: 23px;
+  }
+
+  textarea.giftInp {
     width: 1200px;
     font-size: 23px;
   }
@@ -1561,7 +1660,7 @@ ul li.santa::before {
   }
 
   ul li.spacer {
-    padding: 65px 8px 40px 40px;
+    padding: 75px 8px 40px 40px;
     font-size: 24px;
   }
 }
@@ -1613,6 +1712,13 @@ ul li.santa::before {
     font-size: 26px;
   }
 
+  span.boughtBtnB {
+    left: 13px;
+    bottom: 90px;
+    padding: 13px;
+    font-size: 26px;
+  }
+
   span.addBtn {
     right: 13px;
     bottom: 13px;
@@ -1638,6 +1744,11 @@ ul li.santa::before {
   }
 
   input.giftInp {
+    width: 1200px;
+    font-size: 26px;
+  }
+
+  textarea.giftInp {
     width: 1200px;
     font-size: 26px;
   }
@@ -1717,7 +1828,7 @@ ul li.santa::before {
   }
 
   ul li.spacer {
-    padding: 75px 8px 40px 40px;
+    padding: 85px 8px 40px 40px;
     font-size: 27px;
   }
 }
