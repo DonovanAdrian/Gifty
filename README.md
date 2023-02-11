@@ -21,6 +21,14 @@ Did I mention that Gifty is FREE? To accomplish this,
 I enlisted Google Firebase to follow through with all
 database and hosting operations, while I handled all
 the data processing operations with the code written here.
+Speaking of the code written here, there is plenty
+of progress to be made. While my time has worn thin,
+I still try to make small steps towards my big goal
+as of late - v1.3, which employs a much more fleshed
+out Secret Santa system and Backup functionality.
+While neither of these features are particularly
+fancy or new, they are interesting challenges for
+me to solve that are taking more time than expected.
 
 
 ## What Are Some Possible Use Cases For This Program?
@@ -47,7 +55,16 @@ The easiest way to set this up for yourself is to use
 Google's Firebase Realtime Database in conjunction with
 Google's Firebase Hosting. While it gets a little bit
 technical, the best I can do is to provide the following
-"simple" step-by-step list.
+"simple" step-by-step list. See the "Gifty Setup Tutorial"
+section below for more details on this!
+
+
+## Great, Now I'm All Set Up! How Do I Use Gifty?
+I have PDF documentation that I am still working
+on improving. Of course, as some of the major
+features like the updated Secret Santa system and
+Backups are on their way, I won't be able to
+post that until they are done.
 
 
 ## Gifty Setup Tutorial
