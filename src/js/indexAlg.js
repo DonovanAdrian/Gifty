@@ -22,6 +22,7 @@ let newGiftyMessage = "Please create a new user before trying to log into Gifty!
 let loginBool = false;
 let banOverride = false;
 let allowLogin = true;
+let displayUserText = false;
 
 let user;
 let loginInitial;
@@ -270,13 +271,15 @@ function loginQuery() {
           postRef.on('child_added', function (data) {
             if (data.key == "userLimit") {
               userLimit = data.val();
-              checkSignUpLite();
+              displayUserText = true;
+              checkSignUp();
             }
           });
 
           postRef.on('child_changed', function (data) {
             if (data.key == "userLimit") {
               userLimit = data.val();
+              displayUserText = true;
               checkSignUp();
             }
           });
@@ -284,6 +287,7 @@ function loginQuery() {
           postRef.on('child_removed', function (data) {
             if (data.key == "userLimit") {
               userLimit = 50;
+              displayUserText = true;
               checkSignUp();
             }
           });
@@ -308,6 +312,9 @@ function loginQuery() {
           userLimit: 100,
           giftURLLimit: ""
         });
+        userLimit = 50;
+        displayUserText = true;
+        checkSignUp();
         fetchLogin(loginInitial);
       }
     });
@@ -352,7 +359,7 @@ function databaseQuery() {
             userArr[i] = data.val();
           }
 
-          checkSignUpLite();
+          checkSignUp();
         });
 
         postRef.on('child_removed', function (data) {
@@ -505,34 +512,27 @@ function authenticate() {
   return validAuthUserInt;
 }
 
-function checkSignUpLite(){
-  if (userArr.length < userLimit) {
-    signUpFld.innerHTML = "Don't have an account? Click here!";
-    signUpFld.onclick = function(){
-      signUp();
-    };
-  }
-}
-
 function checkSignUp(){
   let validUserTempInt = 0;
-  if (userArr.length >= userLimit) {
-    signUpFld.innerHTML = "Gifty Database Full! Existing Users Can Still Log In Above!";
-    signUpFld.onclick = function(){
-      validUserTempInt = authenticate();
-      if (loginBool === true && userArr[validUserTempInt].moderatorInt == 1) {
-        signUp(true);
-      } else {
-        deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
-            "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
-            4);
-      }
-    };
-  } else {
-    signUpFld.innerHTML = "Don't have an account? Click here!";
-    signUpFld.onclick = function(){
-      signUp();
-    };
+  if (displayUserText) {
+    if (userArr.length >= userLimit) {
+      signUpFld.innerHTML = "Gifty Database Full! Existing Users Can Still Log In Above!";
+      signUpFld.onclick = function () {
+        validUserTempInt = authenticate();
+        if (loginBool === true && userArr[validUserTempInt].moderatorInt == 1) {
+          signUp(true);
+        } else {
+          deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
+              "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
+              4);
+        }
+      };
+    } else {
+      signUpFld.innerHTML = "Don't have an account? Click here!";
+      signUpFld.onclick = function () {
+        signUp();
+      };
+    }
   }
 }
 
