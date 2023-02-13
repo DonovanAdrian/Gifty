@@ -63,7 +63,8 @@ let denyBtn;
 
 function getCurrentUser(){
   privateList = JSON.parse(sessionStorage.privateList);
-  if(privateList == null || privateList == undefined || privateList == "") {
+
+  if(privateList == undefined || privateList == "") {
     privateListBool = false;
     buttonText = "Back To Home";
     giftNavigationInt = 2;
