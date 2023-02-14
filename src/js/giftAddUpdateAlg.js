@@ -86,7 +86,7 @@ function getCurrentUser(){
   try {
     giftStorage = JSON.parse(sessionStorage.giftStorage);
   } catch (err) {}
-  if (giftStorage == null || giftStorage == undefined || giftStorage == "") {
+  if (giftStorage == undefined || giftStorage == "") {
     giftPresent = false;
   } else {
     if(consoleOutput)
@@ -476,6 +476,15 @@ window.onload = function instantiate() {
             });
           }
 
+          if (currentGift.creationDate == undefined) {
+            let today = new Date();
+            let dd = today.getDate();
+            let mm = today.getMonth()+1;
+            let yy = today.getFullYear();
+            let creationDate = mm + "/" + dd + "/" + yy;
+            currentGift.creationDate = creationDate;
+          }
+
           firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
             title: giftTitleInp.value,
             link: newURL,
@@ -484,13 +493,10 @@ window.onload = function instantiate() {
             uid: giftStorage,
             buyer: currentGift.buyer,
             description: giftDescriptionInp.value,
-            multiples: multiplePurchases.checked
+            multiples: multiplePurchases.checked,
+            creationDate: currentGift.creationDate
           });
-          if (currentGift.creationDate != undefined) {
-            firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
-              creationDate: currentGift.creationDate
-            });
-          }
+
           if (currentGift.receivedBy != undefined) {
             firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
               receivedBy: currentGift.receivedBy
@@ -533,6 +539,15 @@ window.onload = function instantiate() {
             });
           }
 
+          if (currentGift.creationDate == undefined) {
+            let today = new Date();
+            let dd = today.getDate();
+            let mm = today.getMonth()+1;
+            let yy = today.getFullYear();
+            let creationDate = mm + "/" + dd + "/" + yy;
+            currentGift.creationDate = creationDate;
+          }
+
           firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
             title: giftTitleInp.value,
             link: newURL,
@@ -541,13 +556,10 @@ window.onload = function instantiate() {
             uid: giftStorage,
             buyer: currentGift.buyer,
             description: giftDescriptionInp.value,
-            multiples: multiplePurchases.checked
+            multiples: multiplePurchases.checked,
+            creationDate: currentGift.creationDate
           });
-          if (currentGift.creationDate != undefined) {
-            firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
-              creationDate: currentGift.creationDate
-            });
-          }
+
           if (currentGift.creator != undefined) {
             firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
               creator: currentGift.creator
