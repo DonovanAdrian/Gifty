@@ -72,9 +72,10 @@ function getCurrentUser(){
   document.title = publicFirstName + "'s List";
 
   if (giftUser.giftList == undefined) {
-    deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
-    giftListEmptyBool = true;
-  } else if (giftUser.giftList.length == 0) {
+    giftUser.giftList = [];
+  }
+
+  if (giftUser.giftList.length == 0) {
     deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
     giftListEmptyBool = true;
   }
@@ -333,7 +334,7 @@ window.onload = function instantiate() {
   function checkGiftBuyer(buyer){
     let updateGiftToDB = true;
 
-    if(buyer == "" || buyer == null || buyer == undefined || userUserNames.includes(buyer)){
+    if(buyer == "" || buyer == undefined || userUserNames.includes(buyer)){
       updateGiftToDB = false;
     } else {
       if(consoleOutput)
@@ -447,7 +448,7 @@ window.onload = function instantiate() {
             giftBought.innerHTML = "This gift was bought by you!";
           else {
             tempGiftBuyer = fetchNameByUserName(giftBuyer);
-            if (tempGiftBuyer == null)
+            if (tempGiftBuyer == undefined)
               tempGiftBuyer = giftBuyer;
             giftBought.innerHTML = "This gift was bought by " + tempGiftBuyer;
           }
@@ -470,15 +471,15 @@ window.onload = function instantiate() {
           }
         }
       }
-      if(giftDate != undefined) {
-        if (giftDate != "") {
-          giftCreationDate.innerHTML = "Created on: " + giftDate;
-        } else {
-          giftCreationDate.innerHTML = "Creation date not available";
-        }
+      if(giftDate == undefined) {
+        giftDate = "";
+      }
+      if (giftDate != "") {
+        giftCreationDate.innerHTML = "Created on: " + giftDate;
       } else {
         giftCreationDate.innerHTML = "Creation date not available";
       }
+
       giftBuy.onclick = function(){
         buyGiftToDB(giftUid, giftKey, giftMultiples, giftReceivedData, giftReceivedBy, false);
       };
