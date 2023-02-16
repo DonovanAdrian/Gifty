@@ -56,9 +56,10 @@ function getCurrentUser(){
   getCurrentUserCommon();
 
   if (user.friends == undefined) {
-    deployListEmptyNotification("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
-    friendListEmptyBool = true;
-  } else if (user.friends.length == 0) {
+    user.friends = [];
+  }
+
+  if (user.friends.length == 0) {
     deployListEmptyNotification("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
     friendListEmptyBool = true;
   }
@@ -325,32 +326,29 @@ window.onload = function instantiate() {
     liItem.onclick = function () {
       clearInterval(giftListInterval);
       userTitle.innerHTML = friendData.name;
-      if(friendData.giftList != undefined){
-        if(friendData.giftList.length > 0) {
-          setPublicButton = true;
-          publicList.onclick = function () {
-            sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
-            navigation(9);
-          };
-        } else {
-          publicList.onclick = function () {};
-        }
+
+      if(friendData.giftList == undefined){
+        friendData.giftList = [];
+      }
+
+      if(friendData.giftList.length > 0) {
+        setPublicButton = true;
+        publicList.onclick = function () {
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
+          navigation(9);
+        };
       } else {
         publicList.onclick = function () {};
       }
 
-      if(friendData.privateList != undefined) {
-        if (setPublicButton) {
-          flashGiftNumbers(friendData.privateList, friendData.giftList);
-        } else {
-          flashGiftNumbers(friendData.privateList, 0);
-        }
+      if(friendData.privateList == undefined) {
+        friendData.privateList = [];
+      }
+
+      if (setPublicButton) {
+        flashGiftNumbers(friendData.privateList, friendData.giftList);
       } else {
-        if (setPublicButton) {
-          flashGiftNumbers(0, friendData.giftList);
-        } else {
-          flashGiftNumbers(0, 0);
-        }
+        flashGiftNumbers(friendData.privateList, 0);
       }
 
       privateList.onclick = function() {
