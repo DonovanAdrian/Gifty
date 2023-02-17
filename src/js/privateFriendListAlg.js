@@ -85,9 +85,10 @@ function getCurrentUser(){
   document.title = privateFirstName + "'s List";
 
   if (giftUser.privateList == undefined) {
-    deployListEmptyNotification("No Gifts Found! Add Some Gifts With The Button Below!");
-    giftListEmptyBool = true;
-  } else if (giftUser.privateList.length == 0) {
+    giftUser.privateList = [];
+  }
+
+  if (giftUser.privateList.length == 0) {
     deployListEmptyNotification("No Gifts Found! Add Some Gifts With The Button Below!");
     giftListEmptyBool = true;
   }
@@ -384,7 +385,7 @@ window.onload = function instantiate() {
   function checkGiftBuyer(buyer){
     let updateGiftToDB = true;
 
-    if(buyer == "" || buyer == null || buyer == undefined || userUserNames.includes(buyer)){
+    if(buyer == "" || buyer == undefined || userUserNames.includes(buyer)){
       updateGiftToDB = false;
     } else {
       if(consoleOutput)
