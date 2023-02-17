@@ -49,8 +49,10 @@ function getCurrentUser(){
   getCurrentUserCommon();
 
   if (user.invites == undefined) {
-    deployListEmptyNotification("No Invites Found! You've Reviewed All Your Invites!");
-  } else if (user.invites.length == 0) {
+    user.invites = [];
+  }
+
+  if (user.invites.length == 0) {
     deployListEmptyNotification("No Invites Found! You've Reviewed All Your Invites!");
   }
 }
@@ -93,7 +95,7 @@ window.onload = function instantiate() {
   function updateConfirmationButton(confirmFriendData) {
     let setBlank = true;
 
-    if (confirmFriendData != null)
+    if (confirmFriendData != undefined)
       if (confirmFriendData.length != 0)
         if (confirmFriendData.length == 1) {
           alternateButtonLabel(inviteNote, "1 Friend", "Confirm");
@@ -193,7 +195,7 @@ window.onload = function instantiate() {
         if (!friendArr.includes(data.val())) {
           friendArr.push(data.val());
         }
-        if (user.friends != null)
+        if (user.friends != undefined)
           if (!user.friends.includes(data.val())) {
             user.friends.push(data.val());
           }
@@ -201,13 +203,13 @@ window.onload = function instantiate() {
 
       postRef.on('child_changed', function (data) {
         friendArr[data.key] = data.val();
-        if (user.friends != null)
+        if (user.friends != undefined)
           user.friends[data.key] = data.val();
       });
 
       postRef.on('child_removed', function (data) {
         friendArr.splice(data.key, 1);
-        if (user.friends != null)
+        if (user.friends != undefined)
           user.friends.splice(data.key, 1);
       });
     };
@@ -276,7 +278,7 @@ window.onload = function instantiate() {
       }
     }
 
-    if (inviteData != null) {
+    if (inviteData != undefined) {
       let liItem = document.createElement("LI");
       liItem.id = "user" + inviteData.uid;
       initInviteElement(liItem, inviteData);
@@ -299,7 +301,7 @@ window.onload = function instantiate() {
       }
     }
 
-    if (inviteData != null) {
+    if (inviteData != undefined) {
       let liItemUpdate = document.getElementById('user' + inviteData.uid);
       liItemUpdate.innerHTML = inviteData.name;
       initInviteElement(liItemUpdate, inviteData);
@@ -345,7 +347,7 @@ window.onload = function instantiate() {
     let userFriendArr;
     let currentUserScore;
 
-    if (user.userScore == null) {
+    if (user.userScore == undefined) {
       user.userScore = 0;
     }
 
@@ -357,7 +359,7 @@ window.onload = function instantiate() {
       console.log(friendArr);
     }
 
-    if(inviteData.friends == null || inviteData.friends.length == 0) {
+    if(inviteData.friends == undefined || inviteData.friends.length == 0) {
       friendFriendArr = [];
     } else {
       friendFriendArr = inviteData.friends;
@@ -379,7 +381,7 @@ window.onload = function instantiate() {
       return;
     }
 
-    if (friendArr == undefined || friendArr == null || friendArr.length == 0) {
+    if (friendArr == undefined || friendArr.length == 0) {
       userFriendArr = [];
     } else {
       userFriendArr = friendArr;
@@ -505,7 +507,7 @@ window.onload = function instantiate() {
         invites: inviteArr
       });
 
-      if (finalInviteData != null) {
+      if (finalInviteData != undefined) {
         if(consoleOutput) {
           console.log("Updating Friend's Friend List To DB:");
           console.log(finalInviteData[0]);
@@ -530,7 +532,7 @@ window.onload = function instantiate() {
       }
 
       removeInviteElement(uid);
-      if (finalInviteData != null) {
+      if (finalInviteData != undefined) {
         deployNotificationModal(false, "Invite Accepted!", "Your invite from " +
             inviteData.name + " was successfully accepted!");
       } else {
