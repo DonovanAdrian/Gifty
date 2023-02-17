@@ -330,23 +330,17 @@ window.onload = function instantiate() {
       }
     }
 
-    if(newGiftList == undefined){}
-    else if(newGiftList != undefined) {
-      for (let i = 0; i < userBoughtGiftsArr.length; i++) {
-        let a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newGiftList, true);
-        if (a != -1) {
-          checkGiftData(userBoughtGiftsArr[i], newGiftList[a], userBoughtGiftsUIDs[i], userBoughtGiftsUsersArr[i]);
-        }
+    for (let i = 0; i < userBoughtGiftsArr.length; i++) {
+      let a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newGiftList, true);
+      if (a != -1) {
+        checkGiftData(userBoughtGiftsArr[i], newGiftList[a], userBoughtGiftsUIDs[i], userBoughtGiftsUsersArr[i]);
       }
     }
 
-    if(newPrivateGiftList == undefined){}
-    else if(newPrivateGiftList.length != undefined) {
-      for (let i = 0; i < userBoughtGiftsArr.length; i++) {
-        let a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newPrivateGiftList, true);
-        if (a != -1) {
-          checkGiftData(userBoughtGiftsArr[i], newPrivateGiftList[a], userBoughtGiftsUIDs[i], userBoughtGiftsUsersArr[i]);
-        }
+    for (let i = 0; i < userBoughtGiftsArr.length; i++) {
+      let a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newPrivateGiftList, true);
+      if (a != -1) {
+        checkGiftData(userBoughtGiftsArr[i], newPrivateGiftList[a], userBoughtGiftsUIDs[i], userBoughtGiftsUsersArr[i]);
       }
     }
   }
@@ -479,12 +473,11 @@ window.onload = function instantiate() {
       } else {
         giftWhereFld.innerHTML = "There was no location provided";
       }
-      if(giftData.creationDate != undefined) {
-        if (giftData.creationDate != "") {
-          giftCreationDateFld.innerHTML = "Created on: " + giftData.creationDate;
-        } else {
-          giftCreationDateFld.innerHTML = "Creation date not available";
-        }
+      if(giftData.creationDate == undefined) {
+        giftData.creationDate = "";
+      }
+      if (giftData.creationDate != "") {
+        giftCreationDateFld.innerHTML = "Created on: " + giftData.creationDate;
       } else {
         giftCreationDateFld.innerHTML = "Creation date not available";
       }
