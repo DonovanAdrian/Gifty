@@ -441,15 +441,15 @@ function generateNewNoteUID (noteKey, noteString, readOverride) {
 
 function checkInvites() {
   if (user.invites == undefined) {
-    if(consoleOutput)
+    if (consoleOutput)
       console.log("Invites Not Found");
-  } else if (user.invites != undefined) {
-    if (user.invites.length > 0) {
-      inviteNote.style.background = "#ff3923";
-      if (pageName == "Invites") {
-        newInviteIcon.style.display = "block";
-        invitesFound = true;
-      }
+    user.invites = [];
+  }
+  if (user.invites.length > 0) {
+    inviteNote.style.background = "#ff3923";
+    if (pageName == "Invites") {
+      newInviteIcon.style.display = "block";
+      invitesFound = true;
     }
   }
 }
