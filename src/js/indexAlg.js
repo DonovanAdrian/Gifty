@@ -192,7 +192,7 @@ window.onload = function instantiate() {
   try {
     config = JSON.parse(sessionStorage.config);
   } catch (err) {}
-  if (config == null) {
+  if (config == undefined) {
     fetchConfigFile();
   } else {
     commonInitialization();
@@ -537,7 +537,7 @@ function checkSignUp(){
 }
 
 function signUp(override){
-  if (override == null)
+  if (override == undefined)
     override = false;
 
   if((allowLogin || loginDisabledMsg.includes(newGiftyMessage)) || override) {
