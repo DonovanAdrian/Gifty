@@ -489,7 +489,7 @@ window.onload = function instantiate() {
             giftBought.innerHTML = "This gift was bought by you!";
           else {
             tempPGiftBuyer = fetchNameByUserName(pGiftBuyer);
-            if (tempPGiftBuyer == null)
+            if (tempPGiftBuyer == undefined)
               tempPGiftBuyer = pGiftBuyer;
             giftBought.innerHTML = "This gift was bought by " + tempPGiftBuyer;
           }
@@ -512,12 +512,12 @@ window.onload = function instantiate() {
           }
         }
       }
-      if(pGiftDescription != "") {
+      if (pGiftDescription != "") {
         giftDescription.innerHTML = "Description: " + pGiftDescription;
       } else {
         giftDescription.innerHTML = "There was no description provided";
       }
-      if(pGiftCreator == null || pGiftCreator == undefined){
+      if (pGiftCreator == undefined) {
         giftCreator.innerHTML = "Gift creator unavailable";
       } else {
         if (pGiftCreator == "")
@@ -525,12 +525,12 @@ window.onload = function instantiate() {
         else
           giftCreator.innerHTML = "Gift was created by " + pGiftCreator;
       }
-      if(pGiftWhere != "") {
+      if (pGiftWhere != "") {
         giftWhere.innerHTML = "This can be found at: " + pGiftWhere;
       } else {
         giftWhere.innerHTML = "There was no location provided";
       }
-      if(pGiftDate != undefined) {
+      if (pGiftDate != undefined) {
         if (pGiftDate != "") {
           giftCreationDate.innerHTML = "Created on: " + pGiftDate;
         } else {
@@ -543,14 +543,14 @@ window.onload = function instantiate() {
         updateGiftElement(pGiftUid);
       };
       giftDelete.onclick = function(){
-        if (pGiftCreator == user.userName || pGiftCreator == null || pGiftCreator == undefined) {
+        if (pGiftCreator == user.userName || pGiftCreator == undefined) {
           confirmDeletion(pGiftKey, pGiftTitle, pGiftUid, pGiftBuyer, pGiftReceivedBy);
         } else {
           if (pGiftCreator == ""){
             confirmDeletion(pGiftKey, pGiftTitle, pGiftUid, pGiftBuyer, pGiftReceivedBy);
           } else {
             let tempGiftCreator = fetchNameByUserName(pGiftCreator);
-            if (tempGiftCreator == null)
+            if (tempGiftCreator == undefined)
               tempGiftCreator = pGiftCreator;
             deployNotificationModal(true, "Gift Delete Failed!", "Only the creator, " + tempGiftCreator + ", can " +
                 "delete this gift. Please contact them to delete this gift if it needs to be removed.", 4);
@@ -613,7 +613,7 @@ window.onload = function instantiate() {
               "has already been marked as \"Un-Bought\"!");
         else {
           let tempGiftBuyer = fetchNameByUserName(buyer);
-          if (tempGiftBuyer == null)
+          if (tempGiftBuyer == undefined)
             tempGiftBuyer = buyer;
           deployNotificationModal(true, "Gift Buy Error!", "Only the buyer, "
               + tempGiftBuyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action if this has been done " +
