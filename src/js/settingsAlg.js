@@ -124,7 +124,7 @@ window.onload = function instantiate() {
   function displayUserDataAlert(userDataItem) {
     let extraText = "";
 
-    if (user.settingsScoreBlock == null) {
+    if (user.settingsScoreBlock == undefined) {
       user.settingsScoreBlock = 0;
     }
 
@@ -168,7 +168,7 @@ window.onload = function instantiate() {
     let currentUserScore;
 
     if (user.settingsScoreBlock == 0) {
-      if (user.userScore == null) {
+      if (user.userScore == undefined) {
         user.userScore = 0;
       }
 
