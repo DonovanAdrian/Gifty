@@ -575,7 +575,7 @@ window.onload = function instantiate() {
           generateFamilyPCModal("child", familyMemberData);
         };
 
-        if ((familyMemberData.parentUser == null && familyMemberData.childUser == null) ||
+        if ((familyMemberData.parentUser == undefined && familyMemberData.childUser == undefined) ||
             (familyMemberData.parentUser == "" && familyMemberData.childUser == "")) {
           familyMemberParent.innerHTML = "Set Parent";
           familyMemberChild.innerHTML = "Set Child";
@@ -855,7 +855,7 @@ window.onload = function instantiate() {
 
   function updateFamilyRelationsToDB() {
     if (globalParentData != null && globalChildData != null) {
-      if (globalChildData.parentUser == null || globalChildData.parentUser == "") {
+      if (globalChildData.parentUser == undefined || globalChildData.parentUser == "") {
         firebase.database().ref("users/" + globalChildData.uid).update({
           childUser: "",
           parentUser: globalParentData.uid
