@@ -432,68 +432,74 @@ window.onload = function instantiate() {
             break;
           case "Login":
             userDataString = userDataName;
-            if (userData.lastLogin != undefined) {
-              if (userData.lastLogin != "Never Logged In") {
-                let today = new Date();
-                let lastLoginDate = new Date(userData.lastLogin);
-                let lastLoginDateTrimmed = getMonthName(lastLoginDate.getMonth()) + " " + lastLoginDate.getDate() + ", " + lastLoginDate.getFullYear();
-                let lastLoginDiff = Math.floor((today - lastLoginDate) / (1000 * 3600 * 24));
-                userDataString = userDataName + " - " + lastLoginDateTrimmed;
-                if (lastLoginDiff < 15) {
-                  tempElem.className += " lowSev";
-                } else if (lastLoginDiff < 31) {
-                  tempElem.className += " mediumSev";
-                } else if (lastLoginDiff < 61) {
-                  tempElem.className += " highSev";
-                }
-              }
+            if (userData.lastLogin == undefined) {
+              userData.lastLogin = "Never Logged In";
             }
-            break;
-          case "Score":
-            userDataString = userDataName + " - 0";
-            if (userData.userScore != undefined) {
-              userDataString = userDataName + " - " + userData.userScore;
-              if (userData.userScore > 500) {
+
+            if (userData.lastLogin != "Never Logged In") {
+              let today = new Date();
+              let lastLoginDate = new Date(userData.lastLogin);
+              let lastLoginDateTrimmed = getMonthName(lastLoginDate.getMonth()) + " " + lastLoginDate.getDate() + ", " + lastLoginDate.getFullYear();
+              let lastLoginDiff = Math.floor((today - lastLoginDate) / (1000 * 3600 * 24));
+              userDataString = userDataName + " - " + lastLoginDateTrimmed;
+              if (lastLoginDiff < 15) {
                 tempElem.className += " lowSev";
-              } else if (userData.userScore > 250) {
+              } else if (lastLoginDiff < 31) {
                 tempElem.className += " mediumSev";
-              } else if (userData.userScore > 50) {
+              } else if (lastLoginDiff < 61) {
                 tempElem.className += " highSev";
               }
             }
             break;
+          case "Score":
+            if (userData.userScore == undefined) {
+              userData.userScore = 0;
+            }
+
+            userDataString = userDataName + " - " + userData.userScore;
+            if (userData.userScore > 500) {
+              tempElem.className += " lowSev";
+            } else if (userData.userScore > 250) {
+              tempElem.className += " mediumSev";
+            } else if (userData.userScore > 50) {
+              tempElem.className += " highSev";
+            }
+            break;
           case "Share":
-            if (userData.shareCode != undefined)
-              userDataString = userDataName + " - " + userData.shareCode;
-            else
-              userDataString = userDataName;
+            if (userData.shareCode == undefined) {
+              userData.shareCode = "No Share Code Available!";
+            }
+            userDataString = userDataName + " - " + userData.shareCode;
             break;
           case "Friends":
             userDataString = userDataName;
-            if (userData.friends != undefined)
-              if (userData.friends.length > 1) {
-                userDataString = userDataName + " - " + userData.friends.length + " Friends";
-              } else if (userData.friends.length == 1) {
-                userDataString = userDataName + " - 1 Friend";
-              }
+            if (userData.friends == undefined)
+              userData.friends = [];
+
+            if (userData.friends.length > 1) {
+              userDataString = userDataName + " - " + userData.friends.length + " Friends";
+            } else if (userData.friends.length == 1) {
+              userDataString = userDataName + " - 1 Friend";
+            }
             break;
           case "Santa":
             userDataString = userDataName;
-            if (localListedUserData == "Santa") {
-              if (userData.secretSanta != null) {
-                if (userData.secretSanta == 1 && currentState != 3) {
-                  tempElem.className += " santa";
-                  userDataString = userDataName + " - Signed Up!";
-                } else if (userData.secretSantaName != null) {
-                  if (userData.secretSantaName != "") {
-                    tempElem.className += " santa";
-                    userDataString = userDataName + " - Name Assigned!";
-                  } else if (userData.secretSanta == 1 && userData.secretSantaName == "") {
-                    tempElem.className += " highSev";
-                    userDataString = userDataName + " - NOT Assigned";
-                  }
-                }
-              }
+            if (userData.secretSantaName == undefined) {
+              userData.secretSantaName = "";
+            }
+            if (userData.secretSanta == undefined) {
+              userData.secretSanta = 0;
+            }
+
+            if (userData.secretSanta == 1 && currentState != 3) {
+              tempElem.className += " santa";
+              userDataString = userDataName + " - Signed Up!";
+            } else if (userData.secretSantaName != "") {
+              tempElem.className += " santa";
+              userDataString = userDataName + " - Name Assigned!";
+            } else if (userData.secretSanta == 1 && userData.secretSantaName == "") {
+              tempElem.className += " highSev";
+              userDataString = userDataName + " - NOT Assigned";
             }
             break;
           case "Moderator":
@@ -550,7 +556,7 @@ window.onload = function instantiate() {
     nukeAllUserNotifications.onclick = function () {
       userUpdateLocal = true;
       for (let i = 0; i < userArr.length; i++) {
-        if (userArr[i].notifications != null) {
+        if (userArr[i].notifications != undefined) {
           userArr[i].notifications = null;
           firebase.database().ref("users/" + userArr[i].uid + "/notifications/").remove();
         }
