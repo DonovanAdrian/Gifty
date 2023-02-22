@@ -429,7 +429,7 @@ window.onload = function instantiate() {
   function addPrivateMessageToDB(userData, message) {
     let currentUserScore;
 
-    if (user.userScore == null)
+    if (user.userScore == undefined)
       user.userScore = 0;
     user.userScore = user.userScore + 1;
     currentUserScore = user.userScore;
