@@ -727,7 +727,7 @@ window.onload = function instantiate() {
       unsavedChanges = false;
       localGiftAddUpdate = true;
       if(!privateListBool) {
-        if (user.userScore == null) {
+        if (user.userScore == undefined) {
           user.userScore = 0;
         }
 
@@ -756,7 +756,7 @@ window.onload = function instantiate() {
             giftTitleInp.value + ", has been successfully added to your gift list! Redirecting " +
             "back to home...", 3, 2);
       } else {
-        if (privateUser.userScore == null) {
+        if (privateUser.userScore == undefined) {
           privateUser.userScore = 0;
         }
 
