@@ -172,7 +172,7 @@ function commonInitialization(){
     offlineTimer = setInterval(function(){
       now = now + 1000;
       if(now >= 5000){
-        if(dataListChecker != null) {
+        if(dataListChecker != undefined) {
           try {
             document.getElementById('testData').innerHTML = "Loading Failed, Please Connect To Internet";
           } catch (err) {
@@ -207,7 +207,7 @@ function commonInitialization(){
     closeModal(offlineModal);
   };
 
-  if (dataListChecker != null && !emptyListNoteDeployed) {
+  if (dataListChecker != undefined && !emptyListNoteDeployed) {
     commonLoadingTimer = setInterval(function(){
       commonLoadingTimerInt = commonLoadingTimerInt + 1000;
       if (commonLoadingTimerInt >= 15000) {
@@ -216,7 +216,7 @@ function commonInitialization(){
         }
         if (consoleOutput)
           console.log("Timer Error Issued");
-        if (user != null) {
+        if (user != undefined) {
           updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced By " + user.userName);
         } else {
           updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced!");
@@ -258,7 +258,7 @@ function initializeDB(config) {
     }
   });
 
-  if (pageName != "Index" && !(pageName == "UserAddUpdate" && user == null)) {
+  if (pageName != "Index" && !(pageName == "UserAddUpdate" && user == undefined)) {
     databaseCommonPulse();
   }
   if (checkNoteOnDBInit) {
@@ -574,20 +574,20 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
   deployedNoteTimer = 0;
   clearInterval(deployedNoteInterval);
 
-  if (noteTitle == null)
+  if (noteTitle == undefined)
     noteTitle = "Notification Title";
   else if (noteTitle == "")
     noteTitle = "Notification Title";
 
-  if (noteInfo == null)
+  if (noteInfo == undefined)
     noteInfo = "Notification Info";
   else if (noteInfo == "")
     noteInfo = "Notification Info";
 
-  if (reopenPreviousModal != null && currentModalOpenObj != null)
+  if (reopenPreviousModal != undefined && currentModalOpenObj != undefined)
     if (reopenPreviousModal) {
       previousModal = currentModalOpenObj;
-      if (previousModalName != null)
+      if (previousModalName != undefined)
         previousModalName = currentModalOpen;
       else
         previousModalName = "previousModal";
@@ -595,12 +595,12 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
     else
       reopenPreviousModal = false;
 
-  if (customTime == null)
+  if (customTime == undefined)
     customTime = 3;
   else if (customTime.isNaN)
     customTime = 3;
 
-  if (customNavigation == null)
+  if (customNavigation == undefined)
     navigationBool = false;
   else if (customNavigation.isNaN)
     navigationBool = false;
@@ -625,7 +625,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
     }
     notificationDeployed = false;
     closeModal(notificationModal);
-    if (reopenPreviousModal != null)
+    if (reopenPreviousModal != undefined)
       if (reopenPreviousModal)
         openModal(previousModal, previousModalName);
     clearInterval(deployedNoteInterval);
@@ -641,7 +641,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
       }
       notificationDeployed = false;
       closeModal(notificationModal);
-      if (reopenPreviousModal != null)
+      if (reopenPreviousModal != undefined)
         if (reopenPreviousModal)
           openModal(previousModal, previousModalName);
       clearInterval(deployedNoteInterval);
@@ -657,7 +657,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
       }
       notificationDeployed = false;
       closeModal(notificationModal);
-      if (reopenPreviousModal != null)
+      if (reopenPreviousModal != undefined)
         if (reopenPreviousModal)
           openModal(previousModal, previousModalName);
       clearInterval(deployedNoteInterval);
@@ -910,7 +910,7 @@ function navigation(navNum, loginOverride) {
   if (!dbOperationInProgress) {
     if (loginOverride == undefined && !privateUserOverride) {
       try {
-        if (privateUser != null) {
+        if (privateUser != undefined) {
           if (consoleOutput)
             console.log("***Private***");
           sessionStorage.setItem("validUser", JSON.stringify(privateUser));
@@ -990,11 +990,11 @@ function navigation(navNum, loginOverride) {
 function openModal(openThisModal, modalName, ignoreBool){
   let openRetryTimer = 0;
 
-  if (ignoreBool == null) {
+  if (ignoreBool == undefined) {
     ignoreBool = false;
   }
 
-  if (currentModalOpenObj != null) {
+  if (currentModalOpenObj != undefined) {
     closeModal(currentModalOpenObj);
   }
 
@@ -1228,7 +1228,7 @@ function findUIDInString(input){
 }
 
 function findUIDItemInArr(item, array, override){
-  if (array != null) {
+  if (array != undefined) {
     for (let i = 0; i < array.length; i++) {
       if (array[i].uid == item) {
         if (consoleOutput && !override) {
