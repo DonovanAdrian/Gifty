@@ -89,9 +89,10 @@ function getCurrentUser(){
   checkYearlyReview();
 
   if (user.giftList == undefined) {
-    deployListEmptyNotification("No Gifts Found! Add Some Gifts With The Button Below!");
-    giftListEmptyBool = true;
-  } else if (user.giftList.length == 0) {
+    user.giftList = [];
+  }
+
+  if (user.giftList.length == 0) {
     deployListEmptyNotification("No Gifts Found! Add Some Gifts With The Button Below!");
     giftListEmptyBool = true;
   }
@@ -623,19 +624,17 @@ window.onload = function instantiate() {
     let fetchGifts = function (postRef) {
       postRef.on('child_added', function (data) {
         giftArr.push(data.val());
-
-        createGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-            data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
-
+        createGiftElement(data.val().uid);
         checkGiftLimit();
       });
 
       postRef.on('child_changed', function(data) {
         if (initializedGifts.includes(data.val().uid)) {
           giftArr[data.key] = data.val();
-
-          changeGiftElement(data.val().description, data.val().link, data.val().received, data.val().title,
-              data.val().where, data.val().uid, data.val().creationDate, data.val().buyer);
+          changeGiftElement(data.val().uid);
+          if (data.val().uid == currentModalOpen) {
+            closeModal(giftModal);
+          }
         }
       });
 
@@ -653,7 +652,6 @@ window.onload = function instantiate() {
     let fetchInvites = function (postRef) {
       postRef.on('child_added', function (data) {
         inviteArr.push(data.val());
-
         inviteNote.style.background = "#ff3923";
       });
 
@@ -714,90 +712,99 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(limitsInitial);
   }
 
-  function createGiftElement(description, link, received, title, where, uid, date, buyer){
-    try{
-      document.getElementById('testData').remove();
-    } catch (err) {}
+  function createGiftElement(uid) {
+    let giftIndex = findUIDItemInArr(uid, giftArr, true);
+    if (giftIndex != -1) {
+      try {
+        document.getElementById('testData').remove();
+      } catch (err) {}
 
-    let liItem = document.createElement("LI");
-    liItem.id = "gift" + uid;
+      let liItem = document.createElement("LI");
+      liItem.id = "gift" + uid;
+      initGiftElement(liItem, uid);
+      let textNode = document.createTextNode(giftArr[giftIndex].title);
+      liItem.appendChild(textNode);
+      dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+      clearInterval(commonLoadingTimer);
+      clearInterval(offlineTimer);
 
-    initGiftElement(liItem, description, link, received, title, where, uid, date, buyer);
-
-    let textNode = document.createTextNode(title);
-    liItem.appendChild(textNode);
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-    clearInterval(commonLoadingTimer);
-    clearInterval(offlineTimer);
-
-    dataCounter++;
-    initializedGifts.push(uid);
-    if (dataCounter > buttonOpacLim) {
-      boughtGifts.style.opacity = ".75";
-      reviewGifts.style.opacity = ".75";
+      dataCounter++;
+      initializedGifts.push(uid);
+      if (dataCounter > buttonOpacLim) {
+        boughtGifts.style.opacity = ".75";
+        reviewGifts.style.opacity = ".75";
+      }
     }
   }
 
-  function changeGiftElement(description, link, received, title, where, uid, date, buyer) {
-    let editGift = document.getElementById('gift' + uid);
-    editGift.innerHTML = title;
-
-    initGiftElement(description, link, received, title, where, uid, date, buyer);
+  function changeGiftElement(uid) {
+    let giftIndex = findUIDItemInArr(uid, giftArr, true);
+    if (giftIndex != -1) {
+      let editGift = document.getElementById('gift' + uid);
+      editGift.innerHTML = giftArr[giftIndex].title;
+      initGiftElement(editGift, uid);
+    }
   }
 
-  function initGiftElement(liItem, description, link, received, title, where, uid, date, buyer) {
-    liItem.className = "gift";
-    liItem.onclick = function (){
-      if (link != ""){
-        giftLink.innerHTML = "Click me to go to the webpage!";
-        giftLink.onclick = function() {
-          giftLinkRedirect(link);
-        };
-      } else {
-        giftLink.innerHTML = "There was no link provided";
-        giftLink.onclick = function() {
-        };
-      }
-      if(description != "") {
-        giftDescription.innerHTML = "Description: " + description;
-      } else {
-        giftDescription.innerHTML = "There was no description provided";
-      }
-      giftTitle.innerHTML = title;
-      if(where != "") {
-        giftWhere.innerHTML = "This can be found at: " + where;
-      } else {
-        giftWhere.innerHTML = "There was no location provided";
-      }
-      if(date != undefined) {
+  function initGiftElement(liItem, uid) {
+    let giftIndex = findUIDItemInArr(uid, giftArr, true);
+    if (giftIndex != -1) {
+      let description = giftArr[giftIndex].description;
+      let link = giftArr[giftIndex].link;
+      let title = giftArr[giftIndex].title;
+      let where = giftArr[giftIndex].where;
+      let date = giftArr[giftIndex].creationDate;
+      let buyer = giftArr[giftIndex].buyer;
+
+      liItem.className = "gift";
+      liItem.onclick = function () {
+        if (link != "") {
+          giftLink.innerHTML = "Click me to go to the webpage!";
+          giftLink.onclick = function () {
+            giftLinkRedirect(link);
+          };
+        } else {
+          giftLink.innerHTML = "There was no link provided";
+          giftLink.onclick = function () {
+          };
+        }
+        if (description != "") {
+          giftDescription.innerHTML = "Description: " + description;
+        } else {
+          giftDescription.innerHTML = "There was no description provided";
+        }
+        giftTitle.innerHTML = title;
+        if (where != "") {
+          giftWhere.innerHTML = "This can be found at: " + where;
+        } else {
+          giftWhere.innerHTML = "There was no location provided";
+        }
+        if (date == undefined) {
+          date = "";
+        }
         if (date != "") {
           giftCreationDate.innerHTML = "Created on: " + date;
         } else {
           giftCreationDate.innerHTML = "Creation date not available";
         }
-      } else {
-        giftCreationDate.innerHTML = "Creation date not available";
-      }
-      giftUpdate.onclick = function(){
-        updateGiftElement(uid);
+        giftUpdate.onclick = function () {
+          updateGiftElement(uid);
+        };
+        giftDelete.onclick = function () {
+          homeConfirmModal("Confirm Gift Delete", "Are you sure you want to delete your gift, " +
+              title + "?", title, uid, buyer);
+        };
+        openModal(giftModal, uid);
+        closeGiftModal.onclick = function () {
+          closeModal(giftModal);
+        };
       };
-      giftDelete.onclick = function(){
-        homeConfirmModal("Confirm Gift Delete", "Are you sure you want to delete your gift, " +
-            title + "?", title, uid, buyer);
-      };
-
-      openModal(giftModal, uid);
-
-      closeGiftModal.onclick = function() {
-        closeModal(giftModal);
-      };
-    };
+    }
   }
 };
 
 function findRemovedGift(oldArr, newArr) {
-  let removedGiftIndex = -1;
-
+  let removedGiftIndex;
   removedGiftIndex = findRemovedData(oldArr, newArr);
   if (removedGiftIndex != -1) {
     removeGiftElement(oldArr[removedGiftIndex].uid);
@@ -810,9 +817,7 @@ function findRemovedGift(oldArr, newArr) {
 function removeGiftElement(uid) {
   console.log("Remove gift " + uid);
   document.getElementById('gift' + uid).remove();
-
   checkGiftLimit();
-
   dataCounter--;
   if (dataCounter == 0){
     deployListEmptyNotification("No Gifts Found! Add Some Gifts With The Button Below!");
@@ -945,7 +950,6 @@ function checkGiftLimit() {
       disableAddBtn = true;
     }
   }
-
   if (disableAddBtn) {
     addGift.className += " btnDisabled";
     addGift.innerHTML = "Gift Limit Reached!";
