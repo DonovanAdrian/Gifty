@@ -9,6 +9,7 @@ let listeningFirebaseRefs = [];
 let userArr = [];
 
 let config;
+let signUpTimerInterval;
 
 let userLimit = 100;
 let loginTry = 0;
@@ -19,6 +20,7 @@ let loginDisabledMsg = "";
 let newGiftyMessage = "Please create a new user before trying to log into Gifty! Click on the text below the login " +
     "button and fill out the form to make a user account.";
 
+let loginReady = false;
 let loginBool = false;
 let banOverride = false;
 let allowLogin = true;
@@ -189,6 +191,7 @@ window.onload = function instantiate() {
 
   verifyElementIntegrity(indexElements);
   loginBtn.innerHTML = "Please Wait...";
+  initializeSignUpTextInterval();
   try {
     config = JSON.parse(sessionStorage.config);
   } catch (err) {}
@@ -238,12 +241,12 @@ function loginQuery() {
         postRef.on('child_added', function (data) {
           if(data.key == "allowLogin") {
             if (data.val()) {
-              loginBtn.innerHTML = "Log In";
-              username.focus();
-              allowLogin = true;
+              loginReady = true;
             } else {
               loginBtn.innerHTML = "Log In Disabled";
               allowLogin = false;
+              loginReady = false;
+              initializeLoginBtns();
             }
             sessionStorage.setItem("allowLogin", JSON.stringify(allowLogin));
           } else if (data.key == "loginDisabledMsg")
@@ -253,42 +256,38 @@ function loginQuery() {
         postRef.on('child_changed', function (data) {
           if(data.key == "allowLogin") {
             if (data.val()) {
-              loginBtn.innerHTML = "Log In";
-              username.focus();
-              allowLogin = true;
+              loginReady = true;
             } else {
-              loginBtn.innerHTML = "Log In Disabled";
               allowLogin = false;
+              loginReady = false;
+              initializeLoginBtns();
             }
             sessionStorage.setItem("allowLogin", JSON.stringify(allowLogin));
           } else if (data.key == "loginDisabledMsg")
             loginDisabledMsg = data.val();
         });
 
-        initializeLoginBtns();
+        initializeLoginBtnPlatform();
 
         let fetchLimits = function (postRef) {
           postRef.on('child_added', function (data) {
             if (data.key == "userLimit") {
               userLimit = data.val();
-              displayUserText = true;
-              checkSignUp();
+              initializeLoginBtns();
             }
           });
 
           postRef.on('child_changed', function (data) {
             if (data.key == "userLimit") {
               userLimit = data.val();
-              displayUserText = true;
-              checkSignUp();
+              initializeLoginBtns();
             }
           });
 
           postRef.on('child_removed', function (data) {
             if (data.key == "userLimit") {
               userLimit = 50;
-              displayUserText = true;
-              checkSignUp();
+              initializeLoginBtns();
             }
           });
         };
@@ -302,9 +301,7 @@ function loginQuery() {
           loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
               "maintenance before logging in. Thank you for your patience!"
         });
-        loginBtn.innerHTML = "Log In";
-        username.focus();
-        allowLogin = true;
+        loginReady = true;
         sessionStorage.setItem("allowLogin", JSON.stringify(allowLogin));
 
         firebase.database().ref("limits/").update({
@@ -313,8 +310,7 @@ function loginQuery() {
           giftURLLimit: ""
         });
         userLimit = 50;
-        displayUserText = true;
-        checkSignUp();
+        initializeLoginBtns();
         fetchLogin(loginInitial);
       }
     });
@@ -325,7 +321,7 @@ function loginQuery() {
   listeningFirebaseRefs.push(loginInitial);
 }
 
-function initializeLoginBtns() {
+function initializeLoginBtnPlatform() {
   userInitial = firebase.database().ref("users/");
 
   databaseQuery();
@@ -350,7 +346,7 @@ function databaseQuery() {
           if (findUIDItemInArr(data.key, userArr, true) == -1)
             userArr.push(data.val());
 
-          checkSignUp();
+          initializeLoginBtns();
         });
 
         postRef.on('child_changed', function (data) {
@@ -359,7 +355,7 @@ function databaseQuery() {
             userArr[i] = data.val();
           }
 
-          checkSignUp();
+          initializeLoginBtns();
         });
 
         postRef.on('child_removed', function (data) {
@@ -512,9 +508,17 @@ function authenticate() {
   return validAuthUserInt;
 }
 
-function checkSignUp(){
+function initializeLoginBtns(){
   let validUserTempInt = 0;
   if (displayUserText) {
+    if (loginReady) {
+      loginBtn.innerHTML = "Log In";
+      username.focus();
+      allowLogin = true;
+    } else {
+      loginBtn.innerHTML = "Log In Disabled";
+    }
+
     if (userArr.length >= userLimit) {
       signUpFld.innerHTML = "Gifty Database Full! Existing Users Can Still Log In Above!";
       signUpFld.onclick = function () {
@@ -533,6 +537,46 @@ function checkSignUp(){
         signUp();
       };
     }
+  }
+}
+
+function initializeSignUpTextInterval() {
+  let signUpTimerNum = 0;
+  let signUpTimerThreshold = 100;
+  let userArrIntervalThreshold = 25;
+  let pastUserArrSize = 0;
+  let pastInterval = 0;
+
+  signUpTimerInterval = setInterval(function(){
+    if (userArr.length > 0) {
+      signUpTimerNum = signUpTimerNum + 1;
+      if (signUpTimerNum >= signUpTimerThreshold) {
+        displayUserText = true;
+        initializeLoginBtns();
+        clearInterval(signUpTimerInterval);
+      } else {
+        if (userArr.length > pastUserArrSize) {
+          pastUserArrSize = userArr.length;
+          setUserArrMetric(signUpTimerNum);
+          signUpTimerNum = 0;
+        } else {
+          checkUserArrMetric();
+        }
+      }
+    }
+  }, 10);
+
+  function checkUserArrMetric() {
+    if ((pastInterval + userArrIntervalThreshold) < signUpTimerThreshold)
+      if (signUpTimerNum > (pastInterval + userArrIntervalThreshold)) {
+        displayUserText = true;
+        initializeLoginBtns();
+        clearInterval(signUpTimerInterval);
+      }
+  }
+
+  function setUserArrMetric(userArrMetric) {
+    pastInterval = userArrMetric;
   }
 }
 
