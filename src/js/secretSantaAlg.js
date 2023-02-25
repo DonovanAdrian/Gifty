@@ -97,10 +97,10 @@ function triggerSantaIntegrityInterval() {
       initIntervalTime = initIntervalTime + 1;
       if (initIntervalTime > 5) {
         console.log("Correcting Missing Data");
-        if (automaticControl == null) {
+        if (automaticControl == undefined) {
           automaticControl = false;
         }
-        if (manualControl == null) {
+        if (manualControl == undefined) {
           manualControl = false;
         }
         if (currentState == -1) {
@@ -323,7 +323,7 @@ function setSecretSantaBtnDefault(secretButtonText) {
 function showSecretSanta(){
   let initializeSecretBtnOnClick = false;
 
-  if (user.secretSanta == null) {
+  if (user.secretSanta == undefined) {
     if (currentState == 2) {
       setSecretSantaBtnDefault("Sign Up For Secret Santa");
       initializeSecretBtnOnClick = true;
@@ -700,7 +700,7 @@ function generatePrivateMessageDialog(userData) {
 function addPrivateMessageToDB(userData, message) {
   let currentUserScore;
 
-  if (user.userScore == null)
+  if (user.userScore == undefined)
     user.userScore = 0;
   user.userScore = user.userScore + 1;
   currentUserScore = user.userScore;
@@ -970,7 +970,7 @@ function createSecretSantaNames(){
     let friendScoreBool = false;
 
     for (let i = 0; i < tempUserArr.length; i++) {
-      if (tempUserArr[i].friends == null) {
+      if (tempUserArr[i].friends == undefined) {
         tempUserArr.splice(i, 1);
         friendScoreBool = true;
         i--;
@@ -1421,7 +1421,7 @@ function updateAllUsersToDBSantaNums(){
 function updateAllUsersToDBSantaNames(disablingNamesOutputOverride){
   for(let i = 0; i < userArr.length; i++) {
     if (!disablingNamesOutputOverride) {
-      if (userArr[i].secretSanta == 1 && userArr[i].secretSantaName == null) {
+      if (userArr[i].secretSanta == 1 && userArr[i].secretSantaName == undefined) {
         if (consoleOutput) {
           console.log("");
           console.log(userArr[i].userName + " Signed Up But Was Not Assigned A Name! Check The Above Log For The Reasons Why.");
