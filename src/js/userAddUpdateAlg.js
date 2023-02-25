@@ -402,7 +402,7 @@ function updateUserToDB(){
   } else if (!isNaN(pinField.value) == false) {
     deployNotificationModal(false, "Pin Number Error!", "It looks like the pins you entered are not numeric, " +
         "please only enter numbers for your pin!", 4);
-  } else if (userNameBool == false && user == null){
+  } else if (userNameBool == false && user == undefined){
     deployNotificationModal(false, "User Name Taken!", "It looks like the User Name you chose is already taken," +
         " please choose another.", 4);
     userNameBool = true;
@@ -412,12 +412,51 @@ function updateUserToDB(){
     user.name = nameField.value;
     user.userName = userNameField.value;
     let encodeKey = encode(pinField.value);
+
+    if(user.shareCode == undefined) {
+      user.shareCode = genShareCode();
+    }
+    if(user.giftList == undefined) {
+      user.giftList = [];
+    }
+    if(user.notifications == undefined) {
+      user.notifications = [];
+    }
+    if (user.settingsScoreBlock == undefined) {
+      user.settingsScoreBlock = 0;
+    }
+    if (user.secretSanta == undefined) {
+      user.secretSanta = 0;
+    }
+    if (user.secretSantaName == undefined) {
+      user.secretSantaName = "";
+    }
+    if (user.secretSantaNamePrior == undefined) {
+      user.secretSantaNamePrior = "";
+    }
+    if(user.yearlyReview == undefined) {
+      let currentDate = new Date();
+      user.yearlyReview = currentDate.getFullYear();
+    }
+    if(user.friends == undefined) {
+      user.friends = [];
+    }
+    if(user.support == undefined) {
+      user.support = [];
+    }
+    if(user.invites == undefined) {
+      user.invites = [];
+    }
+
     firebase.database().ref("users/" + user.uid).update({
       name: nameField.value,
       encodeStr: encodeKey,
       userName: userNameField.value,
       userScore: user.userScore,
       ban: user.ban,
+      support: user.support,
+      friends: user.friends,
+      invites: user.invites,
       firstLogin: user.firstLogin,
       lastLogin: user.lastLogin,
       moderatorInt: user.moderatorInt,
@@ -426,62 +465,15 @@ function updateUserToDB(){
       theme: user.theme,
       uid: user.uid,
       warn: user.warn,
+      giftList: user.giftList,
+      shareCode: user.shareCode,
+      notifications: user.notifications,
+      settingsScoreBlock: user.settingsScoreBlock,
+      secretSanta: user.secretSanta,
+      secretSantaName: user.secretSantaName,
+      secretSantaNamePrior: user.secretSantaNamePrior,
+      yearlyReview: user.yearlyReview
     });
-    if(user.giftList != undefined) {
-      firebase.database().ref("users/" + user.uid).update({
-        giftList: user.giftList
-      });
-    }
-    if(user.support != undefined) {
-      firebase.database().ref("users/" + user.uid).update({
-        support: user.support
-      });
-    }
-    if(user.invites != undefined) {
-      firebase.database().ref("users/" + user.uid).update({
-        invites: user.invites
-      });
-    }
-    if(user.friends != undefined) {
-      firebase.database().ref("users/" + user.uid).update({
-        friends: user.friends
-      });
-    }
-    if(user.shareCode != undefined) {
-      firebase.database().ref("users/" + user.uid).update({
-        shareCode: user.shareCode
-      });
-    }
-    if(user.notifications != undefined) {
-      firebase.database().ref("users/" + user.uid).update({
-        notifications: user.notifications
-      });
-    }
-    if (user.settingsScoreBlock != undefined) {
-      firebase.database().ref("users/" + user.uid).update({
-        settingsScoreBlock: user.settingsScoreBlock
-      });
-    }
-    if (user.secretSanta != undefined) {
-      firebase.database().ref("users/" + user.uid).update({
-        secretSanta: user.secretSanta
-      });
-    }
-    if (user.secretSantaName != undefined) {
-      firebase.database().ref("users/" + user.uid).update({
-        secretSantaName: user.secretSantaName
-      });
-    }
-    if (user.secretSantaNamePrior != undefined) {
-      firebase.database().ref("users/" + user.uid).update({
-        secretSantaNamePrior: user.secretSantaNamePrior
-      });
-    }
-    if(user.yearlyReview != undefined) {
-      firebase.database().ref("users/" + user.uid).update({
-        yearlyReview: user.yearlyReview
-      });
-    }
 
     btnUpdate.innerHTML = "Please Wait...";
     btnUpdate.onclick = function(){};
@@ -554,24 +546,24 @@ function addUserToDB(){
     deployNotificationModal(false, "User Account Created!", "Your account has been " +
         "successfully created! Redirecting back to Login...", 5, 1, false);
   }
+}
 
-  function genShareCode(){
-    let tempShareCode = "";
-    for(let i = 1; i < 17; i++){
-      tempShareCode = tempShareCode + getRandomAlphabet();
-      if((i % 4) == 0 && i < 16){
-        tempShareCode = tempShareCode + "-";
-      }
+function genShareCode(){
+  let tempShareCode = "";
+  for(let i = 1; i < 17; i++){
+    tempShareCode = tempShareCode + getRandomAlphabet();
+    if((i % 4) == 0 && i < 16){
+      tempShareCode = tempShareCode + "-";
     }
-    return tempShareCode;
   }
+  return tempShareCode;
+}
 
-  function getRandomAlphabet(){
-    let alphabet = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
-    let selector = Math.floor((Math.random() * alphabet.length));
-    let charSelect = alphabet.charAt(selector);
-    return charSelect;
-  }
+function getRandomAlphabet(){
+  let alphabet = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
+  let selector = Math.floor((Math.random() * alphabet.length));
+  let charSelect = alphabet.charAt(selector);
+  return charSelect;
 }
 
 function checkUserNames(userName){
