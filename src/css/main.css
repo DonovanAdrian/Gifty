@@ -54,6 +54,22 @@ body {
   margin: 0;
 }
 
+table {
+  margin: 0 auto;
+}
+
+td.description {
+  text-align: right;
+  vertical-align: text-top;
+  padding-right: 10px;
+}
+
+td.inputItem {
+  text-align: left;
+  vertical-align: bottom;
+  padding-top: 10px;
+}
+
 div.giftUpdateContainer {
   text-align: center;
 }
@@ -117,8 +133,9 @@ input.giftInp {
 }
 
 textarea.giftInp {
-  margin: 0;
+  font-family: Verdana;
   padding-left: 10px;
+  margin-left: 3px;
   border-color: #d9d9d9;
   border-radius: 4px;
   resize: none;
@@ -759,13 +776,18 @@ ul li.santa::before {
     font-size: 10px;
   }
 
+  input.checkBox {
+    width: 15px;
+    height: 15px;
+  }
+
   input.giftInp {
     width: 200px;
     font-size: 13px;
   }
 
   textarea.giftInp {
-    width: 200px;
+    width: 150px;
     font-size: 13px;
   }
 
@@ -931,6 +953,11 @@ ul li.santa::before {
     font-size: 10px;
   }
 
+  input.checkBox {
+    width: 15px;
+    height: 15px;
+  }
+
   input.giftInp {
     width: 200px;
     font-size: 13px;
@@ -1081,6 +1108,11 @@ ul li.santa::before {
   span.giftBackBtn {
     padding: 7px;
     font-size: 15px;
+  }
+
+  input.checkBox {
+    width: 15px;
+    height: 15px;
   }
 
   input.giftInp {
@@ -1247,6 +1279,11 @@ ul li.santa::before {
     font-size: 17px;
   }
 
+  input.checkBox {
+    width: 17px;
+    height: 17px;
+  }
+
   input.giftInp {
     width: 550px;
     font-size: 17px;
@@ -1405,6 +1442,11 @@ ul li.santa::before {
   span.giftBackBtn {
     padding: 11px;
     font-size: 21px;
+  }
+
+  input.checkBox {
+    width: 19px;
+    height: 19px;
   }
 
   input.giftInp {
@@ -1575,6 +1617,11 @@ ul li.santa::before {
     font-size: 23px;
   }
 
+  input.checkBox {
+    width: 20px;
+    height: 20px;
+  }
+
   input.giftInp {
     width: 1200px;
     font-size: 23px;
@@ -1741,6 +1788,11 @@ ul li.santa::before {
   span.giftBackBtn {
     padding: 13px;
     font-size: 26px;
+  }
+
+  input.checkBox {
+    width: 22px;
+    height: 22px;
   }
 
   input.giftInp {
