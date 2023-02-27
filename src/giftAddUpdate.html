@@ -37,22 +37,60 @@
 <svg id="fader"></svg>
 
 <div class="giftUpdateContainer">
-  <br/><br/><br/>
-  <span class="giftBackBtn" id="backBtn" alt="Return To Previous Page">Loading... Please Wait</span>
-  <br/><br/><br/>
-  <p class="giftInf">Title</p>
-  <textarea id="giftTitleInp" placeholder="Gift Title" class="giftInp" maxlength="75" alt="Enter The Desired Title For This Gift" rows="1"></textarea>
-  <p class="giftInf">Web Link/URL</p>
-  <textarea id="giftLinkInp" placeholder="Gift Link" class="giftInp" alt="Enter The Desired URL To This Gift's Webpage" rows="2"></textarea>
-  <p class="giftInf">Where This Gift Can Be Found</p>
-  <textarea id="giftWhereInp" placeholder="Gift Location" class="giftInp" maxlength="100" alt="Enter Where You Could Find This Gift" rows="2"></textarea>
-  <p class="giftInf">Description</p>
-  <textarea id="giftDescriptionInp" placeholder="Gift Description" class="giftInp" maxlength="250" alt="Enter A Desired Description About This Gift" rows="4"></textarea><br/><br/>
-  <p class="giftInf">
-    <input type="checkbox" id="multiplePurchases" alt="If This Gift Can Be Bought Multiple Times, Check This Box">
-    Allow Multiple Purchases</p><br/><br/><br/>
-  <span class="updateBtn" id="updateGift" alt="Add Or Update This Gift To The Gift List">Loading... Please Wait</span>
-  <br/><br/><br/>
+  <table>
+    <tr>
+      <td class="description">
+        <p class="giftInf">Title</p>
+      </td>
+      <td class="inputItem">
+        <textarea id="giftTitleInp" placeholder="Gift Title" class="giftInp" maxlength="75" alt="Enter The Desired Title For This Gift" rows="1"></textarea>
+      </td>
+    </tr>
+    <tr>
+      <td class="description">
+        <p class="giftInf">Web Link/URL</p>
+      </td>
+      <td class="inputItem">
+        <textarea id="giftLinkInp" placeholder="Gift Link" class="giftInp" alt="Enter The Desired URL To This Gift's Webpage" rows="2"></textarea>
+      </td>
+    </tr>
+    <tr>
+      <td class="description">
+        <p class="giftInf">Where This Gift Can Be Found</p>
+      </td>
+      <td class="inputItem">
+        <textarea id="giftWhereInp" placeholder="Gift Location" class="giftInp" maxlength="100" alt="Enter Where You Could Find This Gift" rows="2"></textarea>
+      </td>
+    </tr>
+    <tr>
+      <td class="description">
+        <p class="giftInf">Description</p>
+      </td>
+      <td class="inputItem">
+        <textarea id="giftDescriptionInp" placeholder="Gift Description" class="giftInp" maxlength="250" alt="Enter A Desired Description About This Gift" rows="4"></textarea>
+      </td>
+    </tr>
+    <tr>
+      <br/><br/><br/><br/>
+      <td class="description">
+        <p class="giftInf">Allow Multiple Purchases</p>
+      </td>
+      <td class="inputItem">
+        <input type="checkbox" class="checkBox" id="multiplePurchases" alt="If This Gift Can Be Bought Multiple Times, Check This Box">
+      </td>
+    </tr>
+    <tr>
+      <td class="inputItem">
+        <br/><br/><br/><br/>
+        <span class="updateBtn" id="updateGift" alt="Add Or Update This Gift To The Gift List">Loading... Please Wait</span>
+      </td>
+      <td style="text-align: right; vertical-align: bottom">
+        <br/><br/><br/><br/>
+        <span class="giftBackBtn" id="backBtn" alt="Return To Previous Page">Loading... Please Wait</span>
+      </td>
+    </tr>
+  </table>
+  <br/><br/><br/><br/>
 </div>
 
 <div id="confirmModal" class="modal">
