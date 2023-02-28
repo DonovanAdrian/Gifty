@@ -684,6 +684,10 @@ ul li.santa::before {
   color:black;
 }
 
+.modal-footer-right-override:hover {
+  color:red;
+}
+
 @media screen and (min-width: 0px) and (max-width: 425px) {
   span.boughtBtn {
     left: 5px;
