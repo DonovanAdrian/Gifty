@@ -413,13 +413,13 @@ function updateUserToDB(){
     user.userName = userNameField.value;
     let encodeKey = encode(pinField.value);
 
-    if(user.shareCode == undefined) {
+    if (user.shareCode == undefined) {
       user.shareCode = genShareCode();
     }
-    if(user.giftList == undefined) {
+    if (user.giftList == undefined) {
       user.giftList = [];
     }
-    if(user.notifications == undefined) {
+    if (user.notifications == undefined) {
       user.notifications = [];
     }
     if (user.settingsScoreBlock == undefined) {
@@ -434,18 +434,21 @@ function updateUserToDB(){
     if (user.secretSantaNamePrior == undefined) {
       user.secretSantaNamePrior = "";
     }
-    if(user.yearlyReview == undefined) {
+    if (user.yearlyReview == undefined) {
       let currentDate = new Date();
       user.yearlyReview = currentDate.getFullYear();
     }
-    if(user.friends == undefined) {
+    if (user.friends == undefined) {
       user.friends = [];
     }
-    if(user.support == undefined) {
+    if (user.support == undefined) {
       user.support = [];
     }
-    if(user.invites == undefined) {
+    if (user.invites == undefined) {
       user.invites = [];
+    }
+    if (user.userScore == undefined) {
+      user.userScore = 0;
     }
 
     firebase.database().ref("users/" + user.uid).update({
@@ -474,6 +477,10 @@ function updateUserToDB(){
       secretSantaNamePrior: user.secretSantaNamePrior,
       yearlyReview: user.yearlyReview
     });
+
+    if (user.pin != undefined) {
+      firebase.database().ref("users/" + user.uid + "/pin").remove();
+    }
 
     btnUpdate.innerHTML = "Please Wait...";
     btnUpdate.onclick = function(){};
