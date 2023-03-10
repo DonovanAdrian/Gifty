@@ -40,6 +40,9 @@ let emptyListNoteDeployed = false;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
+let successfulDBOperationTitle = "Pending Operation Completed!";
+let successfulDBOperationNotice = "Your pending change was successfully saved! Thank you for your patience, you may " +
+    "now navigate to other pages.";
 let unsavedChangesOverride;
 let loginTimerInterval;
 let ohThereYouInterval;
@@ -812,10 +815,22 @@ function checkGlobalDBChanges() {
 }
 
 function getDBOpType(dataChangeInput, keyChangeInput) {
+  console.log(dataChangeInput);
+  console.log(keyChangeInput);
   switch (keyChangeInput) {
     case "giftList":
     case "privateList":
-      cancelDBChangeListener("Buy", dataChangeInput);
+      if (pageName == "FriendList")
+        cancelDBChangeListener("Buy", dataChangeInput);
+      else if (pageName == "PrivateFriendList") {
+        if (dataChangeInput.length == undefined)
+          cancelDBChangeListener("Buy", dataChangeInput);
+        else
+          cancelDBChangeListener("Delete", dataChangeInput);
+      }
+      else if (pageName == "Home")
+        if (dataChangeInput.length != undefined)
+          cancelDBChangeListener("Delete", dataChangeInput);
       break;
   }
 }
@@ -830,6 +845,12 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
   }
 
   for (let i = 0; i < listenExpectedUIDs.length; i++) {
+    if (expectedChange == "Delete") {
+      if (findUIDItemInArr(listenExpectedUIDs[i], receivedUID, true) == -1) {
+        receivedUID = listenExpectedUIDs[i];
+      }
+    }
+
     if (listenExpectedUIDs[i] == receivedUID) {
       if (listenDBOpType[i] == expectedChange) {
         updateArrs = true;
@@ -851,9 +872,8 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
       if (consoleOutput)
         console.log("All Expected Changes Received!");
       if (showSuccessfulDBOperation) {
-        deployNotificationModal(false, "Pending Operation Completed!",
-            "Your pending change was successfully saved! Thank you for your patience, you may now navigate " +
-            "to other pages.", 4);
+        deployNotificationModal(false, successfulDBOperationTitle,
+            successfulDBOperationNotice, 4);
       }
       clearInterval(listenForDBInterval);
       showSuccessfulDBOperation = false;
