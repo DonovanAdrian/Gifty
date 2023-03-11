@@ -90,6 +90,11 @@ function getCurrentUser(){
 
   if (user.giftList == undefined) {
     user.giftList = [];
+  } else {
+    giftArr = user.giftList
+    for (let i = 0; i < user.giftList.length; i++) {
+      createGiftElement(user.giftList[i].uid);
+    }
   }
 
   if (user.giftList.length == 0) {
@@ -623,7 +628,8 @@ window.onload = function instantiate() {
 
     let fetchGifts = function (postRef) {
       postRef.on('child_added', function (data) {
-        giftArr.push(data.val());
+        if (findUIDItemInArr(data.val().uid, giftArr, true) == -1)
+          giftArr.push(data.val());
         createGiftElement(data.val().uid);
         checkGiftLimit();
       });
@@ -711,97 +717,97 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(limitsInitial);
   }
-
-  function createGiftElement(uid) {
-    let giftIndex = findUIDItemInArr(uid, giftArr, true);
-    if (giftIndex != -1) {
-      try {
-        document.getElementById('testData').remove();
-      } catch (err) {}
-
-      let liItem = document.createElement("LI");
-      liItem.id = "gift" + uid;
-      initGiftElement(liItem, uid);
-      let textNode = document.createTextNode(giftArr[giftIndex].title);
-      liItem.appendChild(textNode);
-      dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-      clearInterval(commonLoadingTimer);
-      clearInterval(offlineTimer);
-
-      dataCounter++;
-      initializedGifts.push(uid);
-      if (dataCounter > buttonOpacLim) {
-        boughtGifts.style.opacity = ".75";
-        reviewGifts.style.opacity = ".75";
-      }
-    }
-  }
-
-  function changeGiftElement(uid) {
-    let giftIndex = findUIDItemInArr(uid, giftArr, true);
-    if (giftIndex != -1) {
-      let editGift = document.getElementById('gift' + uid);
-      editGift.innerHTML = giftArr[giftIndex].title;
-      initGiftElement(editGift, uid);
-    }
-  }
-
-  function initGiftElement(liItem, uid) {
-    let giftIndex = findUIDItemInArr(uid, giftArr, true);
-    if (giftIndex != -1) {
-      let description = giftArr[giftIndex].description;
-      let link = giftArr[giftIndex].link;
-      let title = giftArr[giftIndex].title;
-      let where = giftArr[giftIndex].where;
-      let date = giftArr[giftIndex].creationDate;
-      let buyer = giftArr[giftIndex].buyer;
-
-      liItem.className = "gift";
-      liItem.onclick = function () {
-        if (link != "") {
-          giftLink.innerHTML = "Click me to go to the webpage!";
-          giftLink.onclick = function () {
-            giftLinkRedirect(link);
-          };
-        } else {
-          giftLink.innerHTML = "There was no link provided";
-          giftLink.onclick = function () {
-          };
-        }
-        if (description != "") {
-          giftDescription.innerHTML = "Description: " + description;
-        } else {
-          giftDescription.innerHTML = "There was no description provided";
-        }
-        giftTitle.innerHTML = title;
-        if (where != "") {
-          giftWhere.innerHTML = "This can be found at: " + where;
-        } else {
-          giftWhere.innerHTML = "There was no location provided";
-        }
-        if (date == undefined) {
-          date = "";
-        }
-        if (date != "") {
-          giftCreationDate.innerHTML = "Created on: " + date;
-        } else {
-          giftCreationDate.innerHTML = "Creation date not available";
-        }
-        giftUpdate.onclick = function () {
-          updateGiftElement(uid);
-        };
-        giftDelete.onclick = function () {
-          homeConfirmModal("Confirm Gift Delete", "Are you sure you want to delete your gift, " +
-              title + "?", title, uid, buyer);
-        };
-        openModal(giftModal, uid);
-        closeGiftModal.onclick = function () {
-          closeModal(giftModal);
-        };
-      };
-    }
-  }
 };
+
+function createGiftElement(uid) {
+  let giftIndex = findUIDItemInArr(uid, giftArr, true);
+  if (giftIndex != -1 && initializedGifts.indexOf(uid) == -1) {
+    try {
+      document.getElementById('testData').remove();
+    } catch (err) {}
+
+    let liItem = document.createElement("LI");
+    liItem.id = "gift" + uid;
+    initGiftElement(liItem, uid);
+    let textNode = document.createTextNode(giftArr[giftIndex].title);
+    liItem.appendChild(textNode);
+    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+    clearInterval(commonLoadingTimer);
+    clearInterval(offlineTimer);
+
+    dataCounter++;
+    initializedGifts.push(uid);
+    if (dataCounter > buttonOpacLim) {
+      boughtGifts.style.opacity = ".75";
+      reviewGifts.style.opacity = ".75";
+    }
+  }
+}
+
+function changeGiftElement(uid) {
+  let giftIndex = findUIDItemInArr(uid, giftArr, true);
+  if (giftIndex != -1) {
+    let editGift = document.getElementById('gift' + uid);
+    editGift.innerHTML = giftArr[giftIndex].title;
+    initGiftElement(editGift, uid);
+  }
+}
+
+function initGiftElement(liItem, uid) {
+  let giftIndex = findUIDItemInArr(uid, giftArr, true);
+  if (giftIndex != -1) {
+    let description = giftArr[giftIndex].description;
+    let link = giftArr[giftIndex].link;
+    let title = giftArr[giftIndex].title;
+    let where = giftArr[giftIndex].where;
+    let date = giftArr[giftIndex].creationDate;
+    let buyer = giftArr[giftIndex].buyer;
+
+    liItem.className = "gift";
+    liItem.onclick = function () {
+      if (link != "") {
+        giftLink.innerHTML = "Click me to go to the webpage!";
+        giftLink.onclick = function () {
+          giftLinkRedirect(link);
+        };
+      } else {
+        giftLink.innerHTML = "There was no link provided";
+        giftLink.onclick = function () {
+        };
+      }
+      if (description != "") {
+        giftDescription.innerHTML = "Description: " + description;
+      } else {
+        giftDescription.innerHTML = "There was no description provided";
+      }
+      giftTitle.innerHTML = title;
+      if (where != "") {
+        giftWhere.innerHTML = "This can be found at: " + where;
+      } else {
+        giftWhere.innerHTML = "There was no location provided";
+      }
+      if (date == undefined) {
+        date = "";
+      }
+      if (date != "") {
+        giftCreationDate.innerHTML = "Created on: " + date;
+      } else {
+        giftCreationDate.innerHTML = "Creation date not available";
+      }
+      giftUpdate.onclick = function () {
+        updateGiftElement(uid);
+      };
+      giftDelete.onclick = function () {
+        homeConfirmModal("Confirm Gift Delete", "Are you sure you want to delete your gift, " +
+            title + "?", title, uid, buyer);
+      };
+      openModal(giftModal, uid);
+      closeGiftModal.onclick = function () {
+        closeModal(giftModal);
+      };
+    };
+  }
+}
 
 function findRemovedGift(oldArr, newArr) {
   let removedGiftIndex;
@@ -871,9 +877,11 @@ function deleteGiftElement(title, uid, buyer, bulkDelete) {
 
     closeModal(giftModal);
 
-    if (!bulkDelete)
-      deployNotificationModal(false, "Gift Deleted", "Gift " + title +
-          " successfully deleted!");
+    if (!bulkDelete) {
+      successfulDBOperationTitle = "Gift Deleted";
+      successfulDBOperationNotice = "Your gift, \"" + title + "\", was successfully deleted!";
+      showSuccessfulDBOperation = true;
+    }
 
     if(buyer != ""){
       let userFound = findUserNameItemInArr(buyer, userArr);
@@ -887,6 +895,9 @@ function deleteGiftElement(title, uid, buyer, bulkDelete) {
       if(consoleOutput)
         console.log("No buyer, no notification needed");
     }
+
+    if (!bulkDelete)
+      listenForDBChanges("Delete", uid);
     giftDeleteLocal = false;
   } else {
     if (!bulkDelete)
