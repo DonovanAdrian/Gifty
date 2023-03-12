@@ -91,10 +91,11 @@ function getCurrentUser(){
   if (user.giftList == undefined) {
     user.giftList = [];
   } else {
-    giftArr = user.giftList
+    giftArr = user.giftList;
     for (let i = 0; i < user.giftList.length; i++) {
       createGiftElement(user.giftList[i].uid);
     }
+    checkGiftLimit();
   }
 
   if (user.giftList.length == 0) {
