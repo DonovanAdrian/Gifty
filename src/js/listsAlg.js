@@ -7,9 +7,12 @@
 let listsElements = [];
 let inviteArr = [];
 let friendArr = [];
+let oldFriendArr = [];
 let listeningFirebaseRefs = [];
+let initializedUsers = [];
 let userArr = [];
 
+let potentialRemoval = false;
 let friendListEmptyBool = false;
 let secretSantaInit = false;
 
@@ -57,6 +60,11 @@ function getCurrentUser(){
 
   if (user.friends == undefined) {
     user.friends = [];
+  } else {
+    friendArr = user.friends;
+    for (let i = 0; i < user.friends.length; i++) {
+      createFriendElement(user.friends[i]);
+    }
   }
 
   if (user.friends.length == 0) {
@@ -193,6 +201,11 @@ window.onload = function instantiate() {
               user = data.val();
               checkNotifications();
               updateFriendNav(user.friends);
+              friendArr = user.friends;
+              if (potentialRemoval) {
+                findRemovedUser(oldFriendArr, friendArr);
+                potentialRemoval = false;
+              }
               if(consoleOutput)
                 console.log("Current User Updated");
             }
@@ -212,24 +225,24 @@ window.onload = function instantiate() {
 
     let fetchFriends = function (postRef) {
       postRef.on('child_added', function (data) {
-        friendArr.push(data.val());
-
+        if (friendArr.indexOf(data.val()) == -1)
+          friendArr.push(data.val());
         createFriendElement(data.val());
       });
 
       postRef.on('child_changed', function (data) {
-        if(consoleOutput)
-          console.log(friendArr);
         friendArr[data.key] = data.val();
         if(consoleOutput)
-          console.log(friendArr);
-
+          console.log("Changing " + data.val());
         changeFriendElement(data.val());
       });
 
       postRef.on('child_removed', function (data) {
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        navigation(3);
+        potentialRemoval = true;
+        oldFriendArr = [];
+        for (let i = 0; i < friendArr.length; i++) {
+          oldFriendArr.push(friendArr[i]);
+        }
       });
     };
 
@@ -273,117 +286,128 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(autoSecretSanta);
   }
-
-  function createFriendElement(friendKey) {
-    let friendData;
-    for (let i = 0; i < userArr.length; i++) {
-      if (friendKey == userArr[i].uid) {
-        friendData = userArr[i];
-        break;
-      }
-    }
-
-    if(friendData != null){
-      try {
-        document.getElementById('testData').remove();
-      } catch (err) {}
-
-      let userUid = friendData.uid;
-      let friendName = friendData.name;
-      let liItem = document.createElement("LI");
-      liItem.id = "user" + userUid;
-      initFriendElement(liItem, friendData);
-      let textNode = document.createTextNode("View " + friendName + "'s Gift Lists");
-      liItem.appendChild(textNode);
-      dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-      clearInterval(commonLoadingTimer);
-      clearInterval(offlineTimer);
-      dataCounter++;
-    }
-  }
-
-  function changeFriendElement(friendKey){
-    let friendData;
-    for (let i = 0; i < userArr.length; i++){
-      if(friendKey == userArr[i].uid){
-        friendData = userArr[i];
-        break;
-      }
-    }
-
-    if (friendData != null) {
-      let friendName = friendData.name;
-      let editItem = document.createElement("LI");
-      editItem.innerHTML = friendName;
-      initFriendElement(editItem, friendData);
-    }
-  }
-
-  function initFriendElement(liItem, friendData) {
-    let setPublicButton = false;
-
-    liItem.className = "gift";
-    liItem.onclick = function () {
-      clearInterval(giftListInterval);
-      userTitle.innerHTML = friendData.name;
-
-      if(friendData.giftList == undefined){
-        friendData.giftList = [];
-      }
-
-      if(friendData.giftList.length > 0) {
-        setPublicButton = true;
-        publicList.onclick = function () {
-          sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
-          navigation(9);
-        };
-      } else {
-        publicList.onclick = function () {};
-      }
-
-      if(friendData.privateList == undefined) {
-        friendData.privateList = [];
-      }
-
-      if (setPublicButton) {
-        flashGiftNumbers(friendData.privateList, friendData.giftList);
-      } else {
-        flashGiftNumbers(friendData.privateList, 0);
-      }
-
-      privateList.onclick = function() {
-        sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
-        navigation(10);
-      };
-
-      sendPrivateMessage.onclick = function() {
-        closeModal(userModal);
-        clearInterval(giftListInterval);
-        generatePrivateMessageDialog(friendData);
-      };
-
-      openModal(userModal, friendData.uid, true);
-
-      closeUserModal.onclick = function() {
-        closeModal(userModal);
-        clearInterval(giftListInterval);
-      };
-
-      window.onclick = function(event) {
-        if (event.target == userModal) {
-          closeModal(userModal);
-          clearInterval(giftListInterval);
-        }
-      }
-    };
-  }
-
-  function removeFriendElement(uid){
-    document.getElementById('user' + uid).remove();
-
-    dataCounter--;
-    if(dataCounter == 0) {
-      deployListEmptyNotification("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
-    }
-  }
 };
+
+function findRemovedUser(oldArr, newArr) {
+  let removedUserIndex = -1;
+
+  removedUserIndex = findRemovedData(oldArr, newArr, true);
+  if (removedUserIndex != -1) {
+    removeFriendElement(oldArr[removedUserIndex]);
+    let i = initializedUsers.indexOf(oldArr[removedUserIndex]);
+    initializedUsers.splice(i, 1);
+    oldFriendArr.splice(removedUserIndex, 1);
+  }
+}
+
+function createFriendElement(friendKey) {
+  let friendIndex = findUIDItemInArr(friendKey, userArr, true);
+  let friendData = userArr[friendIndex];
+
+  if(friendIndex != -1 && initializedUsers.indexOf(friendKey) == -1){
+    try {
+      document.getElementById('testData').remove();
+    } catch (err) {}
+
+    let userUid = friendData.uid;
+    let friendName = friendData.name;
+    let liItem = document.createElement("LI");
+    liItem.id = "user" + userUid;
+    initFriendElement(liItem, friendData);
+    let textNode = document.createTextNode("View " + friendName + "'s Gift Lists");
+    liItem.appendChild(textNode);
+    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+    clearInterval(commonLoadingTimer);
+    clearInterval(offlineTimer);
+    dataCounter++;
+  }
+}
+
+function changeFriendElement(friendKey){
+  let friendIndex = findUIDItemInArr(friendKey, userArr, true);
+  let friendData = userArr[friendIndex];
+
+  if (friendData != null) {
+    let friendName = friendData.name;
+    let editItem = document.createElement("LI");
+    editItem.innerHTML = friendName;
+    initFriendElement(editItem, friendData);
+  }
+}
+
+function initFriendElement(liItem, friendData) {
+  let setPublicButton = false;
+
+  liItem.className = "gift";
+  liItem.onclick = function () {
+    clearInterval(giftListInterval);
+    userTitle.innerHTML = friendData.name;
+
+    if(friendData.giftList == undefined){
+      friendData.giftList = [];
+    }
+
+    if(friendData.giftList.length > 0) {
+      setPublicButton = true;
+      publicList.onclick = function () {
+        sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
+        navigation(9);
+      };
+    } else {
+      publicList.onclick = function () {};
+    }
+
+    if(friendData.privateList == undefined) {
+      friendData.privateList = [];
+    }
+
+    if (setPublicButton) {
+      flashGiftNumbers(friendData.privateList, friendData.giftList);
+    } else {
+      flashGiftNumbers(friendData.privateList, 0);
+    }
+
+    privateList.onclick = function() {
+      sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
+      navigation(10);
+    };
+
+    sendPrivateMessage.onclick = function() {
+      closeModal(userModal);
+      clearInterval(giftListInterval);
+      generatePrivateMessageDialog(friendData);
+    };
+
+    openModal(userModal, friendData.uid, true);
+
+    closeUserModal.onclick = function() {
+      closeModal(userModal);
+      clearInterval(giftListInterval);
+    };
+
+    window.onclick = function(event) {
+      if (event.target == userModal) {
+        closeModal(userModal);
+        clearInterval(giftListInterval);
+      }
+    }
+  };
+
+  if (!initializedUsers.includes(friendData.uid)) {
+    initializedUsers.push(friendData.uid);
+  }
+}
+
+function removeFriendElement(uid){
+  document.getElementById('user' + uid).remove();
+
+  dataCounter--;
+  if(dataCounter == 0) {
+    deployListEmptyNotification("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
+  }
+
+  let i = initializedUsers.indexOf(uid);
+  if (i != -1) {
+    initializedUsers.splice(i, 1);
+  }
+}
