@@ -81,13 +81,15 @@ function getCurrentUser(){
   getCurrentUserCommon();
 
   if (user.friends == undefined) {
-    if (invitesFound)
-      inviteListEmptyText = "No Friends Found, But You Have Some Pending Invites!";
-    else
-      inviteListEmptyText = "No Friends Found! Invite Some Friends With The Button Below!";
-    deployListEmptyNotification(inviteListEmptyText);
-    friendListEmptyBool = true;
-  } else if (user.friends.length == 0) {
+    user.friends = [];
+  } else {
+    friendArr = user.friends;
+    for (let i = 0; i < user.friends.length; i++) {
+      createFriendElement(user.friends[i]);
+    }
+  }
+
+  if (user.friends.length == 0) {
     if (invitesFound)
       inviteListEmptyText = "No Friends Found, But You Have Some Pending Invites!";
     else
@@ -248,7 +250,8 @@ window.onload = function instantiate() {
 
     let fetchFriends = function (postRef) {
       postRef.on('child_added', function (data) {
-        friendArr.push(data.val());
+        if (friendArr.indexOf(data.val()) == -1)
+          friendArr.push(data.val());
         createFriendElement(data.val());
       });
 
@@ -300,690 +303,681 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userFriends);
     listeningFirebaseRefs.push(userInvites);
   }
+};
 
-  function findRemovedUser(oldArr, newArr) {
-    let removedUserIndex = -1;
+function findRemovedUser(oldArr, newArr) {
+  let removedUserIndex = -1;
 
-    removedUserIndex = findRemovedData(oldArr, newArr, true);
-    if (removedUserIndex != -1) {
-      removeFriendElement(oldArr[removedUserIndex]);
-      let i = initializedUsers.indexOf(oldArr[removedUserIndex]);
-      initializedUsers.splice(i, 1);
-      oldFriendArr.splice(removedUserIndex, 1);
-    }
+  removedUserIndex = findRemovedData(oldArr, newArr, true);
+  if (removedUserIndex != -1) {
+    removeFriendElement(oldArr[removedUserIndex]);
+    let i = initializedUsers.indexOf(oldArr[removedUserIndex]);
+    initializedUsers.splice(i, 1);
+    oldFriendArr.splice(removedUserIndex, 1);
   }
+}
 
-  function createFriendElement(friendKey){
-    let friendData;
-    let textNode;
-    for (let i = 0; i < userArr.length; i++)
-      if(friendKey == userArr[i].uid){
-        friendData = userArr[i];
-        break;
-      }
+function createFriendElement(friendKey){
+  let textNode;
+  let friendIndex = findUIDItemInArr(friendKey, userArr, true);
+  let friendData = userArr[friendIndex];
 
-    if(friendData != null) {
-      try {
-        document.getElementById('testData').remove();
-      } catch (err) {}
+  if(friendIndex != -1 && initializedUsers.indexOf(friendKey) == -1) {
+    try {
+      document.getElementById('testData').remove();
+    } catch (err) {}
 
-      let liItem = document.createElement("LI");
-      liItem.id = "user" + friendData.uid;
-      initFriendElement(liItem, friendData);
-      if (friendData.moderatorInt > 0) {
-        textNode = document.createTextNode(friendData.name + " (Moderator)");
-      } else {
-        textNode = document.createTextNode(friendData.name);
-      }
-      liItem.appendChild(textNode);
-      dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-      clearInterval(commonLoadingTimer);
-      clearInterval(offlineTimer);
-      dataCounter++;
-    }
-  }
-
-  function changeFriendElement(friendKey){
-    let friendData;
-    for (let i = 0; i < userArr.length; i++) {
-      if (friendKey == userArr[i].uid) {
-        friendData = userArr[i];
-        break;
-      }
-    }
-
-    if(friendData != null) {
-      let liItemUpdate = document.getElementById("user" + friendData.uid);
-      if (friendData.moderatorInt > 0) {
-        liItemUpdate.innerHTML = friendData.name + " (Moderator)";
-      } else {
-        liItemUpdate.innerHTML = friendData.name;
-      }
-      initFriendElement(liItemUpdate, friendData);
-    }
-  }
-
-  function initFriendElement(liItem, friendData) {
-    liItem.className = "gift";
+    let liItem = document.createElement("LI");
+    liItem.id = "user" + friendData.uid;
+    initFriendElement(liItem, friendData);
     if (friendData.moderatorInt > 0) {
-      liItem.className += " highSev";
-    }
-    liItem.onclick = function () {
-      if (friendData.shareCode == undefined || friendData.shareCode == "")
-        friendData.shareCode = "This User Does Not Have A Share Code";
-
-      userName.innerHTML = friendData.name;
-      userUName.innerHTML = "User Name: " + friendData.userName;
-      userShareCode.innerHTML = "Share Code: " + friendData.shareCode;
-
-      sendPrivateMessage.onclick = function() {
-        closeModal(inviteModal);
-        generatePrivateMessageDialog(friendData);
-      };
-
-      userInviteRemove.onclick = function () {
-        closeModal(inviteModal);
-        confirmDeletion(friendData);
-      };
-
-      openModal(inviteModal, friendData.uid);
-
-      closeInviteModal.onclick = function () {
-        closeModal(inviteModal);
-      };
-    };
-
-    if (!initializedUsers.includes(friendData.uid)) {
-      initializedUsers.push(friendData.uid);
-    }
-  }
-
-  function generatePrivateMessageDialog(userData) {
-    let message = "";
-
-    privateMessageInp.placeholder = "Hey! Just to let you know...";
-
-    sendMsg.onclick = function (){
-      if(privateMessageInp.value.includes(",,,")){
-        deployNotificationModal(true, "Message Error!", "Please do not use commas " +
-            "in the message. Thank you!");
-      } else {
-        message = generateNotificationString(user.uid, "", privateMessageInp.value, "");
-        addPrivateMessageToDB(userData, message);
-        privateMessageInp.value = "";
-      }
-    };
-    cancelMsg.onclick = function (){
-      privateMessageInp.value = "";
-      closeModal(privateMessageModal);
-      openModal(inviteModal, userData.uid);
-    };
-
-    openModal(privateMessageModal, "addGlobalMsgModal");
-
-    closePrivateMessageModal.onclick = function() {
-      closeModal(privateMessageModal);
-    };
-  }
-
-  function addPrivateMessageToDB(userData, message) {
-    let currentUserScore;
-
-    if (user.userScore == undefined)
-      user.userScore = 0;
-    user.userScore = user.userScore + 1;
-    currentUserScore = user.userScore;
-    firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
-
-    addNotificationToDB(userData, message);
-    deployNotificationModal(false, "Message Sent!", "Your message to " +
-        userData.userName + " was successfully delivered!");
-  }
-
-  function confirmDeletion(delFriendData) {
-    confirmTitle.innerHTML = "Confirm Friend Removal";
-    confirmContent.innerHTML = "Are you sure you want to remove your friend, " + delFriendData.name + "?";
-
-    confirmBtn.onclick = function() {
-      closeModal(confirmModal);
-      deleteFriend(delFriendData);
-    };
-
-    denyBtn.onclick = function() {
-      closeModal(confirmModal);
-      openModal(inviteModal, delFriendData.uid);
-    }
-
-    openModal(confirmModal, "confirmModal", true);
-
-    closeConfirmModal.onclick = function() {
-      closeModal(confirmModal);
-      openModal(inviteModal, delFriendData.uid);
-    };
-
-    window.onclick = function(event) {
-      if (event.target == confirmModal) {
-        closeModal(confirmModal);
-      }
-    };
-  }
-
-  function deleteFriend(delFriendData) {
-    let replacementCreatorUser;
-    let deleteChangeBool = false;
-    let deleteBuyerBool = false;
-    let verifyDeleteBool = true;
-    let verifyDeleteBoolFriend = true;
-    let toDelete = -1;
-    let uid = delFriendData.uid;
-    let friendFriendArr;
-
-    deletePendingUid = uid;
-
-    for (let i = 0; i < friendArr.length; i++){
-      if(friendArr[i] == uid) {
-        toDelete = i;
-        break;
-      }
-    }
-
-    if(toDelete != -1) {
-      friendArr.splice(toDelete, 1);
-
-      for (let i = 0; i < friendArr.length; i++) {
-        if (friendArr[i] == uid) {
-          verifyDeleteBool = false;
-          break;
-        }
-      }
+      textNode = document.createTextNode(friendData.name + " (Moderator)");
     } else {
-      verifyDeleteBool = false;
+      textNode = document.createTextNode(friendData.name);
     }
+    liItem.appendChild(textNode);
+    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+    clearInterval(commonLoadingTimer);
+    clearInterval(offlineTimer);
+    dataCounter++;
+  }
+}
 
-    if (!verifyDeleteBool) {
-      friendArr = user.friends;
-      deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
-          "able to be removed from your friend list. Please try again later!");
-      updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
-          delFriendData.userName + " and FAILED! (There was an issue with " + user.userName + "'s friend list)");
-      return;
+function changeFriendElement(friendKey){
+  let friendIndex = findUIDItemInArr(friendKey, userArr, true);
+  let friendData = userArr[friendIndex];
+
+  if(friendData != null) {
+    let liItemUpdate = document.getElementById("user" + friendData.uid);
+    if (friendData.moderatorInt > 0) {
+      liItemUpdate.innerHTML = friendData.name + " (Moderator)";
+    } else {
+      liItemUpdate.innerHTML = friendData.name;
     }
+    initFriendElement(liItemUpdate, friendData);
+  }
+}
 
-    toDelete = -1;
+function initFriendElement(liItem, friendData) {
+  liItem.className = "gift";
+  if (friendData.moderatorInt > 0) {
+    liItem.className += " highSev";
+  }
+  liItem.onclick = function () {
+    if (friendData.shareCode == undefined || friendData.shareCode == "")
+      friendData.shareCode = "This User Does Not Have A Share Code";
 
-    for (let i = 0; i < userArr.length; i++) {
-      if(userArr[i].uid == uid) {
-        friendFriendArr = userArr[i].friends;
+    userName.innerHTML = friendData.name;
+    userUName.innerHTML = "User Name: " + friendData.userName;
+    userShareCode.innerHTML = "Share Code: " + friendData.shareCode;
+
+    sendPrivateMessage.onclick = function() {
+      closeModal(inviteModal);
+      generatePrivateMessageDialog(friendData);
+    };
+
+    userInviteRemove.onclick = function () {
+      closeModal(inviteModal);
+      confirmDeletion(friendData);
+    };
+
+    openModal(inviteModal, friendData.uid);
+
+    closeInviteModal.onclick = function () {
+      closeModal(inviteModal);
+    };
+  };
+
+  if (!initializedUsers.includes(friendData.uid)) {
+    initializedUsers.push(friendData.uid);
+  }
+}
+
+function generatePrivateMessageDialog(userData) {
+  let message = "";
+
+  privateMessageInp.placeholder = "Hey! Just to let you know...";
+
+  sendMsg.onclick = function (){
+    if(privateMessageInp.value.includes(",,,")){
+      deployNotificationModal(true, "Message Error!", "Please do not use commas " +
+          "in the message. Thank you!");
+    } else {
+      message = generateNotificationString(user.uid, "", privateMessageInp.value, "");
+      addPrivateMessageToDB(userData, message);
+      privateMessageInp.value = "";
+    }
+  };
+  cancelMsg.onclick = function (){
+    privateMessageInp.value = "";
+    closeModal(privateMessageModal);
+    openModal(inviteModal, userData.uid);
+  };
+
+  openModal(privateMessageModal, "addGlobalMsgModal");
+
+  closePrivateMessageModal.onclick = function() {
+    closeModal(privateMessageModal);
+  };
+}
+
+function addPrivateMessageToDB(userData, message) {
+  let currentUserScore;
+
+  if (user.userScore == undefined)
+    user.userScore = 0;
+  user.userScore = user.userScore + 1;
+  currentUserScore = user.userScore;
+  firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
+
+  addNotificationToDB(userData, message);
+  deployNotificationModal(false, "Message Sent!", "Your message to " +
+      userData.userName + " was successfully delivered!");
+}
+
+function confirmDeletion(delFriendData) {
+  confirmTitle.innerHTML = "Confirm Friend Removal";
+  confirmContent.innerHTML = "Are you sure you want to remove your friend, " + delFriendData.name + "?";
+
+  confirmBtn.onclick = function() {
+    closeModal(confirmModal);
+    deleteFriend(delFriendData);
+  };
+
+  denyBtn.onclick = function() {
+    closeModal(confirmModal);
+    openModal(inviteModal, delFriendData.uid);
+  }
+
+  openModal(confirmModal, "confirmModal", true);
+
+  closeConfirmModal.onclick = function() {
+    closeModal(confirmModal);
+    openModal(inviteModal, delFriendData.uid);
+  };
+
+  window.onclick = function(event) {
+    if (event.target == confirmModal) {
+      closeModal(confirmModal);
+    }
+  };
+}
+
+function deleteFriend(delFriendData) {
+  let replacementCreatorUser;
+  let deleteChangeBool = false;
+  let deleteBuyerBool = false;
+  let verifyDeleteBool = true;
+  let verifyDeleteBoolFriend = true;
+  let toDelete = -1;
+  let uid = delFriendData.uid;
+  let friendFriendArr;
+
+  deletePendingUid = uid;
+
+  for (let i = 0; i < friendArr.length; i++){
+    if(friendArr[i] == uid) {
+      toDelete = i;
+      break;
+    }
+  }
+
+  if(toDelete != -1) {
+    friendArr.splice(toDelete, 1);
+
+    for (let i = 0; i < friendArr.length; i++) {
+      if (friendArr[i] == uid) {
+        verifyDeleteBool = false;
         break;
       }
     }
+  } else {
+    verifyDeleteBool = false;
+  }
+
+  if (!verifyDeleteBool) {
+    friendArr = user.friends;
+    deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
+        "able to be removed from your friend list. Please try again later!");
+    updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
+        delFriendData.userName + " and FAILED! (There was an issue with " + user.userName + "'s friend list)");
+    return;
+  }
+
+  toDelete = -1;
+
+  for (let i = 0; i < userArr.length; i++) {
+    if(userArr[i].uid == uid) {
+      friendFriendArr = userArr[i].friends;
+      break;
+    }
+  }
+
+  for (let i = 0; i < friendFriendArr.length; i++) {
+    if (friendFriendArr[i] == user.uid){
+      toDelete = i;
+      break;
+    }
+  }
+
+  if(toDelete != -1) {
+    friendFriendArr.splice(toDelete, 1);
 
     for (let i = 0; i < friendFriendArr.length; i++) {
-      if (friendFriendArr[i] == user.uid){
-        toDelete = i;
+      if (friendFriendArr[i] == user.uid) {
+        verifyDeleteBoolFriend = false;
+        break;
+      }
+    }
+  } else {
+    verifyDeleteBoolFriend = false;
+  }
+
+  let deleteUserIndex = findUIDItemInArr(uid, userArr);
+  if (deleteUserIndex != -1) {
+    cleanUpGifts(userArr[deleteUserIndex], user);
+    cleanUpGifts(user, userArr[deleteUserIndex]);
+  } else {
+    verifyDeleteBool = false;
+  }
+
+  if (verifyDeleteBoolFriend && verifyDeleteBool) {
+    friendDeleteLocal = true;
+    firebase.database().ref("users/" + user.uid).update({
+      friends: friendArr
+    });
+
+    let i = initializedUsers.indexOf(uid);
+    if (i != -1) {
+      initializedUsers.splice(i, 1);
+    }
+
+    firebase.database().ref("users/" + uid).update({
+      friends: friendFriendArr
+    });
+
+    deletePendingUid = "";
+    removeFriendElement(uid);
+    user.friends = friendArr;
+    refreshFriendInviteArrays();
+    deployNotificationModal(false, "Friend Removed!", "The user " + delFriendData.name +
+        " has been successfully removed from your friend list!");
+    friendDeleteLocal = false;
+  } else {
+    deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
+        "able to be removed from your friend list. Please try again later!");
+    updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
+        delFriendData.userName + " and FAILED! (There was an issue with " + delFriendData.userName + "'s friend list)");
+  }
+
+  function cleanUpGifts(listOwner, listViewer) {
+    if (listOwner.giftList != null) {
+      for (let delUserGiftIndex = 0; delUserGiftIndex < listOwner.giftList.length; delUserGiftIndex++) {
+        if (listOwner.giftList[delUserGiftIndex].buyer != undefined) {
+          if (listOwner.giftList[delUserGiftIndex].buyer == listViewer.userName) {
+            listOwner.giftList[delUserGiftIndex].received = 0;
+            listOwner.giftList[delUserGiftIndex].buyer = "";
+            deleteChangeBool = true;
+            deleteBuyerBool = true;
+          }
+        }
+        if (!deleteBuyerBool) {
+          if (listOwner.giftList[delUserGiftIndex].received != undefined) {
+            if (listOwner.giftList[delUserGiftIndex].received < 0) {
+              let delUserRcvdIndex = listOwner.giftList[delUserGiftIndex].receivedBy.indexOf(listViewer.uid);
+              if (listOwner.giftList[delUserGiftIndex].receivedBy[delUserRcvdIndex] == listViewer.uid) {
+                listOwner.giftList[delUserGiftIndex].receivedBy.splice(delUserRcvdIndex, 1);
+                listOwner.giftList[delUserGiftIndex].received++;
+                deleteChangeBool = true;
+              }
+            }
+          }
+        }
+        deleteBuyerBool = false;
+      }
+
+      if (deleteChangeBool) {
+        firebase.database().ref("users/" + listOwner.uid).update({
+          giftList: listOwner.giftList
+        });
+        deleteChangeBool = false;
+      }
+    }
+
+    if (listOwner.privateList != null) {
+      for (let delUserGiftIndex = 0; delUserGiftIndex < listOwner.privateList.length; delUserGiftIndex++) {
+        if (listOwner.privateList[delUserGiftIndex].buyer != undefined) {
+          if (listOwner.privateList[delUserGiftIndex].buyer == listViewer.userName) {
+            listOwner.privateList[delUserGiftIndex].received = 0;
+            listOwner.privateList[delUserGiftIndex].buyer = "";
+            deleteChangeBool = true;
+            deleteBuyerBool = true;
+          }
+        }
+        if (!deleteBuyerBool) {
+          if (listOwner.privateList[delUserGiftIndex].received != undefined) {
+            if (listOwner.privateList[delUserGiftIndex].received < 0) {
+              let delUserRcvdIndex = listOwner.privateList[delUserGiftIndex].receivedBy.indexOf(listViewer.uid);
+              if (listOwner.privateList[delUserGiftIndex].receivedBy[delUserRcvdIndex] == listViewer.uid) {
+                listOwner.privateList[delUserGiftIndex].receivedBy.splice(delUserRcvdIndex, 1);
+                listOwner.privateList[delUserGiftIndex].received++;
+                deleteChangeBool = true;
+              }
+            }
+          }
+        }
+        if (listOwner.privateList[delUserGiftIndex].creator != undefined) {
+          if (listOwner.privateList[delUserGiftIndex].creator == listViewer.userName) {
+            replacementCreatorUser = getFriendReplacement(listOwner);
+            if (replacementCreatorUser != null) {
+              listOwner.privateList[delUserGiftIndex].creator = replacementCreatorUser.userName;
+            } else {
+              listOwner.privateList.splice(delUserGiftIndex, 1);
+              delUserGiftIndex--;
+            }
+            deleteChangeBool = true;
+          }
+        }
+        deleteBuyerBool = false;
+      }
+
+      if (deleteChangeBool) {
+        firebase.database().ref("users/" + listOwner.uid).update({
+          privateList: listOwner.privateList
+        });
+        deleteChangeBool = false;
+      }
+    }
+  }
+
+  function getFriendReplacement(friendNeededUser) {
+    let tempFriendReturn = null;
+    let userReplacementIndex = -1;
+    let tempFriendReplacementScore = 0;
+
+    if (friendNeededUser.friends.length > 0)
+      for (let i = 0; i < friendNeededUser.friends.length; i++) {
+        userReplacementIndex = findUIDItemInArr(friendNeededUser.friends[i], userArr, true);
+        if (userReplacementIndex != -1) {
+          if (userArr[userReplacementIndex].userScore > tempFriendReplacementScore) {
+            tempFriendReturn = userArr[userReplacementIndex];
+            tempFriendReplacementScore = userArr[userReplacementIndex].userScore;
+          }
+        }
+      }
+
+    return tempFriendReturn;
+  }
+}
+
+function evaluateCommonFriends(){
+  let userFriendInt1;
+  let userFriendInt2;
+  let userFriendData1;
+  let userFriendData2;
+  let userFriendLength = 0;
+  let commonFriends = 0;
+  let commonFriendData;
+  let userBlackListCommon = [];
+
+  addToBlackList.style.display = "none";
+
+  if (user.friends != null) {
+    userFriendLength = user.friends.length;
+  }
+
+  if (user.userBlackList != null) {
+    userBlackListCommon = user.userBlackList;
+  }
+
+  if (userFriendLength > 3) {
+    for (let i = 0; i < userFriendLength; i++) {
+      userFriendInt1 = findUIDItemInArr(user.friends[i], userArr, true);
+      userFriendData1 = userArr[userFriendInt1].friends;
+
+      for (let a = 0; a < userFriendData1.length; a++) {
+        userFriendInt2 = findUIDItemInArr(user.friends[i], userArr, true);
+        userFriendData2 = userArr[userFriendInt2].friends;
+        for (let b = 0; b < userFriendData2.length; b++) {
+          if (userFriendData1[a] == userFriendData2[b]) {
+            commonFriends += 1;
+          }
+        }
+      }
+
+      if (commonFriends > 3 && userFriendData1.length > userFriendLength) {
+        commonFriendData = userArr[userFriendInt1];
         break;
       }
     }
 
-    if(toDelete != -1) {
-      friendFriendArr.splice(toDelete, 1);
+    if (commonFriendData != undefined) {
+      for (let c = 0; c < commonFriendData.friends.length; c++) {
+        if (!user.friends.includes(commonFriendData.friends[c]) && commonFriendData.friends[c] != user.uid) {
+          commonFriendArr.push(commonFriendData.friends[c]);
+        }
+      }
 
-      for (let i = 0; i < friendFriendArr.length; i++) {
-        if (friendFriendArr[i] == user.uid) {
-          verifyDeleteBoolFriend = false;
+      if (commonFriendArr.length > 0 && userBlackListCommon.length != commonFriendArr.length) {
+        addUser.style.background = "#3be357";
+      }
+    }
+  }
+}
+
+function refreshFriendInviteArrays() {
+  friendUserNameList = [];
+  friendShareCodeList = [];
+
+  if(user.friends != undefined || user.friends != null) {
+    for (let i = 0; i < user.friends.length; i++) {
+      for (let a = 0; a < userArr.length; a++) {
+        if (userArr[a].uid == user.friends[i]) {
+          friendUserNameList.push(userArr[a].userName.toUpperCase());
+          friendShareCodeList.push(userArr[a].shareCode);
           break;
         }
       }
-    } else {
-      verifyDeleteBoolFriend = false;
-    }
-
-    let deleteUserIndex = findUIDItemInArr(uid, userArr);
-    if (deleteUserIndex != -1) {
-      cleanUpGifts(userArr[deleteUserIndex], user);
-      cleanUpGifts(user, userArr[deleteUserIndex]);
-    } else {
-      verifyDeleteBool = false;
-    }
-
-    if (verifyDeleteBoolFriend && verifyDeleteBool) {
-      friendDeleteLocal = true;
-      firebase.database().ref("users/" + user.uid).update({
-        friends: friendArr
-      });
-
-      let i = initializedUsers.indexOf(uid);
-      if (i != -1) {
-        initializedUsers.splice(i, 1);
-      }
-
-      firebase.database().ref("users/" + uid).update({
-        friends: friendFriendArr
-      });
-
-      deletePendingUid = "";
-      removeFriendElement(uid);
-      user.friends = friendArr;
-      refreshFriendInviteArrays();
-      deployNotificationModal(false, "Friend Removed!", "The user " + delFriendData.name +
-          " has been successfully removed from your friend list!");
-      friendDeleteLocal = false;
-    } else {
-      deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
-          "able to be removed from your friend list. Please try again later!");
-      updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
-          delFriendData.userName + " and FAILED! (There was an issue with " + delFriendData.userName + "'s friend list)");
-    }
-
-    function cleanUpGifts(listOwner, listViewer) {
-      if (listOwner.giftList != null) {
-        for (let delUserGiftIndex = 0; delUserGiftIndex < listOwner.giftList.length; delUserGiftIndex++) {
-          if (listOwner.giftList[delUserGiftIndex].buyer != undefined) {
-            if (listOwner.giftList[delUserGiftIndex].buyer == listViewer.userName) {
-              listOwner.giftList[delUserGiftIndex].received = 0;
-              listOwner.giftList[delUserGiftIndex].buyer = "";
-              deleteChangeBool = true;
-              deleteBuyerBool = true;
-            }
-          }
-          if (!deleteBuyerBool) {
-            if (listOwner.giftList[delUserGiftIndex].received != undefined) {
-              if (listOwner.giftList[delUserGiftIndex].received < 0) {
-                let delUserRcvdIndex = listOwner.giftList[delUserGiftIndex].receivedBy.indexOf(listViewer.uid);
-                if (listOwner.giftList[delUserGiftIndex].receivedBy[delUserRcvdIndex] == listViewer.uid) {
-                  listOwner.giftList[delUserGiftIndex].receivedBy.splice(delUserRcvdIndex, 1);
-                  listOwner.giftList[delUserGiftIndex].received++;
-                  deleteChangeBool = true;
-                }
-              }
-            }
-          }
-          deleteBuyerBool = false;
-        }
-
-        if (deleteChangeBool) {
-          firebase.database().ref("users/" + listOwner.uid).update({
-            giftList: listOwner.giftList
-          });
-          deleteChangeBool = false;
-        }
-      }
-
-      if (listOwner.privateList != null) {
-        for (let delUserGiftIndex = 0; delUserGiftIndex < listOwner.privateList.length; delUserGiftIndex++) {
-          if (listOwner.privateList[delUserGiftIndex].buyer != undefined) {
-            if (listOwner.privateList[delUserGiftIndex].buyer == listViewer.userName) {
-              listOwner.privateList[delUserGiftIndex].received = 0;
-              listOwner.privateList[delUserGiftIndex].buyer = "";
-              deleteChangeBool = true;
-              deleteBuyerBool = true;
-            }
-          }
-          if (!deleteBuyerBool) {
-            if (listOwner.privateList[delUserGiftIndex].received != undefined) {
-              if (listOwner.privateList[delUserGiftIndex].received < 0) {
-                let delUserRcvdIndex = listOwner.privateList[delUserGiftIndex].receivedBy.indexOf(listViewer.uid);
-                if (listOwner.privateList[delUserGiftIndex].receivedBy[delUserRcvdIndex] == listViewer.uid) {
-                  listOwner.privateList[delUserGiftIndex].receivedBy.splice(delUserRcvdIndex, 1);
-                  listOwner.privateList[delUserGiftIndex].received++;
-                  deleteChangeBool = true;
-                }
-              }
-            }
-          }
-          if (listOwner.privateList[delUserGiftIndex].creator != undefined) {
-            if (listOwner.privateList[delUserGiftIndex].creator == listViewer.userName) {
-              replacementCreatorUser = getFriendReplacement(listOwner);
-              if (replacementCreatorUser != null) {
-                listOwner.privateList[delUserGiftIndex].creator = replacementCreatorUser.userName;
-              } else {
-                listOwner.privateList.splice(delUserGiftIndex, 1);
-                delUserGiftIndex--;
-              }
-              deleteChangeBool = true;
-            }
-          }
-          deleteBuyerBool = false;
-        }
-
-        if (deleteChangeBool) {
-          firebase.database().ref("users/" + listOwner.uid).update({
-            privateList: listOwner.privateList
-          });
-          deleteChangeBool = false;
-        }
-      }
-    }
-
-    function getFriendReplacement(friendNeededUser) {
-      let tempFriendReturn = null;
-      let userReplacementIndex = -1;
-      let tempFriendReplacementScore = 0;
-
-      if (friendNeededUser.friends.length > 0)
-        for (let i = 0; i < friendNeededUser.friends.length; i++) {
-          userReplacementIndex = findUIDItemInArr(friendNeededUser.friends[i], userArr, true);
-          if (userReplacementIndex != -1) {
-            if (userArr[userReplacementIndex].userScore > tempFriendReplacementScore) {
-              tempFriendReturn = userArr[userReplacementIndex];
-              tempFriendReplacementScore = userArr[userReplacementIndex].userScore;
-            }
-          }
-        }
-
-      return tempFriendReturn;
     }
   }
+}
 
-  function evaluateCommonFriends(){
-    let userFriendInt1;
-    let userFriendInt2;
-    let userFriendData1;
-    let userFriendData2;
-    let userFriendLength = 0;
-    let commonFriends = 0;
-    let commonFriendData;
-    let userBlackListCommon = [];
+function generateAddUserBtn(){
+  let commonFriendIndex;
+  let userBlackList = [];
+  let upperCaseUserArr = [];
 
-    addToBlackList.style.display = "none";
+  refreshFriendInviteArrays();
 
-    if (user.friends != null) {
-      userFriendLength = user.friends.length;
-    }
+  for (let b = 0; b < userArr.length; b++){
+    upperCaseUserArr.push(userArr[b].userName.toUpperCase());
+  }
 
-    if (user.userBlackList != null) {
-      userBlackListCommon = user.userBlackList;
-    }
+  if (user.userBlackList != null) {
+    userBlackList = user.userBlackList;
+  }
 
-    if (userFriendLength > 3) {
-      for (let i = 0; i < userFriendLength; i++) {
-        userFriendInt1 = findUIDItemInArr(user.friends[i], userArr, true);
-        userFriendData1 = userArr[userFriendInt1].friends;
+  addUser.onclick = function() {
+    openModal(userInviteModal, "userInviteModal");
+    addInvite.innerHTML = "Send Invite";
 
-        for (let a = 0; a < userFriendData1.length; a++) {
-          userFriendInt2 = findUIDItemInArr(user.friends[i], userArr, true);
-          userFriendData2 = userArr[userFriendInt2].friends;
-          for (let b = 0; b < userFriendData2.length; b++) {
-            if (userFriendData1[a] == userFriendData2[b]) {
-              commonFriends += 1;
+    if (commonFriendArr.length > 0) {
+      for (let z = 0; z < commonFriendArr.length; z++) {
+        commonFriendIndex = findUIDItemInArr(commonFriendArr[z], userArr);
+        if (commonFriendIndex != -1 && !userBlackList.includes(userArr[commonFriendIndex].uid)) {
+          inviteInfo.innerHTML = "Suggested Friend: " + userArr[commonFriendIndex].userName + " " + "(" + userArr[commonFriendIndex].name + ")";
+          inviteInfo.onclick = function() {
+            userNameInp.value = userArr[commonFriendIndex].userName;
+          };
+          addToBlackList.style.display = "block";
+          addToBlackList.onclick = function () {
+            if (!userBlackList.includes(userArr[commonFriendIndex].uid)) {
+              userBlackList.push(userArr[commonFriendIndex].uid);
+              firebase.database().ref("users/" + user.uid).update({
+                userBlackList: userBlackList
+              });
             }
-          }
+            user.userBlackList = userBlackList;
+            inviteInfo.innerHTML = "";
+            addToBlackList.style.display = "none";
+            addUser.style.background = "#ff4c4c";
+          };
+          break;
+        }
+      }
+    }
+
+    addInvite.onclick = function() {
+      let userLocation = -1;
+      let containsInt = false;
+      let dashCount = 0;
+      let shareCodeBool = false;
+
+      for (let i = 0; i < userNameInp.value.length; i++) {
+        if (userNameInp.value[i] >= '0' && userNameInp.value[i] <= '9') {
+          containsInt = true;
+        } else if (userNameInp.value[i] == '-') {
+          dashCount++;
         }
 
-        if (commonFriends > 3 && userFriendData1.length > userFriendLength) {
-          commonFriendData = userArr[userFriendInt1];
+        if (dashCount > 2 && containsInt) {
+          shareCodeBool = true;
           break;
         }
       }
 
-      if (commonFriendData != undefined) {
-        for (let c = 0; c < commonFriendData.friends.length; c++) {
-          if (!user.friends.includes(commonFriendData.friends[c]) && commonFriendData.friends[c] != user.uid) {
-            commonFriendArr.push(commonFriendData.friends[c]);
-          }
-        }
-
-        if (commonFriendArr.length > 0 && userBlackListCommon.length != commonFriendArr.length) {
-          addUser.style.background = "#3be357";
-        }
-      }
-    }
-  }
-
-  function refreshFriendInviteArrays() {
-    friendUserNameList = [];
-    friendShareCodeList = [];
-
-    if(user.friends != undefined || user.friends != null) {
-      for (let i = 0; i < user.friends.length; i++) {
-        for (let a = 0; a < userArr.length; a++) {
-          if (userArr[a].uid == user.friends[i]) {
-            friendUserNameList.push(userArr[a].userName.toUpperCase());
-            friendShareCodeList.push(userArr[a].shareCode);
+      if (shareCodeBool) {
+        for (let i = 0; i < userArr.length; i++) {
+          if (userArr[i].shareCode == userNameInp.value) {
+            userLocation = i;
             break;
           }
         }
-      }
-    }
-  }
-
-  function generateAddUserBtn(){
-    let commonFriendIndex;
-    let userBlackList = [];
-    let upperCaseUserArr = [];
-
-    refreshFriendInviteArrays();
-
-    for (let b = 0; b < userArr.length; b++){
-      upperCaseUserArr.push(userArr[b].userName.toUpperCase());
-    }
-
-    if (user.userBlackList != null) {
-      userBlackList = user.userBlackList;
-    }
-
-    addUser.onclick = function() {
-      openModal(userInviteModal, "userInviteModal");
-      addInvite.innerHTML = "Send Invite";
-
-      if (commonFriendArr.length > 0) {
-        for (let z = 0; z < commonFriendArr.length; z++) {
-          commonFriendIndex = findUIDItemInArr(commonFriendArr[z], userArr);
-          if (commonFriendIndex != -1 && !userBlackList.includes(userArr[commonFriendIndex].uid)) {
-            inviteInfo.innerHTML = "Suggested Friend: " + userArr[commonFriendIndex].userName + " " + "(" + userArr[commonFriendIndex].name + ")";
-            inviteInfo.onclick = function() {
-              userNameInp.value = userArr[commonFriendIndex].userName;
-            };
-            addToBlackList.style.display = "block";
-            addToBlackList.onclick = function () {
-              if (!userBlackList.includes(userArr[commonFriendIndex].uid)) {
-                userBlackList.push(userArr[commonFriendIndex].uid);
-                firebase.database().ref("users/" + user.uid).update({
-                  userBlackList: userBlackList
-                });
-              }
-              user.userBlackList = userBlackList;
-              inviteInfo.innerHTML = "";
-              addToBlackList.style.display = "none";
-              addUser.style.background = "#ff4c4c";
-            };
+      } else {
+        for (let i = 0; i < upperCaseUserArr.length; i++) {
+          if (upperCaseUserArr[i] == userNameInp.value.toUpperCase()) {
+            userLocation = i;
             break;
           }
         }
       }
 
-      addInvite.onclick = function() {
-        let userLocation = -1;
-        let containsInt = false;
-        let dashCount = 0;
-        let shareCodeBool = false;
-
-        for (let i = 0; i < userNameInp.value.length; i++) {
-          if (userNameInp.value[i] >= '0' && userNameInp.value[i] <= '9') {
-            containsInt = true;
-          } else if (userNameInp.value[i] == '-') {
-            dashCount++;
+      addToBlackList.style.display = "none";
+      addToBlackList.onclick = function() {};
+      inviteInfo.innerHTML = "";
+      if(userNameInp.value == ""){
+        inviteInfo.innerHTML = "No User Name Or Share Code Provided, Please Try Again!";
+      } else if (friendShareCodeList.includes(userNameInp.value) ||
+          friendUserNameList.includes(userNameInp.value.toUpperCase())) {
+        inviteInfo.innerHTML = userNameInp.value + " Is Already Your Friend, Please Try Again!";
+      } else if (user.userName.toUpperCase() == userNameInp.value.toUpperCase() ||
+          user.shareCode == userNameInp.value){
+        inviteInfo.innerHTML = "You Cannot Invite Yourself, Please Try Again!";
+      } else if (userLocation != -1) {
+        try {
+          if (user.invites.includes(userArr[userLocation].uid)) {
+            inviteInfo.innerHTML = userNameInp.value + " Already Sent You An Invite, Please Try Again!";
+          } else if (userArr[userLocation].invites.includes(user.uid)) {
+            inviteInfo.innerHTML = "You Already Sent " + userNameInp.value + " An Invite, Please Try Again!";
+          } else {
+            generateConfirmDialog(userLocation);
           }
-
-          if (dashCount > 2 && containsInt) {
-            shareCodeBool = true;
-            break;
-          }
-        }
-
-        if (shareCodeBool) {
-          for (let i = 0; i < userArr.length; i++) {
-            if (userArr[i].shareCode == userNameInp.value) {
-              userLocation = i;
-              break;
-            }
-          }
-        } else {
-          for (let i = 0; i < upperCaseUserArr.length; i++) {
-            if (upperCaseUserArr[i] == userNameInp.value.toUpperCase()) {
-              userLocation = i;
-              break;
-            }
-          }
-        }
-
-        addToBlackList.style.display = "none";
-        addToBlackList.onclick = function() {};
-        inviteInfo.innerHTML = "";
-        if(userNameInp.value == ""){
-          inviteInfo.innerHTML = "No User Name Or Share Code Provided, Please Try Again!";
-        } else if (friendShareCodeList.includes(userNameInp.value) ||
-            friendUserNameList.includes(userNameInp.value.toUpperCase())) {
-          inviteInfo.innerHTML = userNameInp.value + " Is Already Your Friend, Please Try Again!";
-        } else if (user.userName.toUpperCase() == userNameInp.value.toUpperCase() ||
-            user.shareCode == userNameInp.value){
-          inviteInfo.innerHTML = "You Cannot Invite Yourself, Please Try Again!";
-        } else if (userLocation != -1) {
+        } catch (err) {
           try {
-            if (user.invites.includes(userArr[userLocation].uid)) {
-              inviteInfo.innerHTML = userNameInp.value + " Already Sent You An Invite, Please Try Again!";
-            } else if (userArr[userLocation].invites.includes(user.uid)) {
+            if (userArr[userLocation].invites.includes(user.uid)) {
               inviteInfo.innerHTML = "You Already Sent " + userNameInp.value + " An Invite, Please Try Again!";
             } else {
               generateConfirmDialog(userLocation);
             }
           } catch (err) {
-            try {
-              if (userArr[userLocation].invites.includes(user.uid)) {
-                inviteInfo.innerHTML = "You Already Sent " + userNameInp.value + " An Invite, Please Try Again!";
-              } else {
-                generateConfirmDialog(userLocation);
-              }
-            } catch (err) {
-              generateConfirmDialog(userLocation);
-            }
-          }
-        } else if (userNameInp.value.toUpperCase() == "USER NAME BELOW"){
-          inviteInfo.innerHTML = "Very Funny, Please Enter A User Name";
-        } else if (userNameInp.value.toUpperCase() == "A USER NAME"){
-          inviteInfo.innerHTML = "Listen Here, Please Input Something Serious";
-        } else if (userNameInp.value.toUpperCase() == "SOMETHING SERIOUS"){
-          inviteInfo.innerHTML = "You're Just Mocking Me At This Point";
-        } else {
-          if (shareCodeBool) {
-            inviteInfo.innerHTML = "That Share Code, \"" + userNameInp.value + "\" Does Not Exist, Please Try Again!";
-          } else {
-            inviteInfo.innerHTML = "That User Name, \"" + userNameInp.value + "\" Does Not Exist, Please Try Again!";
+            generateConfirmDialog(userLocation);
           }
         }
-      };
-
-      cancelInvite.onclick = function() {
-        closeModal(userInviteModal);
-        userNameInp.value = "";
-        inviteInfo.innerHTML = "";
-        addToBlackList.style.display = "none";
-        addToBlackList.onclick = function() {};
-      };
-
-      closeUserInviteModal.onclick = function() {
-        closeModal(userInviteModal);
-        userNameInp.value = "";
-        inviteInfo.innerHTML = "";
-        addToBlackList.style.display = "none";
-        addToBlackList.onclick = function() {};
-      };
-    };
-    addUser.innerHTML = "Invite User";
-
-    if(consoleOutput)
-      console.log("Add Button Generated");
-  }
-
-  function generateConfirmDialog(userLocation) {
-    if(consoleOutput) {
-      console.log(userLocation);
-      console.log(userArr[userLocation].userName);
-    }
-    if (userLocation != -1) {
-      closeModal(userInviteModal);
-      confUserName.innerHTML = "Did you mean to add \"" + userArr[userLocation].name + "\"?";
-
-      inviteConfirm.onclick = function () {
-        inviteUserDB(userArr[userLocation]);
-        closeModal(confirmUserModal);
-        userNameInp.value = "";
-        inviteInfo.innerHTML = "";
-        addToBlackList.style.display = "none";
-        addToBlackList.onclick = function() {};
-      };
-
-      inviteDeny.onclick = function () {
-        closeModal(confirmUserModal);
-        openModal(userInviteModal, "userInviteModal");
-        userNameInp.value = "";
-        inviteInfo.innerHTML = "";
-        addToBlackList.style.display = "none";
-        addToBlackList.onclick = function() {};
-      };
-
-      closeConfirmUserModal.onclick = function () {
-        closeModal(confirmUserModal);
-        userNameInp.value = "";
-        inviteInfo.innerHTML = "";
-        addToBlackList.style.display = "none";
-        addToBlackList.onclick = function() {};
-      };
-
-      window.onclick = function (event) {
-        if (event.target == confirmUserModal) {
-          closeModal(confirmUserModal);
-          userNameInp.value = "";
-          inviteInfo.innerHTML = "";
-          addToBlackList.style.display = "none";
-          addToBlackList.onclick = function() {};
+      } else if (userNameInp.value.toUpperCase() == "USER NAME BELOW"){
+        inviteInfo.innerHTML = "Very Funny, Please Enter A User Name";
+      } else if (userNameInp.value.toUpperCase() == "A USER NAME"){
+        inviteInfo.innerHTML = "Listen Here, Please Input Something Serious";
+      } else if (userNameInp.value.toUpperCase() == "SOMETHING SERIOUS"){
+        inviteInfo.innerHTML = "You're Just Mocking Me At This Point";
+      } else {
+        if (shareCodeBool) {
+          inviteInfo.innerHTML = "That Share Code, \"" + userNameInp.value + "\" Does Not Exist, Please Try Again!";
+        } else {
+          inviteInfo.innerHTML = "That User Name, \"" + userNameInp.value + "\" Does Not Exist, Please Try Again!";
         }
       }
-      openModal(confirmUserModal, "confirmUserModal", true);
-    } else {
-      deployNotificationModal(true, "User Finder Error!", "There was an error " +
-          "finding that user... Please contact the developer for assistance on the FAQ page!");
+    };
+
+    cancelInvite.onclick = function() {
+      closeModal(userInviteModal);
+      userNameInp.value = "";
+      inviteInfo.innerHTML = "";
+      addToBlackList.style.display = "none";
+      addToBlackList.onclick = function() {};
+    };
+
+    closeUserInviteModal.onclick = function() {
+      closeModal(userInviteModal);
+      userNameInp.value = "";
+      inviteInfo.innerHTML = "";
+      addToBlackList.style.display = "none";
+      addToBlackList.onclick = function() {};
+    };
+  };
+  addUser.innerHTML = "Invite User";
+
+  if(consoleOutput)
+    console.log("Add Button Generated");
+}
+
+function generateConfirmDialog(userLocation) {
+  if(consoleOutput) {
+    console.log(userLocation);
+    console.log(userArr[userLocation].userName);
+  }
+  if (userLocation != -1) {
+    closeModal(userInviteModal);
+    confUserName.innerHTML = "Did you mean to add \"" + userArr[userLocation].name + "\"?";
+
+    inviteConfirm.onclick = function () {
+      inviteUserDB(userArr[userLocation]);
+      closeModal(confirmUserModal);
+      userNameInp.value = "";
+      inviteInfo.innerHTML = "";
+      addToBlackList.style.display = "none";
+      addToBlackList.onclick = function() {};
+    };
+
+    inviteDeny.onclick = function () {
+      closeModal(confirmUserModal);
+      openModal(userInviteModal, "userInviteModal");
+      userNameInp.value = "";
+      inviteInfo.innerHTML = "";
+      addToBlackList.style.display = "none";
+      addToBlackList.onclick = function() {};
+    };
+
+    closeConfirmUserModal.onclick = function () {
+      closeModal(confirmUserModal);
+      userNameInp.value = "";
+      inviteInfo.innerHTML = "";
+      addToBlackList.style.display = "none";
+      addToBlackList.onclick = function() {};
+    };
+
+    window.onclick = function (event) {
+      if (event.target == confirmUserModal) {
+        closeModal(confirmUserModal);
+        userNameInp.value = "";
+        inviteInfo.innerHTML = "";
+        addToBlackList.style.display = "none";
+        addToBlackList.onclick = function() {};
+      }
     }
+    openModal(confirmUserModal, "confirmUserModal", true);
+  } else {
+    deployNotificationModal(true, "User Finder Error!", "There was an error " +
+        "finding that user... Please contact the developer for assistance on the FAQ page!");
+  }
+}
+
+function removeFriendElement(uid) {
+  document.getElementById('user' + uid).remove();
+
+  dataCounter--;
+  if(dataCounter == 0){
+    if (invitesFound)
+      inviteListEmptyText = "No Friends Found, But You Have Some Pending Invites!";
+    else
+      inviteListEmptyText = "No Friends Found! Invite Some Friends With The Button Below!";
+    deployListEmptyNotification(inviteListEmptyText);
+  }
+}
+
+function inviteUserDB(invitedUser) {
+  let invitedUserInvites = invitedUser.invites;
+  if(invitedUser.invites == undefined){
+    invitedUserInvites = [];
+  }
+  invitedUserInvites.push(user.uid);
+
+  if(invitedUser.invites != undefined) {
+    firebase.database().ref("users/" + invitedUser.uid).update({
+      invites: invitedUserInvites
+    });
+  } else {
+    if(consoleOutput)
+      console.log("New Invite List");
+    firebase.database().ref("users/" + invitedUser.uid).update({invites:{0:user.uid}});
   }
 
-  function removeFriendElement(uid) {
-    document.getElementById('user' + uid).remove();
-
-    dataCounter--;
-    if(dataCounter == 0){
-      if (invitesFound)
-        inviteListEmptyText = "No Friends Found, But You Have Some Pending Invites!";
-      else
-        inviteListEmptyText = "No Friends Found! Invite Some Friends With The Button Below!";
-      deployListEmptyNotification(inviteListEmptyText);
-    }
+  if (commonFriendArr.includes(invitedUser.uid)) {
+    let i = commonFriendArr.indexOf(invitedUser.uid);
+    commonFriendArr.splice(i, 1);
   }
 
-  function inviteUserDB(invitedUser) {
-    let invitedUserInvites = invitedUser.invites;
-    if(invitedUser.invites == undefined){
-      invitedUserInvites = [];
-    }
-    invitedUserInvites.push(user.uid);
-
-    if(invitedUser.invites != undefined) {
-      firebase.database().ref("users/" + invitedUser.uid).update({
-        invites: invitedUserInvites
-      });
-    } else {
-      if(consoleOutput)
-        console.log("New Invite List");
-      firebase.database().ref("users/" + invitedUser.uid).update({invites:{0:user.uid}});
-    }
-
-    if (commonFriendArr.includes(invitedUser.uid)) {
-      let i = commonFriendArr.indexOf(invitedUser.uid);
-      commonFriendArr.splice(i, 1);
-    }
-
-    let notificationString = generateNotificationString(user.uid,"","","");
-    addNotificationToDB(invitedUser, notificationString);
-    deployNotificationModal(false, "Invite Sent!", "Your invite to " +
-        invitedUser.name + " was successfully sent!");
-  }
-};
+  let notificationString = generateNotificationString(user.uid,"","","");
+  addNotificationToDB(invitedUser, notificationString);
+  deployNotificationModal(false, "Invite Sent!", "Your invite to " +
+      invitedUser.name + " was successfully sent!");
+}
