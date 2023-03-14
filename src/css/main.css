@@ -111,6 +111,7 @@ p.giftInfLarge {
   padding-left: 5px;
   padding-top: 10px;
   font-family: Verdana;
+  font-weight: bold;
 }
 
 p.giftInf {
@@ -125,6 +126,7 @@ p.giftInfSmall {
   padding-left: 5px;
   padding-top: 10px;
   font-family: Verdana;
+  font-style: italic;
 }
 
 input.giftInp {
@@ -552,6 +554,11 @@ ul li.santa::before {
   transition-duration: 1s;
 }
 
+.infoIcon {
+  vertical-align: -2px;
+  transition-duration: 1s;
+}
+
 .modal {
   display: none;
   position: fixed;
@@ -671,6 +678,10 @@ ul li.santa::before {
 
 .modal-footer-left:hover {
   color: black;
+}
+
+.modal-footer-right-override:hover {
+  color:red;
 }
 
 .modal-footer-right {
@@ -811,6 +822,11 @@ ul li.santa::before {
   img.notificationIcon {
     width: 20px;
     height: 20px;
+  }
+
+  img.infoIcon {
+    width: 15px;
+    height: 15px;
   }
 
   img.leftCornerImgHidden {
@@ -982,6 +998,11 @@ ul li.santa::before {
     height: 20px;
   }
 
+  img.infoIcon {
+    width: 15px;
+    height: 15px;
+  }
+
   img.leftCornerImgHidden {
     width: 30px;
     height: 30px;
@@ -1144,6 +1165,11 @@ ul li.santa::before {
   img.notificationIcon {
     width: 30px;
     height: 30px;
+  }
+
+  img.infoIcon {
+    width: 15px;
+    height: 15px;
   }
 
   img.leftCornerImgHidden {
@@ -1313,6 +1339,11 @@ ul li.santa::before {
   img.notificationIcon {
     width: 40px;
     height: 40px;
+  }
+
+  img.infoIcon {
+    width: 17px;
+    height: 17px;
   }
 
   img.leftCornerImgHidden {
@@ -1488,6 +1519,11 @@ ul li.santa::before {
     height: 50px;
   }
 
+  img.infoIcon {
+    width: 19px;
+    height: 19px;
+  }
+
   img.leftCornerImgHidden {
     width: 65px;
     height: 65px;
@@ -1661,6 +1697,11 @@ ul li.santa::before {
     height: 55px;
   }
 
+  img.infoIcon {
+    width: 20px;
+    height: 20px;
+  }
+
   img.leftCornerImgHidden {
     width: 75px;
     height: 75px;
@@ -1832,6 +1873,11 @@ ul li.santa::before {
   img.notificationIcon {
     width: 60px;
     height: 60px;
+  }
+
+  img.infoIcon {
+    width: 22px;
+    height: 22px;
   }
 
   img.leftCornerImgHidden {
