@@ -50,6 +50,11 @@ function getCurrentUser(){
 
   if (user.invites == undefined) {
     user.invites = [];
+  } else {
+    inviteArr = user.invites;
+    for (let i = 0; i < user.invites.length; i++) {
+      createInviteElement(user.invites[i]);
+    }
   }
 
   if (user.invites.length == 0) {
@@ -216,7 +221,8 @@ window.onload = function instantiate() {
 
     let fetchInvites = function (postRef) {
       postRef.on('child_added', function (data) {
-        inviteArr.push(data.val());
+        if (inviteArr.indexOf(data.val()) == -1)
+          inviteArr.push(data.val());
 
         createInviteElement(data.val());
         inviteNote.style.background = "#ff3923";
@@ -249,317 +255,311 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userFriends);
     listeningFirebaseRefs.push(userInvites);
   }
+};
 
-  function findRemovedUser(oldArr, newArr) {
-    let removedUserIndex = -1;
+function findRemovedUser(oldArr, newArr) {
+  let removedUserIndex = -1;
 
-    removedUserIndex = findRemovedData(oldArr, newArr, true);
-    if (removedUserIndex != -1) {
-      removeInviteElement(oldArr[removedUserIndex]);
-      let i = initializedUsers.indexOf(oldArr[removedUserIndex]);
-      initializedUsers.splice(i, 1);
-      oldInviteArr.splice(removedUserIndex, 1);
+  removedUserIndex = findRemovedData(oldArr, newArr, true);
+  if (removedUserIndex != -1) {
+    removeInviteElement(oldArr[removedUserIndex]);
+    let i = initializedUsers.indexOf(oldArr[removedUserIndex]);
+    initializedUsers.splice(i, 1);
+    oldInviteArr.splice(removedUserIndex, 1);
+  }
+}
+
+function createInviteElement(inviteKey){
+  let inviteIndex = findUIDItemInArr(inviteKey, userArr, true);
+  let inviteData = userArr[inviteIndex];;
+
+  try{
+    document.getElementById('testData').remove();
+  } catch (err) {
+    console.log("But it \"Doesn't Exist!!\"");
+  }
+
+  if (inviteIndex != -1 && initializedUsers.indexOf(inviteKey) == -1) {
+    let liItem = document.createElement("LI");
+    liItem.id = "user" + inviteData.uid;
+    initInviteElement(liItem, inviteData);
+    let textNode = document.createTextNode(inviteData.name);
+    liItem.appendChild(textNode);
+    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+    clearInterval(commonLoadingTimer);
+    clearInterval(offlineTimer);
+    dataCounter++;
+  }
+}
+
+function changeInviteElement(inviteKey){
+  let inviteData;
+
+  for (let i = 0; i < userArr.length; i++){
+    if(inviteKey == userArr[i].uid){
+      inviteData = userArr[i];
+      break;
     }
   }
 
-  function createInviteElement(inviteKey){
-    let inviteData;
-
-    try{
-      document.getElementById('testData').remove();
-    } catch (err) {
-      console.log("But it \"Doesn't Exist!!\"");
-    }
-
-    for (let i = 0; i < userArr.length; i++){
-      if(inviteKey == userArr[i].uid){
-        inviteData = userArr[i];
-        break;
-      }
-    }
-
-    if (inviteData != undefined) {
-      let liItem = document.createElement("LI");
-      liItem.id = "user" + inviteData.uid;
-      initInviteElement(liItem, inviteData);
-      let textNode = document.createTextNode(inviteData.name);
-      liItem.appendChild(textNode);
-      dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-      clearInterval(commonLoadingTimer);
-      clearInterval(offlineTimer);
-      dataCounter++;
-    }
+  if (inviteData != undefined) {
+    let liItemUpdate = document.getElementById('user' + inviteData.uid);
+    liItemUpdate.innerHTML = inviteData.name;
+    initInviteElement(liItemUpdate, inviteData);
   }
+}
 
-  function changeInviteElement(inviteKey){
-    let inviteData;
-
-    for (let i = 0; i < userArr.length; i++){
-      if(inviteKey == userArr[i].uid){
-        inviteData = userArr[i];
-        break;
-      }
+function initInviteElement(liItem, inviteData) {
+  liItem.className = "gift";
+  liItem.onclick = function (){
+    if(inviteData.shareCode == undefined) {
+      inviteData.shareCode = "This User Does Not Have A Share Code";
     }
 
-    if (inviteData != undefined) {
-      let liItemUpdate = document.getElementById('user' + inviteData.uid);
-      liItemUpdate.innerHTML = inviteData.name;
-      initInviteElement(liItemUpdate, inviteData);
-    }
-  }
+    userNameFld.innerHTML = inviteData.name;
+    userUNameFld.innerHTML = "User Name: " + inviteData.userName;
+    userShareCodeFld.innerHTML = "Share Code: " + inviteData.shareCode;
 
-  function initInviteElement(liItem, inviteData) {
-    liItem.className = "gift";
-    liItem.onclick = function (){
-      if(inviteData.shareCode == undefined) {
-        inviteData.shareCode = "This User Does Not Have A Share Code";
-      }
-
-      userNameFld.innerHTML = inviteData.name;
-      userUNameFld.innerHTML = "User Name: " + inviteData.userName;
-      userShareCodeFld.innerHTML = "Share Code: " + inviteData.shareCode;
-
-      userAcceptBtn.onclick = function(){
-        addInvite(inviteData);
-        closeModal(inviteModal);
-      };
-
-      userDeleteBtn.onclick = function(){
-        confirmDeletion(inviteData);
-        closeModal(inviteModal);
-      };
-
-      openModal(inviteModal, inviteData.uid);
-
-      closeInviteModal.onclick = function() {
-        closeModal(inviteModal);
-      };
+    userAcceptBtn.onclick = function(){
+      addInvite(inviteData);
+      closeModal(inviteModal);
     };
 
-    if (!initializedUsers.includes(inviteData.uid)) {
-      initializedUsers.push(inviteData.uid);
+    userDeleteBtn.onclick = function(){
+      confirmDeletion(inviteData);
+      closeModal(inviteModal);
+    };
+
+    openModal(inviteModal, inviteData.uid);
+
+    closeInviteModal.onclick = function() {
+      closeModal(inviteModal);
+    };
+  };
+
+  if (!initializedUsers.includes(inviteData.uid)) {
+    initializedUsers.push(inviteData.uid);
+  }
+}
+
+function addInvite(inviteData){
+  let finalInviteData;
+  let friendFriendArr;
+  let userFriendArr;
+  let currentUserScore;
+
+  if (user.userScore == undefined) {
+    user.userScore = 0;
+  }
+
+  user.userScore = user.userScore + 5;
+  currentUserScore = user.userScore;
+
+  if(consoleOutput) {
+    console.log("Pre-adding " + inviteData.uid + " to User's Friend List:");
+    console.log(friendArr);
+  }
+
+  if(inviteData.friends == undefined || inviteData.friends.length == 0) {
+    friendFriendArr = [];
+  } else {
+    friendFriendArr = inviteData.friends;
+  }
+
+  if (!friendFriendArr.includes(user.uid)) {
+    friendFriendArr.push(user.uid);
+    if (consoleOutput) {
+      console.log("Added current user (" + user.uid + ") to friend's Friend List:");
+      console.log(friendFriendArr);
     }
   }
 
-  function addInvite(inviteData){
-    let finalInviteData;
-    let friendFriendArr;
-    let userFriendArr;
-    let currentUserScore;
+  if (!friendFriendArr.includes(user.uid)) {
+    deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
+        "friend list! Please try again...", 4);
+    updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
+        inviteData.userName + " and FAILED! (There was an issue with " + inviteData.userName + "'s friend list)");
+    return;
+  }
 
-    if (user.userScore == undefined) {
-      user.userScore = 0;
-    }
+  if (friendArr == undefined || friendArr.length == 0) {
+    userFriendArr = [];
+  } else {
+    userFriendArr = friendArr;
+  }
 
-    user.userScore = user.userScore + 5;
-    currentUserScore = user.userScore;
-
-    if(consoleOutput) {
-      console.log("Pre-adding " + inviteData.uid + " to User's Friend List:");
-      console.log(friendArr);
-    }
-
-    if(inviteData.friends == undefined || inviteData.friends.length == 0) {
-      friendFriendArr = [];
-    } else {
-      friendFriendArr = inviteData.friends;
-    }
-
-    if (!friendFriendArr.includes(user.uid)) {
-      friendFriendArr.push(user.uid);
-      if (consoleOutput) {
-        console.log("Added current user (" + user.uid + ") to friend's Friend List:");
-        console.log(friendFriendArr);
-      }
-    }
-
-    if (!friendFriendArr.includes(user.uid)) {
-      deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
-          "friend list! Please try again...", 4);
-      updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
-          inviteData.userName + " and FAILED! (There was an issue with " + inviteData.userName + "'s friend list)");
-      return;
-    }
-
-    if (friendArr == undefined || friendArr.length == 0) {
-      userFriendArr = [];
-    } else {
-      userFriendArr = friendArr;
-    }
-
-    if (!userFriendArr.includes(inviteData.uid)) {
-      userFriendArr.push(inviteData.uid);
-      if (consoleOutput) {
-        console.log("Added friend user (" + inviteData.uid + ") to current user's Friend List:");
-        console.log(userFriendArr);
-      }
-    }
-
-    if (!userFriendArr.includes(inviteData.uid)) {
-      deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
-          "friend list! Please try again...", 4);
-      updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
-          inviteData.userName + " and FAILED! (There was an issue with " + user.userName + "'s friend list)");
-      return;
-    }
-
-    if(consoleOutput) {
-      console.log("New User's Friend List:")
+  if (!userFriendArr.includes(inviteData.uid)) {
+    userFriendArr.push(inviteData.uid);
+    if (consoleOutput) {
+      console.log("Added friend user (" + inviteData.uid + ") to current user's Friend List:");
       console.log(userFriendArr);
     }
-
-    finalInviteData = [friendFriendArr, userFriendArr];
-    firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
-    deleteInvite(inviteData, finalInviteData);
   }
 
-  function confirmDeletion(delInviteData) {
-    confirmTitle.innerHTML = "Confirm Invite Removal";
-    confirmContent.innerHTML = "Are you sure you want to remove your invite, " + delInviteData.name + "?";
+  if (!userFriendArr.includes(inviteData.uid)) {
+    deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
+        "friend list! Please try again...", 4);
+    updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
+        inviteData.userName + " and FAILED! (There was an issue with " + user.userName + "'s friend list)");
+    return;
+  }
 
-    confirmBtn.onclick = function() {
-      closeModal(confirmModal);
-      deleteInvite(delInviteData);
-    };
+  if(consoleOutput) {
+    console.log("New User's Friend List:")
+    console.log(userFriendArr);
+  }
 
-    denyBtn.onclick = function() {
+  finalInviteData = [friendFriendArr, userFriendArr];
+  firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
+  deleteInvite(inviteData, finalInviteData);
+}
+
+function confirmDeletion(delInviteData) {
+  confirmTitle.innerHTML = "Confirm Invite Removal";
+  confirmContent.innerHTML = "Are you sure you want to remove your invite, " + delInviteData.name + "?";
+
+  confirmBtn.onclick = function() {
+    closeModal(confirmModal);
+    deleteInvite(delInviteData);
+  };
+
+  denyBtn.onclick = function() {
+    closeModal(confirmModal);
+    openModal(inviteModal, delInviteData.uid);
+  }
+
+  openModal(confirmModal, "confirmModal", true);
+
+  closeConfirmModal.onclick = function() {
+    closeModal(confirmModal);
+    openModal(inviteModal, delInviteData.uid);
+  };
+
+  window.onclick = function(event) {
+    if (event.target == confirmModal) {
       closeModal(confirmModal);
-      openModal(inviteModal, delInviteData.uid);
+    }
+  };
+}
+
+function deleteInvite(inviteData, finalInviteData) {
+  let verifyDeleteBool = true;
+  let toDelete;
+  let uid = inviteData.uid;
+
+  if(consoleOutput) {
+    console.log("Pre User Invites:");
+    console.log(inviteArr);
+  }
+
+  toDelete = inviteArr.indexOf(uid);
+
+  if(toDelete != -1) {
+    inviteArr.splice(toDelete, 1);
+    for (let i = 0; i < inviteArr.length; i++) {
+      if (inviteArr[i] == uid) {
+        verifyDeleteBool = false;
+      }
+    }
+  } else {
+    verifyDeleteBool = false;
+  }
+
+  if(verifyDeleteBool){
+    inviteDeleteLocal = true;
+    let i = initializedUsers.indexOf(uid);
+    if (i != -1) {
+      initializedUsers.splice(i, 1);
     }
 
-    openModal(confirmModal, "confirmModal", true);
-
-    closeConfirmModal.onclick = function() {
-      closeModal(confirmModal);
-      openModal(inviteModal, delInviteData.uid);
-    };
-
-    window.onclick = function(event) {
-      if (event.target == confirmModal) {
-        closeModal(confirmModal);
-      }
-    };
-  }
-
-  function deleteInvite(inviteData, finalInviteData) {
-    let verifyDeleteBool = true;
-    let toDelete;
-    let uid = inviteData.uid;
-
-    if(consoleOutput) {
-      console.log("Pre User Invites:");
+    if (consoleOutput) {
+      console.log("New User Invites:");
       console.log(inviteArr);
     }
 
-    toDelete = inviteArr.indexOf(uid);
-
-    if(toDelete != -1) {
-      inviteArr.splice(toDelete, 1);
-      for (let i = 0; i < inviteArr.length; i++) {
-        if (inviteArr[i] == uid) {
-          verifyDeleteBool = false;
+    let inviteNoteIndex = findUIDItemInArr(uid, userArr);
+    let noteSplit = [];
+    let noteSplitCount = 0;
+    if(user.notifications != undefined)
+      for(let x = 0; x < user.notifications.length; x++) {
+        if (user.notifications[x].data.includes(userArr[inviteNoteIndex].uid)) {
+          noteSplit = user.notifications[x].data.split(",,,");
+          for (let i = 0; i < noteSplit.length; i++) {
+            noteSplit[i] = noteSplit[i].replaceAll('"', '');
+            if (noteSplit[i] != "") {
+              noteSplitCount++;
+            }
+          }
+          if (noteSplitCount == 1)
+            firebase.database().ref("users/" + user.uid + "/notifications/" + x).update({
+              read: 1
+            });
         }
+        noteSplitCount = 0;
       }
-    } else {
-      verifyDeleteBool = false;
+
+    for (let i = 0; i < inviteArr.length; i++) {
+      if (inviteArr[i] == uid) {
+        inviteArr.splice(i, 1);
+      }
     }
 
-    if(verifyDeleteBool){
-      inviteDeleteLocal = true;
-      let i = initializedUsers.indexOf(uid);
-      if (i != -1) {
-        initializedUsers.splice(i, 1);
+    firebase.database().ref("users/" + user.uid).update({
+      invites: inviteArr
+    });
+
+    if (finalInviteData != undefined) {
+      if(consoleOutput) {
+        console.log("Updating Friend's Friend List To DB:");
+        console.log(finalInviteData[0]);
       }
 
-      if (consoleOutput) {
-        console.log("New User Invites:");
-        console.log(inviteArr);
-      }
+      firebase.database().ref("users/" + uid).update({
+        friends: finalInviteData[0]
+      });
 
-      let inviteNoteIndex = findUIDItemInArr(uid, userArr);
-      let noteSplit = [];
-      let noteSplitCount = 0;
-      if(user.notifications != undefined)
-        for(let x = 0; x < user.notifications.length; x++) {
-          if (user.notifications[x].data.includes(userArr[inviteNoteIndex].uid)) {
-            noteSplit = user.notifications[x].data.split(",,,");
-            for (let i = 0; i < noteSplit.length; i++) {
-              noteSplit[i] = noteSplit[i].replaceAll('"', '');
-              if (noteSplit[i] != "") {
-                noteSplitCount++;
-              }
-            }
-            if (noteSplitCount == 1)
-              firebase.database().ref("users/" + user.uid + "/notifications/" + x).update({
-                read: 1
-              });
-          }
-          noteSplitCount = 0;
-        }
-
-      for (let i = 0; i < inviteArr.length; i++) {
-        if (inviteArr[i] == uid) {
-          inviteArr.splice(i, 1);
-        }
+      if(consoleOutput) {
+        console.log("Updating User's Friend List To DB:");
+        console.log(finalInviteData[1]);
       }
 
       firebase.database().ref("users/" + user.uid).update({
-        invites: inviteArr
+        friends: finalInviteData[1]
       });
 
-      if (finalInviteData != undefined) {
-        if(consoleOutput) {
-          console.log("Updating Friend's Friend List To DB:");
-          console.log(finalInviteData[0]);
-        }
+      user.invites = inviteArr;
+      user.friends = finalInviteData[1];
+      sessionStorage.setItem("validUser", JSON.stringify(user));
+    }
 
-        firebase.database().ref("users/" + uid).update({
-          friends: finalInviteData[0]
-        });
-
-        if(consoleOutput) {
-          console.log("Updating User's Friend List To DB:");
-          console.log(finalInviteData[1]);
-        }
-
-        firebase.database().ref("users/" + user.uid).update({
-          friends: finalInviteData[1]
-        });
-
-        user.invites = inviteArr;
-        user.friends = finalInviteData[1];
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-      }
-
-      removeInviteElement(uid);
-      if (finalInviteData != undefined) {
-        deployNotificationModal(false, "Invite Accepted!", "Your invite from " +
-            inviteData.name + " was successfully accepted!");
-      } else {
-        deployNotificationModal(false, "Invite Deleted!", "Your invite from " +
-            inviteData.name + " was successfully deleted!");
-      }
-      inviteDeleteLocal = false;
+    removeInviteElement(uid);
+    if (finalInviteData != undefined) {
+      deployNotificationModal(false, "Invite Accepted!", "Your invite from " +
+          inviteData.name + " was successfully accepted!");
     } else {
-      if (deleteInviteRun < 3) {
-        deleteInviteRun++;
-        deleteInvite(inviteData, finalInviteData);
-      } else {
-        deleteInviteRun = 0;
-        deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
-            "friend list! Please try again...", 4);
-        updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
-            inviteData.userName + " and FAILED! (There was an issue with " + user.userName + "'s locally stored friend list)");
-      }
+      deployNotificationModal(false, "Invite Deleted!", "Your invite from " +
+          inviteData.name + " was successfully deleted!");
+    }
+    inviteDeleteLocal = false;
+  } else {
+    if (deleteInviteRun < 3) {
+      deleteInviteRun++;
+      deleteInvite(inviteData, finalInviteData);
+    } else {
+      deleteInviteRun = 0;
+      deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
+          "friend list! Please try again...", 4);
+      updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
+          inviteData.userName + " and FAILED! (There was an issue with " + user.userName + "'s locally stored friend list)");
     }
   }
+}
 
-  function removeInviteElement(uid) {
-    document.getElementById('user' + uid).remove();
+function removeInviteElement(uid) {
+  document.getElementById('user' + uid).remove();
 
-    dataCounter--;
-    if (dataCounter == 0) {
-      deployListEmptyNotification("No Invites Found! You've Reviewed All Your Invites!");
-    }
+  dataCounter--;
+  if (dataCounter == 0) {
+    deployListEmptyNotification("No Invites Found! You've Reviewed All Your Invites!");
   }
-};
+}
