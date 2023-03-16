@@ -73,6 +73,11 @@ function getCurrentUser(){
 
   if (giftUser.giftList == undefined) {
     giftUser.giftList = [];
+  } else {
+    giftArr = giftUser.giftList;
+    for (let i = 0; i < giftUser.giftList.length; i++) {
+      createGiftElement(giftUser.giftList[i], i);
+    }
   }
 
   if (giftUser.giftList.length == 0) {
@@ -226,7 +231,8 @@ window.onload = function instantiate() {
 
     let fetchGifts = function (postRef) {
       postRef.on('child_added', function (data) {
-        giftArr.push(data.val());
+        if (giftArr.indexOf(data.val()) == -1)
+          giftArr.push(data.val());
 
         if(checkGiftBuyer(data.val().buyer)){
           data.val().buyer = "";
@@ -311,52 +317,54 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userGifts);
     listeningFirebaseRefs.push(userInvites);
   }
+};
 
-  function findRemovedGift(oldArr, newArr) {
-    let removedGiftIndex = -1;
+function findRemovedGift(oldArr, newArr) {
+  let removedGiftIndex = -1;
 
-    removedGiftIndex = findRemovedData(oldArr, newArr);
-    if (removedGiftIndex != -1) {
-      removeGiftElement(oldArr[removedGiftIndex].uid);
-      let i = initializedGifts.indexOf(oldArr[removedGiftIndex].uid);
-      initializedGifts.splice(i, 1);
-      if (oldArr[removedGiftIndex].uid == currentModalOpen) {
-        closeModal(giftModal);
-        if (!giftUpdateLocal) {
-          deployNotificationModal(false, "Gift Deleted!", "The gift you were viewing " +
-              "was deleted by " + giftUser.name + "! This gift is no longer available to view...", 4);
-        }
+  removedGiftIndex = findRemovedData(oldArr, newArr);
+  if (removedGiftIndex != -1) {
+    removeGiftElement(oldArr[removedGiftIndex].uid);
+    let i = initializedGifts.indexOf(oldArr[removedGiftIndex].uid);
+    initializedGifts.splice(i, 1);
+    if (oldArr[removedGiftIndex].uid == currentModalOpen) {
+      closeModal(giftModal);
+      if (!giftUpdateLocal) {
+        deployNotificationModal(false, "Gift Deleted!", "The gift you were viewing " +
+            "was deleted by " + giftUser.name + "! This gift is no longer available to view...", 4);
       }
-      oldGiftArr.splice(removedGiftIndex, 1);
     }
+    oldGiftArr.splice(removedGiftIndex, 1);
   }
+}
 
-  function checkGiftBuyer(buyer){
-    let updateGiftToDB = true;
+function checkGiftBuyer(buyer){
+  let updateGiftToDB = true;
 
-    if(buyer == "" || buyer == undefined || userUserNames.includes(buyer)){
-      updateGiftToDB = false;
-    } else {
-      if(consoleOutput)
-        console.log("Buyer error found!");
-    }
-
-    return updateGiftToDB;
-  }
-
-  function updateGiftError(giftData, giftKey){
+  if(buyer == "" || buyer == undefined || userUserNames.includes(buyer)){
+    updateGiftToDB = false;
+  } else {
     if(consoleOutput)
-      console.log("A gift needs to be updated! Key: " + giftKey);
-    firebase.database().ref("users/" + giftUser.uid + "/giftList/" + giftKey).update({
-      buyer: ""
-    });
+      console.log("Buyer error found!");
   }
 
-  function createGiftElement(giftData, giftKey){
-    let giftUid = giftData.uid;
-    let giftTitle = giftData.title;
+  return updateGiftToDB;
+}
 
-    try{
+function updateGiftError(giftData, giftKey){
+  if(consoleOutput)
+    console.log("A gift needs to be updated! Key: " + giftKey);
+  firebase.database().ref("users/" + giftUser.uid + "/giftList/" + giftKey).update({
+    buyer: ""
+  });
+}
+
+function createGiftElement(giftData, giftKey){
+  let giftUid = giftData.uid;
+  let giftTitle = giftData.title;
+
+  if (initializedGifts.indexOf(giftUid) == -1) {
+    try {
       document.getElementById('testData').remove();
     } catch (err) {}
 
@@ -374,216 +382,216 @@ window.onload = function instantiate() {
     }
     initializedGifts.push(giftUid);
   }
+}
 
-  function changeGiftElement(giftData, giftKey) {
-    let uid = giftData.uid;
-    let title = giftData.title;
-    let editGift = document.getElementById('gift' + uid);
-    editGift.innerHTML = title;
-    initGiftElement(editGift, giftData, giftKey);
+function changeGiftElement(giftData, giftKey) {
+  let uid = giftData.uid;
+  let title = giftData.title;
+  let editGift = document.getElementById('gift' + uid);
+  editGift.innerHTML = title;
+  initGiftElement(editGift, giftData, giftKey);
+}
+
+function initGiftElement(liItem, giftData, giftKey) {
+  let multipleBool = false;
+  let giftDescriptionData = giftData.description;
+  let giftLinkData = giftData.link;
+  let giftReceivedData = giftData.received;
+  let giftReceivedBy = giftData.receivedBy;
+  let giftTitleData = giftData.title;
+  let giftWhereData = giftData.where;
+  let giftBuyer = giftData.buyer;
+  let giftUid = giftData.uid;
+  let giftDate = giftData.creationDate;
+  let giftMultiples = giftData.multiples;
+  let tempGiftBuyer = "";
+
+  liItem.className = "gift";
+  if(giftReceivedData == 1) {
+    liItem.className += " checked";
+    if(consoleOutput)
+      console.log("Checked, created");
+  } else if (giftMultiples != undefined) {
+    if (giftMultiples && giftReceivedData < 0) {
+      liItem.className += " multiCheck";
+      if (consoleOutput)
+        console.log("Multi check, created");
+    }
   }
 
-  function initGiftElement(liItem, giftData, giftKey) {
-    let multipleBool = false;
-    let giftDescriptionData = giftData.description;
-    let giftLinkData = giftData.link;
-    let giftReceivedData = giftData.received;
-    let giftReceivedBy = giftData.receivedBy;
-    let giftTitleData = giftData.title;
-    let giftWhereData = giftData.where;
-    let giftBuyer = giftData.buyer;
-    let giftUid = giftData.uid;
-    let giftDate = giftData.creationDate;
-    let giftMultiples = giftData.multiples;
-    let tempGiftBuyer = "";
-
-    liItem.className = "gift";
-    if(giftReceivedData == 1) {
-      liItem.className += " checked";
-      if(consoleOutput)
-        console.log("Checked, created");
-    } else if (giftMultiples != undefined) {
-      if (giftMultiples && giftReceivedData < 0) {
-        liItem.className += " multiCheck";
-        if (consoleOutput)
-          console.log("Multi check, created");
-      }
+  liItem.onclick = function () {
+    if (giftReceivedBy == undefined) {
+      giftReceivedBy = [];
     }
 
-    liItem.onclick = function () {
-      if (giftReceivedBy == undefined) {
-        giftReceivedBy = [];
-      }
-
-      if (giftMultiples != undefined) {
-        multipleBool = giftMultiples;
-      }
-
-      giftTitle.innerHTML = giftTitleData;
-
-      if (giftLinkData != "") {
-        giftLink.innerHTML = "Click me to go to the webpage!";
-        giftLink.onclick = function() {
-          giftLinkRedirect(giftLinkData);
-        };
-      } else {
-        giftLink.innerHTML = "There was no link provided";
-        giftLink.onclick = function() {};
-      }
-      if(giftDescriptionData != "") {
-        giftDescription.innerHTML = "Description: " + giftDescriptionData;
-      } else {
-        giftDescription.innerHTML = "There was no description provided";
-      }
-      if(giftWhereData != "") {
-        giftWhere.innerHTML = "This can be found at: " + giftWhereData;
-      } else {
-        giftWhere.innerHTML = "There was no location provided";
-      }
-      if(giftReceivedData == 1){
-        if(giftBuyer == undefined || giftBuyer == ""){
-          giftBought.innerHTML = "This gift has been bought";
-        } else {
-          if (giftBuyer == user.userName)
-            giftBought.innerHTML = "This gift was bought by you!";
-          else {
-            tempGiftBuyer = fetchNameByUserName(giftBuyer);
-            if (tempGiftBuyer == undefined)
-              tempGiftBuyer = giftBuyer;
-            giftBought.innerHTML = "This gift was bought by " + tempGiftBuyer;
-          }
-        }
-      } else {
-        if (giftMultiples == undefined || giftReceivedData == 0) {
-          giftBought.innerHTML = "This gift has not been bought yet";
-        } else {
-          let userBought = giftReceivedBy.indexOf(user.uid);
-          if (userBought == -1) {
-            if (giftReceivedBy.length == 1)
-              giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " person!";
-            else
-              giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people!";
-          } else {
-            if (giftReceivedBy.length == 1)
-              giftBought.innerHTML = "This gift was bought by you!";
-            else
-              giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people... Including you!";
-          }
-        }
-      }
-      if(giftDate == undefined) {
-        giftDate = "";
-      }
-      if (giftDate != "") {
-        giftCreationDate.innerHTML = "Created on: " + giftDate;
-      } else {
-        giftCreationDate.innerHTML = "Creation date not available";
-      }
-
-      giftBuy.onclick = function(){
-        buyGiftToDB(giftUid, giftKey, giftMultiples, giftReceivedData, giftReceivedBy, false);
-      };
-      giftDontBuy.onclick = function(){
-        buyGiftToDB(giftUid, giftKey, giftMultiples, giftReceivedData, giftReceivedBy, true, giftBuyer);
-      };
-
-      openModal(giftModal, giftUid);
-
-      closeGiftModal.onclick = function() {
-        closeModal(giftModal);
-      };
-    };
-  }
-
-  function fetchNameByUserName(userNameInput) {
-    for (let i = 0; i < userArr.length; i++) {
-      if (userNameInput == userArr[i].userName) {
-        return userArr[i].name;
-      }
+    if (giftMultiples != undefined) {
+      multipleBool = giftMultiples;
     }
 
-    return null;
-  }
+    giftTitle.innerHTML = giftTitleData;
 
-  function buyGiftToDB(pubUid, key, multiples, received, receivedBy, unBuyBool, buyer) {
-    let multipleBool = false;
-    let updateToDB = false;
-    let buyerUserName = "!!!";
-    let buyerData;
-    giftUpdateLocal = true;
-
-    if (buyer != undefined)
-      buyerUserName = buyer;
-
-    if (multiples != undefined)
-      multipleBool = multiples;
-
-    if (!multipleBool) {
-      if (!unBuyBool && received == 0) {
-        received = 1;
-        buyerData = user.userName;
-        updateToDB = true;
-      } else if (unBuyBool && received == 1 && (buyerUserName == user.userName || buyerUserName == "")) {
-        received = 0;
-        buyerData = "";
-        updateToDB = true;
+    if (giftLinkData != "") {
+      giftLink.innerHTML = "Click me to go to the webpage!";
+      giftLink.onclick = function() {
+        giftLinkRedirect(giftLinkData);
+      };
+    } else {
+      giftLink.innerHTML = "There was no link provided";
+      giftLink.onclick = function() {};
+    }
+    if(giftDescriptionData != "") {
+      giftDescription.innerHTML = "Description: " + giftDescriptionData;
+    } else {
+      giftDescription.innerHTML = "There was no description provided";
+    }
+    if(giftWhereData != "") {
+      giftWhere.innerHTML = "This can be found at: " + giftWhereData;
+    } else {
+      giftWhere.innerHTML = "There was no location provided";
+    }
+    if(giftReceivedData == 1){
+      if(giftBuyer == undefined || giftBuyer == ""){
+        giftBought.innerHTML = "This gift has been bought";
       } else {
-        if (!unBuyBool)
-          deployNotificationModal(true, "Gift Already Bought!", "This gift has " +
-              "already been marked as bought!");
-        else if (received == 0)
-          deployNotificationModal(true, "Gift Already Un-Bought!", "This gift " +
-              "has already been marked as \"Un-Bought\"!");
-        else
-          deployNotificationModal(true, "Gift Buy Error!", "Only the buyer, "
-              + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action if this has been done " +
-              "in error.", 4);
-      }
-      if (updateToDB) {
-        firebase.database().ref("users/" + giftUser.uid + "/giftList/" + key).update({
-          received: received,
-          buyer: buyerData
-        });
+        if (giftBuyer == user.userName)
+          giftBought.innerHTML = "This gift was bought by you!";
+        else {
+          tempGiftBuyer = fetchNameByUserName(giftBuyer);
+          if (tempGiftBuyer == undefined)
+            tempGiftBuyer = giftBuyer;
+          giftBought.innerHTML = "This gift was bought by " + tempGiftBuyer;
+        }
       }
     } else {
-      let userBought = receivedBy.indexOf(user.uid);
-      if (!unBuyBool && userBought == -1) {
-        receivedBy.push(user.uid);
-        received = received - 1;
-        updateToDB = true;
-      } else if (unBuyBool && userBought != -1) {
-        receivedBy.splice(userBought, 1);
-        received = received + 1;
-        updateToDB = true;
+      if (giftMultiples == undefined || giftReceivedData == 0) {
+        giftBought.innerHTML = "This gift has not been bought yet";
       } else {
-        if (!unBuyBool)
-          deployNotificationModal(true, "You Already Bought This!", "You can only " +
-              "buy this gift once!");
-        else
-          deployNotificationModal(true, "Gift Un-Buy Error!", "You haven't bought " +
-              "this gift, so you can't un-buy it!");
-      }
-      if (updateToDB) {
-        firebase.database().ref("users/" + giftUser.uid + "/giftList/" + key).update({
-          received: received,
-          receivedBy: receivedBy
-        });
+        let userBought = giftReceivedBy.indexOf(user.uid);
+        if (userBought == -1) {
+          if (giftReceivedBy.length == 1)
+            giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " person!";
+          else
+            giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people!";
+        } else {
+          if (giftReceivedBy.length == 1)
+            giftBought.innerHTML = "This gift was bought by you!";
+          else
+            giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people... Including you!";
+        }
       }
     }
+    if(giftDate == undefined) {
+      giftDate = "";
+    }
+    if (giftDate != "") {
+      giftCreationDate.innerHTML = "Created on: " + giftDate;
+    } else {
+      giftCreationDate.innerHTML = "Creation date not available";
+    }
 
+    giftBuy.onclick = function(){
+      buyGiftToDB(giftUid, giftKey, giftMultiples, giftReceivedData, giftReceivedBy, false);
+    };
+    giftDontBuy.onclick = function(){
+      buyGiftToDB(giftUid, giftKey, giftMultiples, giftReceivedData, giftReceivedBy, true, giftBuyer);
+    };
+
+    openModal(giftModal, giftUid);
+
+    closeGiftModal.onclick = function() {
+      closeModal(giftModal);
+    };
+  };
+}
+
+function fetchNameByUserName(userNameInput) {
+  for (let i = 0; i < userArr.length; i++) {
+    if (userNameInput == userArr[i].userName) {
+      return userArr[i].name;
+    }
+  }
+
+  return null;
+}
+
+function buyGiftToDB(pubUid, key, multiples, received, receivedBy, unBuyBool, buyer) {
+  let multipleBool = false;
+  let updateToDB = false;
+  let buyerUserName = "!!!";
+  let buyerData;
+  giftUpdateLocal = true;
+
+  if (buyer != undefined)
+    buyerUserName = buyer;
+
+  if (multiples != undefined)
+    multipleBool = multiples;
+
+  if (!multipleBool) {
+    if (!unBuyBool && received == 0) {
+      received = 1;
+      buyerData = user.userName;
+      updateToDB = true;
+    } else if (unBuyBool && received == 1 && (buyerUserName == user.userName || buyerUserName == "")) {
+      received = 0;
+      buyerData = "";
+      updateToDB = true;
+    } else {
+      if (!unBuyBool)
+        deployNotificationModal(true, "Gift Already Bought!", "This gift has " +
+            "already been marked as bought!");
+      else if (received == 0)
+        deployNotificationModal(true, "Gift Already Un-Bought!", "This gift " +
+            "has already been marked as \"Un-Bought\"!");
+      else
+        deployNotificationModal(true, "Gift Buy Error!", "Only the buyer, "
+            + buyer + ", can \"Un-Buy\" this gift. Please contact them to undo this action if this has been done " +
+            "in error.", 4);
+    }
     if (updateToDB) {
-      listenForDBChanges("Buy", pubUid);
+      firebase.database().ref("users/" + giftUser.uid + "/giftList/" + key).update({
+        received: received,
+        buyer: buyerData
+      });
     }
-
-    giftUpdateLocal = false;
+  } else {
+    let userBought = receivedBy.indexOf(user.uid);
+    if (!unBuyBool && userBought == -1) {
+      receivedBy.push(user.uid);
+      received = received - 1;
+      updateToDB = true;
+    } else if (unBuyBool && userBought != -1) {
+      receivedBy.splice(userBought, 1);
+      received = received + 1;
+      updateToDB = true;
+    } else {
+      if (!unBuyBool)
+        deployNotificationModal(true, "You Already Bought This!", "You can only " +
+            "buy this gift once!");
+      else
+        deployNotificationModal(true, "Gift Un-Buy Error!", "You haven't bought " +
+            "this gift, so you can't un-buy it!");
+    }
+    if (updateToDB) {
+      firebase.database().ref("users/" + giftUser.uid + "/giftList/" + key).update({
+        received: received,
+        receivedBy: receivedBy
+      });
+    }
   }
 
-  function removeGiftElement(uid) {
-    document.getElementById('gift' + uid).remove();
-
-    dataCounter--;
-    if (dataCounter == 0){
-      deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
-    }
+  if (updateToDB) {
+    listenForDBChanges("Buy", pubUid);
   }
-};
+
+  giftUpdateLocal = false;
+}
+
+function removeGiftElement(uid) {
+  document.getElementById('gift' + uid).remove();
+
+  dataCounter--;
+  if (dataCounter == 0){
+    deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
+  }
+}
