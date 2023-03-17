@@ -14,15 +14,15 @@ let listenDBOpType = [];
 let listenExpectedUIDs = [];
 let globalDBKeyChangesArr = [];
 let globalDBDataChangesArr = [];
-let loadedModalElements = [];
 let localObjectChanges = [];
 let buttonAlternatorTimer = 0;
 let buttonAlternatorInt = 0;
 let buttonOpacLim = 7;
-let maxListenForDB = 10;
+let maxListenForDB = 20;
 let deployedNoteTimer = 0;
 let listenForDBTimer = 0;
 let unsavedChangesNav = 0;
+let failedNavNum = 0;
 let consoleOutput = false;
 let unsavedChanges = false;
 let dbOperationInProgress = false;
@@ -40,6 +40,9 @@ let emptyListNoteDeployed = false;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
+let defaultSuccessfulDBOperationTitle = "Pending Operation Completed!";
+let defaultSuccessfulDBOperationNotice = "Your pending change was successfully saved! Thank you for your patience, you may " +
+    "now navigate to other pages.";
 let successfulDBOperationTitle = "Pending Operation Completed!";
 let successfulDBOperationNotice = "Your pending change was successfully saved! Thank you for your patience, you may " +
     "now navigate to other pages.";
@@ -795,13 +798,13 @@ function listenForDBChanges(dbChangeType, expectedUID) {
       dbOperationInProgress = false;
       deployNotificationModal(false, "Pending Operation Failed!",
           "Your pending changes were NOT successfully saved. You may have a slow connection or be " +
-          "experiencing an error. Please try again or contact a moderator!", 5);
+          "experiencing an error. Please try again or contact a moderator! Refreshing page...", 6, failedNavNum);
       updateMaintenanceLog(pageName, "A user experienced degraded performance or an error with " +
           dbChangeType + " Operation and UID " + expectedUID);
       clearInterval(listenForDBInterval);
       listenForDBTimer = 0;
     }
-  }, 1000);
+  }, 500);
 }
 
 function checkGlobalDBChanges() {
@@ -818,15 +821,28 @@ function getDBOpType(dataChangeInput, keyChangeInput) {
   console.log(dataChangeInput);
   console.log(keyChangeInput);
   switch (keyChangeInput) {
+    case "friends":
+      if (pageName == "Invites")
+        cancelDBChangeListener("Delete", dataChangeInput);
+      break;
+    case "notifications":
+      if (dataChangeInput[0].uid != undefined)
+        cancelDBChangeListener("Invite", dataChangeInput);
+      break;
+    case "invites":
+      if (pageName == "Confirmation")
+        cancelDBChangeListener("Confirm", dataChangeInput, true);
+      break;
     case "giftList":
     case "privateList":
       if (pageName == "FriendList")
         cancelDBChangeListener("Buy", dataChangeInput);
       else if (pageName == "PrivateFriendList") {
-        if (dataChangeInput.length == undefined)
+        if (typeof dataChangeInput == "string") {
           cancelDBChangeListener("Buy", dataChangeInput);
-        else
+        } else {
           cancelDBChangeListener("Delete", dataChangeInput);
+        }
       }
       else if (pageName == "Home")
         if (dataChangeInput.length != undefined)
@@ -839,34 +855,54 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
   let updateArrs = false;
   let receivedUIDCount = 0;
   let removalLocation = 0;
+  let tempString = "";
 
   if (overrideBool == undefined) {
     overrideBool = false;
   }
 
-  for (let i = 0; i < listenExpectedUIDs.length; i++) {
-    if (expectedChange == "Delete") {
-      if (findUIDItemInArr(listenExpectedUIDs[i], receivedUID, true) == -1) {
-        receivedUID = listenExpectedUIDs[i];
+  if (overrideBool) {
+    console.log(receivedUID)
+    if (receivedUID != undefined)
+      updateArrs = true;
+  } else {
+    for (let i = 0; i < listenExpectedUIDs.length; i++) {
+      if (expectedChange == "Invite") {
+        for (let a = 0; a < receivedUID.length; a++) {
+          tempString = receivedUID[a].data;
+          if (tempString != undefined) {
+            if (tempString.includes(listenExpectedUIDs[i])) {
+              receivedUID = listenExpectedUIDs[i];
+              break;
+            }
+          }
+        }
+      }
+
+      if (expectedChange == "Delete") {
+        if (findUIDItemInArr(listenExpectedUIDs[i], receivedUID, true) == -1) {
+          receivedUID = listenExpectedUIDs[i];
+        }
+      }
+
+      if (listenExpectedUIDs[i] == receivedUID) {
+        if (listenDBOpType[i] == expectedChange) {
+          updateArrs = true;
+          removalLocation = i;
+        }
+        receivedUIDCount++;
       }
     }
-
-    if (listenExpectedUIDs[i] == receivedUID) {
-      if (listenDBOpType[i] == expectedChange) {
-        updateArrs = true;
-        removalLocation = i;
-      }
-      receivedUIDCount++;
-    }
-  }
-
-  if (receivedUIDCount == 1 && overrideBool) {
-    updateArrs = true;
   }
 
   if (updateArrs) {
-    listenExpectedUIDs.splice(removalLocation, 1);
-    listenDBOpType.splice(removalLocation, 1);
+    if (overrideBool) {
+      listenExpectedUIDs = [];
+      listenDBOpType = [];
+    } else {
+      listenExpectedUIDs.splice(removalLocation, 1);
+      listenDBOpType.splice(removalLocation, 1);
+    }
 
     if (listenExpectedUIDs.length == 0) {
       if (consoleOutput)
@@ -927,7 +963,12 @@ function navigation(navNum, loginOverride) {
       return;
     }
   }
-  if (!dbOperationInProgress) {
+  if (dbOperationInProgress) {
+    deployNotificationModal(false, "Pending Operation In Progress",
+        "Please do not navigate until your changes are saved!", 4);
+    showSuccessfulDBOperation = true;
+    return;
+  } else {
     if (loginOverride == undefined && !privateUserOverride) {
       try {
         if (privateUser != undefined) {
@@ -1000,10 +1041,6 @@ function navigation(navNum, loginOverride) {
       fader.style.background = "#870b0b";
     }
     fader.classList.add('fade-in');
-  } else {
-    deployNotificationModal(false, "Pending Operation In Progress",
-        "Please do not navigate until your changes are saved!", 4);
-    showSuccessfulDBOperation = true;
   }
 }
 
