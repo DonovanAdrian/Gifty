@@ -87,6 +87,7 @@ let testData;
 function getCurrentUser(){
   getCurrentUserCommon();
   checkYearlyReview();
+  failedNavNum = 2;
 
   if (user.giftList == undefined) {
     user.giftList = [];
@@ -742,6 +743,8 @@ function createGiftElement(uid) {
       boughtGifts.style.opacity = ".75";
       reviewGifts.style.opacity = ".75";
     }
+  } else {
+    changeGiftElement(uid);
   }
 }
 
