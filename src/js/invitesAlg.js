@@ -79,7 +79,7 @@ let cancelInvite;
 
 function getCurrentUser(){
   getCurrentUserCommon();
-
+  failedNavNum = 4;
   if (user.friends == undefined) {
     user.friends = [];
   } else {
@@ -340,6 +340,8 @@ function createFriendElement(friendKey){
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
     dataCounter++;
+  } else {
+    changeFriendElement(friendKey);
   }
 }
 
@@ -560,8 +562,10 @@ function deleteFriend(delFriendData) {
     removeFriendElement(uid);
     user.friends = friendArr;
     refreshFriendInviteArrays();
-    deployNotificationModal(false, "Friend Removed!", "The user " + delFriendData.name +
-        " has been successfully removed from your friend list!");
+    listenForDBChanges("Delete", uid);
+    successfulDBOperationTitle = "Friend Removed!";
+    successfulDBOperationNotice = "The user " + delFriendData.name + " has been successfully removed from your friend list!";
+    showSuccessfulDBOperation = true;
     friendDeleteLocal = false;
   } else {
     deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
@@ -978,6 +982,8 @@ function inviteUserDB(invitedUser) {
 
   let notificationString = generateNotificationString(user.uid,"","","");
   addNotificationToDB(invitedUser, notificationString);
-  deployNotificationModal(false, "Invite Sent!", "Your invite to " +
-      invitedUser.name + " was successfully sent!");
+  listenForDBChanges("Invite", user.uid);
+  successfulDBOperationTitle = "Invite Sent!";
+  successfulDBOperationNotice = "Your invite to " + invitedUser.name + " was successfully sent!";
+  showSuccessfulDBOperation = true;
 }
