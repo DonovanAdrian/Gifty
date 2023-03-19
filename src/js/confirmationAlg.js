@@ -47,6 +47,7 @@ let userDeleteBtn;
 
 function getCurrentUser(){
   getCurrentUserCommon();
+  failedNavNum = 11;
 
   if (user.invites == undefined) {
     user.invites = [];
@@ -275,9 +276,7 @@ function createInviteElement(inviteKey){
 
   try{
     document.getElementById('testData').remove();
-  } catch (err) {
-    console.log("But it \"Doesn't Exist!!\"");
-  }
+  } catch (err) {}
 
   if (inviteIndex != -1 && initializedUsers.indexOf(inviteKey) == -1) {
     let liItem = document.createElement("LI");
@@ -289,6 +288,8 @@ function createInviteElement(inviteKey){
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
     dataCounter++;
+  } else {
+    changeInviteElement(inviteKey);
   }
 }
 
@@ -533,12 +534,14 @@ function deleteInvite(inviteData, finalInviteData) {
     }
 
     removeInviteElement(uid);
+    showSuccessfulDBOperation = true;
+    listenForDBChanges("Confirm", user.uid);
     if (finalInviteData != undefined) {
-      deployNotificationModal(false, "Invite Accepted!", "Your invite from " +
-          inviteData.name + " was successfully accepted!");
+      successfulDBOperationTitle = "Invite Accepted!";
+      successfulDBOperationNotice = "Your invite from " + inviteData.name + " was successfully accepted!";
     } else {
-      deployNotificationModal(false, "Invite Deleted!", "Your invite from " +
-          inviteData.name + " was successfully deleted!");
+      successfulDBOperationTitle = "Invite Deleted!";
+      successfulDBOperationNotice = "Your invite from " + inviteData.name + " was successfully deleted!";
     }
     inviteDeleteLocal = false;
   } else {
