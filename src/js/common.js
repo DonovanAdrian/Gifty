@@ -825,13 +825,13 @@ function getDBOpType(dataChangeInput, keyChangeInput) {
       if (pageName == "Invites")
         cancelDBChangeListener("Delete", dataChangeInput);
       break;
+    case "invites":
+      if (pageName == "Confirmation")
+        cancelDBChangeListener("Confirm", dataChangeInput);
+      break;
     case "notifications":
       if (dataChangeInput[0].uid != undefined)
         cancelDBChangeListener("Invite", dataChangeInput);
-      break;
-    case "invites":
-      if (pageName == "Confirmation")
-        cancelDBChangeListener("Confirm", dataChangeInput, true);
       break;
     case "giftList":
     case "privateList":
@@ -876,6 +876,16 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
               break;
             }
           }
+        }
+      }
+
+      if (expectedChange == "Confirm") {
+        if (receivedUID == undefined) {
+          updateArrs = true;
+          overrideBool = true;
+        } else if (!receivedUID.includes(listenExpectedUIDs[i])) {
+          updateArrs = true;
+          overrideBool = true;
         }
       }
 
