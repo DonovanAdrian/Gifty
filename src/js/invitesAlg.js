@@ -432,9 +432,11 @@ function addPrivateMessageToDB(userData, message) {
   currentUserScore = user.userScore;
   firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
 
+  closeModal(privateMessageModal);
   addNotificationToDB(userData, message);
-  deployNotificationModal(false, "Message Sent!", "Your message to " +
-      userData.userName + " was successfully delivered!");
+  successfulDBOperationTitle = "Message Sent!";
+  successfulDBOperationNotice = "Your message to " + userData.userName + " was successfully delivered!";
+  showSuccessfulDBOperation = true;
 }
 
 function confirmDeletion(delFriendData) {
@@ -675,6 +677,8 @@ function deleteFriend(delFriendData) {
 }
 
 function evaluateCommonFriends(){
+  let userInviteInt;
+  let userInviteData;
   let userFriendInt1;
   let userFriendInt2;
   let userFriendData1;
@@ -698,10 +702,15 @@ function evaluateCommonFriends(){
     for (let i = 0; i < userFriendLength; i++) {
       userFriendInt1 = findUIDItemInArr(user.friends[i], userArr, true);
       userFriendData1 = userArr[userFriendInt1].friends;
+      if (userArr[userFriendInt1].friends == undefined)
+        userFriendData1 = [];
 
       for (let a = 0; a < userFriendData1.length; a++) {
         userFriendInt2 = findUIDItemInArr(user.friends[i], userArr, true);
         userFriendData2 = userArr[userFriendInt2].friends;
+        if (userArr[userFriendInt2].friends == undefined)
+          userFriendData2 = [];
+
         for (let b = 0; b < userFriendData2.length; b++) {
           if (userFriendData1[a] == userFriendData2[b]) {
             commonFriends += 1;
@@ -718,7 +727,18 @@ function evaluateCommonFriends(){
     if (commonFriendData != undefined) {
       for (let c = 0; c < commonFriendData.friends.length; c++) {
         if (!user.friends.includes(commonFriendData.friends[c]) && commonFriendData.friends[c] != user.uid) {
-          commonFriendArr.push(commonFriendData.friends[c]);
+          userInviteInt = findUIDItemInArr(commonFriendData.friends[c], userArr, true);
+          if (userInviteInt != undefined) {
+            userInviteData = userArr[userInviteInt].invites;
+            if (userInviteData == undefined)
+              userInviteData = [];
+          } else {
+            userInviteData = [];
+          }
+
+          if (!userInviteData.includes(user.uid) && !userBlackListCommon.includes(commonFriendData.friends[c])) {
+            commonFriendArr.push(commonFriendData.friends[c]);
+          }
         }
       }
 
@@ -978,6 +998,14 @@ function inviteUserDB(invitedUser) {
   if (commonFriendArr.includes(invitedUser.uid)) {
     let i = commonFriendArr.indexOf(invitedUser.uid);
     commonFriendArr.splice(i, 1);
+    if (commonFriendArr.length == 0) {
+      addUser.onmouseover = function () {
+        addUser.style.backgroundColor = "#ff4c4c";
+      }
+      addUser.onmouseout = function () {
+        addUser.style.backgroundColor = "#ff8e8e";
+      }
+    }
   }
 
   let notificationString = generateNotificationString(user.uid,"","","");
