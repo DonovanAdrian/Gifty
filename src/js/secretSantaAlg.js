@@ -706,9 +706,11 @@ function addPrivateMessageToDB(userData, message) {
   currentUserScore = user.userScore;
   firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
 
+  closeModal(privateMessageModal);
   addNotificationToDB(userData, message);
-  deployNotificationModal(false, "Message Sent!", "Your message to " +
-      userData.userName + " was successfully delivered!");
+  successfulDBOperationTitle = "Message Sent!";
+  successfulDBOperationNotice = "Your message to " + userData.userName + " was successfully delivered!";
+  showSuccessfulDBOperation = true;
 }
 
 function createSecretSantaNames(){
