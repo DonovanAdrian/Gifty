@@ -57,7 +57,7 @@ let cancelMsg;
 
 function getCurrentUser(){
   getCurrentUserCommon();
-
+  failedNavNum = 3;
   if (user.friends == undefined) {
     user.friends = [];
   } else {
@@ -320,6 +320,8 @@ function createFriendElement(friendKey) {
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
     dataCounter++;
+  } else {
+    changeFriendElement(friendKey);
   }
 }
 
