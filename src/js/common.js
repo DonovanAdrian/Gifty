@@ -23,6 +23,7 @@ let deployedNoteTimer = 0;
 let listenForDBTimer = 0;
 let unsavedChangesNav = 0;
 let failedNavNum = 0;
+let globalNotificationBool = false;
 let consoleOutput = false;
 let unsavedChanges = false;
 let dbOperationInProgress = false;
@@ -37,15 +38,18 @@ let notificationDeployed = false;
 let modalClosingBool = false;
 let checkNoteOnDBInit = false;
 let emptyListNoteDeployed = false;
+let privateListBool = true;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
 let defaultSuccessfulDBOperationTitle = "Pending Operation Completed!";
 let defaultSuccessfulDBOperationNotice = "Your pending change was successfully saved! Thank you for your patience, you may " +
     "now navigate to other pages.";
+let defaultSuccessfulDBNavigation = "NoNav";
 let successfulDBOperationTitle = "Pending Operation Completed!";
 let successfulDBOperationNotice = "Your pending change was successfully saved! Thank you for your patience, you may " +
     "now navigate to other pages.";
+let successfulDBNavigation = "NoNav";
 let unsavedChangesOverride;
 let loginTimerInterval;
 let ohThereYouInterval;
@@ -307,7 +311,16 @@ function getCurrentUserCommon(){
   let notificationPages = ["Home", "BoughtGifts", "Confirmation", "FriendList", "Invites", "Lists", "PrivateFriendList"];
 
   try {
-    if (pageName != "UserAddUpdate") {
+    if (pageName == "GiftAddUpdate") {
+      user = JSON.parse(sessionStorage.validUser);
+
+      if (user.moderatorInt == 1 && privateUser == undefined) {
+        consoleOutput = true;
+        console.log("User: " + user.userName + " loaded in");
+        checkInvites(user);
+        updateFriendNav(user.friends, true);
+      }
+    } else if (pageName != "UserAddUpdate") {
       user = JSON.parse(sessionStorage.validUser);
 
       if (user.moderatorInt == 1 && privateUser == undefined) {
@@ -323,7 +336,7 @@ function getCurrentUserCommon(){
       if (notificationPages.includes(pageName)) {
         checkNoteOnDBInit = true;
       }
-      checkInvites();
+      checkInvites(user);
       updateFriendNav(user.friends, true);
     } else {
       try {
@@ -427,6 +440,9 @@ function addNotificationToDB (recipientData, notificationString) {
     data: notificationString,
     read: 0
   });
+
+  if (!globalNotificationBool)
+    listenForDBChanges("Notification", newUid);
 }
 
 function generateNewNoteUID (noteKey, noteString, readOverride) {
@@ -445,13 +461,13 @@ function generateNewNoteUID (noteKey, noteString, readOverride) {
   return newUid;
 }
 
-function checkInvites() {
-  if (user.invites == undefined) {
+function checkInvites(inputUser) {
+  if (inputUser.invites == undefined) {
     if (consoleOutput)
       console.log("Invites Not Found");
-    user.invites = [];
+    inputUser.invites = [];
   }
-  if (user.invites.length > 0) {
+  if (inputUser.invites.length > 0) {
     inviteNote.style.background = "#ff3923";
     if (pageName == "Invites") {
       newInviteIcon.style.display = "block";
@@ -603,12 +619,12 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
 
   if (customTime == undefined)
     customTime = 3;
-  else if (customTime.isNaN)
+  else if (isNaN(customTime))
     customTime = 3;
 
   if (customNavigation == undefined)
     navigationBool = false;
-  else if (customNavigation.isNaN)
+  else if (isNaN(customNavigation))
     navigationBool = false;
   else
   if (consoleOutput)
@@ -696,6 +712,7 @@ function signOut(){
 function findObjectChanges(objInputOld, objInputNew, limiterBool) {
   let objectKeysChanged = [];
   let objectDataChanged = [];
+  let objectKeysChecked = [];
 
   if (limiterBool == undefined)
     limiterBool = false;
@@ -724,6 +741,15 @@ function findObjectChanges(objInputOld, objInputNew, limiterBool) {
           }
         }
       }
+    }
+    objectKeysChecked.push(oldObjKey);
+  }
+
+  for (let newObjKey in objInputNew) {
+    if (!objectKeysChecked.includes(newObjKey)) {
+      let newObjValue = objInputNew[newObjKey];
+      objectKeysChanged.push(newObjKey);
+      objectDataChanged.push(newObjValue);
     }
   }
 
@@ -820,6 +846,10 @@ function checkGlobalDBChanges() {
 function getDBOpType(dataChangeInput, keyChangeInput) {
   console.log(dataChangeInput);
   console.log(keyChangeInput);
+  if (!isNaN(keyChangeInput)) {
+    cancelDBChangeListener("Add", keyChangeInput);
+    cancelDBChangeListener("Update", keyChangeInput);
+  }
   switch (keyChangeInput) {
     case "friends":
       if (pageName == "Invites")
@@ -830,8 +860,10 @@ function getDBOpType(dataChangeInput, keyChangeInput) {
         cancelDBChangeListener("Confirm", dataChangeInput);
       break;
     case "notifications":
-      if (dataChangeInput[0].uid != undefined)
+      if (dataChangeInput[0].uid != undefined) {
         cancelDBChangeListener("Invite", dataChangeInput);
+        cancelDBChangeListener("Notification", dataChangeInput);
+      }
       break;
     case "giftList":
     case "privateList":
@@ -867,6 +899,17 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
       updateArrs = true;
   } else {
     for (let i = 0; i < listenExpectedUIDs.length; i++) {
+      if (expectedChange == "Notification") {
+        for (let a = 0; a < receivedUID.length; a++) {
+          tempString = receivedUID[a].uid;
+          if (tempString != undefined) {
+            if (tempString == listenExpectedUIDs[i]) {
+              receivedUID = listenExpectedUIDs[i];
+              break;
+            }
+          }
+        }
+      }
       if (expectedChange == "Invite") {
         for (let a = 0; a < receivedUID.length; a++) {
           tempString = receivedUID[a].data;
@@ -918,8 +961,19 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
       if (consoleOutput)
         console.log("All Expected Changes Received!");
       if (showSuccessfulDBOperation) {
+        if (privateListBool)
+          sessionStorage.setItem("validGiftUser", JSON.stringify(user));
+        if (pageName == "GiftAddUpdate") {
+          unsavedChanges = false;
+          unsavedGiftStorage = ["", "", "", "", ""]
+          sessionStorage.setItem("unsavedChanges", JSON.stringify(unsavedChanges));
+          sessionStorage.setItem("unsavedGiftStorage", JSON.stringify(unsavedGiftStorage));
+        }
         deployNotificationModal(false, successfulDBOperationTitle,
-            successfulDBOperationNotice, 4);
+            successfulDBOperationNotice, 4, successfulDBNavigation);
+        successfulDBOperationTitle = defaultSuccessfulDBOperationTitle;
+        successfulDBOperationNotice = defaultSuccessfulDBOperationNotice;
+        successfulDBNavigation = defaultSuccessfulDBNavigation;
       }
       clearInterval(listenForDBInterval);
       showSuccessfulDBOperation = false;
@@ -940,6 +994,9 @@ function deployConfirmationModal(unsavedChangesTitle, unsavedChangesContent) {
     if (pageName == "GiftAddUpdate") {
       if (unsavedChanges) {
         unsavedChanges = false;
+        unsavedGiftStorage = ["", "", "", "", ""];
+        sessionStorage.setItem("unsavedChanges", JSON.stringify(unsavedChanges));
+        sessionStorage.setItem("unsavedGiftStorage", JSON.stringify(unsavedGiftStorage));
         navigation(unsavedChangesNav, unsavedChangesOverride);
       }
     }
@@ -966,7 +1023,6 @@ function deployConfirmationModal(unsavedChangesTitle, unsavedChangesContent) {
 function navigation(navNum, loginOverride) {
   if (unsavedChanges) {
     if (pageName == "GiftAddUpdate") {
-      console.log(unsavedChanges);
       unsavedChangesNav = navNum;
       deployConfirmationModal("Unsaved Changes!", "You have unsaved changes! " +
           "Would you like to continue?");
@@ -1484,4 +1540,17 @@ function addReviewDays(date, days) {
   const tempDate = new Date(Number(date));
   tempDate.setDate(date.getDate() + days);
   return tempDate;
+}
+
+function saveCriticalCookies(){
+  if (privateUserOverride) {
+    sessionStorage.setItem("privateList", JSON.stringify(giftUser));
+    sessionStorage.setItem("validUser", JSON.stringify(giftUser));
+    sessionStorage.setItem("validPrivateUser", JSON.stringify(user));
+    sessionStorage.setItem("userArr", JSON.stringify(userArr));
+    sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
+  } else {
+    sessionStorage.setItem("validUser", JSON.stringify(user));
+    sessionStorage.setItem("userArr", JSON.stringify(userArr));
+  }
 }
