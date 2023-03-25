@@ -72,6 +72,7 @@ function getCurrentUser(){
   getCurrentUserCommon();
   moderationSet = sessionStorage.getItem("moderationSet");
   giftUser = JSON.parse(sessionStorage.validGiftUser);
+  failedNavNum = 10;
 
   if(user.uid == giftUser.uid){
     if(consoleOutput)
@@ -435,6 +436,8 @@ function createGiftElement(pGiftData, pGiftKey){
       addGift.style.opacity = ".75";
       swapList.style.opacity = ".75";
     }
+  } else {
+    changeGiftElement(pGiftData, pGiftKey);
   }
 }
 
@@ -865,7 +868,8 @@ function checkGiftLimit() {
     addGift.innerHTML = "Add Private Gift";
     addGift.className = "addBtnB";
     addGift.onclick = function () {
-      privateUserOverride = true;
+      if (!dbOperationInProgress)
+        privateUserOverride = true;
       navigation(8);
     };
   }
