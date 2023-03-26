@@ -62,9 +62,9 @@ let denyBtn;
 
 function getCurrentUser(){
   getCurrentUserCommon();
-
   moderationSet = sessionStorage.getItem("moderationSet");
   giftUser = JSON.parse(sessionStorage.validGiftUser);
+  failedNavNum = 9;
 
   if(consoleOutput)
     console.log("Friend: " + giftUser.userName + " loaded in");
@@ -381,6 +381,8 @@ function createGiftElement(giftData, giftKey){
       swapList.style.opacity = ".75";
     }
     initializedGifts.push(giftUid);
+  } else {
+    changeGiftElement(giftData, giftKey);
   }
 }
 
