@@ -581,6 +581,7 @@ window.onload = function instantiate() {
               checkNotifications();
               updateFriendNav(user.friends);
             }
+            saveCriticalCookies();
           }
         } else {
           userArr.push(data.val());
@@ -590,6 +591,7 @@ window.onload = function instantiate() {
             checkNotifications();
             updateFriendNav(user.friends);
           }
+          saveCriticalCookies();
         }
       });
 
@@ -614,6 +616,7 @@ window.onload = function instantiate() {
               if(consoleOutput)
                 console.log("Current User Updated");
             }
+            saveCriticalCookies();
           }
         }
       });
@@ -881,12 +884,6 @@ function deleteGiftElement(title, uid, buyer, bulkDelete) {
 
     closeModal(giftModal);
 
-    if (!bulkDelete) {
-      successfulDBOperationTitle = "Gift Deleted";
-      successfulDBOperationNotice = "Your gift, \"" + title + "\", was successfully deleted!";
-      showSuccessfulDBOperation = true;
-    }
-
     if(buyer != ""){
       let userFound = findUserNameItemInArr(buyer, userArr);
       if(userFound != -1){
@@ -900,8 +897,12 @@ function deleteGiftElement(title, uid, buyer, bulkDelete) {
         console.log("No buyer, no notification needed");
     }
 
-    if (!bulkDelete)
+    if (!bulkDelete) {
+      successfulDBOperationTitle = "Gift Deleted";
+      successfulDBOperationNotice = "Your gift, \"" + title + "\", was successfully deleted!";
+      showSuccessfulDBOperation = true;
       listenForDBChanges("Delete", uid);
+    }
     giftDeleteLocal = false;
   } else {
     if (!bulkDelete)
