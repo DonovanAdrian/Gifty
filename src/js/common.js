@@ -863,6 +863,7 @@ function getDBOpType(dataChangeInput, keyChangeInput) {
       if (dataChangeInput[0].uid != undefined) {
         cancelDBChangeListener("Invite", dataChangeInput);
         cancelDBChangeListener("Notification", dataChangeInput);
+        cancelDBChangeListener("NoteDelete", dataChangeInput);
       }
       break;
     case "giftList":
@@ -922,6 +923,16 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
         }
       }
 
+      if (expectedChange == "NoteDelete") {
+        if (receivedUID == undefined) {
+          updateArrs = true;
+          overrideBool = true;
+        } else if (findUIDItemInArr(listenExpectedUIDs[i], receivedUID, true)) {
+          updateArrs = true;
+          overrideBool = true;
+        }
+      }
+
       if (expectedChange == "Confirm") {
         if (receivedUID == undefined) {
           updateArrs = true;
@@ -974,6 +985,7 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
         successfulDBOperationTitle = defaultSuccessfulDBOperationTitle;
         successfulDBOperationNotice = defaultSuccessfulDBOperationNotice;
         successfulDBNavigation = defaultSuccessfulDBNavigation;
+        saveCriticalCookies();
       }
       clearInterval(listenForDBInterval);
       showSuccessfulDBOperation = false;
