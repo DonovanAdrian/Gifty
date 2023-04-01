@@ -627,6 +627,7 @@ window.onload = function instantiate() {
           if(consoleOutput)
             console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
+          saveCriticalCookies();
         }
       });
     };
