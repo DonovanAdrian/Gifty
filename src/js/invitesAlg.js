@@ -195,6 +195,7 @@ window.onload = function instantiate() {
               checkNotifications();
               updateFriendNav(user.friends);
             }
+            saveCriticalCookies();
           }
         } else {
           userArr.push(data.val());
@@ -204,6 +205,7 @@ window.onload = function instantiate() {
             checkNotifications();
             updateFriendNav(user.friends);
           }
+          saveCriticalCookies();
         }
       });
 
@@ -233,6 +235,7 @@ window.onload = function instantiate() {
               if(consoleOutput)
                 console.log("Current User Updated");
             }
+            saveCriticalCookies();
           }
         }
       });
@@ -244,6 +247,7 @@ window.onload = function instantiate() {
             console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           }
           userArr.splice(i, 1);
+          saveCriticalCookies();
         }
       });
     };
