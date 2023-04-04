@@ -10,6 +10,10 @@ let logoutLimit = 900; //default 900, 900 15 mins, 600 10 mins
 let debugElementIntegrity = false;
 let redirectWarningBool = true;
 
+let giftDBChanges = [];
+let noteDBChanges = [];
+let userDBChanges = [];
+let cancellationReasons = [];
 let listenDBOpType = [];
 let listenExpectedUIDs = [];
 let globalDBKeyChangesArr = [];
@@ -35,6 +39,7 @@ let privateUserOverride = false;
 let areYouStillThereBool = false;
 let areYouStillThereInit = false;
 let notificationDeployed = false;
+let giftAddUpdateOverride = false;
 let modalClosingBool = false;
 let checkNoteOnDBInit = false;
 let emptyListNoteDeployed = false;
@@ -820,12 +825,17 @@ function listenForDBChanges(dbChangeType, expectedUID) {
       checkGlobalDBChanges();
     }
     if(listenForDBTimer >= maxListenForDB){
+      let tempDegradedPerfUser;
       showSuccessfulDBOperation = false;
       dbOperationInProgress = false;
       deployNotificationModal(false, "Pending Operation Failed!",
           "Your pending changes were NOT successfully saved. You may have a slow connection or be " +
           "experiencing an error. Please try again or contact a moderator! Refreshing page...", 6, failedNavNum);
-      updateMaintenanceLog(pageName, "A user experienced degraded performance or an error with " +
+      if (privateUser != null)
+        tempDegradedPerfUser = privateUser.userName + " (As A Private User)";
+      else
+        tempDegradedPerfUser = user.userName;
+      updateMaintenanceLog(pageName, tempDegradedPerfUser + " experienced degraded performance or an error with " +
           dbChangeType + " Operation and UID " + expectedUID);
       clearInterval(listenForDBInterval);
       listenForDBTimer = 0;
@@ -844,8 +854,10 @@ function checkGlobalDBChanges() {
 }
 
 function getDBOpType(dataChangeInput, keyChangeInput) {
-  console.log(dataChangeInput);
-  console.log(keyChangeInput);
+  giftDBChanges = ["Add", "Update", "Delete", "Buy"];
+  noteDBChanges = ["Invite", "Notification", "NoteDelete"];
+  userDBChanges = ["Remove", "Confirm"];
+  cancellationReasons = [giftDBChanges, noteDBChanges, userDBChanges];
   if (!isNaN(keyChangeInput)) {
     cancelDBChangeListener("Add", keyChangeInput);
     cancelDBChangeListener("Update", keyChangeInput);
@@ -853,7 +865,7 @@ function getDBOpType(dataChangeInput, keyChangeInput) {
   switch (keyChangeInput) {
     case "friends":
       if (pageName == "Invites")
-        cancelDBChangeListener("Delete", dataChangeInput);
+        cancelDBChangeListener("Remove", dataChangeInput);
       break;
     case "invites":
       if (pageName == "Confirmation")
@@ -885,10 +897,19 @@ function getDBOpType(dataChangeInput, keyChangeInput) {
 }
 
 function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
+  let unrelatedCancelOverride = false;
   let updateArrs = false;
   let receivedUIDCount = 0;
   let removalLocation = 0;
   let tempString = "";
+  let cancelReason;
+
+  for (let i = 0; i < cancellationReasons.length; i++) {
+    if (cancellationReasons[i].includes(expectedChange)) {
+      cancelReason = cancellationReasons[i];
+      break;
+    }
+  }
 
   if (overrideBool == undefined) {
     overrideBool = false;
@@ -966,9 +987,14 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
     } else {
       listenExpectedUIDs.splice(removalLocation, 1);
       listenDBOpType.splice(removalLocation, 1);
+      for (let i = 0; i < cancelReason.length; i++) {
+        if (!listenDBOpType.includes(cancelReason[i])) {
+          unrelatedCancelOverride = true;
+        }
+      }
     }
 
-    if (listenExpectedUIDs.length == 0) {
+    if (listenExpectedUIDs.length == 0 || unrelatedCancelOverride) {
       if (consoleOutput)
         console.log("All Expected Changes Received!");
       if (showSuccessfulDBOperation) {
@@ -976,6 +1002,7 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
           sessionStorage.setItem("validGiftUser", JSON.stringify(user));
         if (pageName == "GiftAddUpdate") {
           unsavedChanges = false;
+          giftAddUpdateOverride = false;
           unsavedGiftStorage = ["", "", "", "", ""]
           sessionStorage.setItem("unsavedChanges", JSON.stringify(unsavedChanges));
           sessionStorage.setItem("unsavedGiftStorage", JSON.stringify(unsavedGiftStorage));
@@ -1049,7 +1076,7 @@ function navigation(navNum, loginOverride) {
   } else {
     if (loginOverride == undefined && !privateUserOverride) {
       try {
-        if (privateUser != undefined) {
+        if (privateUser != undefined && !giftAddUpdateOverride) {
           if (consoleOutput)
             console.log("***Private***");
           sessionStorage.setItem("validUser", JSON.stringify(privateUser));
