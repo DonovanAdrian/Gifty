@@ -568,7 +568,7 @@ function deleteFriend(delFriendData) {
     removeFriendElement(uid);
     user.friends = friendArr;
     refreshFriendInviteArrays();
-    listenForDBChanges("Delete", uid);
+    listenForDBChanges("Remove", uid);
     successfulDBOperationTitle = "Friend Removed!";
     successfulDBOperationNotice = "The user " + delFriendData.name + " has been successfully removed from your friend list!";
     showSuccessfulDBOperation = true;
