@@ -52,6 +52,7 @@ let updateGift;
 let homeNote;
 let listNote;
 let inviteNote;
+let tempCurrentGift;
 let currentGift;
 let userGifts;
 let limitsInitial;
@@ -127,14 +128,26 @@ function getCurrentUser(){
       initializeData();
     }
   }
+
   if (unsavedChanges != undefined)
     if (unsavedChanges) {
       unsavedGiftStorage = JSON.parse(sessionStorage.unsavedGiftStorage);
-      currentGift.title = unsavedGiftStorage[0];
-      currentGift.link = unsavedGiftStorage[1];
-      currentGift.where = unsavedGiftStorage[2];
-      currentGift.description = unsavedGiftStorage[3];
-      currentGift.multiples = unsavedGiftStorage[4];
+      tempCurrentGift = {
+        title: unsavedGiftStorage[0],
+        link: unsavedGiftStorage[1],
+        where: unsavedGiftStorage[2],
+        description: unsavedGiftStorage[3],
+        multiples: unsavedGiftStorage[4]
+      };
+      if (tempCurrentGift.title != currentGift.title ||
+          tempCurrentGift.link != currentGift.link ||
+          tempCurrentGift.where != currentGift.where ||
+          tempCurrentGift.description != currentGift.description ||
+          tempCurrentGift.multiples != currentGift.multiples) {
+        currentGift = tempCurrentGift;
+      } else {
+        unsavedChanges = false;
+      }
     }
 }
 
@@ -289,17 +302,33 @@ window.onload = function instantiate() {
               initializeData();
             }
           }
+        } else {
+          if (data.val().uid == giftStorage) {
+            if (privateListBool) {
+              getGiftIndex = findUIDItemInArr(giftStorage, user.privateList, true);
+              if (getGiftIndex != -1)
+                currentGift = user.privateList[getGiftIndex];
+            } else {
+              getGiftIndex = findUIDItemInArr(giftStorage, user.giftList, true);
+              if (getGiftIndex != -1)
+                currentGift = user.giftList[getGiftIndex];
+            }
+            if (data.val().title != currentGift.title ||
+                data.val().link != currentGift.link ||
+                data.val().where != currentGift.where ||
+                data.val().description != currentGift.description ||
+                data.val().multiples != currentGift.multiples) {
+              unsavedChanges = false;
+            }
+          }
         }
       });
 
       postRef.on('child_changed', function (data) {
         oldGiftArr = forceNewArray(giftArr);
         giftArr[data.key] = data.val();
-        console.log(oldGiftArr[data.key])
-        console.log(giftArr[data.key])
         localObjectChanges = findObjectChanges(oldGiftArr, giftArr);
         if (localObjectChanges.length != 0) {
-          console.log("Updated item!")
 
           if (data.val().uid == giftStorage) {
             previousTitle = currentGift.title;
@@ -538,6 +567,10 @@ function updateGiftToDB() {
         "click \"Add Gift\", but the gift URL will not be saved.", 4);
     invalidURLOverride = true;
     invalidURL = newURL;
+  } else if (!unsavedChanges) {
+    deployNotificationModal(false, "No Changes Made!", "It looks like you didn't " +
+        "make any changes to this gift! If this is the case, click on any of the navigation buttons or the \"Back\" " +
+        "button below!", 4);
   } else {
     if(giftUID != -1) {
       unsavedChanges = false;
@@ -713,7 +746,9 @@ function updateGiftToDB() {
       sessionStorage.setItem("unsavedChanges", JSON.stringify(tempUnsavedChanges));
       sessionStorage.setItem("unsavedGiftStorage", JSON.stringify(unsavedGiftStorage));
       showSuccessfulDBOperation = true;
+
       listenForDBChanges("Update", giftUID);
+      giftAddUpdateOverride = true;
       if (!privateListBool) {
         successfulDBOperationTitle = "Gift Updated!";
         successfulDBOperationNotice = "The gift, \"" + giftTitleInp.value + "\", has been successfully updated in your gift list! Redirecting back to home...";
@@ -723,6 +758,7 @@ function updateGiftToDB() {
         successfulDBOperationNotice = "The gift, \"" + giftTitleInp.value + "\", has been successfully updated in " + user.name + "'s private gift list! Redirecting back to their private list...";
         successfulDBNavigation = 10;
       }
+      localGiftAddUpdate = false;
     } else {
       deployNotificationModal(false, "Gift Update Error!", "There was an error " +
           "updating the gift, please try again!");
@@ -899,6 +935,7 @@ function addGiftToDB(){
       successfulDBOperationNotice = "The gift, " + giftTitleInp.value + ", has been successfully added to " + user.name + "'s private gift list! Redirecting back to their private list...";
       successfulDBNavigation = 10;
     }
+    localGiftAddUpdate = false;
   }
   invalidURLBool = false;
 }
