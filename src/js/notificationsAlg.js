@@ -54,13 +54,23 @@ let cancelMsg;
 
 function getCurrentUser(){
   getCurrentUserCommon();
+  failedNavNum = 6;
 
   if(user.notifications == undefined) {
     if(consoleOutput)
       console.log("Notifications Not Found");
     deployListEmptyNotification("No Notifications Found!");
     initializeNukeBtn();
+    notificationArr = [];
     notificationListEmptyBool = true;
+  } else {
+    if (user.notifications[0].uid != undefined) {
+      notificationArr = user.notifications;
+      for (let i = 0; i < user.notifications.length; i++) {
+        createNotificationElement(user.notifications[i], i);
+        notificationKeyArr.push(user.notifications[i].uid);
+      }
+    }
   }
 }
 
@@ -113,9 +123,11 @@ window.onload = function instantiate() {
     let fetchNotifications = function (postRef) {
       postRef.on('child_added', function (data) {
         if (data.val().uid != undefined) {
-          notificationArr.push(data.val());
-          notificationKeyArr.push(data.val().uid);
-          createNotificationElement(data.val(), data.key);
+          if (notificationKeyArr.indexOf(data.val().uid) == -1) {
+            notificationArr.push(data.val());
+            notificationKeyArr.push(data.val().uid);
+            createNotificationElement(data.val(), data.key);
+          }
         } else {
           let newUid = generateNewNoteUID(data.key, data.val());
           notificationArr.push(data.val());
@@ -130,8 +142,6 @@ window.onload = function instantiate() {
       });
 
       postRef.on('child_changed', function (data) {
-        if (consoleOutput)
-          console.log("Changed Notification" + data.val().uid + " " + data.val().read);
         notificationArr[data.key] = data.val();
         changeNotificationElement(data.val(), data.key);
       });
@@ -229,144 +239,157 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(userBase);
   }
+};
 
-  function findRemovedNotification(oldArr, newArr) {
-    let removedNotificationIndex = -1;
+function findRemovedNotification(oldArr, newArr) {
+  let removedNotificationIndex = -1;
 
-    removedNotificationIndex = findRemovedData(oldArr, newArr);
-    if (removedNotificationIndex != -1) {
-      removeNotificationElement(oldArr[removedNotificationIndex].uid);
-      let i = initializedNotifications.indexOf(oldArr[removedNotificationIndex].uid);
-      initializedNotifications.splice(i, 1);
-      oldNotificationArr.splice(removedNotificationIndex, 1);
-    }
+  removedNotificationIndex = findRemovedData(oldArr, newArr);
+  if (removedNotificationIndex != -1) {
+    removeNotificationElement(oldArr[removedNotificationIndex].uid);
+    let i = initializedNotifications.indexOf(oldArr[removedNotificationIndex].uid);
+    initializedNotifications.splice(i, 1);
+    oldNotificationArr.splice(removedNotificationIndex, 1);
   }
+}
 
-  function fetchNotificationData(createBool, liElem, notificationData, noteKey) {
-    let noteToParse = notificationData.data;
-    let noteSplit = noteToParse.split(",,,");
-    let noteSplitCount = 0;
-    let adminPM = false;
-    let globalPM = false;
-    let friendUserData;
-    let notificationDataTitle = "***Notification Load Error***";
-    let notificationDetails;
-    let notificationPage;
+function fetchNotificationData(createBool, liElem, notificationData, noteKey) {
+  let noteToParse = notificationData.data;
+  let noteSplit = noteToParse.split(",,,");
+  let noteSplitCount = 0;
+  let adminPM = false;
+  let globalPM = false;
+  let friendUserData;
+  let notificationDataTitle = "***Notification Load Error***";
+  let notificationDetails;
+  let notificationPage;
 
-    if (noteSplit.length >= 4) {
-      for (let i = 0; i < noteSplit.length; i++) {
-        noteSplit[i] = noteSplit[i].replaceAll('"', '');
-        if (noteSplit[i] != "") {
-          noteSplitCount++;
-        }
+  if (noteSplit.length >= 4) {
+    for (let i = 0; i < noteSplit.length; i++) {
+      noteSplit[i] = noteSplit[i].replaceAll('"', '');
+      if (noteSplit[i] != "") {
+        noteSplitCount++;
       }
+    }
 
-      let senderUID = noteSplit[0];
-      let deleterUID = noteSplit[1];
-      let messageGiftTitle = noteSplit[2];
-      let pageNameNote = noteSplit[3];
+    let senderUID = noteSplit[0];
+    let deleterUID = noteSplit[1];
+    let messageGiftTitle = noteSplit[2];
+    let pageNameNote = noteSplit[3];
 
-      if (senderUID.includes(">admin")) {
-        if (senderUID.includes("Global")) {
-          senderUID = senderUID.slice(12, senderUID.length);
-          globalPM = true;
+    if (senderUID.includes(">admin")) {
+      if (senderUID.includes("Global")) {
+        senderUID = senderUID.slice(12, senderUID.length);
+        globalPM = true;
+      } else {
+        senderUID = senderUID.slice(6, senderUID.length);
+        adminPM = true;
+      }
+    }
+
+    let i = findUIDItemInArr(senderUID, userArr, true);
+    if (i != -1) {
+      friendUserData = userArr[i];
+
+      if (noteSplitCount == 1) {//Type X, Invites
+        notificationDataTitle = friendUserData.name + " has sent you a friend invite!";
+        notificationDetails = friendUserData.name + " has sent you an invite to be added to each other's " +
+            "friend lists. Accepting this invite will allow you to view each other's gift lists!";
+        notificationPage = "invites.html";
+      } else if (noteSplitCount == 2) {//Type W, Messages/Announcements
+        notificationDetails = "\"" + messageGiftTitle + "\"";
+        if (adminPM) {
+          notificationDataTitle = friendUserData.name + " sent you an administrative message";
+          notificationPage = "privateMessage";
+        } else if (globalPM) {
+          notificationDataTitle = friendUserData.name + " sent an announcement!";
+          notificationPage = "globalNotification";
         } else {
-          senderUID = senderUID.slice(6, senderUID.length);
-          adminPM = true;
+          notificationDataTitle = friendUserData.name + " sent you a private message!";
+          notificationPage = "privateMessage";
         }
-      }
-
-      let i = findUIDItemInArr(senderUID, userArr, true);
-      if (i != -1) {
-        friendUserData = userArr[i];
-
-        if (noteSplitCount == 1) {//Type X, Invites
-          notificationDataTitle = friendUserData.name + " has sent you a friend invite!";
-          notificationDetails = friendUserData.name + " has sent you an invite to be added to each other's " +
-              "friend lists. Accepting this invite will allow you to view each other's gift lists!";
-          notificationPage = "invites.html";
-        } else if (noteSplitCount == 2) {//Type W, Messages/Announcements
-          notificationDetails = messageGiftTitle;
-          if (adminPM) {
-            notificationDataTitle = friendUserData.name + " sent you an administrative message";
-            notificationPage = "privateMessage";
-          } else if (globalPM) {
-            notificationDataTitle = friendUserData.name + " sent an announcement!";
-            notificationPage = "globalNotification";
-          } else {
-            notificationDataTitle = friendUserData.name + " sent you a private message!";
-            notificationPage = "privateMessage";
-          }
-        } else if (noteSplitCount == 3) {//Type Y, Gift Updates/Gift Deletion (Public)
-          if (pageNameNote == "friendList.html") {
-            notificationDataTitle = friendUserData.name + " updated a gift you bought!";
-            notificationDetails = friendUserData.name + "'s public gift, " + messageGiftTitle + ", was updated!";
-          } else if (pageNameNote == "privateFriendList.html") {
-            notificationDataTitle = friendUserData.name + "\'s private gift that you bought was updated!";
-            notificationDetails = friendUserData.name + "'s private gift, " + messageGiftTitle + ", was updated!";
-          } else if (pageNameNote == "deleteGift") {
-            notificationDataTitle = friendUserData.name + " deleted a gift you bought...";
-            notificationDetails = "The gift you bought for " + friendUserData.name + ", " + messageGiftTitle + ", was" +
-                " deleted from their public gift list...";
-          } else {
-            if (consoleOutput)
-              console.log("Notification Page Error, 1");
-            notificationPage = "noteERROR";
-          }
-          if (notificationPage != "noteError") {
-            notificationPage = pageNameNote;
-          }
-        } else if (noteSplitCount == 4) {//Z, Gift Deletion (Private)
-          let z = findUIDItemInArr(deleterUID, userArr, true);
-          if (z != -1) {
-            let deleterData = userArr[z];
-            notificationDataTitle = deleterData.name + " deleted a private gift you bought...";
-            notificationDetails = "The gift you bought for " + friendUserData.name + ", " + messageGiftTitle + ", was" +
-                " deleted by " + deleterData.name + " from " + friendUserData.name + "'s private gift list...";
-            notificationPage = pageNameNote;
-          } else {
-            if (consoleOutput)
-              console.log("DeleterUID not found!");
-            notificationPage = "noteERROR";
-          }
+      } else if (noteSplitCount == 3) {//Type Y, Gift Updates/Gift Deletion (Public)
+        if (pageNameNote == "friendList.html") {
+          notificationDataTitle = friendUserData.name + " updated a gift you bought!";
+          notificationDetails = friendUserData.name + "'s public gift, " + messageGiftTitle + ", was updated!";
+        } else if (pageNameNote == "privateFriendList.html") {
+          notificationDataTitle = friendUserData.name + "\'s private gift that you bought was updated!";
+          notificationDetails = friendUserData.name + "'s private gift, " + messageGiftTitle + ", was updated!";
+        } else if (pageNameNote == "deleteGift") {
+          notificationDataTitle = friendUserData.name + " deleted a gift you bought...";
+          notificationDetails = "The gift you bought for " + friendUserData.name + ", " + messageGiftTitle + ", was" +
+              " deleted from their public gift list...";
         } else {
           if (consoleOutput)
-            console.log("Unknown Notification String Received...");
+            console.log("Notification Page Error, 1");
           notificationPage = "noteERROR";
         }
-        initNotificationElement(liElem, notificationPage, notificationData, notificationDataTitle,
-            notificationDetails, friendUserData, noteKey);
+        if (notificationPage != "noteError") {
+          notificationPage = pageNameNote;
+        }
+      } else if (noteSplitCount == 4) {//Z, Gift Deletion (Private)
+        let z = findUIDItemInArr(deleterUID, userArr, true);
+        if (z != -1) {
+          let deleterData = userArr[z];
+          notificationDataTitle = deleterData.name + " deleted a private gift you bought...";
+          notificationDetails = "The gift you bought for " + friendUserData.name + ", " + messageGiftTitle + ", was" +
+              " deleted by " + deleterData.name + " from " + friendUserData.name + "'s private gift list...";
+          notificationPage = pageNameNote;
+        } else {
+          if (consoleOutput)
+            console.log("DeleterUID not found!");
+          notificationPage = "noteERROR";
+        }
       } else {
         if (consoleOutput)
-          console.log("SenderUID not found for notification UID " + notificationData.uid);
-        notificationPage = "noteErrorUser";
-        initNotificationElement(liElem, notificationPage, notificationData);
+          console.log("Unknown Notification String Received...");
+        notificationPage = "noteERROR";
       }
+      initNotificationElement(liElem, notificationPage, notificationData, notificationDataTitle,
+          notificationDetails, friendUserData, noteKey);
     } else {
       if (consoleOutput)
-        console.log("Deprecated Notification Format!");
-      notificationPage = "noteErrorLegacy";
-      initNotificationElement(liElem, notificationPage, notificationData);
-    }
-
-    if (createBool) {
-      let textNode = document.createTextNode(notificationDataTitle);
-      liElem.appendChild(textNode);
-      dataListContainer.insertBefore(liElem, dataListContainer.childNodes[0]);
-      clearInterval(commonLoadingTimer);
-      clearInterval(offlineTimer);
-
-      if (dataCounter < 1) {
-        initializeNukeBtn();
+        console.log("SenderUID not found for notification UID " + notificationData.uid);
+      notificationDataTitle = "A Notification From A Deleted User!";
+      if (noteSplitCount == 1) {
+        notificationDetails = "This was related to an invitation to see their gift list, but the user no longer " +
+            "exists. You can disregard and/or delete this notification."
+      } else if (noteSplitCount == 2) {
+        notificationDetails = "Here is the message that the deleted user sent you: \"" + messageGiftTitle + "\"";
+      } else if (noteSplitCount == 3 || noteSplitCount == 4) {
+        notificationDetails = "This was related to a gift that no longer exists. You can disregard and/or delete " +
+            "this notification.";
       }
-      dataCounter++;
-      initializedNotifications.push(notificationData.uid);
-    } else {
-      liElem.innerHTML = notificationDataTitle;
+      notificationPage = "noteErrorUser";
+      initNotificationElement(liElem, notificationPage, notificationData, notificationDataTitle,
+          notificationDetails, undefined, noteKey);
     }
+  } else {
+    if (consoleOutput)
+      console.log("Deprecated Notification Format!");
+    notificationPage = "noteErrorLegacy";
+    initNotificationElement(liElem, notificationPage, notificationData);
   }
 
-  function createNotificationElement(notificationData, notificationKey){
+  if (createBool) {
+    let textNode = document.createTextNode(notificationDataTitle);
+    liElem.appendChild(textNode);
+    dataListContainer.insertBefore(liElem, dataListContainer.childNodes[0]);
+    clearInterval(commonLoadingTimer);
+    clearInterval(offlineTimer);
+
+    if (dataCounter < 1) {
+      initializeNukeBtn();
+    }
+    dataCounter++;
+    initializedNotifications.push(notificationData.uid);
+  } else {
+    liElem.innerHTML = notificationDataTitle;
+  }
+}
+
+function createNotificationElement(notificationData, notificationKey){
+  if (initializedNotifications.indexOf(notificationData.uid) == -1) {
     try {
       testData.remove();
     } catch (err) {}
@@ -374,223 +397,228 @@ window.onload = function instantiate() {
     let liItem = document.createElement("LI");
     liItem.id = "notification" + notificationData.uid;
     fetchNotificationData(true, liItem, notificationData, notificationKey);
+  } else {
+    changeNotificationElement(notificationData, notificationKey);
   }
+}
 
-  function changeNotificationElement(notificationData, notificationKey){
-    try {
-      testData.remove();
-    } catch (err) {}
+function changeNotificationElement(notificationData, notificationKey){
+  try {
+    testData.remove();
+  } catch (err) {}
 
-    let liItemUpdate = document.getElementById('notification' + notificationData.uid);
-    if (liItemUpdate != undefined) {
-      fetchNotificationData(false, liItemUpdate, notificationData, notificationKey);
+  let liItemUpdate = document.getElementById('notification' + notificationData.uid);
+  if (liItemUpdate != undefined) {
+    fetchNotificationData(false, liItemUpdate, notificationData, notificationKey);
+  }
+}
+
+function initNotificationElement(liItem, notificationPage, notificationData, notificationElemTitle,
+                                 notificationDetails, friendUserData, noteKey) {
+  let warningCount;
+  liItem.className = "gift";
+
+  if (noteKey != null) {
+    if (notificationData.read == 1) {
+      liItem.className += " checked";
     }
+  } else {
+    liItem.className += " highSev";
   }
 
-  function initNotificationElement(liItem, notificationPage, notificationData, notificationElemTitle,
-                                   notificationDetails, friendUserData, noteKey) {
-    let warningCount;
-    liItem.className = "gift";
-
+  liItem.onclick = function () {
     if (noteKey != null) {
-      if (notificationData.read == 1) {
-        liItem.className += " checked";
-      }
+      notificationViewTitle.innerHTML = notificationElemTitle;
+      notificationViewDetails.innerHTML = notificationDetails;
     } else {
-      liItem.className += " highSev";
-    }
-
-    liItem.onclick = function () {
-      if (noteKey != null) {
-        notificationViewTitle.innerHTML = notificationElemTitle;
-        notificationViewDetails.innerHTML = notificationDetails;
-      } else {
-        if (notificationPage == "noteErrorUser") {
-          notificationViewTitle.innerHTML = "Notification From A Deleted User";
-          notificationViewDetails.innerHTML = "Unfortunately the user that sent this notification deleted their profile...";
-        } else if (notificationPage == "noteErrorLegacy") {
-          if (!noteErrorBool) {
-            noteErrorBool = true;
-            initializeNukeBtn();
-          }
+      if (notificationPage == "noteErrorUser") {
+        notificationViewTitle.innerHTML = "Notification From A Deleted User";
+        notificationViewDetails.innerHTML = "Unfortunately the user that sent this notification deleted their profile...";
+      } else if (notificationPage == "noteErrorLegacy") {
+        if (!noteErrorBool) {
+          noteErrorBool = true;
+          initializeNukeBtn();
         }
       }
-      if (notificationPage == "privateMessage" && friendUserData != -1) {
-        notificationViewPage.innerHTML = "To reply to this message, click here!";
-        notificationViewPage.onclick = function(){
-          generatePrivateMessageDialog(friendUserData);
-        };
-      } else if (notificationPage == "globalNotification"){
-        notificationViewPage.innerHTML = "Please send a message to a moderator if there are any questions or concerns.";
-        notificationViewPage.onclick = function(){};
-      } else if (notificationPage == "invites.html") {
-        notificationViewPage.innerHTML = "Click here to access your invites!";
-        notificationViewPage.onclick = function () {
-          navigation(11);//Confirmation
-        };
-      } else if (notificationPage == "friendList.html" && friendUserData != -1) {
-        notificationViewPage.innerHTML = "Click here to access their friend list!";
-        notificationViewPage.onclick = function () {
-          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));
-          navigation(9);//FriendList
-        };
-      } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
-        notificationViewPage.innerHTML = "Click here to access their private friend list!";
-        notificationViewPage.onclick = function () {
-          sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));
-          navigation(10);//PrivateFriendList
-        };
-      } else if (notificationPage == "deleteGift") {
-        notificationViewPage.innerHTML = "If this has been done in error, please contact the gift owner.";
-        notificationViewPage.onclick = function () {};
-      } else if (notificationPage == "deleteGiftPrivate") {
-        notificationViewPage.innerHTML = "If this has been done in error, please contact the person who deleted " +
-            "the gift.";
-        notificationViewPage.onclick = function () {};
-      } else {
-        if(consoleOutput)
-          console.log("Notification Page Error, 2");
-        notificationViewPage.innerHTML = "Alternatively, send an email to Gifty support on the Settings > FAQ page!";
-        notificationViewPage.onclick = function () {
-          navigation(12);//FAQ
-        };
-      }
+    }
+    if (notificationPage == "privateMessage" && friendUserData != -1) {
+      notificationViewPage.innerHTML = "To reply to this message, click here!";
+      notificationViewPage.onclick = function(){
+        generatePrivateMessageDialog(friendUserData);
+      };
+    } else if (notificationPage == "globalNotification"){
+      notificationViewPage.innerHTML = "Please send a message to a moderator if there are any questions or concerns.";
+      notificationViewPage.onclick = function(){};
+    } else if (notificationPage == "invites.html") {
+      notificationViewPage.innerHTML = "Click here to access your invites!";
+      notificationViewPage.onclick = function () {
+        navigation(11);//Confirmation
+      };
+    } else if (notificationPage == "friendList.html" && friendUserData != -1) {
+      notificationViewPage.innerHTML = "Click here to access their friend list!";
+      notificationViewPage.onclick = function () {
+        sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));
+        navigation(9);//FriendList
+      };
+    } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
+      notificationViewPage.innerHTML = "Click here to access their private friend list!";
+      notificationViewPage.onclick = function () {
+        sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));
+        navigation(10);//PrivateFriendList
+      };
+    } else if (notificationPage == "deleteGift") {
+      notificationViewPage.innerHTML = "If this has been done in error, please contact the gift owner.";
+      notificationViewPage.onclick = function () {};
+    } else if (notificationPage == "deleteGiftPrivate") {
+      notificationViewPage.innerHTML = "If this has been done in error, please contact the person who deleted " +
+          "the gift.";
+      notificationViewPage.onclick = function () {};
+    } else {
+      if(consoleOutput)
+        console.log("Notification Page Error, 2");
+      notificationViewPage.innerHTML = "Alternatively, send an email to Gifty support on the Settings > FAQ page!";
+      notificationViewPage.onclick = function () {
+        navigation(12);//FAQ
+      };
+    }
 
-      if (notificationPage == "noteErrorLegacy") {
-        notificationViewDelete.onclick = function () {
-          deployNotificationModal(true, "Delete Function Unavailable!",
-              "There is an error within your notification, please contact a moderator to clear your notifications.");
-        };
-      } else {
-        notificationViewDelete.onclick = function () {
-          deleteNotification(notificationData.uid);
-          closeModal(noteViewModal);
-        };
-      }
-
-      openModal(noteViewModal, notificationData.uid);
-
-      closeNoteViewModal.onclick = function () {
+    if (notificationPage == "noteErrorLegacy") {
+      notificationViewDelete.onclick = function () {
+        deployNotificationModal(true, "Delete Function Unavailable!",
+            "There is an error within your notification, please contact a moderator to clear your notifications.");
+      };
+    } else {
+      notificationViewDelete.onclick = function () {
+        deleteNotification(notificationData.uid);
         closeModal(noteViewModal);
       };
+    }
 
-      if (notificationData.read == 0) {
-        firebase.database().ref("users/" + user.uid + "/notifications/" + noteKey).update({
-          read: 1
+    openModal(noteViewModal, notificationData.uid);
+
+    closeNoteViewModal.onclick = function () {
+      closeModal(noteViewModal);
+    };
+
+    if (notificationData.read == 0) {
+      firebase.database().ref("users/" + user.uid + "/notifications/" + noteKey).update({
+        read: 1
+      });
+
+      if (notificationElemTitle == "New Message From An Administrator!") {
+        warningCount = user.warn;
+
+        if (warningCount > 0) {
+          warningCount = warningCount - 1;
+        }
+
+        firebase.database().ref("users/" + user.uid).update({
+          warn: warningCount
         });
 
-        if (notificationElemTitle == "New Message From An Administrator!") {
-          warningCount = user.warn;
-
-          if (warningCount > 0) {
-            warningCount = warningCount - 1;
-          }
-
-          firebase.database().ref("users/" + user.uid).update({
-            warn: warningCount
-          });
-
-          updateMaintenanceLog("notifications", "The user " + user.userName + " has opened their warning");
-        }
+        updateMaintenanceLog("notifications", "The user " + user.userName + " has opened their warning");
       }
-    };
-  }
-
-  function generatePrivateMessageDialog(userData) {
-    let message = "";
-
-    privateMessageInp.placeholder = "Hey! Just to let you know...";
-
-    sendMsg.onclick = function (){
-      message = generatePrivateMessage(user.uid, privateMessageInp.value);
-      addPrivateMessageToDB(userData, message);
-      privateMessageInp.value = "";
-      closeModal(privateMessageModal);
-    };
-    cancelMsg.onclick = function (){
-      privateMessageInp.value = "";
-      closeModal(privateMessageModal);
-    };
-
-    openModal(privateMessageModal, "addGlobalMsgModal");
-
-    privateMessageSpan.onclick = function() {
-      closeModal(privateMessageModal);
-    };
-  }
-
-  function generatePrivateMessage(userUID, message){
-    return userUID + "@#$:" + message;
-  }
-
-  function addPrivateMessageToDB(userData, message) {
-    let userNotificationArr = [];
-    if(userData.notifications == undefined){
-      userNotificationArr = [];
-    } else {
-      userNotificationArr = userData.notifications;
     }
-    userNotificationArr.push(message);
+  };
+}
 
-    if(userData.notifications == undefined) {
-      firebase.database().ref("users/" + userData.uid).update({notifications:{0:message}});
-    } else {
-      firebase.database().ref("users/" + userData.uid).update({
-        notifications: userNotificationArr
-      });
-    }
+function generatePrivateMessageDialog(userData) {
+  let message = "";
+
+  privateMessageInp.placeholder = "Hey! Just to let you know...";
+
+  sendMsg.onclick = function (){
+    message = generatePrivateMessage(user.uid, privateMessageInp.value);
+    addPrivateMessageToDB(userData, message);
+    privateMessageInp.value = "";
+    closeModal(privateMessageModal);
+  };
+  cancelMsg.onclick = function (){
+    privateMessageInp.value = "";
+    closeModal(privateMessageModal);
+  };
+
+  openModal(privateMessageModal, "addGlobalMsgModal");
+
+  privateMessageSpan.onclick = function() {
+    closeModal(privateMessageModal);
+  };
+}
+
+function generatePrivateMessage(userUID, message){
+  return userUID + "@#$:" + message;
+}
+
+function addPrivateMessageToDB(userData, message) {
+  let userNotificationArr = [];
+  if(userData.notifications != undefined) {
+    userNotificationArr = userData.notifications;
   }
 
-  function deleteNotification(uid) {
-    let verifyDeleteBool = true;
-    let toDelete = -1;
+  userNotificationArr.push(message);
 
-    if(consoleOutput)
-      console.log("Deleting " + uid);
+  if(userData.notifications == undefined) {
+    firebase.database().ref("users/" + userData.uid).update({notifications:{0:message}});
+  } else {
+    firebase.database().ref("users/" + userData.uid).update({
+      notifications: userNotificationArr
+    });
+  }
+}
 
-    toDelete = findUIDItemInArr(uid, notificationArr, true);
-    if (toDelete != -1) {
-      notificationArr.splice(toDelete, 1);
-      notificationKeyArr.splice(toDelete, 1);
+function deleteNotification(uid) {
+  let verifyDeleteBool = true;
+  let toDelete = -1;
 
-      for (let i = 0; i < notificationArr.length; i++) {
-        if (notificationArr[i] == notificationArr[uid]) {
-          verifyDeleteBool = false;
-        }
+  if(consoleOutput)
+    console.log("Deleting " + uid);
+
+  toDelete = findUIDItemInArr(uid, notificationArr, true);
+  if (toDelete != -1) {
+    notificationArr.splice(toDelete, 1);
+    notificationKeyArr.splice(toDelete, 1);
+
+    for (let i = 0; i < notificationArr.length; i++) {
+      if (notificationArr[i] == notificationArr[uid]) {
+        verifyDeleteBool = false;
       }
-    } else {
-      verifyDeleteBool = false;
     }
-
-    if(verifyDeleteBool) {
-      let i = initializedNotifications.indexOf(uid);
-      initializedNotifications.splice(i, 1);
-      notificationDeleteLocal = true;
-
-      user.notifications = notificationArr;
-
-      firebase.database().ref("users/" + user.uid).update({
-        notifications: notificationArr
-      });
-
-      removeNotificationElement(uid);
-      notificationDeleteLocal = false;
-    } else {
-      deployNotificationModal(true, "Delete Error!", "Notification Not Deleted, Please Try Again!");
-      updateMaintenanceLog("notifications", "Notification delete failed for user " + user.userName + ". It's UID is " + uid);
-    }
+  } else {
+    verifyDeleteBool = false;
   }
 
-  function removeNotificationElement(uid) {
-    document.getElementById('notification' + uid).remove();
+  if(verifyDeleteBool) {
+    let i = initializedNotifications.indexOf(uid);
+    initializedNotifications.splice(i, 1);
+    notificationDeleteLocal = true;
+    removeNotificationElement(uid);
 
-    dataCounter--;
-    if (dataCounter == 0){
-      deployListEmptyNotification("No Notifications Found!");
-      initializeNukeBtn();
-    }
+    user.notifications = notificationArr;
+
+    firebase.database().ref("users/" + user.uid).update({
+      notifications: notificationArr
+    });
+
+    successfulDBOperationTitle = "Notification Deleted";
+    successfulDBOperationNotice = "Notification Successfully Deleted!";
+    showSuccessfulDBOperation = true;
+    listenForDBChanges("NoteDelete", uid);
+    notificationDeleteLocal = false;
+  } else {
+    deployNotificationModal(true, "Delete Error!", "Notification Not Deleted, Please Try Again!");
+    updateMaintenanceLog("notifications", "Notification delete failed for user " + user.userName + ". It's UID is " + uid);
   }
-};
+}
+
+function removeNotificationElement(uid) {
+  document.getElementById('notification' + uid).remove();
+
+  dataCounter--;
+  if (dataCounter == 0){
+    deployListEmptyNotification("No Notifications Found!");
+    initializeNukeBtn();
+  }
+}
 
 function initializeNukeBtn() {
   if (notificationArr.length > 0) {
@@ -600,6 +628,7 @@ function initializeNukeBtn() {
         firebase.database().ref("users/" + user.uid + "/notifications/").remove();
 
         notificationArr = [];
+        initializedNotifications = [];
         navigation(2);//Home
       };
     } else {
