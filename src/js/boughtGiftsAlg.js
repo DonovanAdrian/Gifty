@@ -147,9 +147,11 @@ window.onload = function instantiate() {
             } else {
               checkGiftLists(data.val(), previousUserData);
             }
+            saveCriticalCookies();
           }
         } else {
           userArr.push(data.val());
+          saveCriticalCookies();
         }
       });
 
@@ -174,6 +176,7 @@ window.onload = function instantiate() {
             } else {
               checkGiftLists(data.val(), previousUserData);
             }
+            saveCriticalCookies();
           }
         }
       });
@@ -184,6 +187,7 @@ window.onload = function instantiate() {
           if(consoleOutput)
             console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
+          saveCriticalCookies();
         }
       });
     };
