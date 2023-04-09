@@ -276,7 +276,7 @@ window.onload = function instantiate() {
     } else if (ticketData.details.includes("Attempting to delete user")) {
       liItem.className += " highSev";
       ticketTitleSuffix = " - Attempt To Delete User";
-    } else if (ticketData.details.includes("A user experienced degraded performance")) {
+    } else if (ticketData.details.includes("experienced degraded performance")) {
       liItem.className += " highSev";
       ticketTitleSuffix = " - Degraded Performance Experienced";
     } else if (ticketData.details.includes("attempted to remove friend")) {
