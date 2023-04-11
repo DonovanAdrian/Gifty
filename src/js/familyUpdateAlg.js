@@ -381,6 +381,7 @@ window.onload = function instantiate() {
             if (data.key == user.uid) {
               user = data.val();
             }
+            saveCriticalCookies();
           }
           if (familyData.members != null) {
             for (let b = 0; b < familyData.members.length; b++) {
@@ -395,6 +396,7 @@ window.onload = function instantiate() {
           if (data.key == user.uid) {
             user = data.val();
           }
+          saveCriticalCookies();
         }
       });
 
@@ -423,6 +425,7 @@ window.onload = function instantiate() {
               if(consoleOutput)
                 console.log("Current User Updated");
             }
+            saveCriticalCookies();
           }
         }
       });
@@ -441,6 +444,7 @@ window.onload = function instantiate() {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           userArr.splice(i, 1);
+          saveCriticalCookies();
         }
       });
     };
