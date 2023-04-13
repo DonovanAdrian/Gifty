@@ -142,7 +142,7 @@ window.onload = function instantiate() {
     swapList.innerHTML = "View " + publicSwapFirstName + "'s <br/>Private List";
     swapList.onclick = function () {
       sessionStorage.setItem("validGiftUser", JSON.stringify(giftUser));
-      navigation(10);
+      navigation(10);//PrivateFriendList
     };
   }
 
@@ -176,6 +176,7 @@ window.onload = function instantiate() {
             } else if (data.key == giftUser.uid) {
               giftUser = data.val();
             }
+            saveCriticalCookies();
           }
         } else {
           userArr.push(data.val());
@@ -187,6 +188,7 @@ window.onload = function instantiate() {
           } else if (data.key == giftUser.uid) {
             giftUser = data.val();
           }
+          saveCriticalCookies();
         }
       });
 
@@ -215,6 +217,7 @@ window.onload = function instantiate() {
               if(consoleOutput)
                 console.log("Current User Updated");
             }
+            saveCriticalCookies();
           }
         }
       });
@@ -225,6 +228,7 @@ window.onload = function instantiate() {
           if(consoleOutput)
             console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
+          saveCriticalCookies();
         }
       });
     };
