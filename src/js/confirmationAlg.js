@@ -118,7 +118,7 @@ window.onload = function instantiate() {
   function initializeBackBtn() {
     backBtn.innerHTML = "Return To Invites";
     backBtn.onclick = function() {
-      navigation(4);
+      navigation(4);//Invites
     };
   }
 
