@@ -335,7 +335,7 @@ function getCurrentUserCommon(){
         pageName = pageName.toLowerCase();
         updateMaintenanceLog(pageName, "The user \"" + user.userName + "\" " +
             "attempted to access a restricted page.");
-        navigation(2);
+        navigation(2);//Home
       }
 
       if (notificationPages.includes(pageName)) {
@@ -365,7 +365,7 @@ function getCurrentUserCommon(){
     } catch (err) {}
     if(consoleOutput)
       console.log(err.toString());
-    navigation(1, false);
+    navigation(1, false);//Index
   }
 }
 
@@ -495,7 +495,7 @@ function updateFriendNav(friendListData, initIgnore) {
   if (friendListData != undefined) {
     if (giftUserPages.includes(pageName) && !initIgnore) {
       if (friendListData.indexOf(giftUser.uid) == -1) {
-        navigation(3);
+        navigation(3);//Lists
       }
     }
 
@@ -648,7 +648,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
     if (navigationBool) {
       if (consoleOutput)
         console.log("Notification Navigating....");
-      navigation(customNavigation, customNavParam);
+      navigation(customNavigation, customNavParam);//Custom
     }
     notificationDeployed = false;
     closeModal(notificationModal);
@@ -664,7 +664,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
       if (navigationBool) {
         if (consoleOutput)
           console.log("Notification Navigating...");
-        navigation(customNavigation, customNavParam);
+        navigation(customNavigation, customNavParam);//Custom
       }
       notificationDeployed = false;
       closeModal(notificationModal);
@@ -680,7 +680,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
       if (navigationBool) {
         if (consoleOutput)
           console.log("Notification Navigating.....");
-        navigation(customNavigation, customNavParam);
+        navigation(customNavigation, customNavParam);//Custom
       }
       notificationDeployed = false;
       closeModal(notificationModal);
@@ -706,7 +706,7 @@ function signOut(){
     config = JSON.parse(sessionStorage.config);
     sessionStorage.clear();
     sessionStorage.setItem("config", JSON.stringify(config));
-    navigation(1, false);
+    navigation(1, false);//Index
   } else {
     deployNotificationModal(false, "Pending Operation In Progress",
         "Please do not navigate until your changes are saved!", 4);
@@ -1036,7 +1036,7 @@ function deployConfirmationModal(unsavedChangesTitle, unsavedChangesContent) {
         unsavedGiftStorage = ["", "", "", "", ""];
         sessionStorage.setItem("unsavedChanges", JSON.stringify(unsavedChanges));
         sessionStorage.setItem("unsavedGiftStorage", JSON.stringify(unsavedGiftStorage));
-        navigation(unsavedChangesNav, unsavedChangesOverride);
+        navigation(unsavedChangesNav, unsavedChangesOverride);//Custom
       }
     }
     closeModal(confirmModal);
