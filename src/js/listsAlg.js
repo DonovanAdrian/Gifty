@@ -357,7 +357,7 @@ function initFriendElement(liItem, friendData) {
       setPublicButton = true;
       publicList.onclick = function () {
         sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
-        navigation(9);
+        navigation(9);//FriendList
       };
     } else {
       publicList.onclick = function () {};
@@ -375,7 +375,7 @@ function initFriendElement(liItem, friendData) {
 
     privateList.onclick = function() {
       sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
-      navigation(10);
+      navigation(10);//PrivateFriendList
     };
 
     sendPrivateMessage.onclick = function() {
