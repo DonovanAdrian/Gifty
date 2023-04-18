@@ -438,7 +438,7 @@ function login() {
     setInterval(function(){
       timer = timer + 1000;
       if(timer >= 2000){
-        navigation(2, true);
+        navigation(2, true);//Home
       }
     }, 1000);
   } else if (loginBool === false && !banOverride) {
@@ -587,7 +587,7 @@ function signUp(override){
   if((allowLogin || loginDisabledMsg.includes(newGiftyMessage)) || override) {
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
     sessionStorage.setItem("userCreationOverride", JSON.stringify(override));
-    navigation(13, false);
+    navigation(13, false);//UserAddUpdate
   } else {
     deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
         "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
