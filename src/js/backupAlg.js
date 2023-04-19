@@ -166,7 +166,7 @@ window.onload = function instantiate() {
   function initializeBackBtn() {
     backBtn.innerHTML = "Return To Settings";
     backBtn.onclick = function() {
-      navigation(5);
+      navigation(5);//Settings
     };
   }
 
