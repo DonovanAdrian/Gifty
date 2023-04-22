@@ -207,7 +207,7 @@ window.onload = function instantiate() {
     backBtn.innerHTML = buttonText;
 
     backBtn.onclick = function() {
-      navigation(giftNavigationInt);
+      navigation(giftNavigationInt);//PrivateFriendList/Home
     };
   }
 
