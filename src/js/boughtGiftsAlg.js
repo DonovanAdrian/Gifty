@@ -491,13 +491,13 @@ window.onload = function instantiate() {
           viewListBtn.innerHTML = "View " + giftOwnerData.name + "'s Private List";
           viewListBtn.onclick = function(){
             sessionStorage.setItem("validGiftUser", JSON.stringify(giftOwnerData));
-            navigation(10);
+            navigation(10);//PrivateFriendList
           };
         } else {
           viewListBtn.innerHTML = "View " + giftOwnerData.name + "'s Public List";
           viewListBtn.onclick = function(){
             sessionStorage.setItem("validGiftUser", JSON.stringify(giftOwnerData));
-            navigation(9);
+            navigation(9);//FriendList
           };
         }
       } else {
