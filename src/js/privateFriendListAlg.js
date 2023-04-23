@@ -163,7 +163,7 @@ window.onload = function instantiate() {
     swapList.innerHTML = "View " + privateSwapFirstName + "'s <br/>Public List";
     swapList.onclick = function () {
       sessionStorage.setItem("validGiftUser", JSON.stringify(giftUser));
-      navigation(9);
+      navigation(9);//FriendList
     };
   }
 
@@ -686,7 +686,7 @@ function removeGiftElement(uid) {
 function updateGiftElement(uid) {
   giftStorage = uid;
   privateUserOverride = true;
-  navigation(8);
+  navigation(8);//GiftAddUpdate
 }
 
 function confirmDeletion(key, title, uid, buyer, receivedBy) {
@@ -870,7 +870,7 @@ function checkGiftLimit() {
     addGift.onclick = function () {
       if (!dbOperationInProgress)
         privateUserOverride = true;
-      navigation(8);
+      navigation(8);//GiftAddUpdate
     };
   }
 }
