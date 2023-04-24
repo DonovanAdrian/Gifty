@@ -69,7 +69,7 @@ window.onload = function instantiate() {
     backBtn.style.transform = "translate(-50%)";
     backBtn.innerHTML = "Loading...";
     backBtn.onclick = function() {
-      navigation(5, true);
+      navigation(5, true);//Settings
     };
   }
 
