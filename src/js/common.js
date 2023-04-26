@@ -333,6 +333,8 @@ function getCurrentUserCommon(){
         console.log("User: " + user.userName + " loaded in");
       } else if (restrictedPages.includes(pageName)) {
         pageName = pageName.toLowerCase();
+        const config = JSON.parse(sessionStorage.config);
+        initializeDB(config);
         updateMaintenanceLog(pageName, "The user \"" + user.userName + "\" " +
             "attempted to access a restricted page.");
         navigation(2);//Home
@@ -358,6 +360,7 @@ function getCurrentUserCommon(){
 
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
+    console.log("Error Reading Data... Sending Error Report To DB.");
     try {
       const config = JSON.parse(sessionStorage.config);
       initializeDB(config);
@@ -1484,6 +1487,7 @@ function updateMaintenanceLog(locationData, detailsData) {
   let dd = today.getUTCDate() + "";
   let mm = today.getMonth() + 1 + "";
   let yy = today.getFullYear() + "";
+
 
   if (UTChh.length == 1)
     UTChh = "0" + UTChh
