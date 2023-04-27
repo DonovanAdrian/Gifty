@@ -116,6 +116,20 @@ let limitsInitial;
 
 
 
+function checkUserCookie() {
+  try {
+    if (userArr.length == 0)
+      userArr = JSON.parse(sessionStorage.userArr);
+    for (let i = 0; i < userArr.length; i++) {
+      createUserElement(userArr[i]);
+    }
+
+    localListedUserData = JSON.parse(sessionStorage.localListedUserData);
+    initializeShowUserData(localListedUserData);
+    updateInitializedUsers();
+  } catch (err) {}
+}
+
 window.onload = function instantiate() {
   pageName = "Moderation";
   dataListContainer = document.getElementById('dataListContainer');
@@ -209,6 +223,7 @@ window.onload = function instantiate() {
   sessionStorage.setItem("moderationSet", moderationSet);
   getCurrentUserCommon();
   commonInitialization();
+  checkUserCookie();
   verifyElementIntegrity(moderationElements);
 
   userInitial = firebase.database().ref("users/");
@@ -336,219 +351,6 @@ window.onload = function instantiate() {
     message = generateNotificationString(">admin" + user.uid, "", message, "");
     addNotificationToDB(userData, message);
     userUpdateLocal = false;
-  }
-
-  function initializeShowUserData(showDataSelection) {
-    let listOfShowUserElements = [showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends,
-      showSantaSignUp, showModerator];
-    let showHideUserDataBool = false;
-
-    userListDropDown.innerHTML = "Select Listed User Data (" + showDataSelection + ")";;
-    userListDropDown.onclick = function() {
-      for (let i = 0; i < listOfShowUserElements.length; i++) {
-        if (showHideUserDataBool) {
-          listOfShowUserElements[i].style.display = "none";
-        } else {
-          listOfShowUserElements[i].style.display = "block";
-        }
-      }
-
-      if (showHideUserDataBool) {
-        showHideUserDataBool = false;
-      } else {
-        showHideUserDataBool = true;
-      }
-
-      showNone.onclick = function(){
-        updateDBWithShowUserData("None");
-      };
-      showUID.onclick = function(){
-        updateDBWithShowUserData("UID");
-      };
-      showName.onclick = function(){
-        updateDBWithShowUserData("Username");
-      };
-      showLastLogin.onclick = function(){
-        updateDBWithShowUserData("Login");
-      };
-      showUserScore.onclick = function(){
-        updateDBWithShowUserData("Score");
-      };
-      showShareCode.onclick = function(){
-        updateDBWithShowUserData("Share");
-      };
-      showFriends.onclick = function(){
-        updateDBWithShowUserData("Friends");
-      };
-      showSantaSignUp.onclick = function(){
-        updateDBWithShowUserData("Santa");
-      };
-      showModerator.onclick = function(){
-        updateDBWithShowUserData("Moderator");
-      };
-    };
-
-    function updateDBWithShowUserData(showUserDataItem) {
-      firebase.database().ref("moderatorSettings/").update({
-        listedUserData: showUserDataItem
-      });
-    }
-  }
-
-  function updateInitializedUsers(){
-    let tempElem;
-
-    for (let i = 0; i < initializedUsers.length; i++) {
-      tempElem = document.getElementById("user" + initializedUsers[i]);
-      tempElem.className = "gift";
-      tempElem.innerHTML = fetchUserData(initializedUsers[i]);
-    }
-
-    function fetchUserData(uid) {
-      let userIndex = findUIDItemInArr(uid, userArr, true);
-      let userData = userArr[userIndex];
-      let userDataName = userData.name;
-      let userDataString;
-
-      if (userData.ban == 1) {
-        tempElem.className = "gift highSev";
-        userDataString = userDataName + " - BANNED";
-      } else if (userData.warn >= 1) {
-        tempElem.className = "gift mediumSev";
-        userDataString = userDataName + " - WARNED: " + userData.warn;
-      } else {
-        if (userData.ban == 0) {
-          userDataString = userDataName;
-        }
-        switch (localListedUserData) {
-          case "None":
-            userDataString = userDataName;
-            break;
-          case "UID":
-            userDataString = userDataName + ": " + userData.uid;
-            break;
-          case "Username":
-            userDataString = userDataName + " - " + userData.userName;
-            break;
-          case "Login":
-            userDataString = userDataName;
-            if (userData.lastLogin == undefined) {
-              userData.lastLogin = "Never Logged In";
-            }
-
-            if (userData.lastLogin != "Never Logged In") {
-              let today = new Date();
-              let lastLoginDate = new Date(userData.lastLogin);
-              let lastLoginDateTrimmed = getMonthName(lastLoginDate.getMonth()) + " " + lastLoginDate.getDate() + ", " + lastLoginDate.getFullYear();
-              let lastLoginDiff = Math.floor((today - lastLoginDate) / (1000 * 3600 * 24));
-              userDataString = userDataName + " - " + lastLoginDateTrimmed;
-              if (lastLoginDiff < 15) {
-                tempElem.className += " lowSev";
-              } else if (lastLoginDiff < 31) {
-                tempElem.className += " mediumSev";
-              } else if (lastLoginDiff < 61) {
-                tempElem.className += " highSev";
-              }
-            }
-            break;
-          case "Score":
-            if (userData.userScore == undefined) {
-              userData.userScore = 0;
-            }
-
-            userDataString = userDataName + " - " + userData.userScore;
-            if (userData.userScore > 500) {
-              tempElem.className += " lowSev";
-            } else if (userData.userScore > 250) {
-              tempElem.className += " mediumSev";
-            } else if (userData.userScore > 50) {
-              tempElem.className += " highSev";
-            }
-            break;
-          case "Share":
-            if (userData.shareCode == undefined) {
-              userData.shareCode = "No Share Code Available!";
-            }
-            userDataString = userDataName + " - " + userData.shareCode;
-            break;
-          case "Friends":
-            userDataString = userDataName;
-            if (userData.friends == undefined)
-              userData.friends = [];
-
-            if (userData.friends.length > 1) {
-              userDataString = userDataName + " - " + userData.friends.length + " Friends";
-            } else if (userData.friends.length == 1) {
-              userDataString = userDataName + " - 1 Friend";
-            }
-            break;
-          case "Santa":
-            userDataString = userDataName;
-            if (userData.secretSantaName == undefined) {
-              userData.secretSantaName = "";
-            }
-            if (userData.secretSanta == undefined) {
-              userData.secretSanta = 0;
-            }
-
-            if (userData.secretSanta == 1 && currentState != 3) {
-              tempElem.className += " santa";
-              userDataString = userDataName + " - Signed Up!";
-            } else if (userData.secretSantaName != "") {
-              tempElem.className += " santa";
-              userDataString = userDataName + " - Name Assigned!";
-            } else if (userData.secretSanta == 1 && userData.secretSantaName == "") {
-              tempElem.className += " highSev";
-              userDataString = userDataName + " - NOT Assigned";
-            }
-            break;
-          case "Moderator":
-            userDataString = userDataName;
-            if (userData.moderatorInt == 1) {
-              userDataString = userDataName + " - Moderator";
-              tempElem.className += " highSev";
-            }
-            break;
-          default:
-            console.log("Unknown User Data Input!");
-            break;
-        }
-      }
-
-      return userDataString;
-    }
-  }
-
-  function getMonthName(month) {
-    switch(month) {
-      case 0:
-        return "January";
-      case 1:
-        return "February";
-      case 2:
-        return "March";
-      case 3:
-        return "April";
-      case 4:
-        return "May";
-      case 5:
-        return "June";
-      case 6:
-        return "July";
-      case 7:
-        return "August";
-      case 8:
-        return "September";
-      case 9:
-        return "October";
-      case 10:
-        return "November";
-      case 11:
-        return "December";
-      default:
-        console.log("Invalid Month!");
-        break;
-    }
   }
 
   function initializeNukeNotification() {
@@ -881,6 +683,7 @@ window.onload = function instantiate() {
               localListedUserData = data.val();
               initializeShowUserData(data.val());
               updateInitializedUsers();
+              saveListedUserDataToCookie();
             }
           });
 
@@ -891,6 +694,7 @@ window.onload = function instantiate() {
               localListedUserData = data.val();
               initializeShowUserData(data.val());
               updateInitializedUsers();
+              saveListedUserDataToCookie();
             }
           });
 
@@ -955,8 +759,6 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
-        createUserElement(data.val());
-
         if(globalNoteInt == 0) {
           globalNoteInt = 1;
           initializeGlobalNotification();
@@ -969,19 +771,24 @@ window.onload = function instantiate() {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
             userArr[i] = data.val();
+            changeUserElement(data.val());
+            updateInitializedUsers();
 
             if (data.key == user.uid) {
               user = data.val();
               updateFriendNav(user.friends);
             }
+            saveCriticalCookies();
           }
         } else {
+          createUserElement(data.val());
           userArr.push(data.val());
 
           if (data.key == user.uid) {
             user = data.val();
             updateFriendNav(user.friends);
           }
+          saveCriticalCookies();
         }
       });
 
@@ -1007,6 +814,7 @@ window.onload = function instantiate() {
               if(consoleOutput)
                 console.log("Current User Updated");
             }
+            saveCriticalCookies();
           }
         }
       });
@@ -1022,6 +830,7 @@ window.onload = function instantiate() {
             deployNotificationModal(false, "User Removed!", "The user you were " +
                 "viewing was deleted!", 5);
           }
+          saveCriticalCookies();
         }
       });
     };
@@ -1136,224 +945,218 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(loginInitial);
     listeningFirebaseRefs.push(limitsInitial);
   }
+};
 
-  function createUserElement(userData){
-    let textNode;
-    try{
-      document.getElementById('testData').remove();
-    } catch (err) {}
+function createUserElement(userData){
+  let textNode;
+  try{
+    document.getElementById('testData').remove();
+  } catch (err) {}
 
-    let liItem = document.createElement("LI");
-    liItem.id = "user" + userData.uid;
-    initUserElement(liItem, userData);
+  let liItem = document.createElement("LI");
+  liItem.id = "user" + userData.uid;
+  initUserElement(liItem, userData);
 
-    textNode = document.createTextNode(userData.name);
-    liItem.appendChild(textNode);
+  textNode = document.createTextNode(userData.name);
+  liItem.appendChild(textNode);
 
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-    clearInterval(offlineTimer);
+  dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+  clearInterval(offlineTimer);
 
-    dataCounter++;
-    initializedUsers.push(userData.uid);
-    if (dataCounter > buttonOpacLim) {
-      userOptionsBtn.style.opacity = ".75";
+  dataCounter++;
+  initializedUsers.push(userData.uid);
+  if (dataCounter > buttonOpacLim) {
+    userOptionsBtn.style.opacity = ".75";
+  }
+}
+
+function changeUserElement(userData) {
+  let editUser = document.getElementById('user' + userData.uid);
+  initUserElement(editUser, userData);
+}
+
+function initUserElement(liItem, userData) {
+  let showPassBool = false;
+  liItem.className = "gift";
+
+  liItem.onclick = function (){
+    userName.innerHTML = userData.name;
+    userUID.innerHTML = "UID: " + userData.uid;
+    userUserName.innerHTML = "Username: " + userData.userName;
+    if(userData.giftList != undefined){
+      userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
+    } else {
+      userGifts.innerHTML = "This User Has No Gifts";
     }
-  }
+    if(userData.privateList != undefined){
+      if(userData.uid == user.uid) {
+        userPrivateGifts.innerHTML = "# Private Gifts: ???";
+      } else {
+        userPrivateGifts.innerHTML = "# Private Gifts: " + userData.privateList.length;
+      }
+    } else {
+      userPrivateGifts.innerHTML = "This User Has No Private Gifts";
+    }
+    if(userData.friends != undefined) {
+      userFriends.innerHTML = "# Friends: " + userData.friends.length;
+    } else {
+      userFriends.innerHTML = "This User Has No Friends";
+    }
+    if(userData.lastLogin != undefined) {
+      userLastLogin.innerHTML = "Last Login: " + userData.lastLogin;
+    } else {
+      userLastLogin.innerHTML = "This User Has Never Logged In";
+    }
+    if(userData.userScore != undefined) {
+      userScore.innerHTML = "User Score: " + userData.userScore;
+    } else {
+      userScore.innerHTML = "User Score: 0";
+    }
+    userPassword.innerHTML = "Click On Me To View Password";
 
-  function changeUserElement(userData) {
-    let editUser = document.getElementById('user' + userData.uid);
-    initUserElement(editUser, userData);
-  }
-
-  function initUserElement(liItem, userData) {
-    let showPassBool = false;
-    liItem.className = "gift";
-
-    liItem.onclick = function (){
-      userName.innerHTML = userData.name;
-      userUID.innerHTML = "UID: " + userData.uid;
-      userUserName.innerHTML = "Username: " + userData.userName;
-      if(userData.giftList != undefined){
-        userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
-      } else {
-        userGifts.innerHTML = "This User Has No Gifts";
-      }
-      if(userData.privateList != undefined){
-        if(userData.uid == user.uid) {
-          userPrivateGifts.innerHTML = "# Private Gifts: ???";
-        } else {
-          userPrivateGifts.innerHTML = "# Private Gifts: " + userData.privateList.length;
-        }
-      } else {
-        userPrivateGifts.innerHTML = "This User Has No Private Gifts";
-      }
-      if(userData.friends != undefined) {
-        userFriends.innerHTML = "# Friends: " + userData.friends.length;
-      } else {
-        userFriends.innerHTML = "This User Has No Friends";
-      }
-      if(userData.lastLogin != undefined) {
-        userLastLogin.innerHTML = "Last Login: " + userData.lastLogin;
-      } else {
-        userLastLogin.innerHTML = "This User Has Never Logged In";
-      }
-      if(userData.userScore != undefined) {
-        userScore.innerHTML = "User Score: " + userData.userScore;
-      } else {
-        userScore.innerHTML = "User Score: 0";
-      }
-      userPassword.innerHTML = "Click On Me To View Password";
-
-      if (currentState == 2) {
-        if(userData.secretSanta != undefined) {
-          if (userData.secretSanta == 0) {
-            userSecretSanta.innerHTML = "Click To Opt Into Secret Santa";
-            userSecretSanta.style.color = "#f00";
-          } else {
-            userSecretSanta.innerHTML = "Click To Opt Out Of Secret Santa";
-            userSecretSanta.style.color = "#00d118";
-          }
-        } else {
+    if (currentState == 2) {
+      if(userData.secretSanta != undefined) {
+        if (userData.secretSanta == 0) {
           userSecretSanta.innerHTML = "Click To Opt Into Secret Santa";
           userSecretSanta.style.color = "#f00";
-        }
-        userSecretSanta.onclick = function() {
-          manuallyOptInOut(userData);
-        };
-      } else if (currentState == 3 && userData.secretSanta == 1) {
-        if (userData.secretSantaName == "") {
-          userSecretSanta.innerHTML = "This User Was Not Assigned A Name!";
-          userSecretSanta.style.color = "#000";
-          userSecretSanta.onclick = function(){};
         } else {
-          userSecretSanta.innerHTML = "Click Here To View Secret Santa Assignment";
+          userSecretSanta.innerHTML = "Click To Opt Out Of Secret Santa";
           userSecretSanta.style.color = "#00d118";
-          userSecretSanta.onclick = function(){
-            let userSecretIndex = findUIDItemInArr(userData.secretSantaName, userArr, true);
-            userSecretSanta.innerHTML = userArr[userSecretIndex].name;
-            userSecretSanta.onclick = function(){};
-          };
         }
-      } else if (currentState == 3 && userData.secretSanta == 0) {
-        userSecretSanta.innerHTML = "This User Did Not Sign Up For Secret Santa";
+      } else {
+        userSecretSanta.innerHTML = "Click To Opt Into Secret Santa";
+        userSecretSanta.style.color = "#f00";
+      }
+      userSecretSanta.onclick = function() {
+        manuallyOptInOut(userData);
+      };
+    } else if (currentState == 3 && userData.secretSanta == 1) {
+      if (userData.secretSantaName == "") {
+        userSecretSanta.innerHTML = "This User Was Not Assigned A Name!";
         userSecretSanta.style.color = "#000";
         userSecretSanta.onclick = function(){};
       } else {
-        userSecretSanta.innerHTML = "Secret Santa Is Not Active!";
-        userSecretSanta.style.color = "#000";
-        userSecretSanta.onclick = function() {};
-      }
-
-      userGifts.onclick = function() {
-        if(userData.uid == user.uid){
-          deployNotificationModal(true, "User Info",
-              "Navigate to the home page to see your gifts!");
-        } else {
-          sessionStorage.setItem("validGiftUser", JSON.stringify(userData));
-          navigation(9);//FriendList
-        }
-      };
-      userPrivateGifts.onclick = function() {
-        if(userData.uid == user.uid){
-          deployNotificationModal(true, "User Info",
-              "You aren't allowed to see your private gifts!");
-        } else {
-          sessionStorage.setItem("validGiftUser", JSON.stringify(userData));
-          navigation(10);//PrivateFriendList
-        }
-      };
-      userPassword.onclick = function() {
-        if (!showPassBool) {
-          confirmOperation("Show Password?", "Are you sure you wish to view " +
-              userData.name + "'s password?", "showPass", userData, userModal, userData.uid);
-          showPassBool = true;
-        } else {
-          userPassword.innerHTML = "Click On Me To View Password";
-          showPassBool = false;
-        }
-      };
-      warnUser.onclick = function(){
-        generatePrivateMessageDialog(userData, true);
-      };
-      banUser.onclick = function(){
-        userUpdateLocal = true;
-        if (userData.ban == 1) {
-          firebase.database().ref("users/" + userData.uid).update({
-            ban: 0
-          });
-          deployNotificationModal(false, "Unbanned User!",
-              userData.name + " has been unbanned!");
-        } else {
-          confirmOperation("Ban " + userData.name + "?", "While this CAN be undone, this " +
-              "should only be used for serious offenses. Consider using warnings first, if not already done... Are you " +
-              "sure you wish to ban " + userData.name + "?", "banUser", userData, userModal, userData.uid);
-        }
-        userUpdateLocal = false;
-      };
-      if (userData.uid == "-L__dcUyFssV44G9stxY" && user.uid != "-L__dcUyFssV44G9stxY") {
-        moderatorOp.innerHTML = "Don't Even Think About It";
-        moderatorOp.onclick = function() {};
-      } else if (userData.moderatorInt == 1) {
-        moderatorOp.innerHTML = "Click To Revoke Moderator Role";
-        moderatorOp.style.color = "#00d118";
-        moderatorOp.onclick = function() {
-          if(userData.uid == user.uid){
-            deployNotificationModal(true, "User Info",
-                "You cannot adjust your own role");
-          } else {
-            confirmOperation("Revoke " + userData.name + "'s Moderator Role?",
-                "Are you sure you'd like to revoke " +
-                userData.name + " from being a moderator?", "modRevoke", userData, userModal, userData.uid);
-          }
+        userSecretSanta.innerHTML = "Click Here To View Secret Santa Assignment";
+        userSecretSanta.style.color = "#00d118";
+        userSecretSanta.onclick = function(){
+          let userSecretIndex = findUIDItemInArr(userData.secretSantaName, userArr, true);
+          userSecretSanta.innerHTML = userArr[userSecretIndex].name;
+          userSecretSanta.onclick = function(){};
         };
+      }
+    } else if (currentState == 3 && userData.secretSanta == 0) {
+      userSecretSanta.innerHTML = "This User Did Not Sign Up For Secret Santa";
+      userSecretSanta.style.color = "#000";
+      userSecretSanta.onclick = function(){};
+    } else {
+      userSecretSanta.innerHTML = "Secret Santa Is Not Active!";
+      userSecretSanta.style.color = "#000";
+      userSecretSanta.onclick = function() {};
+    }
+
+    userGifts.onclick = function() {
+      if(userData.uid == user.uid){
+        deployNotificationModal(true, "User Info",
+            "Navigate to the home page to see your gifts!");
       } else {
-        moderatorOp.innerHTML = "Click To Grant Moderator Role";
-        moderatorOp.style.color = "#f00";
-        moderatorOp.onclick = function() {
-          if(userData.userName == user.userName){
-            deployNotificationModal(true, "User Info",
-                "You cannot adjust your own role");
-          } else {
-            confirmOperation("Grant " + userData.name + " Moderator Role?",
-                "A moderator is powerful on Gifty, are you sure you'd like to grant " +
-                userData.name + " a moderator role?", "modGrant", userData, userModal, userData.uid);
-          }
-        };
+        sessionStorage.setItem("validGiftUser", JSON.stringify(userData));
+        navigation(9);//FriendList
       }
-
+    };
+    userPrivateGifts.onclick = function() {
+      if(userData.uid == user.uid){
+        deployNotificationModal(true, "User Info",
+            "You aren't allowed to see your private gifts!");
+      } else {
+        sessionStorage.setItem("validGiftUser", JSON.stringify(userData));
+        navigation(10);//PrivateFriendList
+      }
+    };
+    userPassword.onclick = function() {
+      if (!showPassBool) {
+        confirmOperation("Show Password?", "Are you sure you wish to view " +
+            userData.name + "'s password?", "showPass", userData, userModal, userData.uid);
+        showPassBool = true;
+      } else {
+        userPassword.innerHTML = "Click On Me To View Password";
+        showPassBool = false;
+      }
+    };
+    warnUser.onclick = function(){
+      generatePrivateMessageDialog(userData, true);
+    };
+    banUser.onclick = function(){
+      userUpdateLocal = true;
       if (userData.ban == 1) {
-        banUser.innerHTML = "Unban";
-      } else if (userData.ban == 0) {
-        banUser.innerHTML = "Ban";
+        firebase.database().ref("users/" + userData.uid).update({
+          ban: 0
+        });
+        deployNotificationModal(false, "Unbanned User!",
+            userData.name + " has been unbanned!");
+      } else {
+        confirmOperation("Ban " + userData.name + "?", "While this CAN be undone, this " +
+            "should only be used for serious offenses. Consider using warnings first, if not already done... Are you " +
+            "sure you wish to ban " + userData.name + "?", "banUser", userData, userModal, userData.uid);
       }
-
-      sendPrivateMessage.innerHTML = "Click To Send Message To " + userData.name;
-      sendPrivateMessage.onclick = function() {
-        generatePrivateMessageDialog(userData, false);
+      userUpdateLocal = false;
+    };
+    if (userData.uid == "-L__dcUyFssV44G9stxY" && user.uid != "-L__dcUyFssV44G9stxY") {
+      moderatorOp.innerHTML = "Don't Even Think About It";
+      moderatorOp.onclick = function() {};
+    } else if (userData.moderatorInt == 1) {
+      moderatorOp.innerHTML = "Click To Revoke Moderator Role";
+      moderatorOp.style.color = "#00d118";
+      moderatorOp.onclick = function() {
+        if(userData.uid == user.uid){
+          deployNotificationModal(true, "User Info",
+              "You cannot adjust your own role");
+        } else {
+          confirmOperation("Revoke " + userData.name + "'s Moderator Role?",
+              "Are you sure you'd like to revoke " +
+              userData.name + " from being a moderator?", "modRevoke", userData, userModal, userData.uid);
+        }
       };
-
-      openModal(userModal, userData.uid);
-
-      closeUserModal.onclick = function() {
-        closeModal(userModal);
+    } else {
+      moderatorOp.innerHTML = "Click To Grant Moderator Role";
+      moderatorOp.style.color = "#f00";
+      moderatorOp.onclick = function() {
+        if(userData.userName == user.userName){
+          deployNotificationModal(true, "User Info",
+              "You cannot adjust your own role");
+        } else {
+          confirmOperation("Grant " + userData.name + " Moderator Role?",
+              "A moderator is powerful on Gifty, are you sure you'd like to grant " +
+              userData.name + " a moderator role?", "modGrant", userData, userModal, userData.uid);
+        }
       };
+    }
 
-      function manuallyOptInOut(userData){
-        userUpdateLocal = true;
-        if (userData.secretSanta != null) {
-          if (userData.secretSanta == 0) {
-            firebase.database().ref("users/" + userData.uid).update({
-              secretSanta: 1
-            });
-            deployNotificationModal(false, "Secret Santa Opted In!",
-                userData.name + " has been manually opted in to the Secret Santa Program!");
-          } else {
-            firebase.database().ref("users/" + userData.uid).update({
-              secretSanta: 0
-            });
-            deployNotificationModal(false, "Secret Santa Opted Out!",
-                userData.name + " has been manually opted out of the Secret Santa Program!");
-          }
+    if (userData.ban == 1) {
+      banUser.innerHTML = "Unban";
+    } else if (userData.ban == 0) {
+      banUser.innerHTML = "Ban";
+    }
+
+    sendPrivateMessage.innerHTML = "Click To Send Message To " + userData.name;
+    sendPrivateMessage.onclick = function() {
+      generatePrivateMessageDialog(userData, false);
+    };
+
+    openModal(userModal, userData.uid);
+
+    closeUserModal.onclick = function() {
+      closeModal(userModal);
+    };
+
+    function manuallyOptInOut(userData){
+      userUpdateLocal = true;
+      if (userData.secretSanta != null) {
+        if (userData.secretSanta == 0) {
+          firebase.database().ref("users/" + userData.uid).update({
+            secretSanta: 1
+          });
+          deployNotificationModal(false, "Secret Santa Opted In!",
+              userData.name + " has been manually opted in to the Secret Santa Program!");
         } else {
           firebase.database().ref("users/" + userData.uid).update({
             secretSanta: 0
@@ -1361,19 +1164,242 @@ window.onload = function instantiate() {
           deployNotificationModal(false, "Secret Santa Opted Out!",
               userData.name + " has been manually opted out of the Secret Santa Program!");
         }
-        userUpdateLocal = false;
+      } else {
+        firebase.database().ref("users/" + userData.uid).update({
+          secretSanta: 0
+        });
+        deployNotificationModal(false, "Secret Santa Opted Out!",
+            userData.name + " has been manually opted out of the Secret Santa Program!");
       }
-    };
-  }
-
-  function removeUserElement(uid) {
-    document.getElementById('user' + uid).remove();
-    let i = initializedUsers.indexOf(uid);
-    initializedUsers.splice(i , 1);
-
-    dataCounter--;
-    if (dataCounter == 0){
-      deployListEmptyNotification("No Users Found!");
+      userUpdateLocal = false;
     }
+  };
+}
+
+function removeUserElement(uid) {
+  document.getElementById('user' + uid).remove();
+  let i = initializedUsers.indexOf(uid);
+  initializedUsers.splice(i , 1);
+
+  dataCounter--;
+  if (dataCounter == 0){
+    deployListEmptyNotification("No Users Found!");
   }
-};
+}
+
+function initializeShowUserData(showDataSelection) {
+  let listOfShowUserElements = [showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends,
+    showSantaSignUp, showModerator];
+  let showHideUserDataBool = false;
+
+  userListDropDown.innerHTML = "Select Listed User Data (" + showDataSelection + ")";;
+  userListDropDown.onclick = function() {
+    for (let i = 0; i < listOfShowUserElements.length; i++) {
+      if (showHideUserDataBool) {
+        listOfShowUserElements[i].style.display = "none";
+      } else {
+        listOfShowUserElements[i].style.display = "block";
+      }
+    }
+
+    if (showHideUserDataBool) {
+      showHideUserDataBool = false;
+    } else {
+      showHideUserDataBool = true;
+    }
+
+    showNone.onclick = function(){
+      updateDBWithShowUserData("None");
+    };
+    showUID.onclick = function(){
+      updateDBWithShowUserData("UID");
+    };
+    showName.onclick = function(){
+      updateDBWithShowUserData("Username");
+    };
+    showLastLogin.onclick = function(){
+      updateDBWithShowUserData("Login");
+    };
+    showUserScore.onclick = function(){
+      updateDBWithShowUserData("Score");
+    };
+    showShareCode.onclick = function(){
+      updateDBWithShowUserData("Share");
+    };
+    showFriends.onclick = function(){
+      updateDBWithShowUserData("Friends");
+    };
+    showSantaSignUp.onclick = function(){
+      updateDBWithShowUserData("Santa");
+    };
+    showModerator.onclick = function(){
+      updateDBWithShowUserData("Moderator");
+    };
+  };
+
+  function updateDBWithShowUserData(showUserDataItem) {
+    firebase.database().ref("moderatorSettings/").update({
+      listedUserData: showUserDataItem
+    });
+  }
+}
+
+function updateInitializedUsers(){
+  let tempElem;
+
+  for (let i = 0; i < initializedUsers.length; i++) {
+    tempElem = document.getElementById("user" + initializedUsers[i]);
+    tempElem.className = "gift";
+    tempElem.innerHTML = fetchUserData(initializedUsers[i]);
+  }
+
+  function fetchUserData(uid) {
+    let userIndex = findUIDItemInArr(uid, userArr, true);
+    let userData = userArr[userIndex];
+    let userDataName = userData.name;
+    let userDataString;
+
+    if (userData.ban == 1) {
+      tempElem.className = "gift highSev";
+      userDataString = userDataName + " - BANNED";
+    } else if (userData.warn >= 1) {
+      tempElem.className = "gift mediumSev";
+      userDataString = userDataName + " - WARNED: " + userData.warn;
+    } else {
+      if (userData.ban == 0) {
+        userDataString = userDataName;
+      }
+      switch (localListedUserData) {
+        case "None":
+          userDataString = userDataName;
+          break;
+        case "UID":
+          userDataString = userDataName + ": " + userData.uid;
+          break;
+        case "Username":
+          userDataString = userDataName + " - " + userData.userName;
+          break;
+        case "Login":
+          userDataString = userDataName;
+          if (userData.lastLogin == undefined) {
+            userData.lastLogin = "Never Logged In";
+          }
+
+          if (userData.lastLogin != "Never Logged In") {
+            let today = new Date();
+            let lastLoginDate = new Date(userData.lastLogin);
+            let lastLoginDateTrimmed = getMonthName(lastLoginDate.getMonth()) + " " + lastLoginDate.getDate() + ", " + lastLoginDate.getFullYear();
+            let lastLoginDiff = Math.floor((today - lastLoginDate) / (1000 * 3600 * 24));
+            userDataString = userDataName + " - " + lastLoginDateTrimmed;
+            if (lastLoginDiff < 15) {
+              tempElem.className += " lowSev";
+            } else if (lastLoginDiff < 31) {
+              tempElem.className += " mediumSev";
+            } else if (lastLoginDiff < 61) {
+              tempElem.className += " highSev";
+            }
+          }
+          break;
+        case "Score":
+          if (userData.userScore == undefined) {
+            userData.userScore = 0;
+          }
+
+          userDataString = userDataName + " - " + userData.userScore;
+          if (userData.userScore > 500) {
+            tempElem.className += " lowSev";
+          } else if (userData.userScore > 250) {
+            tempElem.className += " mediumSev";
+          } else if (userData.userScore > 50) {
+            tempElem.className += " highSev";
+          }
+          break;
+        case "Share":
+          if (userData.shareCode == undefined) {
+            userData.shareCode = "No Share Code Available!";
+          }
+          userDataString = userDataName + " - " + userData.shareCode;
+          break;
+        case "Friends":
+          userDataString = userDataName;
+          if (userData.friends == undefined)
+            userData.friends = [];
+
+          if (userData.friends.length > 1) {
+            userDataString = userDataName + " - " + userData.friends.length + " Friends";
+          } else if (userData.friends.length == 1) {
+            userDataString = userDataName + " - 1 Friend";
+          }
+          break;
+        case "Santa":
+          userDataString = userDataName;
+          if (userData.secretSantaName == undefined) {
+            userData.secretSantaName = "";
+          }
+          if (userData.secretSanta == undefined) {
+            userData.secretSanta = 0;
+          }
+
+          if (userData.secretSanta == 1 && currentState != 3) {
+            tempElem.className += " santa";
+            userDataString = userDataName + " - Signed Up!";
+          } else if (userData.secretSantaName != "") {
+            tempElem.className += " santa";
+            userDataString = userDataName + " - Name Assigned!";
+          } else if (userData.secretSanta == 1 && userData.secretSantaName == "") {
+            tempElem.className += " highSev";
+            userDataString = userDataName + " - NOT Assigned";
+          }
+          break;
+        case "Moderator":
+          userDataString = userDataName;
+          if (userData.moderatorInt == 1) {
+            userDataString = userDataName + " - Moderator";
+            tempElem.className += " highSev";
+          }
+          break;
+        default:
+          console.log("Unknown User Data Input!");
+          break;
+      }
+    }
+
+    return userDataString;
+  }
+}
+
+function getMonthName(month) {
+  switch(month) {
+    case 0:
+      return "January";
+    case 1:
+      return "February";
+    case 2:
+      return "March";
+    case 3:
+      return "April";
+    case 4:
+      return "May";
+    case 5:
+      return "June";
+    case 6:
+      return "July";
+    case 7:
+      return "August";
+    case 8:
+      return "September";
+    case 9:
+      return "October";
+    case 10:
+      return "November";
+    case 11:
+      return "December";
+    default:
+      console.log("Invalid Month!");
+      break;
+  }
+}
+
+function saveListedUserDataToCookie() {
+  sessionStorage.setItem("localListedUserData", JSON.stringify(localListedUserData));
+}
