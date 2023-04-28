@@ -28,7 +28,6 @@ let moderationModal;
 let moderationSpan;
 let moderationQueueBtn;
 let userListBtn;
-let backupBtn;
 let offlineTimer;
 let offlineSpan;
 let offlineModal;
@@ -82,14 +81,13 @@ window.onload = function instantiate() {
   moderationSpan = document.getElementById('moderationSpan');
   moderationQueueBtn = document.getElementById('moderationQueueBtn');
   userListBtn = document.getElementById('userListBtn');
-  backupBtn = document.getElementById('backupBtn');
   notificationModal = document.getElementById('notificationModal');
   notificationTitle = document.getElementById('notificationTitle');
   notificationInfo = document.getElementById('notificationInfo');
   noteSpan = document.getElementById('closeNotification');
   settingsElements = [offlineModal, offlineSpan, inviteNote, usernameInfo, usernameDisplay, nameInfo, nameDisplay,
     shareCodeInfo, shareCodeDisplay, userScoreInfo, userScoreDisplay, editBtn, faqBtn, modBtn, familyBtn,
-    moderationModal, moderationSpan, moderationQueueBtn, userListBtn, backupBtn, notificationModal, notificationTitle,
+    moderationModal, moderationSpan, moderationQueueBtn, userListBtn, notificationModal, notificationTitle,
     notificationInfo, noteSpan];
 
   getCurrentUser();
@@ -308,7 +306,6 @@ function updateSettingsUserData() {
 function generateModerationModal(){
   moderationQueueBtn.innerHTML = "System Audit Log";
   userListBtn.innerHTML = "User List & Database Settings";
-  backupBtn.innerHTML = "Backups";
 
   userListBtn.onclick = function(){
     navigation(14);//Moderation
@@ -316,10 +313,6 @@ function generateModerationModal(){
 
   moderationQueueBtn.onclick = function(){
     navigation(17);//ModerationQueue
-  };
-
-  backupBtn.onclick = function() {
-    navigation(18);//Backups
   };
 
   moderationSpan.onclick = function(){
