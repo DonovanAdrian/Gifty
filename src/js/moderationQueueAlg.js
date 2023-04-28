@@ -44,6 +44,15 @@ let userName;
 
 
 
+function checkTicketCookie() {
+  try {
+    ticketArr = JSON.parse(sessionStorage.ticketArr);
+    for (let i = 0; i < ticketArr.length; i++) {
+      createModerationTicket(ticketArr[i]);
+    }
+  } catch (err) {}
+}
+
 window.onload = function instantiate() {
   pageName = "ModerationQueue";
   dataListContainer = document.getElementById('dataListContainer');
@@ -72,6 +81,7 @@ window.onload = function instantiate() {
   sessionStorage.setItem("moderationSet", moderationSet);
   getCurrentUserCommon();
   commonInitialization();
+  checkTicketCookie();
   verifyElementIntegrity(moderationQueueElements);
 
   userInitial = firebase.database().ref("users/");
@@ -80,27 +90,6 @@ window.onload = function instantiate() {
 
   databaseQuery();
   alternateButtonLabel(settingsNote, "Settings", "Moderation");
-
-  function initializeNukeBtn() {
-    if (ticketArr.length > 0) {
-      nukeTickets.innerHTML = "Remove All Tickets";
-      nukeTickets.onclick = function () {
-        firebase.database().ref("maintenance/").remove();
-        for (let i = 0; i < initializedTickets.length; i++) {
-          try {
-            removeModerationTicket(initializedTickets[i]);
-          } catch(err) {}
-        }
-        initializedTickets = [];
-        ticketArr = [];
-        nukeTickets.innerHTML = "No Tickets To Remove!";
-        nukeTickets.onclick = function () {};
-      };
-    } else {
-      nukeTickets.innerHTML = "No Tickets To Remove!";
-      nukeTickets.onclick = function () {};
-    }
-  }
 
   function initializeBackBtn() {
     backBtn.innerHTML = "Return To Settings";
@@ -124,6 +113,7 @@ window.onload = function instantiate() {
               user = data.val();
               updateFriendNav(user.friends);
             }
+            saveCriticalCookies();
           }
         } else {
           userArr.push(data.val());
@@ -132,6 +122,7 @@ window.onload = function instantiate() {
             user = data.val();
             updateFriendNav(user.friends);
           }
+          saveCriticalCookies();
         }
       });
 
@@ -149,6 +140,7 @@ window.onload = function instantiate() {
               updateFriendNav(user.friends);
               console.log("Current User Updated");
             }
+            saveCriticalCookies();
           }
         }
       });
@@ -159,6 +151,7 @@ window.onload = function instantiate() {
           console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
+        saveCriticalCookies();
       });
     };
 
@@ -186,31 +179,46 @@ window.onload = function instantiate() {
       postRef.once("value").then(function(snapshot) {
         if (snapshot.exists()) {
           postRef.on("child_added", function (data) {
-            ticketArr.push(data.val());
-            createModerationTicket(data.val());
+            let i = findUIDItemInArr(data.key, ticketArr, true);
+            if(i != -1) {
+              localObjectChanges = findObjectChanges(ticketArr[i], data.val());
+              if (localObjectChanges.length != 0) {
+                console.log("Changing " + ticketArr[i].uid);
+                ticketArr[i] = data.val();
+                changeModerationTicket(data.val());
+                saveTicketArrToCookie();
+              }
+            } else {
+              ticketArr.push(data.val());
+              createModerationTicket(data.val());
+              saveTicketArrToCookie();
+            }
           });
 
           postRef.on("child_changed", function (data) {
-            console.log(data.key + " Changed!");
-            changeModerationTicket(data.val());
-
-            let i = findUIDItemInArr(data.key, ticketArr);
-            if(ticketArr[i] != data.val() && i != -1){
-              console.log("Changing " + ticketArr[i].uid);
-              ticketArr[i] = data.val();
+            let i = findUIDItemInArr(data.key, ticketArr, true);
+            if(i != -1){
+              localObjectChanges = findObjectChanges(ticketArr[i], data.val());
+              if (localObjectChanges.length != 0) {
+                console.log("Changing " + ticketArr[i].uid);
+                ticketArr[i] = data.val();
+                changeModerationTicket(data.val());
+                saveTicketArrToCookie();
+              }
             }
           });
 
           postRef.on("child_removed", function (data) {
             console.log(data.key + " Removed!");
-            let x = initializedTickets.indexOf(data.key);
-            initializedTickets.splice(x, 1);
-            removeModerationTicket(data.key);
-
             let i = findUIDItemInArr(data.key, ticketArr);
-            if(ticketArr[i] != data.val() && i != -1){
+            if(i != -1){
               console.log("Removing " + ticketArr[i].uid);
               ticketArr.splice(i, 1);
+
+              let x = initializedTickets.indexOf(data.key);
+              initializedTickets.splice(x, 1);
+              removeModerationTicket(data.key);
+              saveTicketArrToCookie();
             }
           });
         } else {
@@ -230,181 +238,206 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(moderationTickets);
   }
+};
 
-  function createModerationTicket (ticketData) {
-    try {
-      document.getElementById('testData').remove();
-    } catch (err) {}
-
-    let ticketTitleTextReturned;
-    let liItem = document.createElement("LI");
-    liItem.id = "ticket" + ticketData.uid;
-
-    ticketTitleTextReturned = initModTicketElement(liItem, ticketData);
-
-    let textNode = document.createTextNode(ticketTitleTextReturned);
-    liItem.appendChild(textNode);
-
-    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-    clearInterval(offlineTimer);
-
-    if (dataCounter < 1) {
-      initializeNukeBtn();
-    }
-    dataCounter++;
-    if (dataCounter > buttonOpacLim) {
-      nukeTickets.style.opacity = ".75";
-    }
-  }
-
-  function changeModerationTicket (ticketData) {
-    let ticketTitleTextReturned;
-    let editTicket = document.getElementById('ticket' + ticketData.uid);
-
-    ticketTitleTextReturned = initModTicketElement(editTicket, ticketData);
-    editTicket.innerHTML = ticketTitleTextReturned;
-  }
-
-  function initModTicketElement (liItem, ticketData) {
-    let ticketTitleText = "";
-    let ticketTitleSuffix = "";
-
-    liItem.className = "gift";
-    if (ticketData.details.includes("Critical Error") || ticketData.details.includes("Critical Initialization Error")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - !!Critical Error Occurred!!";
-    } else if (ticketData.details.includes("Attempting to delete user")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - Attempt To Delete User";
-    } else if (ticketData.details.includes("experienced degraded performance")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - Degraded Performance Experienced";
-    } else if (ticketData.details.includes("attempted to remove friend")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - !!Friend Removal Error!!";
-    } else if (ticketData.details.includes("attempted to add friend")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - !!Invite Removal Error!!";
-    } else if (ticketData.details.includes("Invalid Login")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - !!Invalid Login Attempt!!";
-    } else if (ticketData.details.includes("Login Error")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - !!Login Error!!";
-    } else if (ticketData.details.includes("attempted to log in")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - A Banned User Attempted Login";
-    } else if (ticketData.details.includes("attempted to access a restricted page")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - A Restricted Page Was Accessed";
-    }else if (ticketData.details.includes("forced the moderation modal to appear")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - A Restricted Window Was Forced Open";
-    } else if (ticketData.details.includes("Login disabled by")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - Login Disabled";
-    } else if (ticketData.details.includes("failed to connect to the private list owned by")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - Gift List Connection Failed";
-    } else if (ticketData.details.includes("Notification delete failed")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - Notification Delete Failed";
-    } else if (ticketData.details.includes("Gift delete failed")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - Gift Delete Failed";
-    } else if (ticketData.details.includes("Gift update failed for user")) {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - Gift Update Failed";
-    } else if (ticketData.details.includes("URL Limiter disabled by")) {
-      liItem.className += " mediumSev";
-      ticketTitleSuffix = " - URL Limits Disabled";
-    } else if (ticketData.details.includes("URL Limiter set by")) {
-      liItem.className += " mediumSev";
-      ticketTitleSuffix = " - URL Limits Set";
-    } else if (ticketData.details.includes("Database limits set by")) {
-      liItem.className += " mediumSev";
-      ticketTitleSuffix = " - Database Limits Set";
-    } else if (ticketData.details.includes("has opened their warning")) {
-      liItem.className += " mediumSev";
-      ticketTitleSuffix = " - A Warned User Was Successfully Notified";
-    } else if (ticketData.details.includes("Login disabled message reset by")) {
-      liItem.className += " lowSev";
-      ticketTitleSuffix = " - Login Message Reset";
-    } else if (ticketData.details.includes("Login enabled by")) {
-      liItem.className += " lowSev";
-      ticketTitleSuffix = " - Login Enabled";
-    } else {
-      liItem.className += " highSev";
-      ticketTitleSuffix = " - Ticket Title Unavailable, Open For More Details!";
-    }
-
-    ticketTitleText = ticketData.time + ticketTitleSuffix;
-
-    liItem.onclick = function (){
-      ticketTitle.innerHTML = ticketTitleText;
-      ticketDetails.innerHTML = ticketData.details;
-      ticketUID.innerHTML = "UID: " + ticketData.uid;
-      ticketTime.innerHTML = "Time: " + ticketData.time;
-      if (ticketData.location == "index") {
-        ticketLocation.innerHTML = "Location: login/index";
-      } else {
-        ticketLocation.innerHTML = "Location: " + ticketData.location;
+function initializeNukeBtn() {
+  if (ticketArr.length > 0) {
+    nukeTickets.innerHTML = "Remove All Tickets";
+    nukeTickets.onclick = function () {
+      firebase.database().ref("maintenance/").remove();
+      for (let i = 0; i < initializedTickets.length; i++) {
+        try {
+          removeModerationTicket(initializedTickets[i]);
+        } catch(err) {}
       }
+      initializedTickets = [];
+      ticketArr = [];
+      nukeTickets.innerHTML = "No Tickets To Remove!";
+      nukeTickets.onclick = function () {};
+    };
+  } else {
+    nukeTickets.innerHTML = "No Tickets To Remove!";
+    nukeTickets.onclick = function () {};
+  }
+}
 
-      deleteTicket.onclick = function () {
-        deleteModerationTicket(ticketData);
-      };
+function createModerationTicket (ticketData) {
+  try {
+    document.getElementById('testData').remove();
+  } catch (err) {}
 
-      openModal(ticketModal, ticketData.uid);
+  let ticketTitleTextReturned;
+  let liItem = document.createElement("LI");
+  liItem.id = "ticket" + ticketData.uid;
 
-      closeTicketModal.onclick = function() {
-        closeModal(ticketModal);
-      };
+  ticketTitleTextReturned = initModTicketElement(liItem, ticketData);
+
+  let textNode = document.createTextNode(ticketTitleTextReturned);
+  liItem.appendChild(textNode);
+
+  dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+  clearInterval(offlineTimer);
+
+  if (dataCounter < 1) {
+    initializeNukeBtn();
+  }
+  dataCounter++;
+  if (dataCounter > buttonOpacLim) {
+    nukeTickets.style.opacity = ".75";
+  }
+}
+
+function changeModerationTicket (ticketData) {
+  let ticketTitleTextReturned;
+  let editTicket = document.getElementById('ticket' + ticketData.uid);
+
+  ticketTitleTextReturned = initModTicketElement(editTicket, ticketData);
+  editTicket.innerHTML = ticketTitleTextReturned;
+}
+
+function initModTicketElement (liItem, ticketData) {
+  let ticketTitleText = "";
+  let ticketTitleSuffix = "";
+
+  liItem.className = "gift";
+  if (ticketData.details.includes("Critical Error") || ticketData.details.includes("Critical Initialization Error")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - !!Critical Error Occurred!!";
+  } else if (ticketData.details.includes("Attempting to delete user")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - Attempt To Delete User";
+  } else if (ticketData.details.includes("experienced degraded performance")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - Degraded Performance Experienced";
+  } else if (ticketData.details.includes("attempted to remove friend")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - !!Friend Removal Error!!";
+  } else if (ticketData.details.includes("attempted to add friend")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - !!Invite Removal Error!!";
+  } else if (ticketData.details.includes("Invalid Login")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - !!Invalid Login Attempt!!";
+  } else if (ticketData.details.includes("Login Error")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - !!Login Error!!";
+  } else if (ticketData.details.includes("attempted to log in")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - A Banned User Attempted Login";
+  } else if (ticketData.details.includes("attempted to access a restricted page")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - A Restricted Page Was Accessed";
+  }else if (ticketData.details.includes("forced the moderation modal to appear")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - A Restricted Window Was Forced Open";
+  } else if (ticketData.details.includes("Login disabled by")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - Login Disabled";
+  } else if (ticketData.details.includes("failed to connect to the private list owned by")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - Gift List Connection Failed";
+  } else if (ticketData.details.includes("Notification delete failed")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - Notification Delete Failed";
+  } else if (ticketData.details.includes("Gift delete failed")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - Gift Delete Failed";
+  } else if (ticketData.details.includes("Gift update failed for user")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - Gift Update Failed";
+  } else if (ticketData.details.includes("URL Limiter disabled by")) {
+    liItem.className += " mediumSev";
+    ticketTitleSuffix = " - URL Limits Disabled";
+  } else if (ticketData.details.includes("URL Limiter set by")) {
+    liItem.className += " mediumSev";
+    ticketTitleSuffix = " - URL Limits Set";
+  } else if (ticketData.details.includes("Database limits set by")) {
+    liItem.className += " mediumSev";
+    ticketTitleSuffix = " - Database Limits Set";
+  } else if (ticketData.details.includes("has opened their warning")) {
+    liItem.className += " mediumSev";
+    ticketTitleSuffix = " - A Warned User Was Successfully Notified";
+  } else if (ticketData.details.includes("Login disabled message reset by")) {
+    liItem.className += " lowSev";
+    ticketTitleSuffix = " - Login Message Reset";
+  } else if (ticketData.details.includes("Login enabled by")) {
+    liItem.className += " lowSev";
+    ticketTitleSuffix = " - Login Enabled";
+  } else {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - Ticket Title Unavailable, Open For More Details!";
+  }
+
+  ticketTitleText = ticketData.time + ticketTitleSuffix;
+
+  liItem.onclick = function (){
+    ticketTitle.innerHTML = ticketTitleText;
+    ticketDetails.innerHTML = ticketData.details;
+    ticketUID.innerHTML = "UID: " + ticketData.uid;
+    ticketTime.innerHTML = "Time: " + ticketData.time;
+    if (ticketData.location == "index") {
+      ticketLocation.innerHTML = "Location: login/index";
+    } else {
+      ticketLocation.innerHTML = "Location: " + ticketData.location;
+    }
+
+    deleteTicket.onclick = function () {
+      deleteModerationTicket(ticketData);
     };
 
-    return ticketTitleText;
-  }
+    openModal(ticketModal, ticketData.uid);
 
-  function deleteModerationTicket (ticketData) {
-    let verifyDeleteBool = true;
-    let toDelete;
+    closeTicketModal.onclick = function() {
+      closeModal(ticketModal);
+    };
+  };
 
-    toDelete = findUIDItemInArr(ticketData.uid, ticketArr);
+  return ticketTitleText;
+}
 
-    if (toDelete != -1) {
-      ticketArr.splice(toDelete, 1);
-      if (findUIDItemInArr(ticketData.uid, ticketArr) != -1) {
-        verifyDeleteBool = false;
-      }
-    } else {
+function deleteModerationTicket (ticketData) {
+  let verifyDeleteBool = true;
+  let toDelete;
+
+  toDelete = findUIDItemInArr(ticketData.uid, ticketArr);
+
+  if (toDelete != -1) {
+    ticketArr.splice(toDelete, 1);
+    if (findUIDItemInArr(ticketData.uid, ticketArr, true) != -1) {
       verifyDeleteBool = false;
     }
+  } else {
+    verifyDeleteBool = false;
+  }
 
-    if (verifyDeleteBool) {
-      let i = initializedTickets.indexOf(ticketData.uid);
-      initializedTickets.splice(i, 1);
-      removeModerationTicket(ticketData.uid);
+  if (verifyDeleteBool) {
+    let i = initializedTickets.indexOf(ticketData.uid);
+    initializedTickets.splice(i, 1);
+    removeModerationTicket(ticketData.uid);
 
-      firebase.database().ref("maintenance/").child(ticketData.uid).remove();
-      closeModal(ticketModal);
+    firebase.database().ref("maintenance/").child(ticketData.uid).remove();
+    closeModal(ticketModal);
 
-      deployNotificationModal(false, "Ticket " + ticketData.uid + " Deleted!",
-          "The moderation ticket, " + ticketData.uid + ", has been successfully deleted.");
-    } else {
-      deployNotificationModal(true, "Ticket Delete Failure!",
-          "The moderation ticket, " + ticketData.uid + ", was NOT deleted. Please try again later.");
+    deployNotificationModal(false, "Ticket " + ticketData.uid + " Deleted!",
+        "The moderation ticket, " + ticketData.uid + ", has been successfully deleted.");
+  } else {
+    deployNotificationModal(true, "Ticket Delete Failure!",
+        "The moderation ticket, " + ticketData.uid + ", was NOT deleted. Please try again later.");
+  }
+}
+
+function removeModerationTicket(uid) {
+  try {
+    document.getElementById('ticket' + uid).remove();
+
+    dataCounter--;
+    if (dataCounter == 0){
+      deployListEmptyNotification("There Are No Items In The Moderation Queue!");
+      initializeNukeBtn();
     }
-  }
+  } catch (err) {}
+}
 
-  function removeModerationTicket(uid) {
-    try {
-      document.getElementById('ticket' + uid).remove();
-
-      dataCounter--;
-      if (dataCounter == 0){
-        deployListEmptyNotification("There Are No Items In The Moderation Queue!");
-        initializeNukeBtn();
-      }
-    } catch (err) {}
-  }
-};
+function saveTicketArrToCookie(){
+  sessionStorage.setItem("ticketArr", JSON.stringify(ticketArr));
+}
