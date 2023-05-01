@@ -335,7 +335,7 @@ function getCurrentUserCommon(){
         pageName = pageName.toLowerCase();
         const config = JSON.parse(sessionStorage.config);
         initializeDB(config);
-        updateMaintenanceLog(pageName, "The user \"" + user.userName + "\" " +
+        updateMaintenanceLog(pageName, "The user \"" + user.userName + "\" (" + user.uid + ") " +
             "attempted to access a restricted page.");
         navigation(2);//Home
       }
