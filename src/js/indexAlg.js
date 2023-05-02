@@ -456,7 +456,10 @@ function login() {
         }
       }
       if (username.value != "" && pin.value != "")
-        updateMaintenanceLog("index", "Invalid Login: " + username.value.toLowerCase() + " " + pin.value.toString());
+        if (allowLogin)
+          updateMaintenanceLog("index", "Invalid Login: " + username.value.toLowerCase() + " " + pin.value.toString());
+        else
+          updateMaintenanceLog("index", "Invalid Login During Maintenance Period: " + username.value.toLowerCase() + " " + pin.value.toString());
       loginTry = 0;
       showLoginAlert = 0;
     }
