@@ -304,7 +304,7 @@ function initModTicketElement (liItem, ticketData) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - !!Critical Error Occurred!!";
   } else if (ticketData.details.includes("Attempting to delete user")) {
-    liItem.className += " highSev";
+    liItem.className += " mediumSev";
     ticketTitleSuffix = " - Attempt To Delete User";
   } else if (ticketData.details.includes("experienced degraded performance")) {
     liItem.className += " highSev";
@@ -315,14 +315,17 @@ function initModTicketElement (liItem, ticketData) {
   } else if (ticketData.details.includes("attempted to add friend")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - !!Invite Removal Error!!";
-  } else if (ticketData.details.includes("Invalid Login")) {
+  } else if (ticketData.details.includes("Invalid Login:")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - !!Invalid Login Attempt!!";
+  } else if (ticketData.details.includes("Invalid Login During Maintenance Period:")) {
+    liItem.className += " mediumSev";
+    ticketTitleSuffix = " - !!Invalid Login Attempt During Maintenance!!";
   } else if (ticketData.details.includes("Login Error")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - !!Login Error!!";
   } else if (ticketData.details.includes("attempted to log in")) {
-    liItem.className += " highSev";
+    liItem.className += " mediumSev";
     ticketTitleSuffix = " - A Banned User Attempted Login";
   } else if (ticketData.details.includes("attempted to access a restricted page")) {
     liItem.className += " highSev";
@@ -331,7 +334,7 @@ function initModTicketElement (liItem, ticketData) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - A Restricted Window Was Forced Open";
   } else if (ticketData.details.includes("Login disabled by")) {
-    liItem.className += " highSev";
+    liItem.className += " mediumSev";
     ticketTitleSuffix = " - Login Disabled";
   } else if (ticketData.details.includes("failed to connect to the private list owned by")) {
     liItem.className += " highSev";
@@ -355,7 +358,7 @@ function initModTicketElement (liItem, ticketData) {
     liItem.className += " mediumSev";
     ticketTitleSuffix = " - Database Limits Set";
   } else if (ticketData.details.includes("has opened their warning")) {
-    liItem.className += " mediumSev";
+    liItem.className += " lowSev";
     ticketTitleSuffix = " - A Warned User Was Successfully Notified";
   } else if (ticketData.details.includes("Login disabled message reset by")) {
     liItem.className += " lowSev";
