@@ -24,9 +24,10 @@ the data processing operations with the code written here.
 Speaking of the code written here, there is plenty
 of progress to be made. While my time has worn thin,
 I still try to make small steps towards my big goal
-as of late - v1.3, which employs a much more fleshed
-out Secret Santa system and Backup functionality.
-While neither of these features are particularly
+as of late - v1.3, which employs a more fleshed
+out Secret Santa system, Backup functionality, redone
+look and feel, and better reliability for all kinds of 
+users. While none of these features are particularly
 fancy or new, they are interesting challenges for
 me to solve that are taking more time than expected.
 
@@ -46,7 +47,7 @@ data limits.
 At this time, I am in the process of adding various functions
 that will improve the user experience for moderators and normal
 users alike. Some planned features are listed in the
-"Projects" section of my GitHub profile, which will be posted
+"Projects" section of my GitHub profile, which will be added
 as they are created/planned.
 
 
@@ -55,8 +56,8 @@ The easiest way to set this up for yourself is to use
 Google's Firebase Realtime Database in conjunction with
 Google's Firebase Hosting. While it gets a little bit
 technical, the best I can do is to provide the following
-"simple" step-by-step list. See the "Gifty Setup Tutorial"
-section below for more details on this!
+step-by-step list below. See the "Gifty Setup Tutorial"
+section for more details on this!
 
 
 ## Great, Now I'm All Set Up! How Do I Use Gifty?
@@ -132,9 +133,6 @@ https://firebase.google.com/docs/cli
   a test drive! Create an account, make some gifts, and invite
   some friends and family to start using it!
 
-If you encounter any issues in this step-by-step process, be sure to
-re-read the steps up until where you encountered the issue, and THEN
-contact me for assistance. Thank you!!
 
 
 ---------------------------------------------------
@@ -145,11 +143,6 @@ contact me for assistance. Thank you!!
 
 Everything below this point is supplemental data for those who are curious!
 
-
-## ***Task List***
-- Check out a list of tasks on the "Projects" section of my
-  profile! You can find planned release content there
-  as well.
 
 ## General Website Structure
 - index
@@ -171,7 +164,7 @@ Everything below this point is supplemental data for those who are curious!
         - friendList
       - family *\(Moderator Role Only)*
         - familyUpdate *\(Moderator Role Only)*
-      - backup *\(Moderator Role Only)*
+      - backup *\(Moderator Role Only, Coming Soon)*
     - notifications *\(Accessible from **almost** all pages)*
 - 404
 
@@ -194,5 +187,5 @@ Everything below this point is supplemental data for those who are curious!
         - friendListAlg, commonAlg
       - familyAlg, commonAlg
         - familyUpdateAlg, commonAlg
-      - backupAlg, commonAlg
+      - backupAlg, commonAlg *(Coming Soon)*
     - notificationAlg, commonAlg
