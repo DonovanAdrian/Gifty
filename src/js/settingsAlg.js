@@ -282,7 +282,7 @@ window.onload = function instantiate() {
   let targetNode = document.getElementById('moderationModal');
   let observer = new MutationObserver(function(){
     if(targetNode.style.display != 'none' && user.moderatorInt != 1){
-      updateMaintenanceLog("settings", "The user \"" + user.userName + "\" " +
+      updateMaintenanceLog("settings", "The user \"" + user.userName + "\" (" + user.uid + ") " +
           "forced the moderation modal to appear. Functionality and button text is NOT available to the user when forced " +
           "open, but please advise.");
     }
