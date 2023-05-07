@@ -1597,3 +1597,26 @@ function saveCriticalCookies(){
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
   }
 }
+
+function getLocalTime(UTCTime) {
+  let localTime;
+  UTCTime = new Date(UTCTime + " UTC");
+  let MM = UTCTime.getMonth() + 1 + "";
+  let dd = UTCTime.getDay() + "";
+  let yy = UTCTime.getFullYear() + "";
+  let hh = UTCTime.getHours() + "";
+  let mm = UTCTime.getMinutes() + "";
+  let ss = UTCTime.getSeconds() + "";
+  if (hh.length == 1)
+    hh = "0" + hh
+  if (mm.length == 1)
+    mm = "0" + mm
+  if (ss.length == 1)
+    ss = "0" + ss
+  if (dd.length == 1)
+    dd = "0" + dd
+  if (MM.length == 1)
+    MM = "0" + MM
+  localTime = MM + "/" + dd + "/" + yy + " " + hh + ":" + mm + ":" + ss;
+  return localTime;
+}
