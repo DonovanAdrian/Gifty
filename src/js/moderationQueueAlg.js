@@ -296,8 +296,9 @@ function changeModerationTicket (ticketData) {
 }
 
 function initModTicketElement (liItem, ticketData) {
+  let localTime = getLocalTime(ticketData.time);
   let ticketTitleText = "";
-  let ticketTitleSuffix = "";
+  let ticketTitleSuffix;
 
   liItem.className = "gift";
   if (ticketData.details.includes("Critical Error") || ticketData.details.includes("Critical Initialization Error")) {
@@ -371,13 +372,13 @@ function initModTicketElement (liItem, ticketData) {
     ticketTitleSuffix = " - Ticket Title Unavailable, Open For More Details!";
   }
 
-  ticketTitleText = ticketData.time + ticketTitleSuffix;
+  ticketTitleText = localTime + ticketTitleSuffix;
 
   liItem.onclick = function (){
     ticketTitle.innerHTML = ticketTitleText;
     ticketDetails.innerHTML = ticketData.details;
     ticketUID.innerHTML = "UID: " + ticketData.uid;
-    ticketTime.innerHTML = "Time: " + ticketData.time;
+    ticketTime.innerHTML = "Time: " + localTime;
     if (ticketData.location == "index") {
       ticketLocation.innerHTML = "Location: login/index";
     } else {
@@ -422,10 +423,10 @@ function deleteModerationTicket (ticketData) {
     closeModal(ticketModal);
 
     deployNotificationModal(false, "Ticket " + ticketData.uid + " Deleted!",
-        "The moderation ticket, " + ticketData.uid + ", has been successfully deleted.");
+        "The moderation ticket, \"" + ticketData.uid + "\", has been successfully deleted.");
   } else {
     deployNotificationModal(true, "Ticket Delete Failure!",
-        "The moderation ticket, " + ticketData.uid + ", was NOT deleted. Please try again later.");
+        "The moderation ticket, \"" + ticketData.uid + "\", was NOT deleted. Please try again later.");
   }
 }
 
