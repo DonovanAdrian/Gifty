@@ -896,7 +896,7 @@ function addGiftToDB(){
       showSuccessfulDBOperation = true;
       listenForDBChanges("Add", uid);
       successfulDBOperationTitle = "Gift Added!";
-      successfulDBOperationNotice = "The gift, " + giftTitleInp.value + ", has been successfully added to your gift list! Redirecting back to home...";
+      successfulDBOperationNotice = "The gift, \"" + giftTitleInp.value + "\", has been successfully added to your gift list! Redirecting back to home...";
       successfulDBNavigation = 2;
     } else {
       if (privateUser.userScore == undefined) {
@@ -932,7 +932,7 @@ function addGiftToDB(){
       showSuccessfulDBOperation = true;
       listenForDBChanges("Add", uid);
       successfulDBOperationTitle = "Private Gift Added!";
-      successfulDBOperationNotice = "The gift, " + giftTitleInp.value + ", has been successfully added to " + user.name + "'s private gift list! Redirecting back to their private list...";
+      successfulDBOperationNotice = "The gift, \"" + giftTitleInp.value + "\", has been successfully added to " + user.name + "'s private gift list! Redirecting back to their private list...";
       successfulDBNavigation = 10;
     }
     localGiftAddUpdate = false;
