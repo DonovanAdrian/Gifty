@@ -311,13 +311,13 @@ function fetchNotificationData(createBool, liElem, notificationData, noteKey) {
       } else if (noteSplitCount == 3) {//Type Y, Gift Updates/Gift Deletion (Public)
         if (pageNameNote == "friendList.html") {
           notificationDataTitle = friendUserData.name + " updated a gift you bought!";
-          notificationDetails = friendUserData.name + "'s public gift, " + messageGiftTitle + ", was updated!";
+          notificationDetails = friendUserData.name + "'s public gift, \"" + messageGiftTitle + "\", was updated!";
         } else if (pageNameNote == "privateFriendList.html") {
-          notificationDataTitle = friendUserData.name + "\'s private gift that you bought was updated!";
-          notificationDetails = friendUserData.name + "'s private gift, " + messageGiftTitle + ", was updated!";
+          notificationDataTitle = friendUserData.name + "'s private gift that you bought was updated!";
+          notificationDetails = friendUserData.name + "'s private gift, \"" + messageGiftTitle + "\", was updated!";
         } else if (pageNameNote == "deleteGift") {
           notificationDataTitle = friendUserData.name + " deleted a gift you bought...";
-          notificationDetails = "The gift you bought for " + friendUserData.name + ", " + messageGiftTitle + ", was" +
+          notificationDetails = "The gift you bought for " + friendUserData.name + ", \"" + messageGiftTitle + "\", was" +
               " deleted from their public gift list...";
         } else {
           if (consoleOutput)
@@ -332,7 +332,7 @@ function fetchNotificationData(createBool, liElem, notificationData, noteKey) {
         if (z != -1) {
           let deleterData = userArr[z];
           notificationDataTitle = deleterData.name + " deleted a private gift you bought...";
-          notificationDetails = "The gift you bought for " + friendUserData.name + ", " + messageGiftTitle + ", was" +
+          notificationDetails = "The gift you bought for " + friendUserData.name + ", \"" + messageGiftTitle + "\", was" +
               " deleted by " + deleterData.name + " from " + friendUserData.name + "'s private gift list...";
           notificationPage = pageNameNote;
         } else {
