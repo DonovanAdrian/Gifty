@@ -753,8 +753,8 @@ function deleteGiftElement(key, title, uid, buyer, receivedBy) {
 
     closeModal(giftModal);
 
-    deployNotificationModal(false, "Gift Deleted", "Gift " + title +
-        " successfully deleted!");
+    deployNotificationModal(false, "Gift Deleted", "Gift \"" + title +
+        "\" was successfully deleted!");
 
     if(buyer != ""){
       let userFound = findUserNameItemInArr(buyer, userArr);
