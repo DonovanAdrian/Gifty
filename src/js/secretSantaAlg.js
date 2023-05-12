@@ -607,29 +607,35 @@ function flashGiftNumbers(privateGiftList, publicGiftList) {
   let emptyPrivateBool = false;
   let emptyPublicBool = false;
 
-  if (privateGiftList != 0) {
-    privateGiftNum = privateGiftList.length;
+  if (privateGiftList != undefined)
+    if (privateGiftList != 0) {
+      privateGiftNum = privateGiftList.length;
 
-    for (let i = 0; i < privateGiftList.length; i++) {
-      if (privateGiftList[i].received == 1) {
-        privateGiftNum--;
+      for (let i = 0; i < privateGiftList.length; i++) {
+        if (privateGiftList[i].received == 1) {
+          privateGiftNum--;
+        }
       }
+    } else {
+      emptyPrivateBool = true;
     }
-  } else {
+  else
     emptyPrivateBool = true;
-  }
 
-  if (publicGiftList != 0) {
-    publicGiftNum = publicGiftList.length;
+  if (publicGiftList != undefined)
+    if (publicGiftList != 0) {
+      publicGiftNum = publicGiftList.length;
 
-    for (let i = 0; i < publicGiftList.length; i++) {
-      if (publicGiftList[i].received == 1) {
-        publicGiftNum--;
+      for (let i = 0; i < publicGiftList.length; i++) {
+        if (publicGiftList[i].received == 1) {
+          publicGiftNum--;
+        }
       }
+    } else {
+      emptyPublicBool = true;
     }
-  } else {
-    emptyPublicBool = true;
-  }
+  else
+    emptyPrivateBool = true;
 
   if (!emptyPrivateBool) {
     if (privateGiftNum == 0) {
