@@ -5,11 +5,8 @@
  */
 
 let privateFriendListElements = [];
-let listeningFirebaseRefs = [];
-let userArr = [];
 let giftArr = [];
 let oldGiftArr = [];
-let inviteArr = [];
 let userUserNames = [];
 let initializedGifts = [];
 
@@ -764,10 +761,12 @@ function deleteGiftElement(key, title, uid, buyer, receivedBy) {
       privateList: giftArr
     });
 
-    closeModal(giftModal);
+    closeModal(currentModalOpen);
 
-    deployNotificationModal(false, "Gift Deleted", "Gift \"" + title +
-        "\" was successfully deleted!");
+    successfulDBOperationTitle = "Gift Deleted";
+    successfulDBOperationNotice = "Gift \"" + title + "\", was successfully deleted!";
+    showSuccessfulDBOperation = true;
+    listenForDBChanges("Delete", uid);
 
     if(buyer != ""){
       let userFound = findUserNameItemInArr(buyer, userArr);
