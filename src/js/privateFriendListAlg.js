@@ -13,6 +13,7 @@ let inviteArr = [];
 let userUserNames = [];
 let initializedGifts = [];
 
+let initializingElements = false;
 let updateGiftToDBBool = false;
 let giftListEmptyBool = false;
 let potentialRemoval = false;
@@ -32,7 +33,6 @@ let backBtn;
 let swapList;
 let offlineSpan;
 let offlineModal;
-let giftUser;
 let userInvites;
 let offlineTimer;
 let commonLoadingTimer;
@@ -89,9 +89,11 @@ function getCurrentUser(){
     giftUser.privateList = [];
   } else {
     giftArr = giftUser.privateList;
+    initializingElements = true;
     for (let i = 0; i < giftUser.privateList.length; i++) {
       createGiftElement(giftUser.privateList[i], i);
     }
+    initializingElements = false;
     checkGiftLimit();
   }
 
@@ -197,6 +199,7 @@ window.onload = function instantiate() {
             } else if (data.key == giftUser.uid) {
               giftUser = data.val();
             }
+            saveCriticalCookies();
           }
         } else {
           userArr.push(data.val());
@@ -208,6 +211,7 @@ window.onload = function instantiate() {
           } else if (data.key == giftUser.uid) {
             giftUser = data.val();
           }
+          saveCriticalCookies();
         }
       });
 
@@ -236,6 +240,7 @@ window.onload = function instantiate() {
               if(consoleOutput)
                 console.log("Current User Updated");
             }
+            saveCriticalCookies();
           }
         }
       });
@@ -246,13 +251,14 @@ window.onload = function instantiate() {
           if(consoleOutput)
             console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
+          saveCriticalCookies();
         }
       });
     };
 
     let fetchGifts = function (postRef) {
       postRef.on('child_added', function (data) {
-        if (giftArr.indexOf(data.val()) == -1)
+        if (findUIDItemInArr(data.val().uid, giftArr, true) == -1)
           giftArr.push(data.val());
 
         if(checkGiftBuyer(data.val().buyer)){
@@ -266,7 +272,8 @@ window.onload = function instantiate() {
           updateGiftError(data, data.key);
           updateGiftToDBBool = false;
         }
-
+        giftUser.giftList = giftArr;
+        saveCriticalCookies();
         checkGiftLimitLite();
       });
 
@@ -293,6 +300,10 @@ window.onload = function instantiate() {
           }
 
           changeGiftElement(data.val(), data.key);
+          if (!potentialRemoval && !giftDeleteLocal)
+            showUpdatedItem(data.val().uid);
+          giftUser.giftList = giftArr;
+          saveCriticalCookies();
         }
       });
 
@@ -377,7 +388,6 @@ function findRemovedGift(oldArr, newArr) {
 
   removedGiftIndex = findRemovedData(oldArr, newArr);
   if (removedGiftIndex != -1) {
-    removeGiftElement(oldArr[removedGiftIndex].uid);
     let i = initializedGifts.indexOf(oldArr[removedGiftIndex].uid);
     initializedGifts.splice(i, 1);
     if (oldArr[removedGiftIndex].uid == currentModalOpen) {
@@ -387,6 +397,7 @@ function findRemovedGift(oldArr, newArr) {
             "was deleted by " + oldArr[removedGiftIndex].creator + "! This gift is no longer available to view...", 4);
       }
     }
+    showUpdatedItem(oldArr[removedGiftIndex].uid, true);
     oldGiftArr.splice(removedGiftIndex, 1);
   }
 }
@@ -431,11 +442,13 @@ function createGiftElement(pGiftData, pGiftKey){
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
     dataCounter++;
-    initializedGifts.push(createGiftUid);
     if (dataCounter > buttonOpacLim) {
       addGift.style.opacity = ".75";
       swapList.style.opacity = ".75";
     }
+    initializedGifts.push(createGiftUid);
+    if (!initializingElements)
+      showUpdatedItem(createGiftUid);
   } else {
     changeGiftElement(pGiftData, pGiftKey);
   }
@@ -871,6 +884,64 @@ function checkGiftLimit() {
       if (!dbOperationInProgress)
         privateUserOverride = true;
       navigation(8);//GiftAddUpdate
+      privateUserOverride = false;
     };
+  }
+}
+
+function showUpdatedItem(inputUid, removeItem) {
+  let giftElem = document.getElementById('gift' + inputUid);
+  let backColor = window.getComputedStyle(giftElem).backgroundColor;
+  let oldCssColor = "";
+  let oldCssColorA = "#f9f9f9";
+  let oldCssColorB = "#eee";
+  let newCssColor = "#c4ffc4";
+  let giftElementTimer = 0;
+  let maxGiftElemTimer = 3;
+  let giftElementInterval;
+
+  if (removeItem == undefined)
+    removeItem = false;
+  else if (removeItem) {
+    newCssColor = "#ffc4c4";
+    giftElem.onclick = function(){};
+  }
+
+  if (backColor == "rgb(249, 249, 249)") {
+    oldCssColor = oldCssColorA;
+  } else if (backColor == "rgb(238, 238, 238)") {
+    oldCssColor = oldCssColorB;
+  }
+
+  giftElem.style.backgroundColor = newCssColor;
+
+  giftElementInterval = setInterval(function(){
+    giftElementTimer = giftElementTimer + 1;
+    if(giftElementTimer >= maxGiftElemTimer){
+      giftElementTimer = 0;
+      giftElem.style.background = oldCssColor;
+      if (removeItem)
+        removeGiftElement(inputUid);
+      refreshAllElements();
+      clearInterval(giftElementInterval);
+    }
+  }, 1000);
+
+  function refreshAllElements() {
+    let tempElem;
+    let tempAlternator = 0;
+    let oldCssOptions = [oldCssColorB, oldCssColorA];
+    if ((initializedGifts.length % 2) == 0) {
+      oldCssOptions = [oldCssColorA, oldCssColorB];
+    }
+    for (let i = 0; i < initializedGifts.length; i++) {
+      if (tempAlternator == 0)
+        tempAlternator = 1;
+      else
+        tempAlternator = 0;
+
+      tempElem = document.getElementById('gift' + initializedGifts[i]);
+      tempElem.style.background = oldCssOptions[tempAlternator];
+    }
   }
 }
