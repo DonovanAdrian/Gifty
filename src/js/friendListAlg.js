@@ -13,6 +13,7 @@ let inviteArr = [];
 let userUserNames = [];
 let initializedGifts = [];
 
+let initializingElements = false;
 let updateGiftToDBBool = false;
 let giftListEmptyBool = false;
 let potentialRemoval = false;
@@ -27,7 +28,6 @@ let dataListContainer;
 let backBtn;
 let offlineSpan;
 let offlineModal;
-let giftUser;
 let giftModal;
 let giftTitle;
 let giftLink;
@@ -75,9 +75,11 @@ function getCurrentUser(){
     giftUser.giftList = [];
   } else {
     giftArr = giftUser.giftList;
+    initializingElements = true;
     for (let i = 0; i < giftUser.giftList.length; i++) {
       createGiftElement(giftUser.giftList[i], i);
     }
+    initializingElements = false;
   }
 
   if (giftUser.giftList.length == 0) {
@@ -249,6 +251,8 @@ window.onload = function instantiate() {
           updateGiftError(data, data.key);
           updateGiftToDBBool = false;
         }
+        giftUser.giftList = giftArr;
+        saveCriticalCookies();
       });
 
       postRef.on('child_changed', function(data) {
@@ -271,6 +275,10 @@ window.onload = function instantiate() {
           }
 
           changeGiftElement(data.val(), data.key);
+          if (!potentialRemoval)
+            showUpdatedItem(data.val().uid);
+          giftUser.giftList = giftArr;
+          saveCriticalCookies();
         }
       });
 
@@ -328,7 +336,6 @@ function findRemovedGift(oldArr, newArr) {
 
   removedGiftIndex = findRemovedData(oldArr, newArr);
   if (removedGiftIndex != -1) {
-    removeGiftElement(oldArr[removedGiftIndex].uid);
     let i = initializedGifts.indexOf(oldArr[removedGiftIndex].uid);
     initializedGifts.splice(i, 1);
     if (oldArr[removedGiftIndex].uid == currentModalOpen) {
@@ -338,6 +345,7 @@ function findRemovedGift(oldArr, newArr) {
             "was deleted by " + giftUser.name + "! This gift is no longer available to view...", 4);
       }
     }
+    showUpdatedItem(oldArr[removedGiftIndex].uid, true);
     oldGiftArr.splice(removedGiftIndex, 1);
   }
 }
@@ -385,6 +393,8 @@ function createGiftElement(giftData, giftKey){
       swapList.style.opacity = ".75";
     }
     initializedGifts.push(giftUid);
+    if (!initializingElements)
+      showUpdatedItem(giftUid);
   } else {
     changeGiftElement(giftData, giftKey);
   }
@@ -599,5 +609,81 @@ function removeGiftElement(uid) {
   dataCounter--;
   if (dataCounter == 0){
     deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
+  }
+}
+
+function showUpdatedItem(inputUid, removeItem) {
+  let giftElem = document.getElementById('gift' + inputUid);
+  let backColor = window.getComputedStyle(giftElem).backgroundColor;
+  let oldCssColor = "";
+  let oldCssColorA = "#f9f9f9";
+  let oldCssColorB = "#eee";
+  let oldCssHover = "#ddd";
+  let newCssColor = "#c4ffc4";
+  let newCssHover = "#91ff91";
+  let giftElementTimer = 0;
+  let maxGiftElemTimer = 3;
+  let giftElementInterval;
+
+  if (removeItem == undefined)
+    removeItem = false;
+  else if (removeItem) {
+    newCssColor = "#ffc4c4";
+    newCssHover = "#ff9191";
+  }
+
+  if (backColor == "rgb(249, 249, 249)") {
+    oldCssColor = oldCssColorA;
+  } else if (backColor == "rgb(238, 238, 238)") {
+    oldCssColor = oldCssColorB;
+  }
+
+  giftElem.onmouseover = function () {
+    giftElem.style.backgroundColor = newCssHover;
+  }
+  giftElem.onmouseout = function () {
+    giftElem.style.backgroundColor = newCssColor;
+  }
+
+  giftElem.style.backgroundColor = newCssColor;
+
+  giftElementInterval = setInterval(function(){
+    giftElementTimer = giftElementTimer + 1;
+    if(giftElementTimer >= maxGiftElemTimer){
+      giftElementTimer = 0;
+      resetElement();
+      if (removeItem)
+        removeGiftElement(inputUid);
+      refreshAllElements();
+      clearInterval(giftElementInterval);
+    }
+  }, 1000);
+
+  function resetElement() {
+    giftElem.style.background = oldCssColor;
+    giftElem.onmouseover = function () {
+      giftElem.style.backgroundColor = oldCssHover;
+    }
+    giftElem.onmouseout = function () {
+      giftElem.style.backgroundColor = oldCssColor;
+    }
+  }
+
+  function refreshAllElements() {
+    let tempElem;
+    let tempAlternator = 0;
+    let oldCssOptions = [oldCssColorB, oldCssColorA];
+    if ((initializedGifts.length % 2) == 0) {
+      oldCssOptions = [oldCssColorA, oldCssColorB];
+    }
+    for (let i = 0; i < initializedGifts.length; i++) {
+      if (tempAlternator == 0)
+        tempAlternator = 1;
+      else
+        tempAlternator = 0;
+
+      tempElem = document.getElementById('gift' + initializedGifts[i]);
+      tempElem.style.background = oldCssOptions[tempAlternator];
+    }
   }
 }
