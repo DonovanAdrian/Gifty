@@ -237,7 +237,7 @@ window.onload = function instantiate() {
 
     let fetchGifts = function (postRef) {
       postRef.on('child_added', function (data) {
-        if (giftArr.indexOf(data.val()) == -1)
+        if (findUIDItemInArr(data.val().uid, giftArr, true) == -1)
           giftArr.push(data.val());
 
         if(checkGiftBuyer(data.val().buyer)){
@@ -618,9 +618,7 @@ function showUpdatedItem(inputUid, removeItem) {
   let oldCssColor = "";
   let oldCssColorA = "#f9f9f9";
   let oldCssColorB = "#eee";
-  let oldCssHover = "#ddd";
   let newCssColor = "#c4ffc4";
-  let newCssHover = "#91ff91";
   let giftElementTimer = 0;
   let maxGiftElemTimer = 3;
   let giftElementInterval;
@@ -629,7 +627,7 @@ function showUpdatedItem(inputUid, removeItem) {
     removeItem = false;
   else if (removeItem) {
     newCssColor = "#ffc4c4";
-    newCssHover = "#ff9191";
+    giftElem.onclick = function(){};
   }
 
   if (backColor == "rgb(249, 249, 249)") {
@@ -638,36 +636,19 @@ function showUpdatedItem(inputUid, removeItem) {
     oldCssColor = oldCssColorB;
   }
 
-  giftElem.onmouseover = function () {
-    giftElem.style.backgroundColor = newCssHover;
-  }
-  giftElem.onmouseout = function () {
-    giftElem.style.backgroundColor = newCssColor;
-  }
-
   giftElem.style.backgroundColor = newCssColor;
 
   giftElementInterval = setInterval(function(){
     giftElementTimer = giftElementTimer + 1;
     if(giftElementTimer >= maxGiftElemTimer){
       giftElementTimer = 0;
-      resetElement();
+      giftElem.style.background = oldCssColor;
       if (removeItem)
         removeGiftElement(inputUid);
       refreshAllElements();
       clearInterval(giftElementInterval);
     }
   }, 1000);
-
-  function resetElement() {
-    giftElem.style.background = oldCssColor;
-    giftElem.onmouseover = function () {
-      giftElem.style.backgroundColor = oldCssHover;
-    }
-    giftElem.onmouseout = function () {
-      giftElem.style.backgroundColor = oldCssColor;
-    }
-  }
 
   function refreshAllElements() {
     let tempElem;
