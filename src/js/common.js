@@ -68,6 +68,7 @@ let dataListChecker;
 let verifiedElements;
 let analytics;
 let privateUser;
+let giftUser;
 
 
 
@@ -1586,15 +1587,19 @@ function addReviewDays(date, days) {
 }
 
 function saveCriticalCookies(){
+  let possibleKeys ;
+  let possibleValues;
   if (privateUserOverride) {
-    sessionStorage.setItem("privateList", JSON.stringify(giftUser));
-    sessionStorage.setItem("validUser", JSON.stringify(giftUser));
-    sessionStorage.setItem("validPrivateUser", JSON.stringify(user));
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
-    sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
+    possibleKeys = ["privateList", "validUser", "validPrivateUser", "userArr", "giftStorage"];
+    possibleValues = [giftUser, giftUser, user, userArr, giftStorage];
   } else {
-    sessionStorage.setItem("validUser", JSON.stringify(user));
-    sessionStorage.setItem("userArr", JSON.stringify(userArr));
+    possibleKeys = ["validUser", "userArr", "validGiftUser"];
+    possibleValues = [user, userArr, giftUser];
+  }
+
+  for (let i = 0; i < possibleKeys.length; i++) {
+    if (possibleValues[i] != undefined)
+      sessionStorage.setItem(possibleKeys[i], JSON.stringify(possibleValues[i]));
   }
 }
 
