@@ -10,6 +10,10 @@ let logoutLimit = 900; //default 900, 900 15 mins, 600 10 mins
 let debugElementIntegrity = false;
 let redirectWarningBool = true;
 
+let listeningFirebaseRefs = [];
+let userArr = [];
+let inviteArr = [];
+let familyArr = [];
 let giftDBChanges = [];
 let noteDBChanges = [];
 let userDBChanges = [];
@@ -1593,8 +1597,8 @@ function saveCriticalCookies(){
     possibleKeys = ["privateList", "validUser", "validPrivateUser", "userArr", "giftStorage"];
     possibleValues = [giftUser, giftUser, user, userArr, giftStorage];
   } else {
-    possibleKeys = ["validUser", "userArr", "validGiftUser"];
-    possibleValues = [user, userArr, giftUser];
+    possibleKeys = ["validUser", "userArr", "validGiftUser", "familyArr"];
+    possibleValues = [user, userArr, giftUser, familyArr];
   }
 
   for (let i = 0; i < possibleKeys.length; i++) {
