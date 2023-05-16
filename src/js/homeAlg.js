@@ -634,8 +634,10 @@ window.onload = function instantiate() {
 
     let fetchGifts = function (postRef) {
       postRef.on('child_added', function (data) {
-        if (findUIDItemInArr(data.val().uid, giftArr, true) == -1)
+        if (findUIDItemInArr(data.val().uid, giftArr, true) == -1) {
           giftArr.push(data.val());
+          saveCriticalCookies();
+        }
         createGiftElement(data.val().uid);
         checkGiftLimit();
       });
@@ -647,6 +649,7 @@ window.onload = function instantiate() {
           if (data.val().uid == currentModalOpen) {
             closeModal(giftModal);
           }
+          saveCriticalCookies();
         }
       });
 
@@ -862,6 +865,7 @@ function deleteGiftElement(title, uid, buyer, bulkDelete) {
 
   if(toDelete != -1) {
     giftArr.splice(toDelete, 1);
+    saveCriticalCookies();
 
     for (let i = 0; i < giftArr.length; i++) {
       if (uid == giftArr[i].uid) {
