@@ -254,8 +254,11 @@ window.onload = function instantiate() {
 
     let fetchFriends = function (postRef) {
       postRef.on('child_added', function (data) {
-        if (friendArr.indexOf(data.val()) == -1)
+        if (friendArr.indexOf(data.val()) == -1) {
           friendArr.push(data.val());
+          user.friends = friendArr;
+          saveCriticalCookies();
+        }
         createFriendElement(data.val());
       });
 
@@ -264,6 +267,8 @@ window.onload = function instantiate() {
         if(consoleOutput)
           console.log("Changing " + data.val());
         changeFriendElement(data.key);
+        user.friends = friendArr;
+        saveCriticalCookies();
       });
 
       postRef.on('child_removed', function (data) {
@@ -505,6 +510,7 @@ function deleteFriend(delFriendData) {
 
   if (!verifyDeleteBool) {
     friendArr = user.friends;
+    saveCriticalCookies();
     deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
         "able to be removed from your friend list. Please try again later!");
     updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
@@ -567,6 +573,7 @@ function deleteFriend(delFriendData) {
     deletePendingUid = "";
     removeFriendElement(uid);
     user.friends = friendArr;
+    saveCriticalCookies();
     refreshFriendInviteArrays();
     listenForDBChanges("Remove", uid);
     successfulDBOperationTitle = "Friend Removed!";
