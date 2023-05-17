@@ -5,11 +5,8 @@
  */
 
 let confirmationElements = [];
-let userArr = [];
 let friendArr = [];
-let inviteArr = [];
 let oldInviteArr = [];
-let listeningFirebaseRefs = [];
 let initializedUsers = [];
 
 let inviteDeleteLocal = false;
@@ -226,8 +223,11 @@ window.onload = function instantiate() {
 
     let fetchInvites = function (postRef) {
       postRef.on('child_added', function (data) {
-        if (inviteArr.indexOf(data.val()) == -1)
+        if (inviteArr.indexOf(data.val()) == -1) {
           inviteArr.push(data.val());
+          user.invites = inviteArr;
+          saveCriticalCookies();
+        }
 
         createInviteElement(data.val());
         inviteNote.style.background = "#ff3923";
@@ -238,6 +238,8 @@ window.onload = function instantiate() {
 
         if (initializedUsers.includes(data.key)) {
           changeInviteElement(data.val());
+          user.invites = inviteArr;
+          saveCriticalCookies();
         }
       });
 
@@ -534,7 +536,7 @@ function deleteInvite(inviteData, finalInviteData) {
 
       user.invites = inviteArr;
       user.friends = finalInviteData[1];
-      sessionStorage.setItem("validUser", JSON.stringify(user));
+      saveCriticalCookies();
     }
 
     removeInviteElement(uid);
@@ -547,6 +549,7 @@ function deleteInvite(inviteData, finalInviteData) {
       successfulDBOperationTitle = "Invite Deleted!";
       successfulDBOperationNotice = "Your invite from " + inviteData.name + " was successfully deleted!";
     }
+    saveCriticalCookies();
     inviteDeleteLocal = false;
   } else {
     if (deleteInviteRun < 3) {
