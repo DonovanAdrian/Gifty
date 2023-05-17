@@ -229,8 +229,11 @@ window.onload = function instantiate() {
 
     let fetchFriends = function (postRef) {
       postRef.on('child_added', function (data) {
-        if (friendArr.indexOf(data.val()) == -1)
+        if (friendArr.indexOf(data.val()) == -1) {
           friendArr.push(data.val());
+          user.friends = friendArr;
+          saveCriticalCookies();
+        }
         createFriendElement(data.val());
       });
 
@@ -239,6 +242,8 @@ window.onload = function instantiate() {
         if(consoleOutput)
           console.log("Changing " + data.val());
         changeFriendElement(data.val());
+        user.friends = friendArr;
+        saveCriticalCookies();
       });
 
       postRef.on('child_removed', function (data) {
