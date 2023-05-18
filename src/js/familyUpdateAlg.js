@@ -5,10 +5,6 @@
  */
 
 let familyUpdateElements = [];
-let listeningFirebaseRefs = [];
-let inviteArr = [];
-let userArr = [];
-let familyArr = [];
 let loadedPCUserArr = [];
 
 let dataCounter = 0;
@@ -346,6 +342,7 @@ window.onload = function instantiate() {
       } else {
         familyArr[i].members = [];
         firebase.database().ref("family/" + familyRemove.uid).child("/members/").remove();
+        saveCriticalCookies();
       }
     } else {
       emptyFamily = true;
@@ -491,6 +488,7 @@ window.onload = function instantiate() {
     let fetchFamilies = function (postRef){
       postRef.on('child_added', function (data) {
         familyArr.push(data.val());
+        saveCriticalCookies();
       });
 
       postRef.on('child_changed', function (data) {
@@ -523,6 +521,7 @@ window.onload = function instantiate() {
         let i = findUIDItemInArr(data.key, familyArr);
         if(familyArr[i] != data.val() && i != -1) {
           familyArr[i] = data.val();
+          saveCriticalCookies();
         }
       });
 
@@ -533,6 +532,7 @@ window.onload = function instantiate() {
         let i = findUIDItemInArr(data.key, familyArr);
         if(familyArr[i] != data.val() && i != -1) {
           familyArr.splice(i, 1);
+          saveCriticalCookies();
         }
       });
     };
