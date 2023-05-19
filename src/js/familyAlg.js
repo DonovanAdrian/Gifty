@@ -5,10 +5,6 @@
  */
 
 let familyElements = [];
-let listeningFirebaseRefs = [];
-let inviteArr = [];
-let userArr = [];
-let familyArr = [];
 let familyMemberArr = [];
 let loadedFamilyMembersArr = [];
 
@@ -223,14 +219,14 @@ window.onload = function instantiate() {
               familyArr.push(data.val());
 
               createFamilyElement(data.val());
-              saveFamilyArrToCookie();
+              saveCriticalCookies();
             } else {
               localObjectChanges = findObjectChanges(familyArr[i], data.val());
               if (localObjectChanges.length != 0) {
                 familyArr[i] = data.val();
 
                 changeFamilyElement(data.val());
-                saveFamilyArrToCookie();
+                saveCriticalCookies();
               }
             }
           });
@@ -242,7 +238,7 @@ window.onload = function instantiate() {
               if (localObjectChanges.length != 0) {
                 familyArr[i] = data.val();
                 changeFamilyElement(data.val());
-                saveFamilyArrToCookie();
+                saveCriticalCookies();
               }
             }
           });
@@ -252,7 +248,7 @@ window.onload = function instantiate() {
             if (i != -1) {
               familyArr.splice(i, 1);
               removeFamilyElement(data.key);
-              saveFamilyArrToCookie();
+              saveCriticalCookies();
             }
           });
         } else {
@@ -403,8 +399,4 @@ function addFamilyToDB(familyName){
   });
 
   closeModal(familyAddModal);
-}
-
-function saveFamilyArrToCookie(){
-  sessionStorage.setItem("familyArr", JSON.stringify(familyArr));
 }
