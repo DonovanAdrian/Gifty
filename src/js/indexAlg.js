@@ -5,8 +5,6 @@
  */
 
 let indexElements = [];
-let listeningFirebaseRefs = [];
-let userArr = [];
 
 let config;
 let signUpTimerInterval;
