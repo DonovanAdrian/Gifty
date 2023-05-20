@@ -5,8 +5,6 @@
  */
 
 let boughtGiftElements = [];
-let listeningFirebaseRefs = [];
-let inviteArr = [];
 let userUserNames = [];
 let userBoughtGiftsArr = [];
 let userBoughtGiftsUIDs = [];
