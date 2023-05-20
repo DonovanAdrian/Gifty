@@ -5,8 +5,6 @@
  */
 
 let giftAddUpdateElements = [];
-let listeningFirebaseRefs = [];
-let userArr = [];
 let oldGiftArr = [];
 let giftArr = [];
 let giftURLLimit = [];
