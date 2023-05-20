@@ -9,11 +9,8 @@ let currentYear = currentDate.getFullYear();
 let reviewDate = new Date(currentYear, 0, 1, 0, 0, 0, 0);//Jan 1st
 
 let homeElements = [];
-let listeningFirebaseRefs = [];
-let userArr = [];
 let giftArr = [];
 let oldGiftArr = [];
-let inviteArr = [];
 let userBoughtGifts = [];
 let initializedGifts = [];
 let userBoughtGiftsUIDs = [];
@@ -636,6 +633,7 @@ window.onload = function instantiate() {
       postRef.on('child_added', function (data) {
         if (findUIDItemInArr(data.val().uid, giftArr, true) == -1) {
           giftArr.push(data.val());
+          user.giftList = giftArr;
           saveCriticalCookies();
         }
         createGiftElement(data.val().uid);
@@ -649,6 +647,7 @@ window.onload = function instantiate() {
           if (data.val().uid == currentModalOpen) {
             closeModal(giftModal);
           }
+          user.giftList = giftArr;
           saveCriticalCookies();
         }
       });
@@ -865,6 +864,7 @@ function deleteGiftElement(title, uid, buyer, bulkDelete) {
 
   if(toDelete != -1) {
     giftArr.splice(toDelete, 1);
+    user.giftList = giftArr;
     saveCriticalCookies();
 
     for (let i = 0; i < giftArr.length; i++) {
