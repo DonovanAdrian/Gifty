@@ -5,9 +5,7 @@
  */
 
 let faqElements = [];
-let userArr = [];
 let supportArr = [];
-let listeningFirebaseRefs = [];
 
 let offlineSpan;
 let offlineModal;
