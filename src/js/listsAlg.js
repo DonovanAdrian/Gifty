@@ -5,12 +5,9 @@
  */
 
 let listsElements = [];
-let inviteArr = [];
 let friendArr = [];
 let oldFriendArr = [];
-let listeningFirebaseRefs = [];
 let initializedUsers = [];
-let userArr = [];
 
 let potentialRemoval = false;
 let friendListEmptyBool = false;
