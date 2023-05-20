@@ -5,11 +5,8 @@
  */
 
 let inviteElements = [];
-let inviteArr = [];
 let friendArr = [];
 let oldFriendArr = [];
-let listeningFirebaseRefs = [];
-let userArr = [];
 let commonFriendArr = [];
 let initializedUsers = [];
 let friendUserNameList = [];
