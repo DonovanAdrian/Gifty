@@ -5,10 +5,6 @@
  */
 
 let moderationElements = [];
-let listeningFirebaseRefs = [];
-let inviteArr = [];
-let userArr = [];
-let familyArr = [];
 let initializedUsers = [];
 
 let secretSantaAssignErrorMsg = "try again or look at the console for more details!";
