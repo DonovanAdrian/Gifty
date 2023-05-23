@@ -5,10 +5,7 @@
  */
 
 let moderationQueueElements = [];
-let listeningFirebaseRefs = [];
 let initializedTickets = [];
-let inviteArr = [];
-let userArr = [];
 let ticketArr = [];
 
 let moderationSet = 1;
