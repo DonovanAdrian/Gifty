@@ -5,12 +5,9 @@
  */
 
 let notificationsElements = [];
-let userArr = [];
-let inviteArr = [];
 let notificationArr = [];
 let notificationKeyArr = [];
 let oldNotificationArr = [];
-let listeningFirebaseRefs = [];
 let initializedNotifications = [];
 
 let notificationListEmptyBool = false;
