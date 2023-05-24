@@ -5,9 +5,6 @@
  */
 
 let settingsElements = [];
-let listeningFirebaseRefs = [];
-let inviteArr = [];
-let userArr = [];
 
 let settingsUserScore = 0;
 let settingsUserScoreLimit = 10;
