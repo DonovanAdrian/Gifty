@@ -621,35 +621,6 @@ ul li.santa::before {
   100% {top:-100%; opacity:0}
 }
 
-.closeInvert {
-  color: black;
-  float: left;
-  font-size: 28px;
-  font-weight: bold;
-  transition: 0.4s;
-}
-
-.closeInvert:hover,
-.closeInvert:focus {
-  color: #555555;
-  text-decoration: none;
-}
-
-.close {
-  color: white;
-  float: right;
-  padding: 10px 5px;
-  font-size: 28px;
-  font-weight: bold;
-  transition: 0.4s;
-}
-
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-}
-
 .modal-header {
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
@@ -697,6 +668,35 @@ ul li.santa::before {
 
 .modal-footer-right-override:hover {
   color:red;
+}
+
+.closeInvert {
+  color: black;
+  float: left;
+  font-size: 28px;
+  font-weight: bold;
+  transition: 0.4s;
+}
+
+.closeInvert:hover,
+.closeInvert:focus {
+  color: #555555;
+  text-decoration: none;
+}
+
+.close {
+  color: white;
+  float: right;
+  padding: 10px 5px;
+  font-size: 28px;
+  font-weight: bold;
+  transition: 0.4s;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
 }
 
 @media screen and (min-width: 0px) and (max-width: 425px) {
