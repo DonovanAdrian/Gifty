@@ -9,6 +9,8 @@ let friendArr = [];
 let oldFriendArr = [];
 let commonFriendArr = [];
 let initializedUsers = [];
+let unBlacklistUsers = [];
+let loadedBlacklistUsers = [];
 let friendUserNameList = [];
 let friendShareCodeList = [];
 
@@ -19,6 +21,9 @@ let friendListEmptyBool = false;
 
 let dataCounter = 0;
 let commonLoadingTimerInt = 0;
+let easterEggA = 0;
+let easterEggB = 0;
+let easterEggC = 0;
 
 let inviteListEmptyText = "";
 let deletePendingUid = "";
@@ -28,6 +33,13 @@ let offlineSpan;
 let offlineModal;
 let userInviteModal;
 let confirmUserModal;
+let blacklistModal;
+let closeBlacklistModal;
+let blacklistDescription;
+let blacklistContainer;
+let testBlacklist;
+let blacklistRemove;
+let blacklistedUsers;
 let addUser;
 let user;
 let newInviteIcon;
@@ -116,6 +128,13 @@ window.onload = function instantiate() {
   inviteDeny = document.getElementById('inviteDeny');
   inviteNote = document.getElementById('inviteNote');
   newInviteIcon = document.getElementById('newInviteIcon');
+  blacklistModal = document.getElementById('blacklistModal');
+  closeBlacklistModal = document.getElementById('closeBlacklistModal');
+  blacklistDescription = document.getElementById('blacklistDescription');
+  blacklistContainer = document.getElementById('blacklistContainer');
+  testBlacklist = document.getElementById('testBlacklist');
+  blacklistRemove = document.getElementById('blacklistRemove');
+  blacklistedUsers = document.getElementById('blacklistedUsers');
   addUser = document.getElementById('addUser');
   confirmModal = document.getElementById('confirmModal');
   closeConfirmModal = document.getElementById('closeConfirmModal');
@@ -141,13 +160,16 @@ window.onload = function instantiate() {
   userInviteRemove = document.getElementById('userInviteRemove');
   testData = document.getElementById('testData');
   inviteElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, userInviteModal,
-    closeUserInviteModal, userNameInp, addToBlackList, inviteInfo, addInvite, cancelInvite, confirmUserModal, closeConfirmUserModal,
-    confUserName, inviteConfirm, inviteDeny, inviteNote, newInviteIcon, addUser, confirmModal, closeConfirmModal,
-    confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal, notificationTitle, notificationInfo,
-    noteSpan, privateMessageModal, closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg, inviteModal,
-    closeInviteModal, userName, userUName, userShareCode, sendPrivateMessage, userInviteRemove, testData];
+    closeUserInviteModal, userNameInp, addToBlackList, inviteInfo, addInvite, cancelInvite, confirmUserModal,
+    closeConfirmUserModal, confUserName, inviteConfirm, inviteDeny, inviteNote, newInviteIcon, blacklistModal,
+    closeBlacklistModal, blacklistDescription, blacklistContainer, testBlacklist, blacklistRemove, blacklistedUsers,
+    addUser, confirmModal, closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal,
+    notificationTitle, notificationInfo, noteSpan, privateMessageModal, closePrivateMessageModal, privateMessageInp,
+    sendMsg, cancelMsg, inviteModal, closeInviteModal, userName, userUName, userShareCode, sendPrivateMessage,
+    userInviteRemove, testData];
 
   getCurrentUser();
+  initializeBlacklistBtn();
   commonInitialization();
   verifyElementIntegrity(inviteElements);
 
@@ -173,7 +195,6 @@ window.onload = function instantiate() {
     generateInviteIcon();
   }
   generateAddUserBtn();
-  evaluateCommonFriends();
 
 
   function databaseQuery() {
@@ -310,6 +331,123 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 };
+
+function showBlacklistModal() {
+  let tempBlacklist = user.userBlackList;
+  let unBlacklistUserIndex = 0;
+  let blacklistedUserIndex = 0;
+
+  clearLoadedBlacklistUsers(false);
+
+  for (let i = 0; i < tempBlacklist.length; i++) {
+    let liItem = document.createElement("LI");
+    blacklistedUserIndex = findUIDItemInArr(tempBlacklist[i], userArr, true);
+    liItem.id = "blacklist" + tempBlacklist[i];
+    liItem.className = "gift";
+    if (unBlacklistUsers.includes(tempBlacklist[i])) {
+      liItem.className = "gift lowSev";
+    }
+    let textNode = document.createTextNode("\"" + userArr[blacklistedUserIndex].userName + "\", " + userArr[blacklistedUserIndex].name);
+    liItem.appendChild(textNode);
+    blacklistContainer.insertBefore(liItem, blacklistContainer.childNodes[0]);
+    liItem.onclick = function () {
+      if (liItem.className.includes("lowSev")) {
+        liItem.className = "gift";
+        unBlacklistUserIndex = unBlacklistUsers.indexOf(tempBlacklist[i]);
+        if (unBlacklistUserIndex != -1)
+          unBlacklistUsers.splice(unBlacklistUserIndex, 1);
+      } else {
+        liItem.className = "gift lowSev";
+        if (!unBlacklistUsers.includes(tempBlacklist[i])) {
+          unBlacklistUsers.push(tempBlacklist[i]);
+        }
+      }
+      console.log(unBlacklistUsers);
+    };
+
+    loadedBlacklistUsers.push("blacklist" + tempBlacklist[i]);
+  }
+
+  blacklistRemove.onclick = function () {
+    if (unBlacklistUsers.length == 0) {
+      deployNotificationModal(true, "No Users Selected!", "You did not select " +
+          "any users to remove from your blacklist! When selecting users, make sure their names turn green, then try " +
+          "again.", 5);
+    } else {
+      for (let i = 0; i < unBlacklistUsers.length; i++) {
+        unBlacklistUserIndex = tempBlacklist.indexOf(unBlacklistUsers[i]);
+        if (unBlacklistUserIndex != -1) {
+          tempBlacklist.splice(unBlacklistUserIndex, 1);
+        }
+      }
+      firebase.database().ref("users/" + user.uid).update({
+        userBlackList: tempBlacklist
+      });
+      user.userBlackList = tempBlacklist;
+      saveCriticalCookies();
+      deployNotificationModal(false, "Un-Blacklisted Users!", "You have " +
+          "successfully un-blacklisted the selected users!", 5);
+      unBlacklistUsers = [];
+      initializeBlacklistBtn();
+      generateAddUserBtn();
+    }
+  };
+
+  openModal(blacklistModal, "blacklistModal");
+
+  closeBlacklistModal.onclick = function() {
+    closeModal(blacklistModal);
+  };
+}
+
+function clearLoadedBlacklistUsers(addTestElem) {
+  if (addTestElem == undefined)
+    addTestElem = true;
+
+  if (loadedBlacklistUsers.length != 0) {
+    for (let a = 0; a < loadedBlacklistUsers.length; a++) {
+      document.getElementById(loadedBlacklistUsers[a]).remove();
+    }
+    loadedBlacklistUsers = [];
+  }
+
+  try {
+    testBlacklist.remove();
+  } catch (err) {}
+
+  if (addTestElem) {
+    let liItem = document.createElement("LI");
+    liItem.id = "testBlacklist";
+    liItem.className = "gift";
+    let textNode = document.createTextNode("No Blacklist Users Found!");
+    liItem.appendChild(textNode);
+    blacklistContainer.insertBefore(liItem, blacklistContainer.childNodes[0]);
+
+    loadedBlacklistUsers.push("testBlacklist");
+  }
+}
+
+function initializeBlacklistBtn() {
+  if (user.userBlackList == null)
+    user.userBlackList = [];
+
+  if (user.userBlackList.length == 0) {
+    clearLoadedBlacklistUsers();
+    blacklistedUsers.onclick = function () {};
+    blacklistedUsers.style.display = "none";
+    blacklistDescription.style.display = "none";
+    blacklistRemove.innerHTML = "No Users Found!";
+    blacklistRemove.onclick = function () {};
+  } else {
+    blacklistedUsers.onclick = function () {
+      showBlacklistModal();
+    };
+    blacklistedUsers.style.display = "inline-block";
+    blacklistedUsers.innerHTML = "View Blacklisted Users";
+    blacklistDescription.style.display = "block";
+    blacklistRemove.innerHTML = "Un-Blacklist Users";
+  }
+}
 
 function findRemovedUser(oldArr, newArr) {
   let removedUserIndex = -1;
@@ -696,8 +834,6 @@ function evaluateCommonFriends(){
   let commonFriendData;
   let userBlackListCommon = [];
 
-  addToBlackList.style.display = "none";
-
   if (user.friends != null) {
     userFriendLength = user.friends.length;
   }
@@ -744,7 +880,8 @@ function evaluateCommonFriends(){
             userInviteData = [];
           }
 
-          if (!userInviteData.includes(user.uid) && !userBlackListCommon.includes(commonFriendData.friends[c])) {
+          if (!commonFriendArr.includes(commonFriendData.friends[c]) && !userInviteData.includes(user.uid)
+              && !userBlackListCommon.includes(commonFriendData.friends[c])) {
             commonFriendArr.push(commonFriendData.friends[c]);
           }
         }
@@ -778,6 +915,7 @@ function generateAddUserBtn(){
   let commonFriendIndex;
   let userBlackList = [];
   let upperCaseUserArr = [];
+  let setSuggestedUser = false;
 
   refreshFriendInviteArrays();
 
@@ -785,45 +923,23 @@ function generateAddUserBtn(){
     upperCaseUserArr.push(userArr[b].userName.toUpperCase());
   }
 
-  if (user.userBlackList != null) {
-    userBlackList = user.userBlackList;
-  }
+  generateSuggestedUser();
 
   addUser.onclick = function() {
+    generateSuggestedUser();
     openModal(userInviteModal, "userInviteModal");
     addInvite.innerHTML = "Send Invite";
-
-    if (commonFriendArr.length > 0) {
-      for (let z = 0; z < commonFriendArr.length; z++) {
-        commonFriendIndex = findUIDItemInArr(commonFriendArr[z], userArr);
-        if (commonFriendIndex != -1 && !userBlackList.includes(userArr[commonFriendIndex].uid)) {
-          inviteInfo.innerHTML = "Suggested Friend: " + userArr[commonFriendIndex].userName + " " + "(" + userArr[commonFriendIndex].name + ")";
-          inviteInfo.onclick = function() {
-            userNameInp.value = userArr[commonFriendIndex].userName;
-          };
-          addToBlackList.style.display = "block";
-          addToBlackList.onclick = function () {
-            if (!userBlackList.includes(userArr[commonFriendIndex].uid)) {
-              userBlackList.push(userArr[commonFriendIndex].uid);
-              firebase.database().ref("users/" + user.uid).update({
-                userBlackList: userBlackList
-              });
-            }
-            user.userBlackList = userBlackList;
-            inviteInfo.innerHTML = "";
-            addToBlackList.style.display = "none";
-            addUser.style.background = "#ff4c4c";
-          };
-          break;
-        }
-      }
-    }
 
     addInvite.onclick = function() {
       let userLocation = -1;
       let containsInt = false;
       let dashCount = 0;
       let shareCodeBool = false;
+      let currentUserScore;
+
+      if (user.settingsScoreBlock == undefined) {
+        user.settingsScoreBlock = 0;
+      }
 
       for (let i = 0; i < userNameInp.value.length; i++) {
         if (userNameInp.value[i] >= '0' && userNameInp.value[i] <= '9') {
@@ -854,9 +970,11 @@ function generateAddUserBtn(){
         }
       }
 
-      addToBlackList.style.display = "none";
-      addToBlackList.onclick = function() {};
-      inviteInfo.innerHTML = "";
+      if (!setSuggestedUser) {
+        addToBlackList.style.display = "none";
+        addToBlackList.onclick = function () {};
+        inviteInfo.innerHTML = "";
+      }
       if(userNameInp.value == ""){
         inviteInfo.innerHTML = "No User Name Or Share Code Provided, Please Try Again!";
       } else if (friendShareCodeList.includes(userNameInp.value) ||
@@ -885,12 +1003,41 @@ function generateAddUserBtn(){
             generateConfirmDialog(userLocation);
           }
         }
-      } else if (userNameInp.value.toUpperCase() == "USER NAME BELOW"){
+      } else if (userNameInp.value.toUpperCase() == "USER NAME OR SHARE CODE BELOW"
+          && easterEggA == 0 && easterEggB == 0 && easterEggC == 0
+          && user.settingsScoreBlock == 0){
         inviteInfo.innerHTML = "Very Funny, Please Enter A User Name";
-      } else if (userNameInp.value.toUpperCase() == "A USER NAME"){
+        clearInviteModalFields();
+
+        if (user.userScore == undefined)
+          user.userScore = 0;
+        user.userScore = user.userScore + 5;
+        currentUserScore = user.userScore;
+        firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
+        easterEggA = 1;
+        updateMaintenanceLog(pageName, "The user, " + user.userName + " found an easter egg!");
+      } else if (userNameInp.value.toUpperCase() == "A USER NAME"
+          && easterEggA == 1 && easterEggB == 0 && easterEggC == 0){
         inviteInfo.innerHTML = "Listen Here, Please Input Something Serious";
-      } else if (userNameInp.value.toUpperCase() == "SOMETHING SERIOUS"){
+        clearInviteModalFields();
+
+        if (user.userScore == undefined)
+          user.userScore = 0;
+        user.userScore = user.userScore + 10;
+        currentUserScore = user.userScore;
+        firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
+        easterEggB = 1;
+      } else if (userNameInp.value.toUpperCase() == "SOMETHING SERIOUS"
+          && easterEggA == 1 && easterEggB == 1 && easterEggC == 0){
         inviteInfo.innerHTML = "You're Just Mocking Me At This Point";
+        clearInviteModalFields();
+
+        if (user.userScore == undefined)
+          user.userScore = 0;
+        user.userScore = user.userScore + 25;
+        currentUserScore = user.userScore;
+        firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
+        easterEggC = 1;
       } else {
         if (shareCodeBool) {
           inviteInfo.innerHTML = "That Share Code, \"" + userNameInp.value + "\" Does Not Exist, Please Try Again!";
@@ -902,24 +1049,70 @@ function generateAddUserBtn(){
 
     cancelInvite.onclick = function() {
       closeModal(userInviteModal);
-      userNameInp.value = "";
       inviteInfo.innerHTML = "";
-      addToBlackList.style.display = "none";
-      addToBlackList.onclick = function() {};
+      clearInviteModalFields();
     };
 
     closeUserInviteModal.onclick = function() {
       closeModal(userInviteModal);
-      userNameInp.value = "";
       inviteInfo.innerHTML = "";
-      addToBlackList.style.display = "none";
-      addToBlackList.onclick = function() {};
+      clearInviteModalFields();
     };
   };
   addUser.innerHTML = "Invite User";
 
   if(consoleOutput)
     console.log("Add Button Generated");
+
+  function clearInviteModalFields() {
+    userNameInp.value = "";
+    addToBlackList.style.display = "none";
+    addToBlackList.onclick = function() {};
+  }
+
+  function generateSuggestedUser() {
+    if (user.userBlackList == undefined) {
+      user.userBlackList = [];
+    }
+    userBlackList = user.userBlackList;
+
+    evaluateCommonFriends();
+    if (commonFriendArr.length > 0) {
+      for (let z = 0; z < commonFriendArr.length; z++) {
+        commonFriendIndex = findUIDItemInArr(commonFriendArr[z], userArr, true);
+        if (commonFriendIndex != -1 && !userBlackList.includes(userArr[commonFriendIndex].uid)) {
+          inviteInfo.style.display = "block";
+          addToBlackList.style.display = "block";
+          addUser.style.background = "#3be357";
+          inviteInfo.innerHTML = "Suggested Friend: " + userArr[commonFriendIndex].userName + " " + "(" + userArr[commonFriendIndex].name + ")";
+          inviteInfo.onclick = function() {
+            userNameInp.value = userArr[commonFriendIndex].userName;
+          };
+          addToBlackList.onclick = function () {
+            if (!userBlackList.includes(userArr[commonFriendIndex].uid)) {
+              userBlackList.push(userArr[commonFriendIndex].uid);
+              firebase.database().ref("users/" + user.uid).update({
+                userBlackList: userBlackList
+              });
+            }
+            user.userBlackList = userBlackList;
+            saveCriticalCookies();
+            initializeBlacklistBtn();
+            generateAddUserBtn();
+            deployNotificationModal(true, "Suggested User Removed!", "The suggested " +
+                "user will no longer be suggested. Click on \"View Blacklisted Users\" if this was done in error.", 5);
+          };
+          setSuggestedUser = true;
+          break;
+        }
+      }
+      if (!setSuggestedUser) {
+        inviteInfo.innerHTML = "";
+        addToBlackList.style.display = "none";
+        addUser.style.background = "#ff4c4c";
+      }
+    }
+  }
 }
 
 function generateConfirmDialog(userLocation) {
