@@ -135,6 +135,7 @@ a {
 }
 
 .modal-content {
+  border-radius: 14px;
   font-family: Verdana;
   position: relative;
   background-color: #fefefe;
@@ -182,25 +183,27 @@ a {
 }
 
 .modal-header {
-  font-size: 10pt;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
   padding: 2px 16px;
   background-color: #5cb85c;
   color: white;
 }
 
 .modal-body {
-  font-size: 12pt;
   padding: 2px 16px;
 }
 
 .modal-footer {
-  padding-bottom: 50px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
   background-color: #5cb85c;
   color: white;
 }
 
 .modal-footer-left {
   float: left;
+  padding-right: 10px;
   padding-left: 10px;
   transition: 0.4s;
 }
@@ -212,6 +215,7 @@ a {
 .modal-footer-right {
   float: right;
   padding-right: 10px;
+  padding-left: 10px;
   transition: 0.4s;
 }
 
@@ -222,15 +226,16 @@ a {
 .close {
   color: white;
   float: right;
+  padding: 10px 5px;
   font-size: 28px;
   font-weight: bold;
+  transition: 0.4s;
 }
 
 .close:hover,
 .close:focus {
   color: #000;
   text-decoration: none;
-  cursor: pointer;
 }
 
 input {
