@@ -5,10 +5,8 @@
  */
 
 let userAddUpdateElements = [];
-let listeningFirebaseRefs = [];
 let userNameArr = [];
 let userKeyArr = [];
-let userArr = [];
 
 let userNameBool = true;
 
