@@ -364,6 +364,12 @@ function initModTicketElement (liItem, ticketData) {
   } else if (ticketData.details.includes("Login enabled by")) {
     liItem.className += " lowSev";
     ticketTitleSuffix = " - Login Enabled";
+  } else if (ticketData.details.includes("found an easter egg!")) {
+    liItem.className += " lowSev";
+    ticketTitleSuffix = " - Easter Egg Found!";
+  } else if (ticketData.details.includes("found an easter egg... But got greedy")) {
+    liItem.className += " lowSev";
+    ticketTitleSuffix = " - Easter Egg Found...";
   } else {
     liItem.className += " highSev";
     ticketTitleSuffix = " - Ticket Title Unavailable, Open For More Details!";
