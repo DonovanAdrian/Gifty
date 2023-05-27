@@ -41,13 +41,41 @@
   <li class="spacer"></li>
 </ul>
 
-<span class="addBtn" id="addUser" alt="Invite A User To Your Friend List">Loading... Please Wait</span>
-
 <div class="centeredImage">
   <img class="notificationIcon" id="notificationButton" src="img/bellNotificationOff.png" alt="View Notifications">
 </div>
 
+<span class="addBtn" id="addUser" alt="Invite A User To Your Friend List">Loading... Please Wait</span>
+
 <img src="img/newInvite.png" class="leftCornerImgHidden" id="newInviteIcon" alt="You Have A New Invite! Click Here To View Your Pending Invites">
+
+<div id="blacklistModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeBlacklistModal">&times;</span>
+      <h2 alt="The Title Of The Blacklist Modal">Blacklisted Users</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p id="blacklistDescription" alt="The Description Of The Blacklist Modal">This is the list of users that you've
+        removed from your suggested invitations.
+        <br/>Once a user is un-blacklisted, they may show up in your suggestions again.
+        <br/><br/>Select the users below that you'd like to un-blacklist, then select "Un-Blacklist Users" on the bottom right.</p>
+      <ul id="blacklistContainer" class="giftList">
+        <li class="gift" id="testBlacklist">Loading...</li>
+      </ul>
+      <br>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3 class="modal-footer-right" id="blacklistRemove" alt="Remove These Users From Your Blacklist">Un-Blacklist Users</h3>
+    </div>
+  </div>
+</div>
 
 <div id="inviteModal" class="modal">
   <div class="modal-content">
@@ -83,11 +111,15 @@
 
     <!--Modal Body-->
     <div class="modal-body">
-      <p></p>
-      <input type="text" id="userNameInp" placeholder="User Name" class="giftInp" alt="Enter The User Name Of The User You Want To Invite To Your Friend's List">
-      <p class="closeInvert" id="addToBlackList">&times;</p><p id="inviteInfo"></p>
+      <br/><br/>
+      <textarea id="userNameInp" placeholder="User Name" class="giftInp" alt="Enter The User Name Of The User You Want To Invite To Your Friend's List" rows="1" maxlength="30"></textarea>
+      <br/>
+      <p class="closeInvert" id="addToBlackList" style="display: none">&times;</p><p id="inviteInfo"></p>
       <p class="giftInfSmall">Your Own Share Code Can Be Found On The "Settings" Page!</p>
-      <br>
+      <br/>
+      <span class="basicBtn" id="blacklistedUsers" alt="View The Users You've Blacklisted" style="display: none">View Blacklisted Users</span>
+      <br/>
+      <br/>
     </div>
 
     <!--Modal Footer-->
