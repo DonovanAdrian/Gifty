@@ -136,11 +136,15 @@ window.onload = function instantiate() {
           };
           createNotificationElement(notificationData, data.key);
         }
+        user.notifications = notificationArr;
+        saveCriticalCookies();
       });
 
       postRef.on('child_changed', function (data) {
         notificationArr[data.key] = data.val();
         changeNotificationElement(data.val(), data.key);
+        user.notifications = notificationArr;
+        saveCriticalCookies();
       });
 
       postRef.on('child_removed', function (data) {
@@ -513,7 +517,7 @@ function initNotificationElement(liItem, notificationPage, notificationData, not
           warn: warningCount
         });
 
-        updateMaintenanceLog("notifications", "The user " + user.userName + " has opened their warning");
+        updateMaintenanceLog("notifications", "The user \"" + user.userName + "\" has opened their warning");
       }
     }
   };
@@ -603,7 +607,7 @@ function deleteNotification(uid) {
     notificationDeleteLocal = false;
   } else {
     deployNotificationModal(true, "Delete Error!", "Notification Not Deleted, Please Try Again!");
-    updateMaintenanceLog("notifications", "Notification delete failed for user " + user.userName + ". It's UID is " + uid);
+    updateMaintenanceLog("notifications", "Notification delete failed for user \"" + user.userName + "\". It's UID is \"" + uid + "\"");
   }
 }
 
