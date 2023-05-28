@@ -7,8 +7,9 @@
 //User Configurable Variables
 let logoutReminder = 300; //default 300, 300 5 mins
 let logoutLimit = 900; //default 900, 900 15 mins, 600 10 mins
-let debugElementIntegrity = false;
-let redirectWarningBool = true;
+let commonLoadingTimerLimit = 15000; //default 15000
+let debugElementIntegrity = false; //Used to debug if elements are properly initialized (developer tool)
+let redirectWarningBool = true; //Used to enable or disable URL redirect warnings
 
 let listeningFirebaseRefs = [];
 let userArr = [];
@@ -23,6 +24,7 @@ let listenExpectedUIDs = [];
 let globalDBKeyChangesArr = [];
 let globalDBDataChangesArr = [];
 let localObjectChanges = [];
+let commonLoadingTimerInt = 0;
 let buttonAlternatorTimer = 0;
 let buttonAlternatorInt = 0;
 let buttonOpacLim = 7;
@@ -31,6 +33,7 @@ let deployedNoteTimer = 0;
 let listenForDBTimer = 0;
 let unsavedChangesNav = 0;
 let failedNavNum = 0;
+let dataCounter = 0;
 let globalNotificationBool = false;
 let consoleOutput = false;
 let unsavedChanges = false;
@@ -60,6 +63,7 @@ let successfulDBOperationNotice = "Your pending change was successfully saved! T
     "now navigate to other pages.";
 let successfulDBNavigation = "NoNav";
 let unsavedChangesOverride;
+let commonLoadingTimer;
 let loginTimerInterval;
 let ohThereYouInterval;
 let transparencyInterval;
@@ -67,12 +71,37 @@ let deployedNoteInterval;
 let listenForDBInterval;
 let openModalTimer;
 let alternateButtonTimer;
+let loginInitial;
+let userInitial;
+let limitsInitial;
+let familyInitial;
+let userBase;
+let userGifts;
+let userInvites;
+let userFriends;
+let userReadNotifications;
+let userNotifications;
+let offlineSpan;
+let offlineModal;
+let offlineTimer;
+let notificationModal;
+let notificationInfo;
+let notificationTitle;
+let noteSpan;
+let inviteNote;
+let backBtn;
+let notificationBtn;
+let dataListContainer;
+let testData;
 let currentTitle;
 let dataListChecker;
 let verifiedElements;
 let analytics;
+let giftStorage;
+let privateList;
 let privateUser;
 let giftUser;
+let user;
 
 
 
@@ -227,12 +256,14 @@ function commonInitialization(){
     closeModal(offlineModal);
   };
 
-  if (dataListChecker != undefined && !emptyListNoteDeployed) {
+  if (!emptyListNoteDeployed) {
     commonLoadingTimer = setInterval(function(){
       commonLoadingTimerInt = commonLoadingTimerInt + 1000;
-      if (commonLoadingTimerInt >= 15000) {
-        if (testData != undefined) {
-          testData.innerHTML = "Loading Error! Please Contact A Moderator!";
+      if (commonLoadingTimerInt >= commonLoadingTimerLimit) {
+        if (document.getElementById('testData') != undefined) {
+          document.getElementById('testData').innerHTML = "Loading Is Taking Longer Than Expected...";
+        } else if (document.getElementById('loginBtn') != undefined) {
+          document.getElementById('loginBtn').innerHTML = "Loading Is Taking Longer Than Expected...";
         }
         if (consoleOutput)
           console.log("Timer Error Issued");
@@ -242,14 +273,14 @@ function commonInitialization(){
           updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced!");
         }
         clearInterval(commonLoadingTimer);
-      } else if (commonLoadingTimerInt >= 2000) {
+      } else if (commonLoadingTimerInt >= 2000 && dataListChecker != undefined) {
         if (document.getElementById('testData') == undefined){
           clearInterval(commonLoadingTimer);
           if(consoleOutput)
             console.log("TestData Missing. Loading Properly.");
         } else {
           if (!loadingTimerCancelled)
-            testData.innerHTML = "Loading... Please Wait...";
+            document.getElementById('testData').innerHTML = "Loading... Please Wait...";
         }
       }
     }, 1000);
@@ -1149,7 +1180,7 @@ function navigation(navNum, loginOverride) {
     };
     fader.addEventListener('animationend', listener);
     if (loginOverride) {
-      fader.style.background = "white";
+      fader.style.background = "#ffffff";
     } else if (loginOverride != undefined) {
       fader.style.background = "#870b0b";
     }
