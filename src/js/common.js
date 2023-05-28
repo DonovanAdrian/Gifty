@@ -237,7 +237,7 @@ function commonInitialization(){
         if (consoleOutput)
           console.log("Timer Error Issued");
         if (user != undefined) {
-          updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced By " + user.userName);
+          updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced By \"" + user.userName + "\"");
         } else {
           updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced!");
         }
@@ -840,9 +840,9 @@ function listenForDBChanges(dbChangeType, expectedUID) {
           "Your pending changes were NOT successfully saved. You may have a slow connection or be " +
           "experiencing an error. Please try again or contact a moderator! Refreshing page...", 6, failedNavNum);
       if (privateUser != null)
-        tempDegradedPerfUser = privateUser.userName + " (As A Private User)";
+        tempDegradedPerfUser = "\"" + privateUser.userName + "\" (As A Private User)";
       else
-        tempDegradedPerfUser = user.userName;
+        tempDegradedPerfUser = "\"" + user.userName + "\"";
       updateMaintenanceLog(pageName, tempDegradedPerfUser + " experienced degraded performance or an error with " +
           dbChangeType + " Operation and UID " + expectedUID);
       clearInterval(listenForDBInterval);
