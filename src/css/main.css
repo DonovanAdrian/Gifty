@@ -673,6 +673,7 @@ ul li.santa::before {
 .closeInvert {
   color: black;
   float: left;
+  margin: 0;
   font-size: 28px;
   font-weight: bold;
   transition: 0.4s;
