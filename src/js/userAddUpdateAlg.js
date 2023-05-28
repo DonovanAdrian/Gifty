@@ -224,7 +224,7 @@ function deleteCheck(){
   let replacementCreatorUser;
   let deleteChangeBool = false;
   let deleteBuyerBool = false;
-  updateMaintenanceLog("userAddUpdate", "Attempting to delete user: " + user.userName);
+  updateMaintenanceLog("userAddUpdate", "Attempting to delete user: \"" + user.userName + "\"");
 
   if(consoleOutput)
     console.log(user.uid + " will be deleted. Are you sure?");
