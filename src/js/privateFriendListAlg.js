@@ -269,7 +269,7 @@ window.onload = function instantiate() {
           updateGiftError(data, data.key);
           updateGiftToDBBool = false;
         }
-        giftUser.giftList = giftArr;
+        giftUser.privateList = giftArr;
         saveCriticalCookies();
         checkGiftLimitLite();
       });
@@ -798,8 +798,8 @@ function deleteGiftElement(key, title, uid, buyer, receivedBy) {
   } else {
     deployNotificationModal(true, "Gift Delete Failed!", "Delete failed, please " +
         "try again later!");
-    updateMaintenanceLog("privateFriendList", "Gift delete failed for user " +
-        giftUser.userName + "'s private list, gift " + uid);
+    updateMaintenanceLog("privateFriendList", "Gift delete failed for user \"" +
+        giftUser.userName + "\", private list, gift " + uid);
   }
 }
 
