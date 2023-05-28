@@ -384,7 +384,7 @@ function addInvite(inviteData){
   if (!friendFriendArr.includes(user.uid)) {
     deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
         "friend list! Please try again...", 4);
-    updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
+    updateMaintenanceLog("confirmation", "\"" + user.userName + "\" attempted to add friend, " +
         inviteData.userName + " and FAILED! (There was an issue with " + inviteData.userName + "'s friend list)");
     return;
   }
@@ -406,7 +406,7 @@ function addInvite(inviteData){
   if (!userFriendArr.includes(inviteData.uid)) {
     deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
         "friend list! Please try again...", 4);
-    updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
+    updateMaintenanceLog("confirmation", "\"" + user.userName + "\" attempted to add friend, " +
         inviteData.userName + " and FAILED! (There was an issue with " + user.userName + "'s friend list)");
     return;
   }
@@ -559,7 +559,7 @@ function deleteInvite(inviteData, finalInviteData) {
       deleteInviteRun = 0;
       deployNotificationModal(true, "Invite Confirmation Error!", "The invite could not be added to your " +
           "friend list! Please try again...", 4);
-      updateMaintenanceLog("confirmation", user.userName + " attempted to add friend, " +
+      updateMaintenanceLog("confirmation", "\"" + user.userName + "\" attempted to add friend, " +
           inviteData.userName + " and FAILED! (There was an issue with " + user.userName + "'s locally stored friend list)");
     }
   }
