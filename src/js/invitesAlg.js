@@ -648,7 +648,7 @@ function deleteFriend(delFriendData) {
     saveCriticalCookies();
     deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
         "able to be removed from your friend list. Please try again later!");
-    updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
+    updateMaintenanceLog("invites", "\"" + user.userName + "\" attempted to remove friend, " +
         delFriendData.userName + " and FAILED! (There was an issue with " + user.userName + "'s friend list)");
     return;
   }
@@ -718,7 +718,7 @@ function deleteFriend(delFriendData) {
   } else {
     deployNotificationModal(true, "Remove Friend Failure!", "Your friend was not " +
         "able to be removed from your friend list. Please try again later!");
-    updateMaintenanceLog("invites", user.userName + " attempted to remove friend, " +
+    updateMaintenanceLog("invites", "\"" + user.userName + "\" attempted to remove friend, " +
         delFriendData.userName + " and FAILED! (There was an issue with " + delFriendData.userName + "'s friend list)");
   }
 
@@ -1015,7 +1015,7 @@ function generateAddUserBtn(){
         currentUserScore = user.userScore;
         firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
         easterEggA = 1;
-        updateMaintenanceLog(pageName, "The user, " + user.userName + " found an easter egg!");
+        updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg!");
       } else if (userNameInp.value.toUpperCase() == "A USER NAME"
           && easterEggA == 1 && easterEggB == 0 && easterEggC == 0){
         inviteInfo.innerHTML = "Listen Here, Please Input Something Serious";
