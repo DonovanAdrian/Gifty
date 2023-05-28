@@ -455,9 +455,9 @@ function login() {
       }
       if (username.value != "" && pin.value != "")
         if (allowLogin)
-          updateMaintenanceLog("index", "Invalid Login: " + username.value.toLowerCase() + " " + pin.value.toString());
+          updateMaintenanceLog("index", "Invalid Login Attempt: \"" + username.value.toLowerCase() + "\"");
         else
-          updateMaintenanceLog("index", "Invalid Login During Maintenance Period: " + username.value.toLowerCase() + " " + pin.value.toString());
+          updateMaintenanceLog("index", "Invalid Login Attempt During Maintenance Period: \"" + username.value.toLowerCase() + "\"");
       loginTry = 0;
       showLoginAlert = 0;
     }
@@ -480,7 +480,7 @@ function authenticate() {
             } else {
               banOverride = true;
               loginInfo.innerHTML = "Login Error Occurred... Please Contact A Moderator!";
-              updateMaintenanceLog("index", "Banned user " + userArr[i].userName + " attempted to log in!");
+              updateMaintenanceLog("index", "Banned user \"" + userArr[i].userName + "\" attempted to log in!");
               return;
             }
           } else {
@@ -501,7 +501,7 @@ function authenticate() {
         console.log("The following error occurred:");
         console.log(err);
         loginInfo.innerHTML = "Login Error Occurred. Please Contact A Moderator!";
-        updateMaintenanceLog("index", "Login Error: " + username.value.toLowerCase() + " " + pin.value.toString() + " - " + err);
+        updateMaintenanceLog("index", "Login Error Occurred: \"" + username.value.toLowerCase() + "\" - " + err);
       }
     }
   }
