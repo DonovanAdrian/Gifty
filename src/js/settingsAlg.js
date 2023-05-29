@@ -25,17 +25,6 @@ let moderationModal;
 let moderationSpan;
 let moderationQueueBtn;
 let userListBtn;
-let offlineTimer;
-let offlineSpan;
-let offlineModal;
-let inviteNote;
-let user;
-let notificationModal;
-let notificationInfo;
-let notificationTitle;
-let noteSpan;
-let userBase;
-let userInvites;
 
 
 
@@ -128,12 +117,15 @@ window.onload = function instantiate() {
 
       if (settingsUserScore == settingsUserScoreLimit) {
         extraText = "<br\><br\><br\>...NOW you've done it! No more points for you! >:(";
+        updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\", found an easter egg... But got greedy :(" +
+            "  Their ability to obtain user score points through easter eggs has been disabled!");
         updateUserScore(true);
       } else if (settingsUserScore >= 7) {
         extraText = "<br\><br\><br\>...Don't get greedy now!";
         updateUserScore(false);
       } else if (settingsUserScore >= 5) {
         extraText = "<br\><br\><br\>...Yes... You can click on these text icons to get more points!";
+        updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg!");
         updateUserScore(false);
       } else {
         updateUserScore(false);
@@ -194,6 +186,8 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
+        clearInterval(commonLoadingTimer);
+        clearInterval(offlineTimer);
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
