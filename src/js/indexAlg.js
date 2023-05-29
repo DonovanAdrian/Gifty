@@ -6,9 +6,6 @@
 
 let indexElements = [];
 
-let config;
-let signUpTimerInterval;
-
 let userLimit = 100;
 let loginTry = 0;
 let showLoginAlert = 0;
@@ -24,15 +21,11 @@ let banOverride = false;
 let allowLogin = true;
 let displayUserText = false;
 
-let user;
-let loginInitial;
-let userInitial;
-let limitsInitial;
+let config;
+let signUpTimerInterval;
 let username;
 let pin;
 let loginInfo;
-let offlineSpan;
-let offlineModal;
 let validUser;
 let loginBtn;
 let signUpFld;
