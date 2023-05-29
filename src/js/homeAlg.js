@@ -30,20 +30,10 @@ let setYearlyReviewBool = false;
 let setNextYearReviewBool = false;
 
 let giftLimit = 50;
-let dataCounter = 0;
-let commonLoadingTimerInt = 0;
 
-let dataListContainer;
-let giftStorage;
-let privateList;
 let reviewGifts;
 let boughtGifts;
 let addGift;
-let offlineSpan;
-let offlineModal;
-let user;
-let offlineTimer;
-let commonLoadingTimer;
 let giftModal;
 let giftTitle;
 let giftLink;
@@ -67,17 +57,6 @@ let confirmTitle;
 let confirmContent;
 let confirmBtn;
 let denyBtn;
-let notificationModal;
-let notificationInfo;
-let notificationTitle;
-let noteSpan;
-let inviteNote;
-let limitsInitial;
-let userBase;
-let userGifts;
-let userInvites;
-let notificationBtn;
-let testData;
 
 
 
@@ -913,7 +892,7 @@ function deleteGiftElement(title, uid, buyer, bulkDelete) {
     if (!bulkDelete)
       deployNotificationModal(true, "Gift Delete Failed!", "Delete failed, please " +
           "try again later!");
-    updateMaintenanceLog("home", "Gift delete failed for user " + user.userName + "'s public list, gift " + uid);
+    updateMaintenanceLog("home", "Gift delete failed for user \"" + user.userName + "\", public list, gift " + uid);
     return true;
   }
   return false;
