@@ -9,12 +9,8 @@ let initializedTickets = [];
 let ticketArr = [];
 
 let moderationSet = 1;
-let dataCounter = 0;
-let commonLoadingTimerInt = 0;
 
-let dataListContainer;
 let nukeTickets;
-let backBtn;
 let ticketModal;
 let closeTicketModal;
 let ticketTitle;
@@ -23,20 +19,7 @@ let ticketDetails;
 let ticketLocation;
 let ticketTime;
 let deleteTicket;
-let offlineSpan;
-let offlineModal;
-let user;
-let offlineTimer;
-let commonLoadingTimer;
-let notificationModal;
-let notificationInfo;
-let notificationTitle;
-let noteSpan;
-let inviteNote;
-let userInitial;
-let userInvites;
 let moderationTickets;
-let testData;
 let userName;
 
 
@@ -100,6 +83,8 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
+        clearInterval(commonLoadingTimer);
+        clearInterval(offlineTimer);
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -313,13 +298,13 @@ function initModTicketElement (liItem, ticketData) {
   } else if (ticketData.details.includes("attempted to add friend")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - !!Invite Removal Error!!";
-  } else if (ticketData.details.includes("Invalid Login:")) {
+  } else if (ticketData.details.includes("Invalid Login Attempt:")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - !!Invalid Login Attempt!!";
-  } else if (ticketData.details.includes("Invalid Login During Maintenance Period:")) {
+  } else if (ticketData.details.includes("Invalid Login Attempt During Maintenance Period:")) {
     liItem.className += " mediumSev";
     ticketTitleSuffix = " - !!Invalid Login Attempt During Maintenance!!";
-  } else if (ticketData.details.includes("Login Error")) {
+  } else if (ticketData.details.includes("Login Error Occurred")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - !!Login Error!!";
   } else if (ticketData.details.includes("attempted to log in")) {
