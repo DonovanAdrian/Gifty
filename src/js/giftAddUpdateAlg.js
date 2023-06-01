@@ -31,11 +31,6 @@ let giftNavigationInt = 0;
 let giftChangeReloadCount = 0;
 let getGiftIndex = -1;
 
-let giftStorage;
-let privateList;
-let offlineSpan;
-let offlineModal;
-let user;
 let giftDescriptionInp;
 let giftTitleInp;
 let giftWhereInp;
@@ -49,15 +44,8 @@ let multipleInfoIcon;
 let updateGift;
 let homeNote;
 let listNote;
-let inviteNote;
 let tempCurrentGift;
 let currentGift;
-let userGifts;
-let limitsInitial;
-let notificationModal;
-let notificationInfo;
-let notificationTitle;
-let noteSpan;
 let confirmModal;
 let closeConfirmModal;
 let confirmTitle;
@@ -170,6 +158,7 @@ window.onload = function instantiate() {
   descriptionInfoIcon = document.getElementById('descriptionInfoIcon');
   multipleInfoIcon = document.getElementById('multipleInfoIcon');
   updateGift = document.getElementById('updateGift');
+  backBtn = document.getElementById('backBtn');
   homeNote = document.getElementById('homeNote');
   listNote = document.getElementById('listNote');
   inviteNote = document.getElementById('inviteNote');
@@ -193,7 +182,7 @@ window.onload = function instantiate() {
     try{
       userGifts = firebase.database().ref("users/" + privateList.uid + "/privateList/");
     } catch (err) {
-      updateMaintenanceLog("privateList", user.uid + " failed to connect to the private list owned by " + privateList.uid + "!");
+      updateMaintenanceLog("privateList", "\"" + user.userName + "\" failed to connect to the private list owned by \"" + privateList.userName + "\"!");
       deployNotificationModal(false, "Gift List Error!", "There was an error connecting to " +
           privateList.uid + "'s private list! Please notify a moderator about this issue!", 5, 3);
     }
@@ -260,6 +249,8 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchLimits = function (postRef) {
       postRef.on('child_added', function (data) {
+        clearInterval(commonLoadingTimer);
+        clearInterval(offlineTimer);
         if (data.key == "giftLimit") {
           giftLimit = data.val();
         } else if (data.key == "giftURLLimit") {
@@ -761,9 +752,9 @@ function updateGiftToDB() {
       deployNotificationModal(false, "Gift Update Error!", "There was an error " +
           "updating the gift, please try again!");
       if (!privateListBool) {
-        updateMaintenanceLog("home", "Gift update failed for user " + user.userName + "'s public list, gift " + giftUID);
+        updateMaintenanceLog("home", "Gift update failed for user \"" + user.userName + "\", public list, gift " + giftUID);
       } else {
-        updateMaintenanceLog("home", "Gift update failed for user " + privateList.uid + "'s private list, gift " + giftUID);
+        updateMaintenanceLog("home", "Gift update failed for user \"" + privateList.uid + "\", private list, gift " + giftUID);
       }
     }
   }
