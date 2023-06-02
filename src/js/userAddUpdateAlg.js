@@ -13,8 +13,6 @@ let userNameBool = true;
 let pinClearedInt = 0;
 let userLimit = 100;
 
-let offlineSpan;
-let offlineModal;
 let confirmSpan;
 let confirmModal;
 let deleteConfirm;
@@ -25,14 +23,6 @@ let pinField;
 let pinConfField;
 let btnUpdate;
 let btnDelete;
-let backBtn;
-let limitsInitial;
-let userInitial;
-let user;
-let notificationModal;
-let notificationInfo;
-let notificationTitle;
-let noteSpan;
 
 
 
@@ -114,6 +104,8 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchData = function (postRef) {
       postRef.on('child_added', function (data) {
+        clearInterval(commonLoadingTimer);
+        clearInterval(offlineTimer);
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
