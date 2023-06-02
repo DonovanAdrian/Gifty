@@ -8,15 +8,8 @@ let familyElements = [];
 let familyMemberArr = [];
 let loadedFamilyMembersArr = [];
 
-let dataCounter = 0;
-let commonLoadingTimerInt = 0;
-
-let inviteNote;
 let settingsNote;
-let dataListContainer;
-let testData;
 let createFamilyBtn;
-let backBtn;
 let familyModal;
 let closeFamilyModal;
 let familyTitle;
@@ -31,17 +24,6 @@ let closeFamilyAddModal;
 let familyNameInp;
 let addFamily;
 let cancelFamily;
-let offlineModal;
-let offlineSpan;
-let notificationModal;
-let noteSpan;
-let notificationTitle;
-let notificationInfo;
-let offlineTimer;
-let commonLoadingTimer;
-let userInitial;
-let userInvites;
-let familyInitial;
 
 
 
@@ -314,7 +296,7 @@ function initFamilyElement(liItem, familyData) {
 
         for (let i = 0; i < familyMemberArr.length; i++) {
           let liItem = document.createElement("LI");
-          let familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
+          let familyMember = findUIDItemInArr(familyMemberArr[i], userArr, true);
           liItem.id = familyMemberArr[i];
           liItem.className = "gift";
           let textNode = document.createTextNode(userArr[familyMember].name);
