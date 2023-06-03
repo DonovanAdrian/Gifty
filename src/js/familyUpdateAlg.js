@@ -4,21 +4,15 @@
  * with written consent under any circumstance.
  */
 
+let initializedElementsArr = [];
 let familyUpdateElements = [];
 let loadedPCUserArr = [];
-
-let dataCounter = 0;
-let commonLoadingTimerInt = 0;
 
 let globalParentData;
 let globalChildData;
 let familyData;
-let inviteNote;
 let settingsNote;
-let dataListContainer;
-let testData;
 let addMember;
-let backBtn;
 let familySettings;
 let familyMemberViewModal;
 let closeFamilyMemberViewModal;
@@ -58,19 +52,7 @@ let confirmMemberTitle;
 let confMemberUserName;
 let addMemberConfirm;
 let addMemberDeny;
-let offlineModal;
-let offlineSpan;
-let notificationModal;
-let noteSpan;
-let notificationTitle;
-let notificationInfo;
-let offlineTimer;
-let commonLoadingTimer;
-let userInitial;
-let userInvites;
-let familyInitial;
 let parentChildInterval;
-let initializedElementsArr = [];
 
 
 
