@@ -12,34 +12,16 @@ let initializedUsers = [];
 let inviteDeleteLocal = false;
 let potentialRemoval = false;
 
-let dataCounter = 0;
-let commonLoadingTimerInt = 0;
 let deleteInviteRun = 0;
 
-let testData;
-let backBtn;
-let dataListContainer;
-let offlineSpan;
-let offlineModal;
-let user;
-let userInitial;
-let userInvites;
-let userFriends;
 let inviteModal;
-let inviteNote;
-let commonLoadingTimer;
-let offlineTimer;
-let notificationModal;
-let notificationInfo;
-let notificationTitle;
-let noteSpan;
-let notificationBtn;
 let closeInviteModal;
 let userNameFld;
 let userUNameFld;
 let userShareCodeFld;
 let userAcceptBtn;
 let userDeleteBtn;
+
 
 
 function getCurrentUser(){
