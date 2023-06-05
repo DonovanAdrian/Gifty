@@ -15,28 +15,9 @@ let notificationDeleteLocal = false;
 let potentialRemoval = false;
 let noteErrorBool = false;
 
-let dataCounter = 0;
-let commonLoadingTimerInt = 0;
-
-let dataListContainer;
 let nukeNotifications;
-let offlineSpan;
-let offlineModal;
-let user;
-let userBase;
-let userReadNotifications;
-let userNotifications;
-let userInvites;
 let noteViewModal;
-let inviteNote;
-let commonLoadingTimer;
-let offlineTimer;
-let notificationModal;
 let privateMessageModal;
-let notificationInfo;
-let notificationTitle;
-let noteSpan;
-let testData;
 let closeNoteViewModal;
 let notificationViewTitle;
 let notificationViewDetails;
