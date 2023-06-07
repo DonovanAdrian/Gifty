@@ -12,17 +12,10 @@ let userBoughtGiftsUsersArr = [];
 let initializedGiftsArr = [];
 let itemColor = [" highSev", " lowSev"];
 
-let dataCounter = 0;
 let moderationSet = -1;
-let commonLoadingTimerInt = 0;
 let colorIndex = -1;
 
 let lastUser;
-let dataListContainer;
-let backBtn;
-let offlineSpan;
-let offlineModal;
-let user;
 let giftTitleFld;
 let giftLinkFld;
 let giftWhereFld;
@@ -31,18 +24,7 @@ let giftCreationDateFld;
 let viewListBtn;
 let giftModal;
 let closeGiftModal;
-let notificationModal;
-let notificationInfo;
-let notificationTitle;
-let noteSpan;
-let notificationBtn;
-let inviteNote;
 let homeNote;
-let offlineTimer;
-let commonLoadingTimer;
-let testData;
-let userInitial;
-let userInvites;
 
 
 
