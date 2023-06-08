@@ -1347,16 +1347,6 @@ function buildPotentialMatchesArray(usersToAssign) {
   }
 }
 
-function generateUserOptionsModal(){
-  userOptionsBtn.onclick = function() {
-    santaModalSpan.onclick = function(){
-      closeModal(secretSantaModal);
-    };
-
-    openModal(secretSantaModal, "userOptionsModal");
-  };
-}
-
 function savePriorSecretSantaNames(){
   let updatePriorNames = false;
 
