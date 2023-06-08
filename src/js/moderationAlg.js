@@ -10,9 +10,7 @@ let initializedUsers = [];
 let secretSantaAssignErrorMsg = "try again or look at the console for more details!";
 
 let moderationSet = 1;
-let dataCounter = 0;
 let globalNoteInt = 0;
-let commonLoadingTimerInt = 0;
 let giftLimit = 0;
 let userLimit = 0;
 
@@ -23,9 +21,6 @@ let allowLogin = null;
 let loginDisabledMsg = "";
 let giftURLLimit = "";
 
-let dataListContainer;
-let offlineSpan;
-let offlineModal;
 let privateMessageModal;
 let sendGlobalNotification;
 let nukeAllUserNotifications;
@@ -58,10 +53,7 @@ let showShareCode;
 let showFriends;
 let showSantaSignUp;
 let showModerator;
-let user;
 let localListedUserData;
-let offlineTimer;
-let commonLoadingTimer;
 let userModal;
 let confirmModal;
 let closeConfirmModal;
@@ -69,16 +61,8 @@ let confirmTitle;
 let confirmContent;
 let confirmBtn;
 let denyBtn;
-let notificationModal;
-let notificationInfo;
-let notificationTitle;
-let noteSpan;
-let inviteNote;
-let userInitial;
-let userInvites;
 let autoSecretSanta;
 let moderatorSettings;
-let familyInitial;
 let userOptionsBtn;
 let secretSantaModal;
 let santaModalSpan;
@@ -86,14 +70,11 @@ let secretSantaBtn;
 let secretSantaShuffle;
 let secretSantaAutoBtn;
 let settingsNote;
-let testData;
 let closeUserModal;
 let userName;
 let userUID;
 let userUserName;
-let userGifts;
 let userPrivateGifts;
-let userFriends;
 let userLastLogin;
 let userScore;
 let userPassword;
@@ -107,8 +88,6 @@ let globalMsgTitle;
 let globalMsgInp;
 let sendMsg;
 let cancelMsg;
-let loginInitial;
-let limitsInitial;
 
 
 
@@ -129,6 +108,7 @@ function checkUserCookie() {
 window.onload = function instantiate() {
   pageName = "Moderation";
   dataListContainer = document.getElementById('dataListContainer');
+  backBtn = document.getElementById('backBtn');
   offlineModal = document.getElementById('offlineModal');
   offlineSpan = document.getElementById('closeOffline');
   inviteNote = document.getElementById('inviteNote');
@@ -233,7 +213,26 @@ window.onload = function instantiate() {
   databaseQuery();
   alternateButtonLabel(settingsNote, "Settings", "Moderation");
   generateUserOptionsModal();
-  userOptionsBtn.innerHTML = "User Options";
+
+  function generateUserOptionsModal(){
+    userOptionsBtn.onclick = function() {
+      userOptionsBtn.style.transform = "rotate(" + (180 % 360) + "deg)";
+
+      santaModalSpan.onclick = function(){
+        closeModal(secretSantaModal);
+        userOptionsBtn.style.transform = "rotate(" + (-60 % 360) + "deg)";
+      };
+
+      window.onclick = function (event) {
+        if (event.target == secretSantaModal) {
+          closeModal(secretSantaModal);
+          userOptionsBtn.style.transform = "rotate(" + (-60 % 360) + "deg)";
+        }
+      };
+
+      openModal(secretSantaModal, "userOptionsModal", true);
+    };
+  }
 
   function initializeBackBtn() {
     backBtn.innerHTML = "Return To Settings";
@@ -243,111 +242,6 @@ window.onload = function instantiate() {
   }
 
   initializeBackBtn();
-
-  function generatePrivateMessageDialog(userData, warnBool) {
-    let warnCount;
-    if (warnBool) {
-      globalMsgTitle.innerHTML = "Send A Warning Message Below";
-      globalMsgInp.placeholder = "Your next offense will result in a ban...";
-    } else {
-      globalMsgTitle.innerHTML = "Send A Private Message Below";
-      globalMsgInp.placeholder = "Hey! Just to let you know...";
-    }
-
-    sendMsg.onclick = function (){
-      if(globalMsgInp.value.includes(",,,")){
-        deployNotificationModal(true, "Message Error!", "Please do not use commas " +
-            "in the message. Thank you!");
-      } else {
-        userUpdateLocal = true;
-        addPrivateMessageToDB(userData, globalMsgInp.value);
-        globalMsgInp.value = "";
-        closeModal(privateMessageModal);
-        if (warnBool) {
-          warnCount = userData.warn;
-          warnCount = warnCount + 1;
-          firebase.database().ref("users/" + userData.uid).update({
-            warn: warnCount
-          });
-          deployNotificationModal(false, "Warning Sent!", userData.name +
-              " Has Been Warned! Once The User Reads The Warning, Their Warning Will Be Removed.",
-              4);
-        } else {
-          deployNotificationModal(false, "Message Sent!",
-              "The Private Message Has Been Sent!");
-        }
-        userUpdateLocal = false;
-      }
-    };
-    cancelMsg.onclick = function (){
-      globalMsgInp.value = "";
-      closeModal(privateMessageModal);
-    };
-
-    openModal(privateMessageModal, "addGlobalMsgModal");
-
-    closePrivateMessageModal.onclick = function() {
-      closeModal(privateMessageModal);
-    };
-  }
-
-  function confirmOperation(operationTitle, operationContent, operationType, operationData, previousModal, previousModalTitle) {
-    confirmTitle.innerHTML = operationTitle;
-    confirmContent.innerHTML = operationContent;
-
-    confirmBtn.onclick = function() {
-      userUpdateLocal = true;
-      if (operationType == "banUser") {
-        firebase.database().ref("users/" + operationData.uid).update({
-          ban: 1
-        });
-        deployNotificationModal(false, "Banned User!",
-            operationData.name + " has been banned!");
-      } else if (operationType == "modRevoke") {
-        firebase.database().ref("users/" + operationData.uid).update({
-          moderatorInt: 0
-        });
-        deployNotificationModal(false, "Moderator Role Revoked",
-            "Revoked role for " + operationData.userName);
-      } else if (operationType == "modGrant") {
-        firebase.database().ref("users/" + operationData.uid).update({
-          moderatorInt: 1
-        });
-        deployNotificationModal(false, "Moderator Role Granted",
-            "Granted role for " + operationData.userName);
-      } else if (operationType == "showPass") {
-        userPassword.innerHTML = decode(operationData.encodeStr);
-        openModal(previousModal, previousModalTitle);
-      }
-      closeModal(confirmModal);
-      userUpdateLocal = false;
-    };
-
-    denyBtn.onclick = function() {
-      closeModal(confirmModal);
-      openModal(previousModal, previousModalTitle);
-    }
-
-    openModal(confirmModal, "confirmModal", true);
-
-    closeConfirmModal.onclick = function() {
-      closeModal(confirmModal);
-      openModal(previousModal, previousModalTitle);
-    };
-
-    window.onclick = function(event) {
-      if (event.target == confirmModal) {
-        closeModal(confirmModal);
-      }
-    };
-  }
-
-  function addPrivateMessageToDB(userData, message) {
-    userUpdateLocal = true;
-    message = generateNotificationString(">admin" + user.uid, "", message, "");
-    addNotificationToDB(userData, message);
-    userUpdateLocal = false;
-  }
 
   function initializeNukeNotification() {
     nukeAllUserNotifications.innerHTML = "Remove All User's Notifications";
@@ -943,6 +837,111 @@ window.onload = function instantiate() {
   }
 };
 
+function generateModeratorPrivateMessageDialog(userData, warnBool) {
+  let warnCount;
+  if (warnBool) {
+    globalMsgTitle.innerHTML = "Send A Warning Message Below";
+    globalMsgInp.placeholder = "Your next offense will result in a ban...";
+  } else {
+    globalMsgTitle.innerHTML = "Send A Private Message Below";
+    globalMsgInp.placeholder = "Hey! Just to let you know...";
+  }
+
+  sendMsg.onclick = function (){
+    if(globalMsgInp.value.includes(",,,")){
+      deployNotificationModal(true, "Message Error!", "Please do not use commas " +
+          "in the message. Thank you!");
+    } else {
+      userUpdateLocal = true;
+      addPrivateMessageToDB(userData, globalMsgInp.value);
+      globalMsgInp.value = "";
+      closeModal(privateMessageModal);
+      if (warnBool) {
+        warnCount = userData.warn;
+        warnCount = warnCount + 1;
+        firebase.database().ref("users/" + userData.uid).update({
+          warn: warnCount
+        });
+        deployNotificationModal(false, "Warning Sent!", userData.name +
+            " Has Been Warned! Once The User Reads The Warning, Their Warning Will Be Removed.",
+            4);
+      } else {
+        deployNotificationModal(false, "Message Sent!",
+            "The Private Message Has Been Sent!");
+      }
+      userUpdateLocal = false;
+    }
+  };
+  cancelMsg.onclick = function (){
+    globalMsgInp.value = "";
+    closeModal(privateMessageModal);
+  };
+
+  openModal(privateMessageModal, "addGlobalMsgModal");
+
+  closePrivateMessageModal.onclick = function() {
+    closeModal(privateMessageModal);
+  };
+}
+
+function confirmOperation(operationTitle, operationContent, operationType, operationData, previousModal, previousModalTitle) {
+  confirmTitle.innerHTML = operationTitle;
+  confirmContent.innerHTML = operationContent;
+
+  confirmBtn.onclick = function() {
+    userUpdateLocal = true;
+    if (operationType == "banUser") {
+      firebase.database().ref("users/" + operationData.uid).update({
+        ban: 1
+      });
+      deployNotificationModal(false, "Banned User!",
+          operationData.name + " has been banned!");
+    } else if (operationType == "modRevoke") {
+      firebase.database().ref("users/" + operationData.uid).update({
+        moderatorInt: 0
+      });
+      deployNotificationModal(false, "Moderator Role Revoked",
+          "Revoked role for " + operationData.userName);
+    } else if (operationType == "modGrant") {
+      firebase.database().ref("users/" + operationData.uid).update({
+        moderatorInt: 1
+      });
+      deployNotificationModal(false, "Moderator Role Granted",
+          "Granted role for " + operationData.userName);
+    } else if (operationType == "showPass") {
+      userPassword.innerHTML = decode(operationData.encodeStr);
+      openModal(previousModal, previousModalTitle);
+    }
+    closeModal(confirmModal);
+    userUpdateLocal = false;
+  };
+
+  denyBtn.onclick = function() {
+    closeModal(confirmModal);
+    openModal(previousModal, previousModalTitle);
+  }
+
+  openModal(confirmModal, "confirmModal", true);
+
+  closeConfirmModal.onclick = function() {
+    closeModal(confirmModal);
+    openModal(previousModal, previousModalTitle);
+  };
+
+  window.onclick = function(event) {
+    if (event.target == confirmModal) {
+      closeModal(confirmModal);
+    }
+  };
+}
+
+function addPrivateMessageToDB(userData, message) {
+  userUpdateLocal = true;
+  message = generateNotificationString(">admin" + user.uid, "", message, "");
+  addNotificationToDB(userData, message);
+  userUpdateLocal = false;
+}
+
 function createUserElement(userData){
   let textNode;
   try{
@@ -1079,7 +1078,7 @@ function initUserElement(liItem, userData) {
       }
     };
     warnUser.onclick = function(){
-      generatePrivateMessageDialog(userData, true);
+      generateModeratorPrivateMessageDialog(userData, true);
     };
     banUser.onclick = function(){
       userUpdateLocal = true;
@@ -1135,7 +1134,7 @@ function initUserElement(liItem, userData) {
 
     sendPrivateMessage.innerHTML = "Click To Send Message To " + userData.name;
     sendPrivateMessage.onclick = function() {
-      generatePrivateMessageDialog(userData, false);
+      generateModeratorPrivateMessageDialog(userData, false);
     };
 
     openModal(userModal, userData.uid);
