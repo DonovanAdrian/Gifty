@@ -48,29 +48,29 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   pageName = "Settings";
-  offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById('closeOffline');
-  inviteNote = document.getElementById('inviteNote');
-  usernameInfo = document.getElementById('usernameInfo');
-  usernameDisplay = document.getElementById('usernameDisplay');
-  nameInfo = document.getElementById('nameInfo');
-  nameDisplay = document.getElementById('nameDisplay');
-  shareCodeInfo = document.getElementById('shareCodeInfo');
-  shareCodeDisplay = document.getElementById('shareCodeDisplay');
-  userScoreInfo = document.getElementById('userScoreInfo');
-  userScoreDisplay = document.getElementById('userScoreDisplay');
-  editBtn = document.getElementById('edit');
-  faqBtn = document.getElementById('faq');
-  modBtn = document.getElementById('mod');
-  familyBtn = document.getElementById('family');
-  moderationModal = document.getElementById('moderationModal');
-  moderationSpan = document.getElementById('moderationSpan');
-  moderationQueueBtn = document.getElementById('moderationQueueBtn');
-  userListBtn = document.getElementById('userListBtn');
-  notificationModal = document.getElementById('notificationModal');
-  notificationTitle = document.getElementById('notificationTitle');
-  notificationInfo = document.getElementById('notificationInfo');
-  noteSpan = document.getElementById('closeNotification');
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  inviteNote = document.getElementById("inviteNote");
+  usernameInfo = document.getElementById("usernameInfo");
+  usernameDisplay = document.getElementById("usernameDisplay");
+  nameInfo = document.getElementById("nameInfo");
+  nameDisplay = document.getElementById("nameDisplay");
+  shareCodeInfo = document.getElementById("shareCodeInfo");
+  shareCodeDisplay = document.getElementById("shareCodeDisplay");
+  userScoreInfo = document.getElementById("userScoreInfo");
+  userScoreDisplay = document.getElementById("userScoreDisplay");
+  editBtn = document.getElementById("edit");
+  faqBtn = document.getElementById("faq");
+  modBtn = document.getElementById("mod");
+  familyBtn = document.getElementById("family");
+  moderationModal = document.getElementById("moderationModal");
+  moderationSpan = document.getElementById("moderationSpan");
+  moderationQueueBtn = document.getElementById("moderationQueueBtn");
+  userListBtn = document.getElementById("userListBtn");
+  notificationModal = document.getElementById("notificationModal");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
+  noteSpan = document.getElementById("closeNotification");
   settingsElements = [offlineModal, offlineSpan, inviteNote, usernameInfo, usernameDisplay, nameInfo, nameDisplay,
     shareCodeInfo, shareCodeDisplay, userScoreInfo, userScoreDisplay, editBtn, faqBtn, modBtn, familyBtn,
     moderationModal, moderationSpan, moderationQueueBtn, userListBtn, notificationModal, notificationTitle,
@@ -185,7 +185,7 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
     let fetchData = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         clearInterval(commonLoadingTimer);
         clearInterval(offlineTimer);
         let i = findUIDItemInArr(data.key, userArr, true);
@@ -213,7 +213,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -232,7 +232,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           if(consoleOutput)
@@ -244,16 +244,16 @@ window.onload = function instantiate() {
     };
 
     let fetchInvites = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         inviteArr.push(data.val());
         inviteNote.style.background = "#ff3923";
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         inviteArr[data.key] = data.val();
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         inviteArr.splice(data.key, 1);
 
         if (inviteArr.length == 0) {
@@ -270,9 +270,9 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 
-  let targetNode = document.getElementById('moderationModal');
+  let targetNode = document.getElementById("moderationModal");
   let observer = new MutationObserver(function(){
-    if(targetNode.style.display != 'none' && user.moderatorInt != 1){
+    if(targetNode.style.display != "none" && user.moderatorInt != 1){
       updateMaintenanceLog("settings", "The user \"" + user.userName + "\" (" + user.uid + ") " +
           "forced the moderation modal to appear. Functionality and button text is NOT available to the user when forced " +
           "open, but please advise.");
