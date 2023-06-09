@@ -34,6 +34,7 @@ let listenForDBTimer = 0;
 let unsavedChangesNav = 0;
 let failedNavNum = 0;
 let dataCounter = 0;
+let pendingNavigation = 0;
 let globalNotificationBool = false;
 let consoleOutput = false;
 let unsavedChanges = false;
@@ -212,8 +213,9 @@ function commonInitialization(){
   }
 
   window.addEventListener("online", function(){
-    closeModal(offlineModal);
-    location.reload();
+    clearInterval(offlineTimer);
+    deployNotificationModal(false, "Internet Restored!", "Internet connection " +
+        "restored! Please wait, refreshing the page...", 4, failedNavNum);
   });
 
   window.addEventListener("offline", function() {
@@ -221,6 +223,7 @@ function commonInitialization(){
     offlineTimer = setInterval(function(){
       now = now + 1000;
       if(now >= 5000){
+        clearInterval(commonLoadingTimer);
         if(dataListChecker != undefined) {
           try {
             document.getElementById('testData').innerHTML = "Loading Failed, Please Connect To Internet";
@@ -425,18 +428,28 @@ function checkNotifications() {
     if (!readNotificationsBool){
       flickerNotification();
       notificationBtn.onclick = function() {
-        navigation(6);//Notifications
+        notificationNavigation();
       }
     } else if (user.notifications.length > 0) {
       notificationBtn.src = "img/bellNotificationOff.png";
       notificationBtn.onclick = function() {
-        navigation(6);//Notifications
+        notificationNavigation();
       }
     } else if (user.notifications.length == 0) {
       notificationBtn.src = "img/bellNotificationOff.png";
       notificationBtn.onclick = function() {}
     }
   }
+}
+
+function notificationNavigation() {
+  let notificationSize;
+  let notificationScale = 15;
+
+  notificationSize = notificationBtn.height + (notificationBtn.height * Math.log2(notificationScale));
+  notificationBtn.style.height = notificationSize + "px";
+  notificationBtn.style.width = notificationSize + "px";
+  navigation(6);//Notifications
 }
 
 function checkReadNotes(updateNotes) {
@@ -1099,92 +1112,100 @@ function deployConfirmationModal(unsavedChangesTitle, unsavedChangesContent) {
 }
 
 function navigation(navNum, loginOverride) {
-  if (unsavedChanges) {
-    if (pageName == "GiftAddUpdate") {
-      unsavedChangesNav = navNum;
-      deployConfirmationModal("Unsaved Changes!", "You have unsaved changes! " +
-          "Would you like to continue?");
-      return;
+  if (pendingNavigation == 0) {
+    pendingNavigation = 1;
+    if (unsavedChanges) {
+      if (pageName == "GiftAddUpdate") {
+        unsavedChangesNav = navNum;
+        deployConfirmationModal("Unsaved Changes!", "You have unsaved changes! " +
+            "Would you like to continue?");
+        pendingNavigation = 0;
+        return;
+      }
     }
-  }
-  if (dbOperationInProgress) {
-    deployNotificationModal(false, "Pending Operation In Progress",
-        "Please do not navigate until your changes are saved!", 4);
-    showSuccessfulDBOperation = true;
-    return;
-  } else {
-    if (loginOverride == undefined && !privateUserOverride) {
-      try {
-        if (privateUser != undefined && !giftAddUpdateOverride) {
+    if (dbOperationInProgress) {
+      deployNotificationModal(false, "Pending Operation In Progress",
+          "Please do not navigate until your changes are saved!", 4);
+      showSuccessfulDBOperation = true;
+      pendingNavigation = 0;
+    } else {
+      if (loginOverride == undefined && !privateUserOverride) {
+        try {
+          if (privateUser != undefined && !giftAddUpdateOverride) {
+            if (consoleOutput)
+              console.log("***Private***");
+            sessionStorage.setItem("validUser", JSON.stringify(privateUser));
+          } else {
+            if (consoleOutput)
+              console.log("***Normal***");
+            sessionStorage.setItem("validUser", JSON.stringify(user));
+          }
+        } catch (err) {
           if (consoleOutput)
-            console.log("***Private***");
-          sessionStorage.setItem("validUser", JSON.stringify(privateUser));
-        } else {
-          if (consoleOutput)
-            console.log("***Normal***");
+            console.log("***Normal + Catch***");
           sessionStorage.setItem("validUser", JSON.stringify(user));
         }
-      } catch (err) {
-        if (consoleOutput)
-          console.log("***Normal + Catch***");
-        sessionStorage.setItem("validUser", JSON.stringify(user));
+
+        try {
+          sessionStorage.setItem("userArr", JSON.stringify(userArr));
+        } catch (err) {
+        }
+      } else if (loginOverride == undefined && privateUserOverride) {
+        sessionStorage.setItem("privateList", JSON.stringify(giftUser));
+        sessionStorage.setItem("validUser", JSON.stringify(giftUser));
+        sessionStorage.setItem("validPrivateUser", JSON.stringify(user));
+        sessionStorage.setItem("userArr", JSON.stringify(userArr));
+        sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
+      } else if (userUpdateOverride != undefined) {
+        if (userUpdateOverride) {
+          sessionStorage.setItem("validUser", JSON.stringify(user));
+          sessionStorage.setItem("userArr", JSON.stringify(userArr));
+        }
       }
 
-      try {
-        sessionStorage.setItem("userArr", JSON.stringify(userArr));
-      } catch (err) {}
-    } else if (loginOverride == undefined && privateUserOverride) {
-      sessionStorage.setItem("privateList", JSON.stringify(giftUser));
-      sessionStorage.setItem("validUser", JSON.stringify(giftUser));
-      sessionStorage.setItem("validPrivateUser", JSON.stringify(user));
-      sessionStorage.setItem("userArr", JSON.stringify(userArr));
-      sessionStorage.setItem("giftStorage", JSON.stringify(giftStorage));
-    } else if (userUpdateOverride != undefined) {
-      if (userUpdateOverride) {
-        sessionStorage.setItem("validUser", JSON.stringify(user));
-        sessionStorage.setItem("userArr", JSON.stringify(userArr));
+      let navLocations = [
+        "404.html",//0
+        "index.html",//1
+        "home.html",//2
+        "lists.html",//3
+        "invites.html",//4
+        "settings.html",//5 ***
+        "notifications.html",//6
+        "boughtGifts.html",//7 ***
+        "giftAddUpdate.html",//8
+        "friendList.html",//9
+        "privateFriendList.html",//10
+        "confirmation.html", //11
+        "faq.html",//12 ***
+        "userAddUpdate.html",//13 ***
+        "moderation.html",//14 ***
+        "family.html",//15 ***
+        "familyUpdate.html",//16 ***
+        "moderationQueue.html",//17 ***
+        "backup.html"];//18 ***
+
+      if (navNum >= navLocations.length)
+        navNum = 0;
+
+      if (consoleOutput)
+        console.log("Navigating to " + navLocations[navNum]);
+
+      let fader = document.getElementById('fader');
+      let listener = function () {
+        fader.removeEventListener('animationend', listener);
+        window.location.href = navLocations[navNum];
+      };
+      fader.addEventListener('animationend', listener);
+      if (loginOverride) {
+        fader.style.background = "#ffffff";
+      } else if (loginOverride != undefined) {
+        fader.style.background = "#870b0b";
       }
+      fader.classList.add('fade-in');
     }
-
-    let navLocations = [
-      "404.html",//0
-      "index.html",//1
-      "home.html",//2
-      "lists.html",//3
-      "invites.html",//4
-      "settings.html",//5
-      "notifications.html",//6
-      "boughtGifts.html",//7
-      "giftAddUpdate.html",//8
-      "friendList.html",//9
-      "privateFriendList.html",//10
-      "confirmation.html", //11
-      "faq.html",//12
-      "userAddUpdate.html",//13
-      "moderation.html",//14
-      "family.html",//15
-      "familyUpdate.html",//16
-      "moderationQueue.html",//17
-      "backup.html"];//18
-
-    if (navNum >= navLocations.length)
-      navNum = 0;
-
-    if(consoleOutput)
-      console.log("Navigating to " + navLocations[navNum]);
-
-    let fader = document.getElementById('fader');
-    let listener = function () {
-      fader.removeEventListener('animationend', listener);
-      window.location.href = navLocations[navNum];
-    };
-    fader.addEventListener('animationend', listener);
-    if (loginOverride) {
-      fader.style.background = "#ffffff";
-    } else if (loginOverride != undefined) {
-      fader.style.background = "#870b0b";
-    }
-    fader.classList.add('fade-in');
+  } else {
+    if (consoleOutput)
+      console.log("Chill out, man");
   }
 }
 
