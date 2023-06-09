@@ -260,9 +260,7 @@ function createModerationTicket (ticketData) {
   dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
   clearInterval(offlineTimer);
 
-  if (dataCounter < 1) {
-    initializeNukeBtn();
-  }
+  initializeNukeBtn();
   dataCounter++;
   if (dataCounter > buttonOpacLim) {
     nukeTickets.style.opacity = ".75";
