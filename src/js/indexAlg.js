@@ -11,6 +11,7 @@ let loginTry = 0;
 let showLoginAlert = 0;
 let loginThreshold = 3;
 
+let lastLoginStatus = "";
 let loginDisabledMsg = "";
 let newGiftyMessage = "Please create a new user before trying to log into Gifty! Click on the text below the login " +
     "button and fill out the form to make a user account.";
@@ -165,6 +166,7 @@ function fetchConfigFile(){
 }
 
 window.onload = function instantiate() {
+  failedNavNum = 1;
   pageName = "Index";
   username = document.getElementById('username');
   pin = document.getElementById('pin');
@@ -182,6 +184,7 @@ window.onload = function instantiate() {
 
   verifyElementIntegrity(indexElements);
   loginBtn.innerHTML = "Please Wait...";
+  lastLoginStatus = "Please Wait...";
   initializeSignUpTextInterval();
   try {
     config = JSON.parse(sessionStorage.config);
@@ -229,12 +232,15 @@ function loginQuery() {
   let fetchLogin = function (postRef) {
     postRef.once("value").then(function(snapshot) {
       if(snapshot.exists()) {
+        clearInterval(commonLoadingTimer);
+        clearInterval(offlineTimer);
         postRef.on('child_added', function (data) {
           if(data.key == "allowLogin") {
             if (data.val()) {
               loginReady = true;
             } else {
               loginBtn.innerHTML = "Log In Disabled";
+              lastLoginStatus = "Log In Disabled";
               allowLogin = false;
               loginReady = false;
               initializeLoginBtns();
@@ -287,6 +293,8 @@ function loginQuery() {
 
         listeningFirebaseRefs.push(limitsInitial);
       } else {
+        clearInterval(commonLoadingTimer);
+        clearInterval(offlineTimer);
         firebase.database().ref("login/").update({
           allowLogin: true,
           loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
@@ -322,9 +330,11 @@ function initializeLoginBtnPlatform() {
     }
   });
   loginBtn.onclick = function(){
+    loginBtn.onclick = function(){};
     login();
   };
   signUpFld.onclick = function(){
+    signUpFld.onclick = function(){};
     signUp();
   };
 }
@@ -357,6 +367,7 @@ function databaseQuery() {
         });
       } else {
         loginBtn.innerHTML = "Create A New User First!";
+        lastLoginStatus = "Create A New User First!";
         allowLogin = false;
         loginDisabledMsg = newGiftyMessage;
       }
@@ -507,10 +518,12 @@ function initializeLoginBtns(){
   if (displayUserText) {
     if (loginReady) {
       loginBtn.innerHTML = "Log In";
+      lastLoginStatus = "Log In";
       username.focus();
       allowLogin = true;
     } else {
       loginBtn.innerHTML = "Log In Disabled";
+      lastLoginStatus = "Log In Disabled";
     }
 
     if (userArr.length >= userLimit) {
