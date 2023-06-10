@@ -38,32 +38,32 @@ function checkFamilyCookie(){
 
 window.onload = function instantiate() {
   pageName = "Family";
-  inviteNote = document.getElementById('inviteNote');
-  settingsNote = document.getElementById('settingsNote');
-  dataListContainer = document.getElementById('dataListContainer');
-  testData = document.getElementById('testData');
-  createFamilyBtn = document.getElementById('createFamily');
-  backBtn = document.getElementById('backBtn');
-  familyModal = document.getElementById('familyModal');
-  closeFamilyModal = document.getElementById('closeFamilyModal');
-  familyTitle = document.getElementById('familyTitle');
-  familyUID = document.getElementById('familyUID');
-  familyMemberCount = document.getElementById('familyMemberCount');
-  familyListContainer = document.getElementById('familyListContainer');
-  testFamily = document.getElementById('testFamily');
-  familyEdit = document.getElementById('familyEdit');
-  familyRemove = document.getElementById('familyRemove');
-  familyAddModal = document.getElementById('familyAddModal');
-  closeFamilyAddModal = document.getElementById('closeFamilyAddModal');
-  familyNameInp = document.getElementById('familyNameInp');
-  addFamily = document.getElementById('addFamily');
-  cancelFamily = document.getElementById('cancelFamily');
-  offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById('closeOffline');
-  notificationModal = document.getElementById('notificationModal');
-  noteSpan = document.getElementById('closeNotification');
-  notificationTitle = document.getElementById('notificationTitle');
-  notificationInfo = document.getElementById('notificationInfo');
+  inviteNote = document.getElementById("inviteNote");
+  settingsNote = document.getElementById("settingsNote");
+  dataListContainer = document.getElementById("dataListContainer");
+  testData = document.getElementById("testData");
+  createFamilyBtn = document.getElementById("createFamily");
+  backBtn = document.getElementById("backBtn");
+  familyModal = document.getElementById("familyModal");
+  closeFamilyModal = document.getElementById("closeFamilyModal");
+  familyTitle = document.getElementById("familyTitle");
+  familyUID = document.getElementById("familyUID");
+  familyMemberCount = document.getElementById("familyMemberCount");
+  familyListContainer = document.getElementById("familyListContainer");
+  testFamily = document.getElementById("testFamily");
+  familyEdit = document.getElementById("familyEdit");
+  familyRemove = document.getElementById("familyRemove");
+  familyAddModal = document.getElementById("familyAddModal");
+  closeFamilyAddModal = document.getElementById("closeFamilyAddModal");
+  familyNameInp = document.getElementById("familyNameInp");
+  addFamily = document.getElementById("addFamily");
+  cancelFamily = document.getElementById("cancelFamily");
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  notificationModal = document.getElementById("notificationModal");
+  noteSpan = document.getElementById("closeNotification");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
   familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, backBtn, familyModal,
     closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily, familyEdit,
     familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
@@ -120,7 +120,7 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
     let fetchData = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -142,7 +142,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -162,7 +162,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           userArr.splice(i, 1);
@@ -172,17 +172,17 @@ window.onload = function instantiate() {
     };
 
     let fetchInvites = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         inviteArr.push(data.val());
 
         inviteNote.style.background = "#ff3923";
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         inviteArr[data.key] = data.val();
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         inviteArr.splice(data.key, 1);
 
         if (inviteArr.length == 0) {
@@ -195,7 +195,7 @@ window.onload = function instantiate() {
     let fetchFamilies = function (postRef){
       postRef.once("value").then(function(snapshot) {
         if (snapshot.exists()) {
-          postRef.on('child_added', function (data) {
+          postRef.on("child_added", function (data) {
             let i = findUIDItemInArr(data.val().uid, familyArr, true);
             if (i == -1) {
               familyArr.push(data.val());
@@ -213,7 +213,7 @@ window.onload = function instantiate() {
             }
           });
 
-          postRef.on('child_changed', function (data) {
+          postRef.on("child_changed", function (data) {
             let i = findUIDItemInArr(data.key, familyArr);
             if (i != -1) {
               localObjectChanges = findObjectChanges(familyArr[i], data.val());
@@ -225,7 +225,7 @@ window.onload = function instantiate() {
             }
           });
 
-          postRef.on('child_removed', function (data) {
+          postRef.on("child_removed", function (data) {
             let i = findUIDItemInArr(data.key, familyArr);
             if (i != -1) {
               familyArr.splice(i, 1);
@@ -251,7 +251,7 @@ window.onload = function instantiate() {
 
 function createFamilyElement(familyData){
   try{
-    document.getElementById('testData').remove();
+    document.getElementById("testData").remove();
   } catch (err) {}
 
   let liItem = document.createElement("LI");
@@ -267,7 +267,7 @@ function createFamilyElement(familyData){
 }
 
 function changeFamilyElement(familyData) {
-  let editFamily = document.getElementById('family' + familyData.uid);
+  let editFamily = document.getElementById("family" + familyData.uid);
   editFamily.innerHTML = familyData.name;
   initFamilyElement(editFamily, familyData);
 }
@@ -362,7 +362,7 @@ function removeFamilyFromDB(uidToRemove) {
 }
 
 function removeFamilyElement(uid) {
-  document.getElementById('family' + uid).remove();
+  document.getElementById("family" + uid).remove();
 
   dataCounter--;
   if (dataCounter == 0){
