@@ -68,35 +68,35 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   pageName = "FriendList";
-  notificationBtn = document.getElementById('notificationButton');
-  dataListContainer = document.getElementById('dataListContainer');
-  offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById('closeOffline');
-  confirmModal = document.getElementById('confirmModal');
-  closeConfirmModal = document.getElementById('closeConfirmModal');
-  confirmTitle = document.getElementById('confirmTitle');
-  confirmContent = document.getElementById('confirmContent');
-  confirmBtn = document.getElementById('confirmBtn');
-  denyBtn = document.getElementById('denyBtn');
-  noteSpan = document.getElementById('closeNotification');
-  backBtn = document.getElementById('backBtn');
-  listNote = document.getElementById('listNote');
-  inviteNote = document.getElementById('inviteNote');
-  notificationModal = document.getElementById('notificationModal');
-  notificationTitle = document.getElementById('notificationTitle');
-  notificationInfo = document.getElementById('notificationInfo');
-  noteSpan = document.getElementById('closeNotification');
-  giftModal = document.getElementById('giftModal');
-  closeGiftModal = document.getElementById('closeGiftModal');
-  giftTitle = document.getElementById('giftTitle');
-  giftLink = document.getElementById('giftLink');
-  giftWhere = document.getElementById('giftWhere');
-  giftDescription = document.getElementById('giftDescription');
-  giftBought = document.getElementById('giftBought');
-  giftCreationDate = document.getElementById('giftCreationDate');
-  giftBuy = document.getElementById('giftBuy');
-  giftDontBuy = document.getElementById('giftDontBuy');
-  testData = document.getElementById('testData');
+  notificationBtn = document.getElementById("notificationButton");
+  dataListContainer = document.getElementById("dataListContainer");
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  confirmModal = document.getElementById("confirmModal");
+  closeConfirmModal = document.getElementById("closeConfirmModal");
+  confirmTitle = document.getElementById("confirmTitle");
+  confirmContent = document.getElementById("confirmContent");
+  confirmBtn = document.getElementById("confirmBtn");
+  denyBtn = document.getElementById("denyBtn");
+  noteSpan = document.getElementById("closeNotification");
+  backBtn = document.getElementById("backBtn");
+  listNote = document.getElementById("listNote");
+  inviteNote = document.getElementById("inviteNote");
+  notificationModal = document.getElementById("notificationModal");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
+  noteSpan = document.getElementById("closeNotification");
+  giftModal = document.getElementById("giftModal");
+  closeGiftModal = document.getElementById("closeGiftModal");
+  giftTitle = document.getElementById("giftTitle");
+  giftLink = document.getElementById("giftLink");
+  giftWhere = document.getElementById("giftWhere");
+  giftDescription = document.getElementById("giftDescription");
+  giftBought = document.getElementById("giftBought");
+  giftCreationDate = document.getElementById("giftCreationDate");
+  giftBuy = document.getElementById("giftBuy");
+  giftDontBuy = document.getElementById("giftDontBuy");
+  testData = document.getElementById("testData");
   friendListElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, confirmModal, closeConfirmModal,
     confirmTitle, confirmContent, confirmBtn, denyBtn, noteSpan, backBtn, listNote, inviteNote, notificationModal,
     notificationTitle, notificationInfo, noteSpan, giftModal, closeGiftModal, giftTitle, giftLink, giftWhere,
@@ -142,7 +142,7 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
     let fetchData = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -172,7 +172,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -202,7 +202,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           if(consoleOutput)
@@ -214,7 +214,7 @@ window.onload = function instantiate() {
     };
 
     let fetchGifts = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         if (findUIDItemInArr(data.val().uid, giftArr, true) == -1)
           giftArr.push(data.val());
 
@@ -233,7 +233,7 @@ window.onload = function instantiate() {
         saveCriticalCookies();
       });
 
-      postRef.on('child_changed', function(data) {
+      postRef.on("child_changed", function(data) {
         if (initializedGifts.includes(data.val().uid)) {
           let previousBoughtStatus = giftArr[data.key].received;
           let currentBoughtStatus = data.val().received;
@@ -260,7 +260,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function(data) {
+      postRef.on("child_removed", function(data) {
         potentialRemoval = true;
         oldGiftArr = [];
         for (let i = 0; i < giftArr.length; i++) {
@@ -270,13 +270,13 @@ window.onload = function instantiate() {
     };
 
     let fetchInvites = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         inviteArr.push(data.val());
 
         inviteNote.style.background = "#ff3923";
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         if(consoleOutput)
           console.log(inviteArr);
         inviteArr[data.key] = data.val();
@@ -284,7 +284,7 @@ window.onload = function instantiate() {
           console.log(inviteArr);
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         if(consoleOutput)
           console.log(inviteArr);
         inviteArr.splice(data.key, 1);
@@ -355,7 +355,7 @@ function createGiftElement(giftData, giftKey){
 
   if (initializedGifts.indexOf(giftUid) == -1) {
     try {
-      document.getElementById('testData').remove();
+      document.getElementById("testData").remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
@@ -381,7 +381,7 @@ function createGiftElement(giftData, giftKey){
 function changeGiftElement(giftData, giftKey) {
   let uid = giftData.uid;
   let title = giftData.title;
-  let editGift = document.getElementById('gift' + uid);
+  let editGift = document.getElementById("gift" + uid);
   editGift.innerHTML = title;
   initGiftElement(editGift, giftData, giftKey);
 }
@@ -582,7 +582,7 @@ function buyGiftToDB(pubUid, key, multiples, received, receivedBy, unBuyBool, bu
 }
 
 function removeGiftElement(uid) {
-  document.getElementById('gift' + uid).remove();
+  document.getElementById("gift" + uid).remove();
 
   dataCounter--;
   if (dataCounter == 0){
@@ -591,7 +591,7 @@ function removeGiftElement(uid) {
 }
 
 function showUpdatedItem(inputUid, removeItem) {
-  let giftElem = document.getElementById('gift' + inputUid);
+  let giftElem = document.getElementById("gift" + inputUid);
   let backColor = window.getComputedStyle(giftElem).backgroundColor;
   let oldCssColor = "";
   let oldCssColorA = "#f9f9f9";
@@ -641,7 +641,7 @@ function showUpdatedItem(inputUid, removeItem) {
       else
         tempAlternator = 0;
 
-      tempElem = document.getElementById('gift' + initializedGifts[i]);
+      tempElem = document.getElementById("gift" + initializedGifts[i]);
       tempElem.style.background = oldCssOptions[tempAlternator];
     }
   }
