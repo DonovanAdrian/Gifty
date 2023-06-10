@@ -152,23 +152,23 @@ function fadeInPage() {
     return;
   }
   try {
-    let fader = document.getElementById('fader');
-    fader.classList.add('fade-out');
+    let fader = document.getElementById("fader");
+    fader.classList.add("fade-out");
   } catch(err) {}
 }
 
 function initializeFadeOut() {
-  let fader = document.getElementById('fader');
+  let fader = document.getElementById("fader");
 
   if (!window.AnimationEvent) {
     return;
   }
 
-  window.addEventListener('pageshow', function (event) {
+  window.addEventListener("pageshow", function (event) {
     if (!event.persisted) {
       return;
     }
-    fader.classList.remove('fade-in');
+    fader.classList.remove("fade-in");
   });
 }
 
@@ -185,7 +185,7 @@ function commonInitialization(){
   initializeFadeOut();
 
   const config = JSON.parse(sessionStorage.config);
-  dataListChecker = document.getElementById('dataListContainer');
+  dataListChecker = document.getElementById("dataListContainer");
 
   try {
     initializeDB(config);
@@ -226,7 +226,7 @@ function commonInitialization(){
         clearInterval(commonLoadingTimer);
         if(dataListChecker != undefined) {
           try {
-            document.getElementById('testData').innerHTML = "Loading Failed, Please Connect To Internet";
+            document.getElementById("testData").innerHTML = "Loading Failed, Please Connect To Internet";
           } catch (err) {
             if (dataCounter == 0) {
               if (consoleOutput)
@@ -263,10 +263,10 @@ function commonInitialization(){
     commonLoadingTimer = setInterval(function(){
       commonLoadingTimerInt = commonLoadingTimerInt + 1000;
       if (commonLoadingTimerInt >= commonLoadingTimerLimit) {
-        if (document.getElementById('testData') != undefined) {
-          document.getElementById('testData').innerHTML = "Loading Is Taking Longer Than Expected...";
-        } else if (document.getElementById('loginBtn') != undefined) {
-          document.getElementById('loginBtn').innerHTML = "Loading Is Taking Longer Than Expected...";
+        if (document.getElementById("testData") != undefined) {
+          document.getElementById("testData").innerHTML = "Loading Is Taking Longer Than Expected...";
+        } else if (document.getElementById("loginBtn") != undefined) {
+          document.getElementById("loginBtn").innerHTML = "Loading Is Taking Longer Than Expected...";
         }
         if (consoleOutput)
           console.log("Timer Error Issued");
@@ -277,13 +277,13 @@ function commonInitialization(){
         }
         clearInterval(commonLoadingTimer);
       } else if (commonLoadingTimerInt >= 2000 && dataListChecker != undefined) {
-        if (document.getElementById('testData') == undefined){
+        if (document.getElementById("testData") == undefined){
           clearInterval(commonLoadingTimer);
           if(consoleOutput)
             console.log("TestData Missing. Loading Properly.");
         } else {
           if (!loadingTimerCancelled)
-            document.getElementById('testData').innerHTML = "Loading... Please Wait...";
+            document.getElementById("testData").innerHTML = "Loading... Please Wait...";
         }
       }
     }, 1000);
@@ -323,7 +323,7 @@ function initializeDB(config) {
 function databaseCommonPulse() {
   let commonUserValidPulse = firebase.database().ref("users/" + user.uid);
   let fetchCommonData = function (postRef) {
-    postRef.on('child_added', function (data) {
+    postRef.on("child_added", function (data) {
       if (data.key == "ban") {
         if (data.val() != 0) {
           signOut();
@@ -331,7 +331,7 @@ function databaseCommonPulse() {
       }
     });
 
-    postRef.on('child_changed', function (data) {
+    postRef.on("child_changed", function (data) {
       if (data.key == "ban") {
         if (data.val() != 0) {
           signOut();
@@ -339,7 +339,7 @@ function databaseCommonPulse() {
       }
     });
 
-    postRef.on('child_removed', function (data) {
+    postRef.on("child_removed", function (data) {
       if (data.key == "ban") {
         signOut();
       }
@@ -1064,6 +1064,7 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
         successfulDBOperationTitle = defaultSuccessfulDBOperationTitle;
         successfulDBOperationNotice = defaultSuccessfulDBOperationNotice;
         successfulDBNavigation = defaultSuccessfulDBNavigation;
+        pendingNavigation = 0;
         saveCriticalCookies();
       }
       clearInterval(listenForDBInterval);
@@ -1190,18 +1191,18 @@ function navigation(navNum, loginOverride) {
       if (consoleOutput)
         console.log("Navigating to " + navLocations[navNum]);
 
-      let fader = document.getElementById('fader');
+      let fader = document.getElementById("fader");
       let listener = function () {
-        fader.removeEventListener('animationend', listener);
+        fader.removeEventListener("animationend", listener);
         window.location.href = navLocations[navNum];
       };
-      fader.addEventListener('animationend', listener);
+      fader.addEventListener("animationend", listener);
       if (loginOverride) {
         fader.style.background = "#ffffff";
       } else if (loginOverride != undefined) {
         fader.style.background = "#870b0b";
       }
-      fader.classList.add('fade-in');
+      fader.classList.add("fade-in");
     }
   } else {
     if (consoleOutput)
@@ -1226,8 +1227,8 @@ function openModal(openThisModal, modalName, ignoreBool){
       openRetryTimer = openRetryTimer + 10;
       if (openRetryTimer >= 50) {
         if (!modalClosingBool) {
-          openThisModal.classList.remove('modal-content-close');
-          openThisModal.classList.add('modal-content-open');
+          openThisModal.classList.remove("modal-content-close");
+          openThisModal.classList.add("modal-content-open");
           openRetryTimer = 0;
           currentModalOpenObj = openThisModal;
           currentModalOpen = modalName;
@@ -1239,8 +1240,8 @@ function openModal(openThisModal, modalName, ignoreBool){
       }
     }, 60);
   } else {
-    openThisModal.classList.remove('modal-content-close');
-    openThisModal.classList.add('modal-content-open');
+    openThisModal.classList.remove("modal-content-close");
+    openThisModal.classList.add("modal-content-open");
     currentModalOpenObj = openThisModal;
     currentModalOpen = modalName;
     openThisModal.style.display = "block";
@@ -1263,8 +1264,8 @@ function closeModal(closeThisModal){
     let closeTimerBufferTracker = 0;
     let closeTimerBuffer = 10;
 
-    closeThisModal.classList.remove('modal-content-open');
-    closeThisModal.classList.add('modal-content-close');
+    closeThisModal.classList.remove("modal-content-open");
+    closeThisModal.classList.add("modal-content-close");
 
     modalClosingBool = true;
 
