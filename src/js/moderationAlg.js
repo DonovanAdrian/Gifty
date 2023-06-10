@@ -107,83 +107,83 @@ function checkUserCookie() {
 
 window.onload = function instantiate() {
   pageName = "Moderation";
-  dataListContainer = document.getElementById('dataListContainer');
-  backBtn = document.getElementById('backBtn');
-  offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById('closeOffline');
-  inviteNote = document.getElementById('inviteNote');
-  confirmModal = document.getElementById('confirmModal');
-  closeConfirmModal = document.getElementById('closeConfirmModal');
-  confirmTitle = document.getElementById('confirmTitle');
-  confirmContent = document.getElementById('confirmContent');
-  confirmBtn = document.getElementById('confirmBtn');
-  denyBtn = document.getElementById('denyBtn');
-  notificationModal = document.getElementById('notificationModal');
-  notificationTitle = document.getElementById('notificationTitle');
-  notificationInfo = document.getElementById('notificationInfo');
-  noteSpan = document.getElementById('closeNotification');
-  privateMessageModal = document.getElementById('privateMessageModal');
-  sendGlobalNotification = document.getElementById('sendGlobalNotification');
-  nukeAllUserNotifications = document.getElementById('nukeAllUserNotifications');
-  nukeAllUserScores = document.getElementById('nukeAllUserScores');
-  loginFxnBtn = document.getElementById('loginFxnBtn');
-  giftLinkBtn = document.getElementById('giftLinkBtn');
-  limitsBtn = document.getElementById('limitsBtn');
-  databaseLimitsModal = document.getElementById('databaseLimitsModal');
-  closeDatabaseLimitsModal = document.getElementById('closeDatabaseLimitsModal');
-  giftLimitInp = document.getElementById('giftLimitInp');
-  userLimitInp = document.getElementById('userLimitInp');
-  confirmLimits = document.getElementById('confirmLimits');
-  cancelLimits = document.getElementById('cancelLimits');
-  loginDisabledModal = document.getElementById('loginDisabledModal');
-  loginDisabledTitle = document.getElementById('loginDisabledTitle');
-  closeLoginDisabledModal = document.getElementById('closeLoginDisabledModal');
-  loginDisabledDesc = document.getElementById('loginDisabledDesc');
-  loginDisabledInp = document.getElementById('loginDisabledInp');
-  loginDisabledInfo = document.getElementById('loginDisabledInfo');
-  resetDefaultLoginDisabledBtn = document.getElementById('resetDefaultLoginDisabledBtn');
-  confirmLoginDisabled = document.getElementById('confirmLoginDisabled');
-  cancelLoginDisabled = document.getElementById('cancelLoginDisabled');
-  userListDropDown = document.getElementById('userListDropDown');
-  showNone = document.getElementById('showNone');
-  showUID = document.getElementById('showUID');
-  showName = document.getElementById('showName');
-  showLastLogin = document.getElementById('showLastLogin');
-  showUserScore = document.getElementById('showUserScore');
-  showShareCode = document.getElementById('showShareCode');
-  showFriends = document.getElementById('showFriends');
-  showSantaSignUp = document.getElementById('showSantaSignUp');
-  showModerator = document.getElementById('showModerator');
-  sendPrivateMessage = document.getElementById('sendPrivateMessage');
-  userModal = document.getElementById('userModal');
-  userOptionsBtn = document.getElementById('userOptionsBtn');
-  secretSantaModal = document.getElementById('santaModal');
-  santaModalSpan = document.getElementById('secretSantaSpan');
-  secretSantaBtn = document.getElementById('secretSantaBtn');
-  secretSantaShuffle = document.getElementById('secretSantaShuffle');
-  secretSantaAutoBtn = document.getElementById('secretSantaAutoBtn');
-  settingsNote = document.getElementById('settingsNote');
-  testData = document.getElementById('testData');
-  closeUserModal = document.getElementById('closeUserModal');
-  userName = document.getElementById('userName');
-  userUID = document.getElementById('userUID');
-  userUserName = document.getElementById('userUserName');
-  userGifts = document.getElementById('userGifts');
-  userPrivateGifts = document.getElementById('userPrivateGifts');
-  userFriends = document.getElementById('userFriends');
-  userLastLogin = document.getElementById('userLastLogin');
-  userScore = document.getElementById('userScore');
-  userPassword = document.getElementById('userPassword');
-  userSecretSanta = document.getElementById('userSecretSanta');
-  moderatorOp = document.getElementById('moderatorOp');
-  sendPrivateMessage = document.getElementById('sendPrivateMessage');
-  warnUser = document.getElementById('warnUser');
-  banUser = document.getElementById('banUser');
-  closePrivateMessageModal = document.getElementById('closePrivateMessageModal');
-  globalMsgTitle = document.getElementById('globalMsgTitle');
-  globalMsgInp = document.getElementById('globalMsgInp');
-  sendMsg = document.getElementById('sendMsg');
-  cancelMsg = document.getElementById('cancelMsg');
+  dataListContainer = document.getElementById("dataListContainer");
+  backBtn = document.getElementById("backBtn");
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  inviteNote = document.getElementById("inviteNote");
+  confirmModal = document.getElementById("confirmModal");
+  closeConfirmModal = document.getElementById("closeConfirmModal");
+  confirmTitle = document.getElementById("confirmTitle");
+  confirmContent = document.getElementById("confirmContent");
+  confirmBtn = document.getElementById("confirmBtn");
+  denyBtn = document.getElementById("denyBtn");
+  notificationModal = document.getElementById("notificationModal");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
+  noteSpan = document.getElementById("closeNotification");
+  privateMessageModal = document.getElementById("privateMessageModal");
+  sendGlobalNotification = document.getElementById("sendGlobalNotification");
+  nukeAllUserNotifications = document.getElementById("nukeAllUserNotifications");
+  nukeAllUserScores = document.getElementById("nukeAllUserScores");
+  loginFxnBtn = document.getElementById("loginFxnBtn");
+  giftLinkBtn = document.getElementById("giftLinkBtn");
+  limitsBtn = document.getElementById("limitsBtn");
+  databaseLimitsModal = document.getElementById("databaseLimitsModal");
+  closeDatabaseLimitsModal = document.getElementById("closeDatabaseLimitsModal");
+  giftLimitInp = document.getElementById("giftLimitInp");
+  userLimitInp = document.getElementById("userLimitInp");
+  confirmLimits = document.getElementById("confirmLimits");
+  cancelLimits = document.getElementById("cancelLimits");
+  loginDisabledModal = document.getElementById("loginDisabledModal");
+  loginDisabledTitle = document.getElementById("loginDisabledTitle");
+  closeLoginDisabledModal = document.getElementById("closeLoginDisabledModal");
+  loginDisabledDesc = document.getElementById("loginDisabledDesc");
+  loginDisabledInp = document.getElementById("loginDisabledInp");
+  loginDisabledInfo = document.getElementById("loginDisabledInfo");
+  resetDefaultLoginDisabledBtn = document.getElementById("resetDefaultLoginDisabledBtn");
+  confirmLoginDisabled = document.getElementById("confirmLoginDisabled");
+  cancelLoginDisabled = document.getElementById("cancelLoginDisabled");
+  userListDropDown = document.getElementById("userListDropDown");
+  showNone = document.getElementById("showNone");
+  showUID = document.getElementById("showUID");
+  showName = document.getElementById("showName");
+  showLastLogin = document.getElementById("showLastLogin");
+  showUserScore = document.getElementById("showUserScore");
+  showShareCode = document.getElementById("showShareCode");
+  showFriends = document.getElementById("showFriends");
+  showSantaSignUp = document.getElementById("showSantaSignUp");
+  showModerator = document.getElementById("showModerator");
+  sendPrivateMessage = document.getElementById("sendPrivateMessage");
+  userModal = document.getElementById("userModal");
+  userOptionsBtn = document.getElementById("userOptionsBtn");
+  secretSantaModal = document.getElementById("santaModal");
+  santaModalSpan = document.getElementById("secretSantaSpan");
+  secretSantaBtn = document.getElementById("secretSantaBtn");
+  secretSantaShuffle = document.getElementById("secretSantaShuffle");
+  secretSantaAutoBtn = document.getElementById("secretSantaAutoBtn");
+  settingsNote = document.getElementById("settingsNote");
+  testData = document.getElementById("testData");
+  closeUserModal = document.getElementById("closeUserModal");
+  userName = document.getElementById("userName");
+  userUID = document.getElementById("userUID");
+  userUserName = document.getElementById("userUserName");
+  userGifts = document.getElementById("userGifts");
+  userPrivateGifts = document.getElementById("userPrivateGifts");
+  userFriends = document.getElementById("userFriends");
+  userLastLogin = document.getElementById("userLastLogin");
+  userScore = document.getElementById("userScore");
+  userPassword = document.getElementById("userPassword");
+  userSecretSanta = document.getElementById("userSecretSanta");
+  moderatorOp = document.getElementById("moderatorOp");
+  sendPrivateMessage = document.getElementById("sendPrivateMessage");
+  warnUser = document.getElementById("warnUser");
+  banUser = document.getElementById("banUser");
+  closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
+  globalMsgTitle = document.getElementById("globalMsgTitle");
+  globalMsgInp = document.getElementById("globalMsgInp");
+  sendMsg = document.getElementById("sendMsg");
+  cancelMsg = document.getElementById("cancelMsg");
   moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, confirmModal, closeConfirmModal,
     confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal, notificationTitle, notificationInfo, noteSpan,
     privateMessageModal, sendGlobalNotification, nukeAllUserNotifications, nukeAllUserScores, loginFxnBtn, giftLinkBtn,
@@ -502,12 +502,12 @@ window.onload = function instantiate() {
 
   function checkCSVURL(urlString, override) {
     urlString = urlString.replace(" ", "");
-    if (urlString[0] == ',') {
+    if (urlString[0] == ",") {
       urlString = urlString.split("");
       urlString.splice(0);
       urlString = urlString.join("");
     }
-    if (urlString[urlString.length-1] == ',') {
+    if (urlString[urlString.length-1] == ",") {
       urlString = urlString.split("");
       urlString.splice( urlString.length-1, urlString.length);
       urlString = urlString.join("");
@@ -515,10 +515,10 @@ window.onload = function instantiate() {
     if (urlString == "" && !override) {
       deployNotificationModal(true, "URL String Error!", "The URL Limiter Is NOT " +
           "currently active. If you wish to enable it, please enter a non-empty string", 4);
-    } else if (urlString.includes(',,')) {
+    } else if (urlString.includes(",,")) {
       deployNotificationModal(true, "URL String Error!", "Please do not include " +
           "more than one comma");
-    } else if (urlString.includes('.')) {
+    } else if (urlString.includes(".")) {
       deployNotificationModal(true, "URL String Error!", "Please do not include " +
           "full URLs, only specific parts of a URL like \"www\" or \"bestbuy\".");
     } else {
@@ -545,17 +545,17 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
     let fetchFamilies = function (postRef){
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         familyArr.push(data.val());
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         let i = findUIDItemInArr(data.key, familyArr);
         if(familyArr[i] != data.val() && i != -1)
           familyArr[i] = data.val();
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, familyArr);
         if(familyArr[i] != data.val() && i != -1)
           familyArr.splice(i, 1);
@@ -566,7 +566,7 @@ window.onload = function instantiate() {
       postRef.once("value").then(function(snapshot) {
         if(snapshot.exists()) {
           console.log("Moderator Settings Snapshot Exists!");
-          postRef.on('child_added', function (data) {
+          postRef.on("child_added", function (data) {
             console.log(data.key + " added");
 
             if (data.key == "listedUserData") {
@@ -577,7 +577,7 @@ window.onload = function instantiate() {
             }
           });
 
-          postRef.on('child_changed', function (data) {
+          postRef.on("child_changed", function (data) {
             console.log(data.key + " changed");
 
             if (data.key == "listedUserData") {
@@ -588,7 +588,7 @@ window.onload = function instantiate() {
             }
           });
 
-          postRef.on('child_removed', function (data) {
+          postRef.on("child_removed", function (data) {
             console.log(data.key + " removed!");
 
             firebase.database().ref("moderatorSettings/").update({
@@ -610,7 +610,7 @@ window.onload = function instantiate() {
       postRef.once("value").then(function(snapshot) {
         if(snapshot.exists()) {
           console.log("Secret Santa Snapshot Exists!");
-          postRef.on('child_added', function (data) {
+          postRef.on("child_added", function (data) {
             console.log(data.key + " added");
             if (secretSantaInit == false) {
               secretSantaInit = true;
@@ -619,13 +619,13 @@ window.onload = function instantiate() {
             initializeSecretSantaDataMod(data);
           });
 
-          postRef.on('child_changed', function (data) {
+          postRef.on("child_changed", function (data) {
             console.log(data.key + " changed");
 
             initializeSecretSantaDataMod(data);
           });
 
-          postRef.on('child_removed', function (data) {
+          postRef.on("child_removed", function (data) {
             console.log(data.key + " removed!");
 
             firebase.database().ref("secretSanta/").update({
@@ -648,7 +648,7 @@ window.onload = function instantiate() {
     };
 
     let fetchData = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         if(globalNoteInt == 0) {
           globalNoteInt = 1;
           initializeGlobalNotification();
@@ -682,7 +682,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -709,7 +709,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
@@ -726,16 +726,16 @@ window.onload = function instantiate() {
     };
 
     let fetchInvites = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         inviteArr.push(data.val());
         inviteNote.style.background = "#ff3923";
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         inviteArr[data.key] = data.val();
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         inviteArr.splice(data.key, 1);
 
         if (inviteArr.length == 0) {
@@ -746,7 +746,7 @@ window.onload = function instantiate() {
     };
 
     let fetchLogin = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         if (data.key == "allowLogin") {
           allowLogin = data.val();
         } else if (data.key == "loginDisabledMsg") {
@@ -757,7 +757,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         if (data.key == "allowLogin") {
           allowLogin = data.val();
         } else if (data.key == "loginDisabledMsg") {
@@ -766,7 +766,7 @@ window.onload = function instantiate() {
         initializeLoginBtn();
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         if (data.key == "allowLogin") {
           allowLogin = true;
         } else if (data.key == "loginDisabledMsg") {
@@ -778,7 +778,7 @@ window.onload = function instantiate() {
     };
 
     let fetchLimits = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         if (data.key == "userLimit") {
           userLimit = data.val();
         } else if (data.key == "giftLimit") {
@@ -792,7 +792,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         if (data.key == "userLimit") {
           userLimit = data.val();
           initializeLimitsBtn();
@@ -805,7 +805,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         if (data.key == "userLimit") {
           userLimit = 50;
           initializeLimitsBtn();
@@ -945,7 +945,7 @@ function addPrivateMessageToDB(userData, message) {
 function createUserElement(userData){
   let textNode;
   try{
-    document.getElementById('testData').remove();
+    document.getElementById("testData").remove();
   } catch (err) {}
 
   let liItem = document.createElement("LI");
@@ -966,7 +966,7 @@ function createUserElement(userData){
 }
 
 function changeUserElement(userData) {
-  let editUser = document.getElementById('user' + userData.uid);
+  let editUser = document.getElementById("user" + userData.uid);
   initUserElement(editUser, userData);
 }
 
@@ -1172,7 +1172,7 @@ function initUserElement(liItem, userData) {
 }
 
 function removeUserElement(uid) {
-  document.getElementById('user' + uid).remove();
+  document.getElementById("user" + uid).remove();
   let i = initializedUsers.indexOf(uid);
   initializedUsers.splice(i , 1);
 
