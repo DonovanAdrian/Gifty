@@ -16,34 +16,15 @@ let secretSantaInit = false;
 let secretSantaAssignErrorMsg = "refresh the page or ignore this message!";
 
 let moderationSet = 0;
-let dataCounter = 0;
-let commonLoadingTimerInt = 0;
 
-let dataListContainer;
-let userBase;
-let userFriends;
-let userInvites;
 let autoSecretSanta;
-let offlineSpan;
-let offlineModal;
-let offlineTimer;
-let commonLoadingTimer;
-let user;
-let inviteNote;
-let notificationModal;
-let notificationInfo;
-let notificationTitle;
-let noteSpan;
-let notificationBtn;
 let privateMessageModal;
 let closeUserModal;
 let userModal;
 let secretSantaSignUp;
 let secretSantaData;
-let testData;
 let userTitle;
 let publicList;
-let privateList;
 let sendPrivateMessage;
 let closePrivateMessageModal;
 let privateMessageInp;
@@ -73,28 +54,28 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   pageName = "Lists";
-  notificationBtn = document.getElementById('notificationButton');
-  dataListContainer = document.getElementById('dataListContainer');
-  offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById('closeOffline');
-  inviteNote = document.getElementById('inviteNote');
-  notificationModal = document.getElementById('notificationModal');
-  notificationTitle = document.getElementById('notificationTitle');
-  notificationInfo = document.getElementById('notificationInfo');
-  noteSpan = document.getElementById('closeNotification');
-  privateMessageModal = document.getElementById('privateMessageModal');
-  closeUserModal = document.getElementById('closeUserModal');
-  userModal = document.getElementById('userModal');
-  secretSantaSignUp = document.getElementById('secretSanta');
-  testData = document.getElementById('testData');
-  userTitle = document.getElementById('userTitle');
-  publicList = document.getElementById('publicList');
-  privateList = document.getElementById('privateList');
-  sendPrivateMessage = document.getElementById('sendPrivateMessage');
-  closePrivateMessageModal = document.getElementById('closePrivateMessageModal');
-  privateMessageInp = document.getElementById('privateMessageInp');
-  sendMsg = document.getElementById('sendMsg');
-  cancelMsg = document.getElementById('cancelMsg');
+  notificationBtn = document.getElementById("notificationButton");
+  dataListContainer = document.getElementById("dataListContainer");
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  inviteNote = document.getElementById("inviteNote");
+  notificationModal = document.getElementById("notificationModal");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
+  noteSpan = document.getElementById("closeNotification");
+  privateMessageModal = document.getElementById("privateMessageModal");
+  closeUserModal = document.getElementById("closeUserModal");
+  userModal = document.getElementById("userModal");
+  secretSantaSignUp = document.getElementById("secretSanta");
+  testData = document.getElementById("testData");
+  userTitle = document.getElementById("userTitle");
+  publicList = document.getElementById("publicList");
+  privateList = document.getElementById("privateList");
+  sendPrivateMessage = document.getElementById("sendPrivateMessage");
+  closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
+  privateMessageInp = document.getElementById("privateMessageInp");
+  sendMsg = document.getElementById("sendMsg");
+  cancelMsg = document.getElementById("cancelMsg");
   listsElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
     notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, secretSantaSignUp,
     testData, userTitle, publicList, privateList, sendPrivateMessage, closePrivateMessageModal, privateMessageInp,
@@ -115,7 +96,7 @@ window.onload = function instantiate() {
     let fetchSecretSanta = function (postRef) {
       postRef.once("value").then(function(snapshot) {
         if(snapshot.exists()) {
-          postRef.on('child_added', function (data) {
+          postRef.on("child_added", function (data) {
             if (secretSantaInit == false) {
               secretSantaInit = true;
             }
@@ -123,14 +104,14 @@ window.onload = function instantiate() {
             initializeSecretSantaDataList(data);
           });
 
-          postRef.on('child_changed', function (data) {
+          postRef.on("child_changed", function (data) {
             if(consoleOutput)
               console.log(data.key + " changed");
 
             initializeSecretSantaDataList(data);
           });
 
-          postRef.on('child_removed', function (data) {
+          postRef.on("child_removed", function (data) {
             if(consoleOutput)
               console.log(data.key + " removed");
 
@@ -155,7 +136,7 @@ window.onload = function instantiate() {
     };
 
     let fetchData = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -179,7 +160,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -213,7 +194,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           if(consoleOutput)
@@ -225,7 +206,7 @@ window.onload = function instantiate() {
     };
 
     let fetchFriends = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         if (friendArr.indexOf(data.val()) == -1) {
           friendArr.push(data.val());
           user.friends = friendArr;
@@ -234,7 +215,7 @@ window.onload = function instantiate() {
         createFriendElement(data.val());
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         friendArr[data.key] = data.val();
         if(consoleOutput)
           console.log("Changing " + data.val());
@@ -243,7 +224,7 @@ window.onload = function instantiate() {
         saveCriticalCookies();
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         potentialRemoval = true;
         oldFriendArr = [];
         for (let i = 0; i < friendArr.length; i++) {
@@ -253,13 +234,13 @@ window.onload = function instantiate() {
     };
 
     let fetchInvites = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         inviteArr.push(data.val());
 
         inviteNote.style.background = "#ff3923";
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         if(consoleOutput)
           console.log(inviteArr);
         inviteArr[data.key] = data.val();
@@ -267,7 +248,7 @@ window.onload = function instantiate() {
           console.log(inviteArr);
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         if(consoleOutput)
           console.log(inviteArr);
         inviteArr.splice(data.key, 1);
@@ -312,7 +293,7 @@ function createFriendElement(friendKey) {
 
   if(friendIndex != -1 && initializedUsers.indexOf(friendKey) == -1){
     try {
-      document.getElementById('testData').remove();
+      document.getElementById("testData").remove();
     } catch (err) {}
 
     let userUid = friendData.uid;
@@ -407,7 +388,7 @@ function initFriendElement(liItem, friendData) {
 }
 
 function removeFriendElement(uid){
-  document.getElementById('user' + uid).remove();
+  document.getElementById("user" + uid).remove();
 
   dataCounter--;
   if(dataCounter == 0) {
