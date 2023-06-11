@@ -92,55 +92,55 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   pageName = "Invites";
-  notificationBtn = document.getElementById('notificationButton');
-  dataListContainer = document.getElementById('dataListContainer');
-  offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById('closeOffline');
-  userInviteModal = document.getElementById('userInviteModal');
-  closeUserInviteModal = document.getElementById('closeUserInviteModal');
-  userNameInp = document.getElementById('userNameInp');
-  addToBlackList = document.getElementById('addToBlackList');
-  inviteInfo = document.getElementById('inviteInfo');
-  addInvite = document.getElementById('addInvite');
-  cancelInvite = document.getElementById('cancelInvite');
-  confirmUserModal = document.getElementById('confirmUserModal');
-  closeConfirmUserModal = document.getElementById('closeConfirmUserModal');
-  confUserName = document.getElementById('confUserName');
-  inviteConfirm = document.getElementById('inviteConfirm');
-  inviteDeny = document.getElementById('inviteDeny');
-  inviteNote = document.getElementById('inviteNote');
-  newInviteIcon = document.getElementById('newInviteIcon');
-  blacklistModal = document.getElementById('blacklistModal');
-  closeBlacklistModal = document.getElementById('closeBlacklistModal');
-  blacklistDescription = document.getElementById('blacklistDescription');
-  blacklistContainer = document.getElementById('blacklistContainer');
-  testBlacklist = document.getElementById('testBlacklist');
-  blacklistRemove = document.getElementById('blacklistRemove');
-  blacklistedUsers = document.getElementById('blacklistedUsers');
-  addUser = document.getElementById('addUser');
-  confirmModal = document.getElementById('confirmModal');
-  closeConfirmModal = document.getElementById('closeConfirmModal');
-  confirmTitle = document.getElementById('confirmTitle');
-  confirmContent = document.getElementById('confirmContent');
-  confirmBtn = document.getElementById('confirmBtn');
-  denyBtn = document.getElementById('denyBtn');
-  notificationModal = document.getElementById('notificationModal');
-  notificationTitle = document.getElementById('notificationTitle');
-  notificationInfo = document.getElementById('notificationInfo');
-  noteSpan = document.getElementById('closeNotification');
-  privateMessageModal = document.getElementById('privateMessageModal');
-  closePrivateMessageModal = document.getElementById('closePrivateMessageModal');
-  privateMessageInp = document.getElementById('privateMessageInp');
-  sendMsg = document.getElementById('sendMsg');
-  cancelMsg = document.getElementById('cancelMsg');
-  inviteModal = document.getElementById('inviteModal');
-  closeInviteModal = document.getElementById('closeInviteModal');
-  userName = document.getElementById('userName');
-  userUName = document.getElementById('userUName');
-  userShareCode = document.getElementById('userShareCode');
-  sendPrivateMessage = document.getElementById('sendPrivateMessage');
-  userInviteRemove = document.getElementById('userInviteRemove');
-  testData = document.getElementById('testData');
+  notificationBtn = document.getElementById("notificationButton");
+  dataListContainer = document.getElementById("dataListContainer");
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  userInviteModal = document.getElementById("userInviteModal");
+  closeUserInviteModal = document.getElementById("closeUserInviteModal");
+  userNameInp = document.getElementById("userNameInp");
+  addToBlackList = document.getElementById("addToBlackList");
+  inviteInfo = document.getElementById("inviteInfo");
+  addInvite = document.getElementById("addInvite");
+  cancelInvite = document.getElementById("cancelInvite");
+  confirmUserModal = document.getElementById("confirmUserModal");
+  closeConfirmUserModal = document.getElementById("closeConfirmUserModal");
+  confUserName = document.getElementById("confUserName");
+  inviteConfirm = document.getElementById("inviteConfirm");
+  inviteDeny = document.getElementById("inviteDeny");
+  inviteNote = document.getElementById("inviteNote");
+  newInviteIcon = document.getElementById("newInviteIcon");
+  blacklistModal = document.getElementById("blacklistModal");
+  closeBlacklistModal = document.getElementById("closeBlacklistModal");
+  blacklistDescription = document.getElementById("blacklistDescription");
+  blacklistContainer = document.getElementById("blacklistContainer");
+  testBlacklist = document.getElementById("testBlacklist");
+  blacklistRemove = document.getElementById("blacklistRemove");
+  blacklistedUsers = document.getElementById("blacklistedUsers");
+  addUser = document.getElementById("addUser");
+  confirmModal = document.getElementById("confirmModal");
+  closeConfirmModal = document.getElementById("closeConfirmModal");
+  confirmTitle = document.getElementById("confirmTitle");
+  confirmContent = document.getElementById("confirmContent");
+  confirmBtn = document.getElementById("confirmBtn");
+  denyBtn = document.getElementById("denyBtn");
+  notificationModal = document.getElementById("notificationModal");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
+  noteSpan = document.getElementById("closeNotification");
+  privateMessageModal = document.getElementById("privateMessageModal");
+  closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
+  privateMessageInp = document.getElementById("privateMessageInp");
+  sendMsg = document.getElementById("sendMsg");
+  cancelMsg = document.getElementById("cancelMsg");
+  inviteModal = document.getElementById("inviteModal");
+  closeInviteModal = document.getElementById("closeInviteModal");
+  userName = document.getElementById("userName");
+  userUName = document.getElementById("userUName");
+  userShareCode = document.getElementById("userShareCode");
+  sendPrivateMessage = document.getElementById("sendPrivateMessage");
+  userInviteRemove = document.getElementById("userInviteRemove");
+  testData = document.getElementById("testData");
   inviteElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, userInviteModal,
     closeUserInviteModal, userNameInp, addToBlackList, inviteInfo, addInvite, cancelInvite, confirmUserModal,
     closeConfirmUserModal, confUserName, inviteConfirm, inviteDeny, inviteNote, newInviteIcon, blacklistModal,
@@ -181,7 +181,7 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
     let fetchData = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         globalNoteInt = 1;
 
         let i = findUIDItemInArr(data.key, userArr, true);
@@ -209,7 +209,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -240,7 +240,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           if(consoleOutput) {
@@ -253,7 +253,7 @@ window.onload = function instantiate() {
     };
 
     let fetchFriends = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         if (friendArr.indexOf(data.val()) == -1) {
           friendArr.push(data.val());
           user.friends = friendArr;
@@ -262,7 +262,7 @@ window.onload = function instantiate() {
         createFriendElement(data.val());
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         friendArr[data.key] = data.val();
         if(consoleOutput)
           console.log("Changing " + data.val());
@@ -271,7 +271,7 @@ window.onload = function instantiate() {
         saveCriticalCookies();
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         if (!friendDeleteLocal) {
           potentialRemoval = true;
           oldFriendArr = [];
@@ -283,16 +283,16 @@ window.onload = function instantiate() {
     };
 
     let fetchInvites = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         generateInviteIcon();
         inviteArr.push(data.val());
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         inviteArr[data.key] = data.val();
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         inviteArr.splice(data.key, 1);
 
         if (inviteArr.length == 0) {
@@ -450,7 +450,7 @@ function createFriendElement(friendKey){
 
   if(friendIndex != -1 && initializedUsers.indexOf(friendKey) == -1) {
     try {
-      document.getElementById('testData').remove();
+      document.getElementById("testData").remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
@@ -924,9 +924,9 @@ function generateAddUserBtn(){
       }
 
       for (let i = 0; i < userNameInp.value.length; i++) {
-        if (userNameInp.value[i] >= '0' && userNameInp.value[i] <= '9') {
+        if (userNameInp.value[i] >= "0" && userNameInp.value[i] <= "9") {
           containsInt = true;
-        } else if (userNameInp.value[i] == '-') {
+        } else if (userNameInp.value[i] == "-") {
           dashCount++;
         }
 
@@ -1149,7 +1149,7 @@ function generateConfirmDialog(userLocation) {
 }
 
 function removeFriendElement(uid) {
-  document.getElementById('user' + uid).remove();
+  document.getElementById("user" + uid).remove();
 
   dataCounter--;
   if(dataCounter == 0){
