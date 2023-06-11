@@ -70,51 +70,51 @@ function fetchConfigFile(){
       if (configFileInput[i].includes("apiKey:")){
         configInitializeInt++;
         apiKeyString = configFileInput[i].substr(7, configFileInput[i].length);
-        apiKeyString = apiKeyString.replace(/"/g, '');
-        apiKeyString = apiKeyString.replace(/,/g, '');
-        apiKeyString = apiKeyString.replace(/ /g, '');
+        apiKeyString = apiKeyString.replace(/"/g, "");
+        apiKeyString = apiKeyString.replace(/,/g, "");
+        apiKeyString = apiKeyString.replace(/ /g, "");
       } else if (configFileInput[i].includes("authDomain:")){
         configInitializeInt++;
         authDomainString = configFileInput[i].substr(11, configFileInput[i].length);
-        authDomainString = authDomainString.replace(/"/g, '');
-        authDomainString = authDomainString.replace(/,/g, '');
-        authDomainString = authDomainString.replace(/ /g, '');
+        authDomainString = authDomainString.replace(/"/g, "");
+        authDomainString = authDomainString.replace(/,/g, "");
+        authDomainString = authDomainString.replace(/ /g, "");
       } else if (configFileInput[i].includes("databaseURL:")){
         configInitializeInt++;
         databaseURLString = configFileInput[i].substr(12, configFileInput[i].length);
-        databaseURLString = databaseURLString.replace(/"/g, '');
-        databaseURLString = databaseURLString.replace(/,/g, '');
-        databaseURLString = databaseURLString.replace(/ /g, '');
+        databaseURLString = databaseURLString.replace(/"/g, "");
+        databaseURLString = databaseURLString.replace(/,/g, "");
+        databaseURLString = databaseURLString.replace(/ /g, "");
       } else if (configFileInput[i].includes("projectId:")){
         configInitializeInt++;
         projectIdString = configFileInput[i].substr(10, configFileInput[i].length);
-        projectIdString = projectIdString.replace(/"/g, '');
-        projectIdString = projectIdString.replace(/,/g, '');
-        projectIdString = projectIdString.replace(/ /g, '');
+        projectIdString = projectIdString.replace(/"/g, "");
+        projectIdString = projectIdString.replace(/,/g, "");
+        projectIdString = projectIdString.replace(/ /g, "");
       } else if (configFileInput[i].includes("storageBucket:")){
         configInitializeInt++;
         storageBucketString = configFileInput[i].substr(14, configFileInput[i].length);
-        storageBucketString = storageBucketString.replace(/"/g, '');
-        storageBucketString = storageBucketString.replace(/,/g, '');
-        storageBucketString = storageBucketString.replace(/ /g, '');
+        storageBucketString = storageBucketString.replace(/"/g, "");
+        storageBucketString = storageBucketString.replace(/,/g, "");
+        storageBucketString = storageBucketString.replace(/ /g, "");
       } else if (configFileInput[i].includes("messagingSenderId:")){
         configInitializeInt++;
         messagingSenderIdString = configFileInput[i].substr(18, configFileInput[i].length);
-        messagingSenderIdString = messagingSenderIdString.replace(/"/g, '');
-        messagingSenderIdString = messagingSenderIdString.replace(/,/g, '');
-        messagingSenderIdString = messagingSenderIdString.replace(/ /g, '');
+        messagingSenderIdString = messagingSenderIdString.replace(/"/g, "");
+        messagingSenderIdString = messagingSenderIdString.replace(/,/g, "");
+        messagingSenderIdString = messagingSenderIdString.replace(/ /g, "");
       } else if (configFileInput[i].includes("appId:")){
         configInitializeInt++;
         appIdString = configFileInput[i].substr(6, configFileInput[i].length);
-        appIdString = appIdString.replace(/"/g, '');
-        appIdString = appIdString.replace(/,/g, '');
-        appIdString = appIdString.replace(/ /g, '');
+        appIdString = appIdString.replace(/"/g, "");
+        appIdString = appIdString.replace(/,/g, "");
+        appIdString = appIdString.replace(/ /g, "");
       } else if (configFileInput[i].includes("measurementId:")){
         configInitializeInt++;
         measurementIdString = configFileInput[i].substr(14, configFileInput[i].length);
-        measurementIdString = measurementIdString.replace(/"/g, '');
-        measurementIdString = measurementIdString.replace(/,/g, '');
-        measurementIdString = measurementIdString.replace(/ /g, '');
+        measurementIdString = measurementIdString.replace(/"/g, "");
+        measurementIdString = measurementIdString.replace(/,/g, "");
+        measurementIdString = measurementIdString.replace(/ /g, "");
       }
     }
   }
@@ -168,17 +168,17 @@ function fetchConfigFile(){
 window.onload = function instantiate() {
   failedNavNum = 1;
   pageName = "Index";
-  username = document.getElementById('username');
-  pin = document.getElementById('pin');
-  loginBtn = document.getElementById('loginBtn');
-  loginInfo = document.getElementById('loginInfo');
-  signUpFld = document.getElementById('signUpFld');
-  offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById('closeOffline');
-  notificationModal = document.getElementById('notificationModal');
-  notificationTitle = document.getElementById('notificationTitle');
-  notificationInfo = document.getElementById('notificationInfo');
-  noteSpan = document.getElementById('closeNotification');
+  username = document.getElementById("username");
+  pin = document.getElementById("pin");
+  loginBtn = document.getElementById("loginBtn");
+  loginInfo = document.getElementById("loginInfo");
+  signUpFld = document.getElementById("signUpFld");
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  notificationModal = document.getElementById("notificationModal");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
+  noteSpan = document.getElementById("closeNotification");
   indexElements = [username, pin, loginBtn, loginInfo, signUpFld, offlineModal, offlineSpan, notificationModal,
     notificationTitle, notificationInfo, noteSpan];
 
@@ -234,7 +234,7 @@ function loginQuery() {
       if(snapshot.exists()) {
         clearInterval(commonLoadingTimer);
         clearInterval(offlineTimer);
-        postRef.on('child_added', function (data) {
+        postRef.on("child_added", function (data) {
           if(data.key == "allowLogin") {
             if (data.val()) {
               loginReady = true;
@@ -250,7 +250,7 @@ function loginQuery() {
             loginDisabledMsg = data.val();
         });
 
-        postRef.on('child_changed', function (data) {
+        postRef.on("child_changed", function (data) {
           if(data.key == "allowLogin") {
             if (data.val()) {
               loginReady = true;
@@ -267,21 +267,21 @@ function loginQuery() {
         initializeLoginBtnPlatform();
 
         let fetchLimits = function (postRef) {
-          postRef.on('child_added', function (data) {
+          postRef.on("child_added", function (data) {
             if (data.key == "userLimit") {
               userLimit = data.val();
               initializeLoginBtns();
             }
           });
 
-          postRef.on('child_changed', function (data) {
+          postRef.on("child_changed", function (data) {
             if (data.key == "userLimit") {
               userLimit = data.val();
               initializeLoginBtns();
             }
           });
 
-          postRef.on('child_removed', function (data) {
+          postRef.on("child_removed", function (data) {
             if (data.key == "userLimit") {
               userLimit = 50;
               initializeLoginBtns();
@@ -343,14 +343,14 @@ function databaseQuery() {
   let fetchPosts = function (postRef) {
     postRef.once("value").then(function(snapshot) {
       if (snapshot.exists()) {
-        postRef.on('child_added', function (data) {
+        postRef.on("child_added", function (data) {
           if (findUIDItemInArr(data.key, userArr, true) == -1)
             userArr.push(data.val());
 
           initializeLoginBtns();
         });
 
-        postRef.on('child_changed', function (data) {
+        postRef.on("child_changed", function (data) {
           let i = findUIDItemInArr(data.key, userArr);
           if (i != -1) {
             userArr[i] = data.val();
@@ -359,7 +359,7 @@ function databaseQuery() {
           initializeLoginBtns();
         });
 
-        postRef.on('child_removed', function (data) {
+        postRef.on("child_removed", function (data) {
           let i = findUIDItemInArr(data.key, userArr);
           if (i != -1) {
             userArr.splice(i, 1);
