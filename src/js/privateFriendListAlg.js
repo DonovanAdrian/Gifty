@@ -81,39 +81,39 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   pageName = "PrivateFriendList";
-  notificationBtn = document.getElementById('notificationButton');
-  giftCreationDate = document.getElementById('giftCreationDate');
-  dataListContainer = document.getElementById('dataListContainer');
-  offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById('closeOffline');
-  confirmModal = document.getElementById('confirmModal');
-  closeConfirmModal = document.getElementById('closeConfirmModal');
-  confirmTitle = document.getElementById('confirmTitle');
-  confirmContent = document.getElementById('confirmContent');
-  confirmBtn = document.getElementById('confirmBtn');
-  denyBtn = document.getElementById('denyBtn');
-  notificationModal = document.getElementById('notificationModal');
-  notificationTitle = document.getElementById('notificationTitle');
-  notificationInfo = document.getElementById('notificationInfo');
-  noteSpan = document.getElementById('closeNotification');
-  inviteNote = document.getElementById('inviteNote');
-  listNote = document.getElementById('listNote');
-  addGift = document.getElementById('addGift');
-  backBtn = document.getElementById('backBtn');
-  swapList = document.getElementById('swapList');
-  giftModal = document.getElementById('giftModal');
-  testData = document.getElementById('testData');
-  closeGiftModal = document.getElementById('closeGiftModal');
-  giftTitle = document.getElementById('giftTitle');
-  giftLink = document.getElementById('giftLink');
-  giftWhere = document.getElementById('giftWhere');
-  giftDescription = document.getElementById('giftDescription');
-  giftCreator = document.getElementById('giftCreator');
-  giftBought = document.getElementById('giftBought');
-  giftBuy = document.getElementById('giftBuy');
-  giftDontBuy = document.getElementById('giftDontBuy');
-  giftEdit = document.getElementById('giftEdit');
-  giftDelete = document.getElementById('giftDelete');
+  notificationBtn = document.getElementById("notificationButton");
+  giftCreationDate = document.getElementById("giftCreationDate");
+  dataListContainer = document.getElementById("dataListContainer");
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  confirmModal = document.getElementById("confirmModal");
+  closeConfirmModal = document.getElementById("closeConfirmModal");
+  confirmTitle = document.getElementById("confirmTitle");
+  confirmContent = document.getElementById("confirmContent");
+  confirmBtn = document.getElementById("confirmBtn");
+  denyBtn = document.getElementById("denyBtn");
+  notificationModal = document.getElementById("notificationModal");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
+  noteSpan = document.getElementById("closeNotification");
+  inviteNote = document.getElementById("inviteNote");
+  listNote = document.getElementById("listNote");
+  addGift = document.getElementById("addGift");
+  backBtn = document.getElementById("backBtn");
+  swapList = document.getElementById("swapList");
+  giftModal = document.getElementById("giftModal");
+  testData = document.getElementById("testData");
+  closeGiftModal = document.getElementById("closeGiftModal");
+  giftTitle = document.getElementById("giftTitle");
+  giftLink = document.getElementById("giftLink");
+  giftWhere = document.getElementById("giftWhere");
+  giftDescription = document.getElementById("giftDescription");
+  giftCreator = document.getElementById("giftCreator");
+  giftBought = document.getElementById("giftBought");
+  giftBuy = document.getElementById("giftBuy");
+  giftDontBuy = document.getElementById("giftDontBuy");
+  giftEdit = document.getElementById("giftEdit");
+  giftDelete = document.getElementById("giftDelete");
   privateFriendListElements = [notificationBtn, giftCreationDate, dataListContainer, offlineModal, offlineSpan,
     confirmModal, closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal,
     notificationTitle, notificationInfo, noteSpan, inviteNote, listNote, addGift, backBtn, swapList, giftModal,
@@ -161,7 +161,7 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
     let fetchData = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -191,7 +191,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -221,7 +221,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           if(consoleOutput)
@@ -233,7 +233,7 @@ window.onload = function instantiate() {
     };
 
     let fetchGifts = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         if (findUIDItemInArr(data.val().uid, giftArr, true) == -1)
           giftArr.push(data.val());
 
@@ -253,7 +253,7 @@ window.onload = function instantiate() {
         checkGiftLimitLite();
       });
 
-      postRef.on('child_changed', function(data) {
+      postRef.on("child_changed", function(data) {
         if (initializedGifts.includes(data.val().uid)) {
           let previousBoughtStatus = giftArr[data.key].received;
           let currentBoughtStatus = data.val().received;
@@ -283,7 +283,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function(data) {
+      postRef.on("child_removed", function(data) {
         if (!giftDeleteLocal) {
           potentialRemoval = true;
           oldGiftArr = [];
@@ -295,13 +295,13 @@ window.onload = function instantiate() {
     };
 
     let fetchInvites = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         inviteArr.push(data.val());
 
         inviteNote.style.background = "#ff3923";
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         if(consoleOutput)
           console.log(inviteArr);
         inviteArr[data.key] = data.val();
@@ -309,7 +309,7 @@ window.onload = function instantiate() {
           console.log(inviteArr);
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         if(consoleOutput)
           console.log(inviteArr);
         inviteArr.splice(data.key, 1);
@@ -325,21 +325,21 @@ window.onload = function instantiate() {
     };
 
     let fetchLimits = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         if (data.key == "giftLimit") {
           giftLimit = data.val();
           checkGiftLimit();
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         if (data.key == "giftLimit") {
           giftLimit = data.val();
           checkGiftLimit();
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         if (data.key == "giftLimit") {
           giftLimit = 100;
           checkGiftLimit();
@@ -405,7 +405,7 @@ function createGiftElement(pGiftData, pGiftKey){
 
   if (initializedGifts.indexOf(createGiftUid) == -1) {
     try {
-      document.getElementById('testData').remove();
+      document.getElementById("testData").remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
@@ -433,7 +433,7 @@ function createGiftElement(pGiftData, pGiftKey){
 function changeGiftElement(pGiftData, pGiftKey) {
   let changeGiftUid = pGiftData.uid;
   let changeGiftTitle = pGiftData.title;
-  let editGift = document.getElementById('gift' + changeGiftUid);
+  let editGift = document.getElementById("gift" + changeGiftUid);
   editGift.innerHTML = changeGiftTitle;
   initGiftElement(editGift, pGiftData, pGiftKey);
 }
@@ -662,7 +662,7 @@ function buyGiftToDB(priUid, key, multiples, received, receivedBy, unBuyBool, bu
 }
 
 function removeGiftElement(uid) {
-  document.getElementById('gift' + uid).remove();
+  document.getElementById("gift" + uid).remove();
 
   checkGiftLimit();
 
@@ -868,7 +868,7 @@ function checkGiftLimit() {
 }
 
 function showUpdatedItem(inputUid, removeItem) {
-  let giftElem = document.getElementById('gift' + inputUid);
+  let giftElem = document.getElementById("gift" + inputUid);
   let backColor = window.getComputedStyle(giftElem).backgroundColor;
   let oldCssColor = "";
   let oldCssColorA = "#f9f9f9";
@@ -918,7 +918,7 @@ function showUpdatedItem(inputUid, removeItem) {
       else
         tempAlternator = 0;
 
-      tempElem = document.getElementById('gift' + initializedGifts[i]);
+      tempElem = document.getElementById("gift" + initializedGifts[i]);
       tempElem.style.background = oldCssOptions[tempAlternator];
     }
   }
