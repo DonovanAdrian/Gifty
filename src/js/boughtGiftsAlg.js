@@ -51,26 +51,26 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   pageName = "BoughtGifts";
-  notificationBtn = document.getElementById('notificationBtn');
-  dataListContainer = document.getElementById('dataListContainer');
-  offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById('closeOffline');
-  backBtn = document.getElementById('backBtn');
-  inviteNote = document.getElementById('inviteNote');
-  homeNote = document.getElementById('homeNote');
-  notificationModal = document.getElementById('notificationModal');
-  notificationTitle = document.getElementById('notificationTitle');
-  notificationInfo = document.getElementById('notificationInfo');
-  noteSpan = document.getElementById('closeNotification');
-  giftTitleFld = document.getElementById('giftTitleFld');
-  giftLinkFld = document.getElementById('giftLinkFld');
-  giftWhereFld = document.getElementById('giftWhereFld');
-  giftDescriptionFld = document.getElementById('giftDescriptionFld');
-  giftCreationDateFld = document.getElementById('giftCreationDateFld');
-  viewListBtn = document.getElementById('viewListBtn');
-  giftModal = document.getElementById('giftModal');
-  closeGiftModal = document.getElementById('closeGiftModal');
-  testData = document.getElementById('testData');
+  notificationBtn = document.getElementById("notificationBtn");
+  dataListContainer = document.getElementById("dataListContainer");
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  backBtn = document.getElementById("backBtn");
+  inviteNote = document.getElementById("inviteNote");
+  homeNote = document.getElementById("homeNote");
+  notificationModal = document.getElementById("notificationModal");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
+  noteSpan = document.getElementById("closeNotification");
+  giftTitleFld = document.getElementById("giftTitleFld");
+  giftLinkFld = document.getElementById("giftLinkFld");
+  giftWhereFld = document.getElementById("giftWhereFld");
+  giftDescriptionFld = document.getElementById("giftDescriptionFld");
+  giftCreationDateFld = document.getElementById("giftCreationDateFld");
+  viewListBtn = document.getElementById("viewListBtn");
+  giftModal = document.getElementById("giftModal");
+  closeGiftModal = document.getElementById("closeGiftModal");
+  testData = document.getElementById("testData");
   boughtGiftElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, backBtn, inviteNote, homeNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, giftTitleFld, giftLinkFld, giftWhereFld,
     giftDescriptionFld, giftCreationDateFld, viewListBtn, giftModal, closeGiftModal, testData];
@@ -111,7 +111,7 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
     let fetchData = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         let previousUserData;
         if(i != -1){
@@ -135,7 +135,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         let previousUserData;
         if(i != -1){
@@ -161,7 +161,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(i != -1){
           if(consoleOutput)
@@ -173,13 +173,13 @@ window.onload = function instantiate() {
     };
 
     let fetchInvites = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         inviteArr.push(data.val());
 
         inviteNote.style.background = "#ff3923";
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         if(consoleOutput)
           console.log(inviteArr);
         inviteArr[data.key] = data.val();
@@ -187,7 +187,7 @@ window.onload = function instantiate() {
           console.log(inviteArr);
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         if(consoleOutput)
           console.log(inviteArr);
         inviteArr.splice(data.key, 1);
@@ -331,7 +331,7 @@ window.onload = function instantiate() {
 
   function removeGiftElement(uid) {
     console.log("Remove gift " + uid);
-    document.getElementById('gift' + uid).remove();
+    document.getElementById("gift" + uid).remove();
 
     dataCounter--;
     if (dataCounter == 0){
@@ -388,7 +388,7 @@ window.onload = function instantiate() {
     let giftOwnerTrim = "";
     let previousGiftOwnerTrim = "";
     try{
-      document.getElementById('testData').remove();
+      document.getElementById("testData").remove();
     } catch (err) {}
 
     let liItem = document.createElement("LI");
@@ -414,7 +414,7 @@ window.onload = function instantiate() {
     let textNode = document.createTextNode(giftData.title + " - for " + giftOwner);
     liItem.appendChild(textNode);
 
-    dataListContainer.insertBefore(liItem, document.getElementById('dataListContainer').childNodes[0]);
+    dataListContainer.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
     initializedGiftsArr.push(giftData.uid);
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
@@ -425,7 +425,7 @@ window.onload = function instantiate() {
   function changeGiftElement(giftData, giftOwnerUID, giftOwner){
     if(consoleOutput)
       console.log("Updating " + giftData.uid);
-    let editGift = document.getElementById('gift' + giftData.uid);
+    let editGift = document.getElementById("gift" + giftData.uid);
     editGift.innerHTML = giftData.title + " - for " + giftOwner;
     initGiftElement(editGift, giftData, giftOwnerUID, giftOwner, false);
   }
@@ -467,7 +467,7 @@ window.onload = function instantiate() {
       }
 
       if (giftOwnerIndex != -1) {
-        if (giftOwner.includes('Private')) {
+        if (giftOwner.includes("Private")) {
           viewListBtn.innerHTML = "View " + giftOwnerData.name + "'s Private List";
           viewListBtn.onclick = function(){
             sessionStorage.setItem("validGiftUser", JSON.stringify(giftOwnerData));
