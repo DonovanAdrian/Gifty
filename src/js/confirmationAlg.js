@@ -44,24 +44,24 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   pageName = "Confirmation";
-  testData = document.getElementById('testData');
-  backBtn = document.getElementById('backBtn');
-  notificationBtn = document.getElementById('notificationButton');
-  dataListContainer = document.getElementById('dataListContainer');
-  offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById('closeOffline');
-  inviteNote = document.getElementById('inviteNote');
-  notificationModal = document.getElementById('notificationModal');
-  notificationTitle = document.getElementById('notificationTitle');
-  notificationInfo = document.getElementById('notificationInfo');
-  noteSpan = document.getElementById('closeNotification');
-  inviteModal = document.getElementById('inviteModal');
-  closeInviteModal = document.getElementById('closeInviteModal');
-  userNameFld = document.getElementById('userNameFld');
-  userUNameFld = document.getElementById('userUNameFld');
-  userShareCodeFld = document.getElementById('userShareCodeFld');
-  userAcceptBtn = document.getElementById('userAcceptBtn');
-  userDeleteBtn = document.getElementById('userDeleteBtn');
+  testData = document.getElementById("testData");
+  backBtn = document.getElementById("backBtn");
+  notificationBtn = document.getElementById("notificationButton");
+  dataListContainer = document.getElementById("dataListContainer");
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  inviteNote = document.getElementById("inviteNote");
+  notificationModal = document.getElementById("notificationModal");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
+  noteSpan = document.getElementById("closeNotification");
+  inviteModal = document.getElementById("inviteModal");
+  closeInviteModal = document.getElementById("closeInviteModal");
+  userNameFld = document.getElementById("userNameFld");
+  userUNameFld = document.getElementById("userUNameFld");
+  userShareCodeFld = document.getElementById("userShareCodeFld");
+  userAcceptBtn = document.getElementById("userAcceptBtn");
+  userDeleteBtn = document.getElementById("userDeleteBtn");
   confirmationElements = [testData, notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, inviteModal, closeInviteModal, userNameFld,
     userUNameFld, userShareCodeFld, userAcceptBtn, userDeleteBtn];
@@ -105,7 +105,7 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
     let fetchData = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -131,7 +131,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -167,7 +167,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           if(consoleOutput) {
@@ -180,7 +180,7 @@ window.onload = function instantiate() {
     };
 
     let fetchFriends = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         if (!friendArr.includes(data.val())) {
           friendArr.push(data.val());
         }
@@ -190,13 +190,13 @@ window.onload = function instantiate() {
           }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         friendArr[data.key] = data.val();
         if (user.friends != undefined)
           user.friends[data.key] = data.val();
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         friendArr.splice(data.key, 1);
         if (user.friends != undefined)
           user.friends.splice(data.key, 1);
@@ -204,7 +204,7 @@ window.onload = function instantiate() {
     };
 
     let fetchInvites = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         if (inviteArr.indexOf(data.val()) == -1) {
           inviteArr.push(data.val());
           user.invites = inviteArr;
@@ -215,7 +215,7 @@ window.onload = function instantiate() {
         inviteNote.style.background = "#ff3923";
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         inviteArr[data.key] = data.val();
 
         if (initializedUsers.includes(data.key)) {
@@ -225,7 +225,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function () {
+      postRef.on("child_removed", function () {
         if (!inviteDeleteLocal) {
           potentialRemoval = true;
           oldInviteArr = [];
@@ -263,7 +263,7 @@ function createInviteElement(inviteKey){
   let inviteData = userArr[inviteIndex];;
 
   try{
-    document.getElementById('testData').remove();
+    document.getElementById("testData").remove();
   } catch (err) {}
 
   if (inviteIndex != -1 && initializedUsers.indexOf(inviteKey) == -1) {
@@ -292,7 +292,7 @@ function changeInviteElement(inviteKey){
   }
 
   if (inviteData != undefined) {
-    let liItemUpdate = document.getElementById('user' + inviteData.uid);
+    let liItemUpdate = document.getElementById("user" + inviteData.uid);
     liItemUpdate.innerHTML = inviteData.name;
     initInviteElement(liItemUpdate, inviteData);
   }
@@ -474,7 +474,7 @@ function deleteInvite(inviteData, finalInviteData) {
         if (user.notifications[x].data.includes(userArr[inviteNoteIndex].uid)) {
           noteSplit = user.notifications[x].data.split(",,,");
           for (let i = 0; i < noteSplit.length; i++) {
-            noteSplit[i] = noteSplit[i].replaceAll('"', '');
+            noteSplit[i] = noteSplit[i].replaceAll("\"", "");
             if (noteSplit[i] != "") {
               noteSplitCount++;
             }
@@ -548,7 +548,7 @@ function deleteInvite(inviteData, finalInviteData) {
 }
 
 function removeInviteElement(uid) {
-  document.getElementById('user' + uid).remove();
+  document.getElementById("user" + uid).remove();
 
   dataCounter--;
   if (dataCounter == 0) {
