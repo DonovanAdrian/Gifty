@@ -35,25 +35,25 @@ function checkTicketCookie() {
 
 window.onload = function instantiate() {
   pageName = "ModerationQueue";
-  dataListContainer = document.getElementById('dataListContainer');
-  nukeTickets = document.getElementById('nukeTickets');
-  backBtn = document.getElementById('backBtn');
-  ticketModal = document.getElementById('ticketModal');
-  closeTicketModal = document.getElementById('closeTicketModal');
-  ticketTitle = document.getElementById('ticketTitle');
-  ticketUID = document.getElementById('ticketUID');
-  ticketDetails = document.getElementById('ticketDetails');
-  ticketLocation = document.getElementById('ticketLocation');
-  ticketTime = document.getElementById('ticketTime');
-  deleteTicket = document.getElementById('deleteTicket');
-  offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById('closeOffline');
-  inviteNote = document.getElementById('inviteNote');
-  notificationModal = document.getElementById('notificationModal');
-  notificationTitle = document.getElementById('notificationTitle');
-  notificationInfo = document.getElementById('notificationInfo');
-  noteSpan = document.getElementById('closeNotification');
-  testData = document.getElementById('testData');
+  dataListContainer = document.getElementById("dataListContainer");
+  nukeTickets = document.getElementById("nukeTickets");
+  backBtn = document.getElementById("backBtn");
+  ticketModal = document.getElementById("ticketModal");
+  closeTicketModal = document.getElementById("closeTicketModal");
+  ticketTitle = document.getElementById("ticketTitle");
+  ticketUID = document.getElementById("ticketUID");
+  ticketDetails = document.getElementById("ticketDetails");
+  ticketLocation = document.getElementById("ticketLocation");
+  ticketTime = document.getElementById("ticketTime");
+  deleteTicket = document.getElementById("deleteTicket");
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  inviteNote = document.getElementById("inviteNote");
+  notificationModal = document.getElementById("notificationModal");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
+  noteSpan = document.getElementById("closeNotification");
+  testData = document.getElementById("testData");
   moderationQueueElements = [dataListContainer, nukeTickets, backBtn, ticketModal, closeTicketModal, ticketTitle,
     ticketUID, ticketDetails, ticketLocation, ticketTime, deleteTicket, offlineModal, offlineSpan, inviteNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, testData];
@@ -82,7 +82,7 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
     let fetchData = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         clearInterval(commonLoadingTimer);
         clearInterval(offlineTimer);
         let i = findUIDItemInArr(data.key, userArr, true);
@@ -108,7 +108,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -127,7 +127,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
@@ -138,16 +138,16 @@ window.onload = function instantiate() {
     };
 
     let fetchInvites = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         inviteArr.push(data.val());
         inviteNote.style.background = "#ff3923";
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         inviteArr[data.key] = data.val();
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         inviteArr.splice(data.key, 1);
 
         if (inviteArr.length == 0) {
@@ -245,7 +245,7 @@ function initializeNukeBtn() {
 
 function createModerationTicket (ticketData) {
   try {
-    document.getElementById('testData').remove();
+    document.getElementById("testData").remove();
   } catch (err) {}
 
   let ticketTitleTextReturned;
@@ -269,7 +269,7 @@ function createModerationTicket (ticketData) {
 
 function changeModerationTicket (ticketData) {
   let ticketTitleTextReturned;
-  let editTicket = document.getElementById('ticket' + ticketData.uid);
+  let editTicket = document.getElementById("ticket" + ticketData.uid);
 
   ticketTitleTextReturned = initModTicketElement(editTicket, ticketData);
   editTicket.innerHTML = ticketTitleTextReturned;
@@ -418,7 +418,7 @@ function deleteModerationTicket (ticketData) {
 
 function removeModerationTicket(uid) {
   try {
-    document.getElementById('ticket' + uid).remove();
+    document.getElementById("ticket" + uid).remove();
 
     dataCounter--;
     if (dataCounter == 0){
