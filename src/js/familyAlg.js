@@ -37,6 +37,7 @@ function checkFamilyCookie(){
 }
 
 window.onload = function instantiate() {
+  failedNavNum = 15;
   pageName = "Family";
   inviteNote = document.getElementById("inviteNote");
   settingsNote = document.getElementById("settingsNote");
@@ -308,7 +309,7 @@ function initFamilyElement(liItem, familyData) {
       } else
         for (let i = 0; i < familyMemberArr.length; i++) {
           let liItem = document.createElement("LI");
-          let familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
+          let familyMember = findUIDItemInArr(familyMemberArr[i], userArr, true);
           liItem.id = familyMemberArr[i];
           liItem.className = "gift";
           let textNode = document.createTextNode(userArr[familyMember].name);
