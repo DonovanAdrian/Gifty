@@ -491,7 +491,7 @@ ul li.multiCheck {
 }
 
 ul li.multiCheck::before {
-  content: '';
+  content: "";
   position: absolute;
   border-color: #429ef5;
   border-style: solid;
@@ -509,7 +509,7 @@ ul li.checked {
 }
 
 ul li.checked::before {
-  content: '';
+  content: "";
   position: absolute;
   border-color: #f00;
   border-style: solid;
@@ -538,7 +538,7 @@ ul li.santa {
 }
 
 ul li.santa::before {
-  content: '';
+  content: "";
   position: absolute;
   border-color: #00d118;
   border-style: solid;
@@ -682,6 +682,7 @@ ul li.santa::before {
 .closeInvert:hover,
 .closeInvert:focus {
   color: #555555;
+  rotate: 90deg;
   text-decoration: none;
 }
 
@@ -697,6 +698,7 @@ ul li.santa::before {
 .close:hover,
 .close:focus {
   color: #000;
+  rotate: 90deg;
   text-decoration: none;
 }
 
