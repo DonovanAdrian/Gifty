@@ -14,15 +14,15 @@ let settingsNote;
 
 window.onload = function instantiate() {
   pageName = "FAQ";
-  emailBtn = document.getElementById('emailBtn');
-  offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById('closeOffline');
-  inviteNote = document.getElementById('inviteNote');
-  settingsNote = document.getElementById('settingsNote');
-  notificationModal = document.getElementById('notificationModal');
-  notificationTitle = document.getElementById('notificationTitle');
-  notificationInfo = document.getElementById('notificationInfo');
-  noteSpan = document.getElementById('closeNotification');
+  emailBtn = document.getElementById("emailBtn");
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  inviteNote = document.getElementById("inviteNote");
+  settingsNote = document.getElementById("settingsNote");
+  notificationModal = document.getElementById("notificationModal");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
+  noteSpan = document.getElementById("closeNotification");
   faqElements = [emailBtn, offlineModal, offlineSpan, inviteNote, settingsNote, notificationModal, notificationTitle,
     notificationInfo, noteSpan];
 
@@ -37,8 +37,8 @@ window.onload = function instantiate() {
 
   emailBtn.onclick = function () {
     let supportStr = genSupport();
-    window.open('mailto:gifty.application@gmail.com?subject=Gifty Support #' + supportStr +
-        '&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, ' + user.userName);
+    window.open("mailto:gifty.application@gmail.com?subject=Gifty Support #" + supportStr +
+        "&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, " + user.userName);
   };
 
   function genSupport() {
@@ -77,7 +77,7 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
     let fetchData = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         clearInterval(commonLoadingTimer);
         clearInterval(offlineTimer);
         let i = findUIDItemInArr(data.key, userArr, true);
@@ -101,7 +101,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -121,7 +121,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           userArr.splice(i, 1);
