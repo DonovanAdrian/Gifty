@@ -29,6 +29,7 @@ let userListBtn;
 
 
 function getCurrentUser(){
+  failedNavNum = 5;
   getCurrentUserCommon();
 
   if (user.moderatorInt == 1) {
