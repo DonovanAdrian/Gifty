@@ -54,27 +54,27 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   pageName = "Notifications";
-  dataListContainer = document.getElementById('dataListContainer');
-  nukeNotifications = document.getElementById('nukeNotifications');
-  offlineModal = document.getElementById('offlineModal');
-  offlineSpan = document.getElementById('closeOffline');
-  inviteNote = document.getElementById('inviteNote');
-  notificationModal = document.getElementById('notificationModal');
-  notificationTitle = document.getElementById('notificationTitle');
-  notificationInfo = document.getElementById('notificationInfo');
-  noteSpan = document.getElementById('closeNotification');
-  privateMessageModal = document.getElementById('privateMessageModal');
-  noteViewModal = document.getElementById('noteViewModal');
-  testData = document.getElementById('testData');
-  closeNoteViewModal = document.getElementById('closeNoteViewModal');
-  notificationViewTitle = document.getElementById('notificationViewTitle');
-  notificationViewDetails = document.getElementById('notificationViewDetails');
-  notificationViewPage = document.getElementById('notificationViewPage');
-  notificationViewDelete = document.getElementById('notificationViewDelete');
-  privateMessageSpan = document.getElementById('privateMessageSpan');
-  privateMessageInp = document.getElementById('privateMessageInp');
-  sendMsg = document.getElementById('sendMsg');
-  cancelMsg = document.getElementById('cancelMsg');
+  dataListContainer = document.getElementById("dataListContainer");
+  nukeNotifications = document.getElementById("nukeNotifications");
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  inviteNote = document.getElementById("inviteNote");
+  notificationModal = document.getElementById("notificationModal");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
+  noteSpan = document.getElementById("closeNotification");
+  privateMessageModal = document.getElementById("privateMessageModal");
+  noteViewModal = document.getElementById("noteViewModal");
+  testData = document.getElementById("testData");
+  closeNoteViewModal = document.getElementById("closeNoteViewModal");
+  notificationViewTitle = document.getElementById("notificationViewTitle");
+  notificationViewDetails = document.getElementById("notificationViewDetails");
+  notificationViewPage = document.getElementById("notificationViewPage");
+  notificationViewDelete = document.getElementById("notificationViewDelete");
+  privateMessageSpan = document.getElementById("privateMessageSpan");
+  privateMessageInp = document.getElementById("privateMessageInp");
+  sendMsg = document.getElementById("sendMsg");
+  cancelMsg = document.getElementById("cancelMsg");
   notificationsElements = [dataListContainer, nukeNotifications, offlineModal, offlineSpan, inviteNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, privateMessageModal, noteViewModal, testData,
     closeNoteViewModal, notificationViewTitle, notificationViewDetails, notificationViewPage, notificationViewDelete,
@@ -93,13 +93,13 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
     let fetchReadNotifications = function (postRef){
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         firebase.database().ref("users/" + user.uid + "/readNotifications/").remove();
       });
     }
 
     let fetchNotifications = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         if (data.val().uid != undefined) {
           if (notificationKeyArr.indexOf(data.val().uid) == -1) {
             notificationArr.push(data.val());
@@ -121,14 +121,14 @@ window.onload = function instantiate() {
         saveCriticalCookies();
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         notificationArr[data.key] = data.val();
         changeNotificationElement(data.val(), data.key);
         user.notifications = notificationArr;
         saveCriticalCookies();
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         if (!notificationDeleteLocal) {
           potentialRemoval = true;
           oldNotificationArr = [];
@@ -140,16 +140,16 @@ window.onload = function instantiate() {
     };
 
     let fetchInvites = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         inviteArr.push(data.val());
         inviteNote.style.background = "#ff3923";
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         inviteArr[data.key] = data.val();
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         inviteArr.splice(data.key, 1);
         if (inviteArr.length == 0) {
           inviteNote.style.background = "#008222";
@@ -158,7 +158,7 @@ window.onload = function instantiate() {
     };
 
     let fetchData = function (postRef) {
-      postRef.on('child_added', function (data) {
+      postRef.on("child_added", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -180,7 +180,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_changed', function (data) {
+      postRef.on("child_changed", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -202,7 +202,7 @@ window.onload = function instantiate() {
         }
       });
 
-      postRef.on('child_removed', function (data) {
+      postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           if(consoleOutput)
@@ -248,7 +248,7 @@ function fetchNotificationData(createBool, liElem, notificationData, noteKey) {
 
   if (noteSplit.length >= 4) {
     for (let i = 0; i < noteSplit.length; i++) {
-      noteSplit[i] = noteSplit[i].replaceAll('"', '');
+      noteSplit[i] = noteSplit[i].replaceAll("\"", "");
       if (noteSplit[i] != "") {
         noteSplitCount++;
       }
@@ -360,9 +360,7 @@ function fetchNotificationData(createBool, liElem, notificationData, noteKey) {
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
 
-    if (dataCounter < 1) {
-      initializeNukeBtn();
-    }
+    initializeNukeBtn();
     dataCounter++;
     initializedNotifications.push(notificationData.uid);
   } else {
@@ -389,7 +387,7 @@ function changeNotificationElement(notificationData, notificationKey){
     testData.remove();
   } catch (err) {}
 
-  let liItemUpdate = document.getElementById('notification' + notificationData.uid);
+  let liItemUpdate = document.getElementById("notification" + notificationData.uid);
   if (liItemUpdate != undefined) {
     fetchNotificationData(false, liItemUpdate, notificationData, notificationKey);
   }
@@ -593,7 +591,7 @@ function deleteNotification(uid) {
 }
 
 function removeNotificationElement(uid) {
-  document.getElementById('notification' + uid).remove();
+  document.getElementById("notification" + uid).remove();
 
   dataCounter--;
   if (dataCounter == 0){
