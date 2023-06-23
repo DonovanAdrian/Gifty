@@ -27,6 +27,7 @@ let btnDelete;
 
 
 window.onload = function instantiate() {
+  failedNavNum = 13;
   pageName = "UserAddUpdate";
   nameField = document.getElementById("nameField");
   userNameField = document.getElementById("userNameField");
