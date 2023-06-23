@@ -13,6 +13,7 @@ let settingsNote;
 
 
 window.onload = function instantiate() {
+  failedNavNum = 12;
   pageName = "FAQ";
   emailBtn = document.getElementById("emailBtn");
   offlineModal = document.getElementById("offlineModal");
