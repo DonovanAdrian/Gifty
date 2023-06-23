@@ -93,7 +93,7 @@ window.onload = function instantiate() {
 
   function databaseQuery() {
     let fetchReadNotifications = function (postRef){
-      postRef.on("child_added", function (data) {
+      postRef.on("child_added", function () {
         firebase.database().ref("users/" + user.uid + "/readNotifications/").remove();
       });
     }
@@ -128,7 +128,7 @@ window.onload = function instantiate() {
         saveCriticalCookies();
       });
 
-      postRef.on("child_removed", function (data) {
+      postRef.on("child_removed", function () {
         if (!notificationDeleteLocal) {
           potentialRemoval = true;
           oldNotificationArr = [];
