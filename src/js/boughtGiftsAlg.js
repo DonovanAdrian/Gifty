@@ -29,6 +29,7 @@ let homeNote;
 
 
 function getCurrentUser(){
+  failedNavNum = 7;
   getCurrentUserCommon();
 
   try {
