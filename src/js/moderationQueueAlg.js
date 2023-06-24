@@ -34,6 +34,7 @@ function checkTicketCookie() {
 }
 
 window.onload = function instantiate() {
+  failedNavNum = 17;
   pageName = "ModerationQueue";
   dataListContainer = document.getElementById("dataListContainer");
   nukeTickets = document.getElementById("nukeTickets");
