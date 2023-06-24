@@ -106,6 +106,7 @@ function checkUserCookie() {
 }
 
 window.onload = function instantiate() {
+  failedNavNum = 14;
   pageName = "Moderation";
   dataListContainer = document.getElementById("dataListContainer");
   backBtn = document.getElementById("backBtn");
