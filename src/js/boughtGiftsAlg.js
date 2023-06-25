@@ -52,17 +52,10 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   pageName = "BoughtGifts";
-  notificationBtn = document.getElementById("notificationBtn");
-  dataListContainer = document.getElementById("dataListContainer");
-  offlineModal = document.getElementById("offlineModal");
-  offlineSpan = document.getElementById("closeOffline");
-  backBtn = document.getElementById("backBtn");
   inviteNote = document.getElementById("inviteNote");
+  notificationBtn = document.getElementById("notificationBtn");
+  backBtn = document.getElementById("backBtn");
   homeNote = document.getElementById("homeNote");
-  notificationModal = document.getElementById("notificationModal");
-  notificationTitle = document.getElementById("notificationTitle");
-  notificationInfo = document.getElementById("notificationInfo");
-  noteSpan = document.getElementById("closeNotification");
   giftTitleFld = document.getElementById("giftTitleFld");
   giftLinkFld = document.getElementById("giftLinkFld");
   giftWhereFld = document.getElementById("giftWhereFld");
@@ -71,7 +64,6 @@ window.onload = function instantiate() {
   viewListBtn = document.getElementById("viewListBtn");
   giftModal = document.getElementById("giftModal");
   closeGiftModal = document.getElementById("closeGiftModal");
-  testData = document.getElementById("testData");
   boughtGiftElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, backBtn, inviteNote, homeNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, giftTitleFld, giftLinkFld, giftWhereFld,
     giftDescriptionFld, giftCreationDateFld, viewListBtn, giftModal, closeGiftModal, testData];
