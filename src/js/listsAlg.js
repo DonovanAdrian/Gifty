@@ -224,7 +224,7 @@ window.onload = function instantiate() {
         saveCriticalCookies();
       });
 
-      postRef.on("child_removed", function (data) {
+      postRef.on("child_removed", function () {
         potentialRemoval = true;
         oldFriendArr = [];
         for (let i = 0; i < friendArr.length; i++) {
