@@ -44,17 +44,9 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   pageName = "Confirmation";
-  testData = document.getElementById("testData");
   backBtn = document.getElementById("backBtn");
-  notificationBtn = document.getElementById("notificationButton");
-  dataListContainer = document.getElementById("dataListContainer");
-  offlineModal = document.getElementById("offlineModal");
-  offlineSpan = document.getElementById("closeOffline");
   inviteNote = document.getElementById("inviteNote");
-  notificationModal = document.getElementById("notificationModal");
-  notificationTitle = document.getElementById("notificationTitle");
-  notificationInfo = document.getElementById("notificationInfo");
-  noteSpan = document.getElementById("closeNotification");
+  notificationBtn = document.getElementById("notificationButton");
   inviteModal = document.getElementById("inviteModal");
   closeInviteModal = document.getElementById("closeInviteModal");
   userNameFld = document.getElementById("userNameFld");
