@@ -41,8 +41,6 @@ window.onload = function instantiate() {
   pageName = "Family";
   inviteNote = document.getElementById("inviteNote");
   settingsNote = document.getElementById("settingsNote");
-  dataListContainer = document.getElementById("dataListContainer");
-  testData = document.getElementById("testData");
   createFamilyBtn = document.getElementById("createFamily");
   backBtn = document.getElementById("backBtn");
   familyModal = document.getElementById("familyModal");
@@ -59,12 +57,6 @@ window.onload = function instantiate() {
   familyNameInp = document.getElementById("familyNameInp");
   addFamily = document.getElementById("addFamily");
   cancelFamily = document.getElementById("cancelFamily");
-  offlineModal = document.getElementById("offlineModal");
-  offlineSpan = document.getElementById("closeOffline");
-  notificationModal = document.getElementById("notificationModal");
-  noteSpan = document.getElementById("closeNotification");
-  notificationTitle = document.getElementById("notificationTitle");
-  notificationInfo = document.getElementById("notificationInfo");
   familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, backBtn, familyModal,
     closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily, familyEdit,
     familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
