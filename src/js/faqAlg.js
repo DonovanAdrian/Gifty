@@ -16,14 +16,8 @@ window.onload = function instantiate() {
   failedNavNum = 12;
   pageName = "FAQ";
   emailBtn = document.getElementById("emailBtn");
-  offlineModal = document.getElementById("offlineModal");
-  offlineSpan = document.getElementById("closeOffline");
   inviteNote = document.getElementById("inviteNote");
   settingsNote = document.getElementById("settingsNote");
-  notificationModal = document.getElementById("notificationModal");
-  notificationTitle = document.getElementById("notificationTitle");
-  notificationInfo = document.getElementById("notificationInfo");
-  noteSpan = document.getElementById("closeNotification");
   faqElements = [emailBtn, offlineModal, offlineSpan, inviteNote, settingsNote, notificationModal, notificationTitle,
     notificationInfo, noteSpan];
 
