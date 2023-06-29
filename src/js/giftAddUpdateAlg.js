@@ -142,8 +142,6 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   pageName = "GiftAddUpdate";
-  offlineModal = document.getElementById("offlineModal");
-  offlineSpan = document.getElementById("closeOffline");
   confirmModal = document.getElementById("confirmModal");
   closeConfirmModal = document.getElementById("closeConfirmModal");
   confirmTitle = document.getElementById("confirmTitle");
@@ -165,10 +163,6 @@ window.onload = function instantiate() {
   homeNote = document.getElementById("homeNote");
   listNote = document.getElementById("listNote");
   inviteNote = document.getElementById("inviteNote");
-  notificationModal = document.getElementById("notificationModal");
-  notificationTitle = document.getElementById("notificationTitle");
-  notificationInfo = document.getElementById("notificationInfo");
-  noteSpan = document.getElementById("closeNotification");
   giftAddUpdateElements = [offlineModal, offlineSpan, confirmModal, closeConfirmModal, confirmTitle, confirmContent,
     confirmBtn, denyBtn, giftDescriptionInp, giftTitleInp, giftWhereInp, giftLinkInp, multiplePurchases, titleInfoIcon,
     urlInfoIcon, whereInfoIcon, descriptionInfoIcon, multipleInfoIcon, updateGift, homeNote, listNote, inviteNote,
