@@ -69,23 +69,15 @@ function getCurrentUser(){
 window.onload = function instantiate() {
   pageName = "FriendList";
   notificationBtn = document.getElementById("notificationButton");
-  dataListContainer = document.getElementById("dataListContainer");
-  offlineModal = document.getElementById("offlineModal");
-  offlineSpan = document.getElementById("closeOffline");
   confirmModal = document.getElementById("confirmModal");
   closeConfirmModal = document.getElementById("closeConfirmModal");
   confirmTitle = document.getElementById("confirmTitle");
   confirmContent = document.getElementById("confirmContent");
   confirmBtn = document.getElementById("confirmBtn");
   denyBtn = document.getElementById("denyBtn");
-  noteSpan = document.getElementById("closeNotification");
   backBtn = document.getElementById("backBtn");
   listNote = document.getElementById("listNote");
   inviteNote = document.getElementById("inviteNote");
-  notificationModal = document.getElementById("notificationModal");
-  notificationTitle = document.getElementById("notificationTitle");
-  notificationInfo = document.getElementById("notificationInfo");
-  noteSpan = document.getElementById("closeNotification");
   giftModal = document.getElementById("giftModal");
   closeGiftModal = document.getElementById("closeGiftModal");
   giftTitle = document.getElementById("giftTitle");
@@ -96,7 +88,6 @@ window.onload = function instantiate() {
   giftCreationDate = document.getElementById("giftCreationDate");
   giftBuy = document.getElementById("giftBuy");
   giftDontBuy = document.getElementById("giftDontBuy");
-  testData = document.getElementById("testData");
   friendListElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, confirmModal, closeConfirmModal,
     confirmTitle, confirmContent, confirmBtn, denyBtn, noteSpan, backBtn, listNote, inviteNote, notificationModal,
     notificationTitle, notificationInfo, noteSpan, giftModal, closeGiftModal, giftTitle, giftLink, giftWhere,
