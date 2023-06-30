@@ -93,9 +93,6 @@ function getCurrentUser(){
 window.onload = function instantiate() {
   pageName = "Invites";
   notificationBtn = document.getElementById("notificationButton");
-  dataListContainer = document.getElementById("dataListContainer");
-  offlineModal = document.getElementById("offlineModal");
-  offlineSpan = document.getElementById("closeOffline");
   userInviteModal = document.getElementById("userInviteModal");
   closeUserInviteModal = document.getElementById("closeUserInviteModal");
   userNameInp = document.getElementById("userNameInp");
@@ -124,10 +121,6 @@ window.onload = function instantiate() {
   confirmContent = document.getElementById("confirmContent");
   confirmBtn = document.getElementById("confirmBtn");
   denyBtn = document.getElementById("denyBtn");
-  notificationModal = document.getElementById("notificationModal");
-  notificationTitle = document.getElementById("notificationTitle");
-  notificationInfo = document.getElementById("notificationInfo");
-  noteSpan = document.getElementById("closeNotification");
   privateMessageModal = document.getElementById("privateMessageModal");
   closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
   privateMessageInp = document.getElementById("privateMessageInp");
@@ -140,7 +133,6 @@ window.onload = function instantiate() {
   userShareCode = document.getElementById("userShareCode");
   sendPrivateMessage = document.getElementById("sendPrivateMessage");
   userInviteRemove = document.getElementById("userInviteRemove");
-  testData = document.getElementById("testData");
   inviteElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, userInviteModal,
     closeUserInviteModal, userNameInp, addToBlackList, inviteInfo, addInvite, cancelInvite, confirmUserModal,
     closeConfirmUserModal, confUserName, inviteConfirm, inviteDeny, inviteNote, newInviteIcon, blacklistModal,
