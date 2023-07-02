@@ -36,7 +36,6 @@ function checkTicketCookie() {
 window.onload = function instantiate() {
   failedNavNum = 17;
   pageName = "ModerationQueue";
-  dataListContainer = document.getElementById("dataListContainer");
   nukeTickets = document.getElementById("nukeTickets");
   backBtn = document.getElementById("backBtn");
   ticketModal = document.getElementById("ticketModal");
@@ -47,14 +46,7 @@ window.onload = function instantiate() {
   ticketLocation = document.getElementById("ticketLocation");
   ticketTime = document.getElementById("ticketTime");
   deleteTicket = document.getElementById("deleteTicket");
-  offlineModal = document.getElementById("offlineModal");
-  offlineSpan = document.getElementById("closeOffline");
   inviteNote = document.getElementById("inviteNote");
-  notificationModal = document.getElementById("notificationModal");
-  notificationTitle = document.getElementById("notificationTitle");
-  notificationInfo = document.getElementById("notificationInfo");
-  noteSpan = document.getElementById("closeNotification");
-  testData = document.getElementById("testData");
   moderationQueueElements = [dataListContainer, nukeTickets, backBtn, ticketModal, closeTicketModal, ticketTitle,
     ticketUID, ticketDetails, ticketLocation, ticketTime, deleteTicket, offlineModal, offlineSpan, inviteNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, testData];
