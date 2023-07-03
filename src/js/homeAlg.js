@@ -461,19 +461,12 @@ function collectUserBoughtGifts(){
 window.onload = function instantiate() {
   pageName = "Home";
   notificationBtn = document.getElementById("notificationButton");
-  dataListContainer = document.getElementById("dataListContainer");
-  offlineModal = document.getElementById("offlineModal");
-  offlineSpan = document.getElementById("closeOffline");
   confirmModal = document.getElementById("confirmModal");
   closeConfirmModal = document.getElementById("closeConfirmModal");
   confirmTitle = document.getElementById("confirmTitle");
   confirmContent = document.getElementById("confirmContent");
   confirmBtn = document.getElementById("confirmBtn");
   denyBtn = document.getElementById("denyBtn");
-  notificationModal = document.getElementById("notificationModal");
-  notificationTitle = document.getElementById("notificationTitle");
-  notificationInfo = document.getElementById("notificationInfo");
-  noteSpan = document.getElementById("closeNotification");
   inviteNote = document.getElementById("inviteNote");
   reviewGifts = document.getElementById("reviewGifts");
   boughtGifts = document.getElementById("boughtGifts");
@@ -495,7 +488,6 @@ window.onload = function instantiate() {
   testReview = document.getElementById("testReview");
   reviewConfirm = document.getElementById("reviewConfirm");
   reviewCancel = document.getElementById("reviewCancel");
-  testData = document.getElementById("testData");
   homeElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, confirmModal, closeConfirmModal,
     confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal, notificationTitle, notificationInfo,
     noteSpan, inviteNote, boughtGifts, addGift, giftModal, giftTitle, giftLink, giftWhere, giftDescription,
