@@ -54,18 +54,10 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   pageName = "Notifications";
-  dataListContainer = document.getElementById("dataListContainer");
   nukeNotifications = document.getElementById("nukeNotifications");
-  offlineModal = document.getElementById("offlineModal");
-  offlineSpan = document.getElementById("closeOffline");
   inviteNote = document.getElementById("inviteNote");
-  notificationModal = document.getElementById("notificationModal");
-  notificationTitle = document.getElementById("notificationTitle");
-  notificationInfo = document.getElementById("notificationInfo");
-  noteSpan = document.getElementById("closeNotification");
   privateMessageModal = document.getElementById("privateMessageModal");
   noteViewModal = document.getElementById("noteViewModal");
-  testData = document.getElementById("testData");
   closeNoteViewModal = document.getElementById("closeNoteViewModal");
   notificationViewTitle = document.getElementById("notificationViewTitle");
   notificationViewDetails = document.getElementById("notificationViewDetails");
