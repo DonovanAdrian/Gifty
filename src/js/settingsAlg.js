@@ -49,8 +49,6 @@ function getCurrentUser(){
 
 window.onload = function instantiate() {
   pageName = "Settings";
-  offlineModal = document.getElementById("offlineModal");
-  offlineSpan = document.getElementById("closeOffline");
   inviteNote = document.getElementById("inviteNote");
   usernameInfo = document.getElementById("usernameInfo");
   usernameDisplay = document.getElementById("usernameDisplay");
@@ -68,10 +66,6 @@ window.onload = function instantiate() {
   moderationSpan = document.getElementById("moderationSpan");
   moderationQueueBtn = document.getElementById("moderationQueueBtn");
   userListBtn = document.getElementById("userListBtn");
-  notificationModal = document.getElementById("notificationModal");
-  notificationTitle = document.getElementById("notificationTitle");
-  notificationInfo = document.getElementById("notificationInfo");
-  noteSpan = document.getElementById("closeNotification");
   settingsElements = [offlineModal, offlineSpan, inviteNote, usernameInfo, usernameDisplay, nameInfo, nameDisplay,
     shareCodeInfo, shareCodeDisplay, userScoreInfo, userScoreDisplay, editBtn, faqBtn, modBtn, familyBtn,
     moderationModal, moderationSpan, moderationQueueBtn, userListBtn, notificationModal, notificationTitle,
