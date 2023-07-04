@@ -3,7 +3,6 @@
  * edits or changes must be confirmed as valid by Donovan
  * with written consent under any circumstance.
  */
-
 let indexElements = [];
 
 let userLimit = 100;
@@ -173,12 +172,6 @@ window.onload = function instantiate() {
   loginBtn = document.getElementById("loginBtn");
   loginInfo = document.getElementById("loginInfo");
   signUpFld = document.getElementById("signUpFld");
-  offlineModal = document.getElementById("offlineModal");
-  offlineSpan = document.getElementById("closeOffline");
-  notificationModal = document.getElementById("notificationModal");
-  notificationTitle = document.getElementById("notificationTitle");
-  notificationInfo = document.getElementById("notificationInfo");
-  noteSpan = document.getElementById("closeNotification");
   indexElements = [username, pin, loginBtn, loginInfo, signUpFld, offlineModal, offlineSpan, notificationModal,
     notificationTitle, notificationInfo, noteSpan];
 
