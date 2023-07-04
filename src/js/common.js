@@ -10,6 +10,7 @@ let logoutLimit = 900; //default 900, 900 15 mins, 600 10 mins
 let commonLoadingTimerLimit = 15000; //default 15000
 let debugElementIntegrity = false; //Used to debug if elements are properly initialized (developer tool)
 let redirectWarningBool = true; //Used to enable or disable URL redirect warnings
+let twentyFourHourTime = false; //Used to enable or disable 24 hour time for getLocalTime();
 
 let listeningFirebaseRefs = [];
 let userArr = [];
@@ -31,10 +32,14 @@ let buttonOpacLim = 7;
 let maxListenForDB = 20;
 let deployedNoteTimer = 0;
 let listenForDBTimer = 0;
+let navSuppressTimerCount = 0;
+let navSuppressImpatientCount = 0;
 let unsavedChangesNav = 0;
 let failedNavNum = 0;
 let dataCounter = 0;
 let pendingNavigation = 0;
+let timerErrorIssued = 0;
+let validPulseReceived = false;
 let globalNotificationBool = false;
 let consoleOutput = false;
 let unsavedChanges = false;
@@ -52,6 +57,7 @@ let modalClosingBool = false;
 let checkNoteOnDBInit = false;
 let emptyListNoteDeployed = false;
 let privateListBool = true;
+let dataListExists = false;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
@@ -70,6 +76,7 @@ let ohThereYouInterval;
 let transparencyInterval;
 let deployedNoteInterval;
 let listenForDBInterval;
+let navSuppressTimer;
 let openModalTimer;
 let alternateButtonTimer;
 let loginInitial;
@@ -82,6 +89,9 @@ let userInvites;
 let userFriends;
 let userReadNotifications;
 let userNotifications;
+let autoSecretSanta;
+let moderatorSettings;
+
 let offlineSpan;
 let offlineModal;
 let offlineTimer;
@@ -175,6 +185,13 @@ function initializeFadeOut() {
 function commonInitialization(){
   let commonDBInitCount = 0;
   let commonDBInitLimit = 5;
+  offlineModal = document.getElementById("offlineModal");
+  offlineSpan = document.getElementById("closeOffline");
+  notificationModal = document.getElementById("notificationModal");
+  notificationTitle = document.getElementById("notificationTitle");
+  notificationInfo = document.getElementById("notificationInfo");
+  noteSpan = document.getElementById("closeNotification");
+
   if (consoleOutput) {
     let today = new Date();
     console.log(today);
@@ -185,13 +202,14 @@ function commonInitialization(){
   initializeFadeOut();
 
   const config = JSON.parse(sessionStorage.config);
-  dataListChecker = document.getElementById("dataListContainer");
 
   try {
     initializeDB(config);
   } catch (err) {
     let dbInitTimer = 0;
     let dbInitInterval;
+    if (consoleOutput)
+      console.log("Error initializing database... Attempting to reconnect...");
 
     dbInitInterval = setInterval(function(){
       dbInitTimer = dbInitTimer + 1000;
@@ -224,7 +242,8 @@ function commonInitialization(){
       now = now + 1000;
       if(now >= 5000){
         clearInterval(commonLoadingTimer);
-        if(dataListChecker != undefined) {
+        timerErrorIssued = 0;
+        if(dataListExists) {
           try {
             document.getElementById("testData").innerHTML = "Loading Failed, Please Connect To Internet";
           } catch (err) {
@@ -262,28 +281,57 @@ function commonInitialization(){
   if (!emptyListNoteDeployed) {
     commonLoadingTimer = setInterval(function(){
       commonLoadingTimerInt = commonLoadingTimerInt + 1000;
-      if (commonLoadingTimerInt >= commonLoadingTimerLimit) {
-        if (document.getElementById("testData") != undefined) {
-          document.getElementById("testData").innerHTML = "Loading Is Taking Longer Than Expected...";
-        } else if (document.getElementById("loginBtn") != undefined) {
-          document.getElementById("loginBtn").innerHTML = "Loading Is Taking Longer Than Expected...";
+      if (commonLoadingTimerInt >= (commonLoadingTimerLimit * 2)) {
+        if (document.getElementById("loginBtn") != undefined) {
+          deployNotificationModal(false, "Loading Error!", "It appears that " +
+              "loading the login page has taken a significant amount of time. If this slow speed continues, please " +
+              "note that your experience will be severely degraded. If desired, try refreshing the page and contact a " +
+              "moderator.", 180);
+          document.getElementById("loginBtn").innerHTML = "Possible Loading Error...";
+          document.getElementById("signUpFld").innerHTML = "Possible Loading Error...";
+        } else {
+          if (document.getElementById("testData") != undefined) {
+            document.getElementById("testData").innerHTML = "Potential Loading Failure...";
+          }
+          deployNotificationModal(false, "Loading Error!", "It appears that " +
+              "this page has taken a significant amount of time to connect to the database. If this slow speed " +
+              "continues, please note that your experience will be severely degraded. If desired, try refreshing the " +
+              "page and contact a moderator.", 180);
         }
         if (consoleOutput)
-          console.log("Timer Error Issued");
+          console.log("Timer Critical Error Issued");
         if (user != undefined) {
-          updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced By \"" + user.userName + "\"");
+          updateMaintenanceLog(pageName, "Critical Error: Critical Loading Time Experienced By \"" + user.userName + "\"");
         } else {
-          updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced!");
+          updateMaintenanceLog(pageName, "Critical Error: Critical Loading Time Experienced!");
         }
         clearInterval(commonLoadingTimer);
-      } else if (commonLoadingTimerInt >= 2000 && dataListChecker != undefined) {
-        if (document.getElementById("testData") == undefined){
+        timerErrorIssued = 0;
+      } else if (commonLoadingTimerInt >= commonLoadingTimerLimit) {
+
+        if (timerErrorIssued == 0) {
+          if (consoleOutput)
+            console.log("Timer Error Issued");
+          if (document.getElementById("testData") != undefined) {
+            document.getElementById("testData").innerHTML = "Loading Is Taking Longer Than Expected...";
+          } else if (document.getElementById("loginBtn") != undefined) {
+            document.getElementById("loginBtn").innerHTML = "Loading Is Taking Longer Than Expected...";
+          }
+          deployNotificationModal(false, "Database Connection Slow...", "Database " +
+              "connection is very slow... If this slow speed continues, your experience will be severely degraded.", 6);
+          if (user != undefined) {
+            updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced By \"" + user.userName + "\"");
+          } else {
+            updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced!");
+          }
+          timerErrorIssued++;
+        }
+      } else if (commonLoadingTimerInt >= 1000 && dataListExists) {
+        if (validPulseReceived){
           clearInterval(commonLoadingTimer);
+          timerErrorIssued = 0;
           if(consoleOutput)
-            console.log("TestData Missing. Loading Properly.");
-        } else {
-          if (!loadingTimerCancelled)
-            document.getElementById("testData").innerHTML = "Loading... Please Wait...";
+            console.log("Pulse Check Complete. Loading Properly.");
         }
       }
     }, 1000);
@@ -325,6 +373,7 @@ function databaseCommonPulse() {
   let fetchCommonData = function (postRef) {
     postRef.on("child_added", function (data) {
       if (data.key == "ban") {
+        validPulseReceived = true;
         if (data.val() != 0) {
           signOut();
         }
@@ -333,6 +382,7 @@ function databaseCommonPulse() {
 
     postRef.on("child_changed", function (data) {
       if (data.key == "ban") {
+        validPulseReceived = true;
         if (data.val() != 0) {
           signOut();
         }
@@ -353,6 +403,12 @@ function databaseCommonPulse() {
 function getCurrentUserCommon(){
   let restrictedPages = ["Backups", "Moderation", "ModerationQueue", "Family", "FamilyUpdate"];
   let notificationPages = ["Home", "BoughtGifts", "Confirmation", "FriendList", "Invites", "Lists", "PrivateFriendList"];
+  dataListChecker = document.getElementById("dataListContainer");
+  if(dataListChecker != undefined) {
+    dataListExists = true;
+    dataListContainer = document.getElementById("dataListContainer");
+    testData = document.getElementById("testData");
+  }
 
   try {
     if (pageName == "GiftAddUpdate") {
@@ -568,9 +624,8 @@ function loginTimer(){
   currentTitle = document.title;
   if (user.moderatorInt == 1)
     logoutLimit = 1800;
-  if(consoleOutput)
-    console.log("Login Timer Started");
   loginTimerInterval = setInterval(function(){ //900 15 mins, 600 10 mins
+    document.onclick = loginTimer;
     loginNum = loginNum + 1;
     if (loginNum >= logoutLimit){//default 900
       if(consoleOutput)
@@ -1170,20 +1225,20 @@ function navigation(navNum, loginOverride) {
         "home.html",//2
         "lists.html",//3
         "invites.html",//4
-        "settings.html",//5 ***
+        "settings.html",//5
         "notifications.html",//6
-        "boughtGifts.html",//7 ***
+        "boughtGifts.html",//7
         "giftAddUpdate.html",//8
         "friendList.html",//9
         "privateFriendList.html",//10
         "confirmation.html", //11
-        "faq.html",//12 ***
-        "userAddUpdate.html",//13 ***
-        "moderation.html",//14 ***
-        "family.html",//15 ***
-        "familyUpdate.html",//16 ***
-        "moderationQueue.html",//17 ***
-        "backup.html"];//18 ***
+        "faq.html",//12
+        "userAddUpdate.html",//13
+        "moderation.html",//14
+        "family.html",//15
+        "familyUpdate.html",//16
+        "moderationQueue.html",//17
+        "backup.html"];//18
 
       if (navNum >= navLocations.length)
         navNum = 0;
@@ -1205,9 +1260,34 @@ function navigation(navNum, loginOverride) {
       fader.classList.add("fade-in");
     }
   } else {
-    if (consoleOutput)
-      console.log("Chill out, man");
   }
+  navigationSuppressionTimer();
+}
+
+function navigationSuppressionTimer() {
+  let navSuppressTimerLimit = 30;
+  let navSuppressImpatientLimit = 5;
+  clearInterval(navSuppressTimer);
+  if (navSuppressTimerCount > 0) {
+    navSuppressImpatientCount++;
+    if (navSuppressImpatientCount > navSuppressImpatientLimit) {
+      if (consoleOutput)
+        console.log("Chill out, man");
+      deployNotificationModal(false, "Navigation Suppression Error", "It appears " +
+          "that there is an issue navigating. Please wait about 5 seconds and try again. If issues persist, contact " +
+          "a moderator.", 10);
+    }
+  }
+
+  navSuppressTimer = setInterval(function () {
+    navSuppressTimerCount = navSuppressTimerCount + 10;
+    if (navSuppressTimerCount >= navSuppressTimerLimit) {
+      pendingNavigation = 0;
+      navSuppressTimerCount = 0;
+      navSuppressImpatientCount = 0;
+      clearInterval(navSuppressTimer);
+    }
+  }, 1000);
 }
 
 function openModal(openThisModal, modalName, ignoreBool){
@@ -1522,6 +1602,7 @@ function deployListEmptyNotification(dataItemText){
 
   clearInterval(commonLoadingTimer);
   clearInterval(offlineTimer);
+  timerErrorIssued = 0;
   loadingTimerCancelled = true;
 
   function generateTestDataElement(){
@@ -1662,23 +1743,41 @@ function saveCriticalCookies(){
 
 function getLocalTime(UTCTime) {
   let localTime;
+
   UTCTime = new Date(UTCTime + " UTC");
+  UTCTime.toLocaleString();
+
+  let amPMNote = "AM";
   let MM = UTCTime.getMonth() + 1 + "";
-  let dd = UTCTime.getDay() + "";
+  let dd = UTCTime.getDate() + "";
   let yy = UTCTime.getFullYear() + "";
   let hh = UTCTime.getHours() + "";
   let mm = UTCTime.getMinutes() + "";
   let ss = UTCTime.getSeconds() + "";
+
+  if (!twentyFourHourTime)
+    if (hh >= 12) {
+      hh = hh - 12;
+      amPMNote = "PM";
+      if (hh == 0) {
+        hh = 12;
+      }
+    }
+
   if (hh.length == 1)
-    hh = "0" + hh
+    hh = "0" + hh;
   if (mm.length == 1)
-    mm = "0" + mm
+    mm = "0" + mm;
   if (ss.length == 1)
-    ss = "0" + ss
+    ss = "0" + ss;
   if (dd.length == 1)
-    dd = "0" + dd
+    dd = "0" + dd;
   if (MM.length == 1)
-    MM = "0" + MM
-  localTime = MM + "/" + dd + "/" + yy + " " + hh + ":" + mm + ":" + ss;
+    MM = "0" + MM;
+  if (twentyFourHourTime)
+    localTime = MM + "/" + dd + "/" + yy + " " + hh + ":" + mm + ":" + ss;
+  else
+    localTime = MM + "/" + dd + "/" + yy + " " + hh + ":" + mm + ":" + ss + " " + amPMNote;
+
   return localTime;
 }
