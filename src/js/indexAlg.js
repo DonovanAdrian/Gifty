@@ -4,11 +4,14 @@
  * with written consent under any circumstance.
  */
 let indexElements = [];
+let loginColorArrA = ["#ff3b44", "#a10000"];
+let loginColorArrB = ["#ff626a", "#c90000"];
 
 let userLimit = 100;
 let loginTry = 0;
 let showLoginAlert = 0;
 let loginThreshold = 3;
+let loginInfoColor = 0;
 
 let lastLoginStatus = "";
 let loginDisabledMsg = "";
@@ -23,6 +26,7 @@ let displayUserText = false;
 
 let config;
 let signUpTimerInterval;
+let loginTextInterval;
 let username;
 let pin;
 let loginInfo;
@@ -32,6 +36,14 @@ let signUpFld;
 let colorShifter;
 
 
+window.addEventListener( "pageshow", function ( event ) {
+  var historyTraversal = event.persisted ||
+      ( typeof window.performance != "undefined" &&
+          window.performance.navigation.type === 2 );
+  if ( historyTraversal ) {
+    window.location.reload();
+  }
+});
 
 function fetchConfigFile(){
   let oFrame = document.getElementById("frmFile");
@@ -183,8 +195,12 @@ window.onload = function instantiate() {
     config = JSON.parse(sessionStorage.config);
   } catch (err) {}
   if (config == undefined) {
+    sessionStorage.clear();
+    initializeSupplementalModals();
     fetchConfigFile();
   } else {
+    sessionStorage.clear();
+    sessionStorage.setItem("config", JSON.stringify(config));
     commonInitialization();
     loginQuery();
   }
@@ -299,6 +315,7 @@ function loginQuery() {
         firebase.database().ref("limits/").update({
           giftLimit: 50,
           userLimit: 100,
+          listLimit: 0,
           giftURLLimit: ""
         });
         userLimit = 50;
@@ -317,17 +334,20 @@ function initializeLoginBtnPlatform() {
   userInitial = firebase.database().ref("users/");
 
   databaseQuery();
+  username.addEventListener("keypress", function(event){
+    if (event.key === "Enter") {
+      login();
+    }
+  });
   pin.addEventListener("keypress", function(event){
     if (event.key === "Enter") {
       login();
     }
   });
   loginBtn.onclick = function(){
-    loginBtn.onclick = function(){};
     login();
   };
   signUpFld.onclick = function(){
-    signUpFld.onclick = function(){};
     signUp();
   };
 }
@@ -359,6 +379,10 @@ function databaseQuery() {
           }
         });
       } else {
+        signUpFld.innerHTML = "Click Here To Create A New User!";
+        signUpFld.onclick = function () {
+          signUp(true);
+        };
         loginBtn.innerHTML = "Create A New User First!";
         lastLoginStatus = "Create A New User First!";
         allowLogin = false;
@@ -376,7 +400,8 @@ function login() {
   let validUserInt = 0;
 
   validUserInt = authenticate();
-  if (loginBool === true){
+  if (loginBool) {
+    loginBtn.onclick = function(){};
     let today = new Date();
     let UTCmm = today.getUTCMinutes();
     let UTChh = today.getUTCHours();
@@ -410,6 +435,7 @@ function login() {
       });
     } else {
       loginInfo.innerHTML = "Welcome to Gifty, " + userArr[validUserInt].name + "!";
+      sessionStorage.setItem("lastLoginReviewValid", JSON.stringify(false));
       userArr[validUserInt].firstLogin = 1;
       userArr[validUserInt].lastLogin = loginDate;
       userArr[validUserInt].userScore = currentUserScore;
@@ -436,14 +462,14 @@ function login() {
         navigation(2, true);//Home
       }
     }, 1000);
-  } else if (loginBool === false && !banOverride) {
+  } else if (!loginBool && !banOverride) {
     if (loginTry < loginThreshold) {
       loginTry++;
       login();
     } else {
-      if (allowLogin)
-        loginInfo.innerHTML = "Username or Password Incorrect";
-      else {
+      if (allowLogin) {
+        setLoginInfoTextAndTimer("Username or Password Incorrect");
+      } else {
         if (showLoginAlert == 0) {
           showLoginAlert++;
           deployNotificationModal(false, "Login Disabled!", loginDisabledMsg,
@@ -476,7 +502,7 @@ function authenticate() {
               break;
             } else {
               banOverride = true;
-              loginInfo.innerHTML = "Login Error Occurred... Please Contact A Moderator!";
+              setLoginInfoTextAndTimer("Login Error Occurred... Please Contact A Moderator!");
               updateMaintenanceLog("index", "Banned user \"" + userArr[i].userName + "\" attempted to log in!");
               return;
             }
@@ -497,7 +523,7 @@ function authenticate() {
       } catch (err) {
         console.log("The following error occurred:");
         console.log(err);
-        loginInfo.innerHTML = "Login Error Occurred. Please Contact A Moderator!";
+        setLoginInfoTextAndTimer("Login Error Occurred. Please Contact A Moderator!");
         updateMaintenanceLog("index", "Login Error Occurred: \"" + username.value.toLowerCase() + "\" - " + err);
       }
     }
@@ -580,11 +606,44 @@ function initializeSignUpTextInterval() {
   }
 }
 
+function setLoginInfoTextAndTimer (loginInfoStrInput) {
+  let loginTimerNum = 0;
+  let loginTimerThreshold = 6;
+  let loginInfoTextColorArr;
+  clearInterval(loginTextInterval);
+  loginInfo.innerHTML = loginInfoStrInput;
+
+  if (loginInfoColor == 0) {
+    loginInfoColor = 1;
+    loginInfoTextColorArr = loginColorArrA;
+  } else {
+    loginInfoColor = 0;
+    loginInfoTextColorArr = loginColorArrB;
+  }
+  loginInfo.style.color = loginInfoTextColorArr[1];
+
+  loginTextInterval = setInterval(function(){
+    loginTimerNum = loginTimerNum + 1;
+    if (loginTimerNum > (loginTimerThreshold / 2)) {
+      loginInfo.style.color = loginInfoTextColorArr[0];
+    } else if (loginTimerNum > (loginTimerThreshold / 3)) {
+      loginInfo.style.color = loginInfoTextColorArr[1];
+    } else {
+      loginInfo.style.color = loginInfoTextColorArr[0];
+    }
+    if (loginTimerNum >= loginTimerThreshold) {
+      loginInfo.innerHTML = "&nbsp";
+      clearInterval(loginTextInterval);
+    }
+  }, 1000);
+}
+
 function signUp(override){
   if (override == undefined)
     override = false;
 
   if((allowLogin || loginDisabledMsg.includes(newGiftyMessage)) || override) {
+    signUpFld.onclick = function(){};
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
     sessionStorage.setItem("userCreationOverride", JSON.stringify(override));
     navigation(13, false);//UserAddUpdate
