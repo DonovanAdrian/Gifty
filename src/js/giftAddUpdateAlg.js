@@ -877,7 +877,7 @@ function addGiftToDB(){
       });
 
       let tempUnsavedChanges = true;
-      unsavedGiftStorage = [giftTitleInp.value, giftLinkInp.value, giftWhereInp.value, giftDescriptionInp.value, multiplePurchases.checked]
+      unsavedGiftStorage = [giftTitleInp.value, giftLinkInp.value, giftWhereInp.value, giftDescriptionInp.value, multiplePurchases.checked];
       sessionStorage.setItem("unsavedChanges", JSON.stringify(tempUnsavedChanges));
       sessionStorage.setItem("unsavedGiftStorage", JSON.stringify(unsavedGiftStorage));
       showSuccessfulDBOperation = true;
