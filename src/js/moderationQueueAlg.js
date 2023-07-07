@@ -10,6 +10,7 @@ let ticketArr = [];
 
 let moderationSet = 1;
 
+let ticketCount;
 let nukeTickets;
 let ticketModal;
 let closeTicketModal;
@@ -38,6 +39,7 @@ window.onload = function instantiate() {
   pageName = "ModerationQueue";
   nukeTickets = document.getElementById("nukeTickets");
   backBtn = document.getElementById("backBtn");
+  ticketCount = document.getElementById("ticketCount");
   ticketModal = document.getElementById("ticketModal");
   closeTicketModal = document.getElementById("closeTicketModal");
   ticketTitle = document.getElementById("ticketTitle");
@@ -47,9 +49,9 @@ window.onload = function instantiate() {
   ticketTime = document.getElementById("ticketTime");
   deleteTicket = document.getElementById("deleteTicket");
   inviteNote = document.getElementById("inviteNote");
-  moderationQueueElements = [dataListContainer, nukeTickets, backBtn, ticketModal, closeTicketModal, ticketTitle,
-    ticketUID, ticketDetails, ticketLocation, ticketTime, deleteTicket, offlineModal, offlineSpan, inviteNote,
-    notificationModal, notificationTitle, notificationInfo, noteSpan, testData];
+  moderationQueueElements = [dataListContainer, nukeTickets, backBtn, ticketCount, ticketModal, closeTicketModal,
+    ticketTitle, ticketUID, ticketDetails, ticketLocation, ticketTime, deleteTicket, offlineModal, offlineSpan,
+    inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan, testData];
 
   sessionStorage.setItem("moderationSet", moderationSet);
   getCurrentUserCommon();
@@ -199,7 +201,8 @@ window.onload = function instantiate() {
         } else {
           firebase.database().ref("maintenance/").update({});
           deployListEmptyNotification("There Are No Items In The Moderation Queue!");
-          initializeNukeBtn();
+          ticketArr = [];
+          saveTicketArrToCookie();
           fetchModerationQueue(moderationTickets);
         }
       });
@@ -214,6 +217,27 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(moderationTickets);
   }
 };
+
+function initializeTicketCount() {
+  let ticketCountString = "";
+  let ticketCountStringAlt = "";
+
+  if (ticketArr.length == 0) {
+    ticketCountString = "No Tickets!";
+    ticketCountStringAlt = "are currently no tickets";
+  } else if (ticketArr.length == 1) {
+    ticketCountString = "1 Ticket";
+    ticketCountStringAlt = "is only one ticket";
+  } else if (ticketArr.length > 1) {
+    ticketCountString = ticketArr.length + " Tickets";
+    ticketCountStringAlt = "are currently " + ticketArr.length + " tickets";
+  }
+  ticketCount.innerHTML = ticketCountString;
+  ticketCount.onclick = function() {
+    deployNotificationModal(false, "The Number Of Tickets", "There "
+        + ticketCountStringAlt + " in this list.");
+  };
+}
 
 function initializeNukeBtn() {
   if (ticketArr.length > 0) {
@@ -234,6 +258,7 @@ function initializeNukeBtn() {
     nukeTickets.innerHTML = "No Tickets To Remove!";
     nukeTickets.onclick = function () {};
   }
+  initializeTicketCount();
 }
 
 function createModerationTicket (ticketData) {
@@ -403,6 +428,7 @@ function deleteModerationTicket (ticketData) {
 
     deployNotificationModal(false, "Ticket " + ticketData.uid + " Deleted!",
         "The moderation ticket, \"" + ticketData.uid + "\", has been successfully deleted.");
+    saveTicketArrToCookie();
   } else {
     deployNotificationModal(true, "Ticket Delete Failure!",
         "The moderation ticket, \"" + ticketData.uid + "\", was NOT deleted. Please try again later.");
@@ -423,4 +449,5 @@ function removeModerationTicket(uid) {
 
 function saveTicketArrToCookie(){
   sessionStorage.setItem("ticketArr", JSON.stringify(ticketArr));
+  initializeNukeBtn();
 }
