@@ -11,6 +11,7 @@ let secretSantaAssignErrorMsg = "try again or look at the console for more detai
 
 let moderationSet = 1;
 let globalNoteInt = 0;
+let listLimit = 0;
 let giftLimit = 0;
 let userLimit = 0;
 
@@ -21,28 +22,16 @@ let allowLogin = null;
 let loginDisabledMsg = "";
 let giftURLLimit = "";
 
-let privateMessageModal;
-let sendGlobalNotification;
+let localListedUserData;
+let nukeNoteInfoIcon;
 let nukeAllUserNotifications;
+let nukeScoreInfoIcon;
 let nukeAllUserScores;
-let loginFxnBtn;
+let giftLinkInfoIcon;
 let giftLinkBtn;
+let limitsInfoIcon;
 let limitsBtn;
-let databaseLimitsModal;
-let closeDatabaseLimitsModal;
-let giftLimitInp;
-let userLimitInp;
-let confirmLimits;
-let cancelLimits;
-let loginDisabledModal;
-let loginDisabledTitle;
-let closeLoginDisabledModal;
-let loginDisabledDesc;
-let loginDisabledInp;
-let loginDisabledInfo;
-let resetDefaultLoginDisabledBtn;
-let confirmLoginDisabled;
-let cancelLoginDisabled;
+let userListInfoIcon;
 let userListDropDown;
 let showNone;
 let showUID;
@@ -53,23 +42,44 @@ let showShareCode;
 let showFriends;
 let showSantaSignUp;
 let showModerator;
-let localListedUserData;
-let userModal;
+let globalNoteInfoIcon;
+let sendGlobalNotification;
+let loginFxnInfoIcon;
+let loginFxnBtn;
+let listLimitInfoIcon;
+let listLimitBtn;
+let secretSantaStateInfoIcon;
+let secretSantaBtn;
+let secretSantaShuffleInfoIcon;
+let secretSantaShuffle;
+let secretSantaAutoInfoIcon;
+let secretSantaAutoBtn;
 let confirmModal;
 let closeConfirmModal;
 let confirmTitle;
 let confirmContent;
 let confirmBtn;
 let denyBtn;
-let autoSecretSanta;
-let moderatorSettings;
+let databaseLimitsModal;
+let closeDatabaseLimitsModal;
+let giftLimitInp;
+let userLimitInp;
+let confirmLimits;
+let cancelLimits;
+let loginDisabledModal;
+let closeLoginDisabledModal;
+let loginDisabledTitle;
+let loginDisabledDesc;
+let loginDisabledInp;
+let loginDisabledInfo;
+let resetDefaultLoginDisabledBtn;
+let confirmLoginDisabled;
+let cancelLoginDisabled;
 let userOptionsBtn;
 let secretSantaModal;
 let santaModalSpan;
-let secretSantaBtn;
-let secretSantaShuffle;
-let secretSantaAutoBtn;
 let settingsNote;
+let userModal;
 let closeUserModal;
 let userName;
 let userUID;
@@ -83,6 +93,7 @@ let moderatorOp;
 let sendPrivateMessage;
 let warnUser;
 let banUser;
+let privateMessageModal;
 let closePrivateMessageModal;
 let globalMsgTitle;
 let globalMsgInp;
@@ -110,34 +121,15 @@ window.onload = function instantiate() {
   pageName = "Moderation";
   backBtn = document.getElementById("backBtn");
   inviteNote = document.getElementById("inviteNote");
-  confirmModal = document.getElementById("confirmModal");
-  closeConfirmModal = document.getElementById("closeConfirmModal");
-  confirmTitle = document.getElementById("confirmTitle");
-  confirmContent = document.getElementById("confirmContent");
-  confirmBtn = document.getElementById("confirmBtn");
-  denyBtn = document.getElementById("denyBtn");
-  privateMessageModal = document.getElementById("privateMessageModal");
-  sendGlobalNotification = document.getElementById("sendGlobalNotification");
+  nukeNoteInfoIcon = document.getElementById("nukeNoteInfoIcon");
   nukeAllUserNotifications = document.getElementById("nukeAllUserNotifications");
+  nukeScoreInfoIcon = document.getElementById("nukeScoreInfoIcon");
   nukeAllUserScores = document.getElementById("nukeAllUserScores");
-  loginFxnBtn = document.getElementById("loginFxnBtn");
+  giftLinkInfoIcon = document.getElementById("giftLinkInfoIcon");
   giftLinkBtn = document.getElementById("giftLinkBtn");
+  limitsInfoIcon = document.getElementById("limitsInfoIcon");
   limitsBtn = document.getElementById("limitsBtn");
-  databaseLimitsModal = document.getElementById("databaseLimitsModal");
-  closeDatabaseLimitsModal = document.getElementById("closeDatabaseLimitsModal");
-  giftLimitInp = document.getElementById("giftLimitInp");
-  userLimitInp = document.getElementById("userLimitInp");
-  confirmLimits = document.getElementById("confirmLimits");
-  cancelLimits = document.getElementById("cancelLimits");
-  loginDisabledModal = document.getElementById("loginDisabledModal");
-  loginDisabledTitle = document.getElementById("loginDisabledTitle");
-  closeLoginDisabledModal = document.getElementById("closeLoginDisabledModal");
-  loginDisabledDesc = document.getElementById("loginDisabledDesc");
-  loginDisabledInp = document.getElementById("loginDisabledInp");
-  loginDisabledInfo = document.getElementById("loginDisabledInfo");
-  resetDefaultLoginDisabledBtn = document.getElementById("resetDefaultLoginDisabledBtn");
-  confirmLoginDisabled = document.getElementById("confirmLoginDisabled");
-  cancelLoginDisabled = document.getElementById("cancelLoginDisabled");
+  userListInfoIcon = document.getElementById("userListInfoIcon");
   userListDropDown = document.getElementById("userListDropDown");
   showNone = document.getElementById("showNone");
   showUID = document.getElementById("showUID");
@@ -148,15 +140,44 @@ window.onload = function instantiate() {
   showFriends = document.getElementById("showFriends");
   showSantaSignUp = document.getElementById("showSantaSignUp");
   showModerator = document.getElementById("showModerator");
-  sendPrivateMessage = document.getElementById("sendPrivateMessage");
-  userModal = document.getElementById("userModal");
+  globalNoteInfoIcon = document.getElementById("globalNoteInfoIcon");
+  sendGlobalNotification = document.getElementById("sendGlobalNotification");
+  loginFxnInfoIcon = document.getElementById("loginFxnInfoIcon");
+  loginFxnBtn = document.getElementById("loginFxnBtn");
+  listLimitInfoIcon = document.getElementById("listLimitInfoIcon");
+  listLimitBtn = document.getElementById("listLimitBtn");
+  secretSantaStateInfoIcon = document.getElementById("secretSantaStateInfoIcon");
+  secretSantaBtn = document.getElementById("secretSantaBtn");
+  secretSantaShuffleInfoIcon = document.getElementById("secretSantaShuffleInfoIcon");
+  secretSantaShuffle = document.getElementById("secretSantaShuffle");
+  secretSantaAutoInfoIcon = document.getElementById("secretSantaAutoInfoIcon");
+  secretSantaAutoBtn = document.getElementById("secretSantaAutoBtn");
+  confirmModal = document.getElementById("confirmModal");
+  closeConfirmModal = document.getElementById("closeConfirmModal");
+  confirmTitle = document.getElementById("confirmTitle");
+  confirmContent = document.getElementById("confirmContent");
+  confirmBtn = document.getElementById("confirmBtn");
+  denyBtn = document.getElementById("denyBtn");
+  databaseLimitsModal = document.getElementById("databaseLimitsModal");
+  closeDatabaseLimitsModal = document.getElementById("closeDatabaseLimitsModal");
+  giftLimitInp = document.getElementById("giftLimitInp");
+  userLimitInp = document.getElementById("userLimitInp");
+  confirmLimits = document.getElementById("confirmLimits");
+  cancelLimits = document.getElementById("cancelLimits");
+  loginDisabledModal = document.getElementById("loginDisabledModal");
+  closeLoginDisabledModal = document.getElementById("closeLoginDisabledModal");
+  loginDisabledTitle = document.getElementById("loginDisabledTitle");
+  loginDisabledDesc = document.getElementById("loginDisabledDesc");
+  loginDisabledInp = document.getElementById("loginDisabledInp");
+  loginDisabledInfo = document.getElementById("loginDisabledInfo");
+  resetDefaultLoginDisabledBtn = document.getElementById("resetDefaultLoginDisabledBtn");
+  confirmLoginDisabled = document.getElementById("confirmLoginDisabled");
+  cancelLoginDisabled = document.getElementById("cancelLoginDisabled");
   userOptionsBtn = document.getElementById("userOptionsBtn");
   secretSantaModal = document.getElementById("santaModal");
   santaModalSpan = document.getElementById("secretSantaSpan");
-  secretSantaBtn = document.getElementById("secretSantaBtn");
-  secretSantaShuffle = document.getElementById("secretSantaShuffle");
-  secretSantaAutoBtn = document.getElementById("secretSantaAutoBtn");
   settingsNote = document.getElementById("settingsNote");
+  userModal = document.getElementById("userModal");
   closeUserModal = document.getElementById("closeUserModal");
   userName = document.getElementById("userName");
   userUID = document.getElementById("userUID");
@@ -172,6 +193,7 @@ window.onload = function instantiate() {
   sendPrivateMessage = document.getElementById("sendPrivateMessage");
   warnUser = document.getElementById("warnUser");
   banUser = document.getElementById("banUser");
+  privateMessageModal = document.getElementById("privateMessageModal");
   closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
   globalMsgTitle = document.getElementById("globalMsgTitle");
   globalMsgInp = document.getElementById("globalMsgInp");
@@ -234,7 +256,91 @@ window.onload = function instantiate() {
     };
   }
 
+  function initializeInfoIcons() {
+    nukeNoteInfoIcon.onclick = function () {
+      deployNotificationModal(true, "Remove All User Notifications", "This button " +
+          "allows you to remove all the user's notifications. This cannot be reversed!", 6);
+    };
+
+    nukeScoreInfoIcon.onclick = function () {
+      deployNotificationModal(true, "Reset User Scores", "This button allows you to " +
+          "reset all the user's scores. This cannot be reversed!" +
+          "<br><br>Note: User scores are an arbitrary means to tell how active a user is.", 10);
+    };
+
+    giftLinkInfoIcon.onclick = function () {
+      deployNotificationModal(true, "URL Limiter", "This button allows you to " +
+          "customize the acceptable URLs that can be used when a gift is created. Please note that this only applies to " +
+          "specific domains." +
+          "<br><br>For example, to allow www.barnesandnoble.com, specify the area inbetween \"www\" and " +
+          "\"com\"." +
+          "<br><br>To allow more than one website, use this same principle in a comma-separated string, i.e., " +
+          "amazon,amzn,bestbuy,barnesandnoble", 15);
+    };
+
+    limitsInfoIcon.onclick = function () {
+      deployNotificationModal(true, "Database Limiter", "This button allows you to " +
+          "select database limits if you happen to be on a limited budget for database storage data. (For example) " +
+          "Please note that if you set a limit of 15 users and your database has 20, users will NOT be deleted. " +
+          "However, no users will be able to create an account except for a moderator with their respective credentials.", 12);
+    };
+
+    userListInfoIcon.onclick = function () {
+      deployNotificationModal(true, "Supplemental User Info", "This dropdown menu " +
+          "allows you to pick what quick-info you'd like to view upon loading the user list.", 6);
+    };
+
+    globalNoteInfoIcon.onclick = function () {
+      deployNotificationModal(true, "Global Message", "This button allows you " +
+          "to send a global notification to all of your users.", 6);
+    };
+
+    loginFxnInfoIcon.onclick = function () {
+      deployNotificationModal(true, "Login Functionality", "This button allows " +
+          "you to disable and enable login functionality if significant issues were to occur. Please note that " +
+          "moderators are still able to login even if login functionality is disabled.", 10);
+    };
+
+    listLimitInfoIcon.onclick = function () {
+      deployNotificationModal(true, "Parent/Child List Access", "Since " +
+          "the parent/child feature is intended to prevent infants from being assigned to their parents, this button " +
+          "would optionally allow you to prevent parents from seeing what has been bought on their infant's list and " +
+          "vis versa if the parent is accessing their infants account.", 10);
+    };
+
+    secretSantaStateInfoIcon.onclick = function () {
+      deployNotificationModal(true, "Secret Santa States", "This button allows you " +
+          "to manually switch between Secret Santa States, even if automatic mode is enabled. The three states are as " +
+          "follows:" +
+          "<br><br><br>1. IDLE: Secret Santa is idle" +
+          "<br>-----> Secret Santa is effectively disabled in this state." +
+          "<br>-----> Button Text = \"Enable Secret Santa\"" +
+          "<br>-----> Click the button to move to the READY state." +
+          "<br><br>2. READY: Secret Santa is ready for assignments" +
+          "<br>-----> Users can sign up for Secret Santa in this state" +
+          "<br>-----> Button Text = \"Assign Secret Santa Names\"" +
+          "<br>-----> Click the button to move to the ACTIVE state and assign users." +
+          "<br><br>3. ACTIVE: Secret Santa is active" +
+          "<br>-----> Users are assigned to each other in this state." +
+          "<br>-----> Button Text = \"Disable Secret Santa\"" +
+          "<br>-----> Click the button to move to the IDLE state. Any assigned names will be cleared!", 60);
+    };
+
+    secretSantaShuffleInfoIcon.onclick = function () {
+      deployNotificationModal(true, "Secret Santa Shuffle", "This button allows you " +
+          "to shuffle Secret Santa assignments if desired.", 6);
+    };
+
+    secretSantaAutoInfoIcon.onclick = function () {
+      deployNotificationModal(true, "Secret Santa Auto", "This button allows you " +
+          "to choose whether Secret Santa should be automatically run. This will allow Secret Santa to run without any " +
+          "outside intervention. See the first Secret Santa Info Icon for more details about Secret Santa States. " +
+          "Automatic notifications will also be delivered when Secret Santa is completed for the year.", 12);
+    };
+  }
+
   initializeBackBtn();
+  initializeInfoIcons();
 
   function initializeNukeNotification() {
     nukeAllUserNotifications.innerHTML = "Remove All User's Notifications";
@@ -329,11 +435,29 @@ window.onload = function instantiate() {
     };
   }
 
-  function initializeLimitsBtn() {
+  function initializeDatabaseLimitsBtn() {
     limitsBtn.innerHTML = "Set Database Limits";
     limitsBtn.onclick = function() {
       generateLimitsModal();
     };
+  }
+
+  function initializeListLimitsBtn() {
+    if (listLimit == 0) {
+      listLimitBtn.innerHTML = "Enable Gift List Limiter";
+      listLimitBtn.onclick = function (){
+        firebase.database().ref("limits/").update({
+          listLimit: 1
+        });
+      };
+    } else {
+      listLimitBtn.innerHTML = "Disable Gift List Limiter";
+      listLimitBtn.onclick = function (){
+        firebase.database().ref("limits/").update({
+          listLimit: 0
+        });
+      };
+    }
   }
 
   function initializeURLLimitsBtn() {
@@ -779,35 +903,44 @@ window.onload = function instantiate() {
         } else if (data.key == "giftURLLimit") {
           giftURLLimit = data.val();
           initializeURLLimitsBtn();
+        } else if (data.key == "listLimit") {
+          listLimit = data.val();
+          initializeListLimitsBtn();
         }
         if (giftLimit > 0 && userLimit > 0) {
-          initializeLimitsBtn();
+          initializeDatabaseLimitsBtn();
         }
       });
 
       postRef.on("child_changed", function (data) {
         if (data.key == "userLimit") {
           userLimit = data.val();
-          initializeLimitsBtn();
+          initializeDatabaseLimitsBtn();
         } else if (data.key == "giftLimit") {
           giftLimit = data.val();
-          initializeLimitsBtn();
+          initializeDatabaseLimitsBtn();
         } else if (data.key == "giftURLLimit") {
           giftURLLimit = data.val();
           initializeURLLimitsBtn();
+        } else if (data.key == "listLimit") {
+          listLimit = data.val();
+          initializeListLimitsBtn();
         }
       });
 
       postRef.on("child_removed", function (data) {
         if (data.key == "userLimit") {
           userLimit = 50;
-          initializeLimitsBtn();
+          initializeDatabaseLimitsBtn();
         } else if (data.key == "giftLimit") {
           giftLimit = 100;
-          initializeLimitsBtn();
+          initializeDatabaseLimitsBtn();
         } else if (data.key == "giftURLLimit") {
           giftURLLimit = "";
           initializeURLLimitsBtn();
+        } else if (data.key == "listLimit") {
+          listLimit = data.val();
+          initializeListLimitsBtn();
         }
       });
     };
@@ -991,7 +1124,11 @@ function initUserElement(liItem, userData) {
       userFriends.innerHTML = "This User Has No Friends";
     }
     if(userData.lastLogin != undefined) {
-      userLastLogin.innerHTML = "Last Login: " + userData.lastLogin;
+      if (userData.lastLogin == "Never Logged In") {
+        userLastLogin.innerHTML = "Last Login: Never Logged In";
+      } else {
+        userLastLogin.innerHTML = "Last Login: " + getLocalTime(userData.lastLogin);
+      }
     } else {
       userLastLogin.innerHTML = "This User Has Never Logged In";
     }
