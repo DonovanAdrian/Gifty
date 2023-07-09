@@ -182,15 +182,19 @@ function initializeFadeOut() {
   });
 }
 
-function commonInitialization(){
-  let commonDBInitCount = 0;
-  let commonDBInitLimit = 5;
+function initializeSupplementalModals() {
   offlineModal = document.getElementById("offlineModal");
   offlineSpan = document.getElementById("closeOffline");
   notificationModal = document.getElementById("notificationModal");
   notificationTitle = document.getElementById("notificationTitle");
   notificationInfo = document.getElementById("notificationInfo");
   noteSpan = document.getElementById("closeNotification");
+}
+
+function commonInitialization(){
+  let commonDBInitCount = 0;
+  let commonDBInitLimit = 5;
+  initializeSupplementalModals();
 
   if (consoleOutput) {
     let today = new Date();
@@ -308,7 +312,6 @@ function commonInitialization(){
         clearInterval(commonLoadingTimer);
         timerErrorIssued = 0;
       } else if (commonLoadingTimerInt >= commonLoadingTimerLimit) {
-
         if (timerErrorIssued == 0) {
           if (consoleOutput)
             console.log("Timer Error Issued");
@@ -621,7 +624,8 @@ function loginTimer(){
   let loginNum = 0;
   clearInterval(loginTimerInterval);
 
-  currentTitle = document.title;
+  if (document.title != "Where'd You Go?")
+    currentTitle = document.title;
   if (user.moderatorInt == 1)
     logoutLimit = 1800;
   loginTimerInterval = setInterval(function(){ //900 15 mins, 600 10 mins
@@ -1050,7 +1054,6 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
           }
         }
       }
-
       if (expectedChange == "NoteDelete") {
         if (receivedUID == undefined) {
           updateArrs = true;
@@ -1060,8 +1063,7 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
           overrideBool = true;
         }
       }
-
-      if (expectedChange == "Confirm") {
+      if (expectedChange == "Confirm" || expectedChange == "Remove") {
         if (receivedUID == undefined) {
           updateArrs = true;
           overrideBool = true;
@@ -1070,7 +1072,6 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
           overrideBool = true;
         }
       }
-
       if (expectedChange == "Delete") {
         if (findUIDItemInArr(listenExpectedUIDs[i], receivedUID, true) == -1) {
           receivedUID = listenExpectedUIDs[i];
