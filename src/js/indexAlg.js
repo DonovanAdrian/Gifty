@@ -248,8 +248,6 @@ function loginQuery() {
             if (data.val()) {
               loginReady = true;
             } else {
-              loginBtn.innerHTML = "Log In Disabled";
-              lastLoginStatus = "Log In Disabled";
               allowLogin = false;
               loginReady = false;
               initializeLoginBtns();
@@ -534,33 +532,42 @@ function authenticate() {
 
 function initializeLoginBtns(){
   let validUserTempInt = 0;
+
   if (displayUserText) {
     if (loginReady) {
       loginBtn.innerHTML = "Log In";
       lastLoginStatus = "Log In";
       username.focus();
       allowLogin = true;
+
+      if (userArr.length >= userLimit) {
+        signUpFld.innerHTML = "Gifty Database Full! Existing Users Can Still Log In Above!";
+        signUpFld.onclick = function () {
+          validUserTempInt = authenticate();
+          if (loginBool === true && userArr[validUserTempInt].moderatorInt == 1) {
+            signUp(true);
+          } else {
+            signUp();
+          }
+        };
+      } else {
+        signUpFld.innerHTML = "Don't have an account? Click here!";
+        signUpFld.onclick = function () {
+          signUp();
+        };
+      }
     } else {
       loginBtn.innerHTML = "Log In Disabled";
       lastLoginStatus = "Log In Disabled";
-    }
 
-    if (userArr.length >= userLimit) {
-      signUpFld.innerHTML = "Gifty Database Full! Existing Users Can Still Log In Above!";
+      signUpFld.innerHTML = "User Creation Disabled...";
       signUpFld.onclick = function () {
         validUserTempInt = authenticate();
         if (loginBool === true && userArr[validUserTempInt].moderatorInt == 1) {
           signUp(true);
         } else {
-          deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
-              "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
-              4);
+          signUp();
         }
-      };
-    } else {
-      signUpFld.innerHTML = "Don't have an account? Click here!";
-      signUpFld.onclick = function () {
-        signUp();
       };
     }
   }
@@ -642,15 +649,19 @@ function signUp(override){
   if (override == undefined)
     override = false;
 
-  if((allowLogin || loginDisabledMsg.includes(newGiftyMessage)) || override) {
+  if ((allowLogin || loginDisabledMsg.includes(newGiftyMessage)) || override) {
     signUpFld.onclick = function(){};
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
     sessionStorage.setItem("userCreationOverride", JSON.stringify(override));
     navigation(13, false);//UserAddUpdate
-  } else {
+  } else if (userArr.length >= userLimit) {
     deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
         "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access.",
-        4);
+        6);
+  } else {
+    deployNotificationModal(false, "User Creation Disabled!", "Since the login is " +
+        "disabled, no additional users can be created. Please wait until a moderator has enabled login functionality.",
+        6);
   }
 }
 
