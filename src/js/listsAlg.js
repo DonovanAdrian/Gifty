@@ -16,8 +16,8 @@ let secretSantaInit = false;
 let secretSantaAssignErrorMsg = "refresh the page or ignore this message!";
 
 let moderationSet = 0;
+let listLimit = 0;
 
-let autoSecretSanta;
 let privateMessageModal;
 let closeUserModal;
 let userModal;
@@ -81,6 +81,7 @@ window.onload = function instantiate() {
   userFriends = firebase.database().ref("users/" + user.uid + "/friends");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
   autoSecretSanta = firebase.database().ref("secretSanta/");
+  limitsInitial = firebase.database().ref("limits/");
 
   databaseQuery();
 
@@ -255,15 +256,37 @@ window.onload = function instantiate() {
       });
     };
 
+    let fetchLimits = function (postRef) {
+      postRef.on("child_added", function (data) {
+        if (data.key == "listLimit") {
+          listLimit = data.val();
+        }
+      });
+
+      postRef.on("child_changed", function (data) {
+        if (data.key == "listLimit") {
+          listLimit = data.val();
+        }
+      });
+
+      postRef.on("child_removed", function (data) {
+        if (data.key == "listLimit") {
+          listLimit = data.val();
+        }
+      });
+    };
+
     fetchData(userBase);
     fetchFriends(userFriends);
     fetchInvites(userInvites);
     fetchSecretSanta(autoSecretSanta);
+    fetchLimits(limitsInitial);
 
     listeningFirebaseRefs.push(userBase);
     listeningFirebaseRefs.push(userFriends);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(autoSecretSanta);
+    listeningFirebaseRefs.push(limitsInitial);
   }
 };
 
@@ -318,6 +341,15 @@ function changeFriendElement(friendKey){
 
 function initFriendElement(liItem, friendData) {
   let setPublicButton = false;
+  let childUserList = friendData.childUser;
+  let parentUserList = friendData.parentUser;
+
+  if (childUserList == undefined) {
+    childUserList = [];
+  }
+  if (parentUserList == undefined) {
+    parentUserList = [];
+  }
 
   liItem.className = "gift";
   liItem.onclick = function () {
@@ -331,8 +363,20 @@ function initFriendElement(liItem, friendData) {
     if(friendData.giftList.length > 0) {
       setPublicButton = true;
       publicList.onclick = function () {
-        sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
-        navigation(9);//FriendList
+        if (listLimit == 1 && (childUserList.includes(user.uid) || parentUserList.includes(user.uid))) {
+          if (parentUserList.includes(user.uid)) {
+            deployNotificationModal(false, "Relationship Detected!", "It appears that " +
+                "you are the parent of " + friendData.name + " so you are blocked from seeing their list. Please contact " +
+                "a moderator if this has been done in error.", 8);
+          } else if (childUserList.includes(user.uid)) {
+            deployNotificationModal(false, "Relationship Detected!", "It appears that " +
+                "you are the child of " + friendData.name + " so you are blocked from seeing their list. Please contact " +
+                "a moderator if this has been done in error.", 8);
+          }
+        } else {
+          sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
+          navigation(9);//FriendList
+        }
       };
     } else {
       publicList.onclick = function () {};
@@ -349,8 +393,21 @@ function initFriendElement(liItem, friendData) {
     }
 
     privateList.onclick = function() {
-      sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
-      navigation(10);//PrivateFriendList
+
+      if (listLimit == 1 && (childUserList.includes(user.uid) || parentUserList.includes(user.uid))) {
+        if (parentUserList.includes(user.uid)) {
+          deployNotificationModal(false, "Relationship Detected!", "It appears that " +
+              "you are the parent of " + friendData.name + " so you are blocked from seeing their private list. Please " +
+              "contact a moderator if this has been done in error.", 8);
+        } else if (childUserList.includes(user.uid)) {
+          deployNotificationModal(false, "Relationship Detected!", "It appears that " +
+              "you are the child of " + friendData.name + " so you are blocked from seeing their private list. Please " +
+              "contact a moderator if this has been done in error.", 8);
+        }
+      } else {
+        sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
+        navigation(10);//PrivateFriendList
+      }
     };
 
     sendPrivateMessage.onclick = function() {
