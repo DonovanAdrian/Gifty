@@ -1742,43 +1742,58 @@ function saveCriticalCookies(){
   }
 }
 
-function getLocalTime(UTCTime) {
+function getLocalTime(UTCTime, shortHand) {
   let localTime;
+  let amPMNote;
+  let MM;
+  let dd;
+  let yy;
+  let hh;
+  let mm;
+  let ss;
+
+  if (shortHand == undefined)
+    shortHand = false;
 
   UTCTime = new Date(UTCTime + " UTC");
   UTCTime.toLocaleString();
 
-  let amPMNote = "AM";
-  let MM = UTCTime.getMonth() + 1 + "";
-  let dd = UTCTime.getDate() + "";
-  let yy = UTCTime.getFullYear() + "";
-  let hh = UTCTime.getHours() + "";
-  let mm = UTCTime.getMinutes() + "";
-  let ss = UTCTime.getSeconds() + "";
+  dd = UTCTime.getDate() + "";
+  yy = UTCTime.getFullYear() + "";
+  if (shortHand) {
+    MM = UTCTime.getMonth()
+    localTime = getMonthName(MM) + " " + dd + ", " + yy;
+  } else {
+    amPMNote = "AM";
+    MM = UTCTime.getMonth() + 1 + "";
+    hh = UTCTime.getHours() + "";
+    mm = UTCTime.getMinutes() + "";
+    ss = UTCTime.getSeconds() + "";
 
-  if (!twentyFourHourTime)
-    if (hh >= 12) {
-      hh = hh - 12;
-      amPMNote = "PM";
-      if (hh == 0) {
-        hh = 12;
+    if (!twentyFourHourTime)
+      if (hh >= 12) {
+        hh = hh - 12;
+        amPMNote = "PM";
+        if (hh == 0) {
+          hh = 12;
+        }
       }
-    }
 
-  if (hh.length == 1)
-    hh = "0" + hh;
-  if (mm.length == 1)
-    mm = "0" + mm;
-  if (ss.length == 1)
-    ss = "0" + ss;
-  if (dd.length == 1)
-    dd = "0" + dd;
-  if (MM.length == 1)
-    MM = "0" + MM;
-  if (twentyFourHourTime)
-    localTime = MM + "/" + dd + "/" + yy + " " + hh + ":" + mm + ":" + ss;
-  else
-    localTime = MM + "/" + dd + "/" + yy + " " + hh + ":" + mm + ":" + ss + " " + amPMNote;
+    if (hh.length == 1)
+      hh = "0" + hh;
+    if (mm.length == 1)
+      mm = "0" + mm;
+    if (ss.length == 1)
+      ss = "0" + ss;
+    if (dd.length == 1)
+      dd = "0" + dd;
+    if (MM.length == 1)
+      MM = "0" + MM;
+    if (twentyFourHourTime)
+      localTime = MM + "/" + dd + "/" + yy + " " + hh + ":" + mm + ":" + ss;
+    else
+      localTime = MM + "/" + dd + "/" + yy + " " + hh + ":" + mm + ":" + ss + " " + amPMNote;
+  }
 
   return localTime;
 }
