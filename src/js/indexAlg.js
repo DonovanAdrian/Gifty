@@ -403,9 +403,9 @@ function login() {
     let today = new Date();
     let UTCmm = today.getUTCMinutes();
     let UTChh = today.getUTCHours();
-    let dd = today.getDate();
-    let mm = today.getMonth()+1;
-    let yy = today.getFullYear();
+    let dd = today.getUTCDate();
+    let mm = today.getUTCMonth()+1;
+    let yy = today.getUTCFullYear();
     let loginDate = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm;
     let currentUserScore;
 
