@@ -171,6 +171,8 @@ window.onload = function instantiate() {
 
     let fetchLimits = function (postRef) {
       postRef.on("child_added", function (data) {
+        clearInterval(commonLoadingTimer);
+        clearInterval(offlineTimer);
         if (data.key == "userLimit") {
           userLimit = data.val();
           checkUserLimit();
@@ -199,14 +201,21 @@ window.onload = function instantiate() {
 
   function checkUserLimit() {
     if (userArr.length < userLimit && userArr.length != 0 && user == undefined) {
+      deployNotificationModal(false, "Secure Pin Notice!", "Alert! Please use a pin " +
+          "you have never used before. No computer system is 100% secure, so your due diligence as a user will be " +
+          "critical in protecting your pins.", 8);
       btnUpdate.innerHTML = "Create User Profile";
-      deployNotificationModal(false, "Secure Pin Notice!", "Alert! Please use a pin you have never used before." +
-          " No computer system is 100% secure, so your due diligence as a user will be critical in protecting your pins.",
-          4);
     } else if (user == undefined && !userCreationOverride) {
-      deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this Gifty Database is full, so no more users can be created." +
-          " Please contact the owner to obtain access. Redirecting back to login...", 4, 1);
-    } else {
+      deployNotificationModal(false, "Gifty Database Full!", "Unfortunately this " +
+          "Gifty Database is full, so no more users can be created. Please contact the owner to obtain access. " +
+          "Redirecting back to login...", 8, 1);
+      btnUpdate.innerHTML = "DATABASE FULL!";
+    } else if (userArr.length == 0 && user == undefined) {
+      deployNotificationModal(false, "Welcome To Gifty!", "Welcome To Gifty! There " +
+          "are currently no users in the database, but you could be the first! As a result, you will automatically be " +
+          "a moderator as well. For moderator tools, log in and visit the \"Settings\" page. Additionally, please " +
+          "use a pin you have never used before. No computer system is 100% secure, so your due diligence as a user " +
+          "will be critical in protecting your pins.", 30);
       btnUpdate.innerHTML = "Create User Profile";
     }
   }
