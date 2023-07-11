@@ -391,9 +391,23 @@ function updateGiftError(giftData, giftKey){
   });
 }
 
+function convertUserNameToUID(inputUserName) {
+  let returnUIDValue = inputUserName;
+
+  for (let i = 0; i < userArr.length; i++) {
+    if (inputUserName == userArr[i].userName) {
+      returnUIDValue = userArr[i].uid;
+    }
+  }
+  console.log(returnUIDValue);
+
+  return returnUIDValue;
+}
+
 function createGiftElement(pGiftData, pGiftKey){
   let createGiftUid = pGiftData.uid;
   let createGiftTitle = pGiftData.title;
+  let createGiftCreator = pGiftData.creator;
 
   if (initializedGifts.indexOf(createGiftUid) == -1) {
     try {
@@ -402,6 +416,7 @@ function createGiftElement(pGiftData, pGiftKey){
 
     let liItem = document.createElement("LI");
     liItem.id = "gift" + createGiftUid;
+
     initGiftElement(liItem, pGiftData, pGiftKey);
     let textNode = document.createTextNode(createGiftTitle);
     liItem.appendChild(textNode);
@@ -418,6 +433,16 @@ function createGiftElement(pGiftData, pGiftKey){
     if (!initializingElements)
       showUpdatedItem(createGiftUid);
   } else {
+    pGiftData.creator = convertUserNameToUID(pGiftData.creator);
+    if (createGiftCreator != pGiftData.creator) {
+      console.log("Updated!");
+      firebase.database().ref("users/" + giftUser.uid + "/privateList/" + pGiftKey).update({
+        creator: pGiftData.creator
+      });
+    } else {
+      console.log("Nope")
+    }
+
     changeGiftElement(pGiftData, pGiftKey);
   }
 }
@@ -444,6 +469,11 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
   let pGiftCreator = pGiftData.creator;
   let pGiftMultiples = pGiftData.multiples;
   let tempPGiftBuyer = "";
+
+  let uidIndex = findUIDItemInArr(pGiftCreator, userArr, true);
+  if (uidIndex != -1) {
+    pGiftCreator = findFirstNameInFullName(userArr[uidIndex].name);
+  }
 
   liItem.className = "gift";
   if(pGiftReceived == 1) {
@@ -514,10 +544,14 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
     if (pGiftCreator == undefined) {
       giftCreator.innerHTML = "Gift creator unavailable";
     } else {
-      if (pGiftCreator == "")
+      if (pGiftCreator == "") {
         giftCreator.innerHTML = "Gift creator unavailable";
-      else
-        giftCreator.innerHTML = "Gift was created by " + pGiftCreator;
+      } else {
+        if (pGiftCreator == user.userName)
+          giftCreator.innerHTML = "This gift was created by you!";
+        else
+          giftCreator.innerHTML = "Gift was created by " + pGiftCreator;
+      }
     }
     if (pGiftWhere != "") {
       giftWhere.innerHTML = "This can be found at: " + pGiftWhere;
