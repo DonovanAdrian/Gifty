@@ -1413,7 +1413,7 @@ function updateInitializedUsers(){
           if (userData.lastLogin != "Never Logged In") {
             let today = new Date();
             let lastLoginDate = new Date(userData.lastLogin);
-            let lastLoginDateTrimmed = getMonthName(lastLoginDate.getMonth()) + " " + lastLoginDate.getDate() + ", " + lastLoginDate.getFullYear();
+            let lastLoginDateTrimmed = getLocalTime(userData.lastLogin, true);
             let lastLoginDiff = Math.floor((today - lastLoginDate) / (1000 * 3600 * 24));
             userDataString = userDataName + " - " + lastLoginDateTrimmed;
             if (lastLoginDiff < 15) {
