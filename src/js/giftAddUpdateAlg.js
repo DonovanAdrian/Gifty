@@ -908,7 +908,7 @@ function addGiftToDB(){
         buyer: "",
         description: giftDescriptionInp.value,
         creationDate: creationDate,
-        creator: privateUser.userName,
+        creator: privateUser.uid,
         multiples: multiplePurchases.checked
       });
 
