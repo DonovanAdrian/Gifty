@@ -196,6 +196,15 @@ function commonInitialization(){
   let commonDBInitLimit = 5;
   initializeSupplementalModals();
 
+  window.addEventListener( "pageshow", function ( event ) {
+    var historyTraversal = event.persisted ||
+        ( typeof window.performance != "undefined" &&
+            window.performance.navigation.type === 2 );
+    if ( historyTraversal ) {
+      window.location.reload();
+    }
+  });
+
   if (consoleOutput) {
     let today = new Date();
     console.log(today);
@@ -624,7 +633,7 @@ function loginTimer(){
   let loginNum = 0;
   clearInterval(loginTimerInterval);
 
-  if (document.title != "Where'd You Go?")
+  if (document.title != "Where'd You Go?" && document.title != "Oh, There You Are!")
     currentTitle = document.title;
   if (user.moderatorInt == 1)
     logoutLimit = 1800;
