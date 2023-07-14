@@ -12,6 +12,9 @@ let loginTry = 0;
 let showLoginAlert = 0;
 let loginThreshold = 3;
 let loginInfoColor = 0;
+let delayLogin = 0;
+let defaultSupplementNavLimit = 0;
+let defaultAuthNavLimit = 4000;
 
 let lastLoginStatus = "";
 let loginDisabledMsg = "";
@@ -36,14 +39,6 @@ let signUpFld;
 let colorShifter;
 
 
-window.addEventListener( "pageshow", function ( event ) {
-  var historyTraversal = event.persisted ||
-      ( typeof window.performance != "undefined" &&
-          window.performance.navigation.type === 2 );
-  if ( historyTraversal ) {
-    window.location.reload();
-  }
-});
 
 function fetchConfigFile(){
   let oFrame = document.getElementById("frmFile");
@@ -396,6 +391,8 @@ function databaseQuery() {
 
 function login() {
   let validUserInt = 0;
+  let initializedTransition = 0;
+  let queuedNavigationCall = 0;
 
   validUserInt = authenticate();
   if (loginBool) {
@@ -444,22 +441,36 @@ function login() {
       });
     }
 
-    document.body.className = "B";
+    if (delayLogin == 1) {
+      defaultSupplementNavLimit = 4;
+      defaultAuthNavLimit = 8;
+    } else if (delayLogin == 2) {
+      defaultSupplementNavLimit = 8;
+      defaultAuthNavLimit = 12;
+    } else {
+      defaultSupplementNavLimit = 0;
+      defaultAuthNavLimit = 2;
+    }
 
+    document.body.className = "B";
     clearInterval(colorShifter);
-    document.getElementById("fadeOutLogin").className = "fadeOutItemA";
-    document.getElementById("fadeOutIcon").className = "fadeOutItemB";
     validUser = userArr[validUserInt];
     sessionStorage.setItem("validUser", JSON.stringify(validUser));
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
 
     let timer = 0;
     setInterval(function(){
-      timer = timer + 1000;
-      if(timer >= 2000){
+      timer = timer + 1;
+      if (timer >= defaultSupplementNavLimit && initializedTransition == 0){
+        initializedTransition++;
+        document.getElementById("fadeOutLogin").className = "fadeOutItemA";
+        document.getElementById("fadeOutIcon").className = "fadeOutItemB";
+      }
+      if(timer >= defaultAuthNavLimit && queuedNavigationCall == 0){
+        queuedNavigationCall++;
         navigation(2, true);//Home
       }
-    }, 1000);
+    }, 500);
   } else if (!loginBool && !banOverride) {
     if (loginTry < loginThreshold) {
       loginTry++;
@@ -470,8 +481,7 @@ function login() {
       } else {
         if (showLoginAlert == 0) {
           showLoginAlert++;
-          deployNotificationModal(false, "Login Disabled!", loginDisabledMsg,
-              4);
+          deployNotificationModal(false, "Login Disabled!", loginDisabledMsg, 4);
         }
       }
       if (username.value != "" && pin.value != "")
@@ -714,6 +724,11 @@ function loginTextRandomizer(inactiveUser) {
     selector = Math.floor((Math.random() * activeResponses.length));
     selection = activeResponses[selector];
   }
+
+  if (selection.length > 30)
+    delayLogin = 2;
+  else if (selection.length > 20)
+    delayLogin = 1;
 
   return selection;
 }
