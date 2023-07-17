@@ -399,7 +399,6 @@ function convertUserNameToUID(inputUserName) {
       returnUIDValue = userArr[i].uid;
     }
   }
-  console.log(returnUIDValue);
 
   return returnUIDValue;
 }
@@ -435,12 +434,9 @@ function createGiftElement(pGiftData, pGiftKey){
   } else {
     pGiftData.creator = convertUserNameToUID(pGiftData.creator);
     if (createGiftCreator != pGiftData.creator) {
-      console.log("Updated!");
       firebase.database().ref("users/" + giftUser.uid + "/privateList/" + pGiftKey).update({
         creator: pGiftData.creator
       });
-    } else {
-      console.log("Nope")
     }
 
     changeGiftElement(pGiftData, pGiftKey);
@@ -547,7 +543,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
       if (pGiftCreator == "") {
         giftCreator.innerHTML = "Gift creator unavailable";
       } else {
-        if (pGiftCreator == user.userName)
+        if (pGiftData.creator == user.uid)
           giftCreator.innerHTML = "This gift was created by you!";
         else
           giftCreator.innerHTML = "Gift was created by " + pGiftCreator;
@@ -571,7 +567,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
       updateGiftElement(pGiftUid);
     };
     giftDelete.onclick = function(){
-      if (pGiftCreator == user.userName || pGiftCreator == undefined) {
+      if (pGiftData.creator == user.uid || pGiftCreator == undefined) {
         confirmDeletion(pGiftKey, pGiftTitle, pGiftUid, pGiftBuyer, pGiftReceivedBy);
       } else {
         if (pGiftCreator == ""){
@@ -858,8 +854,8 @@ function checkGiftLimitLite() {
     addGift.innerHTML = "Gift Limit Reached!";
     addGift.onclick = function () {
       deployNotificationModal(false, "Gift Limit Reached!", "You have reached the " +
-          "limit of the number of gifts that you can create (" + giftLimit + "). Please remove some gifts in order to " +
-          "create more!", 4);
+          "limit of the number of gifts that you can create (" + giftLimit + "). If you have more than that, no " +
+          "problem! However, you'll need to remove some gifts to make new ones.", 8);
     };
   }
 }
