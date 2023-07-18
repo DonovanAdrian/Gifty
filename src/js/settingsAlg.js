@@ -5,10 +5,12 @@
  */
 
 let settingsElements = [];
+let ticketArr = [];
 
 let settingsUserScore = 0;
 let settingsUserScoreLimit = 10;
 
+let localListedUserData;
 let usernameInfo;
 let usernameDisplay;
 let nameInfo;
@@ -169,9 +171,61 @@ window.onload = function instantiate() {
     }
   }
 
+  function initializeFamilyDBCheck(){
+    if (user.moderatorInt == 1) {
+      familyInitial = firebase.database().ref("family/");
+
+      let fetchFamilies = function (postRef){
+        postRef.once("value").then(function(snapshot) {
+          if (snapshot.exists()) {
+            postRef.on("child_added", function (data) {
+              let i = findUIDItemInArr(data.val().uid, familyArr, true);
+              if (i == -1) {
+                familyArr.push(data.val());
+                saveCriticalCookies();
+              } else {
+                localObjectChanges = findObjectChanges(familyArr[i], data.val());
+                if (localObjectChanges.length != 0) {
+                  familyArr[i] = data.val();
+                  saveCriticalCookies();
+                }
+              }
+            });
+
+            postRef.on("child_changed", function (data) {
+              let i = findUIDItemInArr(data.key, familyArr);
+              if (i != -1) {
+                localObjectChanges = findObjectChanges(familyArr[i], data.val());
+                if (localObjectChanges.length != 0) {
+                  familyArr[i] = data.val();
+                  saveCriticalCookies();
+                }
+              }
+            });
+
+            postRef.on("child_removed", function (data) {
+              let i = findUIDItemInArr(data.key, familyArr);
+              if (i != -1) {
+                familyArr.splice(i, 1);
+                saveCriticalCookies();
+              }
+            });
+          } else {
+            deployListEmptyNotification("No Families Found!");
+          }
+        });
+      };
+
+      fetchFamilies(familyInitial);
+
+      listeningFirebaseRefs.push(familyInitial);
+    }
+  }
+
   initializeEditBtn();
   initializeFAQBtn();
   initializeUserInfo();
+  initializeFamilyDBCheck();
 
   userBase = firebase.database().ref("users/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
@@ -290,6 +344,8 @@ function updateSettingsUserData() {
 }
 
 function generateModerationModal(){
+  queryModeratorData();
+
   moderationQueueBtn.innerHTML = "System Audit Log";
   userListBtn.innerHTML = "User List & Database Settings";
 
@@ -306,4 +362,118 @@ function generateModerationModal(){
   };
 
   openModal(moderationModal, "moderationModal");
+}
+
+function queryModeratorData() {
+  moderationTickets = firebase.database().ref("maintenance/");
+  moderatorSettings = firebase.database().ref("moderatorSettings/");
+
+  let fetchModerationQueue = function (postRef) {
+    postRef.once("value").then(function(snapshot) {
+      if (snapshot.exists()) {
+        postRef.on("child_added", function (data) {
+          let i = findUIDItemInArr(data.key, ticketArr, true);
+          if(i != -1) {
+            localObjectChanges = findObjectChanges(ticketArr[i], data.val());
+            if (localObjectChanges.length != 0) {
+              if (consoleOutput)
+                console.log("Changing " + ticketArr[i].uid);
+              ticketArr[i] = data.val();
+              saveTicketArrToCookie();
+            }
+          } else {
+            ticketArr.push(data.val());
+            saveTicketArrToCookie();
+          }
+        });
+
+        postRef.on("child_changed", function (data) {
+          let i = findUIDItemInArr(data.key, ticketArr, true);
+          if(i != -1){
+            localObjectChanges = findObjectChanges(ticketArr[i], data.val());
+            if (localObjectChanges.length != 0) {
+              if (consoleOutput)
+                console.log("Changing " + ticketArr[i].uid);
+              ticketArr[i] = data.val();
+              saveTicketArrToCookie();
+            }
+          }
+        });
+
+        postRef.on("child_removed", function (data) {
+          let i = findUIDItemInArr(data.key, ticketArr);
+          if(i != -1){
+            if (consoleOutput)
+              console.log("Removing " + ticketArr[i].uid);
+            ticketArr.splice(i, 1);
+            saveTicketArrToCookie();
+          }
+        });
+      } else {
+        firebase.database().ref("maintenance/").update({});
+        saveTicketArrToCookie();
+        fetchModerationQueue(moderationTickets);
+      }
+    });
+  };
+
+  let fetchModeratorSettings = function (postRef) {
+    postRef.once("value").then(function(snapshot) {
+      if(snapshot.exists()) {
+        if (consoleOutput)
+          console.log("Moderator Settings Snapshot Exists!");
+        postRef.on("child_added", function (data) {
+          if (consoleOutput)
+            console.log(data.key + " added");
+
+          if (data.key == "listedUserData") {
+            localListedUserData = data.val();
+            saveListedUserDataToCookie();
+          }
+        });
+
+        postRef.on("child_changed", function (data) {
+          if (consoleOutput)
+            console.log(data.key + " changed");
+
+          if (data.key == "listedUserData") {
+            localListedUserData = data.val();
+            saveListedUserDataToCookie();
+          }
+        });
+
+        postRef.on("child_removed", function (data) {
+          if (consoleOutput)
+            console.log(data.key + " removed!");
+
+          firebase.database().ref("moderatorSettings/").update({
+            listedUserData: "None"
+          });
+        });
+      } else {
+        if (consoleOutput)
+          console.log("Initializing Moderator Settings In DB");
+
+        firebase.database().ref("moderatorSettings/").update({
+          listedUserData: "None"
+        });
+        fetchModeratorSettings(moderatorSettings);
+      }
+    });
+  };
+
+  fetchModeratorSettings(moderatorSettings);
+  fetchModerationQueue(moderationTickets);
+
+  listeningFirebaseRefs.push(moderatorSettings);
+  listeningFirebaseRefs.push(moderationTickets);
+}
+
+function saveListedUserDataToCookie() {
+  sessionStorage.setItem("localListedUserData", JSON.stringify(localListedUserData));
+}
+
+
+function saveTicketArrToCookie(){
+  sessionStorage.setItem("ticketArr", JSON.stringify(ticketArr));
 }
