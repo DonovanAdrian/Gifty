@@ -110,9 +110,14 @@ function checkUserCookie() {
       createUserElement(userArr[i]);
     }
 
+    updateInitializedUsers();
+  } catch (err) {}
+}
+
+function checkModerationCookie() {
+  try {
     localListedUserData = JSON.parse(sessionStorage.localListedUserData);
     initializeShowUserData(localListedUserData);
-    updateInitializedUsers();
   } catch (err) {}
 }
 
@@ -214,6 +219,7 @@ window.onload = function instantiate() {
   sessionStorage.setItem("moderationSet", moderationSet);
   getCurrentUserCommon();
   commonInitialization();
+  checkModerationCookie();
   checkUserCookie();
   verifyElementIntegrity(moderationElements);
 
