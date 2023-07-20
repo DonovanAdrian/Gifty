@@ -947,8 +947,8 @@ function checkGiftLimit() {
     addGift.innerHTML = "Gift Limit Reached!";
     addGift.onclick = function () {
       deployNotificationModal(false, "Gift Limit Reached!", "You have reached " +
-          "the limit of the number of gifts that you can create (" + giftLimit + "). Please remove some gifts in order " +
-          "to create more!", 4);
+          "the limit of the number of gifts that you can create (" + giftLimit + "). If you have more than that, no " +
+          "problem! However, you'll need to remove some gifts to make new ones.", 8);
     };
   } else {
     addGift.innerHTML = "Add Gift";
