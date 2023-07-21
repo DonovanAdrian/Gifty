@@ -290,24 +290,72 @@ window.onload = function instantiate() {
     };
   }
 
-  function generateFamilySettingsModal() {
+  function refreshMemberModalData() {
+    let familyPCRelationshipsExist = false;
+
+    if (familyData.members == undefined)
+      familyData.members = [];
+
+    for (let i = 0; i < userArr.length; i++) {
+      if (familyData.members.includes(userArr[i].uid)) {
+        if (userArr[i].parentUser != undefined) {
+          if (userArr[i].parentUser != "" && userArr[i].parentUser.length > 0) {
+            familyPCRelationshipsExist = true;
+            break;
+          }
+        }
+        if (userArr[i].childUser != undefined) {
+          if (userArr[i].childUser != "" && userArr[i].childUser.length > 0) {
+            familyPCRelationshipsExist = true;
+            break;
+          }
+        }
+      }
+    }
+
+    if (familyData.members.length == 0) {
+      removeAllMembers.innerHTML = "No Members In Family";
+      removeAllMembers.className = "basicBtn btnDisabled";
+      removeAllMembers.onclick = function() {
+        deployNotificationModal(true, "No Members In Family!", "There are currently " +
+            "no members in this family, so there are no members to remove.");
+      };
+    } else {
+      removeAllMembers.innerHTML = "Remove All Members";
+      removeAllMembers.className = "basicBtn";
+      removeAllMembers.onclick = function() {
+        generateConfirmDataModal("Are you sure that you'd like to remove ALL the users from this family? " +
+            "Please note that upon completion, you will be redirected to the main family page.",
+            "Remove ALL Members?", "removeAllMembers", familyData);
+      };
+    }
+
+    if (familyPCRelationshipsExist) {
+      clearAllPCRelationships.innerHTML = "Clear All Parent/Child Relationships";
+      clearAllPCRelationships.className = "basicBtn";
+      clearAllPCRelationships.onclick = function() {
+        generateConfirmDataModal("Are you sure that you'd like to clear ALL parent & child " +
+            "relationships within this family?",
+            "Clear ALL Parent & Child Relationships?", "clearAllPC", null);
+      };
+    } else {
+      clearAllPCRelationships.innerHTML = "No Parent/Child Relationships";
+      clearAllPCRelationships.className = "basicBtn btnDisabled";
+      clearAllPCRelationships.onclick = function() {
+        deployNotificationModal(true, "No Parent Child Relationships!", "There are " +
+            "currently no parent/child relationships in this family, so there are no relationships to remove.");
+      };
+    }
+
     familySettingsTitle.innerHTML = "\"" + familyData.name + "\" Settings";
+  }
+
+  function generateFamilySettingsModal() {
+    refreshMemberModalData();
 
     changeFamilyName.onclick = function() {
       closeModal(familySettingsModal);
       generateFamilyNameModal(familyData.name);
-    };
-
-    removeAllMembers.onclick = function() {
-      generateConfirmDataModal("Are you sure that you'd like to remove ALL the users from this family?" +
-          "Please note that upon completion, you will be redirected to the main family page.",
-          "Remove ALL Members?", "removeAllMembers", familyData);
-    };
-
-    clearAllPCRelationships.onclick = function() {
-      generateConfirmDataModal("Are you sure that you'd like to clear ALL parent & child " +
-          "relationships within this family?",
-          "Clear ALL Parent & Child Relationships?", "clearAllPC", null);
     };
 
     addMember.onclick = function() {
@@ -364,8 +412,10 @@ window.onload = function instantiate() {
             if (memberIndex != -1) {
               if (initializedElementsArr.indexOf(userArr[i].uid) == -1) {
                 createFamilyMemberElement(userArr[i]);
+                refreshMemberModalData();
               } else {
                 changeFamilyMemberElement(userArr[i]);
+                refreshMemberModalData();
               }
             }
           }
@@ -391,6 +441,7 @@ window.onload = function instantiate() {
             let memberIndex = familyData.members.indexOf(userArr[i].uid);
             if (memberIndex != -1) {
               changeFamilyMemberElement(userArr[i]);
+              refreshMemberModalData();
             }
 
             if(data.key == currentModalOpen) {
@@ -466,6 +517,7 @@ window.onload = function instantiate() {
                 let memberIndex = familyData.members.indexOf(initializedElementsArr[i]);
                 if (memberIndex == -1) {
                   removeFamilyMemberElement(initializedElementsArr[i]);
+                  refreshMemberModalData();
                   closeModal(familyMemberViewModal);
                   initializedElementsArr.splice(i, 1);
                   break;
@@ -476,6 +528,7 @@ window.onload = function instantiate() {
                 if (initializedElementsArr.indexOf(familyData.members[i]) == -1) {
                   let userIndex = findUIDItemInArr(familyData.members[i], userArr, true);
                   createFamilyMemberElement(userArr[userIndex]);
+                  refreshMemberModalData();
                   break;
                 }
               }
@@ -774,13 +827,18 @@ function clearParentChildData (familyMemberData) {
 }
 
 function clearAllParentChildData() {
+  let userIndex = 0;
+
   for (let i = 0; i < familyData.members.length; i++) {
-    familyData.members[i].childUser = [];
-    familyData.members[i].parentUser = [];
-    firebase.database().ref("users/" + familyData.members[i]).update({
-      childUser: [],
-      parentUser: []
-    });
+    userIndex = findUIDItemInArr(familyData.members[i], userArr, false);
+    if (userIndex != -1) {
+      userArr[userIndex].childUser = [];
+      userArr[userIndex].parentUser = [];
+      firebase.database().ref("users/" + userArr[userIndex].uid).update({
+        childUser: [],
+        parentUser: []
+      });
+    }
   }
 
   deployNotificationModal(false, "ALL Parent/Child Data Cleared", "All Parent and Child data has been " +
