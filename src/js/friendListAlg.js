@@ -15,8 +15,10 @@ let updateGiftToDBBool = false;
 let giftListEmptyBool = false;
 let potentialRemoval = false;
 let giftUpdateLocal = false;
+let createdJokeGift = false;
 
 let moderationSet = -1;
+let jokeGiftChances = 10000; //default is 10000
 
 let giftCreationDate;
 let giftModal;
@@ -56,6 +58,8 @@ function getCurrentUser(){
     initializingElements = true;
     for (let i = 0; i < giftUser.giftList.length; i++) {
       createGiftElement(giftUser.giftList[i], i);
+      if (!createdJokeGift && giftUser.giftList.length > 1)
+        rollForAJokeGift();
     }
     initializingElements = false;
   }
@@ -64,6 +68,57 @@ function getCurrentUser(){
     deployListEmptyNotification("No Gifts Found! Your Friend Must Not Have Any Gifts!");
     giftListEmptyBool = true;
   }
+}
+
+function rollForAJokeGift() {
+  let randomNumberA = Math.floor(Math.random() * jokeGiftChances);
+  let randomNumberB = Math.floor(Math.random() * jokeGiftChances);
+
+  if (randomNumberA == randomNumberB) {
+    generateCustomGift();
+    createdJokeGift = true;
+  }
+}
+
+function generateCustomGift() {
+  let liItem = document.createElement("LI");
+  liItem.id = "giftJokeGift";
+  liItem.className = "gift";
+
+  liItem.onclick = function () {
+    giftTitle.innerHTML = "Vegetti";
+    giftLink.innerHTML = "There was no link provided";
+    giftLink.onclick = function() {};
+    giftDescription.innerHTML = "It's been my dream to get the premier in all of vegetable spiralizers, but not just any Vegetti... " +
+        "The Vegetti VPRO Pro Deluxe Pack! I get 13 customizable accessories that allow me to shave the vegetables " +
+        "to my liking for the perfect dish. It's one of a kind.";
+    giftWhere.innerHTML = "Anywhere where Vegetti's are sold!";
+    giftBought.innerHTML = "This gift hasn't been bought yet!";
+    giftCreationDate.innerHTML = "Created today!";
+
+    giftBuy.onclick = function(){
+      closeModal(giftModal);
+      liItem.innerHTML = "Just Kidding!";
+      showUpdatedItem("JokeGift", true);
+    };
+    giftDontBuy.onclick = function(){
+      closeModal(giftModal);
+      liItem.innerHTML = "Just Kidding!";
+      showUpdatedItem("JokeGift", true);
+    };
+
+    openModal(giftModal, "JokeGift");
+
+    closeGiftModal.onclick = function() {
+      closeModal(giftModal);
+      liItem.innerHTML = "Just Kidding!";
+      showUpdatedItem("JokeGift", true);
+    };
+  };
+
+  let textNode = document.createTextNode("Vegetti");
+  liItem.appendChild(textNode);
+  dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
 }
 
 window.onload = function instantiate() {
