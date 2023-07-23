@@ -18,7 +18,6 @@ let giftUpdateLocal = false;
 let createdJokeGift = false;
 
 let moderationSet = -1;
-let jokeGiftChances = 10000; //default is 10000
 
 let giftCreationDate;
 let giftModal;
