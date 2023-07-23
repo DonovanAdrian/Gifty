@@ -11,6 +11,8 @@ let commonLoadingTimerLimit = 15000; //default 15000
 let debugElementIntegrity = false; //Used to debug if elements are properly initialized (developer tool)
 let redirectWarningBool = true; //Used to enable or disable URL redirect warnings
 let twentyFourHourTime = false; //Used to enable or disable 24 hour time for getLocalTime();
+let jokeGiftChances = 10000; //default 10000 (1 out of 10000). Only appears on friendList.html
+let jokeGiftEnabled = true; //Enables/disables a joke gift that has a chance to randomly appear
 
 let listeningFirebaseRefs = [];
 let userArr = [];
@@ -1178,6 +1180,7 @@ function deployConfirmationModal(unsavedChangesTitle, unsavedChangesContent) {
 }
 
 function navigation(navNum, loginOverride) {
+  console.log(pendingNavigation);
   if (pendingNavigation == 0) {
     pendingNavigation = 1;
     if (unsavedChanges) {
