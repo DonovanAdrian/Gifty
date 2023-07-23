@@ -10,6 +10,8 @@ let loadedPCUserArr = [];
 let globalParentData = [];
 let globalChildData = [];
 
+let globalParentChildState = "";
+
 let familyData;
 let settingsNote;
 let familySettings;
@@ -985,6 +987,7 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
 
         liItem.onclick = function () {
           if (parentChild == "child") {
+            globalParentChildState = "child";
             if (findUIDItemInArr(parentChildOmit.uid, globalParentData, true) == -1) {
               globalParentData.push(parentChildOmit);
             }
@@ -1010,6 +1013,7 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
                 console.log("Error!");
             }
           } else if (parentChild == "parent") {
+            globalParentChildState = "parent";
             if (findUIDItemInArr(parentChildOmit.uid, globalChildData, true) == -1) {
               globalChildData.push(parentChildOmit);
             }
@@ -1131,58 +1135,47 @@ function generateConfirmDataModal(stringToConfirm, confirmTitle, confirmType, da
 
 function updateFamilyRelationsToDB() {
   let tempPCArr = [];
+  let tempSelectedUserPCArr = [];
+  let tempIndex = 0;
 
-  if (globalParentData != undefined && globalChildData != undefined) {
-    if (globalChildData.length == 1) {
+  if (globalParentData != undefined && globalChildData != undefined && (globalParentChildState != "parent" ||
+      globalParentChildState != "child")) {
+    console.log(globalParentData)
+    console.log(globalChildData)
+    console.log(globalParentChildState)
+
+    if (globalParentChildState == "parent") {
+      console.log("Setting this user's parents " + globalChildData[0].name)
+      tempSelectedUserPCArr = globalChildData[0].parentUser;
+      for (let i = 0; i < tempSelectedUserPCArr.length; i++) {
+        tempIndex = findUIDItemInArr(tempSelectedUserPCArr[i], globalParentData, true);
+        if (tempIndex == -1) {
+          removeSpecificUserFromPCData(tempSelectedUserPCArr[i], globalChildData[0]);
+        }
+      }
       for (let i = 0; i < globalParentData.length; i++) {
-        tempPCArr = [];
-        if (globalParentData[i].childUser != undefined) {
-          tempPCArr = checkForUserStringConversionToArr(globalParentData[i].childUser);
+        tempIndex = tempSelectedUserPCArr.indexOf(globalParentData[i].uid);
+        if (tempIndex == -1) {
+          addSpecificUserToPCData(globalParentData[i], globalChildData[0]);
         }
-        if (tempPCArr.indexOf(globalChildData[0].uid) == -1)
-          tempPCArr.push(globalChildData[0].uid);
-        globalParentData[i].childUser = tempPCArr;
-
-        firebase.database().ref("users/" + globalParentData[i].uid).update({
-          childUser: globalParentData[i].childUser
-        });
-
-        if (globalChildData[0].parentUser != undefined) {
-          tempPCArr = checkForUserStringConversionToArr(globalChildData[0].parentUser);
-        }
-        if (tempPCArr.indexOf(globalParentData[i].uid) == -1)
-          tempPCArr.push(globalParentData[i].uid);
-        globalChildData[0].parentUser = tempPCArr;
       }
-      firebase.database().ref("users/" + globalChildData[0].uid).update({
-        parentUser: globalChildData[0].parentUser
-      });
-    }
-    if (globalParentData.length == 1) {
+    } else if (globalParentChildState == "child") {
+      console.log("Setting this user's children " + globalParentData[0].name)
+      tempSelectedUserPCArr = globalParentData[0].childUser;
+      for (let i = 0; i < tempSelectedUserPCArr.length; i++) {
+        tempIndex = findUIDItemInArr(tempSelectedUserPCArr[i], globalChildData, true);
+        if (tempIndex == -1) {
+          removeSpecificUserFromPCData(tempSelectedUserPCArr[i], globalParentData[0]);
+        }
+      }
       for (let i = 0; i < globalChildData.length; i++) {
-        tempPCArr = [];
-        if (globalChildData[i].parentUser != undefined) {
-          tempPCArr = checkForUserStringConversionToArr(globalChildData[i].parentUser);
+        tempIndex = tempSelectedUserPCArr.indexOf(globalChildData[i].uid);
+        if (tempIndex == -1) {
+          addSpecificUserToPCData(globalParentData[0], globalChildData[i]);
         }
-        if (tempPCArr.indexOf(globalParentData[0].uid) == -1)
-          tempPCArr.push(globalParentData[0].uid);
-        globalChildData[i].parentUser = tempPCArr;
-
-        firebase.database().ref("users/" + globalChildData[i].uid).update({
-          parentUser: globalChildData[i].parentUser
-        });
-
-        if (globalParentData[0].childUser != undefined) {
-          tempPCArr = checkForUserStringConversionToArr(globalParentData[0].childUser);
-        }
-        if (tempPCArr.indexOf(globalChildData[i].uid) == -1)
-          tempPCArr.push(globalChildData[i].uid);
-        globalParentData[0].childUser = tempPCArr;
       }
-      firebase.database().ref("users/" + globalParentData[0].uid).update({
-        childUser: globalParentData[0].childUser
-      });
     }
+
     deployNotificationModal(false, "Parent/Children Relationships Assigned!",
         "The Parent and Child data has been successfully assigned!");
   } else {
@@ -1192,4 +1185,62 @@ function updateFamilyRelationsToDB() {
 
   globalChildData = undefined;
   globalParentData = undefined;
+  globalParentChildState = "";
+
+  function removeSpecificUserFromPCData(parentUserData, childUserData){//todo remove console logs later
+    let tempIndex = -1;
+    let tempPCData = [];
+
+    tempPCData = parentUserData.childUser;
+    console.log(tempPCData.length)
+    tempIndex = tempPCData.indexOf(childUserData.uid);
+    tempPCData.splice(tempIndex, 1);
+    console.log(tempPCData.length)
+    tempIndex = tempPCData.indexOf(childUserData.uid);
+    console.log("Expecting -1: " + tempIndex);
+
+    //updateDatabaseWithPCData(false, parentUserData, tempPCData);
+
+    tempPCData = childUserData.parentUser;
+    console.log(tempPCData.length)
+    tempIndex = tempPCData.indexOf(parentUserData.uid);
+    tempPCData.splice(tempIndex, 1);
+    console.log(tempPCData.length)
+    tempIndex = tempPCData.indexOf(childUserData.uid);
+    console.log("Expecting -1: " + tempIndex);
+
+    //updateDatabaseWithPCData(true, childUserData, tempPCData);
+  }
+
+  function addSpecificUserToPCData(parentUserData, childUserData) {//todo remove console logs later
+    let tempPCData = [];
+
+    tempPCData = parentUserData.childUser;
+    console.log(tempPCData.length)
+    tempPCData.push(childUserData.uid);
+    tempIndex = tempPCData.indexOf(childUserData.uid);
+    console.log("NOT Expecting -1: " + tempIndex);
+
+    //updateDatabaseWithPCData(false, parentUserData, tempPCData);
+
+    tempPCData = childUserData.parentUser;
+    console.log(tempPCData.length)
+    tempPCData.push(parentUserData.uid);
+    tempIndex = tempPCData.indexOf(parentUserData.uid);
+    console.log("NOT Expecting -1: " + tempIndex);
+
+    //updateDatabaseWithPCData(true, childUserData, tempPCData);
+  }
+
+  function updateDatabaseWithPCData(updateParentUserDataBool, inputUserData, inputPCData) {
+    if (updateParentUserDataBool) {
+      firebase.database().ref("users/" + inputUserData.uid).update({
+        parentUser: inputPCData
+      });
+    } else {
+      firebase.database().ref("users/" + inputUserData.uid).update({
+        childUser: inputPCData
+      });
+    }
+  }
 }
