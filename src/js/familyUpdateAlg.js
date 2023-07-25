@@ -1134,7 +1134,6 @@ function generateConfirmDataModal(stringToConfirm, confirmTitle, confirmType, da
 }
 
 function updateFamilyRelationsToDB() {
-  let tempPCArr = [];
   let tempSelectedUserPCArr = [];
   let tempIndex = 0;
 
@@ -1145,12 +1144,12 @@ function updateFamilyRelationsToDB() {
     console.log(globalParentChildState)
 
     if (globalParentChildState == "parent") {
-      console.log("Setting this user's parents " + globalChildData[0].name)
       tempSelectedUserPCArr = globalChildData[0].parentUser;
       for (let i = 0; i < tempSelectedUserPCArr.length; i++) {
         tempIndex = findUIDItemInArr(tempSelectedUserPCArr[i], globalParentData, true);
         if (tempIndex == -1) {
-          removeSpecificUserFromPCData(tempSelectedUserPCArr[i], globalChildData[0]);
+          tempIndex = findUIDItemInArr(tempSelectedUserPCArr[i], userArr, true);
+          removeSpecificUserFromPCData(userArr[tempIndex], globalChildData[0]);
         }
       }
       for (let i = 0; i < globalParentData.length; i++) {
@@ -1160,12 +1159,12 @@ function updateFamilyRelationsToDB() {
         }
       }
     } else if (globalParentChildState == "child") {
-      console.log("Setting this user's children " + globalParentData[0].name)
       tempSelectedUserPCArr = globalParentData[0].childUser;
       for (let i = 0; i < tempSelectedUserPCArr.length; i++) {
         tempIndex = findUIDItemInArr(tempSelectedUserPCArr[i], globalChildData, true);
         if (tempIndex == -1) {
-          removeSpecificUserFromPCData(tempSelectedUserPCArr[i], globalParentData[0]);
+          tempIndex = findUIDItemInArr(tempSelectedUserPCArr[i], userArr, true);
+          removeSpecificUserFromPCData(userArr[tempIndex], globalParentData[0]);
         }
       }
       for (let i = 0; i < globalChildData.length; i++) {
@@ -1187,49 +1186,46 @@ function updateFamilyRelationsToDB() {
   globalParentData = undefined;
   globalParentChildState = "";
 
-  function removeSpecificUserFromPCData(parentUserData, childUserData){//todo remove console logs later
-    let tempIndex = -1;
-    let tempPCData = [];
+  function removeSpecificUserFromPCData(parentUserData, childUserData){
+    let tempPCData;
+    let tempIndex;
 
     tempPCData = parentUserData.childUser;
-    console.log(tempPCData.length)
+    if (tempPCData == undefined)
+      tempPCData = [];
     tempIndex = tempPCData.indexOf(childUserData.uid);
     tempPCData.splice(tempIndex, 1);
-    console.log(tempPCData.length)
-    tempIndex = tempPCData.indexOf(childUserData.uid);
-    console.log("Expecting -1: " + tempIndex);
 
-    //updateDatabaseWithPCData(false, parentUserData, tempPCData);
+    updateDatabaseWithPCData(false, parentUserData, tempPCData);
 
     tempPCData = childUserData.parentUser;
-    console.log(tempPCData.length)
+    if (tempPCData == undefined)
+      tempPCData = [];
     tempIndex = tempPCData.indexOf(parentUserData.uid);
     tempPCData.splice(tempIndex, 1);
-    console.log(tempPCData.length)
-    tempIndex = tempPCData.indexOf(childUserData.uid);
-    console.log("Expecting -1: " + tempIndex);
 
-    //updateDatabaseWithPCData(true, childUserData, tempPCData);
+    updateDatabaseWithPCData(true, childUserData, tempPCData);
   }
 
-  function addSpecificUserToPCData(parentUserData, childUserData) {//todo remove console logs later
-    let tempPCData = [];
+  function addSpecificUserToPCData(parentUserData, childUserData) {
+    let tempPCData;
+    let tempIndex;
 
     tempPCData = parentUserData.childUser;
-    console.log(tempPCData.length)
-    tempPCData.push(childUserData.uid);
-    tempIndex = tempPCData.indexOf(childUserData.uid);
-    console.log("NOT Expecting -1: " + tempIndex);
+    if (tempPCData == undefined)
+      tempPCData = [];
+    if (tempPCData.indexOf(childUserData.uid) == -1)
+      tempPCData.push(childUserData.uid);
 
-    //updateDatabaseWithPCData(false, parentUserData, tempPCData);
+    updateDatabaseWithPCData(false, parentUserData, tempPCData);
 
     tempPCData = childUserData.parentUser;
-    console.log(tempPCData.length)
-    tempPCData.push(parentUserData.uid);
-    tempIndex = tempPCData.indexOf(parentUserData.uid);
-    console.log("NOT Expecting -1: " + tempIndex);
+    if (tempPCData == undefined)
+      tempPCData = [];
+    if (tempPCData.indexOf(parentUserData.uid) == -1)
+      tempPCData.push(parentUserData.uid);
 
-    //updateDatabaseWithPCData(true, childUserData, tempPCData);
+    updateDatabaseWithPCData(true, childUserData, tempPCData);
   }
 
   function updateDatabaseWithPCData(updateParentUserDataBool, inputUserData, inputPCData) {
