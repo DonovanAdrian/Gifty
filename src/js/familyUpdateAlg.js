@@ -202,7 +202,8 @@ window.onload = function instantiate() {
     };
     removeMembersInfoIcon.onclick = function() {
       deployNotificationModal(true, "Remove All Members", "This button " +
-          "offers a quick way to remove every member from this family.", 3);
+          "offers a quick way to remove every member from this family.<br><br>Please note that any parent/child " +
+          "relationships will also be cleared as a result.", 6);
     };
     addMemberInfoIcon.onclick = function() {
       deployNotificationModal(true, "Add Member", "This button " +
@@ -327,7 +328,8 @@ window.onload = function instantiate() {
       removeAllMembers.className = "basicBtn";
       removeAllMembers.onclick = function() {
         generateConfirmDataModal("Are you sure that you'd like to remove ALL the users from this family? " +
-            "Please note that upon completion, you will be redirected to the main family page.",
+            "<br><br>Please note that upon completion, any existing parent/child relationships will be cleared and you " +
+            "will be redirected to the main family page.",
             "Remove ALL Members?", "removeAllMembers", familyData);
       };
     }
@@ -591,6 +593,7 @@ function removeAllFamilyMembers(familyRemove) {
 }
 
 function createFamilyMemberElement(familyMemberData){
+  let familyMemberName = familyMemberData.name + generateParentChildSuffixString(familyMemberData);
   try {
     document.getElementById("testData").remove();
   } catch (err) {}
@@ -598,7 +601,7 @@ function createFamilyMemberElement(familyMemberData){
   let liItem = document.createElement("LI");
   liItem.id = "family" + familyMemberData.uid;
   initFamilyElement(liItem, familyMemberData);
-  let textNode = document.createTextNode(familyMemberData.name);
+  let textNode = document.createTextNode(familyMemberName);
   liItem.appendChild(textNode);
 
   dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
@@ -612,8 +615,9 @@ function createFamilyMemberElement(familyMemberData){
 }
 
 function changeFamilyMemberElement(familyMemberData) {
+  let familyMemberName = familyMemberData.name + generateParentChildSuffixString(familyMemberData);
   let editFamily = document.getElementById("family" + familyMemberData.uid);
-  editFamily.innerHTML = familyMemberData.name;
+  editFamily.innerHTML = familyMemberName;
   initFamilyElement(editFamily, familyMemberData);
 }
 
@@ -727,6 +731,41 @@ function initFamilyElement(liItem, familyMemberData) {
       closeModal(familyMemberViewModal);
     };
   };
+}
+
+function generateParentChildSuffixString(inputFamilyData) {
+  let pcSuffixStr = "";
+  let addedParentStatBool = false;
+  let inputParentUserArr = inputFamilyData.parentUser;
+  let inputChildUserArr = inputFamilyData.childUser;
+
+  if (inputParentUserArr == undefined)
+    inputParentUserArr = [];
+  if (inputChildUserArr == undefined)
+    inputChildUserArr = [];
+
+  if (inputParentUserArr.length != 0 || inputChildUserArr.length != 0) {
+    pcSuffixStr = " - ";
+    if (inputParentUserArr.length == 1) {
+      pcSuffixStr += "1 Parent";
+      addedParentStatBool = true;
+    } else if (inputParentUserArr.length > 1) {
+      pcSuffixStr += inputParentUserArr.length + " Parents";
+      addedParentStatBool = true;
+    }
+
+    if (inputChildUserArr.length == 1) {
+      if (addedParentStatBool)
+        pcSuffixStr += ", ";
+      pcSuffixStr += "1 Child";
+    } else if (inputChildUserArr.length > 1) {
+      if (addedParentStatBool)
+        pcSuffixStr += ", ";
+      pcSuffixStr += inputChildUserArr.length + " Children";
+    }
+  }
+
+  return pcSuffixStr;
 }
 
 function checkForUserStringConversionToArr(strChkData, returnUserData) {
@@ -936,15 +975,29 @@ function generateFamilyPCModal(parentChild, parentChildData) {
 
   familyPCConfirm.onclick = function () {
     if (parentChild == "child") {
-      generateConfirmDataModal("Please confirm that the following user(s) should be assigned as a " +
-          "child to "  + parentChildData.name + "<br/><br/>" + generatePCAddString(globalChildData) + "<br/><br/>Please note " +
-          "that this \"parent\" user will automatically be assigned to the child user(s) as well.",
-          "Confirm Child Selection", "parentChild", null);
+      if (globalChildData.length == 0) {
+        generateConfirmDataModal("Please confirm that all of " + parentChildData.name + "'s children " +
+            "should be removed.<br/><br/>Please note that this \"parent\" user will automatically be removed " +
+            "from the child user(s) as well.",
+            "Confirm Child Removal", "parentChild", null);
+      } else {
+        generateConfirmDataModal("Please confirm that the following user(s) should be assigned as a " +
+            "child to "  + parentChildData.name + "<br/><br/>" + generatePCAddString(globalChildData) + "<br/><br/>Please note " +
+            "that this \"parent\" user will automatically be assigned to the child user(s) as well.",
+            "Confirm Child Selection", "parentChild", null);
+      }
     } else if (parentChild == "parent") {
-      generateConfirmDataModal("Please confirm that the following user(s) should be assigned as a " +
-          "parent to "  + parentChildData.name + "<br/><br/>" + generatePCAddString(globalParentData) + "<br/><br/>Please note " +
-          "that this \"child\" user will automatically be assigned to the parent user(s) as well.",
-          "Confirm Parent Selection", "parentChild", null);
+      if (globalParentData.length == 0) {
+        generateConfirmDataModal("Please confirm that all of " + parentChildData.name + "'s parents " +
+            "should be removed.<br/><br/>Please note that this \"child\" user will automatically be removed " +
+            "from the parent user(s) as well.",
+            "Confirm Child Removal", "parentChild", null);
+      } else {
+        generateConfirmDataModal("Please confirm that the following user(s) should be assigned as a " +
+            "parent to " + parentChildData.name + "<br/><br/>" + generatePCAddString(globalParentData) + "<br/><br/>Please note " +
+            "that this \"child\" user will automatically be assigned to the parent user(s) as well.",
+            "Confirm Parent Selection", "parentChild", null);
+      }
     }
   };
 
@@ -1089,6 +1142,7 @@ function generateConfirmDataModal(stringToConfirm, confirmTitle, confirmType, da
     } else if (confirmType == "clearAllPC") {
       clearAllParentChildData();
     } else if (confirmType == "removeAllMembers") {
+      clearAllParentChildData();
       removeAllFamilyMembers(dataObject);
     }
     closeModal(confirmMemberModal);
@@ -1189,6 +1243,7 @@ function updateFamilyRelationsToDB() {
   function removeSpecificUserFromPCData(parentUserData, childUserData){
     let tempPCData;
     let tempIndex;
+    console.log("Remove")
 
     tempPCData = parentUserData.childUser;
     if (tempPCData == undefined)
@@ -1209,7 +1264,7 @@ function updateFamilyRelationsToDB() {
 
   function addSpecificUserToPCData(parentUserData, childUserData) {
     let tempPCData;
-    let tempIndex;
+    console.log("Add")
 
     tempPCData = parentUserData.childUser;
     if (tempPCData == undefined)
