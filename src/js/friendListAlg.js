@@ -57,7 +57,7 @@ function getCurrentUser(){
     initializingElements = true;
     for (let i = 0; i < giftUser.giftList.length; i++) {
       createGiftElement(giftUser.giftList[i], i);
-      if (!createdJokeGift && giftUser.giftList.length > 1)
+      if (!createdJokeGift && giftUser.giftList.length > 1 && jokeGiftEnabled)
         rollForAJokeGift();
     }
     initializingElements = false;
