@@ -195,6 +195,7 @@ window.onload = function instantiate() {
             if (data.key == giftUser.uid) {
               giftUser = data.val();
               giftArr = giftUser.privateList;
+              checkGiftLimit();
               if (potentialRemoval) {
                 findRemovedGift(oldGiftArr, giftArr);
                 potentialRemoval = false;
@@ -272,10 +273,11 @@ window.onload = function instantiate() {
             showUpdatedItem(data.val().uid);
           giftUser.giftList = giftArr;
           saveCriticalCookies();
+          checkGiftLimit();
         }
       });
 
-      postRef.on("child_removed", function(data) {
+      postRef.on("child_removed", function() {
         if (!giftDeleteLocal) {
           potentialRemoval = true;
           oldGiftArr = [];
@@ -685,8 +687,6 @@ function buyGiftToDB(priUid, key, multiples, received, receivedBy, unBuyBool, bu
 
 function removeGiftElement(uid) {
   document.getElementById("gift" + uid).remove();
-
-  checkGiftLimit();
 
   dataCounter--;
   if (dataCounter == 0){
