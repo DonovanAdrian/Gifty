@@ -454,6 +454,8 @@ function changeGiftElement(pGiftData, pGiftKey) {
 }
 
 function initGiftElement(liItem, pGiftData, pGiftKey) {
+  let buttonVisible = false;
+  let buttonBreakAdded = false;
   let multipleBool = false;
   let pGiftDescription = pGiftData.description;
   let pGiftLink = pGiftData.link;
@@ -467,6 +469,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
   let pGiftCreator = pGiftData.creator;
   let pGiftMultiples = pGiftData.multiples;
   let tempPGiftBuyer = "";
+  let giftInfoPrefix = "";
 
   let uidIndex = findUIDItemInArr(pGiftCreator, userArr, true);
   if (uidIndex != -1) {
@@ -494,15 +497,60 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
     giftTitle.innerHTML = pGiftTitle;
 
     if (pGiftLink != ""){
-      giftLink.innerHTML = "Click me to go to the webpage!";
+      buttonVisible = true;
+      giftLink.innerHTML = "Click me to go to this gift's webpage!";
+      giftLink.style.display = "block";
+      giftLink.className = "basicBtn";
       giftLink.onclick = function() {
         giftLinkRedirect(pGiftLink);
       };
     } else {
       giftLink.innerHTML = "There was no link provided";
-      giftLink.onclick = function() {
-      };
+      giftLink.style.display = "none";
+      giftLink.onclick = function() {};
     }
+
+    if (buttonVisible) {
+      giftInfoPrefix = "<br>";
+      buttonBreakAdded = true;
+    }
+    if (pGiftWhere != "") {
+      giftWhere.innerHTML = giftInfoPrefix + "This can be found at: " + pGiftWhere;
+    } else {
+      giftWhere.innerHTML = "";
+    }
+    giftInfoPrefix = "";
+
+    if (buttonVisible && !buttonBreakAdded) {
+      giftInfoPrefix = "<br>";
+      buttonBreakAdded = true;
+    }
+    if (pGiftDescription != "") {
+      giftDescription.innerHTML = giftInfoPrefix + "Description: " + pGiftDescription;
+    } else {
+      giftDescription.innerHTML = "";
+    }
+    giftInfoPrefix = "";
+
+    if (buttonVisible && !buttonBreakAdded) {
+      giftInfoPrefix = "<br>";
+      buttonBreakAdded = true;
+    }
+    if (pGiftCreator == undefined) {
+      giftCreator.innerHTML = "";
+    } else {
+      if (pGiftCreator == "") {
+        giftCreator.innerHTML = "";
+      } else {
+        if (pGiftData.creator == user.uid) {
+          giftCreator.innerHTML = giftInfoPrefix + "This gift was created by you!";
+        } else {
+          giftCreator.innerHTML = giftInfoPrefix + "Gift was created by " + pGiftCreator;
+        }
+      }
+    }
+    giftInfoPrefix = "";
+
     if(pGiftReceived == 1){
       if(pGiftBuyer == undefined || pGiftBuyer == ""){
         giftBought.innerHTML = "This gift has been bought";
@@ -534,28 +582,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
         }
       }
     }
-    if (pGiftDescription != "") {
-      giftDescription.innerHTML = "Description: " + pGiftDescription;
-    } else {
-      giftDescription.innerHTML = "There was no description provided";
-    }
-    if (pGiftCreator == undefined) {
-      giftCreator.innerHTML = "Gift creator unavailable";
-    } else {
-      if (pGiftCreator == "") {
-        giftCreator.innerHTML = "Gift creator unavailable";
-      } else {
-        if (pGiftData.creator == user.uid)
-          giftCreator.innerHTML = "This gift was created by you!";
-        else
-          giftCreator.innerHTML = "Gift was created by " + pGiftCreator;
-      }
-    }
-    if (pGiftWhere != "") {
-      giftWhere.innerHTML = "This can be found at: " + pGiftWhere;
-    } else {
-      giftWhere.innerHTML = "There was no location provided";
-    }
+
     if (pGiftDate != undefined) {
       if (pGiftDate != "") {
         giftCreationDate.innerHTML = "Created on: " + pGiftDate;
@@ -565,6 +592,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
     } else {
       giftCreationDate.innerHTML = "Creation date not available";
     }
+
     giftEdit.onclick = function(){
       updateGiftElement(pGiftUid);
     };
