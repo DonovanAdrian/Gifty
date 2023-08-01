@@ -836,6 +836,26 @@ function signOut(){
   }
 }
 
+function initGiftDataIfEmpty(inputGiftData) {
+  let giftDataProperties = ["description", "link", "received", "receivedBy",
+    "title", "where", "buyer", "creationDate", "creator", "multiples"];
+  for (let inputGiftKey in giftDataProperties) {
+    if (inputGiftData[inputGiftKey] == undefined)
+      switch (inputGiftKey) {
+        case "multiples":
+          inputGiftData[inputGiftKey] = false;
+          break;
+        case "receivedBy":
+          inputGiftData[inputGiftKey] = [];
+          break;
+        default:
+          inputGiftData[inputGiftKey] = "";//buyer, creator, creationDate
+      }
+  }
+
+  return inputGiftData;
+}
+
 function findObjectChanges(objInputOld, objInputNew, limiterBool) {
   let objectKeysChanged = [];
   let objectDataChanged = [];
