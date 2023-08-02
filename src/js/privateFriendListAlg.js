@@ -454,9 +454,9 @@ function changeGiftElement(pGiftData, pGiftKey) {
 }
 
 function initGiftElement(liItem, pGiftData, pGiftKey) {
+  pGiftData = initGiftDataIfEmpty(pGiftData);
   let buttonVisible = false;
   let buttonBreakAdded = false;
-  let multipleBool = false;
   let pGiftDescription = pGiftData.description;
   let pGiftLink = pGiftData.link;
   let pGiftReceived = pGiftData.received;
@@ -479,21 +479,11 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
   liItem.className = "gift";
   if(pGiftReceived == 1) {
     liItem.className += " checked";
-  } else if (pGiftMultiples != undefined) {
-    if (pGiftMultiples && pGiftReceived < 0) {
-      liItem.className += " multiCheck";
-    }
+  } else if (pGiftMultiples && pGiftReceived < 0) {
+    liItem.className += " multiCheck";
   }
 
   liItem.onclick = function (){
-    if (pGiftReceivedBy == undefined) {
-      pGiftReceivedBy = [];
-    }
-
-    if (pGiftMultiples != undefined) {
-      multipleBool = pGiftMultiples;
-    }
-
     giftTitle.innerHTML = pGiftTitle;
 
     if (pGiftLink != ""){
@@ -536,59 +526,35 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
       giftInfoPrefix = "<br>";
       buttonBreakAdded = true;
     }
-    if (pGiftCreator == undefined) {
+    if (pGiftCreator == "") {
       giftCreator.innerHTML = "";
     } else {
-      if (pGiftCreator == "") {
-        giftCreator.innerHTML = "";
+      if (pGiftData.creator == user.uid) {
+        giftCreator.innerHTML = giftInfoPrefix + "This gift was created by you!";
       } else {
-        if (pGiftData.creator == user.uid) {
-          giftCreator.innerHTML = giftInfoPrefix + "This gift was created by you!";
-        } else {
-          giftCreator.innerHTML = giftInfoPrefix + "Gift was created by " + pGiftCreator;
-        }
+        giftCreator.innerHTML = giftInfoPrefix + "Gift was created by " + pGiftCreator;
       }
     }
     giftInfoPrefix = "";
 
-    if(pGiftReceived == 1){
-      if(pGiftBuyer == undefined || pGiftBuyer == ""){
+    if(pGiftReceived == 1) {
+      if(pGiftBuyer == "") {
         giftBought.innerHTML = "This gift has been bought";
       } else {
-        if (pGiftBuyer == user.userName)
-          giftBought.innerHTML = "This gift was bought by you!";
-        else {
-          tempPGiftBuyer = fetchNameByUserName(pGiftBuyer);
-          if (tempPGiftBuyer == undefined)
-            tempPGiftBuyer = pGiftBuyer;
-          giftBought.innerHTML = "This gift was bought by " + tempPGiftBuyer;
-        }
+        giftBought.innerHTML = "This gift has been bought by " +
+            fetchGiftReceivedSuffix(pGiftReceived, pGiftBuyer, pGiftReceivedBy);
       }
     } else {
-      if (pGiftMultiples == undefined || pGiftReceived == 0) {
+      if (pGiftReceived == 0) {
         giftBought.innerHTML = "This gift has not been bought yet";
       } else {
-        let userBought = pGiftReceivedBy.indexOf(user.uid);
-        if (userBought == -1) {
-          if (pGiftReceivedBy.length == 1)
-            giftBought.innerHTML = "This gift was bought by " + pGiftReceivedBy.length + " person!";
-          else
-            giftBought.innerHTML = "This gift was bought by " + pGiftReceivedBy.length + " people!";
-        } else {
-          if (pGiftReceivedBy.length == 1)
-            giftBought.innerHTML = "This gift was bought by you!";
-          else
-            giftBought.innerHTML = "This gift was bought by " + pGiftReceivedBy.length + " people... Including you!";
-        }
+        giftBought.innerHTML = "This gift has been bought by " +
+            fetchGiftReceivedSuffix(pGiftReceived, pGiftBuyer, pGiftReceivedBy);
       }
     }
 
-    if (pGiftDate != undefined) {
-      if (pGiftDate != "") {
-        giftCreationDate.innerHTML = "Created on: " + pGiftDate;
-      } else {
-        giftCreationDate.innerHTML = "Creation date not available";
-      }
+    if (pGiftDate != "") {
+      giftCreationDate.innerHTML = "Created on: " + pGiftDate;
     } else {
       giftCreationDate.innerHTML = "Creation date not available";
     }
@@ -597,7 +563,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
       updateGiftElement(pGiftUid);
     };
     giftDelete.onclick = function(){
-      if (pGiftData.creator == user.uid || pGiftCreator == undefined) {
+      if (pGiftData.creator == user.uid) {
         confirmDeletion(pGiftKey, pGiftTitle, pGiftUid, pGiftBuyer, pGiftReceivedBy);
       } else {
         if (pGiftCreator == ""){
@@ -633,21 +599,17 @@ function fetchNameByUserName(userNameInput) {
     }
   }
 
-  return null;
+  return undefined;
 }
 
 function buyGiftToDB(priUid, key, multiples, received, receivedBy, unBuyBool, buyer) {
-  let multipleBool = false;
   let updateToDB = false;
   let buyerUserName = "!!!";
+  let multipleBool;
   let buyerData;
   giftUpdateLocal = true;
-
-  if (buyer != undefined)
-    buyerUserName = buyer;
-
-  if (multiples != undefined)
-    multipleBool = multiples;
+  buyerUserName = buyer;
+  multipleBool = multiples;
 
   if (!multipleBool) {
     if (!unBuyBool && received == 0) {
