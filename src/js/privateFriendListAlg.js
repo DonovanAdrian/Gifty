@@ -468,7 +468,6 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
   let pGiftDate = pGiftData.creationDate;
   let pGiftCreator = pGiftData.creator;
   let pGiftMultiples = pGiftData.multiples;
-  let tempPGiftBuyer = "";
   let giftInfoPrefix = "";
 
   let uidIndex = findUIDItemInArr(pGiftCreator, userArr, true);
@@ -542,14 +541,14 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
         giftBought.innerHTML = "This gift has been bought";
       } else {
         giftBought.innerHTML = "This gift has been bought by " +
-            fetchGiftReceivedSuffix(pGiftReceived, pGiftBuyer, pGiftReceivedBy);
+            fetchGiftReceivedSuffix(false, pGiftBuyer, pGiftReceivedBy);
       }
     } else {
       if (pGiftReceived == 0) {
         giftBought.innerHTML = "This gift has not been bought yet";
       } else {
         giftBought.innerHTML = "This gift has been bought by " +
-            fetchGiftReceivedSuffix(pGiftReceived, pGiftBuyer, pGiftReceivedBy);
+            fetchGiftReceivedSuffix(true, pGiftBuyer, pGiftReceivedBy);
       }
     }
 
@@ -590,16 +589,6 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
       closeModal(giftModal);
     };
   };
-}
-
-function fetchNameByUserName(userNameInput) {
-  for (let i = 0; i < userArr.length; i++) {
-    if (userNameInput == userArr[i].userName) {
-      return userArr[i].name;
-    }
-  }
-
-  return undefined;
 }
 
 function buyGiftToDB(priUid, key, multiples, received, receivedBy, unBuyBool, buyer) {
