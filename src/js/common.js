@@ -856,6 +856,48 @@ function initGiftDataIfEmpty(inputGiftData) {
   return inputGiftData;
 }
 
+function fetchGiftReceivedSuffix(multipleBuyer, buyerStr, buyerArr){
+  let returnGiftSuffix = "";
+
+  if (!multipleBuyer) {
+    if (buyerStr == user.uid) {
+      returnGiftSuffix = "you!";
+    } else {
+      let tempUserNameFetch = fetchNameByUserName(buyerStr);
+      if (tempUserNameFetch == undefined)
+        tempUserNameFetch = buyerStr;
+      returnGiftSuffix = tempUserNameFetch;
+    }
+  } else {
+    let userBought = buyerArr.indexOf(user.uid);
+    if (userBought == -1) {
+      if (buyerArr.length == 1) {
+        returnGiftSuffix = "1 person!";
+      } else {
+        returnGiftSuffix = buyerArr.length + " people!";
+      }
+    } else {
+      if (buyerArr.length == 1) {
+        returnGiftSuffix = "you!";
+      } else {
+        returnGiftSuffix = buyerArr.length + " people... Including you!";
+      }
+    }
+  }
+
+  return returnGiftSuffix;
+}
+
+function fetchNameByUserName(userNameInput) {
+  for (let i = 0; i < userArr.length; i++) {
+    if (userNameInput == userArr[i].userName) {
+      return userArr[i].name;
+    }
+  }
+
+  return undefined;
+}
+
 function findObjectChanges(objInputOld, objInputNew, limiterBool) {
   let objectKeysChanged = [];
   let objectDataChanged = [];
