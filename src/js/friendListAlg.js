@@ -478,16 +478,19 @@ function initGiftElement(liItem, giftData, giftKey) {
       giftLink.innerHTML = "There was no link provided";
       giftLink.onclick = function() {};
     }
-    if(giftDescriptionData != "") {
-      giftDescription.innerHTML = "Description: " + giftDescriptionData;
-    } else {
-      giftDescription.innerHTML = "There was no description provided";
-    }
+
     if(giftWhereData != "") {
       giftWhere.innerHTML = "This can be found at: " + giftWhereData;
     } else {
       giftWhere.innerHTML = "There was no location provided";
     }
+
+    if(giftDescriptionData != "") {
+      giftDescription.innerHTML = "Description: " + giftDescriptionData;
+    } else {
+      giftDescription.innerHTML = "There was no description provided";
+    }
+
     if(giftReceivedData == 1){
       if(giftBuyer == undefined || giftBuyer == ""){
         giftBought.innerHTML = "This gift has been bought";
@@ -519,6 +522,7 @@ function initGiftElement(liItem, giftData, giftKey) {
         }
       }
     }
+
     if(giftDate == undefined) {
       giftDate = "";
     }
