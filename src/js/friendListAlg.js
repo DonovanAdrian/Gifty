@@ -432,6 +432,7 @@ function changeGiftElement(giftData, giftKey) {
 }
 
 function initGiftElement(liItem, giftData, giftKey) {
+  giftData = initGiftDataIfEmpty(giftData);
   let multipleBool = false;
   let giftDescriptionData = giftData.description;
   let giftLinkData = giftData.link;
@@ -443,7 +444,6 @@ function initGiftElement(liItem, giftData, giftKey) {
   let giftUid = giftData.uid;
   let giftDate = giftData.creationDate;
   let giftMultiples = giftData.multiples;
-  let tempGiftBuyer = "";
 
   liItem.className = "gift";
   if(giftReceivedData == 1) {
@@ -492,40 +492,21 @@ function initGiftElement(liItem, giftData, giftKey) {
     }
 
     if(giftReceivedData == 1){
-      if(giftBuyer == undefined || giftBuyer == ""){
+      if(giftBuyer == ""){
         giftBought.innerHTML = "This gift has been bought";
       } else {
-        if (giftBuyer == user.userName)
-          giftBought.innerHTML = "This gift was bought by you!";
-        else {
-          tempGiftBuyer = fetchNameByUserName(giftBuyer);
-          if (tempGiftBuyer == undefined)
-            tempGiftBuyer = giftBuyer;
-          giftBought.innerHTML = "This gift was bought by " + tempGiftBuyer;
-        }
+        giftBought.innerHTML = "This gift has been bought by " +
+            fetchGiftReceivedSuffix(false, giftBuyer, giftReceivedBy);
       }
     } else {
-      if (giftMultiples == undefined || giftReceivedData == 0) {
+      if (giftReceivedData == 0) {
         giftBought.innerHTML = "This gift has not been bought yet";
       } else {
-        let userBought = giftReceivedBy.indexOf(user.uid);
-        if (userBought == -1) {
-          if (giftReceivedBy.length == 1)
-            giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " person!";
-          else
-            giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people!";
-        } else {
-          if (giftReceivedBy.length == 1)
-            giftBought.innerHTML = "This gift was bought by you!";
-          else
-            giftBought.innerHTML = "This gift was bought by " + giftReceivedBy.length + " people... Including you!";
-        }
+        giftBought.innerHTML = "This gift has been bought by " +
+            fetchGiftReceivedSuffix(true, giftBuyer, giftReceivedBy);
       }
     }
 
-    if(giftDate == undefined) {
-      giftDate = "";
-    }
     if (giftDate != "") {
       giftCreationDate.innerHTML = "Created on: " + giftDate;
     } else {
@@ -558,24 +539,20 @@ function fetchNameByUserName(userNameInput) {
 }
 
 function buyGiftToDB(pubUid, key, multiples, received, receivedBy, unBuyBool, buyer) {
-  let multipleBool = false;
   let updateToDB = false;
-  let buyerUserName = "!!!";
+  let buyerUID;
   let buyerData;
+  let multipleBool;
   giftUpdateLocal = true;
-
-  if (buyer != undefined)
-    buyerUserName = buyer;
-
-  if (multiples != undefined)
-    multipleBool = multiples;
+  buyerUID = buyer;
+  multipleBool = multiples;
 
   if (!multipleBool) {
     if (!unBuyBool && received == 0) {
       received = 1;
-      buyerData = user.userName;
+      buyerData = user.uid;
       updateToDB = true;
-    } else if (unBuyBool && received == 1 && (buyerUserName == user.userName || buyerUserName == "")) {
+    } else if (unBuyBool && received == 1 && (buyerUID == user.uid || buyerUID == "")) {
       received = 0;
       buyerData = "";
       updateToDB = true;
