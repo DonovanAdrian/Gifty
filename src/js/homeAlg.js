@@ -890,17 +890,6 @@ function deleteGiftElement(title, uid, buyer, bulkDelete) {
   return false;
 }
 
-function findUserNameItemInArr(item, userArray){
-  for(let i = 0; i < userArray.length; i++){
-    if(userArray[i].userName == item){
-      if(consoleOutput)
-        console.log("Found item: " + item);
-      return i;
-    }
-  }
-  return -1;
-}
-
 function addDeleteNoteToDB(buyerUserData, giftTitle){
   let pageNameNote = "deleteGift";
   let giftOwner = user.uid;
