@@ -393,22 +393,9 @@ function updateGiftError(giftData, giftKey){
   });
 }
 
-function convertUserNameToUID(inputUserName) {
-  let returnUIDValue = inputUserName;
-
-  for (let i = 0; i < userArr.length; i++) {
-    if (inputUserName == userArr[i].userName) {
-      returnUIDValue = userArr[i].uid;
-    }
-  }
-
-  return returnUIDValue;
-}
-
 function createGiftElement(pGiftData, pGiftKey){
   let createGiftUid = pGiftData.uid;
   let createGiftTitle = pGiftData.title;
-  let createGiftCreator = pGiftData.creator;
 
   if (initializedGifts.indexOf(createGiftUid) == -1) {
     try {
@@ -434,13 +421,6 @@ function createGiftElement(pGiftData, pGiftKey){
     if (!initializingElements)
       showUpdatedItem(createGiftUid);
   } else {
-    pGiftData.creator = convertUserNameToUID(pGiftData.creator);
-    if (createGiftCreator != pGiftData.creator) {
-      firebase.database().ref("users/" + giftUser.uid + "/privateList/" + pGiftKey).update({
-        creator: pGiftData.creator
-      });
-    }
-
     changeGiftElement(pGiftData, pGiftKey);
   }
 }
@@ -457,6 +437,8 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
   pGiftData = initGiftDataIfEmpty(pGiftData);
   let buttonVisible = false;
   let buttonBreakAdded = false;
+  let creatorUserNameFetchedOrBlank = false;
+  let buyerUserNameFetchedOrBlank = false;
   let pGiftDescription = pGiftData.description;
   let pGiftLink = pGiftData.link;
   let pGiftReceived = pGiftData.received;
@@ -470,9 +452,48 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
   let pGiftMultiples = pGiftData.multiples;
   let giftInfoPrefix = "";
 
-  let uidIndex = findUIDItemInArr(pGiftCreator, userArr, true);
-  if (uidIndex != -1) {
-    pGiftCreator = findFirstNameInFullName(userArr[uidIndex].name);
+  if (pGiftCreator != "") {
+    let uidIndex = findUIDItemInArr(pGiftCreator, userArr, true);
+    if (uidIndex == -1) {
+      uidIndex = findUserNameItemInArr(pGiftCreator, userArr, true);
+      creatorUserNameFetchedOrBlank = true;
+    }
+    if (uidIndex == -1) {
+      pGiftCreator = "";
+      creatorUserNameFetchedOrBlank = true;
+    } else {
+      pGiftCreator = userArr[uidIndex].uid;
+    }
+    if (creatorUserNameFetchedOrBlank && dbInitialized) {
+      firebase.database().ref("users/" + giftUser.uid + "/privateList/" + pGiftKey).update({
+        creator: pGiftCreator
+      });
+    }
+    if (uidIndex != -1) {
+      pGiftCreator = findFirstNameInFullName(userArr[uidIndex].name);
+    }
+  }
+
+  if (pGiftBuyer != "") {
+    let uidIndex = findUIDItemInArr(pGiftBuyer, userArr, true);
+    if (uidIndex == -1) {
+      uidIndex = findUserNameItemInArr(pGiftBuyer, userArr, true);
+      creatorUserNameFetchedOrBlank = true;
+    }
+    if (uidIndex == -1) {
+      pGiftBuyer = "";
+      creatorUserNameFetchedOrBlank = true;
+    } else {
+      pGiftBuyer = userArr[uidIndex].uid;
+    }
+    if (creatorUserNameFetchedOrBlank && dbInitialized) {
+      firebase.database().ref("users/" + giftUser.uid + "/privateList/" + pGiftKey).update({
+        buyer: pGiftBuyer
+      });
+    }
+    if (uidIndex != -1) {
+      pGiftBuyer = findFirstNameInFullName(userArr[uidIndex].name);
+    }
   }
 
   liItem.className = "gift";
@@ -488,7 +509,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
     if (pGiftLink != ""){
       buttonVisible = true;
       giftLink.innerHTML = "Click me to go to this gift's webpage!";
-      giftLink.style.display = "block";
+      giftLink.style.display = "inline-block";
       giftLink.className = "basicBtn";
       giftLink.onclick = function() {
         giftLinkRedirect(pGiftLink);
@@ -603,9 +624,9 @@ function buyGiftToDB(priUid, key, multiples, received, receivedBy, unBuyBool, bu
   if (!multipleBool) {
     if (!unBuyBool && received == 0) {
       received = 1;
-      buyerData = user.userName;
+      buyerData = user.uid;
       updateToDB = true;
-    } else if (unBuyBool && received == 1 && (buyerUserName == user.userName || buyerUserName == "")) {
+    } else if (unBuyBool && received == 1 && (buyerUserName == user.uid || buyerUserName == "")) {
       received = 0;
       buyerData = "";
       updateToDB = true;
@@ -781,17 +802,6 @@ function deleteGiftElement(key, title, uid, buyer, receivedBy) {
     updateMaintenanceLog("privateFriendList", "Gift delete failed for user \"" +
         giftUser.userName + "\", private list, gift " + uid);
   }
-}
-
-function findUserNameItemInArr(item, userArray){
-  for(let i = 0; i < userArray.length; i++){
-    if(userArray[i].userName == item){
-      if(consoleOutput)
-        console.log("Found item: " + item);
-      return i;
-    }
-  }
-  return -1;
 }
 
 function addPrivateDeleteNoteToDB(buyerUserData, giftDeleter, giftTitle){
