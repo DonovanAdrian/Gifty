@@ -41,6 +41,7 @@ let failedNavNum = 0;
 let dataCounter = 0;
 let pendingNavigation = 0;
 let timerErrorIssued = 0;
+let dbInitialized = false;
 let validPulseReceived = false;
 let globalNotificationBool = false;
 let consoleOutput = false;
@@ -380,6 +381,7 @@ function initializeDB(config) {
   if (checkNoteOnDBInit) {
     checkNotifications();
   }
+  dbInitialized = true;
 }
 
 function databaseCommonPulse() {
@@ -1242,7 +1244,6 @@ function deployConfirmationModal(unsavedChangesTitle, unsavedChangesContent) {
 }
 
 function navigation(navNum, loginOverride) {
-  console.log(pendingNavigation);
   if (pendingNavigation == 0) {
     pendingNavigation = 1;
     if (unsavedChanges) {
@@ -1605,10 +1606,24 @@ function findUIDInString(input){
   return potentialUID;
 }
 
-function findUIDItemInArr(item, array, override){
+function findUIDItemInArr(item, array, override) {
   if (array != undefined) {
     for (let i = 0; i < array.length; i++) {
       if (array[i].uid == item) {
+        if (consoleOutput && !override) {
+          console.log("Found item: " + item);
+        }
+        return i;
+      }
+    }
+  }
+  return -1;
+}
+
+function findUserNameItemInArr(item, userArray, override){
+  if (userArray != undefined) {
+    for (let i = 0; i < userArray.length; i++) {
+      if (userArray[i].userName == item) {
         if (consoleOutput && !override) {
           console.log("Found item: " + item);
         }
