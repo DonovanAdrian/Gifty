@@ -433,7 +433,8 @@ function changeGiftElement(giftData, giftKey) {
 
 function initGiftElement(liItem, giftData, giftKey) {
   giftData = initGiftDataIfEmpty(giftData);
-  let multipleBool = false;
+  let buttonVisible = false;
+  let buttonBreakAdded = false;
   let giftDescriptionData = giftData.description;
   let giftLinkData = giftData.link;
   let giftReceivedData = giftData.received;
@@ -444,6 +445,7 @@ function initGiftElement(liItem, giftData, giftKey) {
   let giftUid = giftData.uid;
   let giftDate = giftData.creationDate;
   let giftMultiples = giftData.multiples;
+  let giftInfoPrefix = "";
 
   liItem.className = "gift";
   if(giftReceivedData == 1) {
@@ -459,37 +461,43 @@ function initGiftElement(liItem, giftData, giftKey) {
   }
 
   liItem.onclick = function () {
-    if (giftReceivedBy == undefined) {
-      giftReceivedBy = [];
-    }
-
-    if (giftMultiples != undefined) {
-      multipleBool = giftMultiples;
-    }
-
     giftTitle.innerHTML = giftTitleData;
 
-    if (giftLinkData != "") {
-      giftLink.innerHTML = "Click me to go to the webpage!";
+    if (giftLinkData != ""){
+      buttonVisible = true;
+      giftLink.innerHTML = "Click me to go to this gift's webpage!";
+      giftLink.style.display = "inline-block";
+      giftLink.className = "basicBtn";
       giftLink.onclick = function() {
         giftLinkRedirect(giftLinkData);
       };
     } else {
       giftLink.innerHTML = "There was no link provided";
+      giftLink.style.display = "none";
       giftLink.onclick = function() {};
     }
 
-    if(giftWhereData != "") {
-      giftWhere.innerHTML = "This can be found at: " + giftWhereData;
-    } else {
-      giftWhere.innerHTML = "There was no location provided";
+    if (buttonVisible) {
+      giftInfoPrefix = "<br>";
+      buttonBreakAdded = true;
     }
+    if (giftWhereData != "") {
+      giftWhere.innerHTML = giftInfoPrefix + "This can be found at: " + giftWhereData;
+    } else {
+      giftWhere.innerHTML = "";
+    }
+    giftInfoPrefix = "";
 
-    if(giftDescriptionData != "") {
-      giftDescription.innerHTML = "Description: " + giftDescriptionData;
-    } else {
-      giftDescription.innerHTML = "There was no description provided";
+    if (buttonVisible && !buttonBreakAdded) {
+      giftInfoPrefix = "<br>";
+      buttonBreakAdded = true;
     }
+    if (giftDescriptionData != "") {
+      giftDescription.innerHTML = giftInfoPrefix + "Description: " + giftDescriptionData;
+    } else {
+      giftDescription.innerHTML = "";
+    }
+    giftInfoPrefix = "";
 
     if(giftReceivedData == 1){
       if(giftBuyer == ""){
