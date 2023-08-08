@@ -478,15 +478,15 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
     let uidIndex = findUIDItemInArr(pGiftBuyer, userArr, true);
     if (uidIndex == -1) {
       uidIndex = findUserNameItemInArr(pGiftBuyer, userArr, true);
-      creatorUserNameFetchedOrBlank = true;
+      buyerUserNameFetchedOrBlank = true;
     }
     if (uidIndex == -1) {
       pGiftBuyer = "";
-      creatorUserNameFetchedOrBlank = true;
+      buyerUserNameFetchedOrBlank = true;
     } else {
       pGiftBuyer = userArr[uidIndex].uid;
     }
-    if (creatorUserNameFetchedOrBlank && dbInitialized) {
+    if (buyerUserNameFetchedOrBlank && dbInitialized) {
       firebase.database().ref("users/" + giftUser.uid + "/privateList/" + pGiftKey).update({
         buyer: pGiftBuyer
       });
@@ -586,7 +586,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
       if (pGiftData.creator == user.uid) {
         confirmDeletion(pGiftKey, pGiftTitle, pGiftUid, pGiftBuyer, pGiftReceivedBy);
       } else {
-        if (pGiftCreator == ""){
+        if (pGiftCreator == "") {
           confirmDeletion(pGiftKey, pGiftTitle, pGiftUid, pGiftBuyer, pGiftReceivedBy);
         } else {
           let tempGiftCreator = fetchNameByUserName(pGiftCreator);
@@ -614,11 +614,11 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
 
 function buyGiftToDB(priUid, key, multiples, received, receivedBy, unBuyBool, buyer) {
   let updateToDB = false;
-  let buyerUserName = "!!!";
-  let multipleBool;
+  let buyerUID;
   let buyerData;
+  let multipleBool;
   giftUpdateLocal = true;
-  buyerUserName = buyer;
+  buyerUID = buyer;
   multipleBool = multiples;
 
   if (!multipleBool) {
@@ -626,7 +626,7 @@ function buyGiftToDB(priUid, key, multiples, received, receivedBy, unBuyBool, bu
       received = 1;
       buyerData = user.uid;
       updateToDB = true;
-    } else if (unBuyBool && received == 1 && (buyerUserName == user.uid || buyerUserName == "")) {
+    } else if (unBuyBool && received == 1 && (buyerUID == user.uid || buyerUID == "")) {
       received = 0;
       buyerData = "";
       updateToDB = true;
