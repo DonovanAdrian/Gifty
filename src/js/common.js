@@ -64,6 +64,7 @@ let dataListExists = false;
 let currentModalOpenObj = null;
 let currentModalOpen = "";
 let pageName = "";
+let giftyVersion = "v1.3a";
 let defaultSuccessfulDBOperationTitle = "Pending Operation Completed!";
 let defaultSuccessfulDBOperationNotice = "Your pending change was successfully saved! Thank you for your patience, you may " +
     "now navigate to other pages.";
@@ -471,7 +472,8 @@ function getCurrentUserCommon(){
 
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    console.log("Error Reading Data... Sending Error Report To DB.");
+    if(consoleOutput)
+      console.log("Error Reading Data... Sending Error Report To DB.");
     try {
       const config = JSON.parse(sessionStorage.config);
       initializeDB(config);
@@ -480,6 +482,7 @@ function getCurrentUserCommon(){
     if(consoleOutput)
       console.log(err.toString());
     navigation(1, false);//Index
+    throw "Error Reading Data!";
   }
 }
 
