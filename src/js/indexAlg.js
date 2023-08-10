@@ -3,6 +3,7 @@
  * edits or changes must be confirmed as valid by Donovan
  * with written consent under any circumstance.
  */
+
 let indexElements = [];
 let loginColorArrA = ["#ff3b44", "#a10000"];
 let loginColorArrB = ["#ff626a", "#c90000"];

@@ -600,12 +600,16 @@ function generateSecretSantaModal(){
 function flashGiftNumbers(privateGiftList, publicGiftList) {
   let giftPrivateString;
   let giftPublicString;
-  let giftPrivateAltText = "Click To Add Private Gifts!";
-  let giftPublicAltText = "Click To View Public Gift List!";
+  let giftPrivateAltText = "";
+  let giftPublicAltText = "";
+  let giftPrivateAsterisk = "";
+  let giftPublicAsterisk = "";
   let privateGiftNum = 0;
   let publicGiftNum = 0;
   let emptyPrivateBool = false;
   let emptyPublicBool = false;
+  let showPublicAsterisk = false;
+  let showPrivateAsterisk = false;
 
   if (privateGiftList != undefined)
     if (privateGiftList != 0) {
@@ -614,6 +618,12 @@ function flashGiftNumbers(privateGiftList, publicGiftList) {
       for (let i = 0; i < privateGiftList.length; i++) {
         if (privateGiftList[i].received == 1) {
           privateGiftNum--;
+        } else if (privateGiftList[i].received < 0) {
+          privateGiftNum--;
+          if (!privateGiftList[i].receivedBy.includes(user.uid)) {
+            showPrivateAsterisk = true;
+            giftPrivateAsterisk = "*";
+          }
         }
       }
     } else {
@@ -629,6 +639,12 @@ function flashGiftNumbers(privateGiftList, publicGiftList) {
       for (let i = 0; i < publicGiftList.length; i++) {
         if (publicGiftList[i].received == 1) {
           publicGiftNum--;
+        } else if (publicGiftList[i].received < 0) {
+          publicGiftNum--;
+          if (!publicGiftList[i].receivedBy.includes(user.uid)) {
+            showPublicAsterisk = true;
+            giftPublicAsterisk = "*";
+          }
         }
       }
     } else {
@@ -637,13 +653,15 @@ function flashGiftNumbers(privateGiftList, publicGiftList) {
   else
     emptyPrivateBool = true;
 
+  giftPrivateAltText = "Click To Add Private Gifts!" + giftPrivateAsterisk;
+  giftPublicAltText = "Click To View Public Gift List!" + giftPublicAsterisk;
   if (!emptyPrivateBool) {
     if (privateGiftNum == 0) {
-      giftPrivateString = "All Private Gifts Have Been Bought!";
+      giftPrivateString = "All Private Gifts Have Been Bought!" + giftPrivateAsterisk;
     } else if (privateGiftNum == 1) {
-      giftPrivateString = "There Is 1 Un-Bought Private Gift!";
+      giftPrivateString = "There Is 1 Un-Bought Private Gift!" + giftPrivateAsterisk;
     } else {
-      giftPrivateString = "There Are " + privateGiftNum + " Un-Bought Private Gifts!";
+      giftPrivateString = "There Are " + privateGiftNum + " Un-Bought Private Gifts!" + giftPrivateAsterisk;
     }
   } else {
     giftPrivateString = "There Are No Private Gifts Yet!";
@@ -651,11 +669,11 @@ function flashGiftNumbers(privateGiftList, publicGiftList) {
 
   if (!emptyPublicBool) {
     if (publicGiftNum == 0) {
-      giftPublicString = "All Public Gifts Have Been Bought!";
+      giftPublicString = "All Public Gifts Have Been Bought!" + giftPublicAsterisk;
     } else if (publicGiftNum == 1) {
-      giftPublicString = "There Is 1 Un-Bought Public Gift!";
+      giftPublicString = "There Is 1 Un-Bought Public Gift!" + giftPublicAsterisk;
     } else {
-      giftPublicString = "There Are " + publicGiftNum + " Un-Bought Public Gifts!";
+      giftPublicString = "There Are " + publicGiftNum + " Un-Bought Public Gifts!" + giftPublicAsterisk;
     }
   } else {
     giftPublicAltText = "Public Gift List Empty!";
@@ -669,6 +687,12 @@ function flashGiftNumbers(privateGiftList, publicGiftList) {
     setAlternatingButtonText(giftPublicString, giftPublicAltText, publicList,
         giftPrivateString, giftPrivateAltText, privateList);
   }, 1000);
+
+  if (showPublicAsterisk || showPrivateAsterisk) {
+    multipleGiftCaveat.style.display = "block";
+  } else {
+    multipleGiftCaveat.style.display = "none";
+  }
 }
 
 function generatePrivateMessageDialog(userData) {
