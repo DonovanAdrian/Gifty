@@ -25,6 +25,7 @@ let secretSantaSignUp;
 let secretSantaData;
 let userTitle;
 let publicList;
+let multipleGiftCaveat;
 let sendPrivateMessage;
 let closePrivateMessageModal;
 let privateMessageInp;
@@ -63,6 +64,7 @@ window.onload = function instantiate() {
   userTitle = document.getElementById("userTitle");
   publicList = document.getElementById("publicList");
   privateList = document.getElementById("privateList");
+  multipleGiftCaveat = document.getElementById("multipleGiftCaveat");
   sendPrivateMessage = document.getElementById("sendPrivateMessage");
   closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
   privateMessageInp = document.getElementById("privateMessageInp");
@@ -363,7 +365,7 @@ function initFriendElement(liItem, friendData) {
     if(friendData.giftList.length > 0) {
       setPublicButton = true;
       publicList.onclick = function () {
-        if (listLimit == 1 && (childUserList.includes(user.uid) || parentUserList.includes(user.uid))) {
+        if (listLimit == 1 && user.moderatorInt == 0 && (childUserList.includes(user.uid) || parentUserList.includes(user.uid))) {
           if (parentUserList.includes(user.uid)) {
             deployNotificationModal(false, "Relationship Detected!", "It appears that " +
                 "you are the parent of " + friendData.name + " so you are blocked from seeing their list. Please contact " +
@@ -394,7 +396,7 @@ function initFriendElement(liItem, friendData) {
 
     privateList.onclick = function() {
 
-      if (listLimit == 1 && (childUserList.includes(user.uid) || parentUserList.includes(user.uid))) {
+      if (listLimit == 1 && user.moderatorInt == 0 && (childUserList.includes(user.uid) || parentUserList.includes(user.uid))) {
         if (parentUserList.includes(user.uid)) {
           deployNotificationModal(false, "Relationship Detected!", "It appears that " +
               "you are the parent of " + friendData.name + " so you are blocked from seeing their private list. Please " +
