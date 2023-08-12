@@ -21,6 +21,8 @@ let userScoreInfo;
 let userScoreDisplay;
 let editBtn;
 let faqBtn;
+let giftyVersionIdentifier;
+let giftyCopyrightIdentifier;
 let modBtn;
 let familyBtn;
 let moderationModal;
@@ -60,10 +62,12 @@ window.onload = function instantiate() {
   shareCodeDisplay = document.getElementById("shareCodeDisplay");
   userScoreInfo = document.getElementById("userScoreInfo");
   userScoreDisplay = document.getElementById("userScoreDisplay");
-  editBtn = document.getElementById("edit");
-  faqBtn = document.getElementById("faq");
-  modBtn = document.getElementById("mod");
-  familyBtn = document.getElementById("family");
+  editBtn = document.getElementById("editBtn");
+  faqBtn = document.getElementById("faqBtn");
+  giftyVersionIdentifier = document.getElementById("giftyVersionIdentifier");
+  giftyCopyrightIdentifier = document.getElementById("giftyCopyrightIdentifier");
+  modBtn = document.getElementById("modBtn");
+  familyBtn = document.getElementById("familyBtn");
   moderationModal = document.getElementById("moderationModal");
   moderationSpan = document.getElementById("moderationSpan");
   moderationQueueBtn = document.getElementById("moderationQueueBtn");
@@ -76,6 +80,9 @@ window.onload = function instantiate() {
   getCurrentUser();
   commonInitialization();
   verifyElementIntegrity(settingsElements);
+
+  giftyVersionIdentifier.innerHTML = "Version: " + giftyVersion;
+  giftyCopyrightIdentifier.innerHTML = "©Donovan Adrian 2023";
 
   function initializeEditBtn() {
     editBtn.onclick = function () {
