@@ -10,6 +10,8 @@ let loadedPCUserArr = [];
 let globalParentData = [];
 let globalChildData = [];
 
+let globalPCInteraction = false;
+
 let globalParentChildState = "";
 
 let familyData;
@@ -935,24 +937,27 @@ function addFamilyMemberToDB(memberUID){
 
 function generateFamilyPCModal(parentChild, parentChildData) {
   let tempFamPCIndex;
+  let tempPCData;
   closeModal(familyMemberViewModal);
   globalParentData = [];
   globalChildData = [];
-  for (let i = 0; i < parentChildData.parentUser.length; i++) {
-    tempFamPCIndex = findUIDItemInArr(parentChildData.parentUser[i], userArr, true);
-    globalParentData.push(userArr[tempFamPCIndex]);
-  }
-  for (let i = 0; i < parentChildData.childUser.length; i++) {
-    tempFamPCIndex = findUIDItemInArr(parentChildData.childUser[i], userArr, true);
-    globalChildData.push(userArr[tempFamPCIndex]);
-  }
-
 
   if (parentChild == "child") {
     familyPCTitle.innerHTML = "Choose Children";
+    tempPCData = parentChildData.childUser;
+    for (let i = 0; i < tempPCData.length; i++) {
+      tempFamPCIndex = findUIDItemInArr(tempPCData[i], userArr, true);
+      globalChildData.push(userArr[tempFamPCIndex]);
+    }
   } else if (parentChild == "parent") {
     familyPCTitle.innerHTML = "Choose Parents";
+    tempPCData = parentChildData.parentUser;
+    for (let i = 0; i < tempPCData.length; i++) {
+      tempFamPCIndex = findUIDItemInArr(tempPCData[i], userArr, true);
+      globalParentData.push(userArr[tempFamPCIndex]);
+    }
   }
+
   if ((parentChildData.parentUser.length == 0 && parentChild == "parent") ||
       (parentChildData.childUser.length == 0 && parentChild == "child")) {
     familyPCText.innerHTML = "Please select from the list below to choose " + parentChildData.name + "\'s " + parentChild +
@@ -967,6 +972,7 @@ function generateFamilyPCModal(parentChild, parentChildData) {
   familyPCBack.onclick = function() {
     closeModal(familyPCModal);
     openModal(familyMemberViewModal, parentChildData.uid);
+    globalPCInteraction = false;
   }
 
   generateFamilyPCUserList(parentChild, parentChildData);
@@ -987,26 +993,38 @@ function generateFamilyPCModal(parentChild, parentChildData) {
             "Confirm Child Selection", "parentChild", null);
       }
     } else if (parentChild == "parent") {
-      if (globalParentData.length == 0) {
-        generateConfirmDataModal("Please confirm that all of " + parentChildData.name + "'s parents " +
-            "should be removed.<br/><br/>Please note that this \"child\" user will automatically be removed " +
-            "from the parent user(s) as well.",
-            "Confirm Child Removal", "parentChild", null);
+      if (globalPCInteraction) {
+        if (globalParentData.length == 0) {
+          generateConfirmDataModal("Please confirm that all of " + parentChildData.name + "'s parents " +
+              "should be removed.<br/><br/>Please note that this \"child\" user will automatically be removed " +
+              "from the parent user(s) as well.",
+              "Confirm Child Removal", "parentChild", null);
+        } else {
+          generateConfirmDataModal("Please confirm that the following user(s) should be assigned as a " +
+              "parent to " + parentChildData.name + "<br/><br/>" + generatePCAddString(globalParentData) + "<br/><br/>Please note " +
+              "that this \"child\" user will automatically be assigned to the parent user(s) as well.",
+              "Confirm Parent Selection", "parentChild", null);
+        }
       } else {
-        generateConfirmDataModal("Please confirm that the following user(s) should be assigned as a " +
-            "parent to " + parentChildData.name + "<br/><br/>" + generatePCAddString(globalParentData) + "<br/><br/>Please note " +
-            "that this \"child\" user will automatically be assigned to the parent user(s) as well.",
-            "Confirm Parent Selection", "parentChild", null);
+        deployNotificationModal(false, "No Changes Detected!", "It appears that " +
+            "you did not make any changes to this user's relationships. No changes have been made.");
       }
     }
   };
 
   closeFamilyPCModal.onclick = function() {
     closeModal(familyPCModal);
+    globalPCInteraction = false;
   }
 }
 
 function generateFamilyPCUserList(parentChild, parentChildOmit) {
+  let tempParentData = parentChildOmit.parentUser;
+  let tempChildData = parentChildOmit.childUser;
+  if (tempParentData == undefined)
+    tempParentData = [];
+  if (tempChildData == undefined)
+    tempChildData = [];
   try {
     testFamily.remove();
   } catch (err) {}
@@ -1022,8 +1040,8 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
     for (let i = 0; i < userArr.length; i++) {
       if (userArr[i].uid != parentChildOmit.uid && findUIDItemInArr(userArr[i].uid, loadedPCUserArr, true) == -1 &&
           familyData.members.indexOf(userArr[i].uid) != -1 &&
-          ((findUIDItemInArr(userArr[i].uid, globalChildData, true) == -1 && parentChild == "parent") ||
-              findUIDItemInArr(userArr[i].uid, globalParentData, true) == -1 && parentChild == "child")) {
+          ((tempChildData.indexOf(userArr[i].uid) == -1 && parentChild == "parent") ||
+              tempParentData.indexOf(userArr[i].uid) == -1 && parentChild == "child")) {
         let notAnOriginalPC = false;
         let liItem = document.createElement("LI");
         liItem.id = userArr[i].uid;
@@ -1033,6 +1051,7 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
         if ((parentChildOmit.parentUser.indexOf(userArr[i].uid) != -1 && parentChild == "parent") ||
             (parentChildOmit.childUser.indexOf(userArr[i].uid) != -1 && parentChild == "child")) {
           liItem.className = "gift lowSev";
+
         } else {
           liItem.className = "gift";
           notAnOriginalPC = true;
@@ -1041,6 +1060,7 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
         liItem.onclick = function () {
           if (parentChild == "child") {
             globalParentChildState = "child";
+            globalPCInteraction = true;
             if (findUIDItemInArr(parentChildOmit.uid, globalParentData, true) == -1) {
               globalParentData.push(parentChildOmit);
             }
@@ -1067,6 +1087,7 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
             }
           } else if (parentChild == "parent") {
             globalParentChildState = "parent";
+            globalPCInteraction = true;
             if (findUIDItemInArr(parentChildOmit.uid, globalChildData, true) == -1) {
               globalChildData.push(parentChildOmit);
             }
@@ -1183,54 +1204,76 @@ function generateConfirmDataModal(stringToConfirm, confirmTitle, confirmType, da
       closeModal(confirmMemberModal);
       globalChildData = [];
       globalParentData = [];
+      globalPCInteraction = false;
     }
   };
 }
 
 function updateFamilyRelationsToDB() {
-  let tempSelectedUserPCArr = [];
+  let tempPCUserData;
+  let tempPCArrData = [];
+  let changesMade = 0;
   let tempIndex = 0;
 
-  if (globalParentData != undefined && globalChildData != undefined && (globalParentChildState != "parent" ||
-      globalParentChildState != "child")) {
-    console.log(globalParentData)
-    console.log(globalChildData)
-    console.log(globalParentChildState)
+  if (globalParentData != undefined && globalChildData != undefined &&
+      (globalParentChildState != "parent" || globalParentChildState != "child")) {
 
     if (globalParentChildState == "parent") {
-      tempSelectedUserPCArr = globalChildData[0].parentUser;
-      for (let i = 0; i < tempSelectedUserPCArr.length; i++) {
-        tempIndex = findUIDItemInArr(tempSelectedUserPCArr[i], globalParentData, true);
-        if (tempIndex == -1) {
-          tempIndex = findUIDItemInArr(tempSelectedUserPCArr[i], userArr, true);
-          removeSpecificUserFromPCData(userArr[tempIndex], globalChildData[0]);
+      tempPCArrData = cloneArray(globalChildData[0].parentUser);
+      if (tempPCArrData != undefined)
+        for (let i = 0; i < tempPCArrData.length; i++) {
+          //if childData[0].parents isn't in parentData (If old list user is not in new list user, remove)
+          if (findUIDItemInArr(tempPCArrData[i], globalParentData, true) == -1)
+            if (removePCFromList(true, globalChildData[0], tempPCArrData[i])) {
+              changesMade++;
+              tempIndex = findUIDItemInArr(tempPCArrData[i], userArr, true);
+              tempPCUserData = userArr[tempIndex];
+              //if childData[0] in childUser (if current child is still in other user's childUser list, remove)
+              if (tempPCUserData.childUser.indexOf(globalChildData[0].uid) != -1)
+                if (removePCFromList(false, tempPCUserData, globalChildData[0].uid))
+                  changesMade++;
+            }
         }
-      }
+
       for (let i = 0; i < globalParentData.length; i++) {
-        tempIndex = tempSelectedUserPCArr.indexOf(globalParentData[i].uid);
-        if (tempIndex == -1) {
-          addSpecificUserToPCData(globalParentData[i], globalChildData[0]);
-        }
+        if (checkForChanges(true, globalChildData[0], globalParentData[i]))
+          changesMade++;
+        if (checkForChanges(false, globalParentData[i], globalChildData[0]))
+          changesMade++;
       }
     } else if (globalParentChildState == "child") {
-      tempSelectedUserPCArr = globalParentData[0].childUser;
-      for (let i = 0; i < tempSelectedUserPCArr.length; i++) {
-        tempIndex = findUIDItemInArr(tempSelectedUserPCArr[i], globalChildData, true);
-        if (tempIndex == -1) {
-          tempIndex = findUIDItemInArr(tempSelectedUserPCArr[i], userArr, true);
-          removeSpecificUserFromPCData(userArr[tempIndex], globalParentData[0]);
+      tempPCArrData = cloneArray(globalParentData[0].childUser);
+      if (tempPCArrData != undefined)
+        for (let i = 0; i < tempPCArrData.length; i++) {
+          //if parentData[0].children isn't in childData (If old list user is not in new list user, remove)
+          if (findUIDItemInArr(tempPCArrData[i], globalChildData, true) == -1)
+            if (removePCFromList(false, globalParentData[0], tempPCArrData[i])) {
+              changesMade++;
+              tempIndex = findUIDItemInArr(tempPCArrData[i], userArr, true);
+              tempPCUserData = userArr[tempIndex];
+              //if parentData[0] in parentUser (if current child is still in other user's childUser list, remove)
+              if (tempPCUserData.parentUser.indexOf(globalParentData[0].uid) != -1)
+                if (removePCFromList(true, tempPCUserData, globalParentData[0].uid))
+                  changesMade++;
+            }
         }
-      }
+
       for (let i = 0; i < globalChildData.length; i++) {
-        tempIndex = tempSelectedUserPCArr.indexOf(globalChildData[i].uid);
-        if (tempIndex == -1) {
-          addSpecificUserToPCData(globalParentData[0], globalChildData[i]);
-        }
+        if (checkForChanges(false, globalParentData[0], globalChildData[i]))
+          changesMade++;
+        if (checkForChanges(true, globalChildData[i], globalParentData[0]))
+          changesMade++;
       }
     }
 
-    deployNotificationModal(false, "Parent/Children Relationships Assigned!",
-        "The Parent and Child data has been successfully assigned!");
+    if (changesMade == 0) {
+      deployNotificationModal(false, "Parent/Children Relationships FAILED!",
+          "There was an issue updating the relationships between parents and children, it appears that " +
+          "no changes were made. If desired, clear the parent/child relationships and try again.");
+    } else {
+      deployNotificationModal(false, "Parent/Children Relationships Updated!",
+          "The Parent and Child data has been successfully updated!");
+    }
   } else {
     deployNotificationModal(true, "Parent/Child Assignment Error!", "There was an error updating the " +
         "parent and child of this user, please try again!", 4);
@@ -1239,52 +1282,81 @@ function updateFamilyRelationsToDB() {
   globalChildData = undefined;
   globalParentData = undefined;
   globalParentChildState = "";
+  globalPCInteraction = false;
 
-  function removeSpecificUserFromPCData(parentUserData, childUserData){
-    let tempPCData;
-    let tempIndex;
-    console.log("Remove")
+  function checkForChanges(updatePCUserDataBool, inputUserData, userDataToCheck) {//true = child's parent(s)
+    let updatePerformed = false;
+    let tempInputPCData;
+    let tempCheckIndex;
 
-    tempPCData = parentUserData.childUser;
-    if (tempPCData == undefined)
-      tempPCData = [];
-    tempIndex = tempPCData.indexOf(childUserData.uid);
-    tempPCData.splice(tempIndex, 1);
+    if (updatePCUserDataBool) {
+      tempInputPCData = inputUserData.parentUser;
+    } else {
+      tempInputPCData = inputUserData.childUser;
+    }
 
-    updateDatabaseWithPCData(false, parentUserData, tempPCData);
+    if (tempInputPCData == undefined)
+      tempInputPCData = [];
 
-    tempPCData = childUserData.parentUser;
-    if (tempPCData == undefined)
-      tempPCData = [];
-    tempIndex = tempPCData.indexOf(parentUserData.uid);
-    tempPCData.splice(tempIndex, 1);
+    tempCheckIndex = tempInputPCData.indexOf(userDataToCheck.uid);
+    if (tempCheckIndex == -1) {
+      if (addPCToList(updatePCUserDataBool, inputUserData, userDataToCheck.uid))
+        updatePerformed = true;
+    }
 
-    updateDatabaseWithPCData(true, childUserData, tempPCData);
+    return updatePerformed;
   }
 
-  function addSpecificUserToPCData(parentUserData, childUserData) {
-    let tempPCData;
-    console.log("Add")
+  function addPCToList(updatePCUserDataBool, inputUserData, userDataToAdd) {
+    let updatePerformed = false;
+    let tempAddIndex = -1;
+    let tempPCArrData;
 
-    tempPCData = parentUserData.childUser;
-    if (tempPCData == undefined)
-      tempPCData = [];
-    if (tempPCData.indexOf(childUserData.uid) == -1)
-      tempPCData.push(childUserData.uid);
+    if (updatePCUserDataBool) {
+      tempPCArrData = inputUserData.parentUser;
+    } else {
+      tempPCArrData = inputUserData.childUser;
+    }
 
-    updateDatabaseWithPCData(false, parentUserData, tempPCData);
+    if (tempPCArrData != undefined) {
+      tempAddIndex = tempPCArrData.indexOf(userDataToAdd);
+    } else {
+      tempPCArrData = [];
+    }
+    if (tempAddIndex == -1) {
+      tempPCArrData.push(userDataToAdd);
+      updateDatabaseWithPCData(updatePCUserDataBool, inputUserData, tempPCArrData);
+      updatePerformed = true;
+    }
 
-    tempPCData = childUserData.parentUser;
-    if (tempPCData == undefined)
-      tempPCData = [];
-    if (tempPCData.indexOf(parentUserData.uid) == -1)
-      tempPCData.push(parentUserData.uid);
-
-    updateDatabaseWithPCData(true, childUserData, tempPCData);
+    return updatePerformed;
   }
 
-  function updateDatabaseWithPCData(updateParentUserDataBool, inputUserData, inputPCData) {
-    if (updateParentUserDataBool) {
+  function removePCFromList(updatePCUserDataBool, inputUserData, userUIDToRemove) {//true = child's parent(s)
+    let updatePerformed = false;
+    let tempRemoveIndex;
+    let tempPCArrData;
+
+    if (updatePCUserDataBool) {
+      tempPCArrData = inputUserData.parentUser;
+    } else {
+      tempPCArrData = inputUserData.childUser;
+    }
+
+    if (tempPCArrData != undefined) {
+      tempRemoveIndex = tempPCArrData.indexOf(userUIDToRemove);
+      if (tempRemoveIndex != -1) {
+        tempPCArrData.splice(tempRemoveIndex, 1);
+        updateDatabaseWithPCData(updatePCUserDataBool, inputUserData, tempPCArrData);
+        updatePerformed = true;
+      }
+    }
+
+    return updatePerformed;
+  }
+
+  function updateDatabaseWithPCData(updatePCUserDataBool, inputUserData, inputPCData) {//true = child's parent(s)
+    if (updatePCUserDataBool) {
       firebase.database().ref("users/" + inputUserData.uid).update({
         parentUser: inputPCData
       });
