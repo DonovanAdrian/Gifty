@@ -1,0 +1,187 @@
+/*
+ * This project was created by Donovan Adrian and any
+ * edits or changes must be confirmed as valid by Donovan
+ * with written consent under any circumstance.
+ */
+
+@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInAnimationPartial {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+p {
+    font-family: Verdana;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 2px 3px 5px rgba(0,0,0,1);
+    margin: 0 auto;
+}
+
+h1 {
+    font-family: Verdana;
+    color: #ffffff;
+    text-shadow: 2px 3px 5px rgba(0,0,0,1);
+    margin: 0 auto;
+}
+
+body {
+    margin: 16px;
+    background-color: #700b87;
+    transition: 4s;
+    animation: fadeInAnimation ease 1s;
+    -webkit-animation: fadeInAnimation ease 2s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.contentContainer {
+    position: relative;
+    text-align: center;
+    z-index: 1;
+    animation: fadeInAnimation ease 5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.iconContainer {
+    position: relative;
+    text-align: center;
+    z-index: 0;
+    top: -50px;
+    animation: fadeInAnimationPartial ease 3.5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@media screen and (min-width: 0px) and (max-width: 275px) {
+    img.imgIcon {
+        width: 150px;
+        height: 150px;
+        transition: 0.3s;
+    }
+
+    .contentContainer {
+        top: 45px;
+    }
+
+    h1 {
+        font-size: 7px;
+    }
+
+    p {
+        font-size: 4px;
+    }
+}
+
+@media screen and (min-width: 275px) and (max-width: 360px) {
+    img.imgIcon {
+        width: 200px;
+        height: 200px;
+        transition: 0.3s;
+    }
+
+    .contentContainer {
+        top: 100px;
+    }
+
+    h1 {
+        font-size: 10px;
+    }
+
+    p {
+        font-size: 6px;
+    }
+}
+
+@media screen and (min-width: 360px) and (max-width: 600px) {
+    img.imgIcon {
+        width: 300px;
+        height: 300px;
+        transition: 0.3s;
+    }
+
+    .contentContainer {
+        top: 175px;
+    }
+
+    h1 {
+        font-size: 16px;
+    }
+
+    p {
+        font-size: 8px;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 1000px) {
+    img.imgIcon {
+        width: 550px;
+        height: 550px;
+        transition: 0.3s;
+    }
+
+    .contentContainer {
+        top: 275px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    p {
+        font-size: 16px;
+    }
+}
+
+@media screen and (min-width: 1000px) and (max-width: 1800px) {
+    img.imgIcon {
+        width: 750px;
+        height: 750px;
+        transition: 0.3s;
+    }
+
+    .contentContainer {
+        top: 375px;
+    }
+
+    h1 {
+        font-size: 38px;
+    }
+
+    p {
+        font-size: 22px;
+    }
+}
+
+@media screen and (min-width: 1800px){
+    img.imgIcon {
+        width: 950px;
+        height: 950px;
+        transition: 0.3s;
+    }
+
+    .contentContainer {
+        top: 475px;
+    }
+
+    h1 {
+        font-size: 49px;
+    }
+
+    p {
+        font-size: 28px;
+    }
+}
