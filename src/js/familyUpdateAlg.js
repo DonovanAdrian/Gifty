@@ -9,6 +9,7 @@ let familyUpdateElements = [];
 let loadedPCUserArr = [];
 let globalParentData = [];
 let globalChildData = [];
+let expectedPCChanges = [];
 
 let globalPCInteraction = false;
 
@@ -436,10 +437,18 @@ window.onload = function instantiate() {
       });
 
       postRef.on("child_changed", function (data) {
+        let tempExpectedIndex = 0;
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
+            if (expectedPCChanges.length > 0) {
+              tempExpectedIndex = expectedPCChanges.indexOf(data.key)
+              if (tempExpectedIndex != -1) {
+                expectedPCChanges.splice(tempExpectedIndex, 1);
+              }
+            }
+
             if (consoleOutput)
               console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
@@ -464,6 +473,12 @@ window.onload = function instantiate() {
             }
             saveCriticalCookies();
           }
+        }
+
+        if (expectedPCChanges.length > 0) {
+          tempExpectedIndex = expectedPCChanges.indexOf(data.key)
+          if (tempExpectedIndex != -1)
+            databaseQuery();
         }
       });
 
@@ -1356,6 +1371,9 @@ function updateFamilyRelationsToDB() {
   }
 
   function updateDatabaseWithPCData(updatePCUserDataBool, inputUserData, inputPCData) {//true = child's parent(s)
+    if (expectedPCChanges.indexOf(inputUserData.uid) == -1)
+      expectedPCChanges.push(inputUserData.uid);
+
     if (updatePCUserDataBool) {
       firebase.database().ref("users/" + inputUserData.uid).update({
         parentUser: inputPCData
