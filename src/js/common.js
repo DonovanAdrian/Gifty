@@ -1889,3 +1889,14 @@ function getLocalTime(UTCTime, shortHand) {
 
   return localTime;
 }
+
+function cloneArray(inputArr) {
+  let outputArr = [];
+
+  if (inputArr != undefined)
+    for (let i = 0; i < inputArr.length; i++) {
+      outputArr.push(inputArr[i]);
+    }
+
+  return outputArr;
+}
