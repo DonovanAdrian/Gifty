@@ -11,8 +11,6 @@ let globalParentData = [];
 let globalChildData = [];
 let expectedPCChanges = [];
 
-let globalPCInteraction = false;
-
 let globalParentChildState = "";
 
 let familyData;
@@ -951,6 +949,9 @@ function addFamilyMemberToDB(memberUID){
 }
 
 function generateFamilyPCModal(parentChild, parentChildData) {
+  let tempChildData = cloneArray(parentChildData.childUser);
+  let tempParentData = cloneArray(parentChildData.parentUser);
+  let changeDetected;
   let tempFamPCIndex;
   let tempPCData;
   closeModal(familyMemberViewModal);
@@ -987,7 +988,6 @@ function generateFamilyPCModal(parentChild, parentChildData) {
   familyPCBack.onclick = function() {
     closeModal(familyPCModal);
     openModal(familyMemberViewModal, parentChildData.uid);
-    globalPCInteraction = false;
   }
 
   generateFamilyPCUserList(parentChild, parentChildData);
@@ -995,20 +995,30 @@ function generateFamilyPCModal(parentChild, parentChildData) {
   openModal(familyPCModal, parentChildData.uid);
 
   familyPCConfirm.onclick = function () {
+    changeDetected = false;
     if (parentChild == "child") {
-      if (globalChildData.length == 0) {
-        generateConfirmDataModal("Please confirm that all of " + parentChildData.name + "'s children " +
-            "should be removed.<br/><br/>Please note that this \"parent\" user will automatically be removed " +
-            "from the child user(s) as well.",
-            "Confirm Child Removal", "parentChild", null);
+      changeDetected = checkForPCListChanges();
+
+      if (changeDetected) {
+        if (globalChildData.length == 0) {
+          generateConfirmDataModal("Please confirm that all of " + parentChildData.name + "'s children " +
+              "should be removed.<br/><br/>Please note that this \"parent\" user will automatically be removed " +
+              "from the child user(s) as well.",
+              "Confirm Child Removal", "parentChild", null);
+        } else {
+          generateConfirmDataModal("Please confirm that the following user(s) should be assigned as a " +
+              "child to " + parentChildData.name + "<br/><br/>" + generatePCAddString(globalChildData) + "<br/><br/>Please note " +
+              "that this \"parent\" user will automatically be assigned to the child user(s) as well.",
+              "Confirm Child Selection", "parentChild", null);
+        }
       } else {
-        generateConfirmDataModal("Please confirm that the following user(s) should be assigned as a " +
-            "child to "  + parentChildData.name + "<br/><br/>" + generatePCAddString(globalChildData) + "<br/><br/>Please note " +
-            "that this \"parent\" user will automatically be assigned to the child user(s) as well.",
-            "Confirm Child Selection", "parentChild", null);
+        deployNotificationModal(true, "No Changes Detected!", "It appears that " +
+            "you did not make any changes to this user's relationships. No changes have been made.");
       }
     } else if (parentChild == "parent") {
-      if (globalPCInteraction) {
+      changeDetected = checkForPCListChanges();
+
+      if (changeDetected) {
         if (globalParentData.length == 0) {
           generateConfirmDataModal("Please confirm that all of " + parentChildData.name + "'s parents " +
               "should be removed.<br/><br/>Please note that this \"child\" user will automatically be removed " +
@@ -1021,7 +1031,7 @@ function generateFamilyPCModal(parentChild, parentChildData) {
               "Confirm Parent Selection", "parentChild", null);
         }
       } else {
-        deployNotificationModal(false, "No Changes Detected!", "It appears that " +
+        deployNotificationModal(true, "No Changes Detected!", "It appears that " +
             "you did not make any changes to this user's relationships. No changes have been made.");
       }
     }
@@ -1029,7 +1039,46 @@ function generateFamilyPCModal(parentChild, parentChildData) {
 
   closeFamilyPCModal.onclick = function() {
     closeModal(familyPCModal);
-    globalPCInteraction = false;
+  }
+
+  function checkForPCListChanges() {
+    let changesFound = false;
+
+    if (parentChild == "child") {
+      for (let i = 0; i < globalChildData.length; i++) {
+        if (tempChildData.indexOf(globalChildData[i].uid) == -1) {
+          changesFound = true;
+          break;
+        }
+      }
+
+      if (!changesFound) {
+        for (let i = 0; i < tempChildData.length; i++) {
+          if (findUIDItemInArr(tempChildData[i], globalChildData, true) == -1) {
+            changesFound = true;
+            break;
+          }
+        }
+      }
+    } else if (parentChild == "parent") {
+      for (let i = 0; i < globalParentData.length; i++) {
+        if (tempParentData.indexOf(globalParentData[i].uid) == -1) {
+          changesFound = true;
+          break;
+        }
+      }
+
+      if (!changesFound) {
+        for (let i = 0; i < tempParentData.length; i++) {
+          if (findUIDItemInArr(tempParentData[i], globalParentData, true) == -1) {
+            changesFound = true;
+            break;
+          }
+        }
+      }
+    }
+
+    return changesFound;
   }
 }
 
@@ -1075,7 +1124,6 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
         liItem.onclick = function () {
           if (parentChild == "child") {
             globalParentChildState = "child";
-            globalPCInteraction = true;
             if (findUIDItemInArr(parentChildOmit.uid, globalParentData, true) == -1) {
               globalParentData.push(parentChildOmit);
             }
@@ -1102,7 +1150,6 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
             }
           } else if (parentChild == "parent") {
             globalParentChildState = "parent";
-            globalPCInteraction = true;
             if (findUIDItemInArr(parentChildOmit.uid, globalChildData, true) == -1) {
               globalChildData.push(parentChildOmit);
             }
@@ -1219,7 +1266,6 @@ function generateConfirmDataModal(stringToConfirm, confirmTitle, confirmType, da
       closeModal(confirmMemberModal);
       globalChildData = [];
       globalParentData = [];
-      globalPCInteraction = false;
     }
   };
 }
@@ -1297,7 +1343,6 @@ function updateFamilyRelationsToDB() {
   globalChildData = undefined;
   globalParentData = undefined;
   globalParentChildState = "";
-  globalPCInteraction = false;
 
   function checkForChanges(updatePCUserDataBool, inputUserData, userDataToCheck) {//true = child's parent(s)
     let updatePerformed = false;
