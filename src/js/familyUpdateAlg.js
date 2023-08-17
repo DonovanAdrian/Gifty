@@ -737,7 +737,9 @@ function initFamilyElement(liItem, familyMemberData) {
     }
 
     removeFamilyMember.onclick = function() {
-      removeFamilyMemberFromDB(familyMemberData.uid);
+      generateConfirmDataModal("Are you sure you'd like to remove " + familyMemberData.name + " from " +
+          "this family? Please note that their parent/child relationships will also be cleared!",
+          "Remove "  + familyMemberData.name, "removeFamilyMember", familyMemberData);
     };
 
     openModal(familyMemberViewModal, familyMemberData.uid);
@@ -901,8 +903,10 @@ function clearAllParentChildData() {
       "successfully cleared from the database!");
 }
 
-function removeFamilyMemberFromDB(uid) {
-  let i = familyData.members.indexOf(uid);
+function removeFamilyMemberFromDB(memberToRemove) {
+  clearParentChildData(memberToRemove);
+
+  let i = familyData.members.indexOf(memberToRemove.uid);
   if (i != -1) {
     familyData.members.splice(i, 1);
 
@@ -1227,6 +1231,8 @@ function generateConfirmDataModal(stringToConfirm, confirmTitle, confirmType, da
     } else if (confirmType == "removeAllMembers") {
       clearAllParentChildData();
       removeAllFamilyMembers(dataObject);
+    } else if (confirmType == "removeFamilyMember") {
+      removeFamilyMemberFromDB(dataObject);
     }
     closeModal(confirmMemberModal);
     return true;
@@ -1242,6 +1248,8 @@ function generateConfirmDataModal(stringToConfirm, confirmTitle, confirmType, da
       openModal(familyMemberViewModal, "familyMemberViewModal");
     } else if (confirmType == "clearAllPC" || confirmType == "removeAllMembers") {
       openModal(familySettingsModal, "familySettingsModal");
+    } else if (confirmType == "removeFamilyMember") {
+      openModal(familyMemberViewModal, "familyMemberViewModal");
     }
     return false;
   }
@@ -1258,6 +1266,8 @@ function generateConfirmDataModal(stringToConfirm, confirmTitle, confirmType, da
       openModal(familyMemberViewModal, "familyMemberViewModal");
     } else if (confirmType == "clearAllPC" || confirmType == "removeAllMembers") {
       openModal(familySettingsModal, "familySettingsModal");
+    } else if (confirmType == "removeFamilyMember") {
+      openModal(familyMemberViewModal, "familyMemberViewModal");
     }
   };
 
