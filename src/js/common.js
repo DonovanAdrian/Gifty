@@ -4,6 +4,7 @@
  * with written consent under any circumstance.
  */
 
+//***************************
 //User Configurable Variables
 let logoutReminder = 300; //default 300, 300 5 mins
 let logoutLimit = 900; //default 900, 900 15 mins, 600 10 mins
@@ -13,6 +14,10 @@ let redirectWarningBool = true; //Used to enable or disable URL redirect warning
 let twentyFourHourTime = false; //Used to enable or disable 24 hour time for getLocalTime();
 let jokeGiftChances = 10000; //default 10000 (1 out of 10000). Only appears on friendList.html
 let jokeGiftEnabled = true; //Enables/disables a joke gift that has a chance to randomly appear
+//User Configurable Variables
+//***************************
+
+
 
 let listeningFirebaseRefs = [];
 let userArr = [];
@@ -27,6 +32,8 @@ let listenExpectedUIDs = [];
 let globalDBKeyChangesArr = [];
 let globalDBDataChangesArr = [];
 let localObjectChanges = [];
+let backgroundAlternatorLimit = 30000;
+let backgroundAlternatorStep = 0;
 let commonLoadingTimerInt = 0;
 let buttonAlternatorTimer = 0;
 let buttonAlternatorInt = 0;
@@ -73,6 +80,7 @@ let successfulDBOperationTitle = "Pending Operation Completed!";
 let successfulDBOperationNotice = "Your pending change was successfully saved! Thank you for your patience, you may " +
     "now navigate to other pages.";
 let successfulDBNavigation = "NoNav";
+let backgroundAlternatorColor;
 let unsavedChangesOverride;
 let commonLoadingTimer;
 let loginTimerInterval;
@@ -95,6 +103,7 @@ let userReadNotifications;
 let userNotifications;
 let autoSecretSanta;
 let moderatorSettings;
+let colorShifter;
 
 let offlineSpan;
 let offlineModal;
@@ -199,6 +208,7 @@ function commonInitialization(){
   let commonDBInitCount = 0;
   let commonDBInitLimit = 5;
   initializeSupplementalModals();
+  backgroundAlternator();
 
   window.addEventListener( "pageshow", function ( event ) {
     var historyTraversal = event.persisted ||
@@ -844,6 +854,8 @@ function signOut(){
 function initGiftDataIfEmpty(inputGiftData) {
   let giftDataProperties = ["description", "link", "received", "receivedBy",
     "title", "where", "buyer", "creationDate", "creator", "multiples"];
+  let receivedBySet = false;
+
   for (let inputGiftKey in giftDataProperties) {
     if (inputGiftData[inputGiftKey] == undefined)
       switch (inputGiftKey) {
@@ -852,10 +864,15 @@ function initGiftDataIfEmpty(inputGiftData) {
           break;
         case "receivedBy":
           inputGiftData[inputGiftKey] = [];
+          receivedBySet = true;
           break;
         default:
           inputGiftData[inputGiftKey] = "";//buyer, creator, creationDate
       }
+  }
+
+  if (!receivedBySet) {
+    inputGiftData["receivedBy"] = [];
   }
 
   return inputGiftData;
@@ -1247,6 +1264,7 @@ function deployConfirmationModal(unsavedChangesTitle, unsavedChangesContent) {
 }
 
 function navigation(navNum, loginOverride) {
+  clearInterval(colorShifter);
   if (pendingNavigation == 0) {
     pendingNavigation = 1;
     if (unsavedChanges) {
@@ -1297,6 +1315,8 @@ function navigation(navNum, loginOverride) {
           sessionStorage.setItem("userArr", JSON.stringify(userArr));
         }
       }
+      sessionStorage.setItem("backgroundAlternatorColor", JSON.stringify(backgroundAlternatorColor));
+      sessionStorage.setItem("backgroundAlternatorStep", JSON.stringify(backgroundAlternatorStep));
 
       let navLocations = [
         "404.html",//0
@@ -1521,11 +1541,11 @@ function alternateButtonLabel(button, parentLabel, childLabel){
       if(alternator == 0) {
         alternator++;
         button.innerHTML = parentLabel;
-        button.style.background = "#00c606";
+        button.style.background = "rgba(200, 200, 200, 0.5)";
       } else {
         alternator--;
         button.innerHTML = childLabel;
-        button.style.background = "#00ad05";
+        button.style.background = "rgba(200, 200, 200, 0.75)";
       }
     }
   }, 1000);
@@ -1899,4 +1919,77 @@ function cloneArray(inputArr) {
     }
 
   return outputArr;
+}
+
+function backgroundAlternator(){
+  let nowBackground = 0;
+  let currentBackgroundColor = "#870b0b";
+  let transitionTime = "6s";
+
+  try {
+    if (JSON.parse(sessionStorage.backgroundAlternatorStep) != undefined)
+      backgroundAlternatorStep = JSON.parse(sessionStorage.backgroundAlternatorStep);
+    if (JSON.parse(sessionStorage.backgroundAlternatorColor) != undefined)
+      currentBackgroundColor = JSON.parse(sessionStorage.backgroundAlternatorColor);
+  } catch (err) {}
+
+
+  setColorOfItem(currentBackgroundColor);
+  clearInterval(colorShifter);
+
+  colorShifter = setInterval(function(){
+    nowBackground = nowBackground + 1000;
+    if(nowBackground >= backgroundAlternatorLimit){
+      nowBackground = 0;
+      if(backgroundAlternatorStep == 0) {
+        backgroundAlternatorStep++;
+        setColorOfItem("#0041a3");
+      } else if (backgroundAlternatorStep == 1){
+        backgroundAlternatorStep++;
+        setColorOfItem("#008222");
+      } else if (backgroundAlternatorStep == 2){
+        backgroundAlternatorStep++;
+        setColorOfItem("#0b8781");
+      } else if (backgroundAlternatorStep == 3){
+        backgroundAlternatorStep++;
+        setColorOfItem("#700b87");
+      } else {
+        backgroundAlternatorStep = 0;
+        setColorOfItem("#870b0b");
+      }
+    }
+  }, 1000);
+
+  function setColorOfItem(colorValue) {
+    let tempAlternator;
+    let tempTimerInt = 0;
+    let getElementNav = document.getElementsByClassName("topnav")[0];
+    let getElementModalHeader = document.getElementsByClassName("modal-header");
+    let getElementModalFooter = document.getElementsByClassName("modal-footer");
+    if (getElementNav != undefined) {
+      getElementNav.style.background = colorValue;
+      if (getElementNav.style.transition != transitionTime) {
+        tempAlternator = setInterval(function(){
+          tempTimerInt = tempTimerInt + 1000;
+          if(tempTimerInt >= 3000){
+            getElementNav.style.transition = transitionTime;
+            clearInterval(tempAlternator);
+          }
+        }, 1000);
+      }
+    } else {
+      document.body.style.background = colorValue;
+    }
+    backgroundAlternatorColor = colorValue;
+    try {
+      for (let i = 0; i < getElementModalHeader.length; i++) {
+        getElementModalHeader[i].style.background = colorValue;
+        getElementModalHeader[i].style.transition = transitionTime;
+      }
+      for (let i = 0; i < getElementModalFooter.length; i++) {
+        getElementModalFooter[i].style.background = colorValue;
+        getElementModalFooter[i].style.transition = transitionTime;
+      }
+    } catch (err) {}
+  }
 }
