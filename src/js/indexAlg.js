@@ -37,7 +37,6 @@ let loginInfo;
 let validUser;
 let loginBtn;
 let signUpFld;
-let colorShifter;
 
 
 
@@ -200,34 +199,9 @@ window.onload = function instantiate() {
     commonInitialization();
     loginQuery();
   }
-  backgroundAlternator();
 
-  function backgroundAlternator(){
-    let nowBackground = 0;
-    let alternator = 0;
-    colorShifter = setInterval(function(){
-      nowBackground = nowBackground + 1000;
-      if(nowBackground >= 15000){
-        nowBackground = 0;
-        if(alternator == 0) {
-          alternator++;
-          document.body.style.background = "#0041a3";
-        } else if (alternator == 1){
-          alternator++;
-          document.body.style.background = "#008222";
-        } else if (alternator == 2){
-          alternator++;
-          document.body.style.background = "#0b8781";
-        } else if (alternator == 3){
-          alternator++;
-          document.body.style.background = "#700b87";
-        } else {
-          alternator = 0;
-          document.body.style.background = "#870b0b";
-        }
-      }
-    }, 1000);
-  }
+  backgroundAlternatorLimit = 15000;
+  backgroundAlternator();
 };
 
 function loginQuery() {
@@ -454,7 +428,6 @@ function login() {
     }
 
     document.body.className = "B";
-    clearInterval(colorShifter);
     validUser = userArr[validUserInt];
     sessionStorage.setItem("validUser", JSON.stringify(validUser));
     sessionStorage.setItem("userArr", JSON.stringify(userArr));
