@@ -52,6 +52,7 @@
 
 body {
   margin: 0;
+  transition: 4s;
 }
 
 table {
@@ -400,19 +401,21 @@ img.imgIcon {
   margin: -75px auto -175px auto;
 }
 
+div.topnav {
+  background-color: #870b0b;
+}
+
 div.topnav ul{
   font-family: Verdana;
   list-style-type: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #008222;
 }
 
 div.topnav ul li a {
   border-radius: 4px;
   font-weight: bold;
-  background-color: #008222;
   display: block;
   color: white;
   text-align: center;
@@ -422,23 +425,30 @@ div.topnav ul li a {
 
 div.topnav ul li a:hover:not(.active) {
   border-radius: 12px;
-  background-color: #00d639;
+  background-color: rgba(255, 255, 255, 0.4);
   color: black;
 }
 
 div.topnav ul li a.active {
   border-radius: 8px;
-  background-color: #00d138;
+  background-color: rgba(200, 200, 200, 0.5);
+  color: white;
+}
+
+div.topnav ul li a:hover.active {
+  border-radius: 12px;
+  background-color: rgba(225, 225, 225, 0.6);
+  color: black;
 }
 
 div.topnav ul li a.signOut {
   border-radius: 4px;
-  background-color: #ff3923;
+  background-color: rgba(255, 57, 35, 0.8);
 }
 
 div.topnav ul li a.signOut:hover:not(.active) {
   border-radius: 12px;
-  background-color: #f96554;
+  background-color: #ff3923;
 }
 
 div.topnav ul li.right,
