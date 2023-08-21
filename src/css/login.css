@@ -113,10 +113,12 @@ body.B {
 
 p {
   font-family: Verdana;
+  font-weight: bold;
 }
 
 a {
   font-family: Verdana;
+  font-weight: bold;
   text-shadow: 2px 3px 5px rgba(0,0,0,1);
 }
 
@@ -239,6 +241,8 @@ a {
 }
 
 input {
+  font-weight: bold;
+  font-family: Verdana;
   margin: auto;
   border: none;
   border-radius: 0;
@@ -259,7 +263,87 @@ button {
   border-radius: 0;
 }
 
+input.upperLogin {
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+span.lowerLogin {
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+span.centeredHiddenBtn {
+  display: none;
+  position: relative;
+  font-weight: bold;
+  font-family: Verdana;
+  transition: 0.3s;
+}
+
+span.centeredBtn {
+  display: table;
+  margin: 0 auto;
+  font-weight: bold;
+  font-family: Verdana;
+  transition: 0.3s;
+}
+
+span.centeredLoginBtn {
+  background-color: #d4d4d4;
+  color: #000;
+}
+
+span.centeredLoginBtn:hover {
+  background: #eeeeee;
+  color: #424242;
+}
+
+span.centeredBackBtn {
+  border-radius: 10px;
+  font-weight: bold;
+  font-family: Verdana;
+  transition: 0.3s;
+  background: #b0d4b0;
+  color: #555;
+}
+
+span.centeredBackBtn:hover {
+  border-radius: 12px;
+  background-color: #00d639;
+  color: #000;
+}
+
+span.centeredDeleteBtn {
+  border-radius: 10px;
+  font-weight: bold;
+  font-family: Verdana;
+  transition: 0.3s;
+  background: #d4b0b0;
+  color: #555;
+}
+
+span.centeredDeleteBtn:hover {
+  border-radius: 12px;
+  background-color: #ff4c4c;
+  color: #000;
+}
+
 @media screen and (min-width: 0px) and (max-width: 275px) {
+  span.centeredBtn {
+    width: 145px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    font-size: 9px;
+  }
+
+  span.centeredHiddenBtn {
+    width: 145px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    font-size: 9px;
+  }
+
   .loginContainer {
     top: 45px;
   }
@@ -269,25 +353,14 @@ button {
   }
 
   input {
+    font-size: 9px;
     width: 125px;
-  }
-
-  button {
-    width: 145px;
   }
 
   img.imgIcon {
     width: 150px;
     height: 150px;
     transition: 0.3s;
-  }
-
-  input {
-    font-size: 9px;
-  }
-
-  button {
-    font-size: 9px;
   }
 
   p {
@@ -316,6 +389,20 @@ button {
 }
 
 @media screen and (min-width: 275px) and (max-width: 360px) {
+  span.centeredBtn {
+    width: 220px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 15px;
+  }
+
+  span.centeredHiddenBtn {
+    width: 220px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 15px;
+  }
+
   .loginContainer {
     top: 100px;
   }
@@ -326,24 +413,13 @@ button {
 
   input {
     width: 200px;
-  }
-
-  button {
-    width: 220px;
+    font-size: 15px;
   }
 
   img.imgIcon {
     width: 200px;
     height: 200px;
     transition: 0.3s;
-  }
-
-  input {
-    font-size: 15px;
-  }
-
-  button {
-    font-size: 15px;
   }
 
   p {
@@ -372,6 +448,20 @@ button {
 }
 
 @media screen and (min-width: 360px) and (max-width: 600px) {
+  span.centeredBtn {
+    width: 320px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    font-size: 17px;
+  }
+
+  span.centeredHiddenBtn {
+    width: 320px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    font-size: 17px;
+  }
+
   .loginContainer {
     top: 175px;
   }
@@ -382,24 +472,13 @@ button {
 
   input {
     width: 300px;
-  }
-
-  button {
-    width: 320px;
+    font-size: 17px;
   }
 
   img.imgIcon {
     width: 300px;
     height: 300px;
     transition: 0.3s;
-  }
-
-  input {
-    font-size: 17px;
-  }
-
-  button {
-    font-size: 17px;
   }
 
   p {
@@ -428,6 +507,20 @@ button {
 }
 
 @media screen and (min-width: 600px) and (max-width: 1000px) {
+  span.centeredBtn {
+    width: 520px;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    font-size: 21px;
+  }
+
+  span.centeredHiddenBtn {
+    width: 520px;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    font-size: 21px;
+  }
+
   .loginContainer {
     top: 275px;
   }
@@ -438,24 +531,13 @@ button {
 
   input {
     width: 500px;
-  }
-
-  button {
-    width: 520px;
+    font-size: 21px;
   }
 
   img.imgIcon {
     width: 550px;
     height: 550px;
     transition: 0.3s;
-  }
-
-  input {
-    font-size: 21px;
-  }
-
-  button {
-    font-size: 21px;
   }
 
   p {
@@ -485,6 +567,20 @@ button {
 }
 
 @media screen and (min-width: 1000px) and (max-width: 1800px) {
+  span.centeredBtn {
+    width: 920px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 23px;
+  }
+
+  span.centeredHiddenBtn {
+    width: 920px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 23px;
+  }
+
   .loginContainer {
     top: 375px;
   }
@@ -495,24 +591,13 @@ button {
 
   input {
     width: 900px;
-  }
-
-  button {
-    width: 920px;
+    font-size: 23px;
   }
 
   img.imgIcon {
     width: 750px;
     height: 750px;
     transition: 0.3s;
-  }
-
-  input {
-    font-size: 23px;
-  }
-
-  button {
-    font-size: 23px;
   }
 
   p {
@@ -542,6 +627,20 @@ button {
 }
 
 @media screen and (min-width: 1800px){
+  span.centeredBtn {
+    width: 1720px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 26px;
+  }
+
+  span.centeredHiddenBtn {
+    width: 1720px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 26px;
+  }
+
   .loginContainer {
     top: 475px;
   }
@@ -551,25 +650,14 @@ button {
   }
 
   input {
+    font-size: 26px;
     width: 1700px;
-  }
-
-  button {
-    width: 1720px;
   }
 
   img.imgIcon {
     width: 950px;
     height: 950px;
     transition: 0.3s;
-  }
-
-  input {
-    font-size: 26px;
-  }
-
-  button {
-    font-size: 26px;
   }
 
   p {
