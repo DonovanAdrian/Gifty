@@ -446,6 +446,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
   let pGiftTitle = pGiftData.title;
   let pGiftWhere = pGiftData.where;
   let pGiftBuyer = pGiftData.buyer;
+  let pGiftBuyerUID = pGiftData.buyer;
   let pGiftUid = pGiftData.uid;
   let pGiftDate = pGiftData.creationDate;
   let pGiftCreator = pGiftData.creator;
@@ -601,7 +602,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
       buyGiftToDB(pGiftUid, pGiftKey, pGiftMultiples, pGiftReceived, pGiftReceivedBy, false);
     };
     giftDontBuy.onclick = function(){
-      buyGiftToDB(pGiftUid, pGiftKey, pGiftMultiples, pGiftReceived, pGiftReceivedBy, true, pGiftBuyer);
+      buyGiftToDB(pGiftUid, pGiftKey, pGiftMultiples, pGiftReceived, pGiftReceivedBy, true, pGiftBuyer, pGiftBuyerUID);
     };
 
     openModal(giftModal, pGiftUid);
@@ -612,13 +613,11 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
   };
 }
 
-function buyGiftToDB(priUid, key, multiples, received, receivedBy, unBuyBool, buyer) {
+function buyGiftToDB(priUid, key, multiples, received, receivedBy, unBuyBool, buyer, buyerUID) {
   let updateToDB = false;
-  let buyerUID;
   let buyerData;
   let multipleBool;
   giftUpdateLocal = true;
-  buyerUID = buyer;
   multipleBool = multiples;
 
   if (!multipleBool) {
