@@ -854,25 +854,19 @@ function signOut(){
 function initGiftDataIfEmpty(inputGiftData) {
   let giftDataProperties = ["description", "link", "received", "receivedBy",
     "title", "where", "buyer", "creationDate", "creator", "multiples"];
-  let receivedBySet = false;
 
-  for (let inputGiftKey in giftDataProperties) {
-    if (inputGiftData[inputGiftKey] == undefined)
-      switch (inputGiftKey) {
+  for (let i = 0; i < giftDataProperties.length; i++) {
+    if (inputGiftData[giftDataProperties[i]] == undefined)
+      switch (giftDataProperties[i]) {
         case "multiples":
-          inputGiftData[inputGiftKey] = false;
+          inputGiftData[giftDataProperties[i]] = false;
           break;
         case "receivedBy":
-          inputGiftData[inputGiftKey] = [];
-          receivedBySet = true;
+          inputGiftData[giftDataProperties[i]] = [];
           break;
         default:
-          inputGiftData[inputGiftKey] = "";//buyer, creator, creationDate
+          inputGiftData[giftDataProperties[i]] = "";//buyer, creator, creationDate
       }
-  }
-
-  if (!receivedBySet) {
-    inputGiftData["receivedBy"] = [];
   }
 
   return inputGiftData;
