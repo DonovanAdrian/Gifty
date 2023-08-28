@@ -747,25 +747,25 @@ function initGiftElement(liItem, uid) {
     liItem.className = "gift";
     liItem.onclick = function () {
       if (link != "") {
-        giftLink.innerHTML = "Click me to go to the webpage!";
+        giftLink.innerHTML = "Click me to go to the webpage you provided!";
         giftLink.onclick = function () {
           giftLinkRedirect(link);
         };
       } else {
-        giftLink.innerHTML = "There was no link provided";
+        giftLink.innerHTML = "You did not provide a link for this gift";
         giftLink.onclick = function () {
         };
       }
       if (description != "") {
         giftDescription.innerHTML = "Description: " + description;
       } else {
-        giftDescription.innerHTML = "There was no description provided";
+        giftDescription.innerHTML = "You did not provide a description for this gift";
       }
       giftTitle.innerHTML = title;
       if (where != "") {
         giftWhere.innerHTML = "This can be found at: " + where;
       } else {
-        giftWhere.innerHTML = "There was no location provided";
+        giftWhere.innerHTML = "You did not provide a location for where to find this gift";
       }
       if (date == undefined) {
         date = "";
