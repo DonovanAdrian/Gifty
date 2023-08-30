@@ -57,9 +57,9 @@ function getCurrentUser(){
     initializingElements = true;
     for (let i = 0; i < giftUser.giftList.length; i++) {
       createGiftElement(giftUser.giftList[i], i);
-      if (!createdJokeGift && giftUser.giftList.length > 1 && jokeGiftEnabled)
-        rollForAJokeGift();
     }
+    if (!createdJokeGift && giftUser.giftList.length > 1 && jokeGiftEnabled)
+      rollForAJokeGift();
     initializingElements = false;
   }
 
@@ -76,6 +76,9 @@ function rollForAJokeGift() {
   if (randomNumberA == randomNumberB) {
     generateCustomGift();
     createdJokeGift = true;
+  } else {
+    if (consoleOutput)
+      console.log("Nope... Not this time!");
   }
 }
 
@@ -113,11 +116,15 @@ function generateCustomGift() {
       liItem.innerHTML = "Just Kidding!";
       showUpdatedItem("JokeGift", true);
     };
+    updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg! They also " +
+        "interacted with the gift, woohoo!");
   };
 
   let textNode = document.createTextNode("Vegetti");
   liItem.appendChild(textNode);
   dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+  updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg! It was only " +
+      "generated though, they didn't click on it... yet.");
 }
 
 window.onload = function instantiate() {
