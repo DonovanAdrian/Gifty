@@ -15,7 +15,6 @@ let updateGiftToDBBool = false;
 let giftListEmptyBool = false;
 let potentialRemoval = false;
 let giftUpdateLocal = false;
-let createdJokeGift = false;
 
 let moderationSet = -1;
 
@@ -58,7 +57,7 @@ function getCurrentUser(){
     for (let i = 0; i < giftUser.giftList.length; i++) {
       createGiftElement(giftUser.giftList[i], i);
     }
-    if (!createdJokeGift && giftUser.giftList.length > 1 && jokeGiftEnabled)
+    if (!createdJokeGift && giftUser.giftList.length > 0 && jokeGiftEnabled)
       rollForAJokeGift();
     initializingElements = false;
   }
@@ -92,7 +91,7 @@ function generateCustomGift() {
     giftLink.innerHTML = "There was no link provided";
     giftLink.onclick = function() {};
     giftDescription.innerHTML = "It's been my dream to get the premier in all of vegetable spiralizers, but not just any Vegetti... " +
-        "The Vegetti VPRO Pro Deluxe Pack! I get 13 customizable accessories that allow me to shave the vegetables " +
+        "The Vegetti VPRO Pro Deluxe Pack! I get 69 customizable accessories that allow me to shave the vegetables " +
         "to my liking for the perfect dish. It's one of a kind.";
     giftWhere.innerHTML = "Anywhere where Vegetti's are sold!";
     giftBought.innerHTML = "This gift hasn't been bought yet!";
@@ -116,15 +115,15 @@ function generateCustomGift() {
       liItem.innerHTML = "Just Kidding!";
       showUpdatedItem("JokeGift", true);
     };
-    updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg! They also " +
-        "interacted with the gift, woohoo!");
+    updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg! (" + pageName +
+        " Page) They also interacted with the gift, woohoo!");
+    updateUserScore(100);
   };
 
   let textNode = document.createTextNode("Vegetti");
   liItem.appendChild(textNode);
   dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-  updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg! It was only " +
-      "generated though, they didn't click on it... yet.");
+  dataCounter++;
 }
 
 window.onload = function instantiate() {
@@ -161,6 +160,11 @@ window.onload = function instantiate() {
   userBase = firebase.database().ref("users/");
   userGifts = firebase.database().ref("users/" + giftUser.uid + "/giftList");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+
+  if (createdJokeGift) {
+    updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg! (" + pageName +
+        " Page) It was only generated though, they didn't click on it... yet.");
+  }
 
   databaseQuery();
   alternateButtonLabel(listNote, "Gift Lists", "Public");
