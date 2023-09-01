@@ -69,6 +69,8 @@ function getCurrentUser(){
     for (let i = 0; i < giftUser.privateList.length; i++) {
       createGiftElement(giftUser.privateList[i], i);
     }
+    if (!createdJokeGift && giftUser.privateList.length > 0 && jokeGiftEnabled)
+      rollForAPrivateJokeGift();
     initializingElements = false;
     checkGiftLimit();
   }
@@ -77,6 +79,66 @@ function getCurrentUser(){
     deployListEmptyNotification("No Gifts Found! Add Some Gifts With The Button Below!");
     giftListEmptyBool = true;
   }
+}
+
+function rollForAPrivateJokeGift() {
+  let randomNumberA = Math.floor(Math.random() * jokeGiftChances);
+  let randomNumberB = Math.floor(Math.random() * jokeGiftChances);
+
+  if (randomNumberA == randomNumberB) {
+    generateCustomPrivateGift();
+    createdJokeGift = true;
+  } else {
+    if (consoleOutput)
+      console.log("Nope... Not this time!");
+  }
+}
+
+function generateCustomPrivateGift() {
+  let liItem = document.createElement("LI");
+  let tempGiftUserName = findFirstNameInFullName(giftUser.name);
+  liItem.id = "giftJokeGift";
+  liItem.className = "gift";
+
+  liItem.onclick = function () {
+    giftTitle.innerHTML = "Vegetti";
+    giftLink.innerHTML = "There was no link provided";
+    giftLink.onclick = function() {};
+    giftDescription.innerHTML = "It's been " + tempGiftUserName + "'s dream to get the premier in all of vegetable " +
+        "spiralizers, but not just any Vegetti... The Vegetti VPRO Pro Deluxe Pack! It comes with 69 customizable " +
+        "accessories that allows anyone to shave the vegetables to their liking for the perfect dish. It's one of a kind.";
+    giftCreator.innerHTML = "This gift was created by you!";
+    giftWhere.innerHTML = "Anywhere where Vegetti's are sold!";
+    giftBought.innerHTML = "This gift hasn't been bought yet?";
+    giftCreationDate.innerHTML = "Created today!!";
+
+    giftBuy.onclick = function(){
+      closeModal(giftModal);
+      liItem.innerHTML = "Just Kidding!!";
+      showUpdatedItem("JokeGift", true);
+    };
+    giftDontBuy.onclick = function(){
+      closeModal(giftModal);
+      liItem.innerHTML = "Just Kidding!!";
+      showUpdatedItem("JokeGift", true);
+    };
+
+    openModal(giftModal, "PJokeGift");
+
+    closeGiftModal.onclick = function() {
+      closeModal(giftModal);
+      liItem.innerHTML = "Just Kidding!!";
+      showUpdatedItem("JokeGift", true);
+    };
+    updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg! (" + pageName +
+        " Page) They also interacted with the gift, woohoo!");
+    updateUserScore(100);
+  };
+
+  let textNode = document.createTextNode("Vegetti");
+  liItem.appendChild(textNode);
+  dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+  dataCounter++;
 }
 
 window.onload = function instantiate() {
@@ -120,6 +182,11 @@ window.onload = function instantiate() {
   userGifts = firebase.database().ref("users/" + giftUser.uid + "/privateList/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
   limitsInitial = firebase.database().ref("limits/");
+
+  if (createdJokeGift) {
+    updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg! (" + pageName +
+        " Page) It was only generated though, they didn't click on it... yet.");
+  }
 
   databaseQuery();
   alternateButtonLabel(listNote, "Gift Lists", "Private");
