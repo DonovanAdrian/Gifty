@@ -48,7 +48,9 @@ let failedNavNum = 0;
 let dataCounter = 0;
 let pendingNavigation = 0;
 let timerErrorIssued = 0;
+let createdJokeGift = false;
 let dbInitialized = false;
+let dbInitializedFailed = false;
 let validPulseReceived = false;
 let globalNotificationBool = false;
 let consoleOutput = false;
@@ -156,8 +158,6 @@ function verifyElementIntegrity(arr){
             console.log("WARNING: " + i + " NULL!");
         } else {
           verifiedElements.push(arr[i]);
-          if (consoleOutput)
-            console.log("Verified Element!");
         }
       } catch (err) {
         if (consoleOutput)
@@ -247,12 +247,15 @@ function commonInitialization(){
       } else if (commonDBInitCount >= commonDBInitLimit) {
         console.log("ERROR! There were significant issues experienced trying to initialize the connection to the " +
             "database! Please refresh the page or test your connection!");
+        dbInitializedFailed = true;
         try {
           deployNotificationModal(false, "Database Connection Error!", "It appears " +
               "that you are experiencing connection issues! Ensure that you have a fast connection, then close and " +
-              "reopen this browser tab.", 6);
+              "reopen this browser tab.", 180);
         } catch (err) {}
         clearInterval(dbInitInterval);
+        clearInterval(commonLoadingTimer);
+        clearInterval(loginTimerInterval);
       }
     }, 1000);
   }
@@ -308,7 +311,9 @@ function commonInitialization(){
   if (!emptyListNoteDeployed) {
     commonLoadingTimer = setInterval(function(){
       commonLoadingTimerInt = commonLoadingTimerInt + 1000;
-      if (commonLoadingTimerInt >= (commonLoadingTimerLimit * 2)) {
+      if (dbInitializedFailed)
+        clearInterval(commonLoadingTimer);
+      if (commonLoadingTimerInt >= (commonLoadingTimerLimit * 2) && timerErrorIssued == 1) {
         if (document.getElementById("loginBtn") != undefined) {
           deployNotificationModal(false, "Loading Error!", "It appears that " +
               "loading the login page has taken a significant amount of time. If this slow speed continues, please " +
@@ -327,17 +332,18 @@ function commonInitialization(){
         }
         if (consoleOutput)
           console.log("Timer Critical Error Issued");
+        timerErrorIssued = 2;
+        clearInterval(commonLoadingTimer);
         if (user != undefined) {
           updateMaintenanceLog(pageName, "Critical Error: Critical Loading Time Experienced By \"" + user.userName + "\"");
         } else {
           updateMaintenanceLog(pageName, "Critical Error: Critical Loading Time Experienced!");
         }
-        clearInterval(commonLoadingTimer);
-        timerErrorIssued = 0;
       } else if (commonLoadingTimerInt >= commonLoadingTimerLimit) {
         if (timerErrorIssued == 0) {
           if (consoleOutput)
             console.log("Timer Error Issued");
+          timerErrorIssued = 1;
           if (document.getElementById("testData") != undefined) {
             document.getElementById("testData").innerHTML = "Loading Is Taking Longer Than Expected...";
           } else if (document.getElementById("loginBtn") != undefined) {
@@ -350,7 +356,6 @@ function commonInitialization(){
           } else {
             updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced!");
           }
-          timerErrorIssued++;
         }
       } else if (commonLoadingTimerInt >= 1000 && dataListExists) {
         if (validPulseReceived){
@@ -378,13 +383,6 @@ function commonInitialization(){
 function initializeDB(config) {
   firebase.initializeApp(config);
   analytics = firebase.analytics();
-
-  firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-      let isAnonymous = user.isAnonymous;
-      let uid = user.uid;
-    }
-  });
 
   if (pageName != "Index" && !(pageName == "UserAddUpdate" && user == undefined)) {
     databaseCommonPulse();
@@ -483,12 +481,17 @@ function getCurrentUserCommon(){
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
     if(consoleOutput)
-      console.log("Error Reading Data... Sending Error Report To DB.");
+      console.log("Error Reading Data... Attempting To Send Error Report To DB.");
     try {
       const config = JSON.parse(sessionStorage.config);
       initializeDB(config);
       updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString());
-    } catch (err) {}
+      if(consoleOutput)
+        console.log("Error Report Sent!");
+    } catch (err) {
+      if(consoleOutput)
+        console.log("Error Report Failed!");
+    }
     if(consoleOutput)
       console.log(err.toString());
     navigation(1, false);//Index
@@ -1985,5 +1988,36 @@ function backgroundAlternator(){
         getElementModalFooter[i].style.transition = transitionTime;
       }
     } catch (err) {}
+  }
+}
+
+function updateUserScore(incrementAmount, limitHit) {
+  let previousUserScore = user.userScore;
+  let currentUserScore;
+
+  if (user.settingsScoreBlock == undefined)
+    user.settingsScoreBlock = 0;
+  if (user.userScore == undefined)
+    user.userScore = 0;
+
+  if (limitHit == undefined) {
+    user.userScore = user.userScore + incrementAmount;
+  } else {
+    if (user.settingsScoreBlock == 0) {
+      user.userScore = user.userScore + incrementAmount;
+    }
+    if (limitHit) {
+      firebase.database().ref("users/" + user.uid).update({
+        settingsScoreBlock: 1
+      });
+    }
+  }
+
+  currentUserScore = user.userScore;
+
+  if (currentUserScore > previousUserScore) {
+    firebase.database().ref("users/" + user.uid).update({
+      userScore: currentUserScore
+    });
   }
 }
