@@ -123,16 +123,16 @@ window.onload = function instantiate() {
         extraText = "<br\><br\><br\>...NOW you've done it! No more points for you! >:(";
         updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\", found an easter egg... But got greedy :(" +
             "  Their ability to obtain user score points through easter eggs has been disabled!");
-        updateUserScore(true);
+        updateUserScore(1, true);
       } else if (settingsUserScore >= 7) {
         extraText = "<br\><br\><br\>...Don't get greedy now!";
-        updateUserScore(false);
+        updateUserScore(1, false);
       } else if (settingsUserScore >= 5) {
         extraText = "<br\><br\><br\>...Yes... You can click on these text icons to get more points!";
         updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg!");
-        updateUserScore(false);
+        updateUserScore(1, false);
       } else {
-        updateUserScore(false);
+        updateUserScore(1, false);
       }
     }
 
@@ -152,29 +152,6 @@ window.onload = function instantiate() {
       default:
         console.log("Unknown Input Data Item..." + extraText);
         break;
-    }
-  }
-
-  function updateUserScore(limitHit){
-    let currentUserScore;
-
-    if (user.settingsScoreBlock == 0) {
-      if (user.userScore == undefined) {
-        user.userScore = 0;
-      }
-
-      user.userScore = user.userScore + 1;
-      currentUserScore = user.userScore;
-
-      firebase.database().ref("users/" + user.uid).update({
-        userScore: currentUserScore,
-        settingsScoreBlock: user.settingsScoreBlock
-      });
-    }
-    if (limitHit) {
-      firebase.database().ref("users/" + user.uid).update({
-        settingsScoreBlock: 1
-      });
     }
   }
 
