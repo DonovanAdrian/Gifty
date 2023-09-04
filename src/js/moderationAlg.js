@@ -86,7 +86,7 @@ let userUID;
 let userUserName;
 let userPrivateGifts;
 let userLastLogin;
-let userScore;
+let userScoreElem;
 let userPassword;
 let userSecretSanta;
 let moderatorOp;
@@ -191,7 +191,7 @@ window.onload = function instantiate() {
   userPrivateGifts = document.getElementById("userPrivateGifts");
   userFriends = document.getElementById("userFriends");
   userLastLogin = document.getElementById("userLastLogin");
-  userScore = document.getElementById("userScore");
+  userScoreElem = document.getElementById("userScoreElem");
   userPassword = document.getElementById("userPassword");
   userSecretSanta = document.getElementById("userSecretSanta");
   moderatorOp = document.getElementById("moderatorOp");
@@ -213,7 +213,7 @@ window.onload = function instantiate() {
     showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends, showSantaSignUp,
     showModerator, sendPrivateMessage, userModal, userOptionsBtn, secretSantaModal, santaModalSpan, secretSantaBtn,
     secretSantaShuffle, secretSantaAutoBtn, settingsNote, testData, closeUserModal, userName, userUID, userUserName,
-    userGifts, userPrivateGifts, userFriends, userLastLogin, userScore, userPassword, userSecretSanta, moderatorOp,
+    userGifts, userPrivateGifts, userFriends, userLastLogin, userScoreElem, userPassword, userSecretSanta, moderatorOp,
     sendPrivateMessage, warnUser, banUser, closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
 
   sessionStorage.setItem("moderationSet", moderationSet);
@@ -1139,9 +1139,9 @@ function initUserElement(liItem, userData) {
       userLastLogin.innerHTML = "This User Has Never Logged In";
     }
     if(userData.userScore != undefined) {
-      userScore.innerHTML = "User Score: " + userData.userScore;
+      userScoreElem.innerHTML = "User Score: " + userData.userScore;
     } else {
-      userScore.innerHTML = "User Score: 0";
+      userScoreElem.innerHTML = "User Score: 0";
     }
     userPassword.innerHTML = "Click On Me To View Password";
 
@@ -1377,6 +1377,23 @@ function initializeShowUserData(showDataSelection) {
 
 function updateInitializedUsers(){
   let tempElem;
+  let userScoreHi = 0;
+  let userScoreMid = 0;
+  let userScoreLo = 0;
+  let userScoreHiFactor = 0.3;
+  let userScoreMidFactor = 0.6;
+  let userScoreLoFactor = 0.9;
+
+  for (let i = 0; i < userArr.length; i++) {
+    if (userArr[i].userScore != undefined)
+      if (userArr[i].userScore > userScoreHi) {
+        userScoreHi = userArr[i].userScore;
+      }
+  }
+
+  userScoreLo = userScoreHi - (userScoreHi * userScoreLoFactor);
+  userScoreMid = userScoreHi - (userScoreHi * userScoreMidFactor);
+  userScoreHi = userScoreHi - (userScoreHi * userScoreHiFactor);
 
   for (let i = 0; i < initializedUsers.length; i++) {
     tempElem = document.getElementById("user" + initializedUsers[i]);
@@ -1437,12 +1454,12 @@ function updateInitializedUsers(){
           }
 
           userDataString = userDataName + " - " + userData.userScore;
-          if (userData.userScore > 500) {
-            tempElem.className += " lowSev";
-          } else if (userData.userScore > 250) {
-            tempElem.className += " mediumSev";
-          } else if (userData.userScore > 50) {
+          if (userData.userScore > userScoreHi) {
             tempElem.className += " highSev";
+          } else if (userData.userScore > userScoreMid) {
+            tempElem.className += " mediumSev";
+          } else if (userData.userScore > userScoreLo) {
+            tempElem.className += " lowSev";
           }
           break;
         case "Share":
