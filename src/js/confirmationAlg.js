@@ -327,14 +327,6 @@ function addInvite(inviteData){
   let finalInviteData;
   let friendFriendArr;
   let userFriendArr;
-  let currentUserScore;
-
-  if (user.userScore == undefined) {
-    user.userScore = 0;
-  }
-
-  user.userScore = user.userScore + 5;
-  currentUserScore = user.userScore;
 
   if(consoleOutput) {
     console.log("Pre-adding " + inviteData.uid + " to User's Friend List:");
@@ -391,7 +383,7 @@ function addInvite(inviteData){
   }
 
   finalInviteData = [friendFriendArr, userFriendArr];
-  firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
+  updateUserScore(5);
   deleteInvite(inviteData, finalInviteData);
 }
 
