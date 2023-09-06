@@ -1991,23 +1991,23 @@ function backgroundAlternator(){
   }
 }
 
-function updateUserScore(incrementAmount, limitHit) {
-  let previousUserScore = user.userScore;
+function updateUserScore(userData, incrementAmount, limitHit) {
+  let previousUserScore = userData.userScore;
   let currentUserScore;
 
-  if (user.settingsScoreBlock == undefined)
-    user.settingsScoreBlock = 0;
-  if (user.userScore == undefined)
-    user.userScore = 0;
+  if (userData.settingsScoreBlock == undefined)
+    userData.settingsScoreBlock = 0;
+  if (userData.userScore == undefined)
+    userData.userScore = 0;
 
   if (limitHit == undefined) {
-    user.userScore = user.userScore + incrementAmount;
+    userData.userScore = userData.userScore + incrementAmount;
   } else {
-    if (user.settingsScoreBlock == 0) {
-      user.userScore = user.userScore + incrementAmount;
+    if (userData.settingsScoreBlock == 0) {
+      userData.userScore = userData.userScore + incrementAmount;
     }
-    if (limitHit) {
-      firebase.database().ref("users/" + user.uid).update({
+    if (limitHit && pageName == "Settings") {
+      firebase.database().ref("users/" + userData.uid).update({
         settingsScoreBlock: 1
       });
     }
