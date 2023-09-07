@@ -122,17 +122,17 @@ window.onload = function instantiate() {
       if (settingsUserScore == settingsUserScoreLimit) {
         extraText = "<br\><br\><br\>...NOW you've done it! No more points for you! >:(";
         updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\", found an easter egg... But got greedy :(" +
-            "  Their ability to obtain user score points through easter eggs has been disabled!");
-        updateUserScore(1, true);
+            "  Their ability to obtain user score points through this easter egg has been disabled!");
+        updateUserScore(user,1, true);
       } else if (settingsUserScore >= 7) {
         extraText = "<br\><br\><br\>...Don't get greedy now!";
-        updateUserScore(1, false);
+        updateUserScore(user,1, false);
       } else if (settingsUserScore >= 5) {
         extraText = "<br\><br\><br\>...Yes... You can click on these text icons to get more points!";
         updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg!");
-        updateUserScore(1, false);
+        updateUserScore(user, 1, false);
       } else {
-        updateUserScore(1, false);
+        updateUserScore(user, 1, false);
       }
     }
 
