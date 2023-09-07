@@ -132,7 +132,7 @@ function generateCustomPrivateGift() {
     };
     updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg! (" + pageName +
         " Page) They also interacted with the gift, woohoo!");
-    updateUserScore(100);
+    updateUserScore(user,100);
   };
 
   let textNode = document.createTextNode("Vegetti");
