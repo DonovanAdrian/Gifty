@@ -804,7 +804,6 @@ function addGiftToDB(){
   let yy = today.getFullYear();
   let creationDate = mm + "/" + dd + "/" + yy;
   let newURL = verifyURLString(giftLinkInp.value);
-  let currentUserScore;
   let giftLimitBool = true;
 
   if (giftURLLimit != "") {
@@ -839,16 +838,7 @@ function addGiftToDB(){
     unsavedChanges = false;
     localGiftAddUpdate = true;
     if(!privateListBool) {
-      if (user.userScore == undefined) {
-        user.userScore = 0;
-      }
-
-      user.userScore = user.userScore + 2;
-      currentUserScore = user.userScore;
-
-      firebase.database().ref("users/" + user.uid).update({
-        userScore: currentUserScore
-      });
+      updateUserScore(user, 2);
 
       let newUid = firebase.database().ref("users/" + user.uid + "/giftList/" + uid).push();
       newUid = newUid.toString();
@@ -875,16 +865,8 @@ function addGiftToDB(){
       successfulDBOperationNotice = "The gift, \"" + giftTitleInp.value + "\", has been successfully added to your gift list! Redirecting back to home...";
       successfulDBNavigation = 2;
     } else {
-      if (privateUser.userScore == undefined) {
-        privateUser.userScore = 0;
-      }
+      updateUserScore(privateUser, 4);
 
-      privateUser.userScore = privateUser.userScore + 4;
-      currentUserScore = privateUser.userScore;
-
-      firebase.database().ref("users/" + privateUser.uid).update({
-        userScore: currentUserScore
-      });
       let newUid = firebase.database().ref("users/" + user.uid + "/privateList/" + uid).push();
       newUid = newUid.toString();
       newUid = findUIDInString(newUid);
