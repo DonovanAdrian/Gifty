@@ -383,7 +383,7 @@ function addInvite(inviteData){
   }
 
   finalInviteData = [friendFriendArr, userFriendArr];
-  updateUserScore(5);
+  updateUserScore(user,5);
   deleteInvite(inviteData, finalInviteData);
 }
 
