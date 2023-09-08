@@ -6,19 +6,40 @@
 
 //***************************
 //User Configurable Variables
-let logoutReminder = 300; //default 300, 300 5 mins
-let logoutLimit = 900; //default 900, 900 15 mins, 600 10 mins
-let commonLoadingTimerLimit = 15000; //default 15000
+//***************************
+//Update the below variables to affect
+// user experience accross Gifty
+let logoutReminder = 300; //default 300, 300 (5 mins) -> Notifies user when they have been inactive too long
+let logoutLimit = 900; //default 900, 900 (15 mins), 600 (10 mins) -> Logs out user after this long
+let commonLoadingTimerLimit = 15000; //default 15000 -> Amount of time before displaying load error
+let jokeGiftChances = 10000; //default 10000 (1 out of jokeGiftChances * 2) -> Chance to generate a joke gift
 let debugElementIntegrity = false; //Used to debug if elements are properly initialized (developer tool)
 let redirectWarningBool = true; //Used to enable or disable URL redirect warnings
 let twentyFourHourTime = false; //Used to enable or disable 24 hour time for getLocalTime();
-let jokeGiftChances = 10000; //default 10000 (1 out of 10000). Only appears on friendList.html
 let jokeGiftEnabled = true; //Enables/disables a joke gift that has a chance to randomly appear
 //User Configurable Variables
 //***************************
 
+//***************************
+//User Scoring Variables
+//***************************
+//Update the below variables to affect
+// user activity scoring across Gifty
+let firstLoginIncrementScore = 10;
+let loginIncrementScore = 1;
+let jokeEasterEggScore = 100;
+let settingsEasterEggScore = 1;
+let invitesEasterEggScoreA = 5;
+let invitesEasterEggScoreB = 10;
+let invitesEasterEggScoreC = 25;
+let sendPrivateMessageScore = 1;
+let confirmInviteScore = 5;
+//User Scoring Variables
+//***************************
 
-
+let userScoreElements = [firstLoginIncrementScore, loginIncrementScore, jokeEasterEggScore, settingsEasterEggScore,
+  invitesEasterEggScoreA, invitesEasterEggScoreB, invitesEasterEggScoreC,
+  sendPrivateMessageScore, confirmInviteScore];
 let listeningFirebaseRefs = [];
 let userArr = [];
 let inviteArr = [];
@@ -1992,32 +2013,34 @@ function backgroundAlternator(){
 }
 
 function updateUserScore(userData, incrementAmount, limitHit) {
-  let previousUserScore = userData.userScore;
-  let currentUserScore;
+  if (incrementAmount > 0) {
+    let previousUserScore = userData.userScore;
+    let currentUserScore;
 
-  if (userData.settingsScoreBlock == undefined)
-    userData.settingsScoreBlock = 0;
-  if (userData.userScore == undefined)
-    userData.userScore = 0;
+    if (userData.settingsScoreBlock == undefined)
+      userData.settingsScoreBlock = 0;
+    if (userData.userScore == undefined)
+      userData.userScore = 0;
 
-  if (limitHit == undefined) {
-    userData.userScore = userData.userScore + incrementAmount;
-  } else {
-    if (userData.settingsScoreBlock == 0) {
+    if (limitHit == undefined) {
       userData.userScore = userData.userScore + incrementAmount;
+    } else {
+      if (userData.settingsScoreBlock == 0) {
+        userData.userScore = userData.userScore + incrementAmount;
+      }
+      if (limitHit && pageName == "Settings" && settingsEasterEggScore != 0) {
+        firebase.database().ref("users/" + userData.uid).update({
+          settingsScoreBlock: 1
+        });
+      }
     }
-    if (limitHit && pageName == "Settings") {
+
+    currentUserScore = userData.userScore;
+
+    if (currentUserScore > previousUserScore) {
       firebase.database().ref("users/" + userData.uid).update({
-        settingsScoreBlock: 1
+        userScore: currentUserScore
       });
     }
-  }
-
-  currentUserScore = user.userScore;
-
-  if (currentUserScore > previousUserScore) {
-    firebase.database().ref("users/" + user.uid).update({
-      userScore: currentUserScore
-    });
   }
 }
