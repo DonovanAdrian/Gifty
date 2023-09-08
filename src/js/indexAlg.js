@@ -379,14 +379,6 @@ function login() {
     let mm = today.getUTCMonth()+1;
     let yy = today.getUTCFullYear();
     let loginDate = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm;
-    let currentUserScore;
-
-    if (userArr[validUserInt].userScore != null) {
-      currentUserScore = userArr[validUserInt].userScore + 5;
-    } else {
-      currentUserScore = 10;
-    }
-
 
     loginInfo.style.color = "#fff";
     if (userArr[validUserInt].firstLogin == 1) {
@@ -398,22 +390,22 @@ function login() {
         loginInfo.innerHTML = "You have a pending WARNING, please check your notifications!";
       }
       userArr[validUserInt].lastLogin = loginDate;
-      userArr[validUserInt].userScore = currentUserScore;
       firebase.database().ref("users/" + userArr[validUserInt].uid).update({
-        lastLogin: loginDate,
-        userScore: currentUserScore
+        lastLogin: loginDate
       });
+
+      updateUserScore(userArr[validUserInt], loginIncrement);
     } else {
       loginInfo.innerHTML = "Welcome to Gifty, " + userArr[validUserInt].name + "!";
       sessionStorage.setItem("lastLoginReviewValid", JSON.stringify(false));
       userArr[validUserInt].firstLogin = 1;
       userArr[validUserInt].lastLogin = loginDate;
-      userArr[validUserInt].userScore = currentUserScore;
       firebase.database().ref("users/" + userArr[validUserInt].uid).update({
         firstLogin: 1,
-        lastLogin: loginDate,
-        userScore: currentUserScore
+        lastLogin: loginDate
       });
+
+      updateUserScore(userArr[validUserInt], firstLoginIncrement);
     }
 
     if (delayLogin == 1) {
