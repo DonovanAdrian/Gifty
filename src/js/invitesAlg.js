@@ -542,13 +542,7 @@ function generatePrivateMessageDialog(userData) {
 }
 
 function addPrivateMessageToDB(userData, message) {
-  let currentUserScore;
-
-  if (user.userScore == undefined)
-    user.userScore = 0;
-  user.userScore = user.userScore + 1;
-  currentUserScore = user.userScore;
-  firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
+  updateUserScore(user, sendPrivateMessage);
 
   closeModal(privateMessageModal);
   addNotificationToDB(userData, message);
@@ -909,7 +903,6 @@ function generateAddUserBtn(){
       let containsInt = false;
       let dashCount = 0;
       let shareCodeBool = false;
-      let currentUserScore;
 
       if (user.settingsScoreBlock == undefined) {
         user.settingsScoreBlock = 0;
@@ -983,11 +976,7 @@ function generateAddUserBtn(){
         inviteInfo.innerHTML = "Very Funny, Please Enter A User Name";
         clearInviteModalFields();
 
-        if (user.userScore == undefined)
-          user.userScore = 0;
-        user.userScore = user.userScore + 5;
-        currentUserScore = user.userScore;
-        firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
+        updateUserScore(user, invitesEasterEggScoreA);
         easterEggA = 1;
         updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg!");
       } else if (userNameInp.value.toUpperCase() == "A USER NAME"
@@ -995,22 +984,14 @@ function generateAddUserBtn(){
         inviteInfo.innerHTML = "Listen Here, Please Input Something Serious";
         clearInviteModalFields();
 
-        if (user.userScore == undefined)
-          user.userScore = 0;
-        user.userScore = user.userScore + 10;
-        currentUserScore = user.userScore;
-        firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
+        updateUserScore(user, invitesEasterEggScoreB);
         easterEggB = 1;
       } else if (userNameInp.value.toUpperCase() == "SOMETHING SERIOUS"
           && easterEggA == 1 && easterEggB == 1 && easterEggC == 0){
         inviteInfo.innerHTML = "You're Just Mocking Me At This Point";
         clearInviteModalFields();
 
-        if (user.userScore == undefined)
-          user.userScore = 0;
-        user.userScore = user.userScore + 25;
-        currentUserScore = user.userScore;
-        firebase.database().ref("users/" + user.uid).update({userScore: currentUserScore});
+        updateUserScore(user, invitesEasterEggScoreC);
         easterEggC = 1;
       } else {
         if (shareCodeBool) {
