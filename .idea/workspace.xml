@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="77ae722c-e8b2-463c-8bb6-522420418add" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/js/invitesAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/invitesAlg.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/moderationQueueAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/moderationQueueAlg.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -197,17 +197,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/donovanadrian/Library/CloudStorage/OneDrive-Personal/Documents/Personal Programming/HTML Programming/Gifty/src/img",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/donovanadrian/Library/CloudStorage/OneDrive-Personal/Documents/Personal Programming/HTML Programming/Gifty/src/img&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/img" />
@@ -396,7 +396,8 @@
       <workItem from="1674352442932" duration="70184000" />
       <workItem from="1682741065819" duration="13238000" />
       <workItem from="1684123676867" duration="72938000" />
-      <workItem from="1689126743232" duration="56034000" />
+      <workItem from="1689126743232" duration="56641000" />
+      <workItem from="1694492578262" duration="523000" />
     </task>
     <servers />
   </component>
