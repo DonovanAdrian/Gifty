@@ -132,7 +132,7 @@ function generateCustomPrivateGift() {
     };
     updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg! (" + pageName +
         " Page) They also interacted with the gift, woohoo!");
-    updateUserScore(user,100);
+    updateUserScore(user,jokeEasterEggScore);
   };
 
   let textNode = document.createTextNode("Vegetti");
@@ -184,7 +184,7 @@ window.onload = function instantiate() {
   limitsInitial = firebase.database().ref("limits/");
 
   if (createdJokeGift) {
-    updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg! (" + pageName +
+    updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg... (" + pageName +
         " Page) It was only generated though, they didn't click on it... yet.");
   }
 
