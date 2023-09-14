@@ -141,7 +141,6 @@ let notificationBtn;
 let dataListContainer;
 let testData;
 let currentTitle;
-let dataListChecker;
 let verifiedElements;
 let analytics;
 let giftStorage;
@@ -152,7 +151,7 @@ let user;
 
 
 
-function verifyElementIntegrity(arr){
+function verifyElementIntegrity(arr) {
   if (debugElementIntegrity) {
     verifiedElements = [];
 
@@ -171,12 +170,9 @@ function verifyElementIntegrity(arr){
 
     for (let i = 0; i < arr.length; i++) {
       try {
-        if (arr[i].innerHTML == undefined) {
+        if (arr[i] == undefined) {
           if (consoleOutput)
-            console.log("WARNING: " + i + " UNDEFINED!");
-        } else if (arr[i].innerHTML == null) {
-          if (consoleOutput)
-            console.log("WARNING: " + i + " NULL!");
+            console.log("WARNING: Element Index " + i + " Undefined!");
         } else {
           verifiedElements.push(arr[i]);
         }
@@ -187,7 +183,12 @@ function verifyElementIntegrity(arr){
     }
 
     if (consoleOutput)
-      console.log("Verified " + verifiedElements.length + " Elements!");
+      if (arr.length != verifiedElements.length) {
+        console.log("Only Verified " + verifiedElements.length + " Elements, Check The Above Log!");
+        updateMaintenanceLog(pageName, "Element Verification Failure, Please Notify Gifty Developer!");
+      } else {
+        console.log("Verified " + verifiedElements.length + " Elements!");
+      }
   }
 }
 
@@ -216,19 +217,27 @@ function initializeFadeOut() {
   });
 }
 
-function initializeSupplementalModals() {
+function initializeSupplementalElements() {
   offlineModal = document.getElementById("offlineModal");
   offlineSpan = document.getElementById("closeOffline");
   notificationModal = document.getElementById("notificationModal");
   notificationTitle = document.getElementById("notificationTitle");
   notificationInfo = document.getElementById("notificationInfo");
   noteSpan = document.getElementById("closeNotification");
+
+  dataListContainer = document.getElementById("dataListContainer");
+  if(dataListContainer != undefined) {
+    dataListExists = true;
+    dataListContainer = document.getElementById("dataListContainer");
+    testData = document.getElementById("testData");
+  }
+
+  console.log("Initialized Supplemental Elements");
 }
 
 function commonInitialization(){
   let commonDBInitCount = 0;
   let commonDBInitLimit = 5;
-  initializeSupplementalModals();
   backgroundAlternator();
 
   window.addEventListener( "pageshow", function ( event ) {
@@ -306,7 +315,7 @@ function commonInitialization(){
               liItem.className = "gift";
               let textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
               liItem.appendChild(textNode);
-              dataListContainer.insertBefore(liItem, dataListChecker.childNodes[0]);
+              dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
             }
           }
         }
@@ -449,12 +458,8 @@ function databaseCommonPulse() {
 function getCurrentUserCommon(){
   let restrictedPages = ["Backups", "Moderation", "ModerationQueue", "Family", "FamilyUpdate"];
   let notificationPages = ["Home", "BoughtGifts", "Confirmation", "FriendList", "Invites", "Lists", "PrivateFriendList"];
-  dataListChecker = document.getElementById("dataListContainer");
-  if(dataListChecker != undefined) {
-    dataListExists = true;
-    dataListContainer = document.getElementById("dataListContainer");
-    testData = document.getElementById("testData");
-  }
+
+  initializeSupplementalElements();
 
   try {
     if (pageName == "GiftAddUpdate") {
@@ -1750,37 +1755,42 @@ function deployListEmptyNotification(dataItemText){
 }
 
 function updateMaintenanceLog(locationData, detailsData) {
-  let today = new Date();
-  let UTChh = today.getUTCHours() + "";
-  let UTCmm = today.getUTCMinutes() + "";
-  let UTCss = today.getUTCSeconds() + "";
-  let dd = today.getUTCDate() + "";
-  let mm = today.getMonth() + 1 + "";
-  let yy = today.getFullYear() + "";
+  if (dbInitialized) {
+    let today = new Date();
+    let UTChh = today.getUTCHours() + "";
+    let UTCmm = today.getUTCMinutes() + "";
+    let UTCss = today.getUTCSeconds() + "";
+    let dd = today.getUTCDate() + "";
+    let mm = today.getMonth() + 1 + "";
+    let yy = today.getFullYear() + "";
 
 
-  if (UTChh.length == 1)
-    UTChh = "0" + UTChh
-  if (UTCmm.length == 1)
-    UTCmm = "0" + UTCmm
-  if (UTCss.length == 1)
-    UTCss = "0" + UTCss
-  if (dd.length == 1)
-    dd = "0" + dd
-  if (mm.length == 1)
-    mm = "0" + mm
+    if (UTChh.length == 1)
+      UTChh = "0" + UTChh
+    if (UTCmm.length == 1)
+      UTCmm = "0" + UTCmm
+    if (UTCss.length == 1)
+      UTCss = "0" + UTCss
+    if (dd.length == 1)
+      dd = "0" + dd
+    if (mm.length == 1)
+      mm = "0" + mm
 
-  let timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
-  let newUid = firebase.database().ref("maintenance").push();
-  newUid = newUid.toString();
-  newUid = findUIDInString(newUid);
+    let timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
+    let newUid = firebase.database().ref("maintenance").push();
+    newUid = newUid.toString();
+    newUid = findUIDInString(newUid);
 
-  firebase.database().ref("maintenance/" + newUid).set({
-    uid: newUid,
-    location: locationData,
-    details: detailsData,
-    time: timeData
-  });
+    firebase.database().ref("maintenance/" + newUid).set({
+      uid: newUid,
+      location: locationData,
+      details: detailsData,
+      time: timeData
+    });
+  } else {
+    if (consoleOutput)
+      console.log("Attempted To Update Maintenance Log... DB Not Initialized!");
+  }
 }
 
 function setAlternatingButtonText(initialStringA, altStringA, alternatingBtnA,
