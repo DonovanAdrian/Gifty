@@ -15,7 +15,6 @@
 
   <script src="js/passOp.js?v=2023-08-12" type="text/javascript"></script>
   <script src="js/moderationAlg.js?v=2023-08-12" type="text/javascript"></script>
-  <script src="js/secretSantaAlg.js?v=2023-08-12" type="text/javascript"></script>
   <script src="js/common.js?v=2023-08-12" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -65,10 +64,15 @@
       <p id="userFriends" alt="This User's Friend Count">Loading Friends...</p>
       <p id="userLastLogin" alt="The Last Time This User Logged In">Loading Last Login...</p>
       <p id="userScoreElem" alt="This User's User Score">Loading User Score...</p>
-      <p id="userPassword">Loading Password...</p>
-      <p id="userSecretSanta">Loading Secret Santa Status...</p>
-      <p id="moderatorOp">Loading Mod Option...</p>
-      <p id="sendPrivateMessage">Loading Private Message...</p>
+      <span class="basicBtn" id="userPassword" alt="View This User's Password">Loading Password...</span>
+      <br/>
+      <br/>
+      <span class="basicBtn" id="moderatorOp" alt="Alternate Moderator Status">Loading Mod Option...</span>
+      <br/>
+      <br/>
+      <span class="basicBtn" id="sendPrivateMessage" alt="Send User A Private Message">Loading Private Message...</span>
+      <br/>
+      <br/>
     </div>
 
     <!--Modal Footer-->
@@ -103,11 +107,11 @@
   </div>
 </div>
 
-<div id="santaModal" class="modal">
+<div id="userOptionsModal" class="modal">
   <div class="modal-content">
     <!--Modal Header-->
     <div class="modal-header">
-      <span class="close" id="secretSantaSpan">&times;</span>
+      <span class="close" id="userOptionsSpan">&times;</span>
       <h2>Moderation Settings</h2>
     </div>
 
@@ -123,11 +127,11 @@
       <br/>
       <br/>
       <img class=infoIcon id="giftLinkInfoIcon" src="img/info.png">
-      <span class="basicBtn" id="giftLinkBtn" alt="Disable Or Enable Gift URL Limiter">Loading...</span>
+      <span class="basicBtn" id="giftLinkBtn" alt="Disable Or Enable Gift URL Limiter">Loading Link Button...</span>
       <br/>
       <br/>
       <img class=infoIcon id="limitsInfoIcon" src="img/info.png">
-      <span class="basicBtn" id="limitsBtn" alt="Set Database Limits">Loading...</span>
+      <span class="basicBtn" id="limitsBtn" alt="Set Database Limits">Loading Limits Button...</span>
       <br/>
       <br/>
       <p>General Options:</p>
@@ -140,7 +144,6 @@
       <span class="dropdown" id="showUserScore" alt="Show User Score" style="display: none">User Score</span>
       <span class="dropdown" id="showShareCode" alt="Show Share Code" style="display: none">Share Code</span>
       <span class="dropdown" id="showFriends" alt="Show Number of Friends" style="display: none">Friend Amount</span>
-      <span class="dropdown" id="showSantaSignUp" alt="Show Santa Sign Up" style="display: none">Santa Sign Up</span>
       <span class="dropdown" id="showModerator" alt="Show Moderator Status" style="display: none">Moderator Status</span>
       <br/>
       <br/>
@@ -149,26 +152,13 @@
       <br/>
       <br/>
       <img class=infoIcon id="loginFxnInfoIcon" src="img/info.png">
-      <span class="basicBtn" id="loginFxnBtn" alt="Disable Or Enable Login Functionality">Loading...</span>
+      <span class="basicBtn" id="loginFxnBtn" alt="Disable Or Enable Login Functionality">Loading Login Button...</span>
       <br/>
       <br/>
       <img class=infoIcon id="listLimitInfoIcon" src="img/info.png">
-      <span class="basicBtn" id="listLimitBtn" alt="Disable Or Enable List Limit Functionality">Loading...</span>
+      <span class="basicBtn" id="listLimitBtn" alt="Disable Or Enable List Limit Functionality">Loading List Button...</span>
       <br/>
       <br/>
-      <p>Secret Santa Options:</p>
-      <img class=infoIcon id="secretSantaStateInfoIcon" src="img/info.png">
-      <span class="basicBtn" id="secretSantaBtn" alt="Cycle Secret Santa State">Loading Secret Santa Button...</span>
-      <br/>
-      <br/>
-      <img class=infoIcon id="secretSantaShuffleInfoIcon" src="img/info.png">
-      <span class="basicBtn" id="secretSantaShuffle" alt="Shuffle Secret Santa Names">Loading Shuffle Button...</span>
-      <br/>
-      <br/>
-      <img class=infoIcon id="secretSantaAutoInfoIcon" src="img/info.png">
-      <span class="basicBtn" id="secretSantaAutoBtn" alt="Enable Or Disable Automatic Control">Loading Auto Button...</span>
-      <br/>
-      <p class="giftInfSmall">*When automatic control is enabled, the button text will change to show the next state-change date.</p>
     </div>
 
     <!--Modal Footer-->
