@@ -7,15 +7,12 @@
 let moderationElements = [];
 let initializedUsers = [];
 
-let secretSantaAssignErrorMsg = "try again or look at the console for more details!";
-
 let moderationSet = 1;
 let globalNoteInt = 0;
 let listLimit = 0;
 let giftLimit = 0;
 let userLimit = 0;
 
-let secretSantaInit = false;
 let userUpdateLocal = false;
 let allowLogin = null;
 
@@ -40,7 +37,6 @@ let showLastLogin;
 let showUserScore;
 let showShareCode;
 let showFriends;
-let showSantaSignUp;
 let showModerator;
 let globalNoteInfoIcon;
 let sendGlobalNotification;
@@ -48,12 +44,6 @@ let loginFxnInfoIcon;
 let loginFxnBtn;
 let listLimitInfoIcon;
 let listLimitBtn;
-let secretSantaStateInfoIcon;
-let secretSantaBtn;
-let secretSantaShuffleInfoIcon;
-let secretSantaShuffle;
-let secretSantaAutoInfoIcon;
-let secretSantaAutoBtn;
 let confirmModal;
 let closeConfirmModal;
 let confirmTitle;
@@ -76,8 +66,8 @@ let resetDefaultLoginDisabledBtn;
 let confirmLoginDisabled;
 let cancelLoginDisabled;
 let userOptionsBtn;
-let secretSantaModal;
-let santaModalSpan;
+let userOptionsModal;
+let userOptionsSpan;
 let settingsNote;
 let userModal;
 let closeUserModal;
@@ -88,7 +78,6 @@ let userPrivateGifts;
 let userLastLogin;
 let userScoreElem;
 let userPassword;
-let userSecretSanta;
 let moderatorOp;
 let sendPrivateMessage;
 let warnUser;
@@ -143,7 +132,6 @@ window.onload = function instantiate() {
   showUserScore = document.getElementById("showUserScore");
   showShareCode = document.getElementById("showShareCode");
   showFriends = document.getElementById("showFriends");
-  showSantaSignUp = document.getElementById("showSantaSignUp");
   showModerator = document.getElementById("showModerator");
   globalNoteInfoIcon = document.getElementById("globalNoteInfoIcon");
   sendGlobalNotification = document.getElementById("sendGlobalNotification");
@@ -151,12 +139,6 @@ window.onload = function instantiate() {
   loginFxnBtn = document.getElementById("loginFxnBtn");
   listLimitInfoIcon = document.getElementById("listLimitInfoIcon");
   listLimitBtn = document.getElementById("listLimitBtn");
-  secretSantaStateInfoIcon = document.getElementById("secretSantaStateInfoIcon");
-  secretSantaBtn = document.getElementById("secretSantaBtn");
-  secretSantaShuffleInfoIcon = document.getElementById("secretSantaShuffleInfoIcon");
-  secretSantaShuffle = document.getElementById("secretSantaShuffle");
-  secretSantaAutoInfoIcon = document.getElementById("secretSantaAutoInfoIcon");
-  secretSantaAutoBtn = document.getElementById("secretSantaAutoBtn");
   confirmModal = document.getElementById("confirmModal");
   closeConfirmModal = document.getElementById("closeConfirmModal");
   confirmTitle = document.getElementById("confirmTitle");
@@ -179,8 +161,8 @@ window.onload = function instantiate() {
   confirmLoginDisabled = document.getElementById("confirmLoginDisabled");
   cancelLoginDisabled = document.getElementById("cancelLoginDisabled");
   userOptionsBtn = document.getElementById("userOptionsBtn");
-  secretSantaModal = document.getElementById("santaModal");
-  santaModalSpan = document.getElementById("secretSantaSpan");
+  userOptionsModal = document.getElementById("userOptionsModal");
+  userOptionsSpan = document.getElementById("userOptionsSpan");
   settingsNote = document.getElementById("settingsNote");
   userModal = document.getElementById("userModal");
   closeUserModal = document.getElementById("closeUserModal");
@@ -193,7 +175,6 @@ window.onload = function instantiate() {
   userLastLogin = document.getElementById("userLastLogin");
   userScoreElem = document.getElementById("userScoreElem");
   userPassword = document.getElementById("userPassword");
-  userSecretSanta = document.getElementById("userSecretSanta");
   moderatorOp = document.getElementById("moderatorOp");
   sendPrivateMessage = document.getElementById("sendPrivateMessage");
   warnUser = document.getElementById("warnUser");
@@ -204,28 +185,29 @@ window.onload = function instantiate() {
   globalMsgInp = document.getElementById("globalMsgInp");
   sendMsg = document.getElementById("sendMsg");
   cancelMsg = document.getElementById("cancelMsg");
-  moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, confirmModal, closeConfirmModal,
-    confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal, notificationTitle, notificationInfo, noteSpan,
-    privateMessageModal, sendGlobalNotification, nukeAllUserNotifications, nukeAllUserScores, loginFxnBtn, giftLinkBtn,
-    limitsBtn, databaseLimitsModal, closeDatabaseLimitsModal, giftLimitInp, userLimitInp, confirmLimits, cancelLimits,
-    loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal, loginDisabledDesc, loginDisabledInp,
-    loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown,
-    showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends, showSantaSignUp,
-    showModerator, sendPrivateMessage, userModal, userOptionsBtn, secretSantaModal, santaModalSpan, secretSantaBtn,
-    secretSantaShuffle, secretSantaAutoBtn, settingsNote, testData, closeUserModal, userName, userUID, userUserName,
-    userGifts, userPrivateGifts, userFriends, userLastLogin, userScoreElem, userPassword, userSecretSanta, moderatorOp,
-    sendPrivateMessage, warnUser, banUser, closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
 
   sessionStorage.setItem("moderationSet", moderationSet);
   getCurrentUserCommon();
   commonInitialization();
   checkModerationCookie();
   checkUserCookie();
+
+  moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, confirmModal, closeConfirmModal,
+    confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal, notificationTitle, notificationInfo, noteSpan,
+    privateMessageModal, sendGlobalNotification, nukeAllUserNotifications, nukeAllUserScores, loginFxnBtn, giftLinkBtn,
+    limitsBtn, databaseLimitsModal, closeDatabaseLimitsModal, giftLimitInp, userLimitInp, confirmLimits, cancelLimits,
+    loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal, loginDisabledDesc, loginDisabledInp,
+    loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown,
+    showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends, showModerator,
+    sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal, userOptionsSpan, settingsNote, testData,
+    closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends, userLastLogin,
+    userScoreElem, userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser, closePrivateMessageModal,
+    globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
+
   verifyElementIntegrity(moderationElements);
 
   userInitial = firebase.database().ref("users/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-  autoSecretSanta = firebase.database().ref("secretSanta/");
   moderatorSettings = firebase.database().ref("moderatorSettings/");
   familyInitial = firebase.database().ref("family/");
   loginInitial = firebase.database().ref("login/");
@@ -239,19 +221,19 @@ window.onload = function instantiate() {
     userOptionsBtn.onclick = function() {
       userOptionsBtn.style.transform = "rotate(" + (180 % 360) + "deg)";
 
-      santaModalSpan.onclick = function(){
-        closeModal(secretSantaModal);
+      userOptionsSpan.onclick = function(){
+        closeModal(userOptionsModal);
         userOptionsBtn.style.transform = "rotate(" + (-60 % 360) + "deg)";
       };
 
       window.onclick = function (event) {
-        if (event.target == secretSantaModal) {
-          closeModal(secretSantaModal);
+        if (event.target == userOptionsModal) {
+          closeModal(userOptionsModal);
           userOptionsBtn.style.transform = "rotate(" + (-60 % 360) + "deg)";
         }
       };
 
-      openModal(secretSantaModal, "userOptionsModal", true);
+      openModal(userOptionsModal, "userOptionsModal", true);
     };
   }
 
@@ -312,36 +294,6 @@ window.onload = function instantiate() {
           "the parent/child feature is intended to prevent infants from being assigned to their parents, this button " +
           "would optionally allow you to prevent parents from seeing what has been bought on their infant's list and " +
           "vis versa if the parent is accessing their infants account.", 10);
-    };
-
-    secretSantaStateInfoIcon.onclick = function () {
-      deployNotificationModal(true, "Secret Santa States", "This button allows you " +
-          "to manually switch between Secret Santa States, even if automatic mode is enabled. The three states are as " +
-          "follows:" +
-          "<br><br><br>1. IDLE: Secret Santa is idle" +
-          "<br>-----> Secret Santa is effectively disabled in this state." +
-          "<br>-----> Button Text = \"Enable Secret Santa\"" +
-          "<br>-----> Click the button to move to the READY state." +
-          "<br><br>2. READY: Secret Santa is ready for assignments" +
-          "<br>-----> Users can sign up for Secret Santa in this state" +
-          "<br>-----> Button Text = \"Assign Secret Santa Names\"" +
-          "<br>-----> Click the button to move to the ACTIVE state and assign users." +
-          "<br><br>3. ACTIVE: Secret Santa is active" +
-          "<br>-----> Users are assigned to each other in this state." +
-          "<br>-----> Button Text = \"Disable Secret Santa\"" +
-          "<br>-----> Click the button to move to the IDLE state. Any assigned names will be cleared!", 60);
-    };
-
-    secretSantaShuffleInfoIcon.onclick = function () {
-      deployNotificationModal(true, "Secret Santa Shuffle", "This button allows you " +
-          "to shuffle Secret Santa assignments if desired.", 6);
-    };
-
-    secretSantaAutoInfoIcon.onclick = function () {
-      deployNotificationModal(true, "Secret Santa Auto", "This button allows you " +
-          "to choose whether Secret Santa should be automatically run. This will allow Secret Santa to run without any " +
-          "outside intervention. See the first Secret Santa Info Icon for more details about Secret Santa States. " +
-          "Automatic notifications will also be delivered when Secret Santa is completed for the year.", 12);
     };
   }
 
@@ -474,7 +426,7 @@ window.onload = function instantiate() {
   }
 
   function generateLimitsModal() {
-    closeModal(secretSantaModal);
+    closeModal(userOptionsModal);
 
     giftLimitInp.value = giftLimit;
     userLimitInp.value = userLimit;
@@ -496,7 +448,7 @@ window.onload = function instantiate() {
               + "\" " + "to Gift Limit: " + giftLimitInp.value + " and User Limit: " + userLimitInp.value);
 
           closeModal(databaseLimitsModal);
-          openModal(secretSantaModal, "userOptionsModal");
+          openModal(userOptionsModal, "userOptionsModal");
         } else {
           deployNotificationModal(true, "Invalid Limits!",
               "Please Only Enter Numbers Greater Than Zero!");
@@ -509,18 +461,18 @@ window.onload = function instantiate() {
 
     cancelLimits.onclick = function(){
       closeModal(databaseLimitsModal);
-      openModal(secretSantaModal, "userOptionsModal");
+      openModal(userOptionsModal, "userOptionsModal");
     };
 
     closeDatabaseLimitsModal.onclick = function(){
       closeModal(databaseLimitsModal);
-      openModal(secretSantaModal, "userOptionsModal");
+      openModal(userOptionsModal, "userOptionsModal");
     };
 
     window.onclick = function (event) {
       if (event.target == databaseLimitsModal) {
         closeModal(databaseLimitsModal);
-        openModal(secretSantaModal, "userOptionsModal");
+        openModal(userOptionsModal, "userOptionsModal");
       }
     }
 
@@ -528,7 +480,7 @@ window.onload = function instantiate() {
   }
 
   function generateLoginDisabledModal(urlLimitBool) {
-    closeModal(secretSantaModal);
+    closeModal(userOptionsModal);
 
     if (urlLimitBool) {
       loginDisabledTitle.innerHTML = "Set Custom URL Limiter String";
@@ -598,25 +550,25 @@ window.onload = function instantiate() {
               "with the following message: " + loginDisabledInp.value);
 
           closeModal(loginDisabledModal);
-          openModal(secretSantaModal, "userOptionsModal");
+          openModal(userOptionsModal, "userOptionsModal");
         }
       };
     }
 
     cancelLoginDisabled.onclick = function(){
       closeModal(loginDisabledModal);
-      openModal(secretSantaModal, "userOptionsModal");
+      openModal(userOptionsModal, "userOptionsModal");
     };
 
     closeLoginDisabledModal.onclick = function(){
       closeModal(loginDisabledModal);
-      openModal(secretSantaModal, "userOptionsModal");
+      openModal(userOptionsModal, "userOptionsModal");
     };
 
     window.onclick = function (event) {
       if (event.target == loginDisabledModal) {
         closeModal(loginDisabledModal);
-        openModal(secretSantaModal, "userOptionsModal");
+        openModal(userOptionsModal, "userOptionsModal");
       }
     }
 
@@ -725,47 +677,6 @@ window.onload = function instantiate() {
             listedUserData: "None"
           });
           fetchModeratorSettings(moderatorSettings);
-        }
-      });
-    };
-
-    let fetchSecretSanta = function (postRef) {
-      postRef.once("value").then(function(snapshot) {
-        if(snapshot.exists()) {
-          console.log("Secret Santa Snapshot Exists!");
-          postRef.on("child_added", function (data) {
-            console.log(data.key + " added");
-            if (secretSantaInit == false) {
-              secretSantaInit = true;
-            }
-
-            initializeSecretSantaDataMod(data);
-          });
-
-          postRef.on("child_changed", function (data) {
-            console.log(data.key + " changed");
-
-            initializeSecretSantaDataMod(data);
-          });
-
-          postRef.on("child_removed", function (data) {
-            console.log(data.key + " removed!");
-
-            firebase.database().ref("secretSanta/").update({
-              automaticUpdates: false,
-              manualUpdates: false,
-              santaState: 1
-            });
-          });
-        } else {
-          console.log("Initializing Secret Santa In DB");
-
-          firebase.database().ref("secretSanta/").update({
-            automaticUpdates: false,
-            manualUpdates: false,
-            santaState: 1
-          });
-          fetchSecretSanta(autoSecretSanta);
         }
       });
     };
@@ -953,7 +864,6 @@ window.onload = function instantiate() {
 
     fetchData(userInitial);
     fetchInvites(userInvites);
-    fetchSecretSanta(autoSecretSanta);
     fetchModeratorSettings(moderatorSettings);
     fetchFamilies(familyInitial);
     fetchLogin(loginInitial);
@@ -961,7 +871,6 @@ window.onload = function instantiate() {
 
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
-    listeningFirebaseRefs.push(autoSecretSanta);
     listeningFirebaseRefs.push(moderatorSettings);
     listeningFirebaseRefs.push(familyInitial);
     listeningFirebaseRefs.push(loginInitial);
@@ -1145,46 +1054,6 @@ function initUserElement(liItem, userData) {
     }
     userPassword.innerHTML = "Click On Me To View Password";
 
-    if (currentState == 2) {
-      if(userData.secretSanta != undefined) {
-        if (userData.secretSanta == 0) {
-          userSecretSanta.innerHTML = "Click To Opt Into Secret Santa";
-          userSecretSanta.style.color = "#f00";
-        } else {
-          userSecretSanta.innerHTML = "Click To Opt Out Of Secret Santa";
-          userSecretSanta.style.color = "#00d118";
-        }
-      } else {
-        userSecretSanta.innerHTML = "Click To Opt Into Secret Santa";
-        userSecretSanta.style.color = "#f00";
-      }
-      userSecretSanta.onclick = function() {
-        manuallyOptInOut(userData);
-      };
-    } else if (currentState == 3 && userData.secretSanta == 1) {
-      if (userData.secretSantaName == "") {
-        userSecretSanta.innerHTML = "This User Was Not Assigned A Name!";
-        userSecretSanta.style.color = "#000";
-        userSecretSanta.onclick = function(){};
-      } else {
-        userSecretSanta.innerHTML = "Click Here To View Secret Santa Assignment";
-        userSecretSanta.style.color = "#00d118";
-        userSecretSanta.onclick = function(){
-          let userSecretIndex = findUIDItemInArr(userData.secretSantaName, userArr, true);
-          userSecretSanta.innerHTML = userArr[userSecretIndex].name;
-          userSecretSanta.onclick = function(){};
-        };
-      }
-    } else if (currentState == 3 && userData.secretSanta == 0) {
-      userSecretSanta.innerHTML = "This User Did Not Sign Up For Secret Santa";
-      userSecretSanta.style.color = "#000";
-      userSecretSanta.onclick = function(){};
-    } else {
-      userSecretSanta.innerHTML = "Secret Santa Is Not Active!";
-      userSecretSanta.style.color = "#000";
-      userSecretSanta.onclick = function() {};
-    }
-
     userGifts.onclick = function() {
       if(userData.uid == user.uid){
         deployNotificationModal(true, "User Info",
@@ -1236,7 +1105,7 @@ function initUserElement(liItem, userData) {
       moderatorOp.onclick = function() {};
     } else if (userData.moderatorInt == 1) {
       moderatorOp.innerHTML = "Click To Revoke Moderator Role";
-      moderatorOp.style.color = "#00d118";
+      moderatorOp.style.background = "#f00";
       moderatorOp.onclick = function() {
         if(userData.uid == user.uid){
           deployNotificationModal(true, "User Info",
@@ -1249,7 +1118,7 @@ function initUserElement(liItem, userData) {
       };
     } else {
       moderatorOp.innerHTML = "Click To Grant Moderator Role";
-      moderatorOp.style.color = "#f00";
+      moderatorOp.style.background = "#00d118";
       moderatorOp.onclick = function() {
         if(userData.userName == user.userName){
           deployNotificationModal(true, "User Info",
@@ -1278,32 +1147,6 @@ function initUserElement(liItem, userData) {
     closeUserModal.onclick = function() {
       closeModal(userModal);
     };
-
-    function manuallyOptInOut(userData){
-      userUpdateLocal = true;
-      if (userData.secretSanta != null) {
-        if (userData.secretSanta == 0) {
-          firebase.database().ref("users/" + userData.uid).update({
-            secretSanta: 1
-          });
-          deployNotificationModal(false, "Secret Santa Opted In!",
-              userData.name + " has been manually opted in to the Secret Santa Program!");
-        } else {
-          firebase.database().ref("users/" + userData.uid).update({
-            secretSanta: 0
-          });
-          deployNotificationModal(false, "Secret Santa Opted Out!",
-              userData.name + " has been manually opted out of the Secret Santa Program!");
-        }
-      } else {
-        firebase.database().ref("users/" + userData.uid).update({
-          secretSanta: 0
-        });
-        deployNotificationModal(false, "Secret Santa Opted Out!",
-            userData.name + " has been manually opted out of the Secret Santa Program!");
-      }
-      userUpdateLocal = false;
-    }
   };
 }
 
@@ -1320,7 +1163,7 @@ function removeUserElement(uid) {
 
 function initializeShowUserData(showDataSelection) {
   let listOfShowUserElements = [showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends,
-    showSantaSignUp, showModerator];
+    showModerator];
   let showHideUserDataBool = false;
 
   userListDropDown.innerHTML = "Select Listed User Data (" + showDataSelection + ")";;
@@ -1359,9 +1202,6 @@ function initializeShowUserData(showDataSelection) {
     };
     showFriends.onclick = function(){
       updateDBWithShowUserData("Friends");
-    };
-    showSantaSignUp.onclick = function(){
-      updateDBWithShowUserData("Santa");
     };
     showModerator.onclick = function(){
       updateDBWithShowUserData("Moderator");
@@ -1477,26 +1317,6 @@ function updateInitializedUsers(){
             userDataString = userDataName + " - " + userData.friends.length + " Friends";
           } else if (userData.friends.length == 1) {
             userDataString = userDataName + " - 1 Friend";
-          }
-          break;
-        case "Santa":
-          userDataString = userDataName;
-          if (userData.secretSantaName == undefined) {
-            userData.secretSantaName = "";
-          }
-          if (userData.secretSanta == undefined) {
-            userData.secretSanta = 0;
-          }
-
-          if (userData.secretSanta == 1 && currentState != 3) {
-            tempElem.className += " santa";
-            userDataString = userDataName + " - Signed Up!";
-          } else if (userData.secretSantaName != "") {
-            tempElem.className += " santa";
-            userDataString = userDataName + " - Name Assigned!";
-          } else if (userData.secretSanta == 1 && userData.secretSantaName == "") {
-            tempElem.className += " highSev";
-            userDataString = userDataName + " - NOT Assigned";
           }
           break;
         case "Moderator":
