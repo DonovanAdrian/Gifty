@@ -64,12 +64,14 @@ window.onload = function instantiate() {
   viewListBtn = document.getElementById("viewListBtn");
   giftModal = document.getElementById("giftModal");
   closeGiftModal = document.getElementById("closeGiftModal");
+
+  getCurrentUser();
+  commonInitialization();
+
   boughtGiftElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, backBtn, inviteNote, homeNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, giftTitleFld, giftLinkFld, giftWhereFld,
     giftDescriptionFld, giftCreationDateFld, viewListBtn, giftModal, closeGiftModal, testData];
 
-  getCurrentUser();
-  commonInitialization();
   verifyElementIntegrity(boughtGiftElements);
 
   userInitial = firebase.database().ref("users/");
@@ -407,7 +409,7 @@ window.onload = function instantiate() {
     let textNode = document.createTextNode(giftData.title + " - for " + giftOwner);
     liItem.appendChild(textNode);
 
-    dataListContainer.insertBefore(liItem, document.getElementById("dataListContainer").childNodes[0]);
+    dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
     initializedGiftsArr.push(giftData.uid);
     clearInterval(commonLoadingTimer);
     clearInterval(offlineTimer);
