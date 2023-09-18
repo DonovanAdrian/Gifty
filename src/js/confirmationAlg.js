@@ -54,12 +54,14 @@ window.onload = function instantiate() {
   userShareCodeFld = document.getElementById("userShareCodeFld");
   userAcceptBtn = document.getElementById("userAcceptBtn");
   userDeleteBtn = document.getElementById("userDeleteBtn");
+
+  getCurrentUser();
+  commonInitialization();
+
   confirmationElements = [testData, notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, inviteModal, closeInviteModal, userNameFld,
     userUNameFld, userShareCodeFld, userAcceptBtn, userDeleteBtn];
 
-  getCurrentUser();
-  commonInitialization();
   verifyElementIntegrity(confirmationElements);
 
   userInitial = firebase.database().ref("users/");
@@ -383,7 +385,7 @@ function addInvite(inviteData){
   }
 
   finalInviteData = [friendFriendArr, userFriendArr];
-  updateUserScore(user, confirmInvite);
+  updateUserScore(user, confirmInviteScore);
   deleteInvite(inviteData, finalInviteData);
 }
 
