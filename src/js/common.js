@@ -185,7 +185,7 @@ function verifyElementIntegrity(arr) {
     if (consoleOutput)
       if (arr.length != verifiedElements.length) {
         console.log("Only Verified " + verifiedElements.length + " Elements, Check The Above Log!");
-        updateMaintenanceLog(pageName, "Element Verification Failure, Please Notify Gifty Developer!");
+        updateMaintenanceLog(pageName, "Element Verification Failure, Send This Error To A Gifty Developer!");
       } else {
         console.log("Verified " + verifiedElements.length + " Elements!");
       }
@@ -231,8 +231,6 @@ function initializeSupplementalElements() {
     dataListContainer = document.getElementById("dataListContainer");
     testData = document.getElementById("testData");
   }
-
-  console.log("Initialized Supplemental Elements");
 }
 
 function commonInitialization(){
@@ -455,7 +453,7 @@ function databaseCommonPulse() {
   listeningFirebaseRefs.push(commonUserValidPulse);
 }
 
-function getCurrentUserCommon(){
+function getCurrentUserCommon() {
   let restrictedPages = ["Backups", "Moderation", "ModerationQueue", "Family", "FamilyUpdate"];
   let notificationPages = ["Home", "BoughtGifts", "Confirmation", "FriendList", "Invites", "Lists", "PrivateFriendList"];
 
@@ -511,7 +509,8 @@ function getCurrentUserCommon(){
     try {
       const config = JSON.parse(sessionStorage.config);
       initializeDB(config);
-      updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString());
+      updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+          "Error To A Gifty Developer.");
       if(consoleOutput)
         console.log("Error Report Sent!");
     } catch (err) {
