@@ -136,6 +136,10 @@ window.onload = function instantiate() {
   confMemberUserName = document.getElementById("confMemberUserName");
   addMemberConfirm = document.getElementById("addMemberConfirm");
   addMemberDeny = document.getElementById("addMemberDeny");
+
+  getCurrentUserCommon();
+  commonInitialization();
+
   familyUpdateElements = [inviteNote, settingsNote, dataListContainer, testData, backBtn, familySettings,
     familyMemberViewModal, closeFamilyMemberViewModal, familyMemberName, familyMemberUserName, familyMemberUID,
     familyMemberParent, familyMemberChild, familyMemberPCClear, removeFamilyMember, familyPCModal, closeFamilyPCModal,
@@ -147,8 +151,6 @@ window.onload = function instantiate() {
     confirmMemberModal, closeConfirmMemberModal, confirmMemberTitle, confMemberUserName, addMemberConfirm,
     addMemberDeny, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
 
-  getCurrentUserCommon();
-  commonInitialization();
   checkFamilyMemberCookie();
   verifyElementIntegrity(familyUpdateElements);
 
