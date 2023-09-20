@@ -57,13 +57,15 @@ window.onload = function instantiate() {
   familyNameInp = document.getElementById("familyNameInp");
   addFamily = document.getElementById("addFamily");
   cancelFamily = document.getElementById("cancelFamily");
+
+  getCurrentUserCommon();
+  commonInitialization();
+
   familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, backBtn, familyModal,
     closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily, familyEdit,
     familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
     offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
 
-  getCurrentUserCommon();
-  commonInitialization();
   checkFamilyCookie();
   verifyElementIntegrity(familyElements);
 
