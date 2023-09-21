@@ -18,11 +18,13 @@ window.onload = function instantiate() {
   emailBtn = document.getElementById("emailBtn");
   inviteNote = document.getElementById("inviteNote");
   settingsNote = document.getElementById("settingsNote");
-  faqElements = [emailBtn, offlineModal, offlineSpan, inviteNote, settingsNote, notificationModal, notificationTitle,
-    notificationInfo, noteSpan];
 
   getCurrentUserCommon();
   commonInitialization();
+
+  faqElements = [emailBtn, offlineModal, offlineSpan, inviteNote, settingsNote, notificationModal, notificationTitle,
+    notificationInfo, noteSpan];
+
   verifyElementIntegrity(faqElements);
   alternateButtonLabel(settingsNote, "Settings", "FAQ");
 
