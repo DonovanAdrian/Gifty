@@ -148,13 +148,15 @@ window.onload = function instantiate() {
   giftCreationDate = document.getElementById("giftCreationDate");
   giftBuy = document.getElementById("giftBuy");
   giftDontBuy = document.getElementById("giftDontBuy");
+
+  getCurrentUser();
+  commonInitialization();
+
   friendListElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, confirmModal, closeConfirmModal,
     confirmTitle, confirmContent, confirmBtn, denyBtn, noteSpan, backBtn, listNote, inviteNote, notificationModal,
     notificationTitle, notificationInfo, noteSpan, giftModal, closeGiftModal, giftTitle, giftLink, giftWhere,
     giftDescription, giftBought, giftCreationDate, giftBuy, giftDontBuy, testData];
 
-  getCurrentUser();
-  commonInitialization();
   verifyElementIntegrity(friendListElements);
 
   userBase = firebase.database().ref("users/");
