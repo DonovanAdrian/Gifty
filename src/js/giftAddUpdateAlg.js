@@ -163,13 +163,15 @@ window.onload = function instantiate() {
   homeNote = document.getElementById("homeNote");
   listNote = document.getElementById("listNote");
   inviteNote = document.getElementById("inviteNote");
+
+  getCurrentUser();
+  commonInitialization();
+
   giftAddUpdateElements = [offlineModal, offlineSpan, confirmModal, closeConfirmModal, confirmTitle, confirmContent,
     confirmBtn, denyBtn, giftDescriptionInp, giftTitleInp, giftWhereInp, giftLinkInp, multiplePurchases, titleInfoIcon,
     urlInfoIcon, whereInfoIcon, descriptionInfoIcon, multipleInfoIcon, updateGift, homeNote, listNote, inviteNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan];
 
-  getCurrentUser();
-  commonInitialization();
   verifyElementIntegrity(giftAddUpdateElements);
 
   limitsInitial = firebase.database().ref("limits/");
