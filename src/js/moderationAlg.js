@@ -38,6 +38,7 @@ let showUserScore;
 let showShareCode;
 let showFriends;
 let showModerator;
+let showActions;
 let globalNoteInfoIcon;
 let sendGlobalNotification;
 let loginFxnInfoIcon;
@@ -133,6 +134,7 @@ window.onload = function instantiate() {
   showShareCode = document.getElementById("showShareCode");
   showFriends = document.getElementById("showFriends");
   showModerator = document.getElementById("showModerator");
+  showActions = document.getElementById("showActions");
   globalNoteInfoIcon = document.getElementById("globalNoteInfoIcon");
   sendGlobalNotification = document.getElementById("sendGlobalNotification");
   loginFxnInfoIcon = document.getElementById("loginFxnInfoIcon");
@@ -198,7 +200,7 @@ window.onload = function instantiate() {
     limitsBtn, databaseLimitsModal, closeDatabaseLimitsModal, giftLimitInp, userLimitInp, confirmLimits, cancelLimits,
     loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal, loginDisabledDesc, loginDisabledInp,
     loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown,
-    showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends, showModerator,
+    showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends, showModerator, showActions,
     sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal, userOptionsSpan, settingsNote, testData,
     closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends, userLastLogin,
     userScoreElem, userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser, closePrivateMessageModal,
@@ -1045,7 +1047,7 @@ function initUserElement(liItem, userData) {
         userLastLogin.innerHTML = "Last Login: " + getLocalTime(userData.lastLogin);
       }
     } else {
-      userLastLogin.innerHTML = "This User Has Never Logged In";
+      userLastLogin.innerHTML = "This User Has No Log In Recorded";
     }
     if(userData.userScore != undefined) {
       userScoreElem.innerHTML = "User Score: " + userData.userScore;
@@ -1163,7 +1165,7 @@ function removeUserElement(uid) {
 
 function initializeShowUserData(showDataSelection) {
   let listOfShowUserElements = [showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends,
-    showModerator];
+    showModerator, showActions];
   let showHideUserDataBool = false;
 
   userListDropDown.innerHTML = "Select Listed User Data (" + showDataSelection + ")";;
@@ -1205,6 +1207,9 @@ function initializeShowUserData(showDataSelection) {
     };
     showModerator.onclick = function(){
       updateDBWithShowUserData("Moderator");
+    };
+    showActions.onclick = function(){
+      updateDBWithShowUserData("Action");
     };
   };
 
@@ -1269,11 +1274,10 @@ function updateInitializedUsers(){
           break;
         case "Login":
           userDataString = userDataName;
-          if (userData.lastLogin == undefined) {
-            userData.lastLogin = "Never Logged In";
-          }
 
-          if (userData.lastLogin != "Never Logged In") {
+          if (userData.lastLogin == undefined) {
+            userDataString = userDataName + " - No Log In Recorded";
+          } else if (userData.lastLogin != "Never Logged In") {
             let today = new Date();
             let lastLoginDate = new Date(userData.lastLogin);
             let lastLoginDateTrimmed = getLocalTime(userData.lastLogin, true);
@@ -1286,6 +1290,8 @@ function updateInitializedUsers(){
             } else if (lastLoginDiff < 61) {
               tempElem.className += " highSev";
             }
+          } else {
+            userDataString = userDataName + " - Never Logged In";
           }
           break;
         case "Score":
@@ -1324,6 +1330,18 @@ function updateInitializedUsers(){
           if (userData.moderatorInt == 1) {
             userDataString = userDataName + " - Moderator";
             tempElem.className += " highSev";
+          }
+          break;
+        case "Action":
+          if (userData.lastPerformedAction != undefined) {
+            userDataString = userDataName + " - " + userData.lastPerformedAction;
+            if (userData.lastPerformedAction.includes("Signed Out")) {
+              tempElem.className += " lowSev";
+            } else {
+              tempElem.className += " highSev";
+            }
+          } else {
+            userDataString = userDataName + " - No Actions Recorded";
           }
           break;
         default:
