@@ -488,14 +488,16 @@ window.onload = function instantiate() {
   testReview = document.getElementById("testReview");
   reviewConfirm = document.getElementById("reviewConfirm");
   reviewCancel = document.getElementById("reviewCancel");
+
+  getCurrentUser();
+  commonInitialization();
+
   homeElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, confirmModal, closeConfirmModal,
     confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal, notificationTitle, notificationInfo,
     noteSpan, inviteNote, boughtGifts, addGift, giftModal, giftTitle, giftLink, giftWhere, giftDescription,
     giftCreationDate, giftUpdate, giftDelete, closeGiftModal, reviewModal, closeReviewModal, reviewTitle,
     reviewDetails, reviewListContainer, testReview, reviewConfirm, reviewCancel, testData];
 
-  getCurrentUser();
-  commonInitialization();
   verifyElementIntegrity(homeElements);
   checkUserErrors();
   collectUserBoughtGifts();
