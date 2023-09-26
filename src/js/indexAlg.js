@@ -179,10 +179,7 @@ window.onload = function instantiate() {
   loginBtn = document.getElementById("loginBtn");
   loginInfo = document.getElementById("loginInfo");
   signUpFld = document.getElementById("signUpFld");
-  indexElements = [username, pin, loginBtn, loginInfo, signUpFld, offlineModal, offlineSpan, notificationModal,
-    notificationTitle, notificationInfo, noteSpan];
 
-  verifyElementIntegrity(indexElements);
   loginBtn.innerHTML = "Please Wait...";
   lastLoginStatus = "Please Wait...";
   initializeSignUpTextInterval();
@@ -191,14 +188,19 @@ window.onload = function instantiate() {
   } catch (err) {}
   if (config == undefined) {
     sessionStorage.clear();
-    initializeSupplementalModals();
+    initializeSupplementalElements();
     fetchConfigFile();
   } else {
     sessionStorage.clear();
     sessionStorage.setItem("config", JSON.stringify(config));
+    initializeSupplementalElements();
     commonInitialization();
     loginQuery();
   }
+
+  indexElements = [username, pin, loginBtn, loginInfo, signUpFld, offlineModal, offlineSpan, notificationModal,
+    notificationTitle, notificationInfo, noteSpan];
+  verifyElementIntegrity(indexElements);
 
   backgroundAlternatorLimit = 15000;
   backgroundAlternator();
@@ -394,7 +396,7 @@ function login() {
         lastLogin: loginDate
       });
 
-      updateUserScore(userArr[validUserInt], loginIncrement);
+      updateUserScore(userArr[validUserInt], loginIncrementScore);
     } else {
       loginInfo.innerHTML = "Welcome to Gifty, " + userArr[validUserInt].name + "!";
       sessionStorage.setItem("lastLoginReviewValid", JSON.stringify(false));
@@ -405,7 +407,7 @@ function login() {
         lastLogin: loginDate
       });
 
-      updateUserScore(userArr[validUserInt], firstLoginIncrement);
+      updateUserScore(userArr[validUserInt], firstLoginIncrementScore);
     }
 
     if (delayLogin == 1) {
