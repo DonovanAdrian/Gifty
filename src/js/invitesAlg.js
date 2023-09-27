@@ -133,6 +133,11 @@ window.onload = function instantiate() {
   userShareCode = document.getElementById("userShareCode");
   sendPrivateMessage = document.getElementById("sendPrivateMessage");
   userInviteRemove = document.getElementById("userInviteRemove");
+
+  getCurrentUser();
+  initializeBlacklistBtn();
+  commonInitialization();
+
   inviteElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, userInviteModal,
     closeUserInviteModal, userNameInp, addToBlackList, inviteInfo, addInvite, cancelInvite, confirmUserModal,
     closeConfirmUserModal, confUserName, inviteConfirm, inviteDeny, inviteNote, newInviteIcon, blacklistModal,
@@ -142,9 +147,6 @@ window.onload = function instantiate() {
     sendMsg, cancelMsg, inviteModal, closeInviteModal, userName, userUName, userShareCode, sendPrivateMessage,
     userInviteRemove, testData];
 
-  getCurrentUser();
-  initializeBlacklistBtn();
-  commonInitialization();
   verifyElementIntegrity(inviteElements);
 
   userInitial = firebase.database().ref("users/");
