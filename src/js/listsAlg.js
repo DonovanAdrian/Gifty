@@ -70,13 +70,15 @@ window.onload = function instantiate() {
   privateMessageInp = document.getElementById("privateMessageInp");
   sendMsg = document.getElementById("sendMsg");
   cancelMsg = document.getElementById("cancelMsg");
+
+  getCurrentUser();
+  commonInitialization();
+
   listsElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
     notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, secretSantaSignUp,
     testData, userTitle, publicList, privateList, sendPrivateMessage, closePrivateMessageModal, privateMessageInp,
     sendMsg, cancelMsg];
 
-  getCurrentUser();
-  commonInitialization();
   verifyElementIntegrity(listsElements);
 
   userBase = firebase.database().ref("users/");
