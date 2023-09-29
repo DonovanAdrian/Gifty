@@ -49,14 +49,16 @@ window.onload = function instantiate() {
   ticketTime = document.getElementById("ticketTime");
   deleteTicket = document.getElementById("deleteTicket");
   inviteNote = document.getElementById("inviteNote");
-  moderationQueueElements = [dataListContainer, nukeTickets, backBtn, ticketCount, ticketModal, closeTicketModal,
-    ticketTitle, ticketUID, ticketDetails, ticketLocation, ticketTime, deleteTicket, offlineModal, offlineSpan,
-    inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan, testData];
 
   sessionStorage.setItem("moderationSet", moderationSet);
   getCurrentUserCommon();
   commonInitialization();
   checkTicketCookie();
+
+  moderationQueueElements = [dataListContainer, nukeTickets, backBtn, ticketCount, ticketModal, closeTicketModal,
+    ticketTitle, ticketUID, ticketDetails, ticketLocation, ticketTime, deleteTicket, offlineModal, offlineSpan,
+    inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan, testData];
+
   verifyElementIntegrity(moderationQueueElements);
 
   userInitial = firebase.database().ref("users/");
@@ -302,12 +304,6 @@ function initModTicketElement (liItem, ticketData) {
   if (ticketData.details.includes("Critical Error") || ticketData.details.includes("Critical Initialization Error")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - !!Critical Error Occurred!!";
-  } else if (ticketData.details.includes("Attempting to delete user")) {
-    liItem.className += " mediumSev";
-    ticketTitleSuffix = " - Attempt To Delete User";
-  } else if (ticketData.details.includes("experienced degraded performance")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - Degraded Performance Experienced";
   } else if (ticketData.details.includes("attempted to remove friend")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - !!Friend Removal Error!!";
@@ -317,24 +313,21 @@ function initModTicketElement (liItem, ticketData) {
   } else if (ticketData.details.includes("Invalid Login Attempt:")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - !!Invalid Login Attempt!!";
-  } else if (ticketData.details.includes("Invalid Login Attempt During Maintenance Period:")) {
-    liItem.className += " mediumSev";
-    ticketTitleSuffix = " - !!Invalid Login Attempt During Maintenance!!";
+  } else if (ticketData.details.includes("Element Verification Failure")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - Element Verification Failure";
+  } else if (ticketData.details.includes("experienced degraded performance")) {
+    liItem.className += " highSev";
+    ticketTitleSuffix = " - Degraded Performance Experienced";
   } else if (ticketData.details.includes("Login Error Occurred")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - !!Login Error!!";
-  } else if (ticketData.details.includes("attempted to log in")) {
-    liItem.className += " mediumSev";
-    ticketTitleSuffix = " - A Banned User Attempted Login";
   } else if (ticketData.details.includes("attempted to access a restricted page")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - A Restricted Page Was Accessed";
-  }else if (ticketData.details.includes("forced the moderation modal to appear")) {
+  } else if (ticketData.details.includes("forced the moderation modal to appear")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - A Restricted Window Was Forced Open";
-  } else if (ticketData.details.includes("Login disabled by")) {
-    liItem.className += " mediumSev";
-    ticketTitleSuffix = " - Login Disabled";
   } else if (ticketData.details.includes("failed to connect to the private list owned by")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - Gift List Connection Failed";
@@ -347,6 +340,18 @@ function initModTicketElement (liItem, ticketData) {
   } else if (ticketData.details.includes("Gift update failed for user")) {
     liItem.className += " highSev";
     ticketTitleSuffix = " - Gift Update Failed";
+  } else if (ticketData.details.includes("Attempting to delete user")) {
+    liItem.className += " mediumSev";
+    ticketTitleSuffix = " - Attempt To Delete User";
+  } else if (ticketData.details.includes("Invalid Login Attempt During Maintenance Period:")) {
+    liItem.className += " mediumSev";
+    ticketTitleSuffix = " - !!Invalid Login Attempt During Maintenance!!";
+  } else if (ticketData.details.includes("attempted to log in")) {
+    liItem.className += " mediumSev";
+    ticketTitleSuffix = " - A Banned User Attempted Login";
+  } else if (ticketData.details.includes("Login disabled by")) {
+    liItem.className += " mediumSev";
+    ticketTitleSuffix = " - Login Disabled";
   } else if (ticketData.details.includes("URL Limiter disabled by")) {
     liItem.className += " mediumSev";
     ticketTitleSuffix = " - URL Limits Disabled";
