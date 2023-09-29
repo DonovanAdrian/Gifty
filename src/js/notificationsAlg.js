@@ -67,13 +67,15 @@ window.onload = function instantiate() {
   privateMessageInp = document.getElementById("privateMessageInp");
   sendMsg = document.getElementById("sendMsg");
   cancelMsg = document.getElementById("cancelMsg");
+
+  getCurrentUser();
+  commonInitialization();
+
   notificationsElements = [dataListContainer, nukeNotifications, offlineModal, offlineSpan, inviteNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, privateMessageModal, noteViewModal, testData,
     closeNoteViewModal, notificationViewTitle, notificationViewDetails, notificationViewPage, notificationViewDelete,
     privateMessageSpan, privateMessageInp, sendMsg, cancelMsg];
 
-  getCurrentUser();
-  commonInitialization();
   verifyElementIntegrity(notificationsElements);
 
   userBase = firebase.database().ref("users/");
