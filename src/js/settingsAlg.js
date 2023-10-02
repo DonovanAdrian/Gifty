@@ -72,13 +72,15 @@ window.onload = function instantiate() {
   moderationSpan = document.getElementById("moderationSpan");
   moderationQueueBtn = document.getElementById("moderationQueueBtn");
   userListBtn = document.getElementById("userListBtn");
+
+  getCurrentUser();
+  commonInitialization();
+
   settingsElements = [offlineModal, offlineSpan, inviteNote, usernameInfo, usernameDisplay, nameInfo, nameDisplay,
     shareCodeInfo, shareCodeDisplay, userScoreInfo, userScoreDisplay, editBtn, faqBtn, modBtn, familyBtn,
     moderationModal, moderationSpan, moderationQueueBtn, userListBtn, notificationModal, notificationTitle,
     notificationInfo, noteSpan];
 
-  getCurrentUser();
-  commonInitialization();
   verifyElementIntegrity(settingsElements);
 
   giftyVersionIdentifier.innerHTML = "Version: " + giftyVersion;
@@ -116,23 +118,23 @@ window.onload = function instantiate() {
       user.settingsScoreBlock = 0;
     }
 
-    if (settingsUserScore < settingsUserScoreLimit && user.settingsScoreBlock == 0 && settingsEasterEgg != 0) {
+    if (settingsUserScore < settingsUserScoreLimit && user.settingsScoreBlock == 0 && settingsEasterEggScore != 0) {
       settingsUserScore++;
 
       if (settingsUserScore == settingsUserScoreLimit) {
         extraText = "<br\><br\><br\>...NOW you've done it! No more points for you! >:(";
         updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\", found an easter egg... But got greedy :(" +
             "  Their ability to obtain user score points through this easter egg has been disabled!");
-        updateUserScore(user,settingsEasterEgg, true);
+        updateUserScore(user,settingsEasterEggScore, true);
       } else if (settingsUserScore >= 7) {
         extraText = "<br\><br\><br\>...Don't get greedy now!";
-        updateUserScore(user,settingsEasterEgg, false);
+        updateUserScore(user,settingsEasterEggScore, false);
       } else if (settingsUserScore >= 5) {
         extraText = "<br\><br\><br\>...Yes... You can click on these text icons to get more points!";
         updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg!");
-        updateUserScore(user, settingsEasterEgg, false);
+        updateUserScore(user, settingsEasterEggScore, false);
       } else {
-        updateUserScore(user, settingsEasterEgg, false);
+        updateUserScore(user, settingsEasterEggScore, false);
       }
     }
 
