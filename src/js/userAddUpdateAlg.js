@@ -46,11 +46,15 @@ window.onload = function instantiate() {
   notificationTitle = document.getElementById("notificationTitle");
   notificationInfo = document.getElementById("notificationInfo");
   noteSpan = document.getElementById("closeNotification");
+
+  getCurrentUserCommon();
+  commonInitialization();
+
   userAddUpdateElements = [nameField, userNameField, pinField, pinConfField, btnUpdate, btnDelete, backBtn,
     offlineModal, offlineSpan, confirmModal, confirmSpan, deleteConfirm, deleteDeny, notificationModal,
     notificationTitle, notificationInfo, noteSpan];
 
-  getCurrentUserCommon();
+  verifyElementIntegrity(userAddUpdateElements);
 
   function initializeBackBtn() {
     backBtn.style.display = "block";
@@ -79,23 +83,23 @@ window.onload = function instantiate() {
     };
   }
 
+  function initializePinField() {
+    pinField.onclick = function() {
+      if(pinClearedInt == 0) {
+        pinField.value = "";
+        pinConfField.value = "";
+        pinClearedInt++;
+      }
+    };
+  }
+
   if(user != null) {
     initializeBackBtn();
     initializeDeleteUserBtn();
   }
 
   initializeUpdateUserBtn();
-
-  commonInitialization();
-  verifyElementIntegrity(userAddUpdateElements);
-
-  pinField.onclick = function() {
-    if(pinClearedInt == 0) {
-      pinField.value = "";
-      pinConfField.value = "";
-      pinClearedInt++;
-    }
-  };
+  initializePinField();
 
   userInitial = firebase.database().ref("users/");
   limitsInitial = firebase.database().ref("limits/");
@@ -217,6 +221,11 @@ window.onload = function instantiate() {
           "use a pin you have never used before. No computer system is 100% secure, so your due diligence as a user " +
           "will be critical in protecting your pins.", 30);
       btnUpdate.innerHTML = "Create User Profile";
+    } else if (userCreationOverride) {
+      deployNotificationModal(false, "User Override Active!", "Please note that " +
+          "the user creation override is currently active. It is advised to use a pin that is secure for the " +
+          "user that is being created.", 30);
+      btnUpdate.innerHTML = "Create User Profile<br>(Moderator Override)";
     }
   }
 };
@@ -416,27 +425,15 @@ function updateUserToDB(){
     if (user.shareCode == undefined) {
       user.shareCode = genShareCode();
     }
+    if (user.yearlyReview == undefined) {
+      let currentDate = new Date();
+      user.yearlyReview = currentDate.getFullYear();
+    }
     if (user.giftList == undefined) {
       user.giftList = [];
     }
     if (user.notifications == undefined) {
       user.notifications = [];
-    }
-    if (user.settingsScoreBlock == undefined) {
-      user.settingsScoreBlock = 0;
-    }
-    if (user.secretSanta == undefined) {
-      user.secretSanta = 0;
-    }
-    if (user.secretSantaName == undefined) {
-      user.secretSantaName = "";
-    }
-    if (user.secretSantaNamePrior == undefined) {
-      user.secretSantaNamePrior = "";
-    }
-    if (user.yearlyReview == undefined) {
-      let currentDate = new Date();
-      user.yearlyReview = currentDate.getFullYear();
     }
     if (user.friends == undefined) {
       user.friends = [];
@@ -447,8 +444,23 @@ function updateUserToDB(){
     if (user.invites == undefined) {
       user.invites = [];
     }
+    if (user.secretSantaName == undefined) {
+      user.secretSantaName = "";
+    }
+    if (user.secretSantaNamePrior == undefined) {
+      user.secretSantaNamePrior = "";
+    }
+    if (user.lastPerformedAction == undefined) {
+      user.lastPerformedAction = "";
+    }
     if (user.userScore == undefined) {
       user.userScore = 0;
+    }
+    if (user.settingsScoreBlock == undefined) {
+      user.settingsScoreBlock = 0;
+    }
+    if (user.secretSanta == undefined) {
+      user.secretSanta = 0;
     }
 
     firebase.database().ref("users/" + user.uid).update({
@@ -462,6 +474,7 @@ function updateUserToDB(){
       invites: user.invites,
       firstLogin: user.firstLogin,
       lastLogin: user.lastLogin,
+      lastPerformedAction: user.lastPerformedAction,
       moderatorInt: user.moderatorInt,
       organize: user.organize,
       strike: user.strike,
@@ -532,6 +545,7 @@ function addUserToDB(){
       ban: 0,
       firstLogin: 0,
       lastLogin: "Never Logged In",
+      lastPerformedAction: "Created An Account",
       moderatorInt: moderatorSetter,
       organize: 0,
       strike: 0,
