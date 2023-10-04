@@ -1455,8 +1455,10 @@ function openModal(openThisModal, modalName, ignoreBool) {
       openRetryTimer = openRetryTimer + 10;
       if (openRetryTimer >= 50) {
         if (!modalClosingBool) {
-          openThisModal.classList.remove("modal-content-close");
-          openThisModal.classList.add("modal-content-open");
+          try {
+            openThisModal.classList.remove("modal-content-close");
+            openThisModal.classList.add("modal-content-open");
+          } catch (err) {}
           openRetryTimer = 0;
           currentModalOpenObj = openThisModal;
           currentModalOpen = modalName;
@@ -1468,8 +1470,10 @@ function openModal(openThisModal, modalName, ignoreBool) {
       }
     }, 60);
   } else {
-    openThisModal.classList.remove("modal-content-close");
-    openThisModal.classList.add("modal-content-open");
+    try {
+      openThisModal.classList.remove("modal-content-close");
+      openThisModal.classList.add("modal-content-open");
+    } catch (err) {}
     currentModalOpenObj = openThisModal;
     currentModalOpen = modalName;
     openThisModal.style.display = "block";
