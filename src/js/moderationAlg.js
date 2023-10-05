@@ -6,6 +6,7 @@
 
 let moderationElements = [];
 let initializedUsers = [];
+let loadedGiftFriendArr = [];
 
 let moderationSet = 1;
 let globalNoteInt = 0;
@@ -77,12 +78,20 @@ let userUID;
 let userUserName;
 let userPrivateGifts;
 let userLastLogin;
+let userLastAction;
 let userScoreElem;
 let userPassword;
 let moderatorOp;
 let sendPrivateMessage;
 let warnUser;
 let banUser;
+let userGiftFriendModal;
+let closeUserGiftFriendModal;
+let userGiftFriendTitle;
+let userGiftFriendText;
+let userGiftFriendListContainer;
+let userGiftFriendBack;
+let testGiftFriend;
 let privateMessageModal;
 let closePrivateMessageModal;
 let globalMsgTitle;
@@ -175,12 +184,20 @@ window.onload = function instantiate() {
   userPrivateGifts = document.getElementById("userPrivateGifts");
   userFriends = document.getElementById("userFriends");
   userLastLogin = document.getElementById("userLastLogin");
+  userLastAction = document.getElementById("userLastAction");
   userScoreElem = document.getElementById("userScoreElem");
   userPassword = document.getElementById("userPassword");
   moderatorOp = document.getElementById("moderatorOp");
   sendPrivateMessage = document.getElementById("sendPrivateMessage");
   warnUser = document.getElementById("warnUser");
   banUser = document.getElementById("banUser");
+  userGiftFriendModal = document.getElementById("userGiftFriendModal");
+  closeUserGiftFriendModal = document.getElementById("closeUserGiftFriendModal");
+  userGiftFriendTitle = document.getElementById("userGiftFriendTitle");
+  userGiftFriendText = document.getElementById("userGiftFriendText");
+  userGiftFriendListContainer = document.getElementById("userGiftFriendListContainer");
+  userGiftFriendBack = document.getElementById("userGiftFriendBack");
+  testGiftFriend = document.getElementById("testGiftFriend");
   privateMessageModal = document.getElementById("privateMessageModal");
   closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
   globalMsgTitle = document.getElementById("globalMsgTitle");
@@ -203,8 +220,9 @@ window.onload = function instantiate() {
     showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends, showModerator, showActions,
     sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal, userOptionsSpan, settingsNote, testData,
     closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends, userLastLogin,
-    userScoreElem, userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser, closePrivateMessageModal,
-    globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
+    userLastAction, userScoreElem, userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser,
+    userGiftFriendModal, closeUserGiftFriendModal, userGiftFriendTitle, userGiftFriendText, userGiftFriendListContainer,
+    userGiftFriendBack, testGiftFriend, closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
 
   verifyElementIntegrity(moderationElements);
 
@@ -1021,26 +1039,18 @@ function initUserElement(liItem, userData) {
     userName.innerHTML = userData.name;
     userUID.innerHTML = "UID: " + userData.uid;
     userUserName.innerHTML = "Username: " + userData.userName;
-    if(userData.giftList != undefined){
-      userGifts.innerHTML = "# Gifts: " + userData.giftList.length;
-    } else {
-      userGifts.innerHTML = "This User Has No Gifts";
-    }
-    if(userData.privateList != undefined){
-      if(userData.uid == user.uid) {
-        userPrivateGifts.innerHTML = "# Private Gifts: ???";
+    userPassword.innerHTML = "View " + userData.name + "'s Password";
+    userPassword.onclick = function() {
+      if (!showPassBool) {
+        confirmOperation("Show Password?", "Are you sure you wish to view " +
+            userData.name + "'s password?", "showPass", userData, userModal, userData.uid);
+        showPassBool = true;
       } else {
-        userPrivateGifts.innerHTML = "# Private Gifts: " + userData.privateList.length;
+        userPassword.innerHTML = "View " + userData.userName + "'s Password";
+        showPassBool = false;
       }
-    } else {
-      userPrivateGifts.innerHTML = "This User Has No Private Gifts";
-    }
-    if(userData.friends != undefined) {
-      userFriends.innerHTML = "# Friends: " + userData.friends.length;
-    } else {
-      userFriends.innerHTML = "This User Has No Friends";
-    }
-    if(userData.lastLogin != undefined) {
+    };
+    if (userData.lastLogin != undefined) {
       if (userData.lastLogin == "Never Logged In") {
         userLastLogin.innerHTML = "Last Login: Never Logged In";
       } else {
@@ -1049,41 +1059,83 @@ function initUserElement(liItem, userData) {
     } else {
       userLastLogin.innerHTML = "This User Has No Log In Recorded";
     }
+    if (userData.lastPerformedAction != undefined) {
+      userLastAction.innerHTML = "Last Action: " + userData.lastPerformedAction
+    } else {
+      userLastAction.innerHTML = "This User Has No Last Action Recorded";
+    }
     if(userData.userScore != undefined) {
       userScoreElem.innerHTML = "User Score: " + userData.userScore;
     } else {
       userScoreElem.innerHTML = "User Score: 0";
     }
-    userPassword.innerHTML = "Click On Me To View Password";
+    if (userData.giftList != undefined) {
+      userGifts.onclick = function() {
+        if (userData.uid == user.uid) {
+          deployNotificationModal(true, "User Info",
+              "Navigate to the home page to see your gifts!");
+        } else {
+          generateUserGiftFriendModal(userData.giftList, userData);
+        }
+      };
+      if (userData.giftList.length == 0) {
+        userGifts.innerHTML = "This User Has No Gifts";
+        userGifts.onclick = function() {};
+      } else if (userData.giftList.length == 1) {
+        userGifts.innerHTML = "View " + userData.giftList.length + " Public Gift";
+      } else {
+        userGifts.innerHTML = "View " + userData.giftList.length + " Public Gifts";
+      }
+    } else {
+      userGifts.innerHTML = "This User Has No Gifts";
+      userGifts.onclick = function() {};
+    }
+    if (userData.privateList != undefined) {
+      if (userData.uid == user.uid) {
+        userPrivateGifts.innerHTML = "??? Private Gifts ???";
+        userPrivateGifts.onclick = function() {
+          deployNotificationModal(true, "User Info",
+              "You aren't allowed to see your private gifts!");
+        };
+      } else {
+        userPrivateGifts.onclick = function() {
+          generateUserGiftFriendModal(userData.privateList, userData);
+        };
+        if (userData.privateList.length == 0) {
+          userPrivateGifts.innerHTML = "This User Has No Private Gifts";
+          userPrivateGifts.onclick = function() {};
+        } else if (userData.privateList.length == 1) {
+          userPrivateGifts.innerHTML = "View " + userData.privateList.length + " Private Gift";
+        } else {
+          userPrivateGifts.innerHTML = "View " + userData.privateList.length + " Private Gifts";
+        }
+      }
+    } else {
+      userPrivateGifts.innerHTML = "This User Has No Private Gifts";
+      userPrivateGifts.onclick = function() {};
+    }
+    if (userData.friends != undefined) {
+      userFriends.onclick = function() {
+        if (userData.uid == user.uid) {
+          deployNotificationModal(true, "User Info",
+              "Navigate to the \"Friends\" page to see your friends!");
+        } else {
+          generateUserGiftFriendModal(userData.friends, userData);
+        }
+      };
+      if (userData.friends.length == 0) {
+        userFriends.innerHTML = "This User Has No Friends";
+        userFriends.onclick = function() {};
+      } else if (userData.friends.length == 1) {
+        userFriends.innerHTML = "View " + userData.friends.length + " Friend";
+      } else {
+        userFriends.innerHTML = "View " + userData.friends.length + " Friends";
+      }
+    } else {
+      userFriends.innerHTML = "This User Has No Friends";
+      userFriends.onclick = function() {};
+    }
 
-    userGifts.onclick = function() {
-      if(userData.uid == user.uid){
-        deployNotificationModal(true, "User Info",
-            "Navigate to the home page to see your gifts!");
-      } else {
-        sessionStorage.setItem("validGiftUser", JSON.stringify(userData));
-        navigation(9);//FriendList
-      }
-    };
-    userPrivateGifts.onclick = function() {
-      if(userData.uid == user.uid){
-        deployNotificationModal(true, "User Info",
-            "You aren't allowed to see your private gifts!");
-      } else {
-        sessionStorage.setItem("validGiftUser", JSON.stringify(userData));
-        navigation(10);//PrivateFriendList
-      }
-    };
-    userPassword.onclick = function() {
-      if (!showPassBool) {
-        confirmOperation("Show Password?", "Are you sure you wish to view " +
-            userData.name + "'s password?", "showPass", userData, userModal, userData.uid);
-        showPassBool = true;
-      } else {
-        userPassword.innerHTML = "Click On Me To View Password";
-        showPassBool = false;
-      }
-    };
     warnUser.onclick = function(){
       generateModeratorPrivateMessageDialog(userData, true);
     };
@@ -1102,11 +1154,12 @@ function initUserElement(liItem, userData) {
       }
       userUpdateLocal = false;
     };
+
     if (userData.uid == "-L__dcUyFssV44G9stxY" && user.uid != "-L__dcUyFssV44G9stxY") {
       moderatorOp.innerHTML = "Don't Even Think About It";
       moderatorOp.onclick = function() {};
     } else if (userData.moderatorInt == 1) {
-      moderatorOp.innerHTML = "Click To Revoke Moderator Role";
+      moderatorOp.innerHTML = "Revoke Moderator Role";
       moderatorOp.style.background = "#f00";
       moderatorOp.onclick = function() {
         if(userData.uid == user.uid){
@@ -1119,7 +1172,7 @@ function initUserElement(liItem, userData) {
         }
       };
     } else {
-      moderatorOp.innerHTML = "Click To Grant Moderator Role";
+      moderatorOp.innerHTML = "Grant Moderator Role";
       moderatorOp.style.background = "#00d118";
       moderatorOp.onclick = function() {
         if(userData.userName == user.userName){
@@ -1139,7 +1192,7 @@ function initUserElement(liItem, userData) {
       banUser.innerHTML = "Ban";
     }
 
-    sendPrivateMessage.innerHTML = "Click To Send Message To " + userData.name;
+    sendPrivateMessage.innerHTML = "Send Message To " + userData.name;
     sendPrivateMessage.onclick = function() {
       generateModeratorPrivateMessageDialog(userData, false);
     };
@@ -1150,6 +1203,80 @@ function initUserElement(liItem, userData) {
       closeModal(userModal);
     };
   };
+}
+
+function generateUserGiftFriendModal(dataToLoad, userData) {
+  let dataToLoadType;
+  let userUID = userData.uid;
+
+  if (typeof dataToLoad[0] == "string") {
+    dataToLoadType = "Friend";
+  } else {
+    dataToLoadType = "Gift";
+  }
+
+  userGiftFriendTitle.innerHTML = userData.name + "'s " + dataToLoadType + " List";
+  userGiftFriendText.innerHTML = "Total " + dataToLoadType + "s: " + dataToLoad.length;
+
+  closeModal(userModal);
+
+  userGiftFriendBack.onclick = function() {
+    closeModal(userGiftFriendModal);
+    openModal(userModal, userUID);
+  }
+
+  closeUserGiftFriendModal.onclick = function() {
+    closeModal(userGiftFriendModal);
+  }
+
+  openModal(userGiftFriendModal, userData.name + "'s " + dataToLoadType + " List");
+
+  if (loadedGiftFriendArr.length != 0) {
+    for (let a = 0; a < loadedGiftFriendArr.length; a++) {
+      document.getElementById(loadedGiftFriendArr[a]).remove();
+    }
+    loadedGiftFriendArr = [];
+  }
+
+  try {
+    testGiftFriend.remove();
+  } catch (err) {}
+
+  for (let i = 0; i < dataToLoad.length; i++) {
+    let liItem = document.createElement("LI");
+    let textNode;
+    let loadedGiftFriendElemID;
+
+    liItem.className = "gift";
+
+    if (dataToLoadType == "Friend") {
+      let friendUserDataIndex = findUIDItemInArr(dataToLoad[i], userArr, true);
+      let friendUserData = userArr[friendUserDataIndex];
+      loadedGiftFriendElemID = dataToLoad[i];
+      liItem.id = loadedGiftFriendElemID;
+      textNode = document.createTextNode(friendUserData.name);
+    } else {
+      let giftReceivedData = dataToLoad[i].received;
+      let giftMultiples = dataToLoad[i].multiples;
+      loadedGiftFriendElemID = dataToLoad[i].uid;
+      liItem.id = loadedGiftFriendElemID;
+      textNode = document.createTextNode(dataToLoad[i].title);
+
+      if (userUID != user.uid) {
+        if(giftReceivedData == 1) {
+          liItem.className += " checked";
+        } else if (giftMultiples != undefined) {
+          if (giftMultiples && giftReceivedData < 0) {
+            liItem.className += " multiCheck";
+          }
+        }
+      }
+    }
+
+    liItem.appendChild(textNode);
+    userGiftFriendListContainer.insertBefore(liItem, userGiftFriendListContainer.childNodes[0]);
+    loadedGiftFriendArr.push(loadedGiftFriendElemID);
+  }
 }
 
 function removeUserElement(uid) {
