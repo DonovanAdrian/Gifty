@@ -57,20 +57,28 @@
 
     <!--Modal Body-->
     <div class="modal-body">
-      <p id="userUID" alt="This User's Unique ID">Loading UID...</p>
       <p id="userUserName" alt="This User's User Name">Loading User Name...</p>
-      <p id="userGifts" alt="This User's Public Gift Count, Click To View Gifts">Loading Public Gifts...</p>
-      <p id="userPrivateGifts" alt="This User's Private Gift Count, Click To View Gifts">Loading Private Gifts...</p>
-      <p id="userFriends" alt="This User's Friend Count">Loading Friends...</p>
-      <p id="userLastLogin" alt="The Last Time This User Logged In">Loading Last Login...</p>
-      <p id="userScoreElem" alt="This User's User Score">Loading User Score...</p>
       <span class="basicBtn" id="userPassword" alt="View This User's Password">Loading Password...</span>
+      <br/>
+      <p id="userUID" alt="This User's Unique ID">Loading UID...</p>
+      <p id="userLastLogin" alt="The Last Time This User Logged In">Loading Last Login...</p>
+      <p id="userLastAction" alt="The Last Action This User Performed">Loading Last Action...</p>
+      <p id="userScoreElem" alt="This User's User Score">Loading User Score...</p>
+      <span class="basicBtn" id="userGifts" alt="This User's Public Gift Count, Click To View Gifts">Loading Public Gifts...</span>
+      <br/>
+      <br/>
+      <span class="basicBtn" id="userPrivateGifts" alt="This User's Private Gift Count, Click To View Gifts">Loading Private Gifts...</span>
+      <br/>
+      <br/>
+      <span class="basicBtn" id="userFriends" alt="This User's Friend Count">Loading Friends...</span>
+      <br/>
+      <br/>
+      <span class="basicBtn" id="sendPrivateMessage" alt="Send User A Private Message">Loading Private Message...</span>
       <br/>
       <br/>
       <span class="basicBtn" id="moderatorOp" alt="Alternate Moderator Status">Loading Mod Option...</span>
       <br/>
       <br/>
-      <span class="basicBtn" id="sendPrivateMessage" alt="Send User A Private Message">Loading Private Message...</span>
       <br/>
       <br/>
     </div>
@@ -79,6 +87,32 @@
     <div class="modal-footer">
       <h3 class="modal-footer-left" id="warnUser">Warn</h3>
       <h3 class="modal-footer-right modal-footer-right-override" id="banUser">Ban</h3>
+    </div>
+  </div>
+</div>
+
+<div id="userGiftFriendModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeUserGiftFriendModal">&times;</span>
+      <h2 id="userGiftFriendTitle">Loading Title...</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p id="userGiftFriendText">Loading Information...</p>
+      <br/>
+      <ul id="userGiftFriendListContainer" class="giftList">
+        <li class="gift" id="testGiftFriend">Loading...</li>
+      </ul>
+      <br/>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3 class="modal-footer-left" id="userGiftFriendBack">Back</h3>
     </div>
   </div>
 </div>
@@ -141,11 +175,11 @@
       <span class="dropdown" id="showUID" alt="Show UID" style="display: none">UID</span>
       <span class="dropdown" id="showName" alt="Show Username" style="display: none">Username</span>
       <span class="dropdown" id="showLastLogin" alt="Show Last Login" style="display: none">Last Login</span>
+      <span class="dropdown" id="showActions" alt="Show Last Action" style="display: none">Last Action</span>
       <span class="dropdown" id="showUserScore" alt="Show User Score" style="display: none">User Score</span>
       <span class="dropdown" id="showShareCode" alt="Show Share Code" style="display: none">Share Code</span>
       <span class="dropdown" id="showFriends" alt="Show Number of Friends" style="display: none">Friend Amount</span>
       <span class="dropdown" id="showModerator" alt="Show Moderator Status" style="display: none">Moderator Status</span>
-      <span class="dropdown" id="showActions" alt="Show Last Action" style="display: none">Last Action</span>
       <br/>
       <br/>
       <img class=infoIcon id="globalNoteInfoIcon" src="img/info.png">
