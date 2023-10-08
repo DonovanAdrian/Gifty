@@ -11,9 +11,6 @@ let initializedUsers = [];
 
 let potentialRemoval = false;
 let friendListEmptyBool = false;
-let secretSantaInit = false;
-
-let secretSantaAssignErrorMsg = "refresh the page or ignore this message!";
 
 let moderationSet = 0;
 let listLimit = 0;
@@ -22,13 +19,13 @@ let privateMessageModal;
 let closeUserModal;
 let userModal;
 let secretSantaSignUp;
-let secretSantaData;
 let userTitle;
 let publicList;
 let multipleGiftCaveat;
 let sendPrivateMessage;
 let closePrivateMessageModal;
 let privateMessageInp;
+let giftListInterval;
 let sendMsg;
 let cancelMsg;
 
@@ -84,54 +81,11 @@ window.onload = function instantiate() {
   userBase = firebase.database().ref("users/");
   userFriends = firebase.database().ref("users/" + user.uid + "/friends");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-  autoSecretSanta = firebase.database().ref("secretSanta/");
   limitsInitial = firebase.database().ref("limits/");
 
   databaseQuery();
 
   function databaseQuery() {
-    let fetchSecretSanta = function (postRef) {
-      postRef.once("value").then(function(snapshot) {
-        if(snapshot.exists()) {
-          postRef.on("child_added", function (data) {
-            if (secretSantaInit == false) {
-              secretSantaInit = true;
-            }
-
-            initializeSecretSantaDataList(data);
-          });
-
-          postRef.on("child_changed", function (data) {
-            if(consoleOutput)
-              console.log(data.key + " changed");
-
-            initializeSecretSantaDataList(data);
-          });
-
-          postRef.on("child_removed", function (data) {
-            if(consoleOutput)
-              console.log(data.key + " removed");
-
-            firebase.database().ref("secretSanta/").update({
-              automaticUpdates: false,
-              manualUpdates: false,
-              santaState: 1
-            });
-          });
-        } else {
-          if(consoleOutput)
-            console.log("Initializing Secret Santa In DB");
-
-          firebase.database().ref("secretSanta/").update({
-            automaticUpdates: false,
-            manualUpdates: false,
-            santaState: 1
-          });
-          fetchSecretSanta(autoSecretSanta);
-        }
-      });
-    };
-
     let fetchData = function (postRef) {
       postRef.on("child_added", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
@@ -167,14 +121,6 @@ window.onload = function instantiate() {
             userArr[i] = data.val();
 
             if(data.key == user.uid){
-              if (currentState != undefined) {
-                if (currentState != 1) {
-                  showSecretSanta();
-                } else {
-                  hideSecretSanta();
-                }
-              }
-
               user = data.val();
               checkNotifications();
               updateFriendNav(user.friends);
@@ -283,13 +229,11 @@ window.onload = function instantiate() {
     fetchData(userBase);
     fetchFriends(userFriends);
     fetchInvites(userInvites);
-    fetchSecretSanta(autoSecretSanta);
     fetchLimits(limitsInitial);
 
     listeningFirebaseRefs.push(userBase);
     listeningFirebaseRefs.push(userFriends);
     listeningFirebaseRefs.push(userInvites);
-    listeningFirebaseRefs.push(autoSecretSanta);
     listeningFirebaseRefs.push(limitsInitial);
   }
 };
@@ -452,4 +396,148 @@ function removeFriendElement(uid){
   if (i != -1) {
     initializedUsers.splice(i, 1);
   }
+}
+
+function flashGiftNumbers(privateGiftList, publicGiftList) {
+  let giftPrivateString;
+  let giftPublicString;
+  let giftPrivateAltText = "";
+  let giftPublicAltText = "";
+  let giftPrivateAsterisk = "";
+  let giftPublicAsterisk = "";
+  let privateGiftNum = 0;
+  let publicGiftNum = 0;
+  let emptyPrivateBool = false;
+  let emptyPublicBool = false;
+  let showPublicAsterisk = false;
+  let showPrivateAsterisk = false;
+
+  if (privateGiftList != undefined)
+    if (privateGiftList != 0) {
+      privateGiftNum = privateGiftList.length;
+
+      for (let i = 0; i < privateGiftList.length; i++) {
+        if (privateGiftList[i].received == 1) {
+          privateGiftNum--;
+        } else if (privateGiftList[i].received < 0) {
+          privateGiftNum--;
+          if (privateGiftList[i].receivedBy != undefined)
+            if (!privateGiftList[i].receivedBy.includes(user.uid)) {
+              showPrivateAsterisk = true;
+              giftPrivateAsterisk = "*";
+            }
+        }
+      }
+    } else {
+      emptyPrivateBool = true;
+    }
+  else
+    emptyPrivateBool = true;
+
+  if (publicGiftList != undefined)
+    if (publicGiftList != 0) {
+      publicGiftNum = publicGiftList.length;
+
+      for (let i = 0; i < publicGiftList.length; i++) {
+        if (publicGiftList[i].received == 1) {
+          publicGiftNum--;
+        } else if (publicGiftList[i].received < 0) {
+          publicGiftNum--;
+          if (publicGiftList[i].receivedBy != undefined)
+            if (!publicGiftList[i].receivedBy.includes(user.uid)) {
+              showPublicAsterisk = true;
+              giftPublicAsterisk = "*";
+            }
+        }
+      }
+    } else {
+      emptyPublicBool = true;
+    }
+  else
+    emptyPrivateBool = true;
+
+  giftPrivateAltText = "Click To Add Private Gifts!" + giftPrivateAsterisk;
+  giftPublicAltText = "Click To View Public Gift List!" + giftPublicAsterisk;
+  if (!emptyPrivateBool) {
+    if (privateGiftNum == 0) {
+      giftPrivateString = "All Private Gifts Have Been Bought!" + giftPrivateAsterisk;
+    } else if (privateGiftNum == 1) {
+      giftPrivateString = "There Is 1 Un-Bought Private Gift!" + giftPrivateAsterisk;
+    } else {
+      giftPrivateString = "There Are " + privateGiftNum + " Un-Bought Private Gifts!" + giftPrivateAsterisk;
+    }
+  } else {
+    giftPrivateString = "There Are No Private Gifts Yet!";
+  }
+
+  if (!emptyPublicBool) {
+    if (publicGiftNum == 0) {
+      giftPublicString = "All Public Gifts Have Been Bought!" + giftPublicAsterisk;
+    } else if (publicGiftNum == 1) {
+      giftPublicString = "There Is 1 Un-Bought Public Gift!" + giftPublicAsterisk;
+    } else {
+      giftPublicString = "There Are " + publicGiftNum + " Un-Bought Public Gifts!" + giftPublicAsterisk;
+    }
+  } else {
+    giftPublicAltText = "Public Gift List Empty!";
+    giftPublicString = "There Are No Public Gifts Yet!";
+  }
+
+  privateList.innerHTML = giftPrivateString;
+  publicList.innerHTML = giftPublicString;
+
+  giftListInterval = setInterval(function(){
+    setAlternatingButtonText(giftPublicString, giftPublicAltText, publicList,
+        giftPrivateString, giftPrivateAltText, privateList);
+  }, 1000);
+
+  if (showPublicAsterisk || showPrivateAsterisk) {
+    multipleGiftCaveat.style.display = "block";
+  } else {
+    multipleGiftCaveat.style.display = "none";
+  }
+}
+
+function generatePrivateMessageDialog(userData) {
+  let message = "";
+
+  privateMessageInp.placeholder = "Hey! Just to let you know...";
+
+  sendMsg.onclick = function (){
+    if(privateMessageInp.value.includes(",,,")){
+      deployNotificationModal(true, "Message Error!", "Please do not use commas in the message. Thank you!");
+    } else {
+      message = generateNotificationString(user.uid, "", privateMessageInp.value, "");
+      addPrivateMessageToDB(userData, message);
+      privateMessageInp.value = "";
+    }
+  };
+  cancelMsg.onclick = function (){
+    privateMessageInp.value = "";
+    closeModal(privateMessageModal);
+    openModal(userModal, userData.uid, true);
+
+    window.onclick = function(event) {
+      if (event.target == userModal) {
+        closeModal(userModal);
+        clearInterval(giftListInterval);
+      }
+    }
+  };
+
+  openModal(privateMessageModal, "add");
+
+  closePrivateMessageModal.onclick = function() {
+    closeModal(privateMessageModal);
+  };
+}
+
+function addPrivateMessageToDB(userData, message) {
+  updateUserScore(user, sendPrivateMessageScore);
+  updateUserScore(user, sendPrivateMessageScore);
+  closeModal(privateMessageModal);
+  addNotificationToDB(userData, message);
+  successfulDBOperationTitle = "Message Sent!";
+  successfulDBOperationNotice = "Your message to " + userData.userName + " was successfully delivered!";
+  showSuccessfulDBOperation = true;
 }
