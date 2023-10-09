@@ -69,6 +69,7 @@ let failedNavNum = 0;
 let dataCounter = 0;
 let pendingNavigation = 0;
 let timerErrorIssued = 0;
+let ranCommonInitialization = false;
 let createdJokeGift = false;
 let dbInitialized = false;
 let dbInitializedFailed = false;
@@ -238,181 +239,187 @@ function initializeSupplementalElements() {
 function commonInitialization() {
   let commonDBInitCount = 0;
   let commonDBInitLimit = 5;
-  backgroundAlternator();
 
-  window.addEventListener( "pageshow", function ( event ) {
-    var historyTraversal = event.persisted ||
-        ( typeof window.performance != "undefined" &&
-            window.performance.navigation.type === 2 );
-    if ( historyTraversal ) {
-      window.location.reload();
+  if (!ranCommonInitialization) {
+    backgroundAlternator();
+
+    window.addEventListener("pageshow", function (event) {
+      var historyTraversal = event.persisted ||
+          (typeof window.performance != "undefined" &&
+              window.performance.navigation.type === 2);
+      if (historyTraversal) {
+        window.location.reload();
+      }
+    });
+
+    if (consoleOutput) {
+      let today = new Date();
+      console.log(today);
+      console.log("Initializing the " + pageName + " Page...");
     }
-  });
 
-  if (consoleOutput) {
-    let today = new Date();
-    console.log(today);
-    console.log("Initializing the " + pageName + " Page...");
-  }
+    fadeInPage();
+    initializeFadeOut();
 
-  fadeInPage();
-  initializeFadeOut();
+    const config = JSON.parse(sessionStorage.config);
 
-  const config = JSON.parse(sessionStorage.config);
-
-  try {
-    initializeDB(config);
-    if (user != undefined)
-      saveLastActionToCookie("Viewed " + pageName);
-  } catch (err) {
-    let dbInitTimer = 0;
-    let dbInitInterval;
-    if (consoleOutput)
-      console.log("Error initializing database... Attempting to reconnect...");
-
-    dbInitInterval = setInterval(function() {
-      dbInitTimer = dbInitTimer + 1000;
-      if (dbInitTimer >= 5000 && commonDBInitCount < commonDBInitLimit) {
-        commonDBInitCount++;
-        initializeDB(config);
+    try {
+      initializeDB(config);
+      if (user != undefined)
         saveLastActionToCookie("Viewed " + pageName);
-        clearInterval(dbInitInterval);
-      } else if (commonDBInitCount >= commonDBInitLimit) {
-        console.log("ERROR! There were significant issues experienced trying to initialize the connection to the " +
-            "database! Please refresh the page or test your connection!");
-        dbInitializedFailed = true;
-        try {
-          deployNotificationModal(false, "Database Connection Error!", "It appears " +
-              "that you are experiencing connection issues! Ensure that you have a fast connection, then close and " +
-              "reopen this browser tab.", 180);
-        } catch (err) {}
-        clearInterval(dbInitInterval);
-        clearInterval(commonLoadingTimer);
-        clearInterval(loginTimerInterval);
-      }
-    }, 1000);
-  }
+    } catch (err) {
+      let dbInitTimer = 0;
+      let dbInitInterval;
+      if (consoleOutput)
+        console.log("Error initializing database... Attempting to reconnect...");
 
-  window.addEventListener("online", function() {
-    clearInterval(offlineTimer);
-    deployNotificationModal(false, "Internet Restored!", "Internet connection " +
-        "restored! Please wait, refreshing the page...", 4, failedNavNum);
-  });
-
-  window.addEventListener("offline", function() {
-    let now = 0;
-    offlineTimer = setInterval(function() {
-      now = now + 1000;
-      if (now >= 5000) {
-        clearInterval(commonLoadingTimer);
-        timerErrorIssued = 0;
-        if (dataListExists) {
+      dbInitInterval = setInterval(function () {
+        dbInitTimer = dbInitTimer + 1000;
+        if (dbInitTimer >= 5000 && commonDBInitCount < commonDBInitLimit) {
+          commonDBInitCount++;
+          initializeDB(config);
+          saveLastActionToCookie("Viewed " + pageName);
+          clearInterval(dbInitInterval);
+        } else if (commonDBInitCount >= commonDBInitLimit) {
+          console.log("ERROR! There were significant issues experienced trying to initialize the connection to the " +
+              "database! Please refresh the page or test your connection!");
+          dbInitializedFailed = true;
           try {
-            document.getElementById("testData").innerHTML = "Loading Failed, Please Connect To Internet";
+            deployNotificationModal(false, "Database Connection Error!", "It appears " +
+                "that you are experiencing connection issues! Ensure that you have a fast connection, then close and " +
+                "reopen this browser tab.", 180);
           } catch (err) {
-            if (dataCounter == 0) {
-              if (consoleOutput)
-                console.log("Loading Element Missing, Creating A New One");
-              let liItem = document.createElement("LI");
-              liItem.id = "testData";
-              liItem.className = "gift";
-              let textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
-              liItem.appendChild(textNode);
-              dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
-            }
           }
+          clearInterval(dbInitInterval);
+          clearInterval(commonLoadingTimer);
+          clearInterval(loginTimerInterval);
         }
-        try{
-          closeModal(currentModalOpenObj);
-        } catch (err) {}
-        openModal(offlineModal, "offlineModal");
-        clearInterval(offlineTimer);
-        clearInterval(loginTimerInterval);
-        if (pageName == "Index") {
-          loginBtn.innerHTML = "No Internet!";
-          allowLogin = false;
-          loginDisabledMsg = "It seems that you are offline! Please connect to the internet to be able to " +
-              "use Gifty properly!";
-        }
-      }
-    }, 1000);
-  });
+      }, 1000);
+    }
 
-  offlineSpan.onclick = function() {
-    closeModal(offlineModal);
-  };
+    window.addEventListener("online", function () {
+      clearInterval(offlineTimer);
+      deployNotificationModal(false, "Internet Restored!", "Internet connection " +
+          "restored! Please wait, refreshing the page...", 4, failedNavNum);
+    });
 
-  if (!emptyListNoteDeployed) {
-    commonLoadingTimer = setInterval(function() {
-      commonLoadingTimerInt = commonLoadingTimerInt + 1000;
-      if (dbInitializedFailed)
-        clearInterval(commonLoadingTimer);
-      if (commonLoadingTimerInt >= (commonLoadingTimerLimit * 2) && timerErrorIssued == 1) {
-        if (document.getElementById("loginBtn") != undefined) {
-          deployNotificationModal(false, "Loading Error!", "It appears that " +
-              "loading the login page has taken a significant amount of time. If this slow speed continues, please " +
-              "note that your experience will be severely degraded. If desired, try refreshing the page and contact a " +
-              "moderator.", 180);
-          document.getElementById("loginBtn").innerHTML = "Possible Loading Error...";
-          document.getElementById("signUpFld").innerHTML = "Possible Loading Error...";
-        } else {
-          if (document.getElementById("testData") != undefined) {
-            document.getElementById("testData").innerHTML = "Potential Loading Failure...";
-          }
-          deployNotificationModal(false, "Loading Error!", "It appears that " +
-              "this page has taken a significant amount of time to connect to the database. If this slow speed " +
-              "continues, please note that your experience will be severely degraded. If desired, try refreshing the " +
-              "page and contact a moderator.", 180);
-        }
-        if (consoleOutput)
-          console.log("Timer Critical Error Issued");
-        timerErrorIssued = 2;
-        clearInterval(commonLoadingTimer);
-        clearInterval(loginTimerInterval);
-        if (user != undefined) {
-          updateMaintenanceLog(pageName, "Critical Error: Critical Loading Time Experienced By \"" + user.userName + "\"");
-        } else {
-          updateMaintenanceLog(pageName, "Critical Error: Critical Loading Time Experienced!");
-        }
-      } else if (commonLoadingTimerInt >= commonLoadingTimerLimit) {
-        if (timerErrorIssued == 0) {
-          if (consoleOutput)
-            console.log("Timer Error Issued");
-          timerErrorIssued = 1;
-          if (document.getElementById("testData") != undefined) {
-            document.getElementById("testData").innerHTML = "Loading Is Taking Longer Than Expected...";
-          } else if (document.getElementById("loginBtn") != undefined) {
-            document.getElementById("loginBtn").innerHTML = "Loading Is Taking Longer Than Expected...";
-          }
-          deployNotificationModal(false, "Database Connection Slow...", "Database " +
-              "connection is very slow... If this slow speed continues, your experience will be severely degraded.", 6);
-          if (user != undefined) {
-            updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced By \"" + user.userName + "\"");
-          } else {
-            updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced!");
-          }
-        }
-      } else if (commonLoadingTimerInt >= 1000 && dataListExists) {
-        if (validPulseReceived) {
+    window.addEventListener("offline", function () {
+      let now = 0;
+      offlineTimer = setInterval(function () {
+        now = now + 1000;
+        if (now >= 5000) {
           clearInterval(commonLoadingTimer);
           timerErrorIssued = 0;
-          if (consoleOutput)
-            console.log("Pulse Check Complete. Loading Properly.");
+          if (dataListExists) {
+            try {
+              document.getElementById("testData").innerHTML = "Loading Failed, Please Connect To Internet";
+            } catch (err) {
+              if (dataCounter == 0) {
+                if (consoleOutput)
+                  console.log("Loading Element Missing, Creating A New One");
+                let liItem = document.createElement("LI");
+                liItem.id = "testData";
+                liItem.className = "gift";
+                let textNode = document.createTextNode("Loading Failed, Please Connect To Internet");
+                liItem.appendChild(textNode);
+                dataListContainer.insertBefore(liItem, dataListContainer.childNodes[0]);
+              }
+            }
+          }
+          try {
+            closeModal(currentModalOpenObj);
+          } catch (err) {
+          }
+          openModal(offlineModal, "offlineModal");
+          clearInterval(offlineTimer);
+          clearInterval(loginTimerInterval);
+          if (pageName == "Index") {
+            loginBtn.innerHTML = "No Internet!";
+            allowLogin = false;
+            loginDisabledMsg = "It seems that you are offline! Please connect to the internet to be able to " +
+                "use Gifty properly!";
+          }
         }
-      }
-    }, 1000);
-  }
+      }, 1000);
+    });
 
-  if (user != undefined && pageName != "Index") {
-    loginTimer();
-  } else {
-    if (consoleOutput) {
-      console.log("User Not Found!");
+    offlineSpan.onclick = function () {
+      closeModal(offlineModal);
+    };
+
+    if (!emptyListNoteDeployed) {
+      commonLoadingTimer = setInterval(function () {
+        commonLoadingTimerInt = commonLoadingTimerInt + 1000;
+        if (dbInitializedFailed)
+          clearInterval(commonLoadingTimer);
+        if (commonLoadingTimerInt >= (commonLoadingTimerLimit * 2) && timerErrorIssued == 1) {
+          if (document.getElementById("loginBtn") != undefined) {
+            deployNotificationModal(false, "Loading Error!", "It appears that " +
+                "loading the login page has taken a significant amount of time. If this slow speed continues, please " +
+                "note that your experience will be severely degraded. If desired, try refreshing the page and contact a " +
+                "moderator.", 180);
+            document.getElementById("loginBtn").innerHTML = "Possible Loading Error...";
+            document.getElementById("signUpFld").innerHTML = "Possible Loading Error...";
+          } else {
+            if (document.getElementById("testData") != undefined) {
+              document.getElementById("testData").innerHTML = "Potential Loading Failure...";
+            }
+            deployNotificationModal(false, "Loading Error!", "It appears that " +
+                "this page has taken a significant amount of time to connect to the database. If this slow speed " +
+                "continues, please note that your experience will be severely degraded. If desired, try refreshing the " +
+                "page and contact a moderator.", 180);
+          }
+          if (consoleOutput)
+            console.log("Timer Critical Error Issued");
+          timerErrorIssued = 2;
+          clearInterval(commonLoadingTimer);
+          clearInterval(loginTimerInterval);
+          if (user != undefined) {
+            updateMaintenanceLog(pageName, "Critical Error: Critical Loading Time Experienced By \"" + user.userName + "\"");
+          } else {
+            updateMaintenanceLog(pageName, "Critical Error: Critical Loading Time Experienced!");
+          }
+        } else if (commonLoadingTimerInt >= commonLoadingTimerLimit) {
+          if (timerErrorIssued == 0) {
+            if (consoleOutput)
+              console.log("Timer Error Issued");
+            timerErrorIssued = 1;
+            if (document.getElementById("testData") != undefined) {
+              document.getElementById("testData").innerHTML = "Loading Is Taking Longer Than Expected...";
+            } else if (document.getElementById("loginBtn") != undefined) {
+              document.getElementById("loginBtn").innerHTML = "Loading Is Taking Longer Than Expected...";
+            }
+            deployNotificationModal(false, "Database Connection Slow...", "Database " +
+                "connection is very slow... If this slow speed continues, your experience will be severely degraded.", 6);
+            if (user != undefined) {
+              updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced By \"" + user.userName + "\"");
+            } else {
+              updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced!");
+            }
+          }
+        } else if (commonLoadingTimerInt >= 1000 && dataListExists) {
+          if (validPulseReceived) {
+            clearInterval(commonLoadingTimer);
+            timerErrorIssued = 0;
+            if (consoleOutput)
+              console.log("Pulse Check Complete. Loading Properly.");
+          }
+        }
+      }, 1000);
     }
-  }
 
-  if (consoleOutput)
-    console.log("The " + pageName + " Page has been initialized!");
+    if (user != undefined && pageName != "Index") {
+      loginTimer();
+    } else {
+      if (consoleOutput) {
+        console.log("User Not Found!");
+      }
+    }
+
+    if (consoleOutput)
+      console.log("The " + pageName + " Page has been initialized!");
+    ranCommonInitialization = true;
+  }
 }
 
 function initializeDB(config) {
