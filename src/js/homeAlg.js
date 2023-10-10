@@ -60,8 +60,24 @@ let denyBtn;
 
 
 
-function getCurrentUser(){
+function getCurrentUser() {
+  let fixUserGifts = false;
   getCurrentUserCommon();
+
+  for (let i = 0; i < user.giftList.length; i++) {
+    if (user.giftList[i] == null) {
+      user.giftList.splice(i, 1);
+      fixUserGifts = true;
+    }
+  }
+
+  if (fixUserGifts) {
+    commonInitialization();
+    firebase.database().ref("users/" + user.uid).update({
+      giftList: user.giftList
+    });
+  }
+
   checkYearlyReview();
   failedNavNum = 2;
 
@@ -419,40 +435,42 @@ function collectUserBoughtGifts(){
   userBoughtGiftsUIDs = [];
   userBoughtGiftsUsers = [];
   for(let i = 0; i < userArr.length; i++) {
-    userGiftArr = userArr[i].giftList;
-    userPrivateGiftArr = userArr[i].privateList;
+    if (userArr[i].uid != user.uid) {
+      userGiftArr = userArr[i].giftList;
+      userPrivateGiftArr = userArr[i].privateList;
 
-    if(userGiftArr == undefined){}
-    else if (userGiftArr.length != undefined) {
-      for (let a = 0; a < userGiftArr.length; a++) {
-        if (userGiftArr[a].buyer == user.userName) {
-          userBoughtGifts.push(userGiftArr[a]);
-          userBoughtGiftsUIDs.push(userArr[i].uid);
-          userBoughtGiftsUsers.push(userArr[i].name);
-        }
-        if (userGiftArr[a].receivedBy != undefined)
-          if (userGiftArr[a].receivedBy.includes(user.uid)) {
+      if (userGiftArr == undefined) {
+      } else if (userGiftArr.length != undefined) {
+        for (let a = 0; a < userGiftArr.length; a++) {
+          if (userGiftArr[a].buyer == user.userName) {
             userBoughtGifts.push(userGiftArr[a]);
             userBoughtGiftsUIDs.push(userArr[i].uid);
-            userBoughtGiftsUsers.push(userArr[i].name + " (Multiple Purchase Gift)");
+            userBoughtGiftsUsers.push(userArr[i].name);
           }
-      }
-    }
-
-    if(userPrivateGiftArr == undefined){}
-    else if (userPrivateGiftArr.length != undefined) {
-      for (let b = 0; b < userPrivateGiftArr.length; b++) {
-        if (userPrivateGiftArr[b].buyer == user.userName) {
-          userBoughtGifts.push(userPrivateGiftArr[b]);
-          userBoughtGiftsUIDs.push(userArr[i].uid);
-          userBoughtGiftsUsers.push(userArr[i].name + " (Private List)");
+          if (userGiftArr[a].receivedBy != undefined)
+            if (userGiftArr[a].receivedBy.includes(user.uid)) {
+              userBoughtGifts.push(userGiftArr[a]);
+              userBoughtGiftsUIDs.push(userArr[i].uid);
+              userBoughtGiftsUsers.push(userArr[i].name + " (Multiple Purchase Gift)");
+            }
         }
-        if (userPrivateGiftArr[b].receivedBy != undefined)
-          if (userPrivateGiftArr[b].receivedBy.includes(user.uid)) {
+      }
+
+      if (userPrivateGiftArr == undefined) {
+      } else if (userPrivateGiftArr.length != undefined) {
+        for (let b = 0; b < userPrivateGiftArr.length; b++) {
+          if (userPrivateGiftArr[b].buyer == user.userName) {
             userBoughtGifts.push(userPrivateGiftArr[b]);
             userBoughtGiftsUIDs.push(userArr[i].uid);
-            userBoughtGiftsUsers.push(userArr[i].name + " (Private List, Multiple Purchase Gift)");
+            userBoughtGiftsUsers.push(userArr[i].name + " (Private List)");
           }
+          if (userPrivateGiftArr[b].receivedBy != undefined)
+            if (userPrivateGiftArr[b].receivedBy.includes(user.uid)) {
+              userBoughtGifts.push(userPrivateGiftArr[b]);
+              userBoughtGiftsUIDs.push(userArr[i].uid);
+              userBoughtGiftsUsers.push(userArr[i].name + " (Private List, Multiple Purchase Gift)");
+            }
+        }
       }
     }
   }
