@@ -391,6 +391,16 @@ window.onload = function instantiate() {
     };
   }
 
+  function addGlobalMessageToDB(message) {
+    let globalNotification = "";
+    globalNotificationBool = true;
+    for (let i = 0; i < userArr.length; i++){
+      globalNotification = generateNotificationString(">adminGlobal" + user.uid, "", message, "");
+      addNotificationToDB(userArr[i], globalNotification);
+    }
+    globalNotificationBool = false;
+  }
+
   function initializeLoginBtn() {
     if(allowLogin) {
       loginFxnBtn.innerHTML = "Disable Login Function";
