@@ -70,6 +70,7 @@ window.onload = function instantiate() {
 
   getCurrentUser();
   commonInitialization();
+  initializeSecretSantaListPageVars();
 
   listsElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
     notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, secretSantaSignUp,
@@ -84,6 +85,7 @@ window.onload = function instantiate() {
   limitsInitial = firebase.database().ref("limits/");
 
   databaseQuery();
+  initializeSecretSantaDB();
 
   function databaseQuery() {
     let fetchData = function (postRef) {
