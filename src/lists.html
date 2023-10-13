@@ -10,11 +10,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/main.css?v=2023-08-12" rel="stylesheet" type="text/css"/>
+  <link href="css/main.css?v=2023-10-08" rel="stylesheet" type="text/css"/>
   <title>Gift Lists</title>
 
-  <script src="js/listsAlg.js?v=2023-08-12" type="text/javascript"></script>
-  <script src="js/common.js?v=2023-08-12" type="text/javascript"></script>
+  <script src="js/listsAlg.js?v=2023-10-08" type="text/javascript"></script>
+  <script src="js/secretSantaAlg.js?v=2023-10-08" type="text/javascript"></script>
+  <script src="js/common.js?v=2023-10-08" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -45,7 +46,7 @@
   <img class="notificationIcon" id="notificationButton" src="img/bellNotificationOff.png" alt="View Notifications">
 </div>
 
-<span class="addBtn" id="secretSanta" style="display:none" alt="Secret Santa Button">Loading... Please Wait</span>
+<span class="addBtn" id="secretSantaBtn" style="display:none" alt="Secret Santa Button">Loading... Please Wait</span>
 
 <div id="userModal" class="modal">
   <div class="modal-content">
@@ -72,6 +73,29 @@
     <!--Modal Footer-->
     <div class="modal-footer">
       <h3 class="modal-footer-left" id="sendPrivateMessage" alt="Send This Friend A Message">Send Message</h3>
+    </div>
+  </div>
+</div>
+
+<div id="secretSantaUserModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeSecretSantaUserModal">&times;</span>
+      <h2 alt="This Is Your Assigned Secret Santa Name">Secret Santa Assignment</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p id="secretSantaNameText" alt="Your Secret Santa Name Assignment">Your Secret Santa Assignment: (Hidden)</p>
+      <span class="basicBtn" id="showSecretSantaAssignment" alt="View Your Secret Santa Assignment">Show Secret Santa Name</span>
+      <br/>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <p></p>
     </div>
   </div>
 </div>
