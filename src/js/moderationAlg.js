@@ -35,11 +35,12 @@ let showNone;
 let showUID;
 let showName;
 let showLastLogin;
+let showActions;
 let showUserScore;
 let showShareCode;
 let showFriends;
 let showModerator;
-let showActions;
+let showSecretSanta;
 let globalNoteInfoIcon;
 let sendGlobalNotification;
 let loginFxnInfoIcon;
@@ -80,6 +81,7 @@ let userPrivateGifts;
 let userLastLogin;
 let userLastAction;
 let userScoreElem;
+let userSecretSanta;
 let userPassword;
 let moderatorOp;
 let sendPrivateMessage;
@@ -139,11 +141,12 @@ window.onload = function instantiate() {
   showUID = document.getElementById("showUID");
   showName = document.getElementById("showName");
   showLastLogin = document.getElementById("showLastLogin");
+  showActions = document.getElementById("showActions");
   showUserScore = document.getElementById("showUserScore");
   showShareCode = document.getElementById("showShareCode");
   showFriends = document.getElementById("showFriends");
   showModerator = document.getElementById("showModerator");
-  showActions = document.getElementById("showActions");
+  showSecretSanta = document.getElementById("showSecretSanta");
   globalNoteInfoIcon = document.getElementById("globalNoteInfoIcon");
   sendGlobalNotification = document.getElementById("sendGlobalNotification");
   loginFxnInfoIcon = document.getElementById("loginFxnInfoIcon");
@@ -186,6 +189,7 @@ window.onload = function instantiate() {
   userLastLogin = document.getElementById("userLastLogin");
   userLastAction = document.getElementById("userLastAction");
   userScoreElem = document.getElementById("userScoreElem");
+  userSecretSanta = document.getElementById("userSecretSanta");
   userPassword = document.getElementById("userPassword");
   moderatorOp = document.getElementById("moderatorOp");
   sendPrivateMessage = document.getElementById("sendPrivateMessage");
@@ -217,10 +221,10 @@ window.onload = function instantiate() {
     limitsBtn, databaseLimitsModal, closeDatabaseLimitsModal, giftLimitInp, userLimitInp, confirmLimits, cancelLimits,
     loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal, loginDisabledDesc, loginDisabledInp,
     loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown,
-    showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends, showModerator, showActions,
-    sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal, userOptionsSpan, settingsNote, testData,
-    closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends, userLastLogin,
-    userLastAction, userScoreElem, userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser,
+    showNone, showUID, showName, showLastLogin, showActions, showUserScore, showShareCode, showFriends, showModerator,
+    showSecretSanta, sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal, userOptionsSpan, settingsNote,
+    testData, closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends, userLastLogin,
+    userLastAction, userScoreElem, userSecretSanta, userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser,
     userGiftFriendModal, closeUserGiftFriendModal, userGiftFriendTitle, userGiftFriendText, userGiftFriendListContainer,
     userGiftFriendBack, testGiftFriend, closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
 
@@ -1079,6 +1083,18 @@ function initUserElement(liItem, userData) {
     } else {
       userScoreElem.innerHTML = "User Score: 0";
     }
+    if (userData.secretSanta != undefined) {
+      if (userData.secretSanta == 0) {
+        userSecretSanta.innerHTML = "Secret Santa: Not Signed Up";
+      } else if (userData.secretSanta == 1) {
+        userSecretSanta.innerHTML = "Secret Santa: Signed Up!";
+      }
+      if (userData.secretSantaName != undefined) {
+
+      }
+    } else {
+      userSecretSanta.innerHTML = "Secret Santa: No Data";
+    }
     if (userData.giftList != undefined) {
       userGifts.onclick = function() {
         if (userData.uid == user.uid) {
@@ -1301,8 +1317,8 @@ function removeUserElement(uid) {
 }
 
 function initializeShowUserData(showDataSelection) {
-  let listOfShowUserElements = [showNone, showUID, showName, showLastLogin, showUserScore, showShareCode, showFriends,
-    showModerator, showActions];
+  let listOfShowUserElements = [showNone, showUID, showName, showLastLogin, showActions, showUserScore, showShareCode,
+    showFriends, showModerator, showSecretSanta];
   let showHideUserDataBool = false;
 
   userListDropDown.innerHTML = "Select Listed User Data (" + showDataSelection + ")";;
@@ -1333,6 +1349,9 @@ function initializeShowUserData(showDataSelection) {
     showLastLogin.onclick = function(){
       updateDBWithShowUserData("Login");
     };
+    showActions.onclick = function(){
+      updateDBWithShowUserData("Action");
+    };
     showUserScore.onclick = function(){
       updateDBWithShowUserData("Score");
     };
@@ -1345,9 +1364,9 @@ function initializeShowUserData(showDataSelection) {
     showModerator.onclick = function(){
       updateDBWithShowUserData("Moderator");
     };
-    showActions.onclick = function(){
-      updateDBWithShowUserData("Action");
-    };
+    showSecretSanta.onclick = function(){
+      updateDBWithShowUserData("SecretSanta");
+    }
   };
 
   function updateDBWithShowUserData(showUserDataItem) {
@@ -1431,6 +1450,18 @@ function updateInitializedUsers(){
             userDataString = userDataName + " - Never Logged In";
           }
           break;
+        case "Action":
+          if (userData.lastPerformedAction != undefined) {
+            userDataString = userDataName + " - " + userData.lastPerformedAction;
+            if (userData.lastPerformedAction.includes("Signed Out")) {
+              tempElem.className += " lowSev";
+            } else {
+              tempElem.className += " highSev";
+            }
+          } else {
+            userDataString = userDataName + " - No Actions Recorded";
+          }
+          break;
         case "Score":
           if (userData.userScore == undefined) {
             userData.userScore = 0;
@@ -1469,18 +1500,23 @@ function updateInitializedUsers(){
             tempElem.className += " highSev";
           }
           break;
-        case "Action":
-          if (userData.lastPerformedAction != undefined) {
-            userDataString = userDataName + " - " + userData.lastPerformedAction;
-            if (userData.lastPerformedAction.includes("Signed Out")) {
-              tempElem.className += " lowSev";
-            } else {
-              tempElem.className += " highSev";
+        case "SecretSanta":
+          userDataString = userDataName;
+          if (userData.secretSanta == undefined)
+            userData.secretSanta = 0;
+          if (userData.secretSantaName == undefined)
+            userData.secretSantaName = "";
+
+          if (userData.secretSanta == 0) {
+            userDataString = userDataName + " - Not Signed Up";
+            tempElem.className += " highSev";
+          } else if (userData.secretSanta == 1) {
+            userDataString = userDataName + " - Signed Up";
+            tempElem.className += " lowSev";
+            if (userData.secretSantaName != "") {
+              userDataString = userDataName + " - Signed Up (Assigned Name)";
             }
-          } else {
-            userDataString = userDataName + " - No Actions Recorded";
           }
-          break;
         default:
           console.log("Unknown User Data Input!");
           break;
