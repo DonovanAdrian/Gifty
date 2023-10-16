@@ -10,12 +10,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/main.css?v=2023-08-12" rel="stylesheet" type="text/css"/>
+  <link href="css/main.css?v=2023-10-08" rel="stylesheet" type="text/css"/>
   <title>Moderation</title>
 
-  <script src="js/passOp.js?v=2023-08-12" type="text/javascript"></script>
-  <script src="js/moderationAlg.js?v=2023-08-12" type="text/javascript"></script>
-  <script src="js/common.js?v=2023-08-12" type="text/javascript"></script>
+  <script src="js/passOp.js?v=2023-10-08" type="text/javascript"></script>
+  <script src="js/moderationAlg.js?v=2023-10-08" type="text/javascript"></script>
+  <script src="js/common.js?v=2023-10-08" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -64,6 +64,7 @@
       <p id="userLastLogin" alt="The Last Time This User Logged In">Loading Last Login...</p>
       <p id="userLastAction" alt="The Last Action This User Performed">Loading Last Action...</p>
       <p id="userScoreElem" alt="This User's User Score">Loading User Score...</p>
+      <p id="userSecretSanta" alt="This User's Secret Santa Status">Loading Secret Santa Status...</p>
       <span class="basicBtn" id="userGifts" alt="This User's Public Gift Count, Click To View Gifts">Loading Public Gifts...</span>
       <br/>
       <br/>
@@ -180,6 +181,7 @@
       <span class="dropdown" id="showShareCode" alt="Show Share Code" style="display: none">Share Code</span>
       <span class="dropdown" id="showFriends" alt="Show Number of Friends" style="display: none">Friend Amount</span>
       <span class="dropdown" id="showModerator" alt="Show Moderator Status" style="display: none">Moderator Status</span>
+      <span class="dropdown" id="showSecretSanta" alt="Show Secret Santa Status" style="display: none">Secret Santa</span>
       <br/>
       <br/>
       <img class=infoIcon id="globalNoteInfoIcon" src="img/info.png">
