@@ -127,7 +127,6 @@ let userInvites;
 let userFriends;
 let userReadNotifications;
 let userNotifications;
-let autoSecretSanta;
 let moderatorSettings;
 let colorShifter;
 
