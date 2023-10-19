@@ -60,6 +60,7 @@ window.onload = function instantiate() {
 
   getCurrentUserCommon();
   commonInitialization();
+  initializeSecretSantaFamilyPageVars();
 
   familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, backBtn, familyModal,
     closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily, familyEdit,
@@ -269,68 +270,45 @@ function changeFamilyElement(familyData) {
 
 function initFamilyElement(liItem, familyData) {
   liItem.className = "gift";
-  liItem.onclick = function (){
+  liItem.onclick = function () {
+    initializeSecretSantaFamilyModalElements(familyData);
+
     familyMemberArr = familyData.members;
+    if (familyData.members == undefined) {
+      familyMemberArr = [];
+    }
     familyTitle.innerHTML = familyData.name;
     familyUID.innerHTML = "UID: " + familyData.uid;
 
-    if (familyMemberArr != null) {
-      try {
-        testFamily.remove();
-      } catch (err) {}
-      familyMemberCount.innerHTML = "# Members: " + familyMemberArr.length;
-      try {
-        testFamily.remove();
-      } catch (err) {}
+    try {
+      testFamily.remove();
+    } catch (err) {}
+    familyMemberCount.innerHTML = "# Members: " + familyMemberArr.length;
 
-      if (loadedFamilyMembersArr.length != 0) {
-        for (let a = 0; a < loadedFamilyMembersArr.length; a++) {
-          document.getElementById(loadedFamilyMembersArr[a]).remove();
-        }
-        loadedFamilyMembersArr = [];
+    for (let a = 0; a < loadedFamilyMembersArr.length; a++) {
+      document.getElementById(loadedFamilyMembersArr[a]).remove();
+    }
+    loadedFamilyMembersArr = [];
 
-        for (let i = 0; i < familyMemberArr.length; i++) {
-          let liItem = document.createElement("LI");
-          let familyMember = findUIDItemInArr(familyMemberArr[i], userArr, true);
-          liItem.id = familyMemberArr[i];
-          liItem.className = "gift";
-          let textNode = document.createTextNode(userArr[familyMember].name);
-          liItem.appendChild(textNode);
-          familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+    if (familyMemberArr.length > 0) {
+      for (let i = 0; i < familyMemberArr.length; i++) {
+        let liItem = document.createElement("LI");
+        let familyMember = findUIDItemInArr(familyMemberArr[i], userArr, true);
+        liItem.id = familyMemberArr[i];
+        liItem.className = "gift";
+        let textNode = document.createTextNode(userArr[familyMember].name);
+        liItem.appendChild(textNode);
+        familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
 
-          loadedFamilyMembersArr.push(familyMemberArr[i]);
-        }
-      } else
-        for (let i = 0; i < familyMemberArr.length; i++) {
-          let liItem = document.createElement("LI");
-          let familyMember = findUIDItemInArr(familyMemberArr[i], userArr, true);
-          liItem.id = familyMemberArr[i];
-          liItem.className = "gift";
-          let textNode = document.createTextNode(userArr[familyMember].name);
-          liItem.appendChild(textNode);
-          familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
-
-          loadedFamilyMembersArr.push(familyMemberArr[i]);
-        }
-    } else {
-      if (loadedFamilyMembersArr.length != 0) {
-        for (let a = 0; a < loadedFamilyMembersArr.length; a++) {
-          document.getElementById(loadedFamilyMembersArr[a]).remove();
-        }
-        loadedFamilyMembersArr = [];
+        loadedFamilyMembersArr.push(familyMemberArr[i]);
       }
-
-      try {
-        testFamily.remove();
-      } catch (err) {}
-      familyMemberCount.innerHTML = "# Members: " + 0;
+    } else {
       let liItem = document.createElement("LI");
       liItem.id = "testFamily";
       liItem.className = "gift";
       let textNode = document.createTextNode("No Family Members Found!");
       liItem.appendChild(textNode);
       familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
-
       loadedFamilyMembersArr.push("testFamily");
     }
 
