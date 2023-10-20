@@ -122,6 +122,14 @@ p.giftInf {
   font-family: Verdana;
 }
 
+p.giftInfBold {
+  margin: 0;
+  padding-left: 5px;
+  padding-top: 10px;
+  font-family: Verdana;
+  font-weight: bold;
+}
+
 p.giftInfSmall {
   margin: 0;
   padding-left: 5px;
