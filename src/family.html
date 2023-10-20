@@ -10,11 +10,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/main.css?v=2023-08-12" rel="stylesheet" type="text/css"/>
+  <link href="css/main.css?v=2023-10-08" rel="stylesheet" type="text/css"/>
   <title>Family</title>
 
-  <script src="js/familyAlg.js?v=2023-08-12" type="text/javascript"></script>
-  <script src="js/common.js?v=2023-08-12" type="text/javascript"></script>
+  <script src="js/familyAlg.js?v=2023-10-08" type="text/javascript"></script>
+  <script src="js/secretSantaAlg.js?v=2023-10-08" type="text/javascript"></script>
+  <script src="js/common.js?v=2023-10-08" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -57,11 +58,21 @@
     <!--Modal Body-->
     <div class="modal-body">
       <p id="familyUID" alt="This Family's Unique ID">Loading Family UID...</p>
+      <p id="secretSantaSectionHeader" alt="Secret Santa Section Header" class="giftInfBold">Secret Santa Controls:</p>
+      <p id="secretSantaStateText" alt="Current Secret Santa State">Secret Santa State: Unknown</p>
+      <p id="secretSantaNextStateText" alt="Current Secret Santa State">Next Secret Santa State: Unknown</p>
+      <p id="secretSantaStatusText" alt="Current Secret Santa Status">Secret Santa Status: Nominal</p>
+      <span class="basicBtn" id="secretSantaStateBtn" alt="Change Secret Santa State">Change State</span>
+      <span class="basicBtn" id="secretSantaShuffleBtn" alt="Shuffle Secret Santa Assignments">Shuffle</span>
+      <span class="basicBtn" id="secretSantaAutoBtn" alt="Change Secret Santa Automatic Status">Enable/Disable Auto</span>
+      <br/>
+      <br/>
+      <span class="basicBtn" id="secretSantaExportBtn" alt="Export Secret Santa Data">Export Data To CSV</span>
       <p id="familyMemberCount" alt="The Amount Of Members In This Family">Loading Number Of Family Members...</p>
       <ul id="familyListContainer" class="giftList">
         <li class="gift" id="testFamily">Loading...</li>
       </ul>
-      <br>
+      <br/>
     </div>
 
     <!--Modal Footer-->
