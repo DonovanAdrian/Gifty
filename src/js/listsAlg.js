@@ -18,7 +18,6 @@ let listLimit = 0;
 let privateMessageModal;
 let closeUserModal;
 let userModal;
-let secretSantaSignUp;
 let userTitle;
 let publicList;
 let multipleGiftCaveat;
@@ -57,7 +56,6 @@ window.onload = function instantiate() {
   privateMessageModal = document.getElementById("privateMessageModal");
   closeUserModal = document.getElementById("closeUserModal");
   userModal = document.getElementById("userModal");
-  secretSantaSignUp = document.getElementById("secretSanta");
   userTitle = document.getElementById("userTitle");
   publicList = document.getElementById("publicList");
   privateList = document.getElementById("privateList");
@@ -73,9 +71,8 @@ window.onload = function instantiate() {
   initializeSecretSantaListPageVars();
 
   listsElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
-    notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, secretSantaSignUp,
-    testData, userTitle, publicList, privateList, sendPrivateMessage, closePrivateMessageModal, privateMessageInp,
-    sendMsg, cancelMsg];
+    notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, testData, userTitle,
+    publicList, privateList, sendPrivateMessage, closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg];
 
   verifyElementIntegrity(listsElements);
 
