@@ -15,6 +15,7 @@ let giftLimit = 0;
 let userLimit = 0;
 
 let userUpdateLocal = false;
+let secretSantaAssignmentShown = false;
 let allowLogin = null;
 
 let loginDisabledMsg = "";
@@ -82,6 +83,7 @@ let userLastLogin;
 let userLastAction;
 let userScoreElem;
 let userSecretSanta;
+let userSecretSantaBtn;
 let userPassword;
 let moderatorOp;
 let sendPrivateMessage;
@@ -190,6 +192,7 @@ window.onload = function instantiate() {
   userLastAction = document.getElementById("userLastAction");
   userScoreElem = document.getElementById("userScoreElem");
   userSecretSanta = document.getElementById("userSecretSanta");
+  userSecretSantaBtn = document.getElementById("userSecretSantaBtn");
   userPassword = document.getElementById("userPassword");
   moderatorOp = document.getElementById("moderatorOp");
   sendPrivateMessage = document.getElementById("sendPrivateMessage");
@@ -224,9 +227,10 @@ window.onload = function instantiate() {
     showNone, showUID, showName, showLastLogin, showActions, showUserScore, showShareCode, showFriends, showModerator,
     showSecretSanta, sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal, userOptionsSpan, settingsNote,
     testData, closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends, userLastLogin,
-    userLastAction, userScoreElem, userSecretSanta, userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser,
-    userGiftFriendModal, closeUserGiftFriendModal, userGiftFriendTitle, userGiftFriendText, userGiftFriendListContainer,
-    userGiftFriendBack, testGiftFriend, closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
+    userLastAction, userScoreElem, userSecretSanta, userSecretSantaBtn, userPassword, moderatorOp, sendPrivateMessage,
+    warnUser, banUser, userGiftFriendModal, closeUserGiftFriendModal, userGiftFriendTitle, userGiftFriendText,
+    userGiftFriendListContainer, userGiftFriendBack, testGiftFriend, closePrivateMessageModal, globalMsgTitle,
+    globalMsgInp, sendMsg, cancelMsg];
 
   verifyElementIntegrity(moderationElements);
 
@@ -986,6 +990,10 @@ function confirmOperation(operationTitle, operationContent, operationType, opera
     } else if (operationType == "showPass") {
       userPassword.innerHTML = decode(operationData.encodeStr);
       openModal(previousModal, previousModalTitle);
+    } else if (operationType == "showSanta") {
+      secretSantaAssignmentShown = true;
+      userSecretSanta.innerHTML = "Secret Santa Assignment: " + operationData.secretSantaName;
+      userSecretSantaBtn.innerHTML = "Hide Secret Santa Assignment";
     }
     closeModal(confirmModal);
     userUpdateLocal = false;
@@ -1049,7 +1057,7 @@ function initUserElement(liItem, userData) {
   let showPassBool = false;
   liItem.className = "gift";
 
-  liItem.onclick = function (){
+  liItem.onclick = function () {
     userName.innerHTML = userData.name;
     userUID.innerHTML = "UID: " + userData.uid;
     userUserName.innerHTML = "Username: " + userData.userName;
@@ -1084,16 +1092,42 @@ function initUserElement(liItem, userData) {
       userScoreElem.innerHTML = "User Score: 0";
     }
     if (userData.secretSanta != undefined) {
+      userSecretSantaBtn.className = "basicBtn";
       if (userData.secretSanta == 0) {
         userSecretSanta.innerHTML = "Secret Santa: Not Signed Up";
+        userSecretSantaBtn.innerHTML = "Opt Into Secret Santa";
       } else if (userData.secretSanta == 1) {
         userSecretSanta.innerHTML = "Secret Santa: Signed Up!";
+        userSecretSantaBtn.innerHTML = "Opt Out Of Secret Santa";
       }
+      userSecretSantaBtn.onclick = function() {
+        manuallyOptInOut(userData);
+      };
       if (userData.secretSantaName != undefined) {
-
+        if (userData.secretSantaName != "") {
+          if (!secretSantaAssignmentShown) {
+            userSecretSanta.innerHTML = "Secret Santa: Assigned!";
+            userSecretSantaBtn.innerHTML = "View Secret Santa Assignment";
+            userSecretSantaBtn.onclick = function() {
+              confirmOperation("View " + userData.name + "'s Secret Santa Assignment?", "Are " +
+                  "you sure you would like to view " + userData.name + "'s Secret Santa Assignment? If you are included " +
+                  "in this individual's family within Gifty, their assignment could be you!", "showSanta",
+                  userData, userModal, userData.uid);
+            };
+          } else {
+            userSecretSantaBtn.onclick = function() {
+              secretSantaAssignmentShown = false;
+              deployNotificationModal(false, "Assignment Hidden!", userData.name +
+                  "'s Secret Santa assignment has been hidden. The modal can now be opened again if desired.");
+            };
+          }
+        }
       }
     } else {
       userSecretSanta.innerHTML = "Secret Santa: No Data";
+      userSecretSantaBtn.innerHTML = "Button Disabled";
+      userSecretSantaBtn.className = "basicBtn btnDisabled";
+      userSecretSantaBtn.onclick = function() {};
     }
     if (userData.giftList != undefined) {
       userGifts.onclick = function() {
@@ -1561,4 +1595,21 @@ function getMonthName(month) {
 
 function saveListedUserDataToCookie() {
   sessionStorage.setItem("localListedUserData", JSON.stringify(localListedUserData));
+}
+
+function manuallyOptInOut(userData) {
+  if (userData.secretSanta == null)
+    userData.secretSanta = 0;
+
+  if (userData.secretSanta == 0) {
+    firebase.database().ref("users/" + userData.uid).update({
+      secretSanta: 1
+    });
+    alert(userData.name + " has been manually opted in to the Secret Santa Program!");
+  } else {
+    firebase.database().ref("users/" + userData.uid).update({
+      secretSanta: 0
+    });
+    alert(userData.name + " has been manually opted out of the Secret Santa Program!");
+  }
 }
