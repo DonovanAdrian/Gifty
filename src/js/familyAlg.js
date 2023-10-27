@@ -269,6 +269,7 @@ function changeFamilyElement(familyData) {
 }
 
 function initFamilyElement(liItem, familyData) {
+  let tempFamilyMemberName = "";
   liItem.className = "gift";
   liItem.onclick = function () {
     initializeSecretSantaFamilyModalElements(familyData);
@@ -283,7 +284,10 @@ function initFamilyElement(liItem, familyData) {
     try {
       testFamily.remove();
     } catch (err) {}
-    familyMemberCount.innerHTML = "# Members: " + familyMemberArr.length;
+    if (familyMemberArr.length <= 2)
+      familyMemberCount.innerHTML = "# Members: " + familyMemberArr.length + " (Click \"Edit Family\" to add members!)";
+    else
+      familyMemberCount.innerHTML = "# Members: " + familyMemberArr.length + " (Click \"Edit Family\" to configure relationships!)";
 
     for (let a = 0; a < loadedFamilyMembersArr.length; a++) {
       document.getElementById(loadedFamilyMembersArr[a]).remove();
@@ -296,7 +300,11 @@ function initFamilyElement(liItem, familyData) {
         let familyMember = findUIDItemInArr(familyMemberArr[i], userArr, true);
         liItem.id = familyMemberArr[i];
         liItem.className = "gift";
-        let textNode = document.createTextNode(userArr[familyMember].name);
+        tempFamilyMemberName = userArr[familyMember].name;
+        if (userArr[familyMember].secretSanta != undefined)
+          if (userArr[familyMember].secretSanta == 1)
+            tempFamilyMemberName += " - Signed Up For Secret Santa!"
+        let textNode = document.createTextNode(tempFamilyMemberName);
         liItem.appendChild(textNode);
         familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
 
