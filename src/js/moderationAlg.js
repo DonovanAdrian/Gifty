@@ -81,8 +81,10 @@ let userUserName;
 let userPrivateGifts;
 let userLastLogin;
 let userLastAction;
+let userLastReview;
 let userScoreElem;
 let userSecretSanta;
+let userSecretSantaPrior;
 let userSecretSantaBtn;
 let userPassword;
 let moderatorOp;
@@ -190,8 +192,10 @@ window.onload = function instantiate() {
   userFriends = document.getElementById("userFriends");
   userLastLogin = document.getElementById("userLastLogin");
   userLastAction = document.getElementById("userLastAction");
+  userLastReview = document.getElementById("userLastReview");
   userScoreElem = document.getElementById("userScoreElem");
   userSecretSanta = document.getElementById("userSecretSanta");
+  userSecretSantaPrior = document.getElementById("userSecretSantaPrior");
   userSecretSantaBtn = document.getElementById("userSecretSantaBtn");
   userPassword = document.getElementById("userPassword");
   moderatorOp = document.getElementById("moderatorOp");
@@ -227,10 +231,10 @@ window.onload = function instantiate() {
     showNone, showUID, showName, showLastLogin, showActions, showUserScore, showShareCode, showFriends, showModerator,
     showSecretSanta, sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal, userOptionsSpan, settingsNote,
     testData, closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends, userLastLogin,
-    userLastAction, userScoreElem, userSecretSanta, userSecretSantaBtn, userPassword, moderatorOp, sendPrivateMessage,
-    warnUser, banUser, userGiftFriendModal, closeUserGiftFriendModal, userGiftFriendTitle, userGiftFriendText,
-    userGiftFriendListContainer, userGiftFriendBack, testGiftFriend, closePrivateMessageModal, globalMsgTitle,
-    globalMsgInp, sendMsg, cancelMsg];
+    userLastAction, userLastReview, userScoreElem, userSecretSanta, userSecretSantaPrior, userSecretSantaBtn,
+    userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser, userGiftFriendModal, closeUserGiftFriendModal,
+    userGiftFriendTitle, userGiftFriendText, userGiftFriendListContainer, userGiftFriendBack, testGiftFriend,
+    closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
 
   verifyElementIntegrity(moderationElements);
 
@@ -1086,10 +1090,30 @@ function initUserElement(liItem, userData) {
     } else {
       userLastAction.innerHTML = "This User Has No Last Action Recorded";
     }
+    if (userData.yearlyReview != undefined) {
+      userLastReview.innerHTML = "Last Yearly Review: " + userData.yearlyReview;
+    } else {
+      userLastReview.innerHTML = "This User Has No Yearly Review Recorded";
+    }
     if(userData.userScore != undefined) {
       userScoreElem.innerHTML = "User Score: " + userData.userScore;
     } else {
       userScoreElem.innerHTML = "User Score: 0";
+    }
+    if (userData.secretSantaNamePrior != undefined) {
+      if (userData.secretSantaNamePrior != "") {
+        let tempIndex = 0;
+        tempIndex = findUIDItemInArr(userData.secretSantaNamePrior, userArr, true);
+        if (tempIndex != -1) {
+          userSecretSantaPrior.innerHTML = "Last Secret Santa Assignment: " + findFirstNameInFullName(userArr[tempIndex].name);
+        } else {
+          userSecretSantaPrior.innerHTML = "Last Secret Santa Assignment: This User No Longer Exists!";
+        }
+      } else {
+        userSecretSantaPrior.innerHTML = "Last Secret Santa Assignment: No Previous Assignment";
+      }
+    } else {
+      userSecretSantaPrior.innerHTML = "This User Has No Previous Secret Santa Assignment Recorded";
     }
     if (userData.secretSanta != undefined) {
       userSecretSantaBtn.className = "basicBtn";
@@ -1551,8 +1575,9 @@ function updateInitializedUsers(){
               userDataString = userDataName + " - Signed Up (Assigned Name)";
             }
           }
+          break;
         default:
-          console.log("Unknown User Data Input!");
+          console.log("Unknown User Data Input: " + localListedUserData);
           break;
       }
     }
