@@ -80,7 +80,14 @@ function getCurrentUser(){
   getCurrentUserCommon();
 
   if (privateListBool) {
-    giftArr = user.privateList;
+    if (user.uid != privateUser.uid) {
+      giftArr = user.privateList;
+    } else {
+      updateMaintenanceLog(pageName, "Critical Error: Private User is equal to Primary User!");
+      deployNotificationModal(false, "Gift Page Error!", "Unfortunately there was " +
+          "an error loading your friend's private list! You will be redirected to the Lists page for now. Please " +
+          "notify a moderator of this occurrence.", 10, 3);
+    }
   } else {
     giftArr = user.giftList;
   }
@@ -867,33 +874,38 @@ function addGiftToDB(){
       successfulDBOperationNotice = "The gift, \"" + giftTitleInp.value + "\", has been successfully added to your gift list! Redirecting back to home...";
       successfulDBNavigation = 2;
     } else {
-      updateUserScore(privateUser, 4);
+      if (user.uid != privateUser.uid) {
+        updateUserScore(privateUser, 4);
 
-      let newUid = firebase.database().ref("users/" + user.uid + "/privateList/" + uid).push();
-      newUid = newUid.toString();
-      newUid = findUIDInString(newUid);
-      firebase.database().ref("users/" + user.uid + "/privateList/" + uid).set({
-        title: giftTitleInp.value,
-        link: newURL,
-        where: giftWhereInp.value,
-        received: 0,
-        uid: newUid,
-        buyer: "",
-        description: giftDescriptionInp.value,
-        creationDate: creationDate,
-        creator: privateUser.uid,
-        multiples: multiplePurchases.checked
-      });
+        let newUid = firebase.database().ref("users/" + user.uid + "/privateList/" + uid).push();
+        newUid = newUid.toString();
+        newUid = findUIDInString(newUid);
+        firebase.database().ref("users/" + user.uid + "/privateList/" + uid).set({
+          title: giftTitleInp.value,
+          link: newURL,
+          where: giftWhereInp.value,
+          received: 0,
+          uid: newUid,
+          buyer: "",
+          description: giftDescriptionInp.value,
+          creationDate: creationDate,
+          creator: privateUser.uid,
+          multiples: multiplePurchases.checked
+        });
 
-      let tempUnsavedChanges = true;
-      unsavedGiftStorage = [giftTitleInp.value, giftLinkInp.value, giftWhereInp.value, giftDescriptionInp.value, multiplePurchases.checked]
-      sessionStorage.setItem("unsavedChanges", JSON.stringify(tempUnsavedChanges));
-      sessionStorage.setItem("unsavedGiftStorage", JSON.stringify(unsavedGiftStorage));
-      showSuccessfulDBOperation = true;
-      listenForDBChanges("Add", uid);
-      successfulDBOperationTitle = "Private Gift Added!";
-      successfulDBOperationNotice = "The gift, \"" + giftTitleInp.value + "\", has been successfully added to " + user.name + "'s private gift list! Redirecting back to their private list...";
-      successfulDBNavigation = 10;
+        let tempUnsavedChanges = true;
+        unsavedGiftStorage = [giftTitleInp.value, giftLinkInp.value, giftWhereInp.value, giftDescriptionInp.value, multiplePurchases.checked]
+        sessionStorage.setItem("unsavedChanges", JSON.stringify(tempUnsavedChanges));
+        sessionStorage.setItem("unsavedGiftStorage", JSON.stringify(unsavedGiftStorage));
+        showSuccessfulDBOperation = true;
+        listenForDBChanges("Add", uid);
+        successfulDBOperationTitle = "Private Gift Added!";
+        successfulDBOperationNotice = "The gift, \"" + giftTitleInp.value + "\", has been successfully added to " + user.name + "'s private gift list! Redirecting back to their private list...";
+        successfulDBNavigation = 10;
+      } else {
+        deployNotificationModal(false, "Gift Add Error!", "Please go back to your " +
+            "friend's list and try to add this gift again!");
+      }
     }
     localGiftAddUpdate = false;
   }
