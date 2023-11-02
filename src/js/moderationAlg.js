@@ -37,11 +37,14 @@ let showUID;
 let showName;
 let showLastLogin;
 let showActions;
+let showReview;
 let showUserScore;
 let showShareCode;
 let showFriends;
+let showGifts;
 let showModerator;
 let showSecretSanta;
+let showLastSecretSanta;
 let globalNoteInfoIcon;
 let sendGlobalNotification;
 let loginFxnInfoIcon;
@@ -78,6 +81,7 @@ let closeUserModal;
 let userName;
 let userUID;
 let userUserName;
+let userPublicGifts;
 let userPrivateGifts;
 let userLastLogin;
 let userLastAction;
@@ -146,11 +150,14 @@ window.onload = function instantiate() {
   showName = document.getElementById("showName");
   showLastLogin = document.getElementById("showLastLogin");
   showActions = document.getElementById("showActions");
+  showReview = document.getElementById("showReview");
   showUserScore = document.getElementById("showUserScore");
   showShareCode = document.getElementById("showShareCode");
+  showGifts = document.getElementById("showGifts");
   showFriends = document.getElementById("showFriends");
   showModerator = document.getElementById("showModerator");
   showSecretSanta = document.getElementById("showSecretSanta");
+  showLastSecretSanta = document.getElementById("showLastSecretSanta");
   globalNoteInfoIcon = document.getElementById("globalNoteInfoIcon");
   sendGlobalNotification = document.getElementById("sendGlobalNotification");
   loginFxnInfoIcon = document.getElementById("loginFxnInfoIcon");
@@ -187,7 +194,7 @@ window.onload = function instantiate() {
   userName = document.getElementById("userName");
   userUID = document.getElementById("userUID");
   userUserName = document.getElementById("userUserName");
-  userGifts = document.getElementById("userGifts");
+  userPublicGifts = document.getElementById("userPublicGifts");
   userPrivateGifts = document.getElementById("userPrivateGifts");
   userFriends = document.getElementById("userFriends");
   userLastLogin = document.getElementById("userLastLogin");
@@ -228,13 +235,14 @@ window.onload = function instantiate() {
     limitsBtn, databaseLimitsModal, closeDatabaseLimitsModal, giftLimitInp, userLimitInp, confirmLimits, cancelLimits,
     loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal, loginDisabledDesc, loginDisabledInp,
     loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown,
-    showNone, showUID, showName, showLastLogin, showActions, showUserScore, showShareCode, showFriends, showModerator,
-    showSecretSanta, sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal, userOptionsSpan, settingsNote,
-    testData, closeUserModal, userName, userUID, userUserName, userGifts, userPrivateGifts, userFriends, userLastLogin,
-    userLastAction, userLastReview, userScoreElem, userSecretSanta, userSecretSantaPrior, userSecretSantaBtn,
-    userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser, userGiftFriendModal, closeUserGiftFriendModal,
-    userGiftFriendTitle, userGiftFriendText, userGiftFriendListContainer, userGiftFriendBack, testGiftFriend,
-    closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
+    showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore, showShareCode, showGifts,
+    showFriends, showModerator, showSecretSanta, showLastSecretSanta, sendPrivateMessage, userModal, userOptionsBtn,
+    userOptionsModal, userOptionsSpan, settingsNote, testData, closeUserModal, userName, userUID, userUserName,
+    userPublicGifts, userPrivateGifts, userFriends, userLastLogin, userLastAction, userLastReview, userScoreElem,
+    userSecretSanta, userSecretSantaPrior, userSecretSantaBtn, userPassword, moderatorOp, sendPrivateMessage, warnUser,
+    banUser, userGiftFriendModal, closeUserGiftFriendModal, userGiftFriendTitle, userGiftFriendText,
+    userGiftFriendListContainer, userGiftFriendBack, testGiftFriend, closePrivateMessageModal, globalMsgTitle,
+    globalMsgInp, sendMsg, cancelMsg];
 
   verifyElementIntegrity(moderationElements);
 
@@ -1154,7 +1162,7 @@ function initUserElement(liItem, userData) {
       userSecretSantaBtn.onclick = function() {};
     }
     if (userData.giftList != undefined) {
-      userGifts.onclick = function() {
+      userPublicGifts.onclick = function() {
         if (userData.uid == user.uid) {
           deployNotificationModal(true, "User Info",
               "Navigate to the home page to see your gifts!");
@@ -1163,16 +1171,16 @@ function initUserElement(liItem, userData) {
         }
       };
       if (userData.giftList.length == 0) {
-        userGifts.innerHTML = "This User Has No Gifts";
-        userGifts.onclick = function() {};
+        userPublicGifts.innerHTML = "This User Has No Gifts";
+        userPublicGifts.onclick = function() {};
       } else if (userData.giftList.length == 1) {
-        userGifts.innerHTML = "View " + userData.giftList.length + " Public Gift";
+        userPublicGifts.innerHTML = "View " + userData.giftList.length + " Public Gift";
       } else {
-        userGifts.innerHTML = "View " + userData.giftList.length + " Public Gifts";
+        userPublicGifts.innerHTML = "View " + userData.giftList.length + " Public Gifts";
       }
     } else {
-      userGifts.innerHTML = "This User Has No Gifts";
-      userGifts.onclick = function() {};
+      userPublicGifts.innerHTML = "This User Has No Gifts";
+      userPublicGifts.onclick = function() {};
     }
     if (userData.privateList != undefined) {
       if (userData.uid == user.uid) {
@@ -1375,8 +1383,8 @@ function removeUserElement(uid) {
 }
 
 function initializeShowUserData(showDataSelection) {
-  let listOfShowUserElements = [showNone, showUID, showName, showLastLogin, showActions, showUserScore, showShareCode,
-    showFriends, showModerator, showSecretSanta];
+  let listOfShowUserElements = [showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore,
+    showShareCode, showGifts, showFriends, showModerator, showSecretSanta, showLastSecretSanta];
   let showHideUserDataBool = false;
 
   userListDropDown.innerHTML = "Select Listed User Data (" + showDataSelection + ")";;
@@ -1410,11 +1418,17 @@ function initializeShowUserData(showDataSelection) {
     showActions.onclick = function(){
       updateDBWithShowUserData("Action");
     };
+    showReview.onclick = function(){
+      updateDBWithShowUserData("Review");
+    };
     showUserScore.onclick = function(){
       updateDBWithShowUserData("Score");
     };
     showShareCode.onclick = function(){
       updateDBWithShowUserData("Share");
+    };
+    showGifts.onclick = function(){
+      updateDBWithShowUserData("Gifts");
     };
     showFriends.onclick = function(){
       updateDBWithShowUserData("Friends");
@@ -1424,7 +1438,10 @@ function initializeShowUserData(showDataSelection) {
     };
     showSecretSanta.onclick = function(){
       updateDBWithShowUserData("SecretSanta");
-    }
+    };
+    showLastSecretSanta.onclick = function(){
+      updateDBWithShowUserData("LastSecretSanta");
+    };
   };
 
   function updateDBWithShowUserData(showUserDataItem) {
@@ -1520,6 +1537,16 @@ function updateInitializedUsers(){
             userDataString = userDataName + " - No Actions Recorded";
           }
           break;
+        case "Review":
+          if (userData.yearlyReview == undefined)
+            userData.yearlyReview = "";
+
+          if (userData.yearlyReview == "") {
+            userDataString = userDataName + " - No Yearly Review Recorded";
+          } else {
+            userDataString = userDataName + " - Last Review: " + userData.yearlyReview;
+          }
+          break;
         case "Score":
           if (userData.userScore == undefined) {
             userData.userScore = 0;
@@ -1539,6 +1566,13 @@ function updateInitializedUsers(){
             userData.shareCode = "No Share Code Available!";
           }
           userDataString = userDataName + " - " + userData.shareCode;
+          break;
+        case "Gifts":
+          if (userData.giftList == undefined)
+            userData.giftList = [];
+          if (userData.privateList == undefined)
+            userData.privateList = [];
+          userDataString = userDataName + " - # Public: " + userData.giftList.length + ", # Private: " + userData.privateList.length;
           break;
         case "Friends":
           userDataString = userDataName;
@@ -1574,6 +1608,16 @@ function updateInitializedUsers(){
             if (userData.secretSantaName != "") {
               userDataString = userDataName + " - Signed Up (Assigned Name)";
             }
+          }
+          break;
+        case "LastSecretSanta":
+          if (userData.secretSantaNamePrior == undefined)
+            userData.secretSantaNamePrior = "";
+
+          if (userData.secretSantaNamePrior == "") {
+            userDataString = userDataName + " - No Previous Assignments";
+          } else {
+            userDataString = userDataName + " - Previous Assignment: " + userData.secretSantaNamePrior;
           }
           break;
         default:
