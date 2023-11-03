@@ -290,6 +290,8 @@ function initFriendElement(liItem, friendData) {
   let setPublicButton = false;
   let childUserList = friendData.childUser;
   let parentUserList = friendData.parentUser;
+  let fixPublicGifts = false;
+  let fixPrivateGifts = false;
 
   if (childUserList == undefined) {
     childUserList = [];
@@ -303,11 +305,25 @@ function initFriendElement(liItem, friendData) {
     clearInterval(giftListInterval);
     userTitle.innerHTML = friendData.name;
 
-    if(friendData.giftList == undefined){
+    if (friendData.giftList == undefined) {
       friendData.giftList = [];
+      publicList.onclick = function () {};
+    } else {
+      for (let i = 0; i < friendData.giftList.length; i++) {
+        if (friendData.giftList[i] == null) {
+          friendData.giftList.splice(i, 1);
+          fixPublicGifts = true;
+        }
+      }
+
+      if (fixPublicGifts) {
+        firebase.database().ref("users/" + friendData.uid).update({
+          giftList: friendData.giftList
+        });
+      }
     }
 
-    if(friendData.giftList.length > 0) {
+    if (friendData.giftList.length > 0) {
       setPublicButton = true;
       publicList.onclick = function () {
         if (listLimit == 1 && user.moderatorInt == 0 && (childUserList.includes(user.uid) || parentUserList.includes(user.uid))) {
@@ -325,12 +341,23 @@ function initFriendElement(liItem, friendData) {
           navigation(9);//FriendList
         }
       };
-    } else {
-      publicList.onclick = function () {};
     }
 
-    if(friendData.privateList == undefined) {
+    if (friendData.privateList == undefined) {
       friendData.privateList = [];
+    } else {
+      for (let i = 0; i < friendData.privateList.length; i++) {
+        if (friendData.privateList[i] == null) {
+          friendData.privateList.splice(i, 1);
+          fixPrivateGifts = true;
+        }
+      }
+
+      if (fixPrivateGifts) {
+        firebase.database().ref("users/" + friendData.uid).update({
+          privateList: friendData.privateList
+        });
+      }
     }
 
     if (setPublicButton) {
@@ -340,7 +367,6 @@ function initFriendElement(liItem, friendData) {
     }
 
     privateList.onclick = function() {
-
       if (listLimit == 1 && user.moderatorInt == 0 && (childUserList.includes(user.uid) || parentUserList.includes(user.uid))) {
         if (parentUserList.includes(user.uid)) {
           deployNotificationModal(false, "Relationship Detected!", "It appears that " +
