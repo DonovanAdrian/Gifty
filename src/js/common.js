@@ -8,7 +8,8 @@
 //User Configurable Variables
 //***************************
 //Update the below variables to affect
-// user experience accross Gifty
+// user experience across Gifty
+let automaticSecretSantaLimit = 5; //The limit of families that can have automatic control enabled at a given time
 let logoutReminder = 300; //default 300, 300 (5 mins) -> Notifies user when they have been inactive too long
 let logoutLimit = 900; //default 900, 900 (15 mins), 600 (10 mins) -> Logs out user after this long
 let commonLoadingTimerLimit = 15000; //default 15000 -> Amount of time before displaying load error
