@@ -6,7 +6,7 @@
 
 let moderationElements = [];
 let initializedUsers = [];
-let loadedGiftFriendArr = [];
+let loadedUserDataViewArr = [];
 
 let moderationSet = 1;
 let globalNoteInt = 0;
@@ -95,13 +95,13 @@ let moderatorOp;
 let sendPrivateMessage;
 let warnUser;
 let banUser;
-let userGiftFriendModal;
-let closeUserGiftFriendModal;
-let userGiftFriendTitle;
-let userGiftFriendText;
-let userGiftFriendListContainer;
-let userGiftFriendBack;
-let testGiftFriend;
+let userDataViewModal;
+let closeUserDataViewModal;
+let userDataViewTitle;
+let userDataViewText;
+let userDataViewListContainer;
+let userDataViewBack;
+let testUserDataView;
 let privateMessageModal;
 let closePrivateMessageModal;
 let globalMsgTitle;
@@ -209,13 +209,13 @@ window.onload = function instantiate() {
   sendPrivateMessage = document.getElementById("sendPrivateMessage");
   warnUser = document.getElementById("warnUser");
   banUser = document.getElementById("banUser");
-  userGiftFriendModal = document.getElementById("userGiftFriendModal");
-  closeUserGiftFriendModal = document.getElementById("closeUserGiftFriendModal");
-  userGiftFriendTitle = document.getElementById("userGiftFriendTitle");
-  userGiftFriendText = document.getElementById("userGiftFriendText");
-  userGiftFriendListContainer = document.getElementById("userGiftFriendListContainer");
-  userGiftFriendBack = document.getElementById("userGiftFriendBack");
-  testGiftFriend = document.getElementById("testGiftFriend");
+  userDataViewModal = document.getElementById("userDataViewModal");
+  closeUserDataViewModal = document.getElementById("closeUserDataViewModal");
+  userDataViewTitle = document.getElementById("userDataViewTitle");
+  userDataViewText = document.getElementById("userDataViewText");
+  userDataViewListContainer = document.getElementById("userDataViewListContainer");
+  userDataViewBack = document.getElementById("userDataViewBack");
+  testUserDataView = document.getElementById("testUserDataView");
   privateMessageModal = document.getElementById("privateMessageModal");
   closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
   globalMsgTitle = document.getElementById("globalMsgTitle");
@@ -240,8 +240,8 @@ window.onload = function instantiate() {
     userOptionsModal, userOptionsSpan, settingsNote, testData, closeUserModal, userName, userUID, userUserName,
     userPublicGifts, userPrivateGifts, userFriends, userLastLogin, userLastAction, userLastReview, userScoreElem,
     userSecretSanta, userSecretSantaPrior, userSecretSantaBtn, userPassword, moderatorOp, sendPrivateMessage, warnUser,
-    banUser, userGiftFriendModal, closeUserGiftFriendModal, userGiftFriendTitle, userGiftFriendText,
-    userGiftFriendListContainer, userGiftFriendBack, testGiftFriend, closePrivateMessageModal, globalMsgTitle,
+    banUser, userDataViewModal, closeUserDataViewModal, userDataViewTitle, userDataViewText,
+    userDataViewListContainer, userDataViewBack, testUserDataView, closePrivateMessageModal, globalMsgTitle,
     globalMsgInp, sendMsg, cancelMsg];
 
   verifyElementIntegrity(moderationElements);
@@ -1167,7 +1167,7 @@ function initUserElement(liItem, userData) {
           deployNotificationModal(true, "User Info",
               "Navigate to the home page to see your gifts!");
         } else {
-          generateUserGiftFriendModal(userData.giftList, userData);
+          generateUserDataViewModal(userData.giftList, userData);
         }
       };
       if (userData.giftList.length == 0) {
@@ -1191,7 +1191,7 @@ function initUserElement(liItem, userData) {
         };
       } else {
         userPrivateGifts.onclick = function() {
-          generateUserGiftFriendModal(userData.privateList, userData);
+          generateUserDataViewModal(userData.privateList, userData);
         };
         if (userData.privateList.length == 0) {
           userPrivateGifts.innerHTML = "This User Has No Private Gifts";
@@ -1212,7 +1212,7 @@ function initUserElement(liItem, userData) {
           deployNotificationModal(true, "User Info",
               "Navigate to the \"Friends\" page to see your friends!");
         } else {
-          generateUserGiftFriendModal(userData.friends, userData);
+          generateUserDataViewModal(userData.friends, userData);
         }
       };
       if (userData.friends.length == 0) {
@@ -1297,7 +1297,7 @@ function initUserElement(liItem, userData) {
   };
 }
 
-function generateUserGiftFriendModal(dataToLoad, userData) {
+function generateUserDataViewModal(dataToLoad, userData) {
   let dataToLoadType;
   let userUID = userData.uid;
 
@@ -1307,51 +1307,51 @@ function generateUserGiftFriendModal(dataToLoad, userData) {
     dataToLoadType = "Gift";
   }
 
-  userGiftFriendTitle.innerHTML = userData.name + "'s " + dataToLoadType + " List";
-  userGiftFriendText.innerHTML = "Total " + dataToLoadType + "s: " + dataToLoad.length;
+  userDataViewTitle.innerHTML = userData.name + "'s " + dataToLoadType + " List";
+  userDataViewText.innerHTML = "Total " + dataToLoadType + "s: " + dataToLoad.length;
 
   closeModal(userModal);
 
-  userGiftFriendBack.onclick = function() {
-    closeModal(userGiftFriendModal);
+  userDataViewBack.onclick = function() {
+    closeModal(userDataViewModal);
     openModal(userModal, userUID);
   }
 
-  closeUserGiftFriendModal.onclick = function() {
-    closeModal(userGiftFriendModal);
+  closeUserDataViewModal.onclick = function() {
+    closeModal(userDataViewModal);
   }
 
-  openModal(userGiftFriendModal, userData.name + "'s " + dataToLoadType + " List");
+  openModal(userDataViewModal, userData.name + "'s " + dataToLoadType + " List");
 
-  if (loadedGiftFriendArr.length != 0) {
-    for (let a = 0; a < loadedGiftFriendArr.length; a++) {
-      document.getElementById(loadedGiftFriendArr[a]).remove();
+  if (loadedUserDataViewArr.length != 0) {
+    for (let a = 0; a < loadedUserDataViewArr.length; a++) {
+      document.getElementById(loadedUserDataViewArr[a]).remove();
     }
-    loadedGiftFriendArr = [];
+    loadedUserDataViewArr = [];
   }
 
   try {
-    testGiftFriend.remove();
+    testUserDataView.remove();
   } catch (err) {}
 
   for (let i = 0; i < dataToLoad.length; i++) {
     let liItem = document.createElement("LI");
     let textNode;
-    let loadedGiftFriendElemID;
+    let loadedUserDataViewElemID;
 
     liItem.className = "gift";
 
     if (dataToLoadType == "Friend") {
       let friendUserDataIndex = findUIDItemInArr(dataToLoad[i], userArr, true);
       let friendUserData = userArr[friendUserDataIndex];
-      loadedGiftFriendElemID = dataToLoad[i];
-      liItem.id = loadedGiftFriendElemID;
+      loadedUserDataViewElemID = dataToLoad[i];
+      liItem.id = loadedUserDataViewElemID;
       textNode = document.createTextNode(friendUserData.name);
     } else {
       let giftReceivedData = dataToLoad[i].received;
       let giftMultiples = dataToLoad[i].multiples;
-      loadedGiftFriendElemID = dataToLoad[i].uid;
-      liItem.id = loadedGiftFriendElemID;
+      loadedUserDataViewElemID = dataToLoad[i].uid;
+      liItem.id = loadedUserDataViewElemID;
       textNode = document.createTextNode(dataToLoad[i].title);
 
       if (userUID != user.uid) {
@@ -1366,8 +1366,8 @@ function generateUserGiftFriendModal(dataToLoad, userData) {
     }
 
     liItem.appendChild(textNode);
-    userGiftFriendListContainer.insertBefore(liItem, userGiftFriendListContainer.childNodes[0]);
-    loadedGiftFriendArr.push(loadedGiftFriendElemID);
+    userDataViewListContainer.insertBefore(liItem, userDataViewListContainer.childNodes[0]);
+    loadedUserDataViewArr.push(loadedUserDataViewElemID);
   }
 }
 
