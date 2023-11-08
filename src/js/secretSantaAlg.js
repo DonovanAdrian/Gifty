@@ -22,11 +22,24 @@ let secretSantaShuffleBtn;
 let secretSantaAutoBtn;
 let secretSantaExportBtn;
 
+//General Variables
 let secretSantaElements = [];
 let hideSecretSantaName = true;
 let runningExportProcess = false;
 let mostRecentSecretSantaState = 0;
 let familyMemberSignUpMinimum = 3;
+let currentDate = new Date();
+let currentYear = currentDate.getFullYear();
+let showDate = new Date(currentYear, 9, 1, 0, 0, 0, 0);//Oct 1st
+let assignDate = new Date(currentYear, 10, 1, 0, 0, 0, 0);//Nov 1st
+let hideDateMin = 1; //Jan
+let hideDateMax = 9; //Sept
+
+/*
+ * General Functions
+ */
+function preProcessFamily() {//todo placeholder
+}
 
 /*
 * List Page Functions
@@ -52,6 +65,17 @@ function evaluateSecretSantaButton(familyData) {
     firebase.database().ref("family/" + familyData.uid).update({
       secretSantaState: 1
     });
+  } else if (familyData.secretSantaState > 3 || familyData.secretSantaState < 1) {
+    familyData.secretSantaState = 1;
+    firebase.database().ref("family/" + familyData.uid).update({
+      secretSantaState: 1
+    });
+  }
+  if (familyData.automaticSantaControl == undefined) {
+    familyData.automaticSantaControl = 0;
+    firebase.database().ref("family/" + familyData.uid).update({
+      automaticSantaControl: 0
+    });
   }
   if (familyData.members == undefined)
     familyData.members = [];
@@ -66,7 +90,7 @@ function evaluateSecretSantaButton(familyData) {
       if (i != -1) {
         initializeSecretSantaButton(3);
       } else {
-        updateMaintenanceLog(pageName, "Critical Error: A user was improperly assigned a Secret Santa name!");
+        updateMaintenanceLog(pageName, "Critical Error: A user was improperly assigned a Secret Santa name! " + user.uid);
       }
     } else {
       disableSecretSantaBtn();
@@ -223,6 +247,24 @@ function initializeSecretSantaFamilyModalElements(familyData) {
       secretSantaState: 1
     });
   }
+  if (familyData.automaticSantaControl == undefined) {
+    familyData.automaticSantaControl = 0;
+    firebase.database().ref("family/" + familyData.uid).update({
+      automaticSantaControl: 0
+    });
+  } else if (familyData.automaticSantaControl > 1 || familyData.automaticSantaControl < 0) {
+    familyData.automaticSantaControl = 0;
+    firebase.database().ref("family/" + familyData.uid).update({
+      automaticSantaControl: 0
+    });
+  }
+
+  if (familyData.automaticSantaControl == 0) {
+    secretSantaAutoBtn.innerHTML = "Enable Automatic Control";
+  } else if (familyData.automaticSantaControl == 1) {
+    secretSantaAutoBtn.innerHTML = "Disable Automatic Control";
+  }
+
   if (familyData.members == undefined)
     familyData.members = [];
 
@@ -262,14 +304,18 @@ function initializeSecretSantaFamilyModalElements(familyData) {
       changeSecretSantaState(familyData, 2);
     };
     secretSantaAutoBtn.onclick = function() {
-      toggleAutomaticFunctionality();
+      toggleAutomaticFunctionality(familyData);
     };
     secretSantaShuffleBtn.onclick = function() {};
     secretSantaExportBtn.onclick = function() {};
   } else if (familyData.secretSantaState == 2) {
     secretSantaStateText.innerHTML = "Secret Santa State: Ready";
     secretSantaNextStateText.innerHTML = "Next Secret Santa State: Active";
-    secretSantaStatusText.innerHTML = "Secret Santa Status: Ready To Assign Names";
+    if (familyData.automaticSantaControl == 1) {
+      secretSantaStatusText.innerHTML = "Secret Santa Status: Assigning Names On " + assignDate;
+    } else {
+      secretSantaStatusText.innerHTML = "Secret Santa Status: Ready To Assign Names";
+    }
     secretSantaNextStateText.style.display = "block";
     secretSantaStatusText.style.display = "block";
     secretSantaShuffleBtn.style.display = "none";
@@ -280,7 +326,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
       changeSecretSantaState(familyData, 3);
     };
     secretSantaAutoBtn.onclick = function() {
-      toggleAutomaticFunctionality();
+      toggleAutomaticFunctionality(familyData);
     };
     secretSantaExportBtn.onclick = function() {
       exportSecretSantaData(1, familyData);
@@ -289,7 +335,11 @@ function initializeSecretSantaFamilyModalElements(familyData) {
   } else if (familyData.secretSantaState == 3) {
     secretSantaStateText.innerHTML = "Secret Santa State: Active";
     secretSantaNextStateText.innerHTML = "Next Secret Santa State: Idle";
-    secretSantaStatusText.innerHTML = "Secret Santa Status: Nominal";
+    if (familyData.automaticSantaControl == 1) {
+      secretSantaStatusText.innerHTML = "Secret Santa Status: Activating On " + showDate;
+    } else {
+      secretSantaStatusText.innerHTML = "Secret Santa Status: Nominal";
+    }
     secretSantaNextStateText.style.display = "block";
     secretSantaShuffleBtn.style.display = "inline-block";
     secretSantaAutoBtn.style.display = "inline-block";
@@ -308,7 +358,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
       }
     };
     secretSantaAutoBtn.onclick = function() {
-      toggleAutomaticFunctionality();
+      toggleAutomaticFunctionality(familyData);
     };
     secretSantaExportBtn.onclick = function() {
       exportSecretSantaData(2, familyData);
@@ -391,8 +441,39 @@ function evaluateUserReadiness(familyMembers) {
   return familyReady;
 }
 
-function toggleAutomaticFunctionality() {//todo placeholder
-  alert("This button will eventually toggle secret santa automatic control");
+function toggleAutomaticFunctionality(familyData) {
+  let currentAutomaticControlCount = 0;
+
+  for (let i = 0; i < familyArr.length; i++) {
+    if (familyArr[i].automaticSantaControl == undefined)
+      familyArr[i].automaticSantaControl = 0;
+
+    if (familyArr[i].automaticSantaControl == 1) {
+      currentAutomaticControlCount++;
+    }
+  }
+
+  if (familyData.automaticSantaControl == 1) {
+    firebase.database().ref("family/" + familyData.uid).update({
+      automaticSantaControl: 0
+    });
+    deployNotificationModal(false, "Automatic Control Disabled!", "Secret Santa " +
+        "Automatic Control has been successfully disabled!");
+  } else if (currentAutomaticControlCount < automaticSecretSantaLimit) {
+    if (familyData.automaticSantaControl == 0) {
+      firebase.database().ref("family/" + familyData.uid).update({
+        automaticSantaControl: 1
+      });
+      deployNotificationModal(false, "Automatic Control Enabled!", "Secret Santa " +
+          "Automatic Control has been successfully enabled!");
+    }
+  } else {
+    deployNotificationModal(true, "Automatic Control Limit Reached!", "Warning! " +
+        "You have reached the set limit of families that can have Automatic Control Enabled! Disable some other " +
+        "families and try again!<br><br><br>If desired, this limit can be changed in the common.js file of Gifty and " +
+        "redeployed. Please note that an increased amount of automatic controlled families will potentially degrade " +
+        "the Gifty experience!", 20);
+  }
 }
 
 function exportSecretSantaData(desiredExportType, familyData) {
