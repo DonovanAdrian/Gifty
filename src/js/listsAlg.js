@@ -291,7 +291,13 @@ function initFriendElement(liItem, friendData) {
   let childUserList = friendData.childUser;
   let parentUserList = friendData.parentUser;
   let fixPublicGifts = false;
+  let brokenPublicGifts = [];
+  let aggregatedPublicGiftData = "";
   let fixPrivateGifts = false;
+  let brokenPrivateGifts = [];
+  let aggregatedPrivateGiftData = "";
+  let friendElemErrEncountered = false;
+  let friendElemErrStr = "";
 
   if (childUserList == undefined) {
     childUserList = [];
@@ -305,108 +311,164 @@ function initFriendElement(liItem, friendData) {
     clearInterval(giftListInterval);
     userTitle.innerHTML = friendData.name;
 
-    if (friendData.giftList == undefined) {
-      friendData.giftList = [];
-      publicList.onclick = function () {};
-    } else {
-      for (let i = 0; i < friendData.giftList.length; i++) {
-        if (friendData.giftList[i] == null) {
-          friendData.giftList.splice(i, 1);
-          fixPublicGifts = true;
+    try {
+      if (friendData.giftList == undefined) {
+        friendData.giftList = [];
+        publicList.onclick = function () {
+        };
+      } else {
+        brokenPublicGifts = friendData.giftList;
+        aggregatedPublicGiftData = compileGiftData(brokenPublicGifts);
+        for (let i = 0; i < friendData.giftList.length; i++) {
+          if (friendData.giftList[i] == null) {
+            friendData.giftList.splice(i, 1);
+            fixPublicGifts = true;
+          }
+        }
+
+        if (fixPublicGifts) {
+          updateMaintenanceLog(pageName, "Gift List Fix Performed (Public): " + aggregatedPublicGiftData);
+          firebase.database().ref("users/" + friendData.uid).update({
+            giftList: friendData.giftList
+          });
         }
       }
+    } catch (err) {
+      friendElemErrEncountered = true;
+      friendElemErrStr = err.toString();
+    }
 
-      if (fixPublicGifts) {
-        firebase.database().ref("users/" + friendData.uid).update({
-          giftList: friendData.giftList
-        });
+    if (!friendElemErrEncountered) {
+      if (friendData.giftList.length > 0) {
+        setPublicButton = true;
+        publicList.onclick = function () {
+          if (listLimit == 1 && user.moderatorInt == 0 && (childUserList.includes(user.uid) || parentUserList.includes(user.uid))) {
+            if (parentUserList.includes(user.uid)) {
+              deployNotificationModal(false, "Relationship Detected!", "It appears that " +
+                  "you are the parent of " + friendData.name + " so you are blocked from seeing their list. Please contact " +
+                  "a moderator if this has been done in error.", 8);
+            } else if (childUserList.includes(user.uid)) {
+              deployNotificationModal(false, "Relationship Detected!", "It appears that " +
+                  "you are the child of " + friendData.name + " so you are blocked from seeing their list. Please contact " +
+                  "a moderator if this has been done in error.", 8);
+            }
+          } else {
+            sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
+            navigation(9);//FriendList
+          }
+        };
+      }
+
+      try {
+        if (friendData.privateList == undefined) {
+          friendData.privateList = [];
+        } else {
+          brokenPrivateGifts = friendData.privateList;
+          aggregatedPrivateGiftData = compileGiftData(brokenPrivateGifts);
+          for (let i = 0; i < friendData.privateList.length; i++) {
+            if (friendData.privateList[i] == null) {
+              friendData.privateList.splice(i, 1);
+              fixPrivateGifts = true;
+            }
+          }
+
+          if (fixPrivateGifts) {
+            updateMaintenanceLog(pageName, "Gift List Fix Performed (Private): " + aggregatedPrivateGiftData);
+            firebase.database().ref("users/" + friendData.uid).update({
+              privateList: friendData.privateList
+            });
+          }
+        }
+      } catch (err) {
+        friendElemErrEncountered = true;
+        friendElemErrStr = err.toString();
       }
     }
 
-    if (friendData.giftList.length > 0) {
-      setPublicButton = true;
-      publicList.onclick = function () {
+    if (!friendElemErrEncountered) {
+      if (setPublicButton) {
+        flashGiftNumbers(friendData.privateList, friendData.giftList);
+      } else {
+        flashGiftNumbers(friendData.privateList, 0);
+      }
+
+      privateList.onclick = function () {
         if (listLimit == 1 && user.moderatorInt == 0 && (childUserList.includes(user.uid) || parentUserList.includes(user.uid))) {
           if (parentUserList.includes(user.uid)) {
             deployNotificationModal(false, "Relationship Detected!", "It appears that " +
-                "you are the parent of " + friendData.name + " so you are blocked from seeing their list. Please contact " +
-                "a moderator if this has been done in error.", 8);
+                "you are the parent of " + friendData.name + " so you are blocked from seeing their private list. Please " +
+                "contact a moderator if this has been done in error.", 8);
           } else if (childUserList.includes(user.uid)) {
             deployNotificationModal(false, "Relationship Detected!", "It appears that " +
-                "you are the child of " + friendData.name + " so you are blocked from seeing their list. Please contact " +
-                "a moderator if this has been done in error.", 8);
+                "you are the child of " + friendData.name + " so you are blocked from seeing their private list. Please " +
+                "contact a moderator if this has been done in error.", 8);
           }
         } else {
           sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
-          navigation(9);//FriendList
+          navigation(10);//PrivateFriendList
         }
       };
-    }
 
-    if (friendData.privateList == undefined) {
-      friendData.privateList = [];
-    } else {
-      for (let i = 0; i < friendData.privateList.length; i++) {
-        if (friendData.privateList[i] == null) {
-          friendData.privateList.splice(i, 1);
-          fixPrivateGifts = true;
-        }
-      }
-
-      if (fixPrivateGifts) {
-        firebase.database().ref("users/" + friendData.uid).update({
-          privateList: friendData.privateList
-        });
-      }
-    }
-
-    if (setPublicButton) {
-      flashGiftNumbers(friendData.privateList, friendData.giftList);
-    } else {
-      flashGiftNumbers(friendData.privateList, 0);
-    }
-
-    privateList.onclick = function() {
-      if (listLimit == 1 && user.moderatorInt == 0 && (childUserList.includes(user.uid) || parentUserList.includes(user.uid))) {
-        if (parentUserList.includes(user.uid)) {
-          deployNotificationModal(false, "Relationship Detected!", "It appears that " +
-              "you are the parent of " + friendData.name + " so you are blocked from seeing their private list. Please " +
-              "contact a moderator if this has been done in error.", 8);
-        } else if (childUserList.includes(user.uid)) {
-          deployNotificationModal(false, "Relationship Detected!", "It appears that " +
-              "you are the child of " + friendData.name + " so you are blocked from seeing their private list. Please " +
-              "contact a moderator if this has been done in error.", 8);
-        }
-      } else {
-        sessionStorage.setItem("validGiftUser", JSON.stringify(friendData));
-        navigation(10);//PrivateFriendList
-      }
-    };
-
-    sendPrivateMessage.onclick = function() {
-      closeModal(userModal);
-      clearInterval(giftListInterval);
-      generatePrivateMessageDialog(friendData);
-    };
-
-    openModal(userModal, friendData.uid, true);
-
-    closeUserModal.onclick = function() {
-      closeModal(userModal);
-      clearInterval(giftListInterval);
-    };
-
-    window.onclick = function(event) {
-      if (event.target == userModal) {
+      sendPrivateMessage.onclick = function () {
         closeModal(userModal);
         clearInterval(giftListInterval);
+        generatePrivateMessageDialog(friendData);
+      };
+
+      openModal(userModal, friendData.uid, true);
+
+      closeUserModal.onclick = function () {
+        closeModal(userModal);
+        clearInterval(giftListInterval);
+      };
+
+      window.onclick = function (event) {
+        if (event.target == userModal) {
+          closeModal(userModal);
+          clearInterval(giftListInterval);
+        }
       }
+    } else {
+      deployNotificationModal(false, "List Loading Error!", "Uh Oh! Looks like " +
+          "there was an error loading this user's list. Please let a moderator know and check back later.", 10);
+      updateMaintenanceLog(pageName, "Critical Error: Gift List Load Error: " + friendElemErrStr);
     }
   };
 
   if (!initializedUsers.includes(friendData.uid)) {
     initializedUsers.push(friendData.uid);
   }
+}
+
+function compileGiftData(potentiallyBrokenList) {
+  let finalCompileStr = "";
+
+  try {
+    for (let i = 0; i < potentiallyBrokenList.length; i++) {
+      finalCompileStr += " Gift " + i +
+          ", UID: " + potentiallyBrokenList[i].uid +
+          ", Title: " + potentiallyBrokenList[i].title +
+          ", URL: " + potentiallyBrokenList[i].link +
+          ", Location: " + potentiallyBrokenList[i].where +
+          ", Description: " + potentiallyBrokenList[i].description +
+          ", Received: " + potentiallyBrokenList[i].received +
+          ", Buyer: " + potentiallyBrokenList[i].buyer +
+          ", Created On: " + potentiallyBrokenList[i].creationDate +
+          ", Multiples: " + potentiallyBrokenList[i].multiples;
+      if (potentiallyBrokenList[i].receivedBy != undefined)
+        finalCompileStr += ", Received By: " + potentiallyBrokenList[i].receivedBy;
+      else
+        finalCompileStr += ", Received By Field Empty";
+      finalCompileStr += "  ---  ";
+    }
+    if (finalCompileStr == "") {
+      finalCompileStr = "No Data";
+    }
+  } catch (err) {
+    finalCompileStr = "Gift List Compilation Error: " + err.toString();
+  }
+
+  return finalCompileStr;
 }
 
 function removeFriendElement(uid){
