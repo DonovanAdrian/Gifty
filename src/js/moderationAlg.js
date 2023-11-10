@@ -83,6 +83,8 @@ let userUID;
 let userUserName;
 let userPublicGifts;
 let userPrivateGifts;
+let userFriendsList;
+let userNotificationsList;
 let userLastLogin;
 let userLastAction;
 let userLastReview;
@@ -196,7 +198,8 @@ window.onload = function instantiate() {
   userUserName = document.getElementById("userUserName");
   userPublicGifts = document.getElementById("userPublicGifts");
   userPrivateGifts = document.getElementById("userPrivateGifts");
-  userFriends = document.getElementById("userFriends");
+  userFriendsList = document.getElementById("userFriendsList");
+  userNotificationsList = document.getElementById("userNotificationsList");
   userLastLogin = document.getElementById("userLastLogin");
   userLastAction = document.getElementById("userLastAction");
   userLastReview = document.getElementById("userLastReview");
@@ -238,11 +241,11 @@ window.onload = function instantiate() {
     showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore, showShareCode, showGifts,
     showFriends, showModerator, showSecretSanta, showLastSecretSanta, sendPrivateMessage, userModal, userOptionsBtn,
     userOptionsModal, userOptionsSpan, settingsNote, testData, closeUserModal, userName, userUID, userUserName,
-    userPublicGifts, userPrivateGifts, userFriends, userLastLogin, userLastAction, userLastReview, userScoreElem,
-    userSecretSanta, userSecretSantaPrior, userSecretSantaBtn, userPassword, moderatorOp, sendPrivateMessage, warnUser,
-    banUser, userDataViewModal, closeUserDataViewModal, userDataViewTitle, userDataViewText,
-    userDataViewListContainer, userDataViewBack, testUserDataView, closePrivateMessageModal, globalMsgTitle,
-    globalMsgInp, sendMsg, cancelMsg];
+    userPublicGifts, userPrivateGifts, userFriendsList, userNotificationsList, userLastLogin, userLastAction,
+    userLastReview, userScoreElem, userSecretSanta, userSecretSantaPrior, userSecretSantaBtn, userPassword,
+    moderatorOp, sendPrivateMessage, warnUser, banUser, userDataViewModal, closeUserDataViewModal, userDataViewTitle,
+    userDataViewText, userDataViewListContainer, userDataViewBack, testUserDataView, closePrivateMessageModal,
+    globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
 
   verifyElementIntegrity(moderationElements);
 
@@ -1207,7 +1210,7 @@ function initUserElement(liItem, userData) {
       userPrivateGifts.onclick = function() {};
     }
     if (userData.friends != undefined) {
-      userFriends.onclick = function() {
+      userFriendsList.onclick = function() {
         if (userData.uid == user.uid) {
           deployNotificationModal(true, "User Info",
               "Navigate to the \"Friends\" page to see your friends!");
@@ -1216,16 +1219,38 @@ function initUserElement(liItem, userData) {
         }
       };
       if (userData.friends.length == 0) {
-        userFriends.innerHTML = "This User Has No Friends";
-        userFriends.onclick = function() {};
+        userFriendsList.innerHTML = "This User Has No Friends";
+        userFriendsList.onclick = function() {};
       } else if (userData.friends.length == 1) {
-        userFriends.innerHTML = "View " + userData.friends.length + " Friend";
+        userFriendsList.innerHTML = "View " + userData.friends.length + " Friend";
       } else {
-        userFriends.innerHTML = "View " + userData.friends.length + " Friends";
+        userFriendsList.innerHTML = "View " + userData.friends.length + " Friends";
       }
     } else {
-      userFriends.innerHTML = "This User Has No Friends";
-      userFriends.onclick = function() {};
+      userFriendsList.innerHTML = "This User Has No Friends";
+      userFriendsList.onclick = function() {};
+    }
+    if (userData.notifications != undefined) {
+      userNotificationsList.innerHTML = "This User Has No Notifications";
+      userNotificationsList.onclick = function() {
+        if (userData.uid == user.uid) {
+          deployNotificationModal(true, "User Info",
+              "Click on the bell icon at the bottom of MOST pages (Home, Lists, Friends, etc) to see your notifications!");
+        } else {
+          generateUserDataViewModal(userData.notifications, userData);
+        }
+      };
+      if (userData.notifications.length == 0) {
+        userNotificationsList.innerHTML = "This User Has No Notifications";
+        userNotificationsList.onclick = function() {};
+      } else if (userData.notifications.length == 1) {
+        userNotificationsList.innerHTML = "View " + userData.notifications.length + " Notification";
+      } else {
+        userNotificationsList.innerHTML = "View " + userData.notifications.length + " Notifications";
+      }
+    } else {
+      userNotificationsList.innerHTML = "This User Has No Notifications";
+      userNotificationsList.onclick = function() {};
     }
 
     warnUser.onclick = function(){
@@ -1303,6 +1328,8 @@ function generateUserDataViewModal(dataToLoad, userData) {
 
   if (typeof dataToLoad[0] == "string") {
     dataToLoadType = "Friend";
+  } else if (dataToLoad[0].data != undefined) {
+    dataToLoadType = "Notification";
   } else {
     dataToLoadType = "Gift";
   }
@@ -1347,6 +1374,17 @@ function generateUserDataViewModal(dataToLoad, userData) {
       loadedUserDataViewElemID = dataToLoad[i];
       liItem.id = loadedUserDataViewElemID;
       textNode = document.createTextNode(friendUserData.name);
+    } else if (dataToLoadType == "Notification") {
+      let notificationReadData = dataToLoad[i].read;
+      loadedUserDataViewElemID = dataToLoad[i].uid;
+      liItem.id = loadedUserDataViewElemID;
+      textNode = document.createTextNode(fetchNotificationTitle(dataToLoad[i]));
+
+      if (userUID != user.uid) {
+        if(notificationReadData == 1) {
+          liItem.className += " checked";
+        }
+      }
     } else {
       let giftReceivedData = dataToLoad[i].received;
       let giftMultiples = dataToLoad[i].multiples;
@@ -1369,6 +1407,109 @@ function generateUserDataViewModal(dataToLoad, userData) {
     userDataViewListContainer.insertBefore(liItem, userDataViewListContainer.childNodes[0]);
     loadedUserDataViewArr.push(loadedUserDataViewElemID);
   }
+}
+
+function fetchNotificationTitle(notificationData) {
+  let noteToParse = notificationData.data;
+  let noteSplit = noteToParse.split(",,,");
+  let noteSplitCount = 0;
+  let adminPM = false;
+  let globalPM = false;
+  let friendUserData;
+  let notificationDataTitle = "***Notification Load Error***";
+  let notificationDetails;
+
+  if (noteSplit.length >= 4) {
+    for (let i = 0; i < noteSplit.length; i++) {
+      noteSplit[i] = noteSplit[i].replaceAll("\"", "");
+      if (noteSplit[i] != "") {
+        noteSplitCount++;
+      }
+    }
+
+    let senderUID = noteSplit[0];
+    let deleterUID = noteSplit[1];
+    let messageGiftTitle = noteSplit[2];
+    let pageNameNote = noteSplit[3];
+
+    if (senderUID.includes(">admin")) {
+      if (senderUID.includes("Global")) {
+        senderUID = senderUID.slice(12, senderUID.length);
+        globalPM = true;
+      } else {
+        senderUID = senderUID.slice(6, senderUID.length);
+        adminPM = true;
+      }
+    }
+
+    let i = findUIDItemInArr(senderUID, userArr, true);
+    if (i != -1) {
+      friendUserData = userArr[i];
+
+      if (noteSplitCount == 1) {//Type X, Invites
+        notificationDataTitle = friendUserData.name + " has sent you a friend invite!";
+        notificationDetails = friendUserData.name + " has sent you an invite to be added to each other's " +
+            "friend lists. Accepting this invite will allow you to view each other's gift lists!";
+      } else if (noteSplitCount == 2) {//Type W, Messages/Announcements
+        notificationDetails = "\"" + messageGiftTitle + "\"";
+        if (adminPM) {
+          notificationDataTitle = friendUserData.name + " sent you an administrative message";
+        } else if (globalPM) {
+          notificationDataTitle = friendUserData.name + " sent an announcement!";
+        } else {
+          notificationDataTitle = friendUserData.name + " sent you a private message!";
+        }
+      } else if (noteSplitCount == 3) {//Type Y, Gift Updates/Gift Deletion (Public)
+        if (pageNameNote == "friendList.html") {
+          notificationDataTitle = friendUserData.name + " updated a gift you bought!";
+          notificationDetails = friendUserData.name + "'s public gift, \"" + messageGiftTitle + "\", was updated!";
+        } else if (pageNameNote == "privateFriendList.html") {
+          notificationDataTitle = friendUserData.name + "'s private gift that you bought was updated!";
+          notificationDetails = friendUserData.name + "'s private gift, \"" + messageGiftTitle + "\", was updated!";
+        } else if (pageNameNote == "deleteGift") {
+          notificationDataTitle = friendUserData.name + " deleted a gift you bought...";
+          notificationDetails = "The gift you bought for " + friendUserData.name + ", \"" + messageGiftTitle + "\", was" +
+              " deleted from their public gift list...";
+        } else {
+          if (consoleOutput)
+            console.log("Notification Page Error, 1");
+        }
+      } else if (noteSplitCount == 4) {//Z, Gift Deletion (Private)
+        let z = findUIDItemInArr(deleterUID, userArr, true);
+        if (z != -1) {
+          let deleterData = userArr[z];
+          notificationDataTitle = deleterData.name + " deleted a private gift you bought...";
+          notificationDetails = "The gift you bought for " + friendUserData.name + ", \"" + messageGiftTitle + "\", was" +
+              " deleted by " + deleterData.name + " from " + friendUserData.name + "'s private gift list...";
+        } else {
+          if (consoleOutput)
+            console.log("DeleterUID not found!");
+        }
+      } else {
+        if (consoleOutput)
+          console.log("Unknown Notification String Received...");
+      }
+    } else {
+      if (consoleOutput)
+        console.log("SenderUID not found for notification UID " + notificationData.uid);
+      notificationDataTitle = "A Notification From A Deleted User!";
+      if (noteSplitCount == 1) {
+        notificationDetails = "This was related to an invitation to see their gift list, but the user no longer " +
+            "exists. You can disregard and/or delete this notification."
+      } else if (noteSplitCount == 2) {
+        notificationDetails = "Here is the message that the deleted user sent you: \"" + messageGiftTitle + "\"";
+      } else if (noteSplitCount == 3 || noteSplitCount == 4) {
+        notificationDetails = "This was related to a gift that no longer exists. You can disregard and/or delete " +
+            "this notification.";
+      }
+    }
+  } else {
+    if (consoleOutput)
+      console.log("Deprecated Notification Format!");
+  }
+
+  let notificationStringConcat = notificationDataTitle + " ---> " + notificationDetails;
+  return notificationStringConcat;
 }
 
 function removeUserElement(uid) {
@@ -1627,38 +1768,6 @@ function updateInitializedUsers(){
     }
 
     return userDataString;
-  }
-}
-
-function getMonthName(month) {
-  switch(month) {
-    case 0:
-      return "January";
-    case 1:
-      return "February";
-    case 2:
-      return "March";
-    case 3:
-      return "April";
-    case 4:
-      return "May";
-    case 5:
-      return "June";
-    case 6:
-      return "July";
-    case 7:
-      return "August";
-    case 8:
-      return "September";
-    case 9:
-      return "October";
-    case 10:
-      return "November";
-    case 11:
-      return "December";
-    default:
-      console.log("Invalid Month!");
-      break;
   }
 }
 
