@@ -269,7 +269,6 @@ function changeFamilyElement(familyData) {
 }
 
 function initFamilyElement(liItem, familyData) {
-  let tempFamilyMemberName = "";
   liItem.className = "gift";
   liItem.onclick = function () {
     initializeSecretSantaFamilyModalElements(familyData);
@@ -289,36 +288,7 @@ function initFamilyElement(liItem, familyData) {
     else
       familyMemberCount.innerHTML = "# Members: " + familyMemberArr.length + " (Click \"Edit Family\" to configure relationships!)";
 
-    for (let a = 0; a < loadedFamilyMembersArr.length; a++) {
-      document.getElementById(loadedFamilyMembersArr[a]).remove();
-    }
-    loadedFamilyMembersArr = [];
-
-    if (familyMemberArr.length > 0) {
-      for (let i = 0; i < familyMemberArr.length; i++) {
-        let liItem = document.createElement("LI");
-        let familyMember = findUIDItemInArr(familyMemberArr[i], userArr, true);
-        liItem.id = familyMemberArr[i];
-        liItem.className = "gift";
-        tempFamilyMemberName = userArr[familyMember].name;
-        if (userArr[familyMember].secretSanta != undefined)
-          if (userArr[familyMember].secretSanta == 1)
-            tempFamilyMemberName += " - Signed Up For Secret Santa!"
-        let textNode = document.createTextNode(tempFamilyMemberName);
-        liItem.appendChild(textNode);
-        familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
-
-        loadedFamilyMembersArr.push(familyMemberArr[i]);
-      }
-    } else {
-      let liItem = document.createElement("LI");
-      liItem.id = "testFamily";
-      liItem.className = "gift";
-      let textNode = document.createTextNode("No Family Members Found!");
-      liItem.appendChild(textNode);
-      familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
-      loadedFamilyMembersArr.push("testFamily");
-    }
+    generateFamilyMemberList(liItem, familyMemberArr);
 
     familyEdit.onclick = function (){
       sessionStorage.setItem("familyData", JSON.stringify(familyData));
@@ -336,6 +306,45 @@ function initFamilyElement(liItem, familyData) {
       closeModal(familyModal);
     };
   };
+}
+
+function generateFamilyMemberList(liItem, familyMemberArr) {
+  let tempFamilyMemberName = "";
+
+  for (let a = 0; a < loadedFamilyMembersArr.length; a++) {
+    document.getElementById(loadedFamilyMembersArr[a]).remove();
+  }
+  loadedFamilyMembersArr = [];
+
+  if (familyMemberArr.length > 0) {
+    for (let i = 0; i < familyMemberArr.length; i++) {
+      let liItem = document.createElement("LI");
+      let familyMember = findUIDItemInArr(familyMemberArr[i], userArr, true);
+
+      if (!loadedFamilyMembersArr.includes(familyMemberArr[i])) {
+        liItem.id = familyMemberArr[i];
+        liItem.className = "gift";
+        tempFamilyMemberName = userArr[familyMember].name;
+        if (userArr[familyMember].secretSanta != undefined)
+          if (userArr[familyMember].secretSanta == 1) {
+            tempFamilyMemberName += " - Signed Up For Secret Santa!"
+          }
+        let textNode = document.createTextNode(tempFamilyMemberName);
+        liItem.appendChild(textNode);
+        familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+
+        loadedFamilyMembersArr.push(familyMemberArr[i]);
+      }
+    }
+  } else {
+    let liItem = document.createElement("LI");
+    liItem.id = "testFamily";
+    liItem.className = "gift";
+    let textNode = document.createTextNode("No Family Members Found!");
+    liItem.appendChild(textNode);
+    familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
+    loadedFamilyMembersArr.push("testFamily");
+  }
 }
 
 function removeFamilyFromDB(uidToRemove) {
