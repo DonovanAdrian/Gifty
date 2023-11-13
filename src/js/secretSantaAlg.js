@@ -32,6 +32,8 @@ let currentDate = new Date();
 let currentYear = currentDate.getFullYear();
 let showDate = new Date(currentYear, 9, 1, 0, 0, 0, 0);//Oct 1st
 let assignDate = new Date(currentYear, 10, 1, 0, 0, 0, 0);//Nov 1st
+let showDateShort = new Date(showDate);
+let assignDateShort = new Date(assignDate);
 let hideDateMin = 1; //Jan
 let hideDateMax = 9; //Sept
 
@@ -72,6 +74,11 @@ function evaluateSecretSantaButton(familyData) {
     });
   }
   if (familyData.automaticSantaControl == undefined) {
+    familyData.automaticSantaControl = 0;
+    firebase.database().ref("family/" + familyData.uid).update({
+      automaticSantaControl: 0
+    });
+  } else if (familyData.automaticSantaControl > 1 || familyData.automaticSantaControl < 0) {
     familyData.automaticSantaControl = 0;
     firebase.database().ref("family/" + familyData.uid).update({
       automaticSantaControl: 0
@@ -233,6 +240,10 @@ function initializeSecretSantaFamilyPageVars() {
     secretSantaStatusText, secretSantaInfoIcon, secretSantaStateBtn, secretSantaShuffleBtn, secretSantaAutoBtn,
     secretSantaExportBtn];
   verifyElementIntegrity(secretSantaElements);
+
+  //Generate shortened dates
+  showDateShort = getMonthName(showDateShort.getMonth()) + " " + showDateShort.getDate() + ", " + showDateShort.getFullYear();
+  assignDateShort = getMonthName(assignDateShort.getMonth()) + " " + assignDateShort.getDate() + ", " + assignDateShort.getFullYear();
 }
 
 function initializeSecretSantaFamilyModalElements(familyData) {
@@ -312,7 +323,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     secretSantaStateText.innerHTML = "Secret Santa State: Ready";
     secretSantaNextStateText.innerHTML = "Next Secret Santa State: Active";
     if (familyData.automaticSantaControl == 1) {
-      secretSantaStatusText.innerHTML = "Secret Santa Status: Assigning Names On " + assignDate;
+      secretSantaStatusText.innerHTML = "Secret Santa Status: Assigning Names On " + assignDateShort;
     } else {
       secretSantaStatusText.innerHTML = "Secret Santa Status: Ready To Assign Names";
     }
@@ -336,7 +347,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     secretSantaStateText.innerHTML = "Secret Santa State: Active";
     secretSantaNextStateText.innerHTML = "Next Secret Santa State: Idle";
     if (familyData.automaticSantaControl == 1) {
-      secretSantaStatusText.innerHTML = "Secret Santa Status: Activating On " + showDate;
+      secretSantaStatusText.innerHTML = "Secret Santa Status: Activating On " + showDateShort;
     } else {
       secretSantaStatusText.innerHTML = "Secret Santa Status: Nominal";
     }
@@ -375,12 +386,16 @@ function changeSecretSantaState(familyData, desiredStateInt) {
 
   switch (desiredStateInt) {
     case 1:
-      if (unassignAllFamilyMembers(familyData.members))
+      if (unassignAllFamilyMembers(familyData))
         validStateChange = true;
       invalidStateChangeReason = "Deactivating Secret Santa was unsuccessful! Please try again...";
       stateIndicatorText = "Idle";
       break;
     case 2:
+      stateIndicatorText = "Ready";
+      validStateChange = true;
+      break;
+    case 3:
       if (evaluateUserReadiness(familyData.members))
         validStateChange = true;
       if (familyData.members.length > familyMemberSignUpMinimum) {
@@ -390,18 +405,22 @@ function changeSecretSantaState(familyData, desiredStateInt) {
         invalidStateChangeReason = "There are not enough members in this family! Make sure that at least " +
             familyMemberSignUpMinimum + " family members are in this family and signed up prior to trying again!";
       }
-      stateIndicatorText = "Ready";
-      break;
-    case 3:
-      if (assignUsersToNames(familyData.members))
-        validStateChange = true;
-      invalidStateChangeReason = "Assigning Secret Santa users was unsuccessful! Do these users have too many " +
-          "restrictions? Please try again...<br><br><br>NOTE: Restrictions are things like the amount of friends, " +
-          "family relationships, and more. If your user doesn't have any friends or is related to too many people, " +
-          "assignments will be unsuccessful!";
+      if (validStateChange)
+        if (assignUsersToNames(familyData.members)) {
+          validStateChange = true;
+        } else {
+          invalidStateChangeReason = "Assigning Secret Santa users was unsuccessful! Do these users have too many " +
+              "restrictions? Please try again...<br><br><br>NOTE: Restrictions are things like the amount of friends, " +
+              "family relationships, and more. If your user doesn't have any friends or is related to too many people, " +
+              "assignments will be unsuccessful!";
+        }
       stateIndicatorText = "Active";
       break;
   }
+
+  let updateFamily = document.getElementById("family" + familyData.uid);
+  updateFamily.innerHTML = familyData.name;
+  generateFamilyMemberList(updateFamily, familyData.members);
 
   if (validStateChange) {
     firebase.database().ref("family/" + familyData.uid).update({
@@ -570,16 +589,18 @@ function exportSecretSantaData(desiredExportType, familyData) {
   }
 }
 
-function unassignAllFamilyMembers(familyMembers) {
+function unassignAllFamilyMembers(familyData) {
   let tempIndex = 0;
   let errorEncountered = false;
+  let familyMembers = familyData.members;
 
   for (let i = 0; i < familyMembers.length; i++) {
     tempIndex = findUIDItemInArr(familyMembers[i], userArr, true);
     if (tempIndex != -1) {
       try {
-        resetSecretSantaNum(userArr[tempIndex]);
-        resetSecretSantaName(userArr[tempIndex]);
+        console.log("Resetting " + userArr[tempIndex]);
+        resetSecretSantaNum(tempIndex);
+        resetSecretSantaName(tempIndex);
       } catch (err) {
         if (consoleOutput)
           console.log("Error Occurred! " + err.toString());
@@ -587,9 +608,11 @@ function unassignAllFamilyMembers(familyMembers) {
       }
     }
   }
+
   return !errorEncountered;
 
-  function resetSecretSantaName(userData) {
+  function resetSecretSantaName(tempIndex) {
+    let userData = userArr[tempIndex];
     let tempPreviousSecretSanta = userData.secretSantaName;
 
     if (consoleOutput)
@@ -598,14 +621,20 @@ function unassignAllFamilyMembers(familyMembers) {
       secretSantaNamePrior: tempPreviousSecretSanta,
       secretSantaName: ""
     });
+
+    userArr[tempIndex].secretSantaName = "";
   }
 
-  function resetSecretSantaNum(userData) {
+  function resetSecretSantaNum(tempIndex) {
+    let userData = userArr[tempIndex];
+
     if (consoleOutput)
       console.log("Resetting " + userData.userName + "'s Secret Santa Status...");
     firebase.database().ref("users/" + userData.uid).update({
       secretSanta: 0
     });
+
+    userArr[tempIndex].secretSanta = 0;
   }
 }
 
