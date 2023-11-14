@@ -7,6 +7,7 @@
 let moderationElements = [];
 let initializedUsers = [];
 let loadedUserDataViewArr = [];
+let ticketArr = [];
 
 let moderationSet = 1;
 let globalNoteInt = 0;
@@ -18,9 +19,11 @@ let userUpdateLocal = false;
 let secretSantaAssignmentShown = false;
 let allowLogin = null;
 
+let secretSantaAssignmentShownUser = "";
 let loginDisabledMsg = "";
 let giftURLLimit = "";
 
+let ticketCount;
 let localListedUserData;
 let nukeNoteInfoIcon;
 let nukeAllUserNotifications;
@@ -132,10 +135,18 @@ function checkModerationCookie() {
   } catch (err) {}
 }
 
+function checkTicketCookie() {
+  try {
+    ticketArr = JSON.parse(sessionStorage.ticketArr);
+    initializeTicketCount(0);
+  } catch (err) {}
+}
+
 window.onload = function instantiate() {
   failedNavNum = 14;
   pageName = "Moderation";
   backBtn = document.getElementById("backBtn");
+  ticketCount = document.getElementById("ticketCount");
   inviteNote = document.getElementById("inviteNote");
   nukeNoteInfoIcon = document.getElementById("nukeNoteInfoIcon");
   nukeAllUserNotifications = document.getElementById("nukeAllUserNotifications");
@@ -230,6 +241,7 @@ window.onload = function instantiate() {
   getCurrentUserCommon();
   commonInitialization();
   checkModerationCookie();
+  checkTicketCookie();
   checkUserCookie();
 
   moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, confirmModal, closeConfirmModal,
@@ -251,6 +263,7 @@ window.onload = function instantiate() {
 
   userInitial = firebase.database().ref("users/");
   userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+  moderationTickets = firebase.database().ref("maintenance/");
   moderatorSettings = firebase.database().ref("moderatorSettings/");
   familyInitial = firebase.database().ref("family/");
   loginInitial = firebase.database().ref("login/");
@@ -690,6 +703,55 @@ window.onload = function instantiate() {
       });
     };
 
+    let fetchModerationQueue = function (postRef) {
+      postRef.once("value").then(function(snapshot) {
+        if (snapshot.exists()) {
+          postRef.on("child_added", function (data) {
+            let i = findUIDItemInArr(data.key, ticketArr, true);
+            if(i != -1) {
+              localObjectChanges = findObjectChanges(ticketArr[i], data.val());
+              if (localObjectChanges.length != 0) {
+                console.log("Changing " + ticketArr[i].uid);
+                ticketArr[i] = data.val();
+                saveTicketArrToCookie();
+              }
+            } else {
+              ticketArr.push(data.val());
+              saveTicketArrToCookie();
+            }
+          });
+
+          postRef.on("child_changed", function (data) {
+            let i = findUIDItemInArr(data.key, ticketArr, true);
+            if(i != -1){
+              localObjectChanges = findObjectChanges(ticketArr[i], data.val());
+              if (localObjectChanges.length != 0) {
+                console.log("Changing " + ticketArr[i].uid);
+                ticketArr[i] = data.val();
+                saveTicketArrToCookie();
+              }
+            }
+          });
+
+          postRef.on("child_removed", function (data) {
+            console.log(data.key + " Removed!");
+            let i = findUIDItemInArr(data.key, ticketArr);
+            if(i != -1){
+              console.log("Removing " + ticketArr[i].uid);
+              ticketArr.splice(i, 1);
+
+              saveTicketArrToCookie();
+            }
+          });
+        } else {
+          firebase.database().ref("maintenance/").update({});
+          ticketArr = [];
+          saveTicketArrToCookie();
+          fetchModerationQueue(moderationTickets);
+        }
+      });
+    };
+
     let fetchModeratorSettings = function (postRef) {
       postRef.once("value").then(function(snapshot) {
         if(snapshot.exists()) {
@@ -917,6 +979,7 @@ window.onload = function instantiate() {
 
     fetchData(userInitial);
     fetchInvites(userInvites);
+    fetchModerationQueue(moderationTickets);
     fetchModeratorSettings(moderatorSettings);
     fetchFamilies(familyInitial);
     fetchLogin(loginInitial);
@@ -924,6 +987,7 @@ window.onload = function instantiate() {
 
     listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
+    listeningFirebaseRefs.push(moderationTickets);
     listeningFirebaseRefs.push(moderatorSettings);
     listeningFirebaseRefs.push(familyInitial);
     listeningFirebaseRefs.push(loginInitial);
@@ -1007,8 +1071,7 @@ function confirmOperation(operationTitle, operationContent, operationType, opera
       openModal(previousModal, previousModalTitle);
     } else if (operationType == "showSanta") {
       secretSantaAssignmentShown = true;
-      userSecretSanta.innerHTML = "Secret Santa Assignment: " + operationData.secretSantaName;
-      userSecretSantaBtn.innerHTML = "Hide Secret Santa Assignment";
+      secretSantaAssignmentShownUser = operationData.uid;
     }
     closeModal(confirmModal);
     userUpdateLocal = false;
@@ -1136,10 +1199,15 @@ function initUserElement(liItem, userData) {
         userSecretSantaBtn.innerHTML = "Opt Out Of Secret Santa";
       }
       userSecretSantaBtn.onclick = function() {
+        userUpdateLocal = true;
         manuallyOptInOut(userData);
       };
       if (userData.secretSantaName != undefined) {
         if (userData.secretSantaName != "") {
+          if (secretSantaAssignmentShown && secretSantaAssignmentShownUser != userData.uid) {
+            secretSantaAssignmentShown = false;
+            secretSantaAssignmentShownUser = "";
+          }
           if (!secretSantaAssignmentShown) {
             userSecretSanta.innerHTML = "Secret Santa: Assigned!";
             userSecretSantaBtn.innerHTML = "View Secret Santa Assignment";
@@ -1150,6 +1218,9 @@ function initUserElement(liItem, userData) {
                   userData, userModal, userData.uid);
             };
           } else {
+            let tempIndex = findUIDItemInArr(userData.secretSantaName, userArr, true);
+            userSecretSanta.innerHTML = "Secret Santa: " + findFirstNameInFullName(userArr[tempIndex].name);
+            userSecretSantaBtn.innerHTML = "Hide Secret Santa Assignment";
             userSecretSantaBtn.onclick = function() {
               secretSantaAssignmentShown = false;
               deployNotificationModal(false, "Assignment Hidden!", userData.name +
@@ -1771,8 +1842,34 @@ function updateInitializedUsers(){
   }
 }
 
+function initializeTicketCount(initializeInt) {//0 is initializing, 1 is updates
+  let ticketCountString = "";
+  let ticketCountStringAlt = "";
+
+  if (ticketArr.length == 0) {
+    ticketCountString = "No Tickets!";
+    ticketCountStringAlt = "are currently no tickets";
+  } else if (ticketArr.length == 1) {
+    ticketCountString = "1 Ticket";
+    ticketCountStringAlt = "is only one ticket";
+  } else if (ticketArr.length > 1) {
+    ticketCountString = ticketArr.length + " Tickets";
+    ticketCountStringAlt = "are currently " + ticketArr.length + " tickets";
+  }
+  ticketCount.innerHTML = ticketCountString;
+  ticketCount.onclick = function() {
+    deployNotificationModal(false, "The Number Of Tickets", "There "
+        + ticketCountStringAlt + " in this list.");
+  };
+}
+
 function saveListedUserDataToCookie() {
   sessionStorage.setItem("localListedUserData", JSON.stringify(localListedUserData));
+}
+
+function saveTicketArrToCookie(){
+  sessionStorage.setItem("ticketArr", JSON.stringify(ticketArr));
+  initializeTicketCount(1);
 }
 
 function manuallyOptInOut(userData) {
@@ -1783,11 +1880,14 @@ function manuallyOptInOut(userData) {
     firebase.database().ref("users/" + userData.uid).update({
       secretSanta: 1
     });
-    alert(userData.name + " has been manually opted in to the Secret Santa Program!");
+    deployNotificationModal(false, "Opt In Success!",
+        userData.name + " has been manually opted in to the Secret Santa Program!");
   } else {
     firebase.database().ref("users/" + userData.uid).update({
       secretSanta: 0
     });
-    alert(userData.name + " has been manually opted out of the Secret Santa Program!");
+    deployNotificationModal(false, "Opt Out Success!",
+        userData.name + " has been manually opted out of the Secret Santa Program!");
   }
+  userUpdateLocal = false;
 }
