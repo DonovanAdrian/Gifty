@@ -26,8 +26,10 @@ let secretSantaExportBtn;
 let secretSantaElements = [];
 let hideSecretSantaName = true;
 let runningExportProcess = false;
+let secretSantaStressTesting = false;
+let secretSantaStressTestingLimit = 1000;
 let mostRecentSecretSantaState = 0;
-let familyMemberSignUpMinimum = 3;
+let familyMemberSignUpMinimum = 4;
 let currentDate = new Date();
 let currentYear = currentDate.getFullYear();
 let showDate = new Date(currentYear, 9, 1, 0, 0, 0, 0);//Oct 1st
@@ -36,11 +38,371 @@ let showDateShort = new Date(showDate);
 let assignDateShort = new Date(assignDate);
 let hideDateMin = 1; //Jan
 let hideDateMax = 9; //Sept
+let localReRollLimit = 5;
+let assignmentAttemptLimits = 5;
+let processingResultTextLimit = 5;
+let processFamilyAttempts = 0;
+let processingResultTextTimer = 0;
+let processingSuccessCount = 0;
+let processingFailureCount = 0;
+let processingResultTextInterval;
+let previousStatusValue = "";
 
 /*
  * General Functions
  */
-function preProcessFamily() {//todo placeholder
+function processFamily(familyMembers, ignoreLastYearsAssignments, testingInt) {
+  processFamilyAttempts++;
+  /*
+  *******Result Code Key********
+   -1  is a processing error, there's something very wrong
+    0  (Zero) is a success
+    1  is a failure to find a viable "Giver" user
+`   2  is a user that had ZERO potential assignments
+    3  is a Secret Santa recipient that was duplicated
+    4  is a Secret Santa recipient that was not properly assigned
+    5  Verification Step, a Secret Santa giver was duplicated
+    6  Verification Step, a Secret Santa recipient was duplicated
+    7  Verification Step, a Secret Santa giver was not in the same family
+    8  Verification Step, a Secret Santa recipient was not in the same family
+    9  Verification Step, a Secret Santa giver was NOT assigned a Secret Santa name
+    10 Verification Step, Givers, Recipients, and Family Member count mismatch
+    11 Verification Step, Giver and Receiver records do not match
+    12 Completion Step, Error Saving records to DB
+   */
+
+  let processingResultCode = 0;
+  let tempUserArr = cloneArray(userArr);
+  let tempFamilyMemberArr = cloneArray(familyMembers);
+  let secretGivers = [];
+  let secretRecipients = [];
+  let usersToBeGivers = [];
+  let itemRemoved = false;
+  let tempUserThatWasAssigned = "";
+  let priorUserThatWasAssigned = "";
+  let tempUsersToBeGiversFriends = [];
+  let tempUsersToBeGiversChildRel = [];
+  let tempUsersToBeGiversParentRel = [];
+  let usersToBeGiversPotentialAssignments = [];
+  let tempUsersToBeGiversPotentialAssignments = [];
+  let tempIndex = 0;
+  let altTempIndex = 0;
+
+  if (consoleOutput && !secretSantaStressTesting)
+    console.log("Starting Processing Attempt # " + processFamilyAttempts);
+  try {
+    //Iterate through all the family members and prepare to assign each user
+    for (let i = 0; i < familyMembers.length; i++) {
+      //Reset temp arrays prior to continuing
+      tempUsersToBeGiversFriends = [];
+      tempUsersToBeGiversChildRel = [];
+      tempUsersToBeGiversParentRel = [];
+
+      //Initialize temporary arrays
+      tempIndex = findUIDItemInArr(tempFamilyMemberArr[i], tempUserArr, true);
+      if (tempUserArr[tempIndex].secretSanta == 1) {
+        usersToBeGivers.push(tempUserArr[tempIndex].uid);
+        if (tempUserArr[tempIndex].friends != undefined) {
+          tempUsersToBeGiversFriends = tempUserArr[tempIndex].friends;
+        }
+        if (tempUserArr[tempIndex].childUser != undefined) {
+          tempUsersToBeGiversChildRel = tempUserArr[tempIndex].childUser;
+        }
+        if (tempUserArr[tempIndex].parentUser != undefined) {
+          tempUsersToBeGiversParentRel = tempUserArr[tempIndex].parentUser;
+        }
+
+        //Starting with each family member's friends list, trim down each array of potential assignments
+        for (let a = 0; a < tempUsersToBeGiversFriends.length; a++) {
+          if (tempUsersToBeGiversParentRel.includes(tempUsersToBeGiversFriends[a])) {
+            tempUsersToBeGiversFriends.splice(a, 1);
+            itemRemoved = true;
+          } else if (tempUsersToBeGiversChildRel.includes(tempUsersToBeGiversFriends[a])) {
+            tempUsersToBeGiversFriends.splice(a, 1);
+            itemRemoved = true;
+          } else if (!familyMembers.includes(tempUsersToBeGiversFriends[a])) {
+            tempUsersToBeGiversFriends.splice(a, 1);
+            itemRemoved = true;
+          } else {
+            altTempIndex = findUIDItemInArr(tempUsersToBeGiversFriends[a], tempUserArr, true);
+            if (altTempIndex != -1) {
+              if (tempUserArr[altTempIndex].secretSanta != 1) {
+                tempUsersToBeGiversFriends.splice(a, 1);
+                itemRemoved = true;
+              }
+            } else {
+              processingResultCode = 1;
+              throw "Giver user initialization failure!";
+            }
+          }
+
+          if (itemRemoved) {
+            itemRemoved = false;
+            a--;
+          }
+        }
+        if (ignoreLastYearsAssignments == 0 && tempUserArr[tempIndex].secretSantaNamePrior != undefined) {
+          let tempPriorAssignmentIndex = tempUsersToBeGiversFriends.indexOf(tempUserArr[tempIndex].secretSantaNamePrior);
+          if (tempPriorAssignmentIndex != -1) {
+            tempUsersToBeGiversFriends.splice(tempPriorAssignmentIndex, 1);
+          }
+        }
+
+        usersToBeGiversPotentialAssignments.push(tempUsersToBeGiversFriends);
+      }
+    }
+
+    //Iterate through each potential "giver" user and assign them a secret santa name
+    for (let i = 0; i < usersToBeGivers.length; i++) {
+      if (usersToBeGiversPotentialAssignments[i].length != 0) {
+        //Find the next user to be assigned, ordering each user by whomever has the most "restrictions"
+        //  This function will also call the assignment function to assign the "giver" user their secret santa name
+        let tempIndex = findNextUserToBeAssigned(usersToBeGivers, usersToBeGiversPotentialAssignments);
+        if (tempIndex == -1) {
+          processingResultCode = 1;
+          throw "Failed To Find A Viable User To Be A \"Giver\"";
+        } else {
+          //The "giver" user was successfully given a secret santa name, so they can be removed from the pool
+          usersToBeGivers.splice(tempIndex, 1);
+          usersToBeGiversPotentialAssignments.splice(tempIndex, 1);
+          itemRemoved = true;
+        }
+      } else {
+        processingResultCode = 2;
+        throw "A User Had ZERO Potential Assignments!";
+      }
+
+      //Since the giver user was successfully assigned, we want to remove their secret santa name from the pool, too
+      if (tempUserThatWasAssigned != "") {
+        if (tempUserThatWasAssigned != priorUserThatWasAssigned) {
+          for (let a = 0; a < usersToBeGiversPotentialAssignments.length; a++) {
+            tempUsersToBeGiversPotentialAssignments = usersToBeGiversPotentialAssignments[a];
+            tempIndex = tempUsersToBeGiversPotentialAssignments.indexOf(tempUserThatWasAssigned);
+            if (tempIndex != -1) {
+              tempUsersToBeGiversPotentialAssignments.splice(tempIndex, 1);
+              usersToBeGiversPotentialAssignments[a] = tempUsersToBeGiversPotentialAssignments;
+            }
+          }
+        } else {
+          processingResultCode = 3;
+          throw "A Secret Santa Recipient Was Duplicated"
+        }
+      } else {
+        processingResultCode = 4;
+        throw "A Secret Santa Recipient Was Not Properly Assigned To A Giver"
+      }
+
+      //Track the user that was previously assigned to ensure that immediate temporary assignments are not duplicated.
+      priorUserThatWasAssigned = tempUserThatWasAssigned;
+
+      if (itemRemoved) {
+        itemRemoved = false;
+        i--;
+      }
+    }
+  } catch (err) {
+    if (consoleOutput && !secretSantaStressTesting) {
+      console.log("ERROR ENCOUNTERED PROCESSING FAMILY:");
+      console.log(err.toString());
+    }
+    if (processingResultCode == 0)
+      processingResultCode = -1;
+  }
+
+  //Helper function to find the next user to be assigned. Assigns the users that has the LEAST amount of possible users
+  function findNextUserToBeAssigned(userList, potentialAssignments) {
+    let tempLowestCount;
+    let tempIndexOfLowestCount;
+
+    tempLowestCount = potentialAssignments[0].length;
+    tempIndexOfLowestCount = 0;
+    for (let i = 0; i < userList.length; i++) {
+      if (potentialAssignments[i].length < tempLowestCount) {
+        tempLowestCount = potentialAssignments[i].length;
+        tempIndexOfLowestCount = i;
+      }
+    }
+
+    if (consoleOutput && !secretSantaStressTesting)
+      console.log("Found Next User To Be Assigned, " + userList[tempIndexOfLowestCount]);
+    //The user with the least amount of possible users is determined and verified. Assign them a name randomly.
+    if (tempIndexOfLowestCount >= 0 && tempIndexOfLowestCount <= potentialAssignments.length) {
+      if (potentialAssignments[tempIndexOfLowestCount].length > 0) {
+        tempIndexOfLowestCount = assignUserToPotentialAssignment(tempIndexOfLowestCount, userList, potentialAssignments);
+      } else {
+        processingResultCode = 2;
+        throw "A User Had ZERO Potential Assignments!";
+      }
+    } else {
+      tempIndexOfLowestCount = -1;
+    }
+
+    return tempIndexOfLowestCount;
+  }
+
+  //Helper function to assign a user randomly. ReRolling is employed to prevent users from being assigned to each other.
+  function assignUserToPotentialAssignment(indexToAssign, userList, potentialAssignments) {
+    let selector;
+    let tempIndex = 0;
+    let listOfPotentialUsersArr = potentialAssignments[indexToAssign];
+
+    for (let reRollCount = 0; reRollCount < localReRollLimit; reRollCount++) {
+      selector = Math.floor((Math.random() * listOfPotentialUsersArr.length));
+
+      tempIndex = secretGivers.indexOf(listOfPotentialUsersArr[selector]);
+      if (secretRecipients[tempIndex] != userList[indexToAssign]) {
+        break;
+      }
+    }
+
+    tempUserThatWasAssigned = listOfPotentialUsersArr[selector];
+
+    secretGivers.push(userList[indexToAssign]);
+    secretRecipients.push(listOfPotentialUsersArr[selector]);
+
+    tempIndex = findUIDItemInArr(userList[indexToAssign], tempUserArr, true);
+    if (tempIndex != -1) {
+      tempUserArr[tempIndex].secretSantaName = listOfPotentialUsersArr[selector];
+    } else {
+      //Return a -1 to indicate that a failure occurred
+      indexToAssign = -1;
+    }
+    if (consoleOutput && !secretSantaStressTesting)
+      console.log("Successfully Assigned " + userList[indexToAssign]);
+
+    return indexToAssign;
+  }
+
+  //Save a specific user's assignment into the database
+  function saveSecretSantaAssignmentToDB(userData) {
+    firebase.database().ref("users/" + userData.uid).update({
+      secretSantaName: userData.secretSantaName
+    });
+  }
+
+  try {
+    //Everything thus far was successful, let's verify the results
+    if (processingResultCode == 0) {
+      let tempIndex = 0;
+      let tempGiverUser = "";
+      let tempRecipientUser = "";
+      let tempDuplicationCount = 0;
+      if (consoleOutput && !secretSantaStressTesting)
+        console.log("Successfully Completed Processing... Verifying Results.");
+
+      //The Givers, Recipients, and Family Members size should all match
+      if (secretGivers.length != secretRecipients.length && secretRecipients.length != familyMembers.length) {
+        processingResultCode = 10;
+        throw "Secret Santa Givers, Recipients, and Family Member count mismatch!";
+      }
+
+      //Iterate through the givers to verify that they have been assigned a name, they match with the recipient records,
+      // they have not been duplicated, are within the correct family, and there are no other issues otherwise
+      for (let i = 0; i < secretGivers.length; i++) {
+        tempGiverUser = secretGivers[i];
+        tempIndex = findUIDItemInArr(tempGiverUser, tempUserArr, true);
+        if (tempIndex != -1) {
+          if (tempUserArr[tempIndex].secretSantaName == undefined) {
+            processingResultCode = 9;
+            throw "A Secret Santa Giver was NOT assigned a name!";
+          } else {
+            if (tempUserArr[tempIndex].secretSantaName != secretRecipients[i]) {
+              processingResultCode = 11;
+              throw "The Secret Santa Giver and Receiver records do not match!";
+            }
+          }
+        } else {
+          processingResultCode = 9;
+          throw "There was an issue verifying if a Secret Santa Giver was assigned a name!";
+        }
+
+        if (!familyMembers.includes(tempGiverUser)) {
+          processingResultCode = 7;
+          throw "A Secret Santa Giver was not in the family being assigned!";
+        }
+
+        for (let a = 0; a < secretGivers.length; a++) {
+          if (tempGiverUser == secretGivers[a]) {
+            tempDuplicationCount++;
+          }
+        }
+
+        if (tempDuplicationCount < 1 || tempDuplicationCount > 1) {
+          processingResultCode = 5;
+          throw "A Secret Santa Giver was duplicated!";
+        }
+        tempDuplicationCount = 0;
+      }
+
+      //Iterate through the recipients to verify that they have not been duplicated, are in the expected family,
+      // and there are no other issues otherwise
+      for (let i = 0; i < secretRecipients.length; i++) {
+        tempRecipientUser = secretRecipients[i];
+        if (!familyMembers.includes(tempRecipientUser)) {
+          processingResultCode = 8;
+          throw "A Secret Santa Recipient was not in the family being assigned!";
+        }
+
+        for (let a = 0; a < secretRecipients.length; a++) {
+          if (tempRecipientUser == secretRecipients[a]) {
+            tempDuplicationCount++;
+          }
+        }
+
+        if (tempDuplicationCount < 1 || tempDuplicationCount > 1) {
+          processingResultCode = 6;
+          throw "A Secret Santa Recipient was duplicated!";
+        }
+        tempDuplicationCount = 0;
+      }
+
+      if (testingInt == 0) {
+        for (let i = 0; i < familyMembers.length; i++) {
+          tempIndex = findUIDItemInArr(familyMembers[i], tempUserArr, true);
+          if (tempIndex != -1) {
+            if (consoleOutput && !secretSantaStressTesting)
+              console.log("Saving " + tempUserArr[tempIndex].userName + "...");
+            saveSecretSantaAssignmentToDB(tempUserArr[tempIndex]);
+          } else {
+            processingResultCode = 12;
+            throw "There was an error saving the records to the DB!";
+          }
+        }
+      }
+
+      if (consoleOutput && !secretSantaStressTesting)
+        console.log("Verification Complete. Secret Santa Assignments Successful!");
+    }
+  } catch (err) {
+    if (consoleOutput && !secretSantaStressTesting) {
+      console.log("ERROR ENCOUNTERED PROCESSING FAMILY:");
+      console.log(err.toString());
+    }
+    if (processingResultCode == 0)
+      processingResultCode = -1;
+  }
+
+  if (consoleOutput && !secretSantaStressTesting)
+    console.log(" ***********************************************");
+  return processingResultCode;
+
+  /*
+  *******Result Code Key********
+   -1  is a processing error, there's something very wrong
+    0  (Zero) is a success
+    1  is a failure to find a viable "Giver" user
+`   2  is a user that had ZERO potential assignments
+    3  is a Secret Santa recipient that was duplicated
+    4  is a Secret Santa recipient that was not properly assigned
+    5  Verification Step, a Secret Santa giver was duplicated
+    6  Verification Step, a Secret Santa recipient was duplicated
+    7  Verification Step, a Secret Santa giver was not in the same family
+    8  Verification Step, a Secret Santa recipient was not in the same family
+    9  Verification Step, a Secret Santa giver was NOT assigned a Secret Santa name
+    10 Verification Step, Givers, Recipients, and Family Member count mismatch
+    11 Verification Step, Giver and Receiver records do not match
+    12 Completion Step, Error Saving records to DB
+   */
 }
 
 /*
@@ -322,6 +684,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
   } else if (familyData.secretSantaState == 2) {
     secretSantaStateText.innerHTML = "Secret Santa State: Ready";
     secretSantaNextStateText.innerHTML = "Next Secret Santa State: Active";
+    secretSantaShuffleBtn.innerHTML = "Test Assignments";
     if (familyData.automaticSantaControl == 1) {
       secretSantaStatusText.innerHTML = "Secret Santa Status: Assigning Names On " + assignDateShort;
     } else {
@@ -329,7 +692,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     }
     secretSantaNextStateText.style.display = "block";
     secretSantaStatusText.style.display = "block";
-    secretSantaShuffleBtn.style.display = "none";
+    secretSantaShuffleBtn.style.display = "inline-block";
     secretSantaAutoBtn.style.display = "inline-block";
     secretSantaExportBtn.style.display = "inline-block";
 
@@ -342,10 +705,25 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     secretSantaExportBtn.onclick = function() {
       exportSecretSantaData(1, familyData);
     };
-    secretSantaShuffleBtn.onclick = function() {};
+    secretSantaShuffleBtn.onclick = function() {
+      if (familyData.members.length > familyMemberSignUpMinimum) {
+        if (evaluateUserReadiness(familyData.members)) {
+          assignUsersToNames(familyData.members, 1);
+        } else {
+          deployNotificationModal(true, "Testing Failed!", "Not enough members " +
+              "are signed up! Make sure that at least " + familyMemberSignUpMinimum + " family members are signed up " +
+              "prior to trying again!");
+        }
+      } else {
+        deployNotificationModal(true, "Testing Failed!", "There are not enough " +
+            "members in this family! Make sure that at least " + familyMemberSignUpMinimum + " family members are in " +
+            "this family and signed up prior to trying again!");
+      }
+    };
   } else if (familyData.secretSantaState == 3) {
     secretSantaStateText.innerHTML = "Secret Santa State: Active";
     secretSantaNextStateText.innerHTML = "Next Secret Santa State: Idle";
+    secretSantaShuffleBtn.innerHTML = "Shuffle";
     if (familyData.automaticSantaControl == 1) {
       secretSantaStatusText.innerHTML = "Secret Santa Status: Activating On " + showDateShort;
     } else {
@@ -361,11 +739,8 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     };
     secretSantaShuffleBtn.onclick = function() {
       if (!assignUsersToNames(familyData.members)) {
-        deployNotificationModal(true, "Secret Santa Shuffle Failed!", "Assigning " +
-            "Secret Santa users was unsuccessful! Do these users have too many restrictions? Please try again..." +
-            "<br><br><br>NOTE: Restrictions are things like the amount of friends, family relationships, and more. " +
-            "If your user doesn't have any friends or is related to too many people, assignments will be unsuccessful!",
-            20);
+        deployNotificationModal(true, "Secret Santa Shuffle Failed!", "Shuffling " +
+            "Secret Santa users was unsuccessful! Please try again...");
       }
     };
     secretSantaAutoBtn.onclick = function() {
@@ -409,10 +784,7 @@ function changeSecretSantaState(familyData, desiredStateInt) {
         if (assignUsersToNames(familyData.members)) {
           validStateChange = true;
         } else {
-          invalidStateChangeReason = "Assigning Secret Santa users was unsuccessful! Do these users have too many " +
-              "restrictions? Please try again...<br><br><br>NOTE: Restrictions are things like the amount of friends, " +
-              "family relationships, and more. If your user doesn't have any friends or is related to too many people, " +
-              "assignments will be unsuccessful!";
+          invalidStateChangeReason = "Assigning Secret Santa users was unsuccessful! Please try again...";
         }
       stateIndicatorText = "Active";
       break;
@@ -615,6 +987,12 @@ function unassignAllFamilyMembers(familyData) {
     let userData = userArr[tempIndex];
     let tempPreviousSecretSanta = userData.secretSantaName;
 
+    if (userData.secretSantaNamePrior == undefined)
+      userData.secretSantaNamePrior = "";
+    if (userData.secretSantaName == "" && userData.secretSantaNamePrior != "") {
+      tempPreviousSecretSanta = userData.secretSantaNamePrior;
+    }
+
     if (consoleOutput)
       console.log(userData.userName + "'s Current -> Previous Assignment: " + tempPreviousSecretSanta);
     firebase.database().ref("users/" + userData.uid).update({
@@ -638,6 +1016,175 @@ function unassignAllFamilyMembers(familyData) {
   }
 }
 
-function assignUsersToNames(familyMembers) {//todo placeholder
-  return true;
+function assignUsersToNames(familyMembers, testingInt) {
+  let ignoreLastYearsAssignments = 0;
+  let ignoreLastYearsAssignmentsThreshold;
+  let processingResults = 0;
+  let processingSuccess = false;
+  let previousLimitValue = 0;
+
+  if (testingInt == undefined) {
+    testingInt = 0;
+  }
+
+  if (secretSantaStressTesting) {
+    if (secretSantaStatusText.innerHTML == "Secret Santa Status: Nominal" ||
+        secretSantaStatusText.innerHTML == "Secret Santa Status: Ready To Assign Names") {
+      previousStatusValue = secretSantaStatusText.innerHTML;
+    }
+
+    secretSantaStatusText.innerHTML = "Processing...";
+    previousLimitValue = assignmentAttemptLimits;
+    assignmentAttemptLimits = secretSantaStressTestingLimit;
+    ignoreLastYearsAssignmentsThreshold = secretSantaStressTestingLimit * 0.9;
+  } else {
+    previousLimitValue = assignmentAttemptLimits;
+    ignoreLastYearsAssignmentsThreshold = assignmentAttemptLimits * 0.5;
+  }
+
+  for (let i = 0; i < assignmentAttemptLimits; i++) {
+    if (i > ignoreLastYearsAssignmentsThreshold) {
+      ignoreLastYearsAssignments = 1;
+    }
+
+    if (consoleOutput && !secretSantaStressTesting)
+      console.log(" ***********************************************");
+    processingResults = processFamily(familyMembers, ignoreLastYearsAssignments, testingInt);
+    console.log(processingResults);
+
+    if (processingResults == 0 && !secretSantaStressTesting) {
+      processingSuccess = true;
+      break;
+    } else {
+      if (processingResults == 0) {
+        processingSuccessCount++;
+      } else {
+        processingFailureCount++;
+      }
+    }
+  }
+
+  if (!secretSantaStressTesting && testingInt == 1) {
+    setSecretSantaResultsText(processingResults, ignoreLastYearsAssignments, testingInt, processFamilyAttempts, false);
+  } else if (secretSantaStressTesting && testingInt == 1) {
+    setSecretSantaResultsText(null, null, null, null, true);
+    processingFailureCount = 0;
+    processingSuccessCount = 0;
+  }
+
+  assignmentAttemptLimits = previousLimitValue;
+  processFamilyAttempts = 0;
+
+  return processingSuccess;
+}
+
+function setSecretSantaResultsText(processingResults, ignoreLastYearsAssignments, testingInt, attemptCount, stressOverride) {
+  let successfulStressTest = processingSuccessCount;
+  let failedStressTest = processingFailureCount;
+  let totalStressTests = successfulStressTest + failedStressTest;
+  /*
+  *******Result Code Key********
+   -1  is a processing error, there's something very wrong
+    0  (Zero) is a success
+    1  is a failure to find a viable "Giver" user
+`   2  is a user that had ZERO potential assignments
+    3  is a Secret Santa recipient that was duplicated
+    4  is a Secret Santa recipient that was not properly assigned
+    5  Verification Step, a Secret Santa giver was duplicated
+    6  Verification Step, a Secret Santa recipient was duplicated
+    7  Verification Step, a Secret Santa giver was not in the same family
+    8  Verification Step, a Secret Santa recipient was not in the same family
+    9  Verification Step, a Secret Santa giver was NOT assigned a Secret Santa name
+    10 Verification Step, Givers, Recipients, and Family Member count mismatch
+    11 Verification Step, Giver and Receiver records do not match
+    12 Completion Step, Error Saving records to DB
+   */
+
+  if (secretSantaStatusText.innerHTML == "Secret Santa Status: Nominal" ||
+      secretSantaStatusText.innerHTML == "Secret Santa Status: Ready To Assign Names") {
+    previousStatusValue = secretSantaStatusText.innerHTML;
+  }
+
+  if (!stressOverride) {
+    console.log(fetchProcessingStatusText());
+    if (processingResults == 0) {
+      secretSantaStatusText.innerHTML = "Secret Santa Status: " + "Successful Assignment After " + attemptCount +
+          " Tries!";
+    } else {
+      secretSantaStatusText.innerHTML = "Secret Santa Status: " + "UNSUCCESSFUL Assignment After " + attemptCount +
+          " Tries... Check Console For More Details...";
+      if (consoleOutput)
+        console.log("Errors usually occur due to users that have too many restrictions... This can be resolved by " +
+            "removing the amount of relationships that each user has, increasing the amount of friends in each user's " +
+            "friend list, increasing the amount of signed up users in a family, " +
+            "and/or increasing the amount of users in a given family.");
+    }
+  } else {
+    secretSantaStatusText.innerHTML = "Secret Santa Status: Stress Testing Enabled, " +
+        "Successful: " + successfulStressTest + " Failed: " + failedStressTest + " Total: " + totalStressTests;
+  }
+
+  processingResultTextTimer = 0;
+  clearInterval(processingResultTextInterval);
+  processingResultTextInterval = setInterval(function () {
+    processingResultTextTimer = processingResultTextTimer + 1;
+    if (processingResultTextTimer > processingResultTextLimit) {
+      secretSantaStatusText.innerHTML = previousStatusValue;
+      clearInterval(processingResultTextInterval);
+    }
+  }, 1000);
+
+  function fetchProcessingStatusText() {
+    let processingStatusText = "";
+
+    if (attemptCount > 1) {
+      processingStatusText = processingStatusText + attemptCount + " Attempts, ";
+    }
+    if (testingInt == 1) {
+      processingStatusText = processingStatusText + "After Testing, ";
+    }
+    if (ignoreLastYearsAssignments == 1) {
+      processingStatusText = processingStatusText + "Ignoring Last Years Assignments, ";
+    }
+
+    switch (processingResults) {
+      case 0:
+        //0  (Zero) is a success
+        processingStatusText = processingStatusText + "Successfully Completed!";
+        break;
+      case 1:
+        //1  is a failure to find a viable "Giver" user
+      case 2:
+        //2  is a user that had ZERO potential assignments
+      case 3:
+        //3  is a Secret Santa recipient that was duplicated
+      case 4:
+        //4  is a Secret Santa recipient that was not properly assigned
+      case 5:
+        //5  Verification Step, a Secret Santa giver was duplicated
+      case 6:
+        //6  Verification Step, a Secret Santa recipient was duplicated
+      case 7:
+        //7  Verification Step, a Secret Santa giver was not in the same family
+      case 8:
+        //8  Verification Step, a Secret Santa recipient was not in the same family
+      case 9:
+        //9  Verification Step, a Secret Santa giver was NOT assigned a Secret Santa name
+      case 10:
+        //10 Verification Step, Givers, Recipients, and Family Member count mismatch
+      case 11:
+        //11 Verification Step, Giver and Receiver records do not match
+      case 12:
+        //12 Completion Step, Error Saving records to DB
+        processingStatusText = processingStatusText + "Encountered some errors... Check the console log for more details.";
+        break;
+      case -1:
+      default:
+        //-1  is a processing error, there's something very wrong
+        processingStatusText = processingStatusText + "Encountered some UNKNOWN errors... Check the console log for more details.";
+        break;
+    }
+
+    return processingStatusText;
+  }
 }
