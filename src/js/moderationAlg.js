@@ -47,6 +47,7 @@ let showFriends;
 let showGifts;
 let showModerator;
 let showSecretSanta;
+let showCurrentSecretSanta;
 let showLastSecretSanta;
 let globalNoteInfoIcon;
 let sendGlobalNotification;
@@ -170,6 +171,7 @@ window.onload = function instantiate() {
   showFriends = document.getElementById("showFriends");
   showModerator = document.getElementById("showModerator");
   showSecretSanta = document.getElementById("showSecretSanta");
+  showCurrentSecretSanta = document.getElementById("showCurrentSecretSanta");
   showLastSecretSanta = document.getElementById("showLastSecretSanta");
   globalNoteInfoIcon = document.getElementById("globalNoteInfoIcon");
   sendGlobalNotification = document.getElementById("sendGlobalNotification");
@@ -251,13 +253,13 @@ window.onload = function instantiate() {
     loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal, loginDisabledDesc, loginDisabledInp,
     loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown,
     showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore, showShareCode, showGifts,
-    showFriends, showModerator, showSecretSanta, showLastSecretSanta, sendPrivateMessage, userModal, userOptionsBtn,
-    userOptionsModal, userOptionsSpan, settingsNote, testData, closeUserModal, userName, userUID, userUserName,
-    userPublicGifts, userPrivateGifts, userFriendsList, userNotificationsList, userLastLogin, userLastAction,
-    userLastReview, userScoreElem, userSecretSanta, userSecretSantaPrior, userSecretSantaBtn, userPassword,
-    moderatorOp, sendPrivateMessage, warnUser, banUser, userDataViewModal, closeUserDataViewModal, userDataViewTitle,
-    userDataViewText, userDataViewListContainer, userDataViewBack, testUserDataView, closePrivateMessageModal,
-    globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
+    showFriends, showModerator, showSecretSanta, showCurrentSecretSanta, showLastSecretSanta, sendPrivateMessage,
+    userModal, userOptionsBtn, userOptionsModal, userOptionsSpan, settingsNote, testData, closeUserModal, userName,
+    userUID, userUserName, userPublicGifts, userPrivateGifts, userFriendsList, userNotificationsList, userLastLogin,
+    userLastAction, userLastReview, userScoreElem, userSecretSanta, userSecretSantaPrior, userSecretSantaBtn,
+    userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser, userDataViewModal, closeUserDataViewModal,
+    userDataViewTitle, userDataViewText, userDataViewListContainer, userDataViewBack, testUserDataView,
+    closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
 
   verifyElementIntegrity(moderationElements);
 
@@ -1072,6 +1074,8 @@ function confirmOperation(operationTitle, operationContent, operationType, opera
     } else if (operationType == "showSanta") {
       secretSantaAssignmentShown = true;
       secretSantaAssignmentShownUser = operationData.uid;
+    } else if ("showCurrentSecretSanta") {
+      updateDBWithShowUserData("CurrentSecretSanta");
     }
     closeModal(confirmModal);
     userUpdateLocal = false;
@@ -1596,7 +1600,7 @@ function removeUserElement(uid) {
 
 function initializeShowUserData(showDataSelection) {
   let listOfShowUserElements = [showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore,
-    showShareCode, showGifts, showFriends, showModerator, showSecretSanta, showLastSecretSanta];
+    showShareCode, showGifts, showFriends, showModerator, showSecretSanta, showCurrentSecretSanta, showLastSecretSanta];
   let showHideUserDataBool = false;
 
   userListDropDown.innerHTML = "Select Listed User Data (" + showDataSelection + ")";;
@@ -1651,16 +1655,21 @@ function initializeShowUserData(showDataSelection) {
     showSecretSanta.onclick = function(){
       updateDBWithShowUserData("SecretSanta");
     };
+    showCurrentSecretSanta.onclick = function(){
+      confirmOperation("Activate Current Secret Santa?", "Are you sure that you'd like " +
+          "to activate the \"Current Secret Santa\" quick view? If you are participating in a Secret Santa event, you " +
+          "may have your Secret Santa spoiled!", "showCurrentSecretSanta");
+    }
     showLastSecretSanta.onclick = function(){
       updateDBWithShowUserData("LastSecretSanta");
     };
   };
+}
 
-  function updateDBWithShowUserData(showUserDataItem) {
-    firebase.database().ref("moderatorSettings/").update({
-      listedUserData: showUserDataItem
-    });
-  }
+function updateDBWithShowUserData(showUserDataItem) {
+  firebase.database().ref("moderatorSettings/").update({
+    listedUserData: showUserDataItem
+  });
 }
 
 function updateInitializedUsers(){
@@ -1694,6 +1703,7 @@ function updateInitializedUsers(){
     let userData = userArr[userIndex];
     let userDataName = userData.name;
     let userDataString;
+    let tempIndex = 0;
 
     if (userData.ban == 1) {
       tempElem.className = "gift highSev";
@@ -1829,7 +1839,24 @@ function updateInitializedUsers(){
           if (userData.secretSantaNamePrior == "") {
             userDataString = userDataName + " - No Previous Assignments";
           } else {
-            userDataString = userDataName + " - Previous Assignment: " + userData.secretSantaNamePrior;
+            tempIndex = findUIDItemInArr(userData.secretSantaNamePrior, userArr, true);
+            tempElem.className += " mediumSev";
+            userDataString = userDataName + " - Previous Assignment: " + findFirstNameInFullName(userArr[tempIndex].name);
+          }
+          break;
+        case "CurrentSecretSanta":
+          if (userData.secretSantaName == undefined)
+            userData.secretSantaName = "";
+
+          if (userData.secretSantaName == "") {
+            userDataString = userDataName + " - No Current Assignment";
+          } else {
+            tempIndex = findUIDItemInArr(userData.secretSantaName, userArr, true);
+            tempElem.className += " lowSev";
+            if (tempIndex != -1)
+              userDataString = userDataName + " - Current Assignment: " + findFirstNameInFullName(userArr[tempIndex].name);
+            else
+              userDataString = userDataName + " - Current Assignment: " + userData.secretSantaName;
           }
           break;
         default:
