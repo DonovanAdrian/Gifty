@@ -325,10 +325,16 @@ function generateFamilyMemberList(liItem, familyMemberArr) {
         liItem.id = familyMemberArr[i];
         liItem.className = "gift";
         tempFamilyMemberName = userArr[familyMember].name;
-        if (userArr[familyMember].secretSanta != undefined)
-          if (userArr[familyMember].secretSanta == 1) {
-            tempFamilyMemberName += " - Signed Up For Secret Santa!"
-          }
+        if (userArr[familyMember].secretSanta == undefined)
+          userArr[familyMember].secretSanta = 0;
+        if (userArr[familyMember].secretSantaName == undefined)
+          userArr[familyMember].secretSantaName = "";
+
+        if (userArr[familyMember].secretSanta == 1 && userArr[familyMember].secretSantaName == "") {
+          tempFamilyMemberName += " - Signed Up For Secret Santa!"
+        } else if (userArr[familyMember].secretSanta == 1 && userArr[familyMember].secretSantaName != "") {
+          tempFamilyMemberName += " - Assigned A Name!"
+        }
         let textNode = document.createTextNode(tempFamilyMemberName);
         liItem.appendChild(textNode);
         familyListContainer.insertBefore(liItem, familyListContainer.childNodes[0]);
