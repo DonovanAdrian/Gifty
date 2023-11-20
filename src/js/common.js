@@ -2147,7 +2147,7 @@ function saveLastActionToCookie(actionPerformed, signOutOverride) {
       saveLastAction = true;
     }
   } else {
-    if (lastSavedDBAction != "") {
+    if (lastSavedDBAction != "" && !lastSavedDBAction.includes("And Signed Out")) {
       lastActionCookie = lastSavedDBAction + " And Signed Out";
       saveLastAction = true;
     }
