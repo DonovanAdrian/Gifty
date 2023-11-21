@@ -44,6 +44,7 @@ let showReview;
 let showUserScore;
 let showShareCode;
 let showFriends;
+let showRelationships;
 let showGifts;
 let showModerator;
 let showSecretSanta;
@@ -88,6 +89,7 @@ let userUserName;
 let userPublicGifts;
 let userPrivateGifts;
 let userFriendsList;
+let userRelationshipList;
 let userNotificationsList;
 let userLastLogin;
 let userLastAction;
@@ -169,6 +171,7 @@ window.onload = function instantiate() {
   showShareCode = document.getElementById("showShareCode");
   showGifts = document.getElementById("showGifts");
   showFriends = document.getElementById("showFriends");
+  showRelationships = document.getElementById("showRelationships");
   showModerator = document.getElementById("showModerator");
   showSecretSanta = document.getElementById("showSecretSanta");
   showCurrentSecretSanta = document.getElementById("showCurrentSecretSanta");
@@ -212,6 +215,7 @@ window.onload = function instantiate() {
   userPublicGifts = document.getElementById("userPublicGifts");
   userPrivateGifts = document.getElementById("userPrivateGifts");
   userFriendsList = document.getElementById("userFriendsList");
+  userRelationshipList = document.getElementById("userRelationshipList");
   userNotificationsList = document.getElementById("userNotificationsList");
   userLastLogin = document.getElementById("userLastLogin");
   userLastAction = document.getElementById("userLastAction");
@@ -253,13 +257,13 @@ window.onload = function instantiate() {
     loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal, loginDisabledDesc, loginDisabledInp,
     loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown,
     showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore, showShareCode, showGifts,
-    showFriends, showModerator, showSecretSanta, showCurrentSecretSanta, showLastSecretSanta, sendPrivateMessage,
-    userModal, userOptionsBtn, userOptionsModal, userOptionsSpan, settingsNote, testData, closeUserModal, userName,
-    userUID, userUserName, userPublicGifts, userPrivateGifts, userFriendsList, userNotificationsList, userLastLogin,
-    userLastAction, userLastReview, userScoreElem, userSecretSanta, userSecretSantaPrior, userSecretSantaBtn,
-    userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser, userDataViewModal, closeUserDataViewModal,
-    userDataViewTitle, userDataViewText, userDataViewListContainer, userDataViewBack, testUserDataView,
-    closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
+    showFriends, showRelationships, showModerator, showSecretSanta, showCurrentSecretSanta, showLastSecretSanta,
+    sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal, userOptionsSpan, settingsNote, testData,
+    closeUserModal, userName, userUID, userUserName, userPublicGifts, userPrivateGifts, userFriendsList,
+    userRelationshipList, userNotificationsList, userLastLogin, userLastAction, userLastReview, userScoreElem,
+    userSecretSanta, userSecretSantaPrior, userSecretSantaBtn, userPassword, moderatorOp, sendPrivateMessage, warnUser,
+    banUser, userDataViewModal, closeUserDataViewModal, userDataViewTitle, userDataViewText, userDataViewListContainer,
+    userDataViewBack, testUserDataView, closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
 
   verifyElementIntegrity(moderationElements);
 
@@ -1137,6 +1141,8 @@ function changeUserElement(userData) {
 
 function initUserElement(liItem, userData) {
   let showPassBool = false;
+  let relationshipModifier = "";
+  let tempString = "";
   liItem.className = "gift";
 
   liItem.onclick = function () {
@@ -1305,6 +1311,34 @@ function initUserElement(liItem, userData) {
       userFriendsList.innerHTML = "This User Has No Friends";
       userFriendsList.onclick = function() {};
     }
+    if (userData.parentUser == undefined)
+      userData.parentUser = [];
+    if (userData.childUser == undefined)
+      userData.childUser = [];
+
+    userRelationshipList.onclick = function() {
+      generateRelationshipDataList(userData);
+    };
+    if (userData.childUser.length == 0 && userData.parentUser.length == 0) {
+      userRelationshipList.innerHTML = "This User Has No Family Members";
+      userRelationshipList.onclick = function() {};
+    } else if (userData.childUser.length != 0 && userData.parentUser.length == 0) {
+      if (userData.childUser.length > 1)
+        relationshipModifier = "ren";
+      userRelationshipList.innerHTML = "View " + userData.childUser.length + " Child" + relationshipModifier;
+    } else if (userData.childUser.length == 0 && userData.parentUser.length != 0) {
+      if (userData.parentUser.length > 1)
+        relationshipModifier = "s";
+      userRelationshipList.innerHTML = "View " + userData.parentUser.length + " Parent" + relationshipModifier;
+    } else {
+      if (userData.parentUser.length > 1)
+        relationshipModifier = "s";
+      tempString = "View " + userData.parentUser.length + " Parent" + relationshipModifier;
+      if (userData.childUser.length > 1)
+        relationshipModifier = "ren";
+      tempString =+ ", " + userData.childUser.length + " Child" + relationshipModifier;
+      userRelationshipList.innerHTML = tempString;
+    }
     if (userData.notifications != undefined) {
       userNotificationsList.innerHTML = "This User Has No Notifications";
       userNotificationsList.onclick = function() {
@@ -1397,11 +1431,41 @@ function initUserElement(liItem, userData) {
   };
 }
 
+function generateRelationshipDataList(userData) {
+  let tempFamilyData = [];
+  let tempIndex = 0;
+  let parentList = userData.parentUser;
+  let childList = userData.childUser;
+
+  for (let i = 0; i < parentList.length; i++) {
+    tempIndex = findUIDItemInArr(parentList[i], userArr, true);
+    if (tempIndex != -1) {
+      tempFamilyData.push("Parent -> " + userArr[tempIndex].name);
+    }
+  }
+  for (let i = 0; i < childList.length; i++) {
+    tempIndex = findUIDItemInArr(childList[i], userArr, true);
+    if (tempIndex != -1) {
+      tempFamilyData.push("Child -> " + userArr[tempIndex].name);
+    }
+  }
+
+  if (tempFamilyData.length != 0) {
+    generateUserDataViewModal(tempFamilyData, userData);
+  } else {
+    deployNotificationModal(true, "Family Relationships Load Error!", "There was " +
+        "an issue loading the list of family relationships! Please try again...");
+  }
+}
+
 function generateUserDataViewModal(dataToLoad, userData) {
   let dataToLoadType;
   let userUID = userData.uid;
 
-  if (typeof dataToLoad[0] == "string") {
+  if (typeof dataToLoad[0] == "string" &&
+      (dataToLoad[0].includes("Parent") || dataToLoad[0].includes("Child"))) {
+    dataToLoadType = "Relationships";
+  } else if (typeof dataToLoad[0] == "string") {
     dataToLoadType = "Friend";
   } else if (dataToLoad[0].data != undefined) {
     dataToLoadType = "Notification";
@@ -1449,6 +1513,10 @@ function generateUserDataViewModal(dataToLoad, userData) {
       loadedUserDataViewElemID = dataToLoad[i];
       liItem.id = loadedUserDataViewElemID;
       textNode = document.createTextNode(friendUserData.name);
+    } else if (dataToLoadType == "Family") {
+      loadedUserDataViewElemID = dataToLoad[i];
+      liItem.id = loadedUserDataViewElemID;
+      textNode = document.createTextNode(dataToLoad[i]);
     } else if (dataToLoadType == "Notification") {
       let notificationReadData = dataToLoad[i].read;
       loadedUserDataViewElemID = dataToLoad[i].uid;
@@ -1600,7 +1668,7 @@ function removeUserElement(uid) {
 
 function initializeShowUserData(showDataSelection) {
   let listOfShowUserElements = [showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore,
-    showShareCode, showGifts, showFriends, showModerator, showSecretSanta, showCurrentSecretSanta, showLastSecretSanta];
+    showShareCode, showGifts, showFriends, showRelationships, showModerator, showSecretSanta, showCurrentSecretSanta, showLastSecretSanta];
   let showHideUserDataBool = false;
 
   userListDropDown.innerHTML = "Select Listed User Data (" + showDataSelection + ")";;
@@ -1648,6 +1716,9 @@ function initializeShowUserData(showDataSelection) {
     };
     showFriends.onclick = function(){
       updateDBWithShowUserData("Friends");
+    };
+    showRelationships.onclick = function(){
+      updateDBWithShowUserData("Relationships");
     };
     showModerator.onclick = function(){
       updateDBWithShowUserData("Moderator");
@@ -1805,6 +1876,33 @@ function updateInitializedUsers(){
             userDataString = userDataName + " - " + userData.friends.length + " Friends";
           } else if (userData.friends.length == 1) {
             userDataString = userDataName + " - 1 Friend";
+          }
+          break;
+        case "Relationships":
+          let relationshipModifier = "";
+          userDataString = userDataName;
+          if (userData.parentUser == undefined)
+            userData.parentUser = [];
+          if (userData.childUser == undefined)
+            userData.childUser = [];
+
+          if (userData.childUser.length == 0 && userData.parentUser.length == 0) {
+            userDataString = userDataName + " - No Relationships";
+          } else if (userData.childUser.length != 0 && userData.parentUser.length == 0) {
+            if (userData.childUser.length > 1)
+              relationshipModifier = "ren";
+            userDataString = userDataName + " - " + userData.childUser.length + " Child" + relationshipModifier;
+          } else if (userData.childUser.length == 0 && userData.parentUser.length != 0) {
+            if (userData.parentUser.length > 1)
+              relationshipModifier = "s";
+            userDataString = userDataName + " - " + userData.parentUser.length + " Parent" + relationshipModifier;
+          } else {
+            if (userData.parentUser.length > 1)
+              relationshipModifier = "s";
+            userDataString = userDataName + " - " + userData.parentUser.length + " Parent" + relationshipModifier;
+            if (userData.childUser.length > 1)
+              relationshipModifier = "ren";
+            userDataString =+ ", " + userData.childUser.length + " Child" + relationshipModifier;
           }
           break;
         case "Moderator":
