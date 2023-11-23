@@ -47,6 +47,9 @@ let processingSuccessCount = 0;
 let processingFailureCount = 0;
 let processingResultTextInterval;
 let previousStatusValue = "";
+let globalThanks = "Thank you for participating in the Secret Santa! See you next year!";
+let globalApology = "Unfortunately the Secret Santa for this year has come to an early end! Please contact" +
+    " a moderator for assistance";
 
 /*
  * General Functions
@@ -504,10 +507,13 @@ function initializeSecretSantaButton(stateIndex) {
 }
 
 function deploySecretSantaModal() {
+  let tempIndex = 0;
+
   showSecretSantaAssignment.onclick = function() {
     if (hideSecretSantaName) {
-      secretSantaNameText.innerHTML = "Your Secret Santa Assignment: " + user.secretSantaName;
-      secretSantaBtn.innerHTML = user.secretSantaName;
+      tempIndex = findUIDItemInArr(user.secretSantaName, userArr, true);
+      secretSantaNameText.innerHTML = "Your Secret Santa Assignment: " + userArr[tempIndex].name;
+      secretSantaBtn.innerHTML = findFirstNameInFullName(userArr[tempIndex].name);
       showSecretSantaAssignment.innerHTML = "Hide Secret Santa Name";
       hideSecretSantaName = false;
     } else {
