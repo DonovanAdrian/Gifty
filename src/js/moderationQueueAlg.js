@@ -358,6 +358,9 @@ function initModTicketElement (liItem, ticketData) {
   } else if (ticketData.details.includes("URL Limiter set by")) {
     liItem.className += " mediumSev";
     ticketTitleSuffix = " - URL Limits Set";
+  } else if (ticketData.details.includes("Gift List Fix Performed")) {
+    liItem.className += " mediumSev";
+    ticketTitleSuffix = " - Automatic Gift List Fix Performed";
   } else if (ticketData.details.includes("Database limits set by")) {
     liItem.className += " mediumSev";
     ticketTitleSuffix = " - Database Limits Set";
