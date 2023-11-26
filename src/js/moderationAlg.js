@@ -1465,9 +1465,9 @@ function generateUserDataViewModal(dataToLoad, userData) {
   if (typeof dataToLoad[0] == "string" &&
       (dataToLoad[0].includes("Parent") || dataToLoad[0].includes("Child"))) {
     dataToLoadType = "Relationships";
-  } else if (typeof dataToLoad[0] == "string") {
+  } else if (typeof dataToLoad[0] == "string" && !dataToLoad[0].includes("\",,,\"")) {
     dataToLoadType = "Friend";
-  } else if (dataToLoad[0].data != undefined) {
+  } else if (dataToLoad[0].data != undefined || dataToLoad[0].includes("\",,,\"")) {
     dataToLoadType = "Notification";
   } else {
     dataToLoadType = "Gift";
@@ -1554,7 +1554,14 @@ function generateUserDataViewModal(dataToLoad, userData) {
 
 function fetchNotificationTitle(notificationData) {
   let noteToParse = notificationData.data;
-  let noteSplit = noteToParse.split(",,,");
+  let noteSplit;
+  let noteParseError = false;
+  try {
+    noteSplit = noteToParse.split(",,,");
+  } catch (err) {
+    noteSplit = notificationData;
+    noteParseError = true;
+  }
   let noteSplitCount = 0;
   let adminPM = false;
   let globalPM = false;
@@ -1562,7 +1569,7 @@ function fetchNotificationTitle(notificationData) {
   let notificationDataTitle = "***Notification Load Error***";
   let notificationDetails;
 
-  if (noteSplit.length >= 4) {
+  if (noteSplit.length >= 4 && !noteParseError) {
     for (let i = 0; i < noteSplit.length; i++) {
       noteSplit[i] = noteSplit[i].replaceAll("\"", "");
       if (noteSplit[i] != "") {
@@ -1647,8 +1654,17 @@ function fetchNotificationTitle(notificationData) {
       }
     }
   } else {
-    if (consoleOutput)
-      console.log("Deprecated Notification Format!");
+    if (noteSplit.data == undefined) {
+      if (consoleOutput)
+        console.log("Severely Deprecated Notification Format!");
+      notificationDataTitle = "Deprecated Notification Format! Showing Unaltered Notification Data";
+      notificationDetails = noteSplit;
+    } else {
+      if (consoleOutput)
+        console.log("Deprecated Notification Format!");
+      notificationDataTitle = "Deprecated Notification Format! Showing Unaltered Notification Data";
+      notificationDetails = noteSplit.data.data;
+    }
   }
 
   let notificationStringConcat = notificationDataTitle + " ---> " + notificationDetails;
@@ -1843,6 +1859,9 @@ function updateInitializedUsers(){
         case "Score":
           if (userData.userScore == undefined) {
             userData.userScore = 0;
+            firebase.database().ref("users/" + userData.uid).update({
+              userScore: 0
+            });
           }
 
           userDataString = userDataName + " - " + userData.userScore;
