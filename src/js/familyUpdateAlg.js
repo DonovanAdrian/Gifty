@@ -180,38 +180,38 @@ window.onload = function instantiate() {
       deployNotificationModal(true, "Secret Santa Parent Restriction", "Use this " +
           "button to assign a parent to a user. By assigning a parent to a user, the user is restricted from being " +
           "assigned to the parent for Secret Santa. Additionally, the parent will automatically be assigned to the " +
-          "child in return.", 6);
+          "child in return.", 10);
     };
     childInfoIcon.onclick = function() {
       deployNotificationModal(true, "Secret Santa Child Restriction", "Use this " +
           "button to assign a child to a user. By assigning a child to a user, the user is restricted from being " +
           "assigned to the child for Secret Santa. Additionally, the child will automatically be assigned to the " +
-          "parent in return.", 6);
+          "parent in return.", 10);
     };
     clearInfoIcon.onclick = function() {
       deployNotificationModal(true, "Clear Parent & Child Data", "This button " +
           "offers a quick way to clear any relationships between this user and their respective parent(s)/child(ren). " +
           "If you would like to clear ALL Parent/Child relationships in this family, select the \"Family Settings\" " +
-          "button on the bottom left, then select \"Clear All Parent/Child Relationships\".", 4);
+          "button on the bottom left, then select \"Clear All Parent/Child Relationships\".", 15);
     };
 
     changeNameInfoIcon.onclick = function() {
       deployNotificationModal(true, "Change Family Name", "This button allows " +
-          "you to update this family's name within Gifty.", 3);
+          "you to update this family's name within Gifty.", 6);
     };
     clearAllInfoIcon.onclick = function() {
       deployNotificationModal(true, "Clear All Parent & Child Data", "This button " +
-          "offers a quick way to clear ALL relationships between every user in this family.", 3);
+          "offers a quick way to clear ALL relationships between every user in this family.", 6);
     };
     removeMembersInfoIcon.onclick = function() {
       deployNotificationModal(true, "Remove All Members", "This button " +
           "offers a quick way to remove every member from this family.<br><br>Please note that any parent/child " +
-          "relationships will also be cleared as a result.", 6);
+          "relationships will also be cleared as a result.", 8);
     };
     addMemberInfoIcon.onclick = function() {
       deployNotificationModal(true, "Add Member", "This button " +
           "allows you to add a given user to this family. Please note that a given user cannot exist in two families " +
-          "at the same time.", 5);
+          "at the same time.", 8);
     };
   }
 
@@ -605,7 +605,7 @@ function removeAllFamilyMembers(familyRemove) {
     deployNotificationModal(true, "Family Empty!", "This family is empty, so no members can be removed!");
   } else {
     deployNotificationModal(false, "Member Removal Complete", "All members were removed from this family! " +
-        "The page will now be redirected to the Family page.", 4, 15);
+        "The page will now be redirected to the Family page.", 6, 15);
   }
 }
 
@@ -925,7 +925,7 @@ function changeFamilyNameInDB(newFamilyName){
     name:newFamilyName
   });
   deployNotificationModal(false, "Family Name Updated!", "The family name has been updated! The page will " +
-      "now be redirected to the Family page.", 4, 15);
+      "now be redirected to the Family page.", 6, 15);
 }
 
 function addFamilyMemberToDB(memberUID){
@@ -1349,7 +1349,7 @@ function updateFamilyRelationsToDB() {
     }
   } else {
     deployNotificationModal(true, "Parent/Child Assignment Error!", "There was an error updating the " +
-        "parent and child of this user, please try again!", 4);
+        "parent and child of this user, please try again!", 6);
   }
 
   globalChildData = undefined;
