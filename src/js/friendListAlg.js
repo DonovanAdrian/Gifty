@@ -8,6 +8,7 @@ let friendListElements = [];
 let giftArr = [];
 let oldGiftArr = [];
 let userUserNames = [];
+let userUIDList = [];
 let initializedGifts = [];
 
 let initializingElements = false;
@@ -173,6 +174,7 @@ window.onload = function instantiate() {
 
   for(let i = 0; i < userArr.length; i++){
     userUserNames.push(userArr[i].userName);
+    userUIDList.push(userArr[i].uid);
   }
 
   function initializeSwapBtn() {
@@ -386,10 +388,10 @@ function findRemovedGift(oldArr, newArr) {
   }
 }
 
-function checkGiftBuyer(buyer){
+function checkGiftBuyer(buyer) {
   let updateGiftToDB = true;
 
-  if(buyer == "" || buyer == undefined || userUserNames.includes(buyer)){
+  if(buyer == "" || buyer == undefined || userUIDList.includes(buyer)){
     updateGiftToDB = false;
   } else {
     if(consoleOutput)
@@ -513,8 +515,8 @@ function initGiftElement(liItem, giftData, giftKey) {
     }
     giftInfoPrefix = "";
 
-    if(giftReceivedData == 1){
-      if(giftBuyer == ""){
+    if (giftReceivedData == 1) {
+      if (giftBuyer == "") {
         giftBought.innerHTML = "This gift has been bought";
       } else {
         giftBought.innerHTML = "This gift has been bought by " +
