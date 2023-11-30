@@ -7,7 +7,9 @@
 let moderationElements = [];
 let initializedUsers = [];
 let loadedUserDataViewArr = [];
+let loadedModerationTicketViewArr = [];
 let ticketArr = [];
+let newTicketArr = [];
 
 let moderationSet = 1;
 let globalNoteInt = 0;
@@ -110,6 +112,13 @@ let userDataViewText;
 let userDataViewListContainer;
 let userDataViewBack;
 let testUserDataView;
+let moderationTicketViewModal;
+let closeModerationTicketViewModal;
+let moderationTicketViewTitle;
+let moderationTicketViewText;
+let moderationTicketViewListContainer;
+let testModerationTicketView;
+let moderationTicketViewNavigate;
 let privateMessageModal;
 let closePrivateMessageModal;
 let globalMsgTitle;
@@ -236,6 +245,14 @@ window.onload = function instantiate() {
   userDataViewListContainer = document.getElementById("userDataViewListContainer");
   userDataViewBack = document.getElementById("userDataViewBack");
   testUserDataView = document.getElementById("testUserDataView");
+
+  moderationTicketViewModal = document.getElementById("moderationTicketViewModal");
+  closeModerationTicketViewModal = document.getElementById("closeModerationTicketViewModal");
+  moderationTicketViewTitle = document.getElementById("moderationTicketViewTitle");
+  moderationTicketViewText = document.getElementById("moderationTicketViewText");
+  moderationTicketViewListContainer = document.getElementById("moderationTicketViewListContainer");
+  testModerationTicketView = document.getElementById("testModerationTicketView");
+  moderationTicketViewNavigate = document.getElementById("moderationTicketViewNavigate");
   privateMessageModal = document.getElementById("privateMessageModal");
   closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
   globalMsgTitle = document.getElementById("globalMsgTitle");
@@ -263,7 +280,9 @@ window.onload = function instantiate() {
     userRelationshipList, userNotificationsList, userLastLogin, userLastAction, userLastReview, userScoreElem,
     userSecretSanta, userSecretSantaPrior, userSecretSantaBtn, userPassword, moderatorOp, sendPrivateMessage, warnUser,
     banUser, userDataViewModal, closeUserDataViewModal, userDataViewTitle, userDataViewText, userDataViewListContainer,
-    userDataViewBack, testUserDataView, closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
+    userDataViewBack, testUserDataView, moderationTicketViewModal, closeModerationTicketViewModal,
+    moderationTicketViewTitle, moderationTicketViewText, moderationTicketViewListContainer, testModerationTicketView,
+    moderationTicketViewNavigate, closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
 
   verifyElementIntegrity(moderationElements);
 
@@ -723,6 +742,7 @@ window.onload = function instantiate() {
               }
             } else {
               ticketArr.push(data.val());
+              newTicketArr.push(data.val());
               saveTicketArrToCookie();
             }
           });
@@ -1552,6 +1572,64 @@ function generateUserDataViewModal(dataToLoad, userData) {
   }
 }
 
+function generateModerationTicketViewModal() {
+  moderationTicketViewTitle.innerHTML = "Moderation Tickets Preview";
+  moderationTicketViewText.innerHTML = "Total: " + ticketArr.length + ", New: " + newTicketArr.length;
+
+  moderationTicketViewNavigate.onclick = function() {
+    navigation(17); //moderationQueue
+  };
+
+  closeModal(moderationTicketViewModal);
+
+  closeModerationTicketViewModal.onclick = function() {
+    closeModal(moderationTicketViewModal);
+  }
+
+  openModal(moderationTicketViewModal, "moderationTicketPreviewModal");
+
+  if (loadedModerationTicketViewArr.length != 0) {
+    for (let a = 0; a < loadedModerationTicketViewArr.length; a++) {
+      document.getElementById(loadedModerationTicketViewArr[a]).remove();
+    }
+    loadedModerationTicketViewArr = [];
+  }
+
+  try {
+    testModerationTicketView.remove();
+  } catch (err) {}
+
+  for (let i = 0; i < ticketArr.length; i++) {
+    let liItem = document.createElement("LI");
+    let textNode;
+    let loadedModerationTicketViewElemID;
+
+    liItem.className = "gift";
+
+    loadedModerationTicketViewElemID = ticketArr[i].uid;
+    liItem.id = loadedModerationTicketViewElemID;
+    textNode = document.createTextNode(fetchModerationTitle(ticketArr[i]));
+
+    if (findUIDItemInArr(ticketArr[i].uid, newTicketArr, true) != -1) {
+      liItem.className += " lowSev";
+    }
+
+    liItem.appendChild(textNode);
+    moderationTicketViewListContainer.insertBefore(liItem, moderationTicketViewListContainer.childNodes[0]);
+    loadedModerationTicketViewArr.push(loadedModerationTicketViewElemID);
+  }
+  if (newTicketArr.length > 0) {
+    newTicketArr = [];
+    ticketCount.style.background = "#ff8e8e";
+    ticketCount.onmouseover = function () {
+      ticketCount.style.backgroundColor = "#ff4c4c";
+    }
+    ticketCount.onmouseout = function () {
+      ticketCount.style.backgroundColor = "#ff8e8e";
+    }
+  }
+}
+
 function fetchNotificationTitle(notificationData) {
   let noteToParse = notificationData.data;
   let noteSplit;
@@ -1669,6 +1747,74 @@ function fetchNotificationTitle(notificationData) {
 
   let notificationStringConcat = notificationDataTitle + " ---> " + notificationDetails;
   return notificationStringConcat;
+}
+
+function fetchModerationTitle(moderationData) {
+  let localTime = getLocalTime(moderationData.time);
+  let ticketTitleText;
+  let ticketTitleSuffix;
+
+  if (moderationData.details.includes("Critical Error") || moderationData.details.includes("Critical Initialization Error")) {
+    ticketTitleSuffix = " - !!Critical Error Occurred!!";
+  } else if (moderationData.details.includes("attempted to remove friend")) {
+    ticketTitleSuffix = " - !!Friend Removal Error!!";
+  } else if (moderationData.details.includes("attempted to add friend")) {
+    ticketTitleSuffix = " - !!Invite Removal Error!!";
+  } else if (moderationData.details.includes("Invalid Login Attempt:")) {
+    ticketTitleSuffix = " - !!Invalid Login Attempt!!";
+  } else if (moderationData.details.includes("Element Verification Failure")) {
+    ticketTitleSuffix = " - Element Verification Failure";
+  } else if (moderationData.details.includes("experienced degraded performance")) {
+    ticketTitleSuffix = " - Degraded Performance Experienced";
+  } else if (moderationData.details.includes("Login Error Occurred")) {
+    ticketTitleSuffix = " - !!Login Error!!";
+  } else if (moderationData.details.includes("attempted to access a restricted page")) {
+    ticketTitleSuffix = " - A Restricted Page Was Accessed";
+  } else if (moderationData.details.includes("forced the moderation modal to appear")) {
+    ticketTitleSuffix = " - A Restricted Window Was Forced Open";
+  } else if (moderationData.details.includes("failed to connect to the private list owned by")) {
+    ticketTitleSuffix = " - Gift List Connection Failed";
+  } else if (moderationData.details.includes("Notification delete failed")) {
+    ticketTitleSuffix = " - Notification Delete Failed";
+  } else if (moderationData.details.includes("Gift delete failed")) {
+    ticketTitleSuffix = " - Gift Delete Failed";
+  } else if (moderationData.details.includes("Gift update failed for user")) {
+    ticketTitleSuffix = " - Gift Update Failed";
+  } else if (moderationData.details.includes("Attempting to delete user")) {
+    ticketTitleSuffix = " - Attempt To Delete User";
+  } else if (moderationData.details.includes("Invalid Login Attempt During Maintenance Period:")) {
+    ticketTitleSuffix = " - !!Invalid Login Attempt During Maintenance!!";
+  } else if (moderationData.details.includes("attempted to log in")) {
+    ticketTitleSuffix = " - A Banned User Attempted Login";
+  } else if (moderationData.details.includes("Login disabled by")) {
+    ticketTitleSuffix = " - Login Disabled";
+  } else if (moderationData.details.includes("URL Limiter disabled by")) {
+    ticketTitleSuffix = " - URL Limits Disabled";
+  } else if (moderationData.details.includes("URL Limiter set by")) {
+    ticketTitleSuffix = " - URL Limits Set";
+  } else if (moderationData.details.includes("Gift List Fix Performed")) {
+    ticketTitleSuffix = " - Automatic Gift List Fix Performed";
+  } else if (moderationData.details.includes("Database limits set by")) {
+    ticketTitleSuffix = " - Database Limits Set";
+  } else if (moderationData.details.includes("has opened their warning")) {
+    ticketTitleSuffix = " - A Warned User Was Successfully Notified";
+  } else if (moderationData.details.includes("Login disabled message reset by")) {
+    ticketTitleSuffix = " - Login Message Reset";
+  } else if (moderationData.details.includes("Login enabled by")) {
+    ticketTitleSuffix = " - Login Enabled";
+  } else if (moderationData.details.includes("found an easter egg!")) {
+    ticketTitleSuffix = " - Easter Egg Found!";
+  } else if (moderationData.details.includes("found an easter egg... But got greedy")) {
+    ticketTitleSuffix = " - Easter Egg Found...";
+  } else if (moderationData.details.includes("found an easter egg...")) {
+    ticketTitleSuffix = " - Easter Egg Found...?";
+  } else {
+    ticketTitleSuffix = " - Ticket Title Unavailable, Open For More Details!";
+  }
+
+  ticketTitleText = localTime + ticketTitleSuffix;
+
+  return ticketTitleText;
 }
 
 function removeUserElement(uid) {
@@ -1988,22 +2134,27 @@ function updateInitializedUsers(){
 
 function initializeTicketCount(initializeInt) {//0 is initializing, 1 is updates
   let ticketCountString = "";
-  let ticketCountStringAlt = "";
+
+  if (initializeInt == 1) {
+    ticketCount.style.background = "#3be357";
+    ticketCount.onmouseover = function () {
+      ticketCount.style.backgroundColor = "#3be357";
+    }
+    ticketCount.onmouseout = function () {
+      ticketCount.style.backgroundColor = "#3be357";
+    }
+  }
 
   if (ticketArr.length == 0) {
     ticketCountString = "No Tickets!";
-    ticketCountStringAlt = "are currently no tickets";
   } else if (ticketArr.length == 1) {
     ticketCountString = "1 Ticket";
-    ticketCountStringAlt = "is only one ticket";
   } else if (ticketArr.length > 1) {
     ticketCountString = ticketArr.length + " Tickets";
-    ticketCountStringAlt = "are currently " + ticketArr.length + " tickets";
   }
   ticketCount.innerHTML = ticketCountString;
   ticketCount.onclick = function() {
-    deployNotificationModal(false, "The Number Of Tickets", "There "
-        + ticketCountStringAlt + " in this list.");
+    generateModerationTicketViewModal();
   };
 }
 
