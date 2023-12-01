@@ -446,7 +446,7 @@ function collectUserBoughtGifts(){
         userPrivateGiftArr = [];
 
       for (let a = 0; a < userGiftArr.length; a++) {
-        if (userGiftArr[a].buyer == user.userName) {
+        if (userGiftArr[a].buyer == user.userName || userGiftArr[a].buyer == user.uid) {
           userBoughtGifts.push(userGiftArr[a]);
           userBoughtGiftsUIDs.push(userArr[i].uid);
           userBoughtGiftsUsers.push(userArr[i].name);
