@@ -461,8 +461,9 @@ function evaluateSecretSantaButton(familyData) {
       let i = findUIDItemInArr(user.secretSantaName, userArr, true);
       if (i != -1) {
         initializeSecretSantaButton(3);
-      } else {
-        updateMaintenanceLog(pageName, "Critical Error: A user was improperly assigned a Secret Santa name! " + user.uid);
+      } else if (user.secretSanta == 1) {
+        updateMaintenanceLog(pageName, "Critical Error: A user was improperly assigned a Secret Santa " +
+            "name! " + user.userName + " (" + user.uid + ")");
       }
     } else {
       disableSecretSantaBtn();
