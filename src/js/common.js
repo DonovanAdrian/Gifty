@@ -924,6 +924,43 @@ function initGiftDataIfEmpty(inputGiftData) {
   return inputGiftData;
 }
 
+function initUserDataIfEmpty(inputUserData) {
+  let userDataProperties = ["ban", "encodeStr", "firstLogin", "friends",
+    "lastLogin", "lastPerformedAction", "moderatorInt", "name", "notifications",
+    "organize", "privateList", "secretSanta", "secretSantaName", "secretSantaNamePrior",
+    "settingsScoreBlock", "shareCode", "strike", "theme", "uid", "userName",
+    "userScore", "warn", "yearlyReview"];
+
+  for (let i = 0; i < userDataProperties.length; i++) {
+    if (inputUserData[userDataProperties[i]] == undefined)
+      switch (userDataProperties[i]) {
+        case "ban":
+        case "firstLogin":
+        case "moderatorInt":
+        case "organize":
+        case "secretSanta":
+        case "settingsScoreBlock":
+        case "strike":
+        case "theme":
+        case "warn":
+        case "yearlyReview":
+          inputUserData[userDataProperties[i]] = 0;
+          break;
+        case "friends":
+        case "notifications":
+        case "readNotifications":
+        case "privateList":
+          inputUserData[userDataProperties[i]] = [];
+          break;
+          //encodeStr, lastLogin, lastPerformedAction, name, secretSantaName, secretSantaNamePrior, shareCode, uid, userName
+        default:
+          inputUserData[userDataProperties[i]] = "";
+      }
+  }
+
+  return inputUserData;
+}
+
 function fetchGiftReceivedSuffix(multipleBuyer, buyerStr, buyerArr) {
   let returnGiftSuffix = "";
 
@@ -931,7 +968,7 @@ function fetchGiftReceivedSuffix(multipleBuyer, buyerStr, buyerArr) {
     if (buyerStr == user.uid) {
       returnGiftSuffix = "you!";
     } else {
-      let tempUserNameFetch = fetchNameByUserName(buyerStr);
+      let tempUserNameFetch = fetchNameByUID(buyerStr);
       if (tempUserNameFetch == undefined)
         tempUserNameFetch = buyerStr;
       returnGiftSuffix = tempUserNameFetch;
@@ -954,6 +991,16 @@ function fetchGiftReceivedSuffix(multipleBuyer, buyerStr, buyerArr) {
   }
 
   return returnGiftSuffix;
+}
+
+function fetchNameByUID(userUIDInput) {
+  for (let i = 0; i < userArr.length; i++) {
+    if (userUIDInput == userArr[i].uid) {
+      return userArr[i].name;
+    }
+  }
+
+  return undefined;
 }
 
 function fetchNameByUserName(userNameInput) {
