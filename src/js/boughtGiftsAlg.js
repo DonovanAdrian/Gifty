@@ -25,6 +25,12 @@ let viewListBtn;
 let giftModal;
 let closeGiftModal;
 let homeNote;
+let confirmModal;
+let closeConfirmModal;
+let confirmTitle;
+let confirmContent;
+let confirmBtn;
+let denyBtn;
 
 
 
@@ -64,13 +70,20 @@ window.onload = function instantiate() {
   viewListBtn = document.getElementById("viewListBtn");
   giftModal = document.getElementById("giftModal");
   closeGiftModal = document.getElementById("closeGiftModal");
+  confirmModal = document.getElementById("confirmModal");
+  closeConfirmModal = document.getElementById("closeConfirmModal");
+  confirmTitle = document.getElementById("confirmTitle");
+  confirmContent = document.getElementById("confirmContent");
+  confirmBtn = document.getElementById("confirmBtn");
+  denyBtn = document.getElementById("denyBtn");
 
   getCurrentUser();
   commonInitialization();
 
   boughtGiftElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, backBtn, inviteNote, homeNote,
     notificationModal, notificationTitle, notificationInfo, noteSpan, giftTitleFld, giftLinkFld, giftWhereFld,
-    giftDescriptionFld, giftCreationDateFld, viewListBtn, giftModal, closeGiftModal, testData];
+    giftDescriptionFld, giftCreationDateFld, viewListBtn, giftModal, closeGiftModal, testData, confirmModal,
+    closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn];
 
   verifyElementIntegrity(boughtGiftElements);
 
