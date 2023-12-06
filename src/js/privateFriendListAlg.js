@@ -8,10 +8,10 @@ let privateFriendListElements = [];
 let giftArr = [];
 let oldGiftArr = [];
 let userUserNames = [];
+let userUIDList = [];
 let initializedGifts = [];
 
 let initializingElements = false;
-let updateGiftToDBBool = false;
 let giftListEmptyBool = false;
 let potentialRemoval = false;
 let giftDeleteLocal = false;
@@ -195,6 +195,7 @@ window.onload = function instantiate() {
 
   for (let i = 0; i < userArr.length; i++) {
     userUserNames.push(userArr[i].userName);
+    userUIDList.push(userArr[i].uid);
   }
 
   function initializeSwapBtn() {
@@ -221,6 +222,8 @@ window.onload = function instantiate() {
   initializeSwapBtn();
 
   function databaseQuery() {
+    let tempGiftCheckIndex = 0;
+
     let fetchData = function (postRef) {
       postRef.on("child_added", function (data) {
         let i = findUIDItemInArr(data.key, userArr, true);
@@ -299,17 +302,19 @@ window.onload = function instantiate() {
         if (findUIDItemInArr(data.val().uid, giftArr, true) == -1)
           giftArr.push(data.val());
 
-        if(checkGiftBuyer(data.val().buyer)){
+        tempGiftCheckIndex = checkGiftBuyer(data.val());
+        if (tempGiftCheckIndex == -2) {
           data.val().buyer = "";
-          updateGiftToDBBool = true;
+          updateGiftError(data.val(), data.key, undefined);
+        } else if (tempGiftCheckIndex == -1) {
+          data.val().buyer = "";
+          updateGiftError(data.val(), data.key, "");
+        } else if (tempGiftCheckIndex > 0) {
+          updateGiftError(data.val(), data.key, userArr[tempGiftCheckIndex].uid);
         }
 
         createGiftElement(data.val(), data.key);
 
-        if(updateGiftToDBBool){
-          updateGiftError(data, data.key);
-          updateGiftToDBBool = false;
-        }
         giftUser.privateList = giftArr;
         saveCriticalCookies();
         checkGiftLimitLite();
@@ -441,12 +446,33 @@ function findRemovedGift(oldArr, newArr) {
   }
 }
 
-function checkGiftBuyer(buyer){
-  let updateGiftToDB = true;
+function checkGiftBuyer(giftData) {
+  // -2 -> Multiple Buyer Error, received number needs to be fixed
+  // -1 -> Gift Buyer Error, Needs To Be Cleared
+  // 0  -> No Gift Buyer Error, No Issues
+  // >0 -> Gift Buyer Error, Needs To Become A UID
+  let updateGiftToDB = 0;
+  let tempIndexOfUserName = 0;
+  let buyer = giftData.buyer;
+  let received = giftData.received;
+  let receivedBy = giftData.receivedBy;
 
-  if(buyer == "" || buyer == undefined || userUserNames.includes(buyer)){
-    updateGiftToDB = false;
+  if (receivedBy == undefined)
+    receivedBy = [];
+
+  if (received < 0 || receivedBy.length > 0) {
+    if (receivedBy.length != Math.abs(received)) {
+      updateGiftToDB = -2;
+      if(consoleOutput)
+        console.log("Multiple buyer error found!");
+    }
+  } else if (buyer == "" || buyer == undefined || userUIDList.includes(buyer)) {
+    updateGiftToDB = 0;
+  } else if (userUserNames.includes(buyer)) {
+    tempIndexOfUserName = userUserNames.indexOf(buyer);
+    updateGiftToDB = findUserNameItemInArr(userUserNames[tempIndexOfUserName], userArr, true);
   } else {
+    updateGiftToDB = -1;
     if(consoleOutput)
       console.log("Buyer error found!");
   }
@@ -454,12 +480,30 @@ function checkGiftBuyer(buyer){
   return updateGiftToDB;
 }
 
-function updateGiftError(giftData, giftKey){
-  if(consoleOutput)
-    console.log("A gift needs to be updated! Key: " + giftKey);
-  firebase.database().ref("users/" + giftUser.uid + "/privateList/" + giftKey).update({
-    buyer: ""
-  });
+function updateGiftError(giftData, giftKey, buyerData) {
+  if (buyerData == undefined) {
+    if(consoleOutput)
+      console.log("A multi-gift needs to be updated! Key: " + giftKey);
+
+    let tempReceivedBy = giftData.receivedBy;
+    let tempReceivedByLen = 0;
+
+    if (tempReceivedBy == undefined)
+      tempReceivedBy = [];
+
+    tempReceivedByLen = Math.abs(tempReceivedBy.length) * -1;
+
+    firebase.database().ref("users/" + giftUser.uid + "/privateList/" + giftKey).update({
+      received: tempReceivedByLen
+    });
+  } else {
+    if(consoleOutput)
+      console.log("A gift needs to be updated! Key: " + giftKey);
+
+    firebase.database().ref("users/" + giftUser.uid + "/privateList/" + giftKey).update({
+      buyer: buyerData
+    });
+  }
 }
 
 function createGiftElement(pGiftData, pGiftKey){
