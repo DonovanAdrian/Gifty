@@ -435,7 +435,7 @@ function collectUserBoughtGifts(){
   userBoughtGifts = [];
   userBoughtGiftsUIDs = [];
   userBoughtGiftsUsers = [];
-  for(let i = 0; i < userArr.length; i++) {
+  for (let i = 0; i < userArr.length; i++) {
     if (userArr[i].uid != user.uid) {
       userGiftArr = userArr[i].giftList;
       userPrivateGiftArr = userArr[i].privateList;
@@ -846,17 +846,16 @@ function deleteGiftElement(title, uid, buyer, bulkDelete) {
   if (bulkDelete == undefined)
     bulkDelete = false;
 
-  for (let i = 0; i < giftArr.length; i++){
+  for (let i = 0; i < giftArr.length; i++) {
     if(uid == giftArr[i].uid) {
       toDelete = i;
       break;
     }
   }
 
-  if(toDelete != -1) {
+  if (toDelete != -1) {
     giftArr.splice(toDelete, 1);
     user.giftList = giftArr;
-    saveCriticalCookies();
 
     for (let i = 0; i < giftArr.length; i++) {
       if (uid == giftArr[i].uid) {
@@ -868,7 +867,8 @@ function deleteGiftElement(title, uid, buyer, bulkDelete) {
     verifyDeleteBool = false;
   }
 
-  if(verifyDeleteBool){
+  if (verifyDeleteBool) {
+    saveCriticalCookies();
     let i = initializedGifts.indexOf(uid);
     initializedGifts.splice(i, 1);
     giftDeleteLocal = true;
@@ -880,7 +880,7 @@ function deleteGiftElement(title, uid, buyer, bulkDelete) {
 
     closeModal(giftModal);
 
-    if(buyer != ""){
+    if (buyer != "" || buyer == undefined) {
       let userFound = findUserNameItemInArr(buyer, userArr);
       if(userFound != -1){
         addDeleteNoteToDB(userArr[userFound], title);
@@ -904,13 +904,14 @@ function deleteGiftElement(title, uid, buyer, bulkDelete) {
     if (!bulkDelete)
       deployNotificationModal(true, "Gift Delete Failed!", "Delete failed, please " +
           "try again later!");
-    updateMaintenanceLog("home", "Gift delete failed for user \"" + user.userName + "\", public list, gift " + uid);
+    updateMaintenanceLog("home", "Gift delete failed for user \"" + user.userName +
+        "\", public list, gift " + title + " (" + uid + ")");
     return true;
   }
   return false;
 }
 
-function addDeleteNoteToDB(buyerUserData, giftTitle){
+function addDeleteNoteToDB(buyerUserData, giftTitle) {
   let pageNameNote = "deleteGift";
   let giftOwner = user.uid;
   let buyerUserNotifications = [];
