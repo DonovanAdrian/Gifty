@@ -347,12 +347,13 @@ function commonInitialization() {
       closeModal(offlineModal);
     };
 
+
     if (!emptyListNoteDeployed) {
       commonLoadingTimer = setInterval(function () {
         commonLoadingTimerInt = commonLoadingTimerInt + 1000;
         if (dbInitializedFailed)
           clearInterval(commonLoadingTimer);
-        if (commonLoadingTimerInt >= (commonLoadingTimerLimit * 2) && timerErrorIssued == 1) {
+        if (commonLoadingTimerInt >= (commonLoadingTimerLimit * 2) && timerErrorIssued == 1 && !validPulseReceived) {
           if (document.getElementById("loginBtn") != undefined) {
             deployNotificationModal(false, "Loading Error!", "It appears that " +
                 "loading the login page has taken a significant amount of time. If this slow speed continues, please " +
@@ -379,7 +380,7 @@ function commonInitialization() {
           } else {
             updateMaintenanceLog(pageName, "Critical Error: Critical Loading Time Experienced!");
           }
-        } else if (commonLoadingTimerInt >= commonLoadingTimerLimit) {
+        } else if (commonLoadingTimerInt >= commonLoadingTimerLimit && !validPulseReceived) {
           if (timerErrorIssued == 0) {
             if (consoleOutput)
               console.log("Timer Error Issued");
@@ -397,12 +398,10 @@ function commonInitialization() {
               updateMaintenanceLog(pageName, "Critical Error: Significant Loading Time Experienced!");
             }
           }
-        } else if (commonLoadingTimerInt >= 1000 && dataListExists) {
+        } else if (commonLoadingTimerInt >= 1000) {
           if (validPulseReceived) {
             clearInterval(commonLoadingTimer);
             timerErrorIssued = 0;
-            if (consoleOutput)
-              console.log("Pulse Check Complete. Loading Properly.");
           }
         }
       }, 1000);
@@ -441,6 +440,8 @@ function databaseCommonPulse() {
     postRef.on("child_added", function (data) {
       if (data.key == "ban") {
         validPulseReceived = true;
+        if (consoleOutput)
+          console.log("Direct Pulse Received. Database Connection Intact.");
         if (data.val() != 0) {
           signOut();
         }
@@ -977,7 +978,15 @@ function fetchGiftReceivedSuffix(multipleBuyer, buyerStr, buyerArr) {
     let userBought = buyerArr.indexOf(user.uid);
     if (userBought == -1) {
       if (buyerArr.length == 1) {
-        returnGiftSuffix = "1 person!";
+        userBought = findUIDItemInArr(buyerArr[0], userArr, true);
+        if (userBought == -1) {
+          userBought = findUserNameItemInArr(buyerArr[0], userArr, true);
+        }
+        if (userBought != -1) {
+          returnGiftSuffix = findFirstNameInFullName(userArr[userBought].name);
+        } else {
+          returnGiftSuffix = "1 person!";
+        }
       } else {
         returnGiftSuffix = buyerArr.length + " people!";
       }
