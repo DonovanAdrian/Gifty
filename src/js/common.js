@@ -18,6 +18,7 @@ let debugElementIntegrity = false; //Used to debug if elements are properly init
 let redirectWarningBool = true; //Used to enable or disable URL redirect warnings
 let twentyFourHourTime = false; //Used to enable or disable 24 hour time for getLocalTime();
 let jokeGiftEnabled = true; //Enables/disables a joke gift that has a chance to randomly appear
+let primaryOwner = "-L__dcUyFssV44G9stxY"; //This must be a string and can be set to the Gifty server's owner UID
 //User Configurable Variables
 //***************************
 
@@ -1026,6 +1027,7 @@ function findObjectChanges(objInputOld, objInputNew, limiterBool) {
   let objectKeysChanged = [];
   let objectDataChanged = [];
   let objectKeysChecked = [];
+  let saveChangedState = false;
 
   if (limiterBool == undefined)
     limiterBool = false;
@@ -1036,8 +1038,16 @@ function findObjectChanges(objInputOld, objInputNew, limiterBool) {
     let oldObjValue = objInputOld[oldObjKey];
     let newObjValue = objInputNew[oldObjKey];
     if (oldObjValue == undefined || newObjValue == undefined) {
-      objectKeysChanged.push(oldObjKey);
-      objectDataChanged.push(newObjValue);
+      if (oldObjValue != undefined)
+        if (oldObjValue.length > 0)
+          saveChangedState = true;
+      if (newObjValue != undefined)
+        if (newObjValue.length > 0)
+          saveChangedState = true;
+      if (saveChangedState) {
+        objectKeysChanged.push(oldObjKey);
+        objectDataChanged.push(newObjValue);
+      }
     } else {
       if (oldObjValue != newObjValue) {
         if (oldObjValue.length == undefined) {
@@ -1521,14 +1531,20 @@ function openModal(openThisModal, modalName, ignoreBool) {
           try {
             openThisModal.classList.remove("modal-content-close");
             openThisModal.classList.add("modal-content-open");
-          } catch (err) {}
-          openRetryTimer = 0;
-          currentModalOpenObj = openThisModal;
-          currentModalOpen = modalName;
-          openThisModal.style.display = "block";
-          if (consoleOutput)
-            console.log("A Modal Opened: " + modalName);
-          clearInterval(openModalTimer);
+            openRetryTimer = 0;
+            currentModalOpenObj = openThisModal;
+            currentModalOpen = modalName;
+            openThisModal.style.display = "block";
+            if (consoleOutput)
+              console.log("A Modal Opened: " + modalName);
+            clearInterval(openModalTimer);
+          } catch (err) {
+            if (consoleOutput)
+              console.log("A Modal Was Trying To Reopen, But Failed!");
+            clearInterval(openModalTimer);
+            updateMaintenanceLog(pageName, user.userName + " (" + user.uid + ") encountered a modal that " +
+                "failed to reopen!");
+          }
         }
       }
     }, 60);
