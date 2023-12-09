@@ -1163,6 +1163,9 @@ function initUserElement(liItem, userData) {
   let showPassBool = false;
   let relationshipModifier = "";
   let tempString = "";
+
+  userData = initUserDataIfEmpty(userData);
+
   liItem.className = "gift";
 
   liItem.onclick = function () {
@@ -1401,7 +1404,10 @@ function initUserElement(liItem, userData) {
       userUpdateLocal = false;
     };
 
-    if (userData.uid == "-L__dcUyFssV44G9stxY" && user.uid != "-L__dcUyFssV44G9stxY") {
+    if (primaryOwner == undefined)
+      primaryOwner = "";
+    if (primaryOwner != "" && typeof primaryOwner == "string" &&
+        userData.uid == primaryOwner && user.uid != primaryOwner) {
       moderatorOp.innerHTML = "Don't Even Think About It";
       moderatorOp.onclick = function() {};
     } else if (userData.moderatorInt == 1) {
@@ -1891,7 +1897,8 @@ function initializeShowUserData(showDataSelection) {
     showCurrentSecretSanta.onclick = function(){
       confirmOperation("Activate Current Secret Santa?", "Are you sure that you'd like " +
           "to activate the \"Current Secret Santa\" quick view? If you are participating in a Secret Santa event, you " +
-          "may have your Secret Santa spoiled!", "showCurrentSecretSanta");
+          "may have your Secret Santa spoiled!", "showCurrentSecretSanta", undefined,
+          userOptionsModal, "userOptionsModal");
     }
     showLastSecretSanta.onclick = function(){
       updateDBWithShowUserData("LastSecretSanta");
