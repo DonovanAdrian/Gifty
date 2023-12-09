@@ -713,7 +713,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
       exportSecretSantaData(1, familyData);
     };
     secretSantaShuffleBtn.onclick = function() {
-      if (familyData.members.length > familyMemberSignUpMinimum) {
+      if (familyData.members.length >= familyMemberSignUpMinimum) {
         if (evaluateUserReadiness(familyData.members)) {
           assignUsersToNames(familyData.members, 1);
         } else {
@@ -1057,7 +1057,7 @@ function assignUsersToNames(familyMembers, testingInt) {
     if (consoleOutput && !secretSantaStressTesting)
       console.log(" ***********************************************");
     processingResults = processFamily(familyMembers, ignoreLastYearsAssignments, testingInt);
-    console.log(processingResults);
+    console.log("Result Code: " + processingResults);
 
     if (processingResults == 0 && !secretSantaStressTesting) {
       processingSuccess = true;
