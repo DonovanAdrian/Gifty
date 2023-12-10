@@ -10,6 +10,7 @@ let loadedUserDataViewArr = [];
 let loadedModerationTicketViewArr = [];
 let ticketArr = [];
 let newTicketArr = [];
+let viewedNewTicketArr = [];
 
 let moderationSet = 1;
 let globalNoteInt = 0;
@@ -116,6 +117,8 @@ let moderationTicketViewModal;
 let closeModerationTicketViewModal;
 let moderationTicketViewTitle;
 let moderationTicketViewText;
+let moderationTicketViewLastTicket;
+let moderationTicketViewOldestTicket;
 let moderationTicketViewListContainer;
 let testModerationTicketView;
 let moderationTicketViewNavigate;
@@ -150,6 +153,10 @@ function checkModerationCookie() {
 function checkTicketCookie() {
   try {
     ticketArr = JSON.parse(sessionStorage.ticketArr);
+    for (let i = 0; i < ticketArr.length; i++) {
+      createQuickModerationTicketElem(ticketArr[i]);
+    }
+    evaluateInitialTicketTimeline();
     initializeTicketCount(0);
   } catch (err) {}
 }
@@ -250,6 +257,8 @@ window.onload = function instantiate() {
   closeModerationTicketViewModal = document.getElementById("closeModerationTicketViewModal");
   moderationTicketViewTitle = document.getElementById("moderationTicketViewTitle");
   moderationTicketViewText = document.getElementById("moderationTicketViewText");
+  moderationTicketViewLastTicket = document.getElementById("moderationTicketViewLastTicket");
+  moderationTicketViewOldestTicket = document.getElementById("moderationTicketViewOldestTicket");
   moderationTicketViewListContainer = document.getElementById("moderationTicketViewListContainer");
   testModerationTicketView = document.getElementById("testModerationTicketView");
   moderationTicketViewNavigate = document.getElementById("moderationTicketViewNavigate");
@@ -281,7 +290,8 @@ window.onload = function instantiate() {
     userSecretSanta, userSecretSantaPrior, userSecretSantaBtn, userPassword, moderatorOp, sendPrivateMessage, warnUser,
     banUser, userDataViewModal, closeUserDataViewModal, userDataViewTitle, userDataViewText, userDataViewListContainer,
     userDataViewBack, testUserDataView, moderationTicketViewModal, closeModerationTicketViewModal,
-    moderationTicketViewTitle, moderationTicketViewText, moderationTicketViewListContainer, testModerationTicketView,
+    moderationTicketViewTitle, moderationTicketViewText, moderationTicketViewLastTicket,
+    moderationTicketViewOldestTicket, moderationTicketViewListContainer, testModerationTicketView,
     moderationTicketViewNavigate, closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
 
   verifyElementIntegrity(moderationElements);
@@ -739,10 +749,14 @@ window.onload = function instantiate() {
                 console.log("Changing " + ticketArr[i].uid);
                 ticketArr[i] = data.val();
                 saveTicketArrToCookie();
+                changeQuickModerationTicketElem(data.val());
               }
             } else {
               ticketArr.push(data.val());
               newTicketArr.push(data.val());
+              if (!loadedModerationTicketViewArr.includes("ticket_" + data.key)) {
+                createQuickModerationTicketElem(data.val());
+              }
               saveTicketArrToCookie();
             }
           });
@@ -755,6 +769,7 @@ window.onload = function instantiate() {
                 console.log("Changing " + ticketArr[i].uid);
                 ticketArr[i] = data.val();
                 saveTicketArrToCookie();
+                changeQuickModerationTicketElem(data.val());
               }
             }
           });
@@ -766,6 +781,7 @@ window.onload = function instantiate() {
               console.log("Removing " + ticketArr[i].uid);
               ticketArr.splice(i, 1);
 
+              removeQuickModerationTicketElem(data.val());
               saveTicketArrToCookie();
             }
           });
@@ -773,6 +789,7 @@ window.onload = function instantiate() {
           firebase.database().ref("maintenance/").update({});
           ticketArr = [];
           saveTicketArrToCookie();
+          nukeQuickModerationTicketElem();
           fetchModerationQueue(moderationTickets);
         }
       });
@@ -1579,6 +1596,8 @@ function generateUserDataViewModal(dataToLoad, userData) {
 }
 
 function generateModerationTicketViewModal() {
+  let viewedTicketElem;
+
   moderationTicketViewTitle.innerHTML = "Moderation Tickets Preview";
   moderationTicketViewText.innerHTML = "Total: " + ticketArr.length + ", New: " + newTicketArr.length;
 
@@ -1589,42 +1608,22 @@ function generateModerationTicketViewModal() {
   closeModal(moderationTicketViewModal);
 
   closeModerationTicketViewModal.onclick = function() {
+    if (viewedNewTicketArr.length > 0)
+      for (let i = 0; i < viewedNewTicketArr.length; i++) {
+        viewedTicketElem = document.getElementById("ticket_" + viewedNewTicketArr[i].uid)
+        viewedTicketElem.className = "gift";
+      }
     closeModal(moderationTicketViewModal);
   }
 
   openModal(moderationTicketViewModal, "moderationTicketPreviewModal");
 
-  if (loadedModerationTicketViewArr.length != 0) {
-    for (let a = 0; a < loadedModerationTicketViewArr.length; a++) {
-      document.getElementById(loadedModerationTicketViewArr[a]).remove();
-    }
-    loadedModerationTicketViewArr = [];
-  }
-
   try {
     testModerationTicketView.remove();
   } catch (err) {}
 
-  for (let i = 0; i < ticketArr.length; i++) {
-    let liItem = document.createElement("LI");
-    let textNode;
-    let loadedModerationTicketViewElemID;
-
-    liItem.className = "gift";
-
-    loadedModerationTicketViewElemID = ticketArr[i].uid;
-    liItem.id = loadedModerationTicketViewElemID;
-    textNode = document.createTextNode(fetchModerationTitle(ticketArr[i]));
-
-    if (findUIDItemInArr(ticketArr[i].uid, newTicketArr, true) != -1) {
-      liItem.className += " lowSev";
-    }
-
-    liItem.appendChild(textNode);
-    moderationTicketViewListContainer.insertBefore(liItem, moderationTicketViewListContainer.childNodes[0]);
-    loadedModerationTicketViewArr.push(loadedModerationTicketViewElemID);
-  }
   if (newTicketArr.length > 0) {
+    viewedNewTicketArr = cloneArray(newTicketArr);
     newTicketArr = [];
     ticketCount.style.background = "#ff8e8e";
     ticketCount.onmouseover = function () {
@@ -1633,6 +1632,109 @@ function generateModerationTicketViewModal() {
     ticketCount.onmouseout = function () {
       ticketCount.style.backgroundColor = "#ff8e8e";
     }
+  }
+}
+
+function evaluateInitialTicketTimeline() {
+  commonToday = new Date();
+  let newestTicketDayCounterText = "";
+  let oldestTicketDayCounterText = "";
+  let localizedTicketTime;
+  let diffTwoDates = 0;
+  let newestTicketTime;
+  let oldestTicketTime = 0;
+
+  if (ticketArr.length > 0) {
+    localizedTicketTime = new Date(getLocalTime(ticketArr[0].time));
+    newestTicketTime = Math.floor((Date.parse(commonToday) - Date.parse(localizedTicketTime)) / 86400000);
+  } else {
+    newestTicketDayCounterText = "No Tickets Yet!";
+    oldestTicketDayCounterText = "No Tickets Yet!";
+  }
+
+  for (let i = 0; i < ticketArr.length; i++) {
+    localizedTicketTime = new Date(getLocalTime(ticketArr[i].time));
+    diffTwoDates = (Math.floor((Date.parse(commonToday) - Date.parse(localizedTicketTime)) / 86400000));
+    if (diffTwoDates > oldestTicketTime) {
+      oldestTicketTime = diffTwoDates;
+    }
+    if (diffTwoDates < newestTicketTime) {
+      newestTicketTime = diffTwoDates;
+    }
+  }
+
+  if (ticketArr.length > 0) {
+    if (oldestTicketTime == 0) {
+      oldestTicketDayCounterText = "Today";
+    } else if (oldestTicketTime == 1) {
+      oldestTicketDayCounterText = "Yesterday";
+    } else if (oldestTicketTime > 1 && oldestTicketTime < 7) {
+      oldestTicketDayCounterText = "Approx. " + oldestTicketTime + " Days Ago";
+    } else if (oldestTicketTime >= 7 && oldestTicketTime < 14) {
+      oldestTicketDayCounterText = "Approx. A Week Ago";
+    } else if (oldestTicketTime >= 14 && oldestTicketTime < 32) {
+      oldestTicketDayCounterText = "Approx. A Month Ago";
+    } else if (oldestTicketTime >= 32 && oldestTicketTime < 366) {
+      oldestTicketDayCounterText = "Within A Year";
+    } else {
+      oldestTicketDayCounterText = "A While Ago";
+    }
+
+    if (newestTicketTime == 0) {
+      newestTicketDayCounterText = "Today";
+    } else if (newestTicketTime == 1) {
+      newestTicketDayCounterText = "Yesterday";
+    } else if (newestTicketTime > 1 && newestTicketTime < 366) {
+      newestTicketDayCounterText = "Approx. " + oldestTicketTime + " Days Ago";
+    } else {
+      newestTicketDayCounterText = "A While Ago";
+    }
+  }
+
+  moderationTicketViewLastTicket.innerHTML = "Newest Ticket: " + newestTicketDayCounterText;
+  moderationTicketViewOldestTicket.innerHTML = "Oldest Ticket: " + oldestTicketDayCounterText;
+}
+
+function createQuickModerationTicketElem(ticketData) {
+  let liItem = document.createElement("LI");
+  let textNode;
+  let loadedModerationTicketViewElemID;
+
+  liItem.className = "gift";
+
+  loadedModerationTicketViewElemID = "ticket_" + ticketData.uid;
+  liItem.id = loadedModerationTicketViewElemID;
+  textNode = document.createTextNode(fetchModerationTitle(ticketData));
+
+  if (findUIDItemInArr(ticketData.uid, newTicketArr, true) != -1) {
+    liItem.className += " lowSev";
+  }
+
+  liItem.appendChild(textNode);
+  moderationTicketViewListContainer.insertBefore(liItem, moderationTicketViewListContainer.childNodes[0]);
+  loadedModerationTicketViewArr.push(loadedModerationTicketViewElemID);
+}
+
+function changeQuickModerationTicketElem(ticketData) {
+  let ticketTitleTextReturned;
+  let editTicket = document.getElementById("ticket_" + ticketData.uid);
+
+  ticketTitleTextReturned = fetchModerationTitle(ticketData);
+  editTicket.innerHTML = ticketTitleTextReturned;
+}
+
+function removeQuickModerationTicketElem(ticketData) {
+  let i = loadedModerationTicketViewArr.indexOf("ticket_" + ticketData.uid);
+  if (i != -1) {
+    loadedModerationTicketViewArr.splice(i, 1);
+  }
+
+  document.getElementById("ticket_" + ticketData.uid).remove();
+}
+
+function nukeQuickModerationTicketElem() {
+  for (let i = 0; i < loadedModerationTicketViewArr.length; i++) {
+    document.getElementById(loadedModerationTicketViewArr[i]).remove();
   }
 }
 
