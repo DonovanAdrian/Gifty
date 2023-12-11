@@ -152,6 +152,7 @@ let privateList;
 let privateUser;
 let giftUser;
 let user;
+let commonToday;
 
 
 
@@ -254,8 +255,8 @@ function commonInitialization() {
     });
 
     if (consoleOutput) {
-      let today = new Date();
-      console.log(today);
+      commonToday = new Date();
+      console.log(commonToday);
       console.log("Initializing the " + pageName + " Page...");
     }
 
@@ -1865,13 +1866,13 @@ function deployListEmptyNotification(dataItemText) {
 
 function updateMaintenanceLog(locationData, detailsData) {
   if (dbInitialized) {
-    let today = new Date();
-    let UTChh = today.getUTCHours() + "";
-    let UTCmm = today.getUTCMinutes() + "";
-    let UTCss = today.getUTCSeconds() + "";
-    let dd = today.getUTCDate() + "";
-    let mm = today.getMonth() + 1 + "";
-    let yy = today.getFullYear() + "";
+    commonToday = new Date();
+    let UTChh = commonToday.getUTCHours() + "";
+    let UTCmm = commonToday.getUTCMinutes() + "";
+    let UTCss = commonToday.getUTCSeconds() + "";
+    let dd = commonToday.getUTCDate() + "";
+    let mm = commonToday.getMonth() + 1 + "";
+    let yy = commonToday.getFullYear() + "";
 
 
     if (UTChh.length == 1)
