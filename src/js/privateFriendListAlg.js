@@ -10,6 +10,7 @@ let oldGiftArr = [];
 let userUserNames = [];
 let userUIDList = [];
 let initializedGifts = [];
+let loadedBuyerDataViewArr = [];
 
 let initializingElements = false;
 let giftListEmptyBool = false;
@@ -31,6 +32,7 @@ let giftWhere;
 let giftDescription;
 let giftCreator;
 let giftBought;
+let giftBuyerList;
 let giftBuy;
 let giftDontBuy;
 let giftEdit;
@@ -41,6 +43,13 @@ let confirmTitle;
 let confirmContent;
 let confirmBtn;
 let denyBtn;
+let buyerDataViewModal;
+let closeBuyerDataViewModal;
+let buyerDataViewTitle;
+let buyerDataViewText;
+let buyerDataViewListContainer;
+let testBuyerDataView;
+let buyerDataViewBack;
 
 
 
@@ -104,12 +113,14 @@ function generateCustomPrivateGift() {
     giftTitle.innerHTML = "Vegetti";
     giftLink.innerHTML = "There was no link provided";
     giftLink.onclick = function() {};
+    giftLink.style.display = "none";
     giftDescription.innerHTML = "It's been " + tempGiftUserName + "'s dream to get the premier in all of vegetable " +
         "spiralizers, but not just any Vegetti... The Vegetti VPRO Pro Deluxe Pack! It comes with 69 customizable " +
         "accessories that allows anyone to shave the vegetables to their liking for the perfect dish. It's one of a kind.";
     giftCreator.innerHTML = "This gift was created by you!";
     giftWhere.innerHTML = "Anywhere where Vegetti's are sold!";
     giftBought.innerHTML = "This gift hasn't been bought yet?";
+    giftBuyerList.style.display = "none";
     giftCreationDate.innerHTML = "Created today!!";
 
     giftBuy.onclick = function(){
@@ -151,6 +162,13 @@ window.onload = function instantiate() {
   confirmContent = document.getElementById("confirmContent");
   confirmBtn = document.getElementById("confirmBtn");
   denyBtn = document.getElementById("denyBtn");
+  buyerDataViewModal = document.getElementById("buyerDataViewModal");
+  closeBuyerDataViewModal = document.getElementById("closeBuyerDataViewModal");
+  buyerDataViewTitle = document.getElementById("buyerDataViewTitle");
+  buyerDataViewText = document.getElementById("buyerDataViewText");
+  buyerDataViewListContainer = document.getElementById("buyerDataViewListContainer");
+  testBuyerDataView = document.getElementById("testBuyerDataView");
+  buyerDataViewBack = document.getElementById("buyerDataViewBack");
   inviteNote = document.getElementById("inviteNote");
   listNote = document.getElementById("listNote");
   addGift = document.getElementById("addGift");
@@ -164,6 +182,7 @@ window.onload = function instantiate() {
   giftDescription = document.getElementById("giftDescription");
   giftCreator = document.getElementById("giftCreator");
   giftBought = document.getElementById("giftBought");
+  giftBuyerList = document.getElementById("giftBuyerList");
   giftBuy = document.getElementById("giftBuy");
   giftDontBuy = document.getElementById("giftDontBuy");
   giftEdit = document.getElementById("giftEdit");
@@ -173,10 +192,11 @@ window.onload = function instantiate() {
   commonInitialization();
 
   privateFriendListElements = [notificationBtn, giftCreationDate, dataListContainer, offlineModal, offlineSpan,
-    confirmModal, closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal,
-    notificationTitle, notificationInfo, noteSpan, inviteNote, listNote, addGift, backBtn, swapList, giftModal,
-    testData, closeGiftModal, giftTitle, giftLink, giftWhere, giftDescription, giftCreator, giftBought, giftBuy,
-    giftDontBuy, giftEdit, giftDelete];
+    confirmModal, closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn, buyerDataViewModal,
+    closeBuyerDataViewModal, buyerDataViewTitle, buyerDataViewText, buyerDataViewListContainer, testBuyerDataView,
+    buyerDataViewBack, notificationModal, notificationTitle, notificationInfo, noteSpan, inviteNote, listNote, addGift,
+    backBtn, swapList, giftModal, testData, closeGiftModal, giftTitle, giftLink, giftWhere, giftDescription,
+    giftCreator, giftBought, giftBuyerList, giftBuy, giftDontBuy, giftEdit, giftDelete];
 
   verifyElementIntegrity(privateFriendListElements);
 
@@ -618,7 +638,11 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
   }
 
   liItem.onclick = function (){
-    giftTitle.innerHTML = pGiftTitle;
+    if (pGiftMultiples) {
+      giftTitle.innerHTML = pGiftTitle + " (Multiple Purchase Gift)";
+    } else {
+      giftTitle.innerHTML = pGiftTitle;
+    }
 
     if (pGiftLink != ""){
       buttonVisible = true;
@@ -671,6 +695,9 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
     }
     giftInfoPrefix = "";
 
+    giftBuyerList.onclick = function() {};
+    giftBuyerList.style.display = "none";
+    giftBought.style.display = "block";
     if(pGiftReceived == 1) {
       if(pGiftBuyer == "") {
         giftBought.innerHTML = "This gift has been bought";
@@ -682,8 +709,17 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
       if (pGiftReceived == 0) {
         giftBought.innerHTML = "This gift has not been bought yet";
       } else {
-        giftBought.innerHTML = "This gift has been bought by " +
-            fetchGiftReceivedSuffix(true, pGiftBuyer, pGiftReceivedBy);
+        if (pGiftReceived < -1) {
+          giftBuyerList.style.display = "inline-block";
+          giftBought.style.display = "none";
+          giftBuyerList.onclick = function() {
+            generateBuyerDataViewModal(pGiftData);
+          };
+          giftBuyerList.innerHTML = "View Gift Buyers";
+        } else {
+          giftBought.innerHTML = "This gift has been bought by " +
+              fetchGiftReceivedSuffix(true, pGiftBuyer, pGiftReceivedBy);
+        }
       }
     }
 
@@ -724,6 +760,65 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
       closeModal(giftModal);
     };
   };
+}
+
+function generateBuyerDataViewModal(giftData) {
+  let giftUID = giftData.uid;
+  let buyersToLoad = giftData.receivedBy;
+
+  buyerDataViewTitle.innerHTML = giftData.title + "'s Buyers";
+  buyerDataViewText.innerHTML = "Total Buyers: " + buyersToLoad.length;
+
+  closeModal(giftModal);
+
+  buyerDataViewBack.onclick = function() {
+    closeModal(buyerDataViewModal);
+    openModal(giftModal, giftUID);
+  }
+
+  closeBuyerDataViewModal.onclick = function() {
+    closeModal(buyerDataViewModal);
+  }
+
+  openModal(buyerDataViewModal, giftData.title + "'s Buyers");
+
+  if (loadedBuyerDataViewArr.length != 0) {
+    for (let a = 0; a < loadedBuyerDataViewArr.length; a++) {
+      document.getElementById(loadedBuyerDataViewArr[a]).remove();
+    }
+    loadedBuyerDataViewArr = [];
+  }
+
+  try {
+    testBuyerDataView.remove();
+  } catch (err) {}
+
+  for (let i = 0; i < buyersToLoad.length; i++) {
+    let liItem = document.createElement("LI");
+    let textNode;
+    let loadedBuyerDataViewElemID;
+    let loadedBuyerDataName = "";
+    let loadedBuyerDataIndex = -1;
+
+    loadedBuyerDataIndex = findUIDItemInArr(buyersToLoad[i], userArr, true);
+    if (loadedBuyerDataIndex == -1)
+      loadedBuyerDataIndex = findUserNameItemInArr(buyersToLoad[i], userArr, true)
+
+    if (loadedBuyerDataIndex == -1)
+      loadedBuyerDataName = "Buyer's Name Not Found!";
+    else
+      loadedBuyerDataName = userArr[loadedBuyerDataIndex].name;
+
+    liItem.className = "gift";
+
+    loadedBuyerDataViewElemID = buyersToLoad[i];
+    liItem.id = loadedBuyerDataViewElemID;
+    textNode = document.createTextNode(loadedBuyerDataName);
+
+    liItem.appendChild(textNode);
+    buyerDataViewListContainer.insertBefore(liItem, buyerDataViewListContainer.childNodes[0]);
+    loadedBuyerDataViewArr.push(loadedBuyerDataViewElemID);
+  }
 }
 
 function buyGiftToDB(priUid, key, multiples, received, receivedBy, unBuyBool, buyer, buyerUID) {
