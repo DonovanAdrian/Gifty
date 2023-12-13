@@ -10,11 +10,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/main.css?v=2023-11-12" rel="stylesheet" type="text/css"/>
+  <link href="css/main.css?v=2023-12-01" rel="stylesheet" type="text/css"/>
   <title>Private Friend List</title>
 
-  <script src="js/privateFriendListAlg.js?v=2023-11-12" type="text/javascript"></script>
-  <script src="js/common.js?v=2023-11-12" type="text/javascript"></script>
+  <script src="js/privateFriendListAlg.js?v=2023-12-01" type="text/javascript"></script>
+  <script src="js/common.js?v=2023-12-01" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -68,6 +68,7 @@
       <p id="giftDescription" alt="A Short Description About This Gift">Loading Description...</p>
       <p id="giftCreator" alt="The Creator For This Gift">Loading Creator...</p>
       <p id="giftBought" alt="The Buyer(s) For This Gift">Loading Bought...</p>
+      <span class="basicBtn" id="giftBuyerList" alt="Show This Gift's Buyers">Loading Buyers...</span>
       <p id="giftCreationDate" alt="The Date This Gift Was Created">Loading Date Created...</p>
       <br/>
       <span class="basicBtn" id="giftEdit" alt="Edit This Gift">Edit</span>
@@ -80,6 +81,32 @@
     <div class="modal-footer">
       <h3 class="modal-footer-left" id="giftBuy" alt="Buy This Gift">Buy</h3>
       <h3 class="modal-footer-right modal-footer-right-override" id="giftDontBuy" alt="Undo Buying This Gift">Don't Buy</h3>
+    </div>
+  </div>
+</div>
+
+<div id="buyerDataViewModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeBuyerDataViewModal">&times;</span>
+      <h2 id="buyerDataViewTitle">Loading Title...</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p id="buyerDataViewText">Loading Information...</p>
+      <br/>
+      <ul id="buyerDataViewListContainer" class="giftList">
+        <li class="gift" id="testBuyerDataView">Loading...</li>
+      </ul>
+      <br/>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3 class="modal-footer-left" id="buyerDataViewBack">Back</h3>
     </div>
   </div>
 </div>
