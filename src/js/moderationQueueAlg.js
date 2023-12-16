@@ -298,94 +298,15 @@ function changeModerationTicket (ticketData) {
 function initModTicketElement (liItem, ticketData) {
   let localTime = getLocalTime(ticketData.time);
   let ticketTitleText = "";
+  let ticketDataReturn;
   let ticketTitleSuffix;
 
+  ticketDataReturn = fetchModerationTicketData(ticketData);
+  ticketDataReturn = ticketDataReturn.split(",,,");
   liItem.className = "gift";
-  if (ticketData.details.includes("Critical Error") || ticketData.details.includes("Critical Initialization Error")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - !!Critical Error Occurred!!";
-  } else if (ticketData.details.includes("attempted to remove friend")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - !!Friend Removal Error!!";
-  } else if (ticketData.details.includes("attempted to add friend")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - !!Invite Removal Error!!";
-  } else if (ticketData.details.includes("Invalid Login Attempt:")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - !!Invalid Login Attempt!!";
-  } else if (ticketData.details.includes("Element Verification Failure")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - Element Verification Failure";
-  } else if (ticketData.details.includes("experienced degraded performance")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - Degraded Performance Experienced";
-  } else if (ticketData.details.includes("Login Error Occurred")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - !!Login Error!!";
-  } else if (ticketData.details.includes("attempted to access a restricted page")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - A Restricted Page Was Accessed";
-  } else if (ticketData.details.includes("forced the moderation modal to appear")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - A Restricted Window Was Forced Open";
-  } else if (ticketData.details.includes("failed to connect to the private list owned by")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - Gift List Connection Failed";
-  } else if (ticketData.details.includes("Notification delete failed")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - Notification Delete Failed";
-  } else if (ticketData.details.includes("Gift delete failed")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - Gift Delete Failed";
-  } else if (ticketData.details.includes("Gift update failed for user")) {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - Gift Update Failed";
-  } else if (ticketData.details.includes("Attempting to delete user")) {
-    liItem.className += " mediumSev";
-    ticketTitleSuffix = " - Attempt To Delete User";
-  } else if (ticketData.details.includes("Invalid Login Attempt During Maintenance Period:")) {
-    liItem.className += " mediumSev";
-    ticketTitleSuffix = " - !!Invalid Login Attempt During Maintenance!!";
-  } else if (ticketData.details.includes("attempted to log in")) {
-    liItem.className += " mediumSev";
-    ticketTitleSuffix = " - A Banned User Attempted Login";
-  } else if (ticketData.details.includes("Login disabled by")) {
-    liItem.className += " mediumSev";
-    ticketTitleSuffix = " - Login Disabled";
-  } else if (ticketData.details.includes("URL Limiter disabled by")) {
-    liItem.className += " mediumSev";
-    ticketTitleSuffix = " - URL Limits Disabled";
-  } else if (ticketData.details.includes("URL Limiter set by")) {
-    liItem.className += " mediumSev";
-    ticketTitleSuffix = " - URL Limits Set";
-  } else if (ticketData.details.includes("Gift List Fix Performed")) {
-    liItem.className += " mediumSev";
-    ticketTitleSuffix = " - Automatic Gift List Fix Performed";
-  } else if (ticketData.details.includes("Database limits set by")) {
-    liItem.className += " mediumSev";
-    ticketTitleSuffix = " - Database Limits Set";
-  } else if (ticketData.details.includes("has opened their warning")) {
-    liItem.className += " lowSev";
-    ticketTitleSuffix = " - A Warned User Was Successfully Notified";
-  } else if (ticketData.details.includes("Login disabled message reset by")) {
-    liItem.className += " lowSev";
-    ticketTitleSuffix = " - Login Message Reset";
-  } else if (ticketData.details.includes("Login enabled by")) {
-    liItem.className += " lowSev";
-    ticketTitleSuffix = " - Login Enabled";
-  } else if (ticketData.details.includes("found an easter egg!")) {
-    liItem.className += " lowSev";
-    ticketTitleSuffix = " - Easter Egg Found!";
-  } else if (ticketData.details.includes("found an easter egg... But got greedy")) {
-    liItem.className += " lowSev";
-    ticketTitleSuffix = " - Easter Egg Found...";
-  } else if (ticketData.details.includes("found an easter egg...")) {
-    liItem.className += " lowSev";
-    ticketTitleSuffix = " - Easter Egg Found...?";
-  } else {
-    liItem.className += " highSev";
-    ticketTitleSuffix = " - Ticket Title Unavailable, Open For More Details!";
-  }
+  ticketTitleSuffix = ticketDataReturn[0];
+  liItem.className += ticketDataReturn[1];
+  console.log(ticketDataReturn[1]);
 
   ticketTitleText = localTime + ticketTitleSuffix;
 
