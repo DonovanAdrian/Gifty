@@ -1171,6 +1171,11 @@ ul li.santa::before {
     font-size: 15px;
   }
 
+  div.cropIcon {
+    overflow: hidden;
+    max-width: 600px;
+  }
+
   p.giftInfLarge {
     font-size: 19px;
   }
