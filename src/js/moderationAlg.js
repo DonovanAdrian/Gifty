@@ -156,7 +156,7 @@ function checkTicketCookie() {
     for (let i = 0; i < ticketArr.length; i++) {
       createQuickModerationTicketElem(ticketArr[i]);
     }
-    evaluateInitialTicketTimeline();
+    evaluateInitialTicketTimeline(moderationTicketViewLastTicket, moderationTicketViewOldestTicket);
     initializeTicketCount(0);
   } catch (err) {}
 }
@@ -1598,7 +1598,7 @@ function generateUserDataViewModal(dataToLoad, userData) {
 function generateModerationTicketViewModal() {
   let viewedTicketElem;
 
-  moderationTicketViewTitle.innerHTML = "Moderation Tickets Preview";
+  moderationTicketViewTitle.innerHTML = "Audit Log Ticket Preview";
   moderationTicketViewText.innerHTML = "Total: " + ticketArr.length + ", New: " + newTicketArr.length;
 
   moderationTicketViewNavigate.onclick = function() {
@@ -1633,66 +1633,6 @@ function generateModerationTicketViewModal() {
       ticketCount.style.backgroundColor = "#ff8e8e";
     }
   }
-}
-
-function evaluateInitialTicketTimeline() {
-  commonToday = new Date();
-  let newestTicketDayCounterText = "";
-  let oldestTicketDayCounterText = "";
-  let localizedTicketTime;
-  let diffTwoDates = 0;
-  let newestTicketTime;
-  let oldestTicketTime = 0;
-
-  if (ticketArr.length > 0) {
-    localizedTicketTime = new Date(getLocalTime(ticketArr[0].time));
-    newestTicketTime = Math.floor((Date.parse(commonToday) - Date.parse(localizedTicketTime)) / 86400000);
-  } else {
-    newestTicketDayCounterText = "No Tickets Yet!";
-    oldestTicketDayCounterText = "No Tickets Yet!";
-  }
-
-  for (let i = 0; i < ticketArr.length; i++) {
-    localizedTicketTime = new Date(getLocalTime(ticketArr[i].time));
-    diffTwoDates = (Math.floor((Date.parse(commonToday) - Date.parse(localizedTicketTime)) / 86400000));
-    if (diffTwoDates > oldestTicketTime) {
-      oldestTicketTime = diffTwoDates;
-    }
-    if (diffTwoDates < newestTicketTime) {
-      newestTicketTime = diffTwoDates;
-    }
-  }
-
-  if (ticketArr.length > 0) {
-    if (oldestTicketTime == 0) {
-      oldestTicketDayCounterText = "Today";
-    } else if (oldestTicketTime == 1) {
-      oldestTicketDayCounterText = "Yesterday";
-    } else if (oldestTicketTime > 1 && oldestTicketTime < 7) {
-      oldestTicketDayCounterText = "Approx. " + oldestTicketTime + " Days Ago";
-    } else if (oldestTicketTime >= 7 && oldestTicketTime < 14) {
-      oldestTicketDayCounterText = "Approx. A Week Ago";
-    } else if (oldestTicketTime >= 14 && oldestTicketTime < 32) {
-      oldestTicketDayCounterText = "Approx. A Month Ago";
-    } else if (oldestTicketTime >= 32 && oldestTicketTime < 366) {
-      oldestTicketDayCounterText = "Within A Year";
-    } else {
-      oldestTicketDayCounterText = "A While Ago";
-    }
-
-    if (newestTicketTime == 0) {
-      newestTicketDayCounterText = "Today";
-    } else if (newestTicketTime == 1) {
-      newestTicketDayCounterText = "Yesterday";
-    } else if (newestTicketTime > 1 && newestTicketTime < 366) {
-      newestTicketDayCounterText = "Approx. " + oldestTicketTime + " Days Ago";
-    } else {
-      newestTicketDayCounterText = "A While Ago";
-    }
-  }
-
-  moderationTicketViewLastTicket.innerHTML = "Newest Ticket: " + newestTicketDayCounterText;
-  moderationTicketViewOldestTicket.innerHTML = "Oldest Ticket: " + oldestTicketDayCounterText;
 }
 
 function createQuickModerationTicketElem(ticketData) {
