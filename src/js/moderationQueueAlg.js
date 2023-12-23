@@ -20,6 +20,13 @@ let ticketDetails;
 let ticketLocation;
 let ticketTime;
 let deleteTicket;
+let moderationTicketDataModal;
+let closeModerationTicketDataModal;
+let moderationTicketDataTitle;
+let moderationTicketDataText;
+let moderationTicketDataLastTicket;
+let moderationTicketDataOldestTicket;
+let moderationTicketDataNavigate;
 let moderationTickets;
 let userName;
 
@@ -48,6 +55,13 @@ window.onload = function instantiate() {
   ticketLocation = document.getElementById("ticketLocation");
   ticketTime = document.getElementById("ticketTime");
   deleteTicket = document.getElementById("deleteTicket");
+  moderationTicketDataModal = document.getElementById("moderationTicketDataModal");
+  closeModerationTicketDataModal = document.getElementById("closeModerationTicketDataModal");
+  moderationTicketDataTitle = document.getElementById("moderationTicketDataTitle");
+  moderationTicketDataText = document.getElementById("moderationTicketDataText");
+  moderationTicketDataLastTicket = document.getElementById("moderationTicketDataLastTicket");
+  moderationTicketDataOldestTicket = document.getElementById("moderationTicketDataOldestTicket");
+  moderationTicketDataNavigate = document.getElementById("moderationTicketDataNavigate");
   inviteNote = document.getElementById("inviteNote");
 
   sessionStorage.setItem("moderationSet", moderationSet);
@@ -56,8 +70,10 @@ window.onload = function instantiate() {
   checkTicketCookie();
 
   moderationQueueElements = [dataListContainer, nukeTickets, backBtn, ticketCount, ticketModal, closeTicketModal,
-    ticketTitle, ticketUID, ticketDetails, ticketLocation, ticketTime, deleteTicket, offlineModal, offlineSpan,
-    inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan, testData];
+    ticketTitle, ticketUID, ticketDetails, ticketLocation, ticketTime, deleteTicket, moderationTicketDataModal,
+    closeModerationTicketDataModal, moderationTicketDataTitle, moderationTicketDataText, moderationTicketDataLastTicket,
+    moderationTicketDataOldestTicket, moderationTicketDataNavigate, offlineModal, offlineSpan, inviteNote,
+    notificationModal, notificationTitle, notificationInfo, noteSpan, testData];
 
   verifyElementIntegrity(moderationQueueElements);
 
@@ -236,8 +252,7 @@ function initializeTicketCount() {
   }
   ticketCount.innerHTML = ticketCountString;
   ticketCount.onclick = function() {
-    deployNotificationModal(false, "The Number Of Tickets", "There "
-        + ticketCountStringAlt + " in this list.");
+    generateModerationTicketDataModal();
   };
 }
 
@@ -359,11 +374,11 @@ function deleteModerationTicket (ticketData) {
     closeModal(ticketModal);
 
     deployNotificationModal(false, "Ticket " + ticketData.uid + " Deleted!",
-        "The moderation ticket, \"" + ticketData.uid + "\", has been successfully deleted.");
+        "The audit log ticket, \"" + ticketData.uid + "\", has been successfully deleted.");
     saveTicketArrToCookie();
   } else {
     deployNotificationModal(true, "Ticket Delete Failure!",
-        "The moderation ticket, \"" + ticketData.uid + "\", was NOT deleted. Please try again later.");
+        "The audit log ticket, \"" + ticketData.uid + "\", was NOT deleted. Please try again later.");
   }
 }
 
@@ -373,7 +388,7 @@ function removeModerationTicket(uid) {
 
     dataCounter--;
     if (dataCounter == 0){
-      deployListEmptyNotification("There Are No Items In The Moderation Queue!");
+      deployListEmptyNotification("There Are No Items In The Audit Log Queue!");
       initializeNukeBtn();
     }
   } catch (err) {}
@@ -382,4 +397,22 @@ function removeModerationTicket(uid) {
 function saveTicketArrToCookie(){
   sessionStorage.setItem("ticketArr", JSON.stringify(ticketArr));
   initializeNukeBtn();
+}
+
+function generateModerationTicketDataModal() {
+  evaluateInitialTicketTimeline(moderationTicketDataLastTicket, moderationTicketDataOldestTicket);
+  moderationTicketDataTitle.innerHTML = "Audit Log Ticket Data";
+  moderationTicketDataText.innerHTML = "Total: " + ticketArr.length + " Ticket(s)";
+
+  moderationTicketDataNavigate.onclick = function() {
+    navigation(14); //moderation
+  };
+
+  closeModal(moderationTicketDataModal);
+
+  closeModerationTicketDataModal.onclick = function() {
+    closeModal(moderationTicketDataModal);
+  }
+
+  openModal(moderationTicketDataModal, "moderationTicketDataModal");
 }
