@@ -10,12 +10,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/main.css?v=2023-12-01" rel="stylesheet" type="text/css"/>
+  <link href="css/main.css?v=2023-12-18" rel="stylesheet" type="text/css"/>
   <title>Moderation Queue</title>
 
-  <script src="js/moderationQueueAlg.js?v=2023-12-01" type="text/javascript"></script>
-  <script src="js/common.js?v=2023-12-01" type="text/javascript"></script>
-  <script src="js/moderationCommon.js?v=2023-12-01" type="text/javascript"></script>
+  <script src="js/moderationQueueAlg.js?v=2023-12-18" type="text/javascript"></script>
+  <script src="js/common.js?v=2023-12-18" type="text/javascript"></script>
+  <script src="js/moderationCommon.js?v=2023-12-18" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -68,6 +68,30 @@
     <!--Modal Footer-->
     <div class="modal-footer">
       <h3 class="modal-footer-right modal-footer-right-override" id="deleteTicket" alt="Delete This Ticket">Delete</h3>
+    </div>
+  </div>
+</div>
+
+<div id="moderationTicketDataModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeModerationTicketDataModal">&times;</span>
+      <h2 id="moderationTicketDataTitle">Loading Title...</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p id="moderationTicketDataText">Loading Information...</p>
+      <p id="moderationTicketDataLastTicket">Loading Last Ticket Date...</p>
+      <p id="moderationTicketDataOldestTicket">Loading Oldest Ticket Date...</p>
+      <br/>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3 class="modal-footer-right" id="moderationTicketDataNavigate" alt="Navigate To Moderation Page">View Moderation Page</h3>
     </div>
   </div>
 </div>
