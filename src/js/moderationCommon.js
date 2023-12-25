@@ -149,3 +149,64 @@ function fetchModerationTicketData(moderationData) {
 
     return ticketReturnText;
 }
+
+function evaluateInitialTicketTimeline(newestTicketElement, oldestTicketElement) {
+    let newestTicketDayCounterText = "";
+    let oldestTicketDayCounterText = "";
+    let localizedTicketTime;
+    let diffTwoDates = 0;
+    let newestTicketTime;
+    let oldestTicketTime = 0;
+    commonToday = new Date();
+
+    if (ticketArr.length > 0) {
+        localizedTicketTime = new Date(getLocalTime(ticketArr[0].time));
+        newestTicketTime = Math.floor((Date.parse(commonToday) - Date.parse(localizedTicketTime)) / 86400000);
+    } else {
+        newestTicketDayCounterText = "No Tickets Yet!";
+        oldestTicketDayCounterText = "No Tickets Yet!";
+    }
+
+    for (let i = 0; i < ticketArr.length; i++) {
+        localizedTicketTime = new Date(getLocalTime(ticketArr[i].time));
+        diffTwoDates = (Math.floor((Date.parse(commonToday) - Date.parse(localizedTicketTime)) / 86400000));
+        if (diffTwoDates > oldestTicketTime) {
+            oldestTicketTime = diffTwoDates;
+        }
+        if (diffTwoDates < newestTicketTime) {
+            newestTicketTime = diffTwoDates;
+        }
+    }
+    console.log(newestTicketTime);
+
+    if (ticketArr.length > 0) {
+        if (oldestTicketTime == 0) {
+            oldestTicketDayCounterText = "Today";
+        } else if (oldestTicketTime == 1) {
+            oldestTicketDayCounterText = "Yesterday";
+        } else if (oldestTicketTime > 1 && oldestTicketTime < 7) {
+            oldestTicketDayCounterText = "Approx. " + oldestTicketTime + " Days Ago";
+        } else if (oldestTicketTime >= 7 && oldestTicketTime < 14) {
+            oldestTicketDayCounterText = "Approx. A Week Ago";
+        } else if (oldestTicketTime >= 14 && oldestTicketTime < 32) {
+            oldestTicketDayCounterText = "Approx. A Month Ago";
+        } else if (oldestTicketTime >= 32 && oldestTicketTime < 366) {
+            oldestTicketDayCounterText = "Within A Year";
+        } else {
+            oldestTicketDayCounterText = "A While Ago";
+        }
+
+        if (newestTicketTime == 0) {
+            newestTicketDayCounterText = "Today";
+        } else if (newestTicketTime == 1) {
+            newestTicketDayCounterText = "Yesterday";
+        } else if (newestTicketTime > 1 && newestTicketTime < 366) {
+            newestTicketDayCounterText = "Approx. " + newestTicketTime + " Days Ago";
+        } else {
+            newestTicketDayCounterText = "A While Ago";
+        }
+    }
+
+    newestTicketElement.innerHTML = "Newest Ticket: " + newestTicketDayCounterText;
+    oldestTicketElement.innerHTML = "Oldest Ticket: " + oldestTicketDayCounterText;
+}
