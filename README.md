@@ -182,10 +182,10 @@ Everything below this point is supplemental data for those who are curious!
       - confirmationAlg, commonAlg
     - settingsAlg, commonAlg
       - faqAlg, commonAlg
-      - moderationQueueAlg, commonAlg
-      - moderationAlg, commonAlg, secretSantaAlg, passOp
+      - moderationQueueAlg, commonAlg, moderationCommonAlg
+      - moderationAlg, commonAlg, moderationCommonAlg, passOp
         - friendListAlg, commonAlg
-      - familyAlg, commonAlg
+      - familyAlg, secretSantaAlg, commonAlg
         - familyUpdateAlg, commonAlg
       - backupAlg, commonAlg *(Coming Soon)*
     - notificationAlg, commonAlg
