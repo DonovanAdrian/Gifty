@@ -10,13 +10,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/main.css?v=2023-12-01" rel="stylesheet" type="text/css"/>
+  <link href="css/main.css?v=2023-12-18" rel="stylesheet" type="text/css"/>
   <title>Moderation</title>
 
-  <script src="js/passOp.js?v=2023-12-01" type="text/javascript"></script>
-  <script src="js/moderationAlg.js?v=2023-12-01" type="text/javascript"></script>
-  <script src="js/common.js?v=2023-12-01" type="text/javascript"></script>
-  <script src="js/moderationCommon.js?v=2023-12-01" type="text/javascript"></script>
+  <script src="js/passOp.js?v=2023-12-18" type="text/javascript"></script>
+  <script src="js/moderationAlg.js?v=2023-12-18" type="text/javascript"></script>
+  <script src="js/common.js?v=2023-12-18" type="text/javascript"></script>
+  <script src="js/moderationCommon.js?v=2023-12-18" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -68,6 +68,7 @@
       <p id="userLastAction" alt="The Last Action This User Performed">Loading Last Action...</p>
       <p id="userLastReview" alt="The Last Yearly Review Completed">Loading Last Review...</p>
       <p id="userScoreElem" alt="This User's User Score">Loading User Score...</p>
+      <p id="userFamilyName" alt="This User's Family">Loading Family...</p>
       <p id="userSecretSanta" alt="This User's Secret Santa Status">Loading Secret Santa Status...</p>
       <p id="userSecretSantaPrior" alt="This User's Prior Secret Santa Assignment">Loading Prior Secret Santa...</p>
       <span class="basicBtn" id="userSecretSantaBtn" alt="This User's Extra Secret Santa Info">Loading Secret Santa...</span>
@@ -224,8 +225,10 @@
       <span class="dropdown" id="showShareCode" alt="Show Share Code" style="display: none">Share Code</span>
       <span class="dropdown" id="showGifts" alt="Show Number of Gifts" style="display: none">Gift Amount</span>
       <span class="dropdown" id="showFriends" alt="Show Number of Friends" style="display: none">Friend Amount</span>
-      <span class="dropdown" id="showRelationships" alt="Show Number of Relationships" style="display: none">Relationships</span>
+      <span class="dropdown" id="showNotifications" alt="Show Number of Notifications" style="display: none">Notification Amount</span>
+      <span class="dropdown" id="showRelationships" alt="Show Number of Relationships" style="display: none">Relationship Assignments</span>
       <span class="dropdown" id="showModerator" alt="Show Moderator Status" style="display: none">Moderator Status</span>
+      <span class="dropdown" id="showFamilyAssignment" alt="Show Family Assignment" style="display: none">Family Assignment</span>
       <span class="dropdown" id="showSecretSanta" alt="Show Secret Santa Status" style="display: none">Secret Santa Sign Ups</span>
       <span class="dropdown" id="showCurrentSecretSanta" alt="Show Current Secret Santa Assignment" style="display: none">Current Secret Santa</span>
       <span class="dropdown" id="showLastSecretSanta" alt="Show Last Secret Santa Assignment" style="display: none">Last Secret Santa</span>
