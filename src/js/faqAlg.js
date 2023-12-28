@@ -13,63 +13,39 @@ let settingsNote;
 
 
 window.onload = function instantiate() {
-  failedNavNum = 12;
-  pageName = "FAQ";
-  emailBtn = document.getElementById("emailBtn");
-  inviteNote = document.getElementById("inviteNote");
-  settingsNote = document.getElementById("settingsNote");
+  initializeFAQPage();
 
-  getCurrentUserCommon();
-  commonInitialization();
+  function initializeFAQPage() {
+    try {
+      failedNavNum = 12;
+      pageName = "FAQ";
+      emailBtn = document.getElementById("emailBtn");
+      inviteNote = document.getElementById("inviteNote");
+      settingsNote = document.getElementById("settingsNote");
 
-  faqElements = [emailBtn, offlineModal, offlineSpan, inviteNote, settingsNote, notificationModal, notificationTitle,
-    notificationInfo, noteSpan];
+      getCurrentUserCommon();
+      commonInitialization();
 
-  verifyElementIntegrity(faqElements);
-  alternateButtonLabel(settingsNote, "Settings", "FAQ");
+      faqElements = [emailBtn, offlineModal, offlineSpan, inviteNote, settingsNote, notificationModal, notificationTitle,
+        notificationInfo, noteSpan];
 
-  userInitial = firebase.database().ref("users/");
+      verifyElementIntegrity(faqElements);
+      alternateButtonLabel(settingsNote, "Settings", "FAQ");
 
-  databaseQuery();
+      userInitial = firebase.database().ref("users/");
 
-  emailBtn.onclick = function () {
-    let supportStr = genSupport();
-    window.open("mailto:gifty.application@gmail.com?subject=Gifty Support #" + supportStr +
-        "&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, " + user.userName);
-  };
+      databaseQuery();
 
-  function genSupport() {
-    let supportCode = "";
-    for(let i = 0; i < 16; i++){
-      supportCode = supportCode + randomizer();
-    }
-    addSupportToDB(supportCode);
-    return supportCode;
-  }
-
-  function addSupportToDB(supportCode) {
-    let supportCount = 0;
-    try{
-      supportCount = supportArr.length;
+      emailBtn.onclick = function () {
+        let supportStr = genSupport();
+        window.open("mailto:gifty.application@gmail.com?subject=Gifty Support #" + supportStr +
+            "&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, " + user.userName);
+      };
     } catch (err) {
-
+      console.log("Critical Error: " + err.toString());
+      updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+          "Error To A Gifty Developer.");
     }
-    if(consoleOutput) {
-      console.log(supportCode);
-      console.log(supportCount);
-    }
-    firebase.database().ref("users/" + user.uid + "/support/" + supportCount).push();
-    firebase.database().ref("users/" + user.uid + "/support/" + supportCount).set({
-      supportCount: supportCount,
-      supportString: supportCode
-    });
-  }
-
-  function randomizer() {
-    let alphabet = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
-    let selector = Math.floor((Math.random() * alphabet.length));
-    let charSelect = alphabet.charAt(selector);
-    return charSelect;
   }
 
   function databaseQuery() {
@@ -132,3 +108,37 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInitial);
   }
 };
+
+function genSupport() {
+  let supportCode = "";
+  for(let i = 0; i < 16; i++){
+    supportCode = supportCode + randomizer();
+  }
+  addSupportToDB(supportCode);
+  return supportCode;
+}
+
+function addSupportToDB(supportCode) {
+  let supportCount = 0;
+  try{
+    supportCount = supportArr.length;
+  } catch (err) {
+
+  }
+  if(consoleOutput) {
+    console.log(supportCode);
+    console.log(supportCount);
+  }
+  firebase.database().ref("users/" + user.uid + "/support/" + supportCount).push();
+  firebase.database().ref("users/" + user.uid + "/support/" + supportCount).set({
+    supportCount: supportCount,
+    supportString: supportCode
+  });
+}
+
+function randomizer() {
+  let alphabet = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
+  let selector = Math.floor((Math.random() * alphabet.length));
+  let charSelect = alphabet.charAt(selector);
+  return charSelect;
+}
