@@ -47,9 +47,11 @@ let showReview;
 let showUserScore;
 let showShareCode;
 let showFriends;
+let showNotifications;
 let showRelationships;
 let showGifts;
 let showModerator;
+let showFamilyAssignment;
 let showSecretSanta;
 let showCurrentSecretSanta;
 let showLastSecretSanta;
@@ -98,6 +100,7 @@ let userLastLogin;
 let userLastAction;
 let userLastReview;
 let userScoreElem;
+let userFamilyName;
 let userSecretSanta;
 let userSecretSantaPrior;
 let userSecretSantaBtn;
@@ -187,8 +190,10 @@ window.onload = function instantiate() {
   showShareCode = document.getElementById("showShareCode");
   showGifts = document.getElementById("showGifts");
   showFriends = document.getElementById("showFriends");
+  showNotifications = document.getElementById("showNotifications");
   showRelationships = document.getElementById("showRelationships");
   showModerator = document.getElementById("showModerator");
+  showFamilyAssignment = document.getElementById("showFamilyAssignment");
   showSecretSanta = document.getElementById("showSecretSanta");
   showCurrentSecretSanta = document.getElementById("showCurrentSecretSanta");
   showLastSecretSanta = document.getElementById("showLastSecretSanta");
@@ -237,6 +242,7 @@ window.onload = function instantiate() {
   userLastAction = document.getElementById("userLastAction");
   userLastReview = document.getElementById("userLastReview");
   userScoreElem = document.getElementById("userScoreElem");
+  userFamilyName = document.getElementById("userFamilyName");
   userSecretSanta = document.getElementById("userSecretSanta");
   userSecretSantaPrior = document.getElementById("userSecretSantaPrior");
   userSecretSantaBtn = document.getElementById("userSecretSantaBtn");
@@ -283,16 +289,17 @@ window.onload = function instantiate() {
     loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal, loginDisabledDesc, loginDisabledInp,
     loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown,
     showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore, showShareCode, showGifts,
-    showFriends, showRelationships, showModerator, showSecretSanta, showCurrentSecretSanta, showLastSecretSanta,
-    sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal, userOptionsSpan, settingsNote, testData,
-    closeUserModal, userName, userUID, userUserName, userPublicGifts, userPrivateGifts, userFriendsList,
-    userRelationshipList, userNotificationsList, userLastLogin, userLastAction, userLastReview, userScoreElem,
-    userSecretSanta, userSecretSantaPrior, userSecretSantaBtn, userPassword, moderatorOp, sendPrivateMessage, warnUser,
-    banUser, userDataViewModal, closeUserDataViewModal, userDataViewTitle, userDataViewText, userDataViewListContainer,
-    userDataViewBack, testUserDataView, moderationTicketViewModal, closeModerationTicketViewModal,
-    moderationTicketViewTitle, moderationTicketViewText, moderationTicketViewLastTicket,
-    moderationTicketViewOldestTicket, moderationTicketViewListContainer, testModerationTicketView,
-    moderationTicketViewNavigate, closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg];
+    showFriends, showNotifications, showRelationships, showModerator, showFamilyAssignment, showSecretSanta,
+    showCurrentSecretSanta, showLastSecretSanta, sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal,
+    userOptionsSpan, settingsNote, testData, closeUserModal, userName, userUID, userUserName, userPublicGifts,
+    userPrivateGifts, userFriendsList, userRelationshipList, userNotificationsList, userLastLogin, userLastAction,
+    userLastReview, userScoreElem, userFamilyName, userSecretSanta, userSecretSantaPrior, userSecretSantaBtn,
+    userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser, userDataViewModal, closeUserDataViewModal,
+    userDataViewTitle, userDataViewText, userDataViewListContainer, userDataViewBack, testUserDataView,
+    moderationTicketViewModal, closeModerationTicketViewModal, moderationTicketViewTitle, moderationTicketViewText,
+    moderationTicketViewLastTicket, moderationTicketViewOldestTicket, moderationTicketViewListContainer,
+    testModerationTicketView, moderationTicketViewNavigate, closePrivateMessageModal, globalMsgTitle, globalMsgInp,
+    sendMsg, cancelMsg];
 
   verifyElementIntegrity(moderationElements);
 
@@ -1178,6 +1185,7 @@ function changeUserElement(userData) {
 
 function initUserElement(liItem, userData) {
   let showPassBool = false;
+  let userFoundInFam = false;
   let relationshipModifier = "";
   let tempString = "";
 
@@ -1400,6 +1408,19 @@ function initUserElement(liItem, userData) {
     } else {
       userNotificationsList.innerHTML = "This User Has No Notifications";
       userNotificationsList.onclick = function() {};
+    }
+
+    for (let i = 0; i < familyArr.length; i++) {
+      if (familyArr[i].members != undefined) {
+        if (familyArr[i].members.includes(userData.uid)) {
+          userFamilyName.innerHTML = "Family: \"" + familyArr[i].name + "\"";
+          userFoundInFam = true;
+        }
+      }
+    }
+
+    if (!userFoundInFam) {
+      userFamilyName.innerHTML = "Family: No Family Found";
     }
 
     warnUser.onclick = function(){
@@ -1810,7 +1831,8 @@ function removeUserElement(uid) {
 
 function initializeShowUserData(showDataSelection) {
   let listOfShowUserElements = [showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore,
-    showShareCode, showGifts, showFriends, showRelationships, showModerator, showSecretSanta, showCurrentSecretSanta, showLastSecretSanta];
+    showShareCode, showGifts, showFriends, showNotifications, showRelationships, showModerator, showSecretSanta,
+    showFamilyAssignment, showCurrentSecretSanta, showLastSecretSanta];
   let showHideUserDataBool = false;
 
   userListDropDown.innerHTML = "Select Listed User Data (" + showDataSelection + ")";;
@@ -1859,11 +1881,17 @@ function initializeShowUserData(showDataSelection) {
     showFriends.onclick = function(){
       updateDBWithShowUserData("Friends");
     };
+    showNotifications.onclick = function(){
+      updateDBWithShowUserData("Notifications");
+    };
     showRelationships.onclick = function(){
       updateDBWithShowUserData("Relationships");
     };
     showModerator.onclick = function(){
       updateDBWithShowUserData("Moderator");
+    };
+    showFamilyAssignment.onclick = function(){
+      updateDBWithShowUserData("Family");
     };
     showSecretSanta.onclick = function(){
       updateDBWithShowUserData("SecretSanta");
@@ -1918,6 +1946,8 @@ function updateInitializedUsers(){
     let userDataName = userData.name;
     let userDataString;
     let tempIndex = 0;
+    let userFoundInFam = false;
+    let userFamName = "";
 
     if (userData.ban == 1) {
       tempElem.className = "gift highSev";
@@ -2024,6 +2054,11 @@ function updateInitializedUsers(){
             userDataString = userDataName + " - 1 Friend";
           }
           break;
+        case "Notifications":
+          if (userData.notifications == undefined)
+            userData.notifications = [];
+          userDataString = userDataName + " - # Notifications: " + userData.notifications.length;
+          break;
         case "Relationships":
           let relationshipModifier = "";
           userDataString = userDataName;
@@ -2057,6 +2092,21 @@ function updateInitializedUsers(){
             userDataString = userDataName + " - Moderator";
             tempElem.className += " highSev";
           }
+          break;
+        case "Family":
+          for (let i = 0; i < familyArr.length; i++) {
+            if (familyArr[i].members != undefined)
+              if (familyArr[i].members.includes(userData.uid)) {
+                userFoundInFam = true;
+                userFamName = familyArr[i].name;
+                break;
+              }
+          }
+
+          if (!userFoundInFam)
+            userDataString = userDataName + " - No Family Found";
+          else
+            userDataString = userDataName + " - Family: \"" + userFamName + "\"";
           break;
         case "SecretSanta":
           userDataString = userDataName;
@@ -2149,8 +2199,29 @@ function saveTicketArrToCookie(){
 }
 
 function manuallyOptInOut(userData) {
+  let foundUserInFam = false;
   if (userData.secretSanta == null)
     userData.secretSanta = 0;
+
+  for (let i = 0; i < familyArr.length; i++) {
+    if (familyArr[i].members != undefined)
+      if (familyArr[i].members.includes(userData.uid)) {
+        if (familyArr[i].secretSantaState != 2) {
+          deployNotificationModal(true, "Opt In Failed!",
+              findFirstNameInFullName(userData.name) + "'s assigned family is not in the correct state! Their " +
+              "family (" + familyArr[i].name + "), must be in the \"Ready\" state in order to opt users in manually.", 10);
+          return;
+        }
+        foundUserInFam = true;
+      }
+  }
+
+  if (!foundUserInFam) {
+    deployNotificationModal(true, "Opt In Failed!",
+        findFirstNameInFullName(userData.name) + " is not assigned to a family! Secret Santa cannot be opted " +
+        "in without an accompanying family.", 10);
+    return;
+  }
 
   if (userData.secretSanta == 0) {
     firebase.database().ref("users/" + userData.uid).update({
