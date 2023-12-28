@@ -34,7 +34,7 @@ let denyBtn;
 
 
 
-function getCurrentUser(){
+function getCurrentUser() {
   failedNavNum = 7;
   getCurrentUserCommon();
 
@@ -57,65 +57,57 @@ function getCurrentUser(){
 }
 
 window.onload = function instantiate() {
-  pageName = "BoughtGifts";
-  inviteNote = document.getElementById("inviteNote");
-  notificationBtn = document.getElementById("notificationBtn");
-  backBtn = document.getElementById("backBtn");
-  homeNote = document.getElementById("homeNote");
-  giftTitleFld = document.getElementById("giftTitleFld");
-  giftLinkFld = document.getElementById("giftLinkFld");
-  giftWhereFld = document.getElementById("giftWhereFld");
-  giftDescriptionFld = document.getElementById("giftDescriptionFld");
-  giftCreationDateFld = document.getElementById("giftCreationDateFld");
-  viewListBtn = document.getElementById("viewListBtn");
-  giftModal = document.getElementById("giftModal");
-  closeGiftModal = document.getElementById("closeGiftModal");
-  confirmModal = document.getElementById("confirmModal");
-  closeConfirmModal = document.getElementById("closeConfirmModal");
-  confirmTitle = document.getElementById("confirmTitle");
-  confirmContent = document.getElementById("confirmContent");
-  confirmBtn = document.getElementById("confirmBtn");
-  denyBtn = document.getElementById("denyBtn");
+  initializeBoughtGiftsPage();
 
-  getCurrentUser();
-  commonInitialization();
+  function initializeBoughtGiftsPage() {
+    try {
+      pageName = "BoughtGifts";
+      inviteNote = document.getElementById("inviteNote");
+      notificationBtn = document.getElementById("notificationBtn");
+      backBtn = document.getElementById("backBtn");
+      homeNote = document.getElementById("homeNote");
+      giftTitleFld = document.getElementById("giftTitleFld");
+      giftLinkFld = document.getElementById("giftLinkFld");
+      giftWhereFld = document.getElementById("giftWhereFld");
+      giftDescriptionFld = document.getElementById("giftDescriptionFld");
+      giftCreationDateFld = document.getElementById("giftCreationDateFld");
+      viewListBtn = document.getElementById("viewListBtn");
+      giftModal = document.getElementById("giftModal");
+      closeGiftModal = document.getElementById("closeGiftModal");
+      confirmModal = document.getElementById("confirmModal");
+      closeConfirmModal = document.getElementById("closeConfirmModal");
+      confirmTitle = document.getElementById("confirmTitle");
+      confirmContent = document.getElementById("confirmContent");
+      confirmBtn = document.getElementById("confirmBtn");
+      denyBtn = document.getElementById("denyBtn");
 
-  boughtGiftElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, backBtn, inviteNote, homeNote,
-    notificationModal, notificationTitle, notificationInfo, noteSpan, giftTitleFld, giftLinkFld, giftWhereFld,
-    giftDescriptionFld, giftCreationDateFld, viewListBtn, giftModal, closeGiftModal, testData, confirmModal,
-    closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn];
+      getCurrentUser();
+      commonInitialization();
 
-  verifyElementIntegrity(boughtGiftElements);
+      boughtGiftElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, backBtn, inviteNote, homeNote,
+        notificationModal, notificationTitle, notificationInfo, noteSpan, giftTitleFld, giftLinkFld, giftWhereFld,
+        giftDescriptionFld, giftCreationDateFld, viewListBtn, giftModal, closeGiftModal, testData, confirmModal,
+        closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn];
 
-  userInitial = firebase.database().ref("users/");
-  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+      verifyElementIntegrity(boughtGiftElements);
 
-  for(let i = 0; i < userArr.length; i++){
-    userUserNames.push(userArr[i].userName);
-  }
+      userInitial = firebase.database().ref("users/");
+      userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
-  function initializeGifts(){
-    if(userBoughtGiftsArr.length == userBoughtGiftsUsersArr.length) {
-      for (let i = 0; i < userBoughtGiftsArr.length; i++) {
-        createGiftElement(userBoughtGiftsArr[i], userBoughtGiftsUIDs[i], userBoughtGiftsUsersArr[i]);
+      for(let i = 0; i < userArr.length; i++){
+        userUserNames.push(userArr[i].userName);
       }
-    } else {
-      deployNotificationModal(false, "Critical Error!", "There has been a critical error, redirecting " +
-          "back home...", 4, 2);
+
+      initializeBackBtn();
+      initializeGifts();
+      databaseQuery();
+      alternateButtonLabel(homeNote, "Home", "Bought");
+    } catch (err) {
+      console.log("Critical Error: " + err.toString());
+      updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+          "Error To A Gifty Developer.");
     }
   }
-
-  function initializeBackBtn(){
-    backBtn.innerHTML = "Back To Home";
-    backBtn.onclick = function() {
-      navigation(2);//Home
-    };
-  }
-
-  initializeBackBtn();
-  initializeGifts();
-  databaseQuery();
-  alternateButtonLabel(homeNote, "Home", "Bought");
 
   function databaseQuery() {
     let fetchData = function (postRef) {
@@ -501,3 +493,21 @@ window.onload = function instantiate() {
     };
   }
 };
+
+function initializeGifts(){
+  if(userBoughtGiftsArr.length == userBoughtGiftsUsersArr.length) {
+    for (let i = 0; i < userBoughtGiftsArr.length; i++) {
+      createGiftElement(userBoughtGiftsArr[i], userBoughtGiftsUIDs[i], userBoughtGiftsUsersArr[i]);
+    }
+  } else {
+    deployNotificationModal(false, "Critical Error!", "There has been a critical error, redirecting " +
+        "back home...", 4, 2);
+  }
+}
+
+function initializeBackBtn(){
+  backBtn.innerHTML = "Back To Home";
+  backBtn.onclick = function() {
+    navigation(2);//Home
+  };
+}
