@@ -37,81 +37,57 @@ function checkFamilyCookie(){
 }
 
 window.onload = function instantiate() {
-  failedNavNum = 15;
-  pageName = "Family";
-  inviteNote = document.getElementById("inviteNote");
-  settingsNote = document.getElementById("settingsNote");
-  createFamilyBtn = document.getElementById("createFamily");
-  backBtn = document.getElementById("backBtn");
-  familyModal = document.getElementById("familyModal");
-  closeFamilyModal = document.getElementById("closeFamilyModal");
-  familyTitle = document.getElementById("familyTitle");
-  familyUID = document.getElementById("familyUID");
-  familyMemberCount = document.getElementById("familyMemberCount");
-  familyListContainer = document.getElementById("familyListContainer");
-  testFamily = document.getElementById("testFamily");
-  familyEdit = document.getElementById("familyEdit");
-  familyRemove = document.getElementById("familyRemove");
-  familyAddModal = document.getElementById("familyAddModal");
-  closeFamilyAddModal = document.getElementById("closeFamilyAddModal");
-  familyNameInp = document.getElementById("familyNameInp");
-  addFamily = document.getElementById("addFamily");
-  cancelFamily = document.getElementById("cancelFamily");
+  initializeFamilyPage();
 
-  getCurrentUserCommon();
-  commonInitialization();
-  initializeSecretSantaFamilyPageVars();
+  function initializeFamilyPage() {
+    try {
+      failedNavNum = 15;
+      pageName = "Family";
+      inviteNote = document.getElementById("inviteNote");
+      settingsNote = document.getElementById("settingsNote");
+      createFamilyBtn = document.getElementById("createFamily");
+      backBtn = document.getElementById("backBtn");
+      familyModal = document.getElementById("familyModal");
+      closeFamilyModal = document.getElementById("closeFamilyModal");
+      familyTitle = document.getElementById("familyTitle");
+      familyUID = document.getElementById("familyUID");
+      familyMemberCount = document.getElementById("familyMemberCount");
+      familyListContainer = document.getElementById("familyListContainer");
+      testFamily = document.getElementById("testFamily");
+      familyEdit = document.getElementById("familyEdit");
+      familyRemove = document.getElementById("familyRemove");
+      familyAddModal = document.getElementById("familyAddModal");
+      closeFamilyAddModal = document.getElementById("closeFamilyAddModal");
+      familyNameInp = document.getElementById("familyNameInp");
+      addFamily = document.getElementById("addFamily");
+      cancelFamily = document.getElementById("cancelFamily");
 
-  familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, backBtn, familyModal,
-    closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily, familyEdit,
-    familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
-    offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
+      getCurrentUserCommon();
+      commonInitialization();
+      initializeSecretSantaFamilyPageVars();
 
-  checkFamilyCookie();
-  verifyElementIntegrity(familyElements);
+      familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, backBtn, familyModal,
+        closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily, familyEdit,
+        familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
+        offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
 
-  userInitial = firebase.database().ref("users/");
-  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-  familyInitial = firebase.database().ref("family/");
+      checkFamilyCookie();
+      verifyElementIntegrity(familyElements);
 
-  databaseQuery();
-  alternateButtonLabel(settingsNote, "Settings", "Family");
+      userInitial = firebase.database().ref("users/");
+      userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+      familyInitial = firebase.database().ref("family/");
 
-  function initializeCreateFamilyBtn() {
-    createFamilyBtn.innerHTML = "Create Family";
-    createFamilyBtn.onclick = function () {
-      generateAddFamilyModal();
-    };
-  }
+      databaseQuery();
+      alternateButtonLabel(settingsNote, "Settings", "Family");
 
-  function initializeBackBtn() {
-    backBtn.innerHTML = "Return To Settings";
-    backBtn.onclick = function() {
-      navigation(5);//Settings
-    };
-  }
-
-  initializeCreateFamilyBtn();
-  initializeBackBtn();
-
-  function generateAddFamilyModal(){
-    addFamily.onclick = function() {
-      if(familyNameInp.value != "" || (familyNameInp.value.includes(" ") && isAlph(familyNameInp.value.charAt(0)))) {
-        addFamilyToDB(familyNameInp.value);
-        familyNameInp.value = "";
-      }
-    };
-
-    cancelFamily.onclick = function() {
-      familyNameInp.value = "";
-      closeModal(familyAddModal);
-    };
-
-    openModal(familyAddModal, "familyAddModal");
-
-    closeFamilyAddModal.onclick = function() {
-      closeModal(familyAddModal);
-    };
+      initializeCreateFamilyBtn();
+      initializeBackBtn();
+    } catch (err) {
+      console.log("Critical Error: " + err.toString());
+      updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+          "Error To A Gifty Developer.");
+    }
   }
 
   function databaseQuery() {
@@ -244,6 +220,40 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(familyInitial);
   }
 };
+
+function initializeCreateFamilyBtn() {
+  createFamilyBtn.innerHTML = "Create Family";
+  createFamilyBtn.onclick = function () {
+    generateAddFamilyModal();
+  };
+}
+
+function initializeBackBtn() {
+  backBtn.innerHTML = "Return To Settings";
+  backBtn.onclick = function() {
+    navigation(5);//Settings
+  };
+}
+
+function generateAddFamilyModal(){
+  addFamily.onclick = function() {
+    if(familyNameInp.value != "" || (familyNameInp.value.includes(" ") && isAlph(familyNameInp.value.charAt(0)))) {
+      addFamilyToDB(familyNameInp.value);
+      familyNameInp.value = "";
+    }
+  };
+
+  cancelFamily.onclick = function() {
+    familyNameInp.value = "";
+    closeModal(familyAddModal);
+  };
+
+  openModal(familyAddModal, "familyAddModal");
+
+  closeFamilyAddModal.onclick = function() {
+    closeModal(familyAddModal);
+  };
+}
 
 function createFamilyElement(familyData){
   try{
