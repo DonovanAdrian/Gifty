@@ -43,59 +43,45 @@ function getCurrentUser(){
 }
 
 window.onload = function instantiate() {
-  pageName = "Confirmation";
-  backBtn = document.getElementById("backBtn");
-  inviteNote = document.getElementById("inviteNote");
-  notificationBtn = document.getElementById("notificationButton");
-  inviteModal = document.getElementById("inviteModal");
-  closeInviteModal = document.getElementById("closeInviteModal");
-  userNameFld = document.getElementById("userNameFld");
-  userUNameFld = document.getElementById("userUNameFld");
-  userShareCodeFld = document.getElementById("userShareCodeFld");
-  userAcceptBtn = document.getElementById("userAcceptBtn");
-  userDeleteBtn = document.getElementById("userDeleteBtn");
+  initializeConfirmationPage();
 
-  getCurrentUser();
-  commonInitialization();
+  function initializeConfirmationPage() {
+    try {
+      pageName = "Confirmation";
+      backBtn = document.getElementById("backBtn");
+      inviteNote = document.getElementById("inviteNote");
+      notificationBtn = document.getElementById("notificationButton");
+      inviteModal = document.getElementById("inviteModal");
+      closeInviteModal = document.getElementById("closeInviteModal");
+      userNameFld = document.getElementById("userNameFld");
+      userUNameFld = document.getElementById("userUNameFld");
+      userShareCodeFld = document.getElementById("userShareCodeFld");
+      userAcceptBtn = document.getElementById("userAcceptBtn");
+      userDeleteBtn = document.getElementById("userDeleteBtn");
 
-  confirmationElements = [testData, notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote,
-    notificationModal, notificationTitle, notificationInfo, noteSpan, inviteModal, closeInviteModal, userNameFld,
-    userUNameFld, userShareCodeFld, userAcceptBtn, userDeleteBtn];
+      getCurrentUser();
+      commonInitialization();
 
-  verifyElementIntegrity(confirmationElements);
+      confirmationElements = [testData, notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote,
+        notificationModal, notificationTitle, notificationInfo, noteSpan, inviteModal, closeInviteModal, userNameFld,
+        userUNameFld, userShareCodeFld, userAcceptBtn, userDeleteBtn];
 
-  userInitial = firebase.database().ref("users/");
-  userFriends = firebase.database().ref("users/" + user.uid + "/friends");
-  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+      verifyElementIntegrity(confirmationElements);
 
-  databaseQuery();
-  updateConfirmationButton(user.friends)
+      userInitial = firebase.database().ref("users/");
+      userFriends = firebase.database().ref("users/" + user.uid + "/friends");
+      userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
-  function updateConfirmationButton(confirmFriendData) {
-    let setBlank = true;
+      databaseQuery();
+      updateConfirmationButton(user.friends);
 
-    if (confirmFriendData != undefined)
-      if (confirmFriendData.length != 0)
-        if (confirmFriendData.length == 1) {
-          alternateButtonLabel(inviteNote, "1 Friend", "Confirm");
-          setBlank = false;
-        } else if (confirmFriendData.length < 100) {
-          alternateButtonLabel(inviteNote, confirmFriendData.length + " Friends", "Confirm");
-          setBlank = false;
-        }
-
-    if (setBlank)
-      alternateButtonLabel(inviteNote, "Friends", "Confirm");
+      initializeBackBtn();
+    } catch (err) {
+      console.log("Critical Error: " + err.toString());
+      updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+          "Error To A Gifty Developer.");
+    }
   }
-
-  function initializeBackBtn() {
-    backBtn.innerHTML = "Return To Invites";
-    backBtn.onclick = function() {
-      navigation(4);//Invites
-    };
-  }
-
-  initializeBackBtn();
 
   function databaseQuery() {
     let fetchData = function (postRef) {
@@ -239,6 +225,30 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 };
+
+function updateConfirmationButton(confirmFriendData) {
+  let setBlank = true;
+
+  if (confirmFriendData != undefined)
+    if (confirmFriendData.length != 0)
+      if (confirmFriendData.length == 1) {
+        alternateButtonLabel(inviteNote, "1 Friend", "Confirm");
+        setBlank = false;
+      } else if (confirmFriendData.length < 100) {
+        alternateButtonLabel(inviteNote, confirmFriendData.length + " Friends", "Confirm");
+        setBlank = false;
+      }
+
+  if (setBlank)
+    alternateButtonLabel(inviteNote, "Friends", "Confirm");
+}
+
+function initializeBackBtn() {
+  backBtn.innerHTML = "Return To Invites";
+  backBtn.onclick = function() {
+    navigation(4);//Invites
+  };
+}
 
 function findRemovedUser(oldArr, newArr) {
   let removedUserIndex = -1;
