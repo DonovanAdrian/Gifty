@@ -82,322 +82,105 @@ function checkFamilyMemberCookie() {
 }
 
 window.onload = function instantiate() {
-  failedNavNum = 16;
-  pageName = "FamilyUpdate";
-  inviteNote = document.getElementById("inviteNote");
-  settingsNote = document.getElementById("settingsNote");
-  backBtn = document.getElementById("backBtn");
-  familySettings = document.getElementById("familySettings");
-  familyMemberViewModal = document.getElementById("familyMemberViewModal");
-  closeFamilyMemberViewModal = document.getElementById("closeFamilyMemberViewModal");
-  familyMemberName = document.getElementById("familyMemberName");
-  familyMemberUserName = document.getElementById("familyMemberUserName");
-  familyMemberUID = document.getElementById("familyMemberUID");
-  familyMemberParent = document.getElementById("familyMemberParent");
-  familyMemberChild = document.getElementById("familyMemberChild");
-  familyMemberPCClear = document.getElementById("familyMemberPCClear");
-  parentInfoIcon = document.getElementById("parentInfoIcon");
-  childInfoIcon = document.getElementById("childInfoIcon");
-  clearInfoIcon = document.getElementById("clearInfoIcon");
-  removeFamilyMember = document.getElementById("removeFamilyMember");
-  familyPCModal = document.getElementById("familyPCModal");
-  closeFamilyPCModal = document.getElementById("closeFamilyPCModal");
-  familyPCTitle = document.getElementById("familyPCTitle");
-  familyPCText = document.getElementById("familyPCText");
-  familyPCListContainer = document.getElementById("familyPCListContainer");
-  familyPCBack = document.getElementById("familyPCBack");
-  familyPCConfirm = document.getElementById("familyPCConfirm");
-  testFamily = document.getElementById("testFamily");
-  familyAddModal = document.getElementById("familyAddModal");
-  closeFamilyAddModal = document.getElementById("closeFamilyAddModal");
-  familyMemberInp = document.getElementById("familyMemberInp");
-  addMemberInfo = document.getElementById("addMemberInfo");
-  addFamilyMember = document.getElementById("addFamilyMember");
-  cancelFamilyMember = document.getElementById("cancelFamilyMember");
-  familyNameModal = document.getElementById("familyNameModal");
-  closeFamilyNameModal = document.getElementById("closeFamilyNameModal");
-  familyNameInp = document.getElementById("familyNameInp");
-  updateFamilyName = document.getElementById("updateFamilyName");
-  cancelFamilyName = document.getElementById("cancelFamilyName");
-  familySettingsModal = document.getElementById("familySettingsModal");
-  familySettingsTitle = document.getElementById("familySettingsTitle");
-  closeFamilySettings = document.getElementById("closeFamilySettings");
-  changeNameInfoIcon = document.getElementById("changeNameInfoIcon");
-  changeFamilyName = document.getElementById("changeFamilyName");
-  clearAllInfoIcon = document.getElementById("clearAllInfoIcon");
-  clearAllPCRelationships = document.getElementById("clearAllPCRelationships");
-  removeMembersInfoIcon = document.getElementById("removeMembersInfoIcon");
-  removeAllMembers = document.getElementById("removeAllMembers");
-  addMemberInfoIcon = document.getElementById("addMemberInfoIcon");
-  addMember = document.getElementById("addMember");
-  confirmMemberModal = document.getElementById("confirmMemberModal");
-  closeConfirmMemberModal = document.getElementById("closeConfirmMemberModal");
-  confirmMemberTitle = document.getElementById("confirmMemberTitle");
-  confMemberUserName = document.getElementById("confMemberUserName");
-  addMemberConfirm = document.getElementById("addMemberConfirm");
-  addMemberDeny = document.getElementById("addMemberDeny");
+  initializeFamilyUpdatePage();
 
-  getCurrentUserCommon();
-  commonInitialization();
+  function initializeFamilyUpdatePage() {
+    try {
+      failedNavNum = 16;
+      pageName = "FamilyUpdate";
+      inviteNote = document.getElementById("inviteNote");
+      settingsNote = document.getElementById("settingsNote");
+      backBtn = document.getElementById("backBtn");
+      familySettings = document.getElementById("familySettings");
+      familyMemberViewModal = document.getElementById("familyMemberViewModal");
+      closeFamilyMemberViewModal = document.getElementById("closeFamilyMemberViewModal");
+      familyMemberName = document.getElementById("familyMemberName");
+      familyMemberUserName = document.getElementById("familyMemberUserName");
+      familyMemberUID = document.getElementById("familyMemberUID");
+      familyMemberParent = document.getElementById("familyMemberParent");
+      familyMemberChild = document.getElementById("familyMemberChild");
+      familyMemberPCClear = document.getElementById("familyMemberPCClear");
+      parentInfoIcon = document.getElementById("parentInfoIcon");
+      childInfoIcon = document.getElementById("childInfoIcon");
+      clearInfoIcon = document.getElementById("clearInfoIcon");
+      removeFamilyMember = document.getElementById("removeFamilyMember");
+      familyPCModal = document.getElementById("familyPCModal");
+      closeFamilyPCModal = document.getElementById("closeFamilyPCModal");
+      familyPCTitle = document.getElementById("familyPCTitle");
+      familyPCText = document.getElementById("familyPCText");
+      familyPCListContainer = document.getElementById("familyPCListContainer");
+      familyPCBack = document.getElementById("familyPCBack");
+      familyPCConfirm = document.getElementById("familyPCConfirm");
+      testFamily = document.getElementById("testFamily");
+      familyAddModal = document.getElementById("familyAddModal");
+      closeFamilyAddModal = document.getElementById("closeFamilyAddModal");
+      familyMemberInp = document.getElementById("familyMemberInp");
+      addMemberInfo = document.getElementById("addMemberInfo");
+      addFamilyMember = document.getElementById("addFamilyMember");
+      cancelFamilyMember = document.getElementById("cancelFamilyMember");
+      familyNameModal = document.getElementById("familyNameModal");
+      closeFamilyNameModal = document.getElementById("closeFamilyNameModal");
+      familyNameInp = document.getElementById("familyNameInp");
+      updateFamilyName = document.getElementById("updateFamilyName");
+      cancelFamilyName = document.getElementById("cancelFamilyName");
+      familySettingsModal = document.getElementById("familySettingsModal");
+      familySettingsTitle = document.getElementById("familySettingsTitle");
+      closeFamilySettings = document.getElementById("closeFamilySettings");
+      changeNameInfoIcon = document.getElementById("changeNameInfoIcon");
+      changeFamilyName = document.getElementById("changeFamilyName");
+      clearAllInfoIcon = document.getElementById("clearAllInfoIcon");
+      clearAllPCRelationships = document.getElementById("clearAllPCRelationships");
+      removeMembersInfoIcon = document.getElementById("removeMembersInfoIcon");
+      removeAllMembers = document.getElementById("removeAllMembers");
+      addMemberInfoIcon = document.getElementById("addMemberInfoIcon");
+      addMember = document.getElementById("addMember");
+      confirmMemberModal = document.getElementById("confirmMemberModal");
+      closeConfirmMemberModal = document.getElementById("closeConfirmMemberModal");
+      confirmMemberTitle = document.getElementById("confirmMemberTitle");
+      confMemberUserName = document.getElementById("confMemberUserName");
+      addMemberConfirm = document.getElementById("addMemberConfirm");
+      addMemberDeny = document.getElementById("addMemberDeny");
 
-  familyUpdateElements = [inviteNote, settingsNote, dataListContainer, testData, backBtn, familySettings,
-    familyMemberViewModal, closeFamilyMemberViewModal, familyMemberName, familyMemberUserName, familyMemberUID,
-    familyMemberParent, familyMemberChild, familyMemberPCClear, removeFamilyMember, familyPCModal, closeFamilyPCModal,
-    familyPCTitle, familyPCText, familyPCListContainer, familyPCBack, testFamily, familyAddModal, closeFamilyAddModal,
-    familyMemberInp, addMemberInfo, addFamilyMember, cancelFamilyMember, familyNameModal, closeFamilyNameModal,
-    familyNameInp, updateFamilyName, cancelFamilyName, familyNameInp, updateFamilyName, cancelFamilyName,
-    familySettingsModal, familySettingsTitle, closeFamilySettings, changeNameInfoIcon, changeFamilyName,
-    clearAllInfoIcon, clearAllPCRelationships, removeMembersInfoIcon, removeAllMembers, addMemberInfoIcon, addMember,
-    confirmMemberModal, closeConfirmMemberModal, confirmMemberTitle, confMemberUserName, addMemberConfirm,
-    addMemberDeny, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
+      getCurrentUserCommon();
+      commonInitialization();
 
-  checkFamilyMemberCookie();
-  verifyElementIntegrity(familyUpdateElements);
+      familyUpdateElements = [inviteNote, settingsNote, dataListContainer, testData, backBtn, familySettings,
+        familyMemberViewModal, closeFamilyMemberViewModal, familyMemberName, familyMemberUserName, familyMemberUID,
+        familyMemberParent, familyMemberChild, familyMemberPCClear, removeFamilyMember, familyPCModal, closeFamilyPCModal,
+        familyPCTitle, familyPCText, familyPCListContainer, familyPCBack, testFamily, familyAddModal, closeFamilyAddModal,
+        familyMemberInp, addMemberInfo, addFamilyMember, cancelFamilyMember, familyNameModal, closeFamilyNameModal,
+        familyNameInp, updateFamilyName, cancelFamilyName, familyNameInp, updateFamilyName, cancelFamilyName,
+        familySettingsModal, familySettingsTitle, closeFamilySettings, changeNameInfoIcon, changeFamilyName,
+        clearAllInfoIcon, clearAllPCRelationships, removeMembersInfoIcon, removeAllMembers, addMemberInfoIcon, addMember,
+        confirmMemberModal, closeConfirmMemberModal, confirmMemberTitle, confMemberUserName, addMemberConfirm,
+        addMemberDeny, offlineModal, offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
 
-  userInitial = firebase.database().ref("users/");
-  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-  familyInitial = firebase.database().ref("family/");
+      checkFamilyMemberCookie();
+      verifyElementIntegrity(familyUpdateElements);
 
-  databaseQuery();
-  alternateButtonLabel(settingsNote, "Settings", "Family");
+      userInitial = firebase.database().ref("users/");
+      userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+      familyInitial = firebase.database().ref("family/");
 
-  function initializeFamilySettingsBtn() {
-    familySettings.innerHTML = "Family Settings";
-    familySettings.onclick = function () {
-      generateFamilySettingsModal();
-    };
-  }
+      databaseQuery();
+      alternateButtonLabel(settingsNote, "Settings", "Family");
 
-  function initializeBackBtn() {
-    backBtn.innerHTML = "Return To Family Page";
-    backBtn.onclick = function() {
-      navigation(15);//family.html
-    };
-  }
+      initializeFamilySettingsBtn();
+      initializeBackBtn();
+      initializeInfoIcons();
 
-  function initializeInfoIcons() {
-    parentInfoIcon.onclick = function() {
-      deployNotificationModal(true, "Secret Santa Parent Restriction", "Use this " +
-          "button to assign a parent to a user. By assigning a parent to a user, the user is restricted from being " +
-          "assigned to the parent for Secret Santa. Additionally, the parent will automatically be assigned to the " +
-          "child in return.", 10);
-    };
-    childInfoIcon.onclick = function() {
-      deployNotificationModal(true, "Secret Santa Child Restriction", "Use this " +
-          "button to assign a child to a user. By assigning a child to a user, the user is restricted from being " +
-          "assigned to the child for Secret Santa. Additionally, the child will automatically be assigned to the " +
-          "parent in return.", 10);
-    };
-    clearInfoIcon.onclick = function() {
-      deployNotificationModal(true, "Clear Parent & Child Data", "This button " +
-          "offers a quick way to clear any relationships between this user and their respective parent(s)/child(ren). " +
-          "If you would like to clear ALL Parent/Child relationships in this family, select the \"Family Settings\" " +
-          "button on the bottom left, then select \"Clear All Parent/Child Relationships\".", 15);
-    };
-
-    changeNameInfoIcon.onclick = function() {
-      deployNotificationModal(true, "Change Family Name", "This button allows " +
-          "you to update this family's name within Gifty.", 6);
-    };
-    clearAllInfoIcon.onclick = function() {
-      deployNotificationModal(true, "Clear All Parent & Child Data", "This button " +
-          "offers a quick way to clear ALL relationships between every user in this family.", 6);
-    };
-    removeMembersInfoIcon.onclick = function() {
-      deployNotificationModal(true, "Remove All Members", "This button " +
-          "offers a quick way to remove every member from this family.<br><br>Please note that any parent/child " +
-          "relationships will also be cleared as a result.", 8);
-    };
-    addMemberInfoIcon.onclick = function() {
-      deployNotificationModal(true, "Add Member", "This button " +
-          "allows you to add a given user to this family. Please note that a given user cannot exist in two families " +
-          "at the same time.", 8);
-    };
-  }
-
-  initializeFamilySettingsBtn();
-  initializeBackBtn();
-  initializeInfoIcons();
-
-  if(familyData.members != null) {
-    if (familyData.members.length == 0) {
-      deployListEmptyNotification("No Family Members Found!");
-    }
-  } else {
-    deployListEmptyNotification("No Family Members Found!");
-  }
-
-  function generateAddMemberModal() {
-    let familyMemberFound = false;
-    let familyMemberDuplicate = false;
-
-    addFamilyMember.onclick = function() {
-      if(familyMemberInp.value != "" || (familyMemberInp.value.includes(" ") &&
-          isAlph(familyMemberInp.value.charAt(0)))) {
-        for (let i = 0; i < userArr.length; i++) {
-          if (familyMemberInp.value.toLowerCase() == userArr[i].userName.toLowerCase()) {
-            for (let z = 0; z < familyArr.length; z++) {
-              if (familyArr[z].members != null) {
-                for (let y = 0; y < familyArr[z].members.length; y++) {
-                  if (familyArr[z].members[y] == userArr[i].uid && familyArr[z].uid != familyData.uid) {
-                    familyMemberDuplicate = true;
-                  }
-                }
-              }
-            }
-
-            if (!familyMemberDuplicate) {
-              familyMemberFound = true;
-              if (familyData.members != null)
-                if (!familyData.members.includes(userArr[i].uid)) {
-                  closeModal(familyAddModal);
-                  generateConfirmDataModal("Did you mean " + userArr[i].name + "?",
-                      "Confirm Member Name Below",
-                      "user", userArr[i].uid);
-                } else {
-                  console.log("User is already in THIS family!");
-                  addMemberInfo.innerHTML = "That user is already added to this family, please try another!";
-                }
-              else {
-                closeModal(familyAddModal);
-                generateConfirmDataModal("Did you mean " + userArr[i].name + "?",
-                    "Confirm Member Name Below",
-                    "user", userArr[i].uid);
-              }
-            } else {
-              console.log("User is already in ANOTHER family!");
-              addMemberInfo.innerHTML = "A user can only be in one family at a time!";
-            }
-            break;
-          }
+      if(familyData.members != null) {
+        if (familyData.members.length == 0) {
+          deployListEmptyNotification("No Family Members Found!");
         }
-        if(!familyMemberFound && !familyMemberDuplicate) {
-          console.log("Username doesn't exist!");
-          addMemberInfo.innerHTML = "That user name does not exist, please try again!";
-        }
+      } else {
+        deployListEmptyNotification("No Family Members Found!");
       }
-      familyMemberDuplicate = false;
-      familyMemberFound = false;
-    };
-
-    cancelFamilyMember.onclick = function() {
-      addMemberInfo.innerHTML = "";
-      familyMemberInp.value = "";
-      closeModal(familyAddModal);
-      generateFamilySettingsModal();
-    };
-
-    openModal(familyAddModal, "familyAddModal");
-
-    closeFamilyAddModal.onclick = function() {
-      addMemberInfo.innerHTML = "";
-      closeModal(familyAddModal);
-      generateFamilySettingsModal();
-    };
-  }
-
-  function refreshMemberModalData() {
-    let familyPCRelationshipsExist = false;
-
-    if (familyData.members == undefined)
-      familyData.members = [];
-
-    for (let i = 0; i < userArr.length; i++) {
-      if (familyData.members.includes(userArr[i].uid)) {
-        if (userArr[i].parentUser != undefined) {
-          if (userArr[i].parentUser != "" && userArr[i].parentUser.length > 0) {
-            familyPCRelationshipsExist = true;
-            break;
-          }
-        }
-        if (userArr[i].childUser != undefined) {
-          if (userArr[i].childUser != "" && userArr[i].childUser.length > 0) {
-            familyPCRelationshipsExist = true;
-            break;
-          }
-        }
-      }
+    } catch (err) {
+      console.log("Critical Error: " + err.toString());
+      updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+          "Error To A Gifty Developer.");
     }
-
-    if (familyData.members.length == 0) {
-      removeAllMembers.innerHTML = "No Members In Family";
-      removeAllMembers.className = "basicBtn btnDisabled";
-      removeAllMembers.onclick = function() {
-        deployNotificationModal(true, "No Members In Family!", "There are currently " +
-            "no members in this family, so there are no members to remove.");
-      };
-    } else {
-      removeAllMembers.innerHTML = "Remove All Members";
-      removeAllMembers.className = "basicBtn";
-      removeAllMembers.onclick = function() {
-        generateConfirmDataModal("Are you sure that you'd like to remove ALL the users from this family? " +
-            "<br><br>Please note that upon completion, any existing parent/child relationships will be cleared and you " +
-            "will be redirected to the main family page.",
-            "Remove ALL Members?", "removeAllMembers", familyData);
-      };
-    }
-
-    if (familyPCRelationshipsExist) {
-      clearAllPCRelationships.innerHTML = "Clear All Parent/Child Relationships";
-      clearAllPCRelationships.className = "basicBtn";
-      clearAllPCRelationships.onclick = function() {
-        generateConfirmDataModal("Are you sure that you'd like to clear ALL parent & child " +
-            "relationships within this family?",
-            "Clear ALL Parent & Child Relationships?", "clearAllPC", null);
-      };
-    } else {
-      clearAllPCRelationships.innerHTML = "No Parent/Child Relationships";
-      clearAllPCRelationships.className = "basicBtn btnDisabled";
-      clearAllPCRelationships.onclick = function() {
-        deployNotificationModal(true, "No Parent Child Relationships!", "There are " +
-            "currently no parent/child relationships in this family, so there are no relationships to remove.");
-      };
-    }
-
-    familySettingsTitle.innerHTML = "\"" + familyData.name + "\" Settings";
-  }
-
-  function generateFamilySettingsModal() {
-    refreshMemberModalData();
-
-    changeFamilyName.onclick = function() {
-      closeModal(familySettingsModal);
-      generateFamilyNameModal(familyData.name);
-    };
-
-    addMember.onclick = function() {
-      generateAddMemberModal();
-    };
-
-    openModal(familySettingsModal, "familySettingsModal");
-
-    closeFamilySettings.onclick = function() {
-      closeModal(familySettingsModal);
-    };
-  }
-
-  function generateFamilyNameModal() {
-    familyNameInp.value = familyData.name;
-    updateFamilyName.onclick = function() {
-      if(familyNameInp.value != "" || (familyNameInp.value.includes(" ") &&
-          isAlph(familyNameInp.value.charAt(0)))) {
-        changeFamilyNameInDB(familyNameInp.value);
-        familyNameInp.value = "";
-        closeModal(familyNameModal);
-      }
-    };
-
-    cancelFamilyName.onclick = function() {
-      closeModal(familyNameModal);
-      generateFamilySettingsModal();
-    };
-
-    openModal(familyNameModal, "familyNameModal");
-
-    closeFamilyNameModal.onclick = function() {
-      closeModal(familyNameModal);
-      generateFamilySettingsModal();
-    };
   }
 
   function databaseQuery() {
@@ -585,6 +368,233 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(familyInitial);
   }
 };
+
+function initializeFamilySettingsBtn() {
+  familySettings.innerHTML = "Family Settings";
+  familySettings.onclick = function () {
+    generateFamilySettingsModal();
+  };
+}
+
+function initializeBackBtn() {
+  backBtn.innerHTML = "Return To Family Page";
+  backBtn.onclick = function() {
+    navigation(15);//family.html
+  };
+}
+
+function initializeInfoIcons() {
+  parentInfoIcon.onclick = function() {
+    deployNotificationModal(true, "Secret Santa Parent Restriction", "Use this " +
+        "button to assign a parent to a user. By assigning a parent to a user, the user is restricted from being " +
+        "assigned to the parent for Secret Santa. Additionally, the parent will automatically be assigned to the " +
+        "child in return.", 10);
+  };
+  childInfoIcon.onclick = function() {
+    deployNotificationModal(true, "Secret Santa Child Restriction", "Use this " +
+        "button to assign a child to a user. By assigning a child to a user, the user is restricted from being " +
+        "assigned to the child for Secret Santa. Additionally, the child will automatically be assigned to the " +
+        "parent in return.", 10);
+  };
+  clearInfoIcon.onclick = function() {
+    deployNotificationModal(true, "Clear Parent & Child Data", "This button " +
+        "offers a quick way to clear any relationships between this user and their respective parent(s)/child(ren). " +
+        "If you would like to clear ALL Parent/Child relationships in this family, select the \"Family Settings\" " +
+        "button on the bottom left, then select \"Clear All Parent/Child Relationships\".", 15);
+  };
+
+  changeNameInfoIcon.onclick = function() {
+    deployNotificationModal(true, "Change Family Name", "This button allows " +
+        "you to update this family's name within Gifty.", 6);
+  };
+  clearAllInfoIcon.onclick = function() {
+    deployNotificationModal(true, "Clear All Parent & Child Data", "This button " +
+        "offers a quick way to clear ALL relationships between every user in this family.", 6);
+  };
+  removeMembersInfoIcon.onclick = function() {
+    deployNotificationModal(true, "Remove All Members", "This button " +
+        "offers a quick way to remove every member from this family.<br><br>Please note that any parent/child " +
+        "relationships will also be cleared as a result.", 8);
+  };
+  addMemberInfoIcon.onclick = function() {
+    deployNotificationModal(true, "Add Member", "This button " +
+        "allows you to add a given user to this family. Please note that a given user cannot exist in two families " +
+        "at the same time.", 8);
+  };
+}
+
+function generateAddMemberModal() {
+  let familyMemberFound = false;
+  let familyMemberDuplicate = false;
+
+  addFamilyMember.onclick = function() {
+    if(familyMemberInp.value != "" || (familyMemberInp.value.includes(" ") &&
+        isAlph(familyMemberInp.value.charAt(0)))) {
+      for (let i = 0; i < userArr.length; i++) {
+        if (familyMemberInp.value.toLowerCase() == userArr[i].userName.toLowerCase()) {
+          for (let z = 0; z < familyArr.length; z++) {
+            if (familyArr[z].members != null) {
+              for (let y = 0; y < familyArr[z].members.length; y++) {
+                if (familyArr[z].members[y] == userArr[i].uid && familyArr[z].uid != familyData.uid) {
+                  familyMemberDuplicate = true;
+                }
+              }
+            }
+          }
+
+          if (!familyMemberDuplicate) {
+            familyMemberFound = true;
+            if (familyData.members != null)
+              if (!familyData.members.includes(userArr[i].uid)) {
+                closeModal(familyAddModal);
+                generateConfirmDataModal("Did you mean " + userArr[i].name + "?",
+                    "Confirm Member Name Below",
+                    "user", userArr[i].uid);
+              } else {
+                console.log("User is already in THIS family!");
+                addMemberInfo.innerHTML = "That user is already added to this family, please try another!";
+              }
+            else {
+              closeModal(familyAddModal);
+              generateConfirmDataModal("Did you mean " + userArr[i].name + "?",
+                  "Confirm Member Name Below",
+                  "user", userArr[i].uid);
+            }
+          } else {
+            console.log("User is already in ANOTHER family!");
+            addMemberInfo.innerHTML = "A user can only be in one family at a time!";
+          }
+          break;
+        }
+      }
+      if(!familyMemberFound && !familyMemberDuplicate) {
+        console.log("Username doesn't exist!");
+        addMemberInfo.innerHTML = "That user name does not exist, please try again!";
+      }
+    }
+    familyMemberDuplicate = false;
+    familyMemberFound = false;
+  };
+
+  cancelFamilyMember.onclick = function() {
+    addMemberInfo.innerHTML = "";
+    familyMemberInp.value = "";
+    closeModal(familyAddModal);
+    generateFamilySettingsModal();
+  };
+
+  openModal(familyAddModal, "familyAddModal");
+
+  closeFamilyAddModal.onclick = function() {
+    addMemberInfo.innerHTML = "";
+    closeModal(familyAddModal);
+    generateFamilySettingsModal();
+  };
+}
+
+function refreshMemberModalData() {
+  let familyPCRelationshipsExist = false;
+
+  if (familyData.members == undefined)
+    familyData.members = [];
+
+  for (let i = 0; i < userArr.length; i++) {
+    if (familyData.members.includes(userArr[i].uid)) {
+      if (userArr[i].parentUser != undefined) {
+        if (userArr[i].parentUser != "" && userArr[i].parentUser.length > 0) {
+          familyPCRelationshipsExist = true;
+          break;
+        }
+      }
+      if (userArr[i].childUser != undefined) {
+        if (userArr[i].childUser != "" && userArr[i].childUser.length > 0) {
+          familyPCRelationshipsExist = true;
+          break;
+        }
+      }
+    }
+  }
+
+  if (familyData.members.length == 0) {
+    removeAllMembers.innerHTML = "No Members In Family";
+    removeAllMembers.className = "basicBtn btnDisabled";
+    removeAllMembers.onclick = function() {
+      deployNotificationModal(true, "No Members In Family!", "There are currently " +
+          "no members in this family, so there are no members to remove.");
+    };
+  } else {
+    removeAllMembers.innerHTML = "Remove All Members";
+    removeAllMembers.className = "basicBtn";
+    removeAllMembers.onclick = function() {
+      generateConfirmDataModal("Are you sure that you'd like to remove ALL the users from this family? " +
+          "<br><br>Please note that upon completion, any existing parent/child relationships will be cleared and you " +
+          "will be redirected to the main family page.",
+          "Remove ALL Members?", "removeAllMembers", familyData);
+    };
+  }
+
+  if (familyPCRelationshipsExist) {
+    clearAllPCRelationships.innerHTML = "Clear All Parent/Child Relationships";
+    clearAllPCRelationships.className = "basicBtn";
+    clearAllPCRelationships.onclick = function() {
+      generateConfirmDataModal("Are you sure that you'd like to clear ALL parent & child " +
+          "relationships within this family?",
+          "Clear ALL Parent & Child Relationships?", "clearAllPC", null);
+    };
+  } else {
+    clearAllPCRelationships.innerHTML = "No Parent/Child Relationships";
+    clearAllPCRelationships.className = "basicBtn btnDisabled";
+    clearAllPCRelationships.onclick = function() {
+      deployNotificationModal(true, "No Parent Child Relationships!", "There are " +
+          "currently no parent/child relationships in this family, so there are no relationships to remove.");
+    };
+  }
+
+  familySettingsTitle.innerHTML = "\"" + familyData.name + "\" Settings";
+}
+
+function generateFamilySettingsModal() {
+  refreshMemberModalData();
+
+  changeFamilyName.onclick = function() {
+    closeModal(familySettingsModal);
+    generateFamilyNameModal(familyData.name);
+  };
+
+  addMember.onclick = function() {
+    generateAddMemberModal();
+  };
+
+  openModal(familySettingsModal, "familySettingsModal");
+
+  closeFamilySettings.onclick = function() {
+    closeModal(familySettingsModal);
+  };
+}
+
+function generateFamilyNameModal() {
+  familyNameInp.value = familyData.name;
+  updateFamilyName.onclick = function() {
+    if(familyNameInp.value != "" || (familyNameInp.value.includes(" ") &&
+        isAlph(familyNameInp.value.charAt(0)))) {
+      changeFamilyNameInDB(familyNameInp.value);
+      familyNameInp.value = "";
+      closeModal(familyNameModal);
+    }
+  };
+
+  cancelFamilyName.onclick = function() {
+    closeModal(familyNameModal);
+    generateFamilySettingsModal();
+  };
+
+  openModal(familyNameModal, "familyNameModal");
+
+  closeFamilyNameModal.onclick = function() {
+    closeModal(familyNameModal);
+    generateFamilySettingsModal();
+  };
+}
 
 function removeAllFamilyMembers(familyRemove) {
   let emptyFamily = false;
