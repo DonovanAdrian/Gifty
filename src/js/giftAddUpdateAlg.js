@@ -148,110 +148,67 @@ function getCurrentUser(){
 }
 
 window.onload = function instantiate() {
-  pageName = "GiftAddUpdate";
-  confirmModal = document.getElementById("confirmModal");
-  closeConfirmModal = document.getElementById("closeConfirmModal");
-  confirmTitle = document.getElementById("confirmTitle");
-  confirmContent = document.getElementById("confirmContent");
-  confirmBtn = document.getElementById("confirmBtn");
-  denyBtn = document.getElementById("denyBtn");
-  giftDescriptionInp = document.getElementById("giftDescriptionInp");
-  giftTitleInp = document.getElementById("giftTitleInp");
-  giftWhereInp = document.getElementById("giftWhereInp");
-  giftLinkInp = document.getElementById("giftLinkInp");
-  multiplePurchases = document.getElementById("multiplePurchases");
-  titleInfoIcon = document.getElementById("titleInfoIcon");
-  urlInfoIcon = document.getElementById("urlInfoIcon");
-  whereInfoIcon = document.getElementById("whereInfoIcon");
-  descriptionInfoIcon = document.getElementById("descriptionInfoIcon");
-  multipleInfoIcon = document.getElementById("multipleInfoIcon");
-  updateGift = document.getElementById("updateGift");
-  backBtn = document.getElementById("backBtn");
-  homeNote = document.getElementById("homeNote");
-  listNote = document.getElementById("listNote");
-  inviteNote = document.getElementById("inviteNote");
+  initializeGiftAddUpdatePage();
 
-  getCurrentUser();
-  commonInitialization();
+  function initializeGiftAddUpdatePage() {
+    try {
+      pageName = "GiftAddUpdate";
+      confirmModal = document.getElementById("confirmModal");
+      closeConfirmModal = document.getElementById("closeConfirmModal");
+      confirmTitle = document.getElementById("confirmTitle");
+      confirmContent = document.getElementById("confirmContent");
+      confirmBtn = document.getElementById("confirmBtn");
+      denyBtn = document.getElementById("denyBtn");
+      giftDescriptionInp = document.getElementById("giftDescriptionInp");
+      giftTitleInp = document.getElementById("giftTitleInp");
+      giftWhereInp = document.getElementById("giftWhereInp");
+      giftLinkInp = document.getElementById("giftLinkInp");
+      multiplePurchases = document.getElementById("multiplePurchases");
+      titleInfoIcon = document.getElementById("titleInfoIcon");
+      urlInfoIcon = document.getElementById("urlInfoIcon");
+      whereInfoIcon = document.getElementById("whereInfoIcon");
+      descriptionInfoIcon = document.getElementById("descriptionInfoIcon");
+      multipleInfoIcon = document.getElementById("multipleInfoIcon");
+      updateGift = document.getElementById("updateGift");
+      backBtn = document.getElementById("backBtn");
+      homeNote = document.getElementById("homeNote");
+      listNote = document.getElementById("listNote");
+      inviteNote = document.getElementById("inviteNote");
 
-  giftAddUpdateElements = [offlineModal, offlineSpan, confirmModal, closeConfirmModal, confirmTitle, confirmContent,
-    confirmBtn, denyBtn, giftDescriptionInp, giftTitleInp, giftWhereInp, giftLinkInp, multiplePurchases, titleInfoIcon,
-    urlInfoIcon, whereInfoIcon, descriptionInfoIcon, multipleInfoIcon, updateGift, homeNote, listNote, inviteNote,
-    notificationModal, notificationTitle, notificationInfo, noteSpan];
+      getCurrentUser();
+      commonInitialization();
 
-  verifyElementIntegrity(giftAddUpdateElements);
+      giftAddUpdateElements = [offlineModal, offlineSpan, confirmModal, closeConfirmModal, confirmTitle, confirmContent,
+        confirmBtn, denyBtn, giftDescriptionInp, giftTitleInp, giftWhereInp, giftLinkInp, multiplePurchases, titleInfoIcon,
+        urlInfoIcon, whereInfoIcon, descriptionInfoIcon, multipleInfoIcon, updateGift, homeNote, listNote, inviteNote,
+        notificationModal, notificationTitle, notificationInfo, noteSpan];
 
-  limitsInitial = firebase.database().ref("limits/");
-  if(!privateListBool) {
-    userGifts = firebase.database().ref("users/" + user.uid + "/giftList/");
-  } else {
-    try{
-      userGifts = firebase.database().ref("users/" + privateList.uid + "/privateList/");
+      verifyElementIntegrity(giftAddUpdateElements);
+
+      limitsInitial = firebase.database().ref("limits/");
+      if (!privateListBool) {
+        userGifts = firebase.database().ref("users/" + user.uid + "/giftList/");
+      } else {
+        try {
+          userGifts = firebase.database().ref("users/" + privateList.uid + "/privateList/");
+        } catch (err) {
+          updateMaintenanceLog("privateList", "\"" + user.userName + "\" failed to connect to the private list owned by \"" + privateList.userName + "\"!");
+          deployNotificationModal(false, "Gift List Error!", "There was an error connecting to " +
+              privateList.uid + "'s private list! Please notify a moderator about this issue!", 5, 3);
+        }
+      }
+
+      databaseQuery();
+
+      initializeInfoIcons();
+      initializeBackBtn();
+      initializeGiftAddBtn();
     } catch (err) {
-      updateMaintenanceLog("privateList", "\"" + user.userName + "\" failed to connect to the private list owned by \"" + privateList.userName + "\"!");
-      deployNotificationModal(false, "Gift List Error!", "There was an error connecting to " +
-          privateList.uid + "'s private list! Please notify a moderator about this issue!", 5, 3);
+      console.log("Critical Error: " + err.toString());
+      updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+          "Error To A Gifty Developer.");
     }
   }
-
-  databaseQuery();
-
-  function initializeBackBtn() {
-    backBtn.innerHTML = buttonText;
-
-    backBtn.onclick = function() {
-      navigation(giftNavigationInt);//PrivateFriendList/Home
-    };
-  }
-
-  function initializeGiftAddBtn() {
-    if (giftPresent) {
-      updateGift.innerHTML = "Update Gift";
-      updateGift.onclick = function () {
-        updateGiftToDB();
-      }
-    } else {
-      currentGift = {
-        title:"",
-        link:"",
-        where:"",
-        description:""
-      }
-      initializeGiftFieldListeners();
-      updateGift.innerHTML = "Add New Gift";
-      updateGift.onclick = function () {
-        addGiftToDB();
-        updateGift.onclick = function () {};
-      };
-    }
-  }
-
-  function initializeInfoIcons() {
-    titleInfoIcon.onclick = function() {
-      deployNotificationModal(false, "Gift Title", "This field is for the title " +
-          "of your gift! This is the only mandatory field.", 4);
-    };
-    urlInfoIcon.onclick = function() {
-      deployNotificationModal(false, "Gift URL", "This field is for a website URL " +
-          "to spur ideas or to be precise about what you would like.", 6);
-    };
-    whereInfoIcon.onclick = function() {
-      deployNotificationModal(false, "Gift Location", "This field is for telling " +
-          "your friends where they would be able to find your gift.", 6);
-    };
-    descriptionInfoIcon.onclick = function() {
-      deployNotificationModal(false, "Gift Description", "This field is for any " +
-          "other details that you would like to add along with your gift. Type away!", 6);
-    };
-    multipleInfoIcon.onclick = function() {
-      deployNotificationModal(false, "Gift Multiples?", "This checkbox allows this " +
-          "gift to be bought more than once. For example, gift cards, candles, or pairs of socks!", 6);
-    };
-  }
-
-  initializeInfoIcons();
-  initializeBackBtn();
-  initializeGiftAddBtn();
 
   function databaseQuery() {
     let fetchLimits = function (postRef) {
@@ -366,6 +323,59 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(limitsInitial);
   }
 };
+
+function initializeBackBtn() {
+  backBtn.innerHTML = buttonText;
+
+  backBtn.onclick = function() {
+    navigation(giftNavigationInt);//PrivateFriendList/Home
+  };
+}
+
+function initializeGiftAddBtn() {
+  if (giftPresent) {
+    updateGift.innerHTML = "Update Gift";
+    updateGift.onclick = function () {
+      updateGiftToDB();
+    }
+  } else {
+    currentGift = {
+      title:"",
+      link:"",
+      where:"",
+      description:""
+    }
+    initializeGiftFieldListeners();
+    updateGift.innerHTML = "Add New Gift";
+    updateGift.onclick = function () {
+      addGiftToDB();
+      updateGift.onclick = function () {};
+    };
+  }
+}
+
+function initializeInfoIcons() {
+  titleInfoIcon.onclick = function() {
+    deployNotificationModal(false, "Gift Title", "This field is for the title " +
+        "of your gift! This is the only mandatory field.", 4);
+  };
+  urlInfoIcon.onclick = function() {
+    deployNotificationModal(false, "Gift URL", "This field is for a website URL " +
+        "to spur ideas or to be precise about what you would like.", 6);
+  };
+  whereInfoIcon.onclick = function() {
+    deployNotificationModal(false, "Gift Location", "This field is for telling " +
+        "your friends where they would be able to find your gift.", 6);
+  };
+  descriptionInfoIcon.onclick = function() {
+    deployNotificationModal(false, "Gift Description", "This field is for any " +
+        "other details that you would like to add along with your gift. Type away!", 6);
+  };
+  multipleInfoIcon.onclick = function() {
+    deployNotificationModal(false, "Gift Multiples?", "This checkbox allows this " +
+        "gift to be bought more than once. For example, gift cards, candles, or pairs of socks!", 6);
+  };
+}
 
 function forceNewArray(inputArray) {
   let tempArray = [];
