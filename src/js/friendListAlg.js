@@ -138,86 +138,76 @@ function generateCustomGift() {
 }
 
 window.onload = function instantiate() {
-  pageName = "FriendList";
-  notificationBtn = document.getElementById("notificationButton");
-  confirmModal = document.getElementById("confirmModal");
-  closeConfirmModal = document.getElementById("closeConfirmModal");
-  confirmTitle = document.getElementById("confirmTitle");
-  confirmContent = document.getElementById("confirmContent");
-  confirmBtn = document.getElementById("confirmBtn");
-  denyBtn = document.getElementById("denyBtn");
-  buyerDataViewModal = document.getElementById("buyerDataViewModal");
-  closeBuyerDataViewModal = document.getElementById("closeBuyerDataViewModal");
-  buyerDataViewTitle = document.getElementById("buyerDataViewTitle");
-  buyerDataViewText = document.getElementById("buyerDataViewText");
-  buyerDataViewListContainer = document.getElementById("buyerDataViewListContainer");
-  testBuyerDataView = document.getElementById("testBuyerDataView");
-  buyerDataViewBack = document.getElementById("buyerDataViewBack");
-  backBtn = document.getElementById("backBtn");
-  listNote = document.getElementById("listNote");
-  inviteNote = document.getElementById("inviteNote");
-  giftModal = document.getElementById("giftModal");
-  closeGiftModal = document.getElementById("closeGiftModal");
-  giftTitle = document.getElementById("giftTitle");
-  giftLink = document.getElementById("giftLink");
-  giftWhere = document.getElementById("giftWhere");
-  giftDescription = document.getElementById("giftDescription");
-  giftBought = document.getElementById("giftBought");
-  giftBuyerList = document.getElementById("giftBuyerList");
-  giftCreationDate = document.getElementById("giftCreationDate");
-  giftBuy = document.getElementById("giftBuy");
-  giftDontBuy = document.getElementById("giftDontBuy");
+  initializeFriendListPage();
 
-  getCurrentUser();
-  commonInitialization();
+  function initializeFriendListPage() {
+    try {
+      pageName = "FriendList";
+      notificationBtn = document.getElementById("notificationButton");
+      confirmModal = document.getElementById("confirmModal");
+      closeConfirmModal = document.getElementById("closeConfirmModal");
+      confirmTitle = document.getElementById("confirmTitle");
+      confirmContent = document.getElementById("confirmContent");
+      confirmBtn = document.getElementById("confirmBtn");
+      denyBtn = document.getElementById("denyBtn");
+      buyerDataViewModal = document.getElementById("buyerDataViewModal");
+      closeBuyerDataViewModal = document.getElementById("closeBuyerDataViewModal");
+      buyerDataViewTitle = document.getElementById("buyerDataViewTitle");
+      buyerDataViewText = document.getElementById("buyerDataViewText");
+      buyerDataViewListContainer = document.getElementById("buyerDataViewListContainer");
+      testBuyerDataView = document.getElementById("testBuyerDataView");
+      buyerDataViewBack = document.getElementById("buyerDataViewBack");
+      backBtn = document.getElementById("backBtn");
+      listNote = document.getElementById("listNote");
+      inviteNote = document.getElementById("inviteNote");
+      giftModal = document.getElementById("giftModal");
+      closeGiftModal = document.getElementById("closeGiftModal");
+      giftTitle = document.getElementById("giftTitle");
+      giftLink = document.getElementById("giftLink");
+      giftWhere = document.getElementById("giftWhere");
+      giftDescription = document.getElementById("giftDescription");
+      giftBought = document.getElementById("giftBought");
+      giftBuyerList = document.getElementById("giftBuyerList");
+      giftCreationDate = document.getElementById("giftCreationDate");
+      giftBuy = document.getElementById("giftBuy");
+      giftDontBuy = document.getElementById("giftDontBuy");
 
-  friendListElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, confirmModal, closeConfirmModal,
-    confirmTitle, confirmContent, confirmBtn, denyBtn, buyerDataViewModal, closeBuyerDataViewModal, buyerDataViewTitle,
-    buyerDataViewText, buyerDataViewListContainer, testBuyerDataView, buyerDataViewBack, noteSpan, backBtn, listNote,
-    inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan, giftModal, closeGiftModal, giftTitle,
-    giftLink, giftWhere, giftDescription, giftBought, giftBuyerList, giftCreationDate, giftBuy, giftDontBuy, testData];
+      getCurrentUser();
+      commonInitialization();
 
-  verifyElementIntegrity(friendListElements);
+      friendListElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, confirmModal, closeConfirmModal,
+        confirmTitle, confirmContent, confirmBtn, denyBtn, buyerDataViewModal, closeBuyerDataViewModal, buyerDataViewTitle,
+        buyerDataViewText, buyerDataViewListContainer, testBuyerDataView, buyerDataViewBack, noteSpan, backBtn, listNote,
+        inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan, giftModal, closeGiftModal, giftTitle,
+        giftLink, giftWhere, giftDescription, giftBought, giftBuyerList, giftCreationDate, giftBuy, giftDontBuy, testData];
 
-  userBase = firebase.database().ref("users/");
-  userGifts = firebase.database().ref("users/" + giftUser.uid + "/giftList");
-  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+      verifyElementIntegrity(friendListElements);
 
-  if (createdJokeGift) {
-    updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg... (" + pageName +
-        " Page) It was only generated though, they didn't click on it... yet.");
-  }
+      userBase = firebase.database().ref("users/");
+      userGifts = firebase.database().ref("users/" + giftUser.uid + "/giftList");
+      userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
-  databaseQuery();
-  alternateButtonLabel(listNote, "Gift Lists", "Public");
-
-  for(let i = 0; i < userArr.length; i++){
-    userUserNames.push(userArr[i].userName);
-    userUIDList.push(userArr[i].uid);
-  }
-
-  function initializeSwapBtn() {
-    let publicSwapFirstName = findFirstNameInFullName(giftUser.name);
-    swapList.innerHTML = "View " + publicSwapFirstName + "'s <br/>Private List";
-    swapList.onclick = function () {
-      sessionStorage.setItem("validGiftUser", JSON.stringify(giftUser));
-      navigation(10);//PrivateFriendList
-    };
-  }
-
-  function initializeBackBtn() {
-    backBtn.innerHTML = "Back To Gift Lists";
-    backBtn.onclick = function () {
-      if (moderationSet == 1) {
-        navigation(14);//Moderation
-      } else {
-        navigation(3);//Lists
+      if (createdJokeGift) {
+        updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg... (" + pageName +
+            " Page) It was only generated though, they didn't click on it... yet.");
       }
-    };
-  }
 
-  initializeBackBtn();
-  initializeSwapBtn();
+      databaseQuery();
+      alternateButtonLabel(listNote, "Gift Lists", "Public");
+
+      for (let i = 0; i < userArr.length; i++) {
+        userUserNames.push(userArr[i].userName);
+        userUIDList.push(userArr[i].uid);
+      }
+
+      initializeBackBtn();
+      initializeSwapBtn();
+    } catch (err) {
+      console.log("Critical Error: " + err.toString());
+      updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+          "Error To A Gifty Developer.");
+    }
+  }
 
   function databaseQuery() {
     let tempGiftCheckIndex = 0;
@@ -391,6 +381,26 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 };
+
+function initializeSwapBtn() {
+  let publicSwapFirstName = findFirstNameInFullName(giftUser.name);
+  swapList.innerHTML = "View " + publicSwapFirstName + "'s <br/>Private List";
+  swapList.onclick = function () {
+    sessionStorage.setItem("validGiftUser", JSON.stringify(giftUser));
+    navigation(10);//PrivateFriendList
+  };
+}
+
+function initializeBackBtn() {
+  backBtn.innerHTML = "Back To Gift Lists";
+  backBtn.onclick = function () {
+    if (moderationSet == 1) {
+      navigation(14);//Moderation
+    } else {
+      navigation(3);//Lists
+    }
+  };
+}
 
 function findRemovedGift(oldArr, newArr) {
   let removedGiftIndex = -1;
