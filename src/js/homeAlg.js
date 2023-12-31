@@ -477,83 +477,78 @@ function collectUserBoughtGifts(){
 }
 
 window.onload = function instantiate() {
-  pageName = "Home";
-  notificationBtn = document.getElementById("notificationButton");
-  confirmModal = document.getElementById("confirmModal");
-  closeConfirmModal = document.getElementById("closeConfirmModal");
-  confirmTitle = document.getElementById("confirmTitle");
-  confirmContent = document.getElementById("confirmContent");
-  confirmBtn = document.getElementById("confirmBtn");
-  denyBtn = document.getElementById("denyBtn");
-  inviteNote = document.getElementById("inviteNote");
-  reviewGifts = document.getElementById("reviewGifts");
-  boughtGifts = document.getElementById("boughtGifts");
-  addGift = document.getElementById("addGift");
-  giftModal = document.getElementById("giftModal");
-  giftTitle = document.getElementById("giftTitle");
-  giftLink = document.getElementById("giftLink");
-  giftWhere = document.getElementById("giftWhere");
-  giftDescription = document.getElementById("giftDescription");
-  giftCreationDate = document.getElementById("giftCreationDate");
-  giftUpdate = document.getElementById("giftUpdate");
-  giftDelete = document.getElementById("giftDelete");
-  closeGiftModal = document.getElementById("closeGiftModal");
-  reviewModal = document.getElementById("reviewModal");
-  closeReviewModal = document.getElementById("closeReviewModal");
-  reviewTitle = document.getElementById("reviewTitle");
-  reviewDetails = document.getElementById("reviewDetails");
-  reviewListContainer = document.getElementById("reviewListContainer");
-  testReview = document.getElementById("testReview");
-  reviewConfirm = document.getElementById("reviewConfirm");
-  reviewCancel = document.getElementById("reviewCancel");
+  initializeHomePage();
 
-  getCurrentUser();
-  commonInitialization();
+  function initializeHomePage() {
+    try {
+      pageName = "Home";
+      notificationBtn = document.getElementById("notificationButton");
+      confirmModal = document.getElementById("confirmModal");
+      closeConfirmModal = document.getElementById("closeConfirmModal");
+      confirmTitle = document.getElementById("confirmTitle");
+      confirmContent = document.getElementById("confirmContent");
+      confirmBtn = document.getElementById("confirmBtn");
+      denyBtn = document.getElementById("denyBtn");
+      inviteNote = document.getElementById("inviteNote");
+      reviewGifts = document.getElementById("reviewGifts");
+      boughtGifts = document.getElementById("boughtGifts");
+      addGift = document.getElementById("addGift");
+      giftModal = document.getElementById("giftModal");
+      giftTitle = document.getElementById("giftTitle");
+      giftLink = document.getElementById("giftLink");
+      giftWhere = document.getElementById("giftWhere");
+      giftDescription = document.getElementById("giftDescription");
+      giftCreationDate = document.getElementById("giftCreationDate");
+      giftUpdate = document.getElementById("giftUpdate");
+      giftDelete = document.getElementById("giftDelete");
+      closeGiftModal = document.getElementById("closeGiftModal");
+      reviewModal = document.getElementById("reviewModal");
+      closeReviewModal = document.getElementById("closeReviewModal");
+      reviewTitle = document.getElementById("reviewTitle");
+      reviewDetails = document.getElementById("reviewDetails");
+      reviewListContainer = document.getElementById("reviewListContainer");
+      testReview = document.getElementById("testReview");
+      reviewConfirm = document.getElementById("reviewConfirm");
+      reviewCancel = document.getElementById("reviewCancel");
 
-  homeElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, confirmModal, closeConfirmModal,
-    confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal, notificationTitle, notificationInfo,
-    noteSpan, inviteNote, boughtGifts, addGift, giftModal, giftTitle, giftLink, giftWhere, giftDescription,
-    giftCreationDate, giftUpdate, giftDelete, closeGiftModal, reviewModal, closeReviewModal, reviewTitle,
-    reviewDetails, reviewListContainer, testReview, reviewConfirm, reviewCancel, testData];
+      getCurrentUser();
+      commonInitialization();
 
-  verifyElementIntegrity(homeElements);
-  checkUserErrors();
-  collectUserBoughtGifts();
+      homeElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, confirmModal, closeConfirmModal,
+        confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal, notificationTitle, notificationInfo,
+        noteSpan, inviteNote, boughtGifts, addGift, giftModal, giftTitle, giftLink, giftWhere, giftDescription,
+        giftCreationDate, giftUpdate, giftDelete, closeGiftModal, reviewModal, closeReviewModal, reviewTitle,
+        reviewDetails, reviewListContainer, testReview, reviewConfirm, reviewCancel, testData];
 
-  userBase = firebase.database().ref("users/");
-  userGifts = firebase.database().ref("users/" + user.uid + "/giftList");
-  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-  limitsInitial = firebase.database().ref("limits/");
+      verifyElementIntegrity(homeElements);
+      checkUserErrors();
+      collectUserBoughtGifts();
 
-  databaseQuery();
+      userBase = firebase.database().ref("users/");
+      userGifts = firebase.database().ref("users/" + user.uid + "/giftList");
+      userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+      limitsInitial = firebase.database().ref("limits/");
 
-  if (setYearlyReviewBool) {
-    firebase.database().ref("users/" + user.uid).update({
-      yearlyReview: 0
-    });
-  }
-  if (setNextYearReviewBool) {
-    firebase.database().ref("users/" + user.uid).update({
-      yearlyReview: currentYear
-    });
-  }
+      databaseQuery();
 
-  function initializeBoughtGiftsBtn() {
-    boughtGifts.innerHTML = "Bought Gifts";
-    boughtGifts.onclick = function () {
-      if (userBoughtGifts.length == 0) {
-        deployNotificationModal(false, "No Bought Gifts!", "You haven't bought any " +
-            "gifts yet. Buy some gifts from some friends first!");
-      } else {
-        sessionStorage.setItem("boughtGifts", JSON.stringify(userBoughtGifts));
-        sessionStorage.setItem("boughtGiftsUIDs", JSON.stringify(userBoughtGiftsUIDs));
-        sessionStorage.setItem("boughtGiftsUsers", JSON.stringify(userBoughtGiftsUsers));
-        navigation(7);//BoughtGifts
+      if (setYearlyReviewBool) {
+        firebase.database().ref("users/" + user.uid).update({
+          yearlyReview: 0
+        });
       }
-    };
-  }
+      if (setNextYearReviewBool) {
+        firebase.database().ref("users/" + user.uid).update({
+          yearlyReview: currentYear
+        });
+      }
 
-  initializeBoughtGiftsBtn();
+      initializeBoughtGiftsBtn();
+    } catch (err) {
+      console.log("Critical Error: " + err.toString());
+      updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+          "Error To A Gifty Developer.");
+    }
+  }
 
   function databaseQuery() {
     let fetchData = function (postRef) {
@@ -717,6 +712,21 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(limitsInitial);
   }
 };
+
+function initializeBoughtGiftsBtn() {
+  boughtGifts.innerHTML = "Bought Gifts";
+  boughtGifts.onclick = function () {
+    if (userBoughtGifts.length == 0) {
+      deployNotificationModal(false, "No Bought Gifts!", "You haven't bought any " +
+          "gifts yet. Buy some gifts from some friends first!");
+    } else {
+      sessionStorage.setItem("boughtGifts", JSON.stringify(userBoughtGifts));
+      sessionStorage.setItem("boughtGiftsUIDs", JSON.stringify(userBoughtGiftsUIDs));
+      sessionStorage.setItem("boughtGiftsUsers", JSON.stringify(userBoughtGiftsUsers));
+      navigation(7);//BoughtGifts
+    }
+  };
+}
 
 function createGiftElement(uid) {
   let giftIndex = findUIDItemInArr(uid, giftArr, true);
