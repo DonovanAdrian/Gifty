@@ -50,39 +50,45 @@ function getCurrentUser(){
 }
 
 window.onload = function instantiate() {
-  pageName = "Lists";
-  notificationBtn = document.getElementById("notificationButton");
-  inviteNote = document.getElementById("inviteNote");
-  privateMessageModal = document.getElementById("privateMessageModal");
-  closeUserModal = document.getElementById("closeUserModal");
-  userModal = document.getElementById("userModal");
-  userTitle = document.getElementById("userTitle");
-  publicList = document.getElementById("publicList");
-  privateList = document.getElementById("privateList");
-  multipleGiftCaveat = document.getElementById("multipleGiftCaveat");
-  sendPrivateMessage = document.getElementById("sendPrivateMessage");
-  closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
-  privateMessageInp = document.getElementById("privateMessageInp");
-  sendMsg = document.getElementById("sendMsg");
-  cancelMsg = document.getElementById("cancelMsg");
+  try {
+    pageName = "Lists";
+    notificationBtn = document.getElementById("notificationButton");
+    inviteNote = document.getElementById("inviteNote");
+    privateMessageModal = document.getElementById("privateMessageModal");
+    closeUserModal = document.getElementById("closeUserModal");
+    userModal = document.getElementById("userModal");
+    userTitle = document.getElementById("userTitle");
+    publicList = document.getElementById("publicList");
+    privateList = document.getElementById("privateList");
+    multipleGiftCaveat = document.getElementById("multipleGiftCaveat");
+    sendPrivateMessage = document.getElementById("sendPrivateMessage");
+    closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
+    privateMessageInp = document.getElementById("privateMessageInp");
+    sendMsg = document.getElementById("sendMsg");
+    cancelMsg = document.getElementById("cancelMsg");
 
-  getCurrentUser();
-  commonInitialization();
-  initializeSecretSantaListPageVars();
+    getCurrentUser();
+    commonInitialization();
+    initializeSecretSantaListPageVars();
 
-  listsElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
-    notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, testData, userTitle,
-    publicList, privateList, sendPrivateMessage, closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg];
+    listsElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
+      notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, testData, userTitle,
+      publicList, privateList, sendPrivateMessage, closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg];
 
-  verifyElementIntegrity(listsElements);
+    verifyElementIntegrity(listsElements);
 
-  userBase = firebase.database().ref("users/");
-  userFriends = firebase.database().ref("users/" + user.uid + "/friends");
-  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-  limitsInitial = firebase.database().ref("limits/");
+    userBase = firebase.database().ref("users/");
+    userFriends = firebase.database().ref("users/" + user.uid + "/friends");
+    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+    limitsInitial = firebase.database().ref("limits/");
 
-  databaseQuery();
-  initializeSecretSantaDB();
+    databaseQuery();
+    initializeSecretSantaDB();
+  } catch (err) {
+    console.log("Critical Error: " + err.toString());
+    updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+        "Error To A Gifty Developer.");
+  }
 
   function databaseQuery() {
     let fetchData = function (postRef) {
