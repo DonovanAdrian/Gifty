@@ -172,38 +172,45 @@ function fetchConfigFile(){
 }
 
 window.onload = function instantiate() {
-  failedNavNum = 1;
-  pageName = "Index";
-  username = document.getElementById("username");
-  pin = document.getElementById("pin");
-  loginBtn = document.getElementById("loginBtn");
-  loginInfo = document.getElementById("loginInfo");
-  signUpFld = document.getElementById("signUpFld");
-
-  loginBtn.innerHTML = "Please Wait...";
-  lastLoginStatus = "Please Wait...";
-  initializeSignUpTextInterval();
   try {
-    config = JSON.parse(sessionStorage.config);
-  } catch (err) {}
-  if (config == undefined) {
-    sessionStorage.clear();
-    initializeSupplementalElements();
-    fetchConfigFile();
-  } else {
-    sessionStorage.clear();
-    sessionStorage.setItem("config", JSON.stringify(config));
-    initializeSupplementalElements();
-    commonInitialization();
-    loginQuery();
+    failedNavNum = 1;
+    pageName = "Index";
+    username = document.getElementById("username");
+    pin = document.getElementById("pin");
+    loginBtn = document.getElementById("loginBtn");
+    loginInfo = document.getElementById("loginInfo");
+    signUpFld = document.getElementById("signUpFld");
+
+    loginBtn.innerHTML = "Please Wait...";
+    lastLoginStatus = "Please Wait...";
+    initializeSignUpTextInterval();
+    try {
+      config = JSON.parse(sessionStorage.config);
+    } catch (err) {
+    }
+    if (config == undefined) {
+      sessionStorage.clear();
+      initializeSupplementalElements();
+      fetchConfigFile();
+    } else {
+      sessionStorage.clear();
+      sessionStorage.setItem("config", JSON.stringify(config));
+      initializeSupplementalElements();
+      commonInitialization();
+      loginQuery();
+    }
+
+    indexElements = [username, pin, loginBtn, loginInfo, signUpFld, offlineModal, offlineSpan, notificationModal,
+      notificationTitle, notificationInfo, noteSpan];
+    verifyElementIntegrity(indexElements);
+
+    backgroundAlternatorLimit = 15000;
+    backgroundAlternator();
+  } catch (err) {
+    console.log("Critical Error: " + err.toString());
+    updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+        "Error To A Gifty Developer.");
   }
-
-  indexElements = [username, pin, loginBtn, loginInfo, signUpFld, offlineModal, offlineSpan, notificationModal,
-    notificationTitle, notificationInfo, noteSpan];
-  verifyElementIntegrity(indexElements);
-
-  backgroundAlternatorLimit = 15000;
-  backgroundAlternator();
 };
 
 function loginQuery() {
