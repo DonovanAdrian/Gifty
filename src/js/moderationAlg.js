@@ -165,565 +165,161 @@ function checkTicketCookie() {
 }
 
 window.onload = function instantiate() {
-  failedNavNum = 14;
-  pageName = "Moderation";
-  backBtn = document.getElementById("backBtn");
-  ticketCount = document.getElementById("ticketCount");
-  inviteNote = document.getElementById("inviteNote");
-  nukeNoteInfoIcon = document.getElementById("nukeNoteInfoIcon");
-  nukeAllUserNotifications = document.getElementById("nukeAllUserNotifications");
-  nukeScoreInfoIcon = document.getElementById("nukeScoreInfoIcon");
-  nukeAllUserScores = document.getElementById("nukeAllUserScores");
-  giftLinkInfoIcon = document.getElementById("giftLinkInfoIcon");
-  giftLinkBtn = document.getElementById("giftLinkBtn");
-  limitsInfoIcon = document.getElementById("limitsInfoIcon");
-  limitsBtn = document.getElementById("limitsBtn");
-  userListInfoIcon = document.getElementById("userListInfoIcon");
-  userListDropDown = document.getElementById("userListDropDown");
-  showNone = document.getElementById("showNone");
-  showUID = document.getElementById("showUID");
-  showName = document.getElementById("showName");
-  showLastLogin = document.getElementById("showLastLogin");
-  showActions = document.getElementById("showActions");
-  showReview = document.getElementById("showReview");
-  showUserScore = document.getElementById("showUserScore");
-  showShareCode = document.getElementById("showShareCode");
-  showGifts = document.getElementById("showGifts");
-  showFriends = document.getElementById("showFriends");
-  showNotifications = document.getElementById("showNotifications");
-  showRelationships = document.getElementById("showRelationships");
-  showModerator = document.getElementById("showModerator");
-  showFamilyAssignment = document.getElementById("showFamilyAssignment");
-  showSecretSanta = document.getElementById("showSecretSanta");
-  showCurrentSecretSanta = document.getElementById("showCurrentSecretSanta");
-  showLastSecretSanta = document.getElementById("showLastSecretSanta");
-  globalNoteInfoIcon = document.getElementById("globalNoteInfoIcon");
-  sendGlobalNotification = document.getElementById("sendGlobalNotification");
-  loginFxnInfoIcon = document.getElementById("loginFxnInfoIcon");
-  loginFxnBtn = document.getElementById("loginFxnBtn");
-  listLimitInfoIcon = document.getElementById("listLimitInfoIcon");
-  listLimitBtn = document.getElementById("listLimitBtn");
-  confirmModal = document.getElementById("confirmModal");
-  closeConfirmModal = document.getElementById("closeConfirmModal");
-  confirmTitle = document.getElementById("confirmTitle");
-  confirmContent = document.getElementById("confirmContent");
-  confirmBtn = document.getElementById("confirmBtn");
-  denyBtn = document.getElementById("denyBtn");
-  databaseLimitsModal = document.getElementById("databaseLimitsModal");
-  closeDatabaseLimitsModal = document.getElementById("closeDatabaseLimitsModal");
-  giftLimitInp = document.getElementById("giftLimitInp");
-  userLimitInp = document.getElementById("userLimitInp");
-  confirmLimits = document.getElementById("confirmLimits");
-  cancelLimits = document.getElementById("cancelLimits");
-  loginDisabledModal = document.getElementById("loginDisabledModal");
-  closeLoginDisabledModal = document.getElementById("closeLoginDisabledModal");
-  loginDisabledTitle = document.getElementById("loginDisabledTitle");
-  loginDisabledDesc = document.getElementById("loginDisabledDesc");
-  loginDisabledInp = document.getElementById("loginDisabledInp");
-  loginDisabledInfo = document.getElementById("loginDisabledInfo");
-  resetDefaultLoginDisabledBtn = document.getElementById("resetDefaultLoginDisabledBtn");
-  confirmLoginDisabled = document.getElementById("confirmLoginDisabled");
-  cancelLoginDisabled = document.getElementById("cancelLoginDisabled");
-  userOptionsBtn = document.getElementById("userOptionsBtn");
-  userOptionsModal = document.getElementById("userOptionsModal");
-  userOptionsSpan = document.getElementById("userOptionsSpan");
-  settingsNote = document.getElementById("settingsNote");
-  userModal = document.getElementById("userModal");
-  closeUserModal = document.getElementById("closeUserModal");
-  userName = document.getElementById("userName");
-  userUID = document.getElementById("userUID");
-  userUserName = document.getElementById("userUserName");
-  userPublicGifts = document.getElementById("userPublicGifts");
-  userPrivateGifts = document.getElementById("userPrivateGifts");
-  userFriendsList = document.getElementById("userFriendsList");
-  userRelationshipList = document.getElementById("userRelationshipList");
-  userNotificationsList = document.getElementById("userNotificationsList");
-  userLastLogin = document.getElementById("userLastLogin");
-  userLastAction = document.getElementById("userLastAction");
-  userLastReview = document.getElementById("userLastReview");
-  userScoreElem = document.getElementById("userScoreElem");
-  userFamilyName = document.getElementById("userFamilyName");
-  userSecretSanta = document.getElementById("userSecretSanta");
-  userSecretSantaPrior = document.getElementById("userSecretSantaPrior");
-  userSecretSantaBtn = document.getElementById("userSecretSantaBtn");
-  userPassword = document.getElementById("userPassword");
-  moderatorOp = document.getElementById("moderatorOp");
-  sendPrivateMessage = document.getElementById("sendPrivateMessage");
-  warnUser = document.getElementById("warnUser");
-  banUser = document.getElementById("banUser");
-  userDataViewModal = document.getElementById("userDataViewModal");
-  closeUserDataViewModal = document.getElementById("closeUserDataViewModal");
-  userDataViewTitle = document.getElementById("userDataViewTitle");
-  userDataViewText = document.getElementById("userDataViewText");
-  userDataViewListContainer = document.getElementById("userDataViewListContainer");
-  userDataViewBack = document.getElementById("userDataViewBack");
-  testUserDataView = document.getElementById("testUserDataView");
+  try {
+    failedNavNum = 14;
+    pageName = "Moderation";
+    backBtn = document.getElementById("backBtn");
+    ticketCount = document.getElementById("ticketCount");
+    inviteNote = document.getElementById("inviteNote");
+    nukeNoteInfoIcon = document.getElementById("nukeNoteInfoIcon");
+    nukeAllUserNotifications = document.getElementById("nukeAllUserNotifications");
+    nukeScoreInfoIcon = document.getElementById("nukeScoreInfoIcon");
+    nukeAllUserScores = document.getElementById("nukeAllUserScores");
+    giftLinkInfoIcon = document.getElementById("giftLinkInfoIcon");
+    giftLinkBtn = document.getElementById("giftLinkBtn");
+    limitsInfoIcon = document.getElementById("limitsInfoIcon");
+    limitsBtn = document.getElementById("limitsBtn");
+    userListInfoIcon = document.getElementById("userListInfoIcon");
+    userListDropDown = document.getElementById("userListDropDown");
+    showNone = document.getElementById("showNone");
+    showUID = document.getElementById("showUID");
+    showName = document.getElementById("showName");
+    showLastLogin = document.getElementById("showLastLogin");
+    showActions = document.getElementById("showActions");
+    showReview = document.getElementById("showReview");
+    showUserScore = document.getElementById("showUserScore");
+    showShareCode = document.getElementById("showShareCode");
+    showGifts = document.getElementById("showGifts");
+    showFriends = document.getElementById("showFriends");
+    showNotifications = document.getElementById("showNotifications");
+    showRelationships = document.getElementById("showRelationships");
+    showModerator = document.getElementById("showModerator");
+    showFamilyAssignment = document.getElementById("showFamilyAssignment");
+    showSecretSanta = document.getElementById("showSecretSanta");
+    showCurrentSecretSanta = document.getElementById("showCurrentSecretSanta");
+    showLastSecretSanta = document.getElementById("showLastSecretSanta");
+    globalNoteInfoIcon = document.getElementById("globalNoteInfoIcon");
+    sendGlobalNotification = document.getElementById("sendGlobalNotification");
+    loginFxnInfoIcon = document.getElementById("loginFxnInfoIcon");
+    loginFxnBtn = document.getElementById("loginFxnBtn");
+    listLimitInfoIcon = document.getElementById("listLimitInfoIcon");
+    listLimitBtn = document.getElementById("listLimitBtn");
+    confirmModal = document.getElementById("confirmModal");
+    closeConfirmModal = document.getElementById("closeConfirmModal");
+    confirmTitle = document.getElementById("confirmTitle");
+    confirmContent = document.getElementById("confirmContent");
+    confirmBtn = document.getElementById("confirmBtn");
+    denyBtn = document.getElementById("denyBtn");
+    databaseLimitsModal = document.getElementById("databaseLimitsModal");
+    closeDatabaseLimitsModal = document.getElementById("closeDatabaseLimitsModal");
+    giftLimitInp = document.getElementById("giftLimitInp");
+    userLimitInp = document.getElementById("userLimitInp");
+    confirmLimits = document.getElementById("confirmLimits");
+    cancelLimits = document.getElementById("cancelLimits");
+    loginDisabledModal = document.getElementById("loginDisabledModal");
+    closeLoginDisabledModal = document.getElementById("closeLoginDisabledModal");
+    loginDisabledTitle = document.getElementById("loginDisabledTitle");
+    loginDisabledDesc = document.getElementById("loginDisabledDesc");
+    loginDisabledInp = document.getElementById("loginDisabledInp");
+    loginDisabledInfo = document.getElementById("loginDisabledInfo");
+    resetDefaultLoginDisabledBtn = document.getElementById("resetDefaultLoginDisabledBtn");
+    confirmLoginDisabled = document.getElementById("confirmLoginDisabled");
+    cancelLoginDisabled = document.getElementById("cancelLoginDisabled");
+    userOptionsBtn = document.getElementById("userOptionsBtn");
+    userOptionsModal = document.getElementById("userOptionsModal");
+    userOptionsSpan = document.getElementById("userOptionsSpan");
+    settingsNote = document.getElementById("settingsNote");
+    userModal = document.getElementById("userModal");
+    closeUserModal = document.getElementById("closeUserModal");
+    userName = document.getElementById("userName");
+    userUID = document.getElementById("userUID");
+    userUserName = document.getElementById("userUserName");
+    userPublicGifts = document.getElementById("userPublicGifts");
+    userPrivateGifts = document.getElementById("userPrivateGifts");
+    userFriendsList = document.getElementById("userFriendsList");
+    userRelationshipList = document.getElementById("userRelationshipList");
+    userNotificationsList = document.getElementById("userNotificationsList");
+    userLastLogin = document.getElementById("userLastLogin");
+    userLastAction = document.getElementById("userLastAction");
+    userLastReview = document.getElementById("userLastReview");
+    userScoreElem = document.getElementById("userScoreElem");
+    userFamilyName = document.getElementById("userFamilyName");
+    userSecretSanta = document.getElementById("userSecretSanta");
+    userSecretSantaPrior = document.getElementById("userSecretSantaPrior");
+    userSecretSantaBtn = document.getElementById("userSecretSantaBtn");
+    userPassword = document.getElementById("userPassword");
+    moderatorOp = document.getElementById("moderatorOp");
+    sendPrivateMessage = document.getElementById("sendPrivateMessage");
+    warnUser = document.getElementById("warnUser");
+    banUser = document.getElementById("banUser");
+    userDataViewModal = document.getElementById("userDataViewModal");
+    closeUserDataViewModal = document.getElementById("closeUserDataViewModal");
+    userDataViewTitle = document.getElementById("userDataViewTitle");
+    userDataViewText = document.getElementById("userDataViewText");
+    userDataViewListContainer = document.getElementById("userDataViewListContainer");
+    userDataViewBack = document.getElementById("userDataViewBack");
+    testUserDataView = document.getElementById("testUserDataView");
+    moderationTicketViewModal = document.getElementById("moderationTicketViewModal");
+    closeModerationTicketViewModal = document.getElementById("closeModerationTicketViewModal");
+    moderationTicketViewTitle = document.getElementById("moderationTicketViewTitle");
+    moderationTicketViewText = document.getElementById("moderationTicketViewText");
+    moderationTicketViewLastTicket = document.getElementById("moderationTicketViewLastTicket");
+    moderationTicketViewOldestTicket = document.getElementById("moderationTicketViewOldestTicket");
+    moderationTicketViewListContainer = document.getElementById("moderationTicketViewListContainer");
+    testModerationTicketView = document.getElementById("testModerationTicketView");
+    moderationTicketViewNavigate = document.getElementById("moderationTicketViewNavigate");
+    privateMessageModal = document.getElementById("privateMessageModal");
+    closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
+    globalMsgTitle = document.getElementById("globalMsgTitle");
+    globalMsgInp = document.getElementById("globalMsgInp");
+    sendMsg = document.getElementById("sendMsg");
+    cancelMsg = document.getElementById("cancelMsg");
 
-  moderationTicketViewModal = document.getElementById("moderationTicketViewModal");
-  closeModerationTicketViewModal = document.getElementById("closeModerationTicketViewModal");
-  moderationTicketViewTitle = document.getElementById("moderationTicketViewTitle");
-  moderationTicketViewText = document.getElementById("moderationTicketViewText");
-  moderationTicketViewLastTicket = document.getElementById("moderationTicketViewLastTicket");
-  moderationTicketViewOldestTicket = document.getElementById("moderationTicketViewOldestTicket");
-  moderationTicketViewListContainer = document.getElementById("moderationTicketViewListContainer");
-  testModerationTicketView = document.getElementById("testModerationTicketView");
-  moderationTicketViewNavigate = document.getElementById("moderationTicketViewNavigate");
-  privateMessageModal = document.getElementById("privateMessageModal");
-  closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
-  globalMsgTitle = document.getElementById("globalMsgTitle");
-  globalMsgInp = document.getElementById("globalMsgInp");
-  sendMsg = document.getElementById("sendMsg");
-  cancelMsg = document.getElementById("cancelMsg");
+    sessionStorage.setItem("moderationSet", moderationSet);
+    getCurrentUserCommon();
+    commonInitialization();
+    checkModerationCookie();
+    checkTicketCookie();
+    checkUserCookie();
 
-  sessionStorage.setItem("moderationSet", moderationSet);
-  getCurrentUserCommon();
-  commonInitialization();
-  checkModerationCookie();
-  checkTicketCookie();
-  checkUserCookie();
+    moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, confirmModal, closeConfirmModal,
+      confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal, notificationTitle, notificationInfo, noteSpan,
+      privateMessageModal, sendGlobalNotification, nukeAllUserNotifications, nukeAllUserScores, loginFxnBtn, giftLinkBtn,
+      limitsBtn, databaseLimitsModal, closeDatabaseLimitsModal, giftLimitInp, userLimitInp, confirmLimits, cancelLimits,
+      loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal, loginDisabledDesc, loginDisabledInp,
+      loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown,
+      showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore, showShareCode, showGifts,
+      showFriends, showNotifications, showRelationships, showModerator, showFamilyAssignment, showSecretSanta,
+      showCurrentSecretSanta, showLastSecretSanta, sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal,
+      userOptionsSpan, settingsNote, testData, closeUserModal, userName, userUID, userUserName, userPublicGifts,
+      userPrivateGifts, userFriendsList, userRelationshipList, userNotificationsList, userLastLogin, userLastAction,
+      userLastReview, userScoreElem, userFamilyName, userSecretSanta, userSecretSantaPrior, userSecretSantaBtn,
+      userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser, userDataViewModal, closeUserDataViewModal,
+      userDataViewTitle, userDataViewText, userDataViewListContainer, userDataViewBack, testUserDataView,
+      moderationTicketViewModal, closeModerationTicketViewModal, moderationTicketViewTitle, moderationTicketViewText,
+      moderationTicketViewLastTicket, moderationTicketViewOldestTicket, moderationTicketViewListContainer,
+      testModerationTicketView, moderationTicketViewNavigate, closePrivateMessageModal, globalMsgTitle, globalMsgInp,
+      sendMsg, cancelMsg];
 
-  moderationElements = [dataListContainer, offlineModal, offlineSpan, inviteNote, confirmModal, closeConfirmModal,
-    confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal, notificationTitle, notificationInfo, noteSpan,
-    privateMessageModal, sendGlobalNotification, nukeAllUserNotifications, nukeAllUserScores, loginFxnBtn, giftLinkBtn,
-    limitsBtn, databaseLimitsModal, closeDatabaseLimitsModal, giftLimitInp, userLimitInp, confirmLimits, cancelLimits,
-    loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal, loginDisabledDesc, loginDisabledInp,
-    loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown,
-    showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore, showShareCode, showGifts,
-    showFriends, showNotifications, showRelationships, showModerator, showFamilyAssignment, showSecretSanta,
-    showCurrentSecretSanta, showLastSecretSanta, sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal,
-    userOptionsSpan, settingsNote, testData, closeUserModal, userName, userUID, userUserName, userPublicGifts,
-    userPrivateGifts, userFriendsList, userRelationshipList, userNotificationsList, userLastLogin, userLastAction,
-    userLastReview, userScoreElem, userFamilyName, userSecretSanta, userSecretSantaPrior, userSecretSantaBtn,
-    userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser, userDataViewModal, closeUserDataViewModal,
-    userDataViewTitle, userDataViewText, userDataViewListContainer, userDataViewBack, testUserDataView,
-    moderationTicketViewModal, closeModerationTicketViewModal, moderationTicketViewTitle, moderationTicketViewText,
-    moderationTicketViewLastTicket, moderationTicketViewOldestTicket, moderationTicketViewListContainer,
-    testModerationTicketView, moderationTicketViewNavigate, closePrivateMessageModal, globalMsgTitle, globalMsgInp,
-    sendMsg, cancelMsg];
+    verifyElementIntegrity(moderationElements);
 
-  verifyElementIntegrity(moderationElements);
+    userInitial = firebase.database().ref("users/");
+    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+    moderationTickets = firebase.database().ref("maintenance/");
+    moderatorSettings = firebase.database().ref("moderatorSettings/");
+    familyInitial = firebase.database().ref("family/");
+    loginInitial = firebase.database().ref("login/");
+    limitsInitial = firebase.database().ref("limits/");
 
-  userInitial = firebase.database().ref("users/");
-  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-  moderationTickets = firebase.database().ref("maintenance/");
-  moderatorSettings = firebase.database().ref("moderatorSettings/");
-  familyInitial = firebase.database().ref("family/");
-  loginInitial = firebase.database().ref("login/");
-  limitsInitial = firebase.database().ref("limits/");
-
-  databaseQuery();
-  alternateButtonLabel(settingsNote, "Settings", "Moderation");
-  generateUserOptionsModal();
-
-  function generateUserOptionsModal(){
-    userOptionsBtn.onclick = function() {
-      userOptionsBtn.style.transform = "rotate(" + (180 % 360) + "deg)";
-
-      userOptionsSpan.onclick = function(){
-        closeModal(userOptionsModal);
-        userOptionsBtn.style.transform = "rotate(" + (-60 % 360) + "deg)";
-      };
-
-      window.onclick = function (event) {
-        if (event.target == userOptionsModal) {
-          closeModal(userOptionsModal);
-          userOptionsBtn.style.transform = "rotate(" + (-60 % 360) + "deg)";
-        }
-      };
-
-      openModal(userOptionsModal, "userOptionsModal", true);
-    };
-  }
-
-  function initializeBackBtn() {
-    backBtn.innerHTML = "Return To Settings";
-    backBtn.onclick = function() {
-      navigation(5);//Settings
-    };
-  }
-
-  function initializeInfoIcons() {
-    nukeNoteInfoIcon.onclick = function () {
-      deployNotificationModal(true, "Remove All User Notifications", "This button " +
-          "allows you to remove all the user's notifications. This cannot be reversed!", 6);
-    };
-
-    nukeScoreInfoIcon.onclick = function () {
-      deployNotificationModal(true, "Reset User Scores", "This button allows you to " +
-          "reset all the user's scores. This cannot be reversed!" +
-          "<br><br>Note: User scores are an arbitrary means to tell how active a user is.", 10);
-    };
-
-    giftLinkInfoIcon.onclick = function () {
-      deployNotificationModal(true, "URL Limiter", "This button allows you to " +
-          "customize the acceptable URLs that can be used when a gift is created. Please note that this only applies to " +
-          "specific domains." +
-          "<br><br>For example, to allow www.barnesandnoble.com, specify the area inbetween \"www\" and " +
-          "\"com\"." +
-          "<br><br>To allow more than one website, use this same principle in a comma-separated string, i.e., " +
-          "amazon,amzn,bestbuy,barnesandnoble", 15);
-    };
-
-    limitsInfoIcon.onclick = function () {
-      deployNotificationModal(true, "Database Limiter", "This button allows you to " +
-          "select database limits if you happen to be on a limited budget for database storage data. (For example) " +
-          "Please note that if you set a limit of 15 users and your database has 20, users will NOT be deleted. " +
-          "However, no users will be able to create an account except for a moderator with their respective credentials.", 12);
-    };
-
-    userListInfoIcon.onclick = function () {
-      deployNotificationModal(true, "Supplemental User Info", "This dropdown menu " +
-          "allows you to pick what quick-info you'd like to view upon loading the user list.", 6);
-    };
-
-    globalNoteInfoIcon.onclick = function () {
-      deployNotificationModal(true, "Global Message", "This button allows you " +
-          "to send a global notification to all of your users.", 6);
-    };
-
-    loginFxnInfoIcon.onclick = function () {
-      deployNotificationModal(true, "Login Functionality", "This button allows " +
-          "you to disable and enable login functionality if significant issues were to occur. Please note that " +
-          "moderators are still able to login even if login functionality is disabled.", 10);
-    };
-
-    listLimitInfoIcon.onclick = function () {
-      deployNotificationModal(true, "Parent/Child List Access", "Since " +
-          "the parent/child feature is intended to prevent infants from being assigned to their parents, this button " +
-          "would optionally allow you to prevent parents from seeing what has been bought on their infant's list and " +
-          "vis versa if the parent is accessing their infants account.", 10);
-    };
-  }
-
-  initializeBackBtn();
-  initializeInfoIcons();
-
-  function initializeNukeNotification() {
-    nukeAllUserNotifications.innerHTML = "Remove All User's Notifications";
-    nukeAllUserNotifications.onclick = function () {
-      userUpdateLocal = true;
-      for (let i = 0; i < userArr.length; i++) {
-        if (userArr[i].notifications != undefined) {
-          userArr[i].notifications = null;
-          firebase.database().ref("users/" + userArr[i].uid + "/notifications/").remove();
-        }
-
-        if (userArr[i].readNotifications != null) {
-          userArr[i].readNotifications = null;
-          firebase.database().ref("users/" + userArr[i].uid + "/readNotifications/").remove();
-        }
-      }
-
-      deployNotificationModal(false, "Notification Removal Successful!",
-          "Every User's Notifications Have Been Successfully Removed!");
-      userUpdateLocal = false;
-    };
-  }
-
-  function initializeNukeScores() {
-    nukeAllUserScores.innerHTML = "Reset All User's Scores";
-    nukeAllUserScores.onclick = function () {
-      userUpdateLocal = true;
-      for (let i = 0; i < userArr.length; i++) {
-        userArr[i].userScore = 0;
-      }
-
-      for (let i = 0; i < userArr.length; i++) {
-        firebase.database().ref("users/" + userArr[i].uid + "/userScore/").remove();
-      }
-
-      deployNotificationModal(false, "User Scores Reset!",
-          "Every User's Score Has Been Successfully Reset!");
-      userUpdateLocal = false;
-    };
-  }
-
-  function initializeGlobalNotification() {
-    sendGlobalNotification.innerHTML = "Send Global Message";
-    sendGlobalNotification.onclick = function (){
-      globalMsgInp.placeholder = "WARNING: An Important Message...";
-      globalMsgTitle.innerHTML = "Enter Global Notification Below";
-
-      sendMsg.onclick = function (){
-        if(globalMsgInp.value.includes(",,,")){
-          deployNotificationModal(true, "Message Error!", "Please do not use commas " +
-              "in the notification. Thank you!");
-        } else {
-          addGlobalMessageToDB(globalMsgInp.value);
-          globalMsgInp.value = "";
-          closeModal(privateMessageModal);
-          deployNotificationModal(false, "Message Sent!",
-              "The Global Message Has Been Sent!");
-        }
-      };
-      cancelMsg.onclick = function (){
-        globalMsgInp.value = "";
-        closeModal(privateMessageModal);
-      };
-
-      openModal(privateMessageModal, "addGlobalMsgModal");
-
-      closePrivateMessageModal.onclick = function() {
-        closeModal(privateMessageModal);
-      };
-    };
-  }
-
-  function addGlobalMessageToDB(message) {
-    let globalNotification = "";
-    globalNotificationBool = true;
-    for (let i = 0; i < userArr.length; i++){
-      globalNotification = generateNotificationString(">adminGlobal" + user.uid, "", message, "");
-      addNotificationToDB(userArr[i], globalNotification);
-    }
-    globalNotificationBool = false;
-  }
-
-  function initializeLoginBtn() {
-    if(allowLogin) {
-      loginFxnBtn.innerHTML = "Disable Login Function";
-    } else {
-      loginFxnBtn.innerHTML = "Enable Login Function";
-    }
-    loginFxnBtn.onclick = function(){
-      if (allowLogin) {
-        generateLoginDisabledModal(false);
-      } else {
-        loginFxnBtn.innerHTML = "Disable Login Function";
-        firebase.database().ref("login/").update({
-          allowLogin: true,
-          loginDisabledMsg: loginDisabledMsg
-        });
-        deployNotificationModal(false, "Login Enabled!", "Login functionality has " +
-            "been successfully enabled!");
-        updateMaintenanceLog("moderation", "Login enabled by the user \"" + user.userName + "\"");
-      }
-    };
-  }
-
-  function initializeDatabaseLimitsBtn() {
-    limitsBtn.innerHTML = "Set Database Limits";
-    limitsBtn.onclick = function() {
-      generateLimitsModal();
-    };
-  }
-
-  function initializeListLimitsBtn() {
-    if (listLimit == 0) {
-      listLimitBtn.innerHTML = "Enable Gift List Limiter";
-      listLimitBtn.onclick = function (){
-        firebase.database().ref("limits/").update({
-          listLimit: 1
-        });
-      };
-    } else {
-      listLimitBtn.innerHTML = "Disable Gift List Limiter";
-      listLimitBtn.onclick = function (){
-        firebase.database().ref("limits/").update({
-          listLimit: 0
-        });
-      };
-    }
-  }
-
-  function initializeURLLimitsBtn() {
-    giftLinkBtn.innerHTML = "Enable/Disable Gift URL Limiter";
-    giftLinkBtn.onclick = function() {
-      generateLoginDisabledModal(true);
-    };
-  }
-
-  function generateLimitsModal() {
-    closeModal(userOptionsModal);
-
-    giftLimitInp.value = giftLimit;
-    userLimitInp.value = userLimit;
-
-    confirmLimits.onclick = function (){
-      if (giftLimitInp.value == "" && userLimitInp.value == "") {
-        deployNotificationModal(true, "Invalid Limits!",
-            "Please Do Not Enter Empty Or Invalid Characters!");
-      } else if (!isNaN(giftLimitInp.value) && !isNaN(userLimitInp.value)) {
-        if (giftLimitInp.value > 0 && userLimitInp.value > 0) {
-          firebase.database().ref("limits/").update({
-            giftLimit: giftLimitInp.value,
-            userLimit: userLimitInp.value
-          });
-
-          deployNotificationModal(false, "Limits Set!",
-              "Database Limits Successfully Set!");
-          updateMaintenanceLog("moderation", "Database limits set by the user \"" + user.userName
-              + "\" " + "to Gift Limit: " + giftLimitInp.value + " and User Limit: " + userLimitInp.value);
-
-          closeModal(databaseLimitsModal);
-          openModal(userOptionsModal, "userOptionsModal");
-        } else {
-          deployNotificationModal(true, "Invalid Limits!",
-              "Please Only Enter Numbers Greater Than Zero!");
-        }
-      } else {
-        deployNotificationModal(true, "Invalid Limits!",
-            "Please Only Enter Numbers Into The Fields!");
-      }
-    };
-
-    cancelLimits.onclick = function(){
-      closeModal(databaseLimitsModal);
-      openModal(userOptionsModal, "userOptionsModal");
-    };
-
-    closeDatabaseLimitsModal.onclick = function(){
-      closeModal(databaseLimitsModal);
-      openModal(userOptionsModal, "userOptionsModal");
-    };
-
-    window.onclick = function (event) {
-      if (event.target == databaseLimitsModal) {
-        closeModal(databaseLimitsModal);
-        openModal(userOptionsModal, "userOptionsModal");
-      }
-    }
-
-    openModal(databaseLimitsModal, "databaseLimitsModal", true);
-  }
-
-  function generateLoginDisabledModal(urlLimitBool) {
-    closeModal(userOptionsModal);
-
-    if (urlLimitBool) {
-      loginDisabledTitle.innerHTML = "Set Custom URL Limiter String";
-      loginDisabledDesc.innerHTML = "URL Limiter String:";
-      loginDisabledInp.value = giftURLLimit;
-      loginDisabledInp.placeholder = "Set Custom URL Limiter";
-      loginDisabledInfo.innerHTML = "Set A Custom List Of Acceptable URL Domains (i.e., amazon,amzn,bestbuy,barnesandnoble)";
-      if (giftURLLimit == "") {
-        resetDefaultLoginDisabledBtn.innerHTML = "Enable Default URL Limiter";
-        confirmLoginDisabled.innerHTML = "Confirm & Enable";
-      } else {
-        resetDefaultLoginDisabledBtn.innerHTML = "Disable URL Limiter";
-        confirmLoginDisabled.innerHTML = "Confirm & Update";
-      }
-    } else {
-      loginDisabledTitle.innerHTML = "Set Login Disabled Message Below";
-      loginDisabledDesc.innerHTML = "Login Disabled Message:";
-      loginDisabledInp.value = loginDisabledMsg;
-      loginDisabledInp.placeholder = "Set Login Disabled Message";
-      loginDisabledInfo.innerHTML = "Set A Custom Alert Upon Attempted Login";
-      resetDefaultLoginDisabledBtn.innerHTML = "Reset To Default Alert";
-      confirmLoginDisabled.innerHTML = "Confirm & Disable";
-    }
-
-    if (urlLimitBool) {
-      if (giftURLLimit == "") {
-        resetDefaultLoginDisabledBtn.onclick = function () {
-          checkCSVURL("amazon,amzn,bestbuy,barnesandnoble", true);
-        };
-      } else {
-        resetDefaultLoginDisabledBtn.onclick = function () {
-          checkCSVURL("", true);
-        };
-      }
-
-      confirmLoginDisabled.onclick = function() {
-        checkCSVURL(loginDisabledInp.value, false);
-      };
-    } else {
-      resetDefaultLoginDisabledBtn.onclick = function () {
-        loginDisabledInp.value = "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-            "maintenance before logging in. Thank you for your patience!";
-        firebase.database().ref("login/").update({
-          allowLogin: allowLogin,
-          loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
-              "maintenance before logging in. Thank you for your patience!"
-        });
-        deployNotificationModal(false, "Login Message Updated!",
-            "Login Disabled Message Successfully Reset!");
-        updateMaintenanceLog("moderation", "Login disabled message reset by the user \"" + user.userName
-            + "\"");
-      };
-
-      confirmLoginDisabled.onclick = function () {
-        if (loginDisabledInp.value == "") {
-          deployNotificationModal(true, "Login Message Error!",
-              "Please Do Not Leave The Login Message Empty!");
-        } else {
-          loginFxnBtn.innerHTML = "Enable Login Function";
-          firebase.database().ref("login/").update({
-            allowLogin: false,
-            loginDisabledMsg: loginDisabledInp.value
-          });
-          deployNotificationModal(false, "Login Message Updated!",
-              "Login Disabled Message Set And Login Disabled!");
-          updateMaintenanceLog("moderation", "Login disabled by the user \"" + user.userName + "\" " +
-              "with the following message: " + loginDisabledInp.value);
-
-          closeModal(loginDisabledModal);
-          openModal(userOptionsModal, "userOptionsModal");
-        }
-      };
-    }
-
-    cancelLoginDisabled.onclick = function(){
-      closeModal(loginDisabledModal);
-      openModal(userOptionsModal, "userOptionsModal");
-    };
-
-    closeLoginDisabledModal.onclick = function(){
-      closeModal(loginDisabledModal);
-      openModal(userOptionsModal, "userOptionsModal");
-    };
-
-    window.onclick = function (event) {
-      if (event.target == loginDisabledModal) {
-        closeModal(loginDisabledModal);
-        openModal(userOptionsModal, "userOptionsModal");
-      }
-    }
-
-    openModal(loginDisabledModal, "loginDisabledModal", true);
-  }
-
-  function checkCSVURL(urlString, override) {
-    urlString = urlString.replace(" ", "");
-    if (urlString[0] == ",") {
-      urlString = urlString.split("");
-      urlString.splice(0);
-      urlString = urlString.join("");
-    }
-    if (urlString[urlString.length-1] == ",") {
-      urlString = urlString.split("");
-      urlString.splice( urlString.length-1, urlString.length);
-      urlString = urlString.join("");
-    }
-    if (urlString == "" && !override) {
-      deployNotificationModal(true, "URL String Error!", "The URL Limiter Is NOT " +
-          "currently active. If you wish to enable it, please enter a non-empty string", 4);
-    } else if (urlString.includes(",,")) {
-      deployNotificationModal(true, "URL String Error!", "Please do not include " +
-          "more than one comma");
-    } else if (urlString.includes(".")) {
-      deployNotificationModal(true, "URL String Error!", "Please do not include " +
-          "full URLs, only specific parts of a URL like \"www\" or \"bestbuy\".");
-    } else {
-      firebase.database().ref("limits/").update({
-        giftURLLimit: urlString
-      });
-      if (urlString == "" && override) {
-        updateMaintenanceLog("moderation", "URL Limiter disabled by the user \"" + user.userName);
-        deployNotificationModal(false, "URL Limiter Disabled!", "The URL Limiter " +
-            "has been disabled!");
-      } else if (urlString == "amazon,amzn,bestbuy,barnesandnoble" && override) {
-        updateMaintenanceLog("moderation", "Default URL Limiter set by the user \"" +
-            user.userName + "\" " + "with the following string: " + urlString);
-        deployNotificationModal(false, "Default URL Limiter Set!", "The Default " +
-            "URL Limiter was successfully set! From now on, only gifts with the default limiters will be allowed.", 4);
-      } else {
-        updateMaintenanceLog("moderation", "URL Limiter set by the user \"" + user.userName + "\" " +
-            "with the following string: " + urlString);
-        deployNotificationModal(false, "URL Limiter Set!", "Your URL Limiter was " +
-            "successfully set! From now on, only gifts with your specified limiter(s) will be allowed.", 4);
-      }
-    }
+    databaseQuery();
+    alternateButtonLabel(settingsNote, "Settings", "Moderation");
+    generateUserOptionsModal();
+    initializeBackBtn();
+    initializeInfoIcons();
+  } catch (err) {
+    console.log("Critical Error: " + err.toString());
+    updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+        "Error To A Gifty Developer.");
   }
 
   function databaseQuery() {
@@ -1044,6 +640,414 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(limitsInitial);
   }
 };
+
+function generateUserOptionsModal(){
+  userOptionsBtn.onclick = function() {
+    userOptionsBtn.style.transform = "rotate(" + (180 % 360) + "deg)";
+
+    userOptionsSpan.onclick = function(){
+      closeModal(userOptionsModal);
+      userOptionsBtn.style.transform = "rotate(" + (-60 % 360) + "deg)";
+    };
+
+    window.onclick = function (event) {
+      if (event.target == userOptionsModal) {
+        closeModal(userOptionsModal);
+        userOptionsBtn.style.transform = "rotate(" + (-60 % 360) + "deg)";
+      }
+    };
+
+    openModal(userOptionsModal, "userOptionsModal", true);
+  };
+}
+
+function initializeBackBtn() {
+  backBtn.innerHTML = "Return To Settings";
+  backBtn.onclick = function() {
+    navigation(5);//Settings
+  };
+}
+
+function initializeInfoIcons() {
+  nukeNoteInfoIcon.onclick = function () {
+    deployNotificationModal(true, "Remove All User Notifications", "This button " +
+        "allows you to remove all the user's notifications. This cannot be reversed!", 6);
+  };
+
+  nukeScoreInfoIcon.onclick = function () {
+    deployNotificationModal(true, "Reset User Scores", "This button allows you to " +
+        "reset all the user's scores. This cannot be reversed!" +
+        "<br><br>Note: User scores are an arbitrary means to tell how active a user is.", 10);
+  };
+
+  giftLinkInfoIcon.onclick = function () {
+    deployNotificationModal(true, "URL Limiter", "This button allows you to " +
+        "customize the acceptable URLs that can be used when a gift is created. Please note that this only applies to " +
+        "specific domains." +
+        "<br><br>For example, to allow www.barnesandnoble.com, specify the area inbetween \"www\" and " +
+        "\"com\"." +
+        "<br><br>To allow more than one website, use this same principle in a comma-separated string, i.e., " +
+        "amazon,amzn,bestbuy,barnesandnoble", 15);
+  };
+
+  limitsInfoIcon.onclick = function () {
+    deployNotificationModal(true, "Database Limiter", "This button allows you to " +
+        "select database limits if you happen to be on a limited budget for database storage data. (For example) " +
+        "Please note that if you set a limit of 15 users and your database has 20, users will NOT be deleted. " +
+        "However, no users will be able to create an account except for a moderator with their respective credentials.", 12);
+  };
+
+  userListInfoIcon.onclick = function () {
+    deployNotificationModal(true, "Supplemental User Info", "This dropdown menu " +
+        "allows you to pick what quick-info you'd like to view upon loading the user list.", 6);
+  };
+
+  globalNoteInfoIcon.onclick = function () {
+    deployNotificationModal(true, "Global Message", "This button allows you " +
+        "to send a global notification to all of your users.", 6);
+  };
+
+  loginFxnInfoIcon.onclick = function () {
+    deployNotificationModal(true, "Login Functionality", "This button allows " +
+        "you to disable and enable login functionality if significant issues were to occur. Please note that " +
+        "moderators are still able to login even if login functionality is disabled.", 10);
+  };
+
+  listLimitInfoIcon.onclick = function () {
+    deployNotificationModal(true, "Parent/Child List Access", "Since " +
+        "the parent/child feature is intended to prevent infants from being assigned to their parents, this button " +
+        "would optionally allow you to prevent parents from seeing what has been bought on their infant's list and " +
+        "vis versa if the parent is accessing their infants account.", 10);
+  };
+}
+
+function initializeNukeNotification() {
+  nukeAllUserNotifications.innerHTML = "Remove All User's Notifications";
+  nukeAllUserNotifications.onclick = function () {
+    userUpdateLocal = true;
+    for (let i = 0; i < userArr.length; i++) {
+      if (userArr[i].notifications != undefined) {
+        userArr[i].notifications = null;
+        firebase.database().ref("users/" + userArr[i].uid + "/notifications/").remove();
+      }
+
+      if (userArr[i].readNotifications != null) {
+        userArr[i].readNotifications = null;
+        firebase.database().ref("users/" + userArr[i].uid + "/readNotifications/").remove();
+      }
+    }
+
+    deployNotificationModal(false, "Notification Removal Successful!",
+        "Every User's Notifications Have Been Successfully Removed!");
+    userUpdateLocal = false;
+  };
+}
+
+function initializeNukeScores() {
+  nukeAllUserScores.innerHTML = "Reset All User's Scores";
+  nukeAllUserScores.onclick = function () {
+    userUpdateLocal = true;
+    for (let i = 0; i < userArr.length; i++) {
+      userArr[i].userScore = 0;
+    }
+
+    for (let i = 0; i < userArr.length; i++) {
+      firebase.database().ref("users/" + userArr[i].uid + "/userScore/").remove();
+    }
+
+    deployNotificationModal(false, "User Scores Reset!",
+        "Every User's Score Has Been Successfully Reset!");
+    userUpdateLocal = false;
+  };
+}
+
+function initializeGlobalNotification() {
+  sendGlobalNotification.innerHTML = "Send Global Message";
+  sendGlobalNotification.onclick = function (){
+    globalMsgInp.placeholder = "WARNING: An Important Message...";
+    globalMsgTitle.innerHTML = "Enter Global Notification Below";
+
+    sendMsg.onclick = function (){
+      if(globalMsgInp.value.includes(",,,")){
+        deployNotificationModal(true, "Message Error!", "Please do not use commas " +
+            "in the notification. Thank you!");
+      } else {
+        addGlobalMessageToDB(globalMsgInp.value);
+        globalMsgInp.value = "";
+        closeModal(privateMessageModal);
+        deployNotificationModal(false, "Message Sent!",
+            "The Global Message Has Been Sent!");
+      }
+    };
+    cancelMsg.onclick = function (){
+      globalMsgInp.value = "";
+      closeModal(privateMessageModal);
+    };
+
+    openModal(privateMessageModal, "addGlobalMsgModal");
+
+    closePrivateMessageModal.onclick = function() {
+      closeModal(privateMessageModal);
+    };
+  };
+}
+
+function addGlobalMessageToDB(message) {
+  let globalNotification = "";
+  globalNotificationBool = true;
+  for (let i = 0; i < userArr.length; i++){
+    globalNotification = generateNotificationString(">adminGlobal" + user.uid, "", message, "");
+    addNotificationToDB(userArr[i], globalNotification);
+  }
+  globalNotificationBool = false;
+}
+
+function initializeLoginBtn() {
+  if(allowLogin) {
+    loginFxnBtn.innerHTML = "Disable Login Function";
+  } else {
+    loginFxnBtn.innerHTML = "Enable Login Function";
+  }
+  loginFxnBtn.onclick = function(){
+    if (allowLogin) {
+      generateLoginDisabledModal(false);
+    } else {
+      loginFxnBtn.innerHTML = "Disable Login Function";
+      firebase.database().ref("login/").update({
+        allowLogin: true,
+        loginDisabledMsg: loginDisabledMsg
+      });
+      deployNotificationModal(false, "Login Enabled!", "Login functionality has " +
+          "been successfully enabled!");
+      updateMaintenanceLog("moderation", "Login enabled by the user \"" + user.userName + "\"");
+    }
+  };
+}
+
+function initializeDatabaseLimitsBtn() {
+  limitsBtn.innerHTML = "Set Database Limits";
+  limitsBtn.onclick = function() {
+    generateLimitsModal();
+  };
+}
+
+function initializeListLimitsBtn() {
+  if (listLimit == 0) {
+    listLimitBtn.innerHTML = "Enable Gift List Limiter";
+    listLimitBtn.onclick = function (){
+      firebase.database().ref("limits/").update({
+        listLimit: 1
+      });
+    };
+  } else {
+    listLimitBtn.innerHTML = "Disable Gift List Limiter";
+    listLimitBtn.onclick = function (){
+      firebase.database().ref("limits/").update({
+        listLimit: 0
+      });
+    };
+  }
+}
+
+function initializeURLLimitsBtn() {
+  giftLinkBtn.innerHTML = "Enable/Disable Gift URL Limiter";
+  giftLinkBtn.onclick = function() {
+    generateLoginDisabledModal(true);
+  };
+}
+
+function generateLimitsModal() {
+  closeModal(userOptionsModal);
+
+  giftLimitInp.value = giftLimit;
+  userLimitInp.value = userLimit;
+
+  confirmLimits.onclick = function (){
+    if (giftLimitInp.value == "" && userLimitInp.value == "") {
+      deployNotificationModal(true, "Invalid Limits!",
+          "Please Do Not Enter Empty Or Invalid Characters!");
+    } else if (!isNaN(giftLimitInp.value) && !isNaN(userLimitInp.value)) {
+      if (giftLimitInp.value > 0 && userLimitInp.value > 0) {
+        firebase.database().ref("limits/").update({
+          giftLimit: giftLimitInp.value,
+          userLimit: userLimitInp.value
+        });
+
+        deployNotificationModal(false, "Limits Set!",
+            "Database Limits Successfully Set!");
+        updateMaintenanceLog("moderation", "Database limits set by the user \"" + user.userName
+            + "\" " + "to Gift Limit: " + giftLimitInp.value + " and User Limit: " + userLimitInp.value);
+
+        closeModal(databaseLimitsModal);
+        openModal(userOptionsModal, "userOptionsModal");
+      } else {
+        deployNotificationModal(true, "Invalid Limits!",
+            "Please Only Enter Numbers Greater Than Zero!");
+      }
+    } else {
+      deployNotificationModal(true, "Invalid Limits!",
+          "Please Only Enter Numbers Into The Fields!");
+    }
+  };
+
+  cancelLimits.onclick = function(){
+    closeModal(databaseLimitsModal);
+    openModal(userOptionsModal, "userOptionsModal");
+  };
+
+  closeDatabaseLimitsModal.onclick = function(){
+    closeModal(databaseLimitsModal);
+    openModal(userOptionsModal, "userOptionsModal");
+  };
+
+  window.onclick = function (event) {
+    if (event.target == databaseLimitsModal) {
+      closeModal(databaseLimitsModal);
+      openModal(userOptionsModal, "userOptionsModal");
+    }
+  }
+
+  openModal(databaseLimitsModal, "databaseLimitsModal", true);
+}
+
+function generateLoginDisabledModal(urlLimitBool) {
+  closeModal(userOptionsModal);
+
+  if (urlLimitBool) {
+    loginDisabledTitle.innerHTML = "Set Custom URL Limiter String";
+    loginDisabledDesc.innerHTML = "URL Limiter String:";
+    loginDisabledInp.value = giftURLLimit;
+    loginDisabledInp.placeholder = "Set Custom URL Limiter";
+    loginDisabledInfo.innerHTML = "Set A Custom List Of Acceptable URL Domains (i.e., amazon,amzn,bestbuy,barnesandnoble)";
+    if (giftURLLimit == "") {
+      resetDefaultLoginDisabledBtn.innerHTML = "Enable Default URL Limiter";
+      confirmLoginDisabled.innerHTML = "Confirm & Enable";
+    } else {
+      resetDefaultLoginDisabledBtn.innerHTML = "Disable URL Limiter";
+      confirmLoginDisabled.innerHTML = "Confirm & Update";
+    }
+  } else {
+    loginDisabledTitle.innerHTML = "Set Login Disabled Message Below";
+    loginDisabledDesc.innerHTML = "Login Disabled Message:";
+    loginDisabledInp.value = loginDisabledMsg;
+    loginDisabledInp.placeholder = "Set Login Disabled Message";
+    loginDisabledInfo.innerHTML = "Set A Custom Alert Upon Attempted Login";
+    resetDefaultLoginDisabledBtn.innerHTML = "Reset To Default Alert";
+    confirmLoginDisabled.innerHTML = "Confirm & Disable";
+  }
+
+  if (urlLimitBool) {
+    if (giftURLLimit == "") {
+      resetDefaultLoginDisabledBtn.onclick = function () {
+        checkCSVURL("amazon,amzn,bestbuy,barnesandnoble", true);
+      };
+    } else {
+      resetDefaultLoginDisabledBtn.onclick = function () {
+        checkCSVURL("", true);
+      };
+    }
+
+    confirmLoginDisabled.onclick = function() {
+      checkCSVURL(loginDisabledInp.value, false);
+    };
+  } else {
+    resetDefaultLoginDisabledBtn.onclick = function () {
+      loginDisabledInp.value = "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
+          "maintenance before logging in. Thank you for your patience!";
+      firebase.database().ref("login/").update({
+        allowLogin: allowLogin,
+        loginDisabledMsg: "Gifty is currently down for maintenance. Please wait for a moderator to finish " +
+            "maintenance before logging in. Thank you for your patience!"
+      });
+      deployNotificationModal(false, "Login Message Updated!",
+          "Login Disabled Message Successfully Reset!");
+      updateMaintenanceLog("moderation", "Login disabled message reset by the user \"" + user.userName
+          + "\"");
+    };
+
+    confirmLoginDisabled.onclick = function () {
+      if (loginDisabledInp.value == "") {
+        deployNotificationModal(true, "Login Message Error!",
+            "Please Do Not Leave The Login Message Empty!");
+      } else {
+        loginFxnBtn.innerHTML = "Enable Login Function";
+        firebase.database().ref("login/").update({
+          allowLogin: false,
+          loginDisabledMsg: loginDisabledInp.value
+        });
+        deployNotificationModal(false, "Login Message Updated!",
+            "Login Disabled Message Set And Login Disabled!");
+        updateMaintenanceLog("moderation", "Login disabled by the user \"" + user.userName + "\" " +
+            "with the following message: " + loginDisabledInp.value);
+
+        closeModal(loginDisabledModal);
+        openModal(userOptionsModal, "userOptionsModal");
+      }
+    };
+  }
+
+  cancelLoginDisabled.onclick = function(){
+    closeModal(loginDisabledModal);
+    openModal(userOptionsModal, "userOptionsModal");
+  };
+
+  closeLoginDisabledModal.onclick = function(){
+    closeModal(loginDisabledModal);
+    openModal(userOptionsModal, "userOptionsModal");
+  };
+
+  window.onclick = function (event) {
+    if (event.target == loginDisabledModal) {
+      closeModal(loginDisabledModal);
+      openModal(userOptionsModal, "userOptionsModal");
+    }
+  }
+
+  openModal(loginDisabledModal, "loginDisabledModal", true);
+}
+
+function checkCSVURL(urlString, override) {
+  urlString = urlString.replace(" ", "");
+  if (urlString[0] == ",") {
+    urlString = urlString.split("");
+    urlString.splice(0);
+    urlString = urlString.join("");
+  }
+  if (urlString[urlString.length-1] == ",") {
+    urlString = urlString.split("");
+    urlString.splice( urlString.length-1, urlString.length);
+    urlString = urlString.join("");
+  }
+  if (urlString == "" && !override) {
+    deployNotificationModal(true, "URL String Error!", "The URL Limiter Is NOT " +
+        "currently active. If you wish to enable it, please enter a non-empty string", 4);
+  } else if (urlString.includes(",,")) {
+    deployNotificationModal(true, "URL String Error!", "Please do not include " +
+        "more than one comma");
+  } else if (urlString.includes(".")) {
+    deployNotificationModal(true, "URL String Error!", "Please do not include " +
+        "full URLs, only specific parts of a URL like \"www\" or \"bestbuy\".");
+  } else {
+    firebase.database().ref("limits/").update({
+      giftURLLimit: urlString
+    });
+    if (urlString == "" && override) {
+      updateMaintenanceLog("moderation", "URL Limiter disabled by the user \"" + user.userName);
+      deployNotificationModal(false, "URL Limiter Disabled!", "The URL Limiter " +
+          "has been disabled!");
+    } else if (urlString == "amazon,amzn,bestbuy,barnesandnoble" && override) {
+      updateMaintenanceLog("moderation", "Default URL Limiter set by the user \"" +
+          user.userName + "\" " + "with the following string: " + urlString);
+      deployNotificationModal(false, "Default URL Limiter Set!", "The Default " +
+          "URL Limiter was successfully set! From now on, only gifts with the default limiters will be allowed.", 4);
+    } else {
+      updateMaintenanceLog("moderation", "URL Limiter set by the user \"" + user.userName + "\" " +
+          "with the following string: " + urlString);
+      deployNotificationModal(false, "URL Limiter Set!", "Your URL Limiter was " +
+          "successfully set! From now on, only gifts with your specified limiter(s) will be allowed.", 4);
+    }
+  }
+}
 
 function generateModeratorPrivateMessageDialog(userData, warnBool) {
   let warnCount;
