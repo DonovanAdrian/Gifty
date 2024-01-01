@@ -91,87 +91,80 @@ function getCurrentUser(){
 }
 
 window.onload = function instantiate() {
-  pageName = "Invites";
-  notificationBtn = document.getElementById("notificationButton");
-  userInviteModal = document.getElementById("userInviteModal");
-  closeUserInviteModal = document.getElementById("closeUserInviteModal");
-  userNameInp = document.getElementById("userNameInp");
-  addToBlackList = document.getElementById("addToBlackList");
-  inviteInfo = document.getElementById("inviteInfo");
-  addInvite = document.getElementById("addInvite");
-  cancelInvite = document.getElementById("cancelInvite");
-  confirmUserModal = document.getElementById("confirmUserModal");
-  closeConfirmUserModal = document.getElementById("closeConfirmUserModal");
-  confUserName = document.getElementById("confUserName");
-  inviteConfirm = document.getElementById("inviteConfirm");
-  inviteDeny = document.getElementById("inviteDeny");
-  inviteNote = document.getElementById("inviteNote");
-  newInviteIcon = document.getElementById("newInviteIcon");
-  blacklistModal = document.getElementById("blacklistModal");
-  closeBlacklistModal = document.getElementById("closeBlacklistModal");
-  blacklistDescription = document.getElementById("blacklistDescription");
-  blacklistContainer = document.getElementById("blacklistContainer");
-  testBlacklist = document.getElementById("testBlacklist");
-  blacklistRemove = document.getElementById("blacklistRemove");
-  blacklistedUsers = document.getElementById("blacklistedUsers");
-  addUser = document.getElementById("addUser");
-  confirmModal = document.getElementById("confirmModal");
-  closeConfirmModal = document.getElementById("closeConfirmModal");
-  confirmTitle = document.getElementById("confirmTitle");
-  confirmContent = document.getElementById("confirmContent");
-  confirmBtn = document.getElementById("confirmBtn");
-  denyBtn = document.getElementById("denyBtn");
-  privateMessageModal = document.getElementById("privateMessageModal");
-  closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
-  privateMessageInp = document.getElementById("privateMessageInp");
-  sendMsg = document.getElementById("sendMsg");
-  cancelMsg = document.getElementById("cancelMsg");
-  inviteModal = document.getElementById("inviteModal");
-  closeInviteModal = document.getElementById("closeInviteModal");
-  userName = document.getElementById("userName");
-  userUName = document.getElementById("userUName");
-  userShareCode = document.getElementById("userShareCode");
-  sendPrivateMessage = document.getElementById("sendPrivateMessage");
-  userInviteRemove = document.getElementById("userInviteRemove");
+  try {
+    pageName = "Invites";
+    notificationBtn = document.getElementById("notificationButton");
+    userInviteModal = document.getElementById("userInviteModal");
+    closeUserInviteModal = document.getElementById("closeUserInviteModal");
+    userNameInp = document.getElementById("userNameInp");
+    addToBlackList = document.getElementById("addToBlackList");
+    inviteInfo = document.getElementById("inviteInfo");
+    addInvite = document.getElementById("addInvite");
+    cancelInvite = document.getElementById("cancelInvite");
+    confirmUserModal = document.getElementById("confirmUserModal");
+    closeConfirmUserModal = document.getElementById("closeConfirmUserModal");
+    confUserName = document.getElementById("confUserName");
+    inviteConfirm = document.getElementById("inviteConfirm");
+    inviteDeny = document.getElementById("inviteDeny");
+    inviteNote = document.getElementById("inviteNote");
+    newInviteIcon = document.getElementById("newInviteIcon");
+    blacklistModal = document.getElementById("blacklistModal");
+    closeBlacklistModal = document.getElementById("closeBlacklistModal");
+    blacklistDescription = document.getElementById("blacklistDescription");
+    blacklistContainer = document.getElementById("blacklistContainer");
+    testBlacklist = document.getElementById("testBlacklist");
+    blacklistRemove = document.getElementById("blacklistRemove");
+    blacklistedUsers = document.getElementById("blacklistedUsers");
+    addUser = document.getElementById("addUser");
+    confirmModal = document.getElementById("confirmModal");
+    closeConfirmModal = document.getElementById("closeConfirmModal");
+    confirmTitle = document.getElementById("confirmTitle");
+    confirmContent = document.getElementById("confirmContent");
+    confirmBtn = document.getElementById("confirmBtn");
+    denyBtn = document.getElementById("denyBtn");
+    privateMessageModal = document.getElementById("privateMessageModal");
+    closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
+    privateMessageInp = document.getElementById("privateMessageInp");
+    sendMsg = document.getElementById("sendMsg");
+    cancelMsg = document.getElementById("cancelMsg");
+    inviteModal = document.getElementById("inviteModal");
+    closeInviteModal = document.getElementById("closeInviteModal");
+    userName = document.getElementById("userName");
+    userUName = document.getElementById("userUName");
+    userShareCode = document.getElementById("userShareCode");
+    sendPrivateMessage = document.getElementById("sendPrivateMessage");
+    userInviteRemove = document.getElementById("userInviteRemove");
 
-  getCurrentUser();
-  initializeBlacklistBtn();
-  commonInitialization();
+    getCurrentUser();
+    initializeBlacklistBtn();
+    commonInitialization();
 
-  inviteElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, userInviteModal,
-    closeUserInviteModal, userNameInp, addToBlackList, inviteInfo, addInvite, cancelInvite, confirmUserModal,
-    closeConfirmUserModal, confUserName, inviteConfirm, inviteDeny, inviteNote, newInviteIcon, blacklistModal,
-    closeBlacklistModal, blacklistDescription, blacklistContainer, testBlacklist, blacklistRemove, blacklistedUsers,
-    addUser, confirmModal, closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal,
-    notificationTitle, notificationInfo, noteSpan, privateMessageModal, closePrivateMessageModal, privateMessageInp,
-    sendMsg, cancelMsg, inviteModal, closeInviteModal, userName, userUName, userShareCode, sendPrivateMessage,
-    userInviteRemove, testData];
+    inviteElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, userInviteModal,
+      closeUserInviteModal, userNameInp, addToBlackList, inviteInfo, addInvite, cancelInvite, confirmUserModal,
+      closeConfirmUserModal, confUserName, inviteConfirm, inviteDeny, inviteNote, newInviteIcon, blacklistModal,
+      closeBlacklistModal, blacklistDescription, blacklistContainer, testBlacklist, blacklistRemove, blacklistedUsers,
+      addUser, confirmModal, closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal,
+      notificationTitle, notificationInfo, noteSpan, privateMessageModal, closePrivateMessageModal, privateMessageInp,
+      sendMsg, cancelMsg, inviteModal, closeInviteModal, userName, userUName, userShareCode, sendPrivateMessage,
+      userInviteRemove, testData];
 
-  verifyElementIntegrity(inviteElements);
+    verifyElementIntegrity(inviteElements);
 
-  userInitial = firebase.database().ref("users/");
-  userFriends = firebase.database().ref("users/" + user.uid + "/friends");
-  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+    userInitial = firebase.database().ref("users/");
+    userFriends = firebase.database().ref("users/" + user.uid + "/friends");
+    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
-  databaseQuery();
+    databaseQuery();
 
-  function generateInviteIcon() {
-    newInviteIcon.style.display = "block";
-    newInviteIcon.onclick = function () {
-      navigation(11);//Confirmation
-    };
+    if (invitesFound) {
+      generateInviteIcon();
+    }
+    generateAddUserBtn();
+  } catch (err) {
+    console.log("Critical Error: " + err.toString());
+    updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+        "Error To A Gifty Developer.");
   }
-
-  function disableInviteIcon() {
-    newInviteIcon.style.display = "none";
-    newInviteIcon.onclick = function () {};
-  }
-
-  if (invitesFound) {
-    generateInviteIcon();
-  }
-  generateAddUserBtn();
-
 
   function databaseQuery() {
     let fetchData = function (postRef) {
@@ -307,6 +300,18 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(userInvites);
   }
 };
+
+function generateInviteIcon() {
+  newInviteIcon.style.display = "block";
+  newInviteIcon.onclick = function () {
+    navigation(11);//Confirmation
+  };
+}
+
+function disableInviteIcon() {
+  newInviteIcon.style.display = "none";
+  newInviteIcon.onclick = function () {};
+}
 
 function showBlacklistModal() {
   let tempBlacklist = user.userBlackList;
