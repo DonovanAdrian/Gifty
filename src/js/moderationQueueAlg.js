@@ -42,56 +42,54 @@ function checkTicketCookie() {
 }
 
 window.onload = function instantiate() {
-  failedNavNum = 17;
-  pageName = "ModerationQueue";
-  nukeTickets = document.getElementById("nukeTickets");
-  backBtn = document.getElementById("backBtn");
-  ticketCount = document.getElementById("ticketCount");
-  ticketModal = document.getElementById("ticketModal");
-  closeTicketModal = document.getElementById("closeTicketModal");
-  ticketTitle = document.getElementById("ticketTitle");
-  ticketUID = document.getElementById("ticketUID");
-  ticketDetails = document.getElementById("ticketDetails");
-  ticketLocation = document.getElementById("ticketLocation");
-  ticketTime = document.getElementById("ticketTime");
-  deleteTicket = document.getElementById("deleteTicket");
-  moderationTicketDataModal = document.getElementById("moderationTicketDataModal");
-  closeModerationTicketDataModal = document.getElementById("closeModerationTicketDataModal");
-  moderationTicketDataTitle = document.getElementById("moderationTicketDataTitle");
-  moderationTicketDataText = document.getElementById("moderationTicketDataText");
-  moderationTicketDataLastTicket = document.getElementById("moderationTicketDataLastTicket");
-  moderationTicketDataOldestTicket = document.getElementById("moderationTicketDataOldestTicket");
-  moderationTicketDataNavigate = document.getElementById("moderationTicketDataNavigate");
-  inviteNote = document.getElementById("inviteNote");
+  try {
+    failedNavNum = 17;
+    pageName = "ModerationQueue";
+    nukeTickets = document.getElementById("nukeTickets");
+    backBtn = document.getElementById("backBtn");
+    ticketCount = document.getElementById("ticketCount");
+    ticketModal = document.getElementById("ticketModal");
+    closeTicketModal = document.getElementById("closeTicketModal");
+    ticketTitle = document.getElementById("ticketTitle");
+    ticketUID = document.getElementById("ticketUID");
+    ticketDetails = document.getElementById("ticketDetails");
+    ticketLocation = document.getElementById("ticketLocation");
+    ticketTime = document.getElementById("ticketTime");
+    deleteTicket = document.getElementById("deleteTicket");
+    moderationTicketDataModal = document.getElementById("moderationTicketDataModal");
+    closeModerationTicketDataModal = document.getElementById("closeModerationTicketDataModal");
+    moderationTicketDataTitle = document.getElementById("moderationTicketDataTitle");
+    moderationTicketDataText = document.getElementById("moderationTicketDataText");
+    moderationTicketDataLastTicket = document.getElementById("moderationTicketDataLastTicket");
+    moderationTicketDataOldestTicket = document.getElementById("moderationTicketDataOldestTicket");
+    moderationTicketDataNavigate = document.getElementById("moderationTicketDataNavigate");
+    inviteNote = document.getElementById("inviteNote");
 
-  sessionStorage.setItem("moderationSet", moderationSet);
-  getCurrentUserCommon();
-  commonInitialization();
-  checkTicketCookie();
+    sessionStorage.setItem("moderationSet", moderationSet);
+    getCurrentUserCommon();
+    commonInitialization();
+    checkTicketCookie();
 
-  moderationQueueElements = [dataListContainer, nukeTickets, backBtn, ticketCount, ticketModal, closeTicketModal,
-    ticketTitle, ticketUID, ticketDetails, ticketLocation, ticketTime, deleteTicket, moderationTicketDataModal,
-    closeModerationTicketDataModal, moderationTicketDataTitle, moderationTicketDataText, moderationTicketDataLastTicket,
-    moderationTicketDataOldestTicket, moderationTicketDataNavigate, offlineModal, offlineSpan, inviteNote,
-    notificationModal, notificationTitle, notificationInfo, noteSpan, testData];
+    moderationQueueElements = [dataListContainer, nukeTickets, backBtn, ticketCount, ticketModal, closeTicketModal,
+      ticketTitle, ticketUID, ticketDetails, ticketLocation, ticketTime, deleteTicket, moderationTicketDataModal,
+      closeModerationTicketDataModal, moderationTicketDataTitle, moderationTicketDataText, moderationTicketDataLastTicket,
+      moderationTicketDataOldestTicket, moderationTicketDataNavigate, offlineModal, offlineSpan, inviteNote,
+      notificationModal, notificationTitle, notificationInfo, noteSpan, testData];
 
-  verifyElementIntegrity(moderationQueueElements);
+    verifyElementIntegrity(moderationQueueElements);
 
-  userInitial = firebase.database().ref("users/");
-  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-  moderationTickets = firebase.database().ref("maintenance/");
+    userInitial = firebase.database().ref("users/");
+    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+    moderationTickets = firebase.database().ref("maintenance/");
 
-  databaseQuery();
-  alternateButtonLabel(settingsNote, "Settings", "Moderation");
-
-  function initializeBackBtn() {
-    backBtn.innerHTML = "Return To Settings";
-    backBtn.onclick = function() {
-      navigation(5);//Settings
-    };
+    databaseQuery();
+    alternateButtonLabel(settingsNote, "Settings", "Moderation");
+    initializeBackBtn();
+  } catch (err) {
+    console.log("Critical Error: " + err.toString());
+    updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+        "Error To A Gifty Developer.");
   }
-
-  initializeBackBtn();
 
   function databaseQuery() {
     let fetchData = function (postRef) {
@@ -235,6 +233,13 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(moderationTickets);
   }
 };
+
+function initializeBackBtn() {
+  backBtn.innerHTML = "Return To Settings";
+  backBtn.onclick = function() {
+    navigation(5);//Settings
+  };
+}
 
 function initializeTicketCount() {
   let ticketCountString = "";
