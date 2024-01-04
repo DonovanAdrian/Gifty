@@ -53,37 +53,43 @@ function getCurrentUser(){
 }
 
 window.onload = function instantiate() {
-  pageName = "Notifications";
-  nukeNotifications = document.getElementById("nukeNotifications");
-  inviteNote = document.getElementById("inviteNote");
-  privateMessageModal = document.getElementById("privateMessageModal");
-  noteViewModal = document.getElementById("noteViewModal");
-  closeNoteViewModal = document.getElementById("closeNoteViewModal");
-  notificationViewTitle = document.getElementById("notificationViewTitle");
-  notificationViewDetails = document.getElementById("notificationViewDetails");
-  notificationViewPage = document.getElementById("notificationViewPage");
-  notificationViewDelete = document.getElementById("notificationViewDelete");
-  privateMessageSpan = document.getElementById("privateMessageSpan");
-  privateMessageInp = document.getElementById("privateMessageInp");
-  sendMsg = document.getElementById("sendMsg");
-  cancelMsg = document.getElementById("cancelMsg");
+  try {
+    pageName = "Notifications";
+    nukeNotifications = document.getElementById("nukeNotifications");
+    inviteNote = document.getElementById("inviteNote");
+    privateMessageModal = document.getElementById("privateMessageModal");
+    noteViewModal = document.getElementById("noteViewModal");
+    closeNoteViewModal = document.getElementById("closeNoteViewModal");
+    notificationViewTitle = document.getElementById("notificationViewTitle");
+    notificationViewDetails = document.getElementById("notificationViewDetails");
+    notificationViewPage = document.getElementById("notificationViewPage");
+    notificationViewDelete = document.getElementById("notificationViewDelete");
+    privateMessageSpan = document.getElementById("privateMessageSpan");
+    privateMessageInp = document.getElementById("privateMessageInp");
+    sendMsg = document.getElementById("sendMsg");
+    cancelMsg = document.getElementById("cancelMsg");
 
-  getCurrentUser();
-  commonInitialization();
+    getCurrentUser();
+    commonInitialization();
 
-  notificationsElements = [dataListContainer, nukeNotifications, offlineModal, offlineSpan, inviteNote,
-    notificationModal, notificationTitle, notificationInfo, noteSpan, privateMessageModal, noteViewModal, testData,
-    closeNoteViewModal, notificationViewTitle, notificationViewDetails, notificationViewPage, notificationViewDelete,
-    privateMessageSpan, privateMessageInp, sendMsg, cancelMsg];
+    notificationsElements = [dataListContainer, nukeNotifications, offlineModal, offlineSpan, inviteNote,
+      notificationModal, notificationTitle, notificationInfo, noteSpan, privateMessageModal, noteViewModal, testData,
+      closeNoteViewModal, notificationViewTitle, notificationViewDetails, notificationViewPage, notificationViewDelete,
+      privateMessageSpan, privateMessageInp, sendMsg, cancelMsg];
 
-  verifyElementIntegrity(notificationsElements);
+    verifyElementIntegrity(notificationsElements);
 
-  userBase = firebase.database().ref("users/");
-  userReadNotifications = firebase.database().ref("users/" + user.uid + "/readNotifications");
-  userNotifications = firebase.database().ref("users/" + user.uid + "/notifications");
-  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+    userBase = firebase.database().ref("users/");
+    userReadNotifications = firebase.database().ref("users/" + user.uid + "/readNotifications");
+    userNotifications = firebase.database().ref("users/" + user.uid + "/notifications");
+    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
-  databaseQuery();
+    databaseQuery();
+  } catch (err) {
+    console.log("Critical Error: " + err.toString());
+    updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+        "Error To A Gifty Developer.");
+  }
 
   function databaseQuery() {
     let fetchReadNotifications = function (postRef){
