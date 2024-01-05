@@ -153,93 +153,79 @@ function generateCustomPrivateGift() {
 }
 
 window.onload = function instantiate() {
-  pageName = "PrivateFriendList";
-  notificationBtn = document.getElementById("notificationButton");
-  giftCreationDate = document.getElementById("giftCreationDate");
-  confirmModal = document.getElementById("confirmModal");
-  closeConfirmModal = document.getElementById("closeConfirmModal");
-  confirmTitle = document.getElementById("confirmTitle");
-  confirmContent = document.getElementById("confirmContent");
-  confirmBtn = document.getElementById("confirmBtn");
-  denyBtn = document.getElementById("denyBtn");
-  buyerDataViewModal = document.getElementById("buyerDataViewModal");
-  closeBuyerDataViewModal = document.getElementById("closeBuyerDataViewModal");
-  buyerDataViewTitle = document.getElementById("buyerDataViewTitle");
-  buyerDataViewText = document.getElementById("buyerDataViewText");
-  buyerDataViewListContainer = document.getElementById("buyerDataViewListContainer");
-  testBuyerDataView = document.getElementById("testBuyerDataView");
-  buyerDataViewBack = document.getElementById("buyerDataViewBack");
-  inviteNote = document.getElementById("inviteNote");
-  listNote = document.getElementById("listNote");
-  addGift = document.getElementById("addGift");
-  backBtn = document.getElementById("backBtn");
-  swapList = document.getElementById("swapList");
-  giftModal = document.getElementById("giftModal");
-  closeGiftModal = document.getElementById("closeGiftModal");
-  giftTitle = document.getElementById("giftTitle");
-  giftLink = document.getElementById("giftLink");
-  giftWhere = document.getElementById("giftWhere");
-  giftDescription = document.getElementById("giftDescription");
-  giftCreator = document.getElementById("giftCreator");
-  giftBought = document.getElementById("giftBought");
-  giftBuyerList = document.getElementById("giftBuyerList");
-  giftBuy = document.getElementById("giftBuy");
-  giftDontBuy = document.getElementById("giftDontBuy");
-  giftEdit = document.getElementById("giftEdit");
-  giftDelete = document.getElementById("giftDelete");
+  try {
+    pageName = "PrivateFriendList";
+    notificationBtn = document.getElementById("notificationButton");
+    giftCreationDate = document.getElementById("giftCreationDate");
+    confirmModal = document.getElementById("confirmModal");
+    closeConfirmModal = document.getElementById("closeConfirmModal");
+    confirmTitle = document.getElementById("confirmTitle");
+    confirmContent = document.getElementById("confirmContent");
+    confirmBtn = document.getElementById("confirmBtn");
+    denyBtn = document.getElementById("denyBtn");
+    buyerDataViewModal = document.getElementById("buyerDataViewModal");
+    closeBuyerDataViewModal = document.getElementById("closeBuyerDataViewModal");
+    buyerDataViewTitle = document.getElementById("buyerDataViewTitle");
+    buyerDataViewText = document.getElementById("buyerDataViewText");
+    buyerDataViewListContainer = document.getElementById("buyerDataViewListContainer");
+    testBuyerDataView = document.getElementById("testBuyerDataView");
+    buyerDataViewBack = document.getElementById("buyerDataViewBack");
+    inviteNote = document.getElementById("inviteNote");
+    listNote = document.getElementById("listNote");
+    addGift = document.getElementById("addGift");
+    backBtn = document.getElementById("backBtn");
+    swapList = document.getElementById("swapList");
+    giftModal = document.getElementById("giftModal");
+    closeGiftModal = document.getElementById("closeGiftModal");
+    giftTitle = document.getElementById("giftTitle");
+    giftLink = document.getElementById("giftLink");
+    giftWhere = document.getElementById("giftWhere");
+    giftDescription = document.getElementById("giftDescription");
+    giftCreator = document.getElementById("giftCreator");
+    giftBought = document.getElementById("giftBought");
+    giftBuyerList = document.getElementById("giftBuyerList");
+    giftBuy = document.getElementById("giftBuy");
+    giftDontBuy = document.getElementById("giftDontBuy");
+    giftEdit = document.getElementById("giftEdit");
+    giftDelete = document.getElementById("giftDelete");
 
-  getCurrentUser();
-  commonInitialization();
+    getCurrentUser();
+    commonInitialization();
 
-  privateFriendListElements = [notificationBtn, giftCreationDate, dataListContainer, offlineModal, offlineSpan,
-    confirmModal, closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn, buyerDataViewModal,
-    closeBuyerDataViewModal, buyerDataViewTitle, buyerDataViewText, buyerDataViewListContainer, testBuyerDataView,
-    buyerDataViewBack, notificationModal, notificationTitle, notificationInfo, noteSpan, inviteNote, listNote, addGift,
-    backBtn, swapList, giftModal, testData, closeGiftModal, giftTitle, giftLink, giftWhere, giftDescription,
-    giftCreator, giftBought, giftBuyerList, giftBuy, giftDontBuy, giftEdit, giftDelete];
+    privateFriendListElements = [notificationBtn, giftCreationDate, dataListContainer, offlineModal, offlineSpan,
+      confirmModal, closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn, buyerDataViewModal,
+      closeBuyerDataViewModal, buyerDataViewTitle, buyerDataViewText, buyerDataViewListContainer, testBuyerDataView,
+      buyerDataViewBack, notificationModal, notificationTitle, notificationInfo, noteSpan, inviteNote, listNote, addGift,
+      backBtn, swapList, giftModal, testData, closeGiftModal, giftTitle, giftLink, giftWhere, giftDescription,
+      giftCreator, giftBought, giftBuyerList, giftBuy, giftDontBuy, giftEdit, giftDelete];
 
-  verifyElementIntegrity(privateFriendListElements);
+    verifyElementIntegrity(privateFriendListElements);
 
-  userBase = firebase.database().ref("users/");
-  userGifts = firebase.database().ref("users/" + giftUser.uid + "/privateList/");
-  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-  limitsInitial = firebase.database().ref("limits/");
+    userBase = firebase.database().ref("users/");
+    userGifts = firebase.database().ref("users/" + giftUser.uid + "/privateList/");
+    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+    limitsInitial = firebase.database().ref("limits/");
 
-  if (createdJokeGift) {
-    updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg... (" + pageName +
-        " Page) It was only generated though, they didn't click on it... yet.");
+    if (createdJokeGift) {
+      updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg... (" + pageName +
+          " Page) It was only generated though, they didn't click on it... yet.");
+    }
+
+    databaseQuery();
+    alternateButtonLabel(listNote, "Gift Lists", "Private");
+
+    for (let i = 0; i < userArr.length; i++) {
+      userUserNames.push(userArr[i].userName);
+      userUIDList.push(userArr[i].uid);
+    }
+
+    initializeBackBtn();
+    initializeSwapBtn();
+  } catch (err) {
+    console.log("Critical Error: " + err.toString());
+    updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+        "Error To A Gifty Developer.");
   }
-
-  databaseQuery();
-  alternateButtonLabel(listNote, "Gift Lists", "Private");
-
-  for (let i = 0; i < userArr.length; i++) {
-    userUserNames.push(userArr[i].userName);
-    userUIDList.push(userArr[i].uid);
-  }
-
-  function initializeSwapBtn() {
-    let privateSwapFirstName = findFirstNameInFullName(giftUser.name);
-    swapList.innerHTML = "View " + privateSwapFirstName + "'s <br/>Public List";
-    swapList.onclick = function () {
-      sessionStorage.setItem("validGiftUser", JSON.stringify(giftUser));
-      navigation(9);//FriendList
-    };
-  }
-
-  function initializeBackBtn() {
-    backBtn.innerHTML = "Back To Gift Lists";
-    backBtn.onclick = function () {
-      if (moderationSet == 1) {
-        navigation(14);//Moderation
-      } else {
-        navigation(3);//Lists
-      }
-    };
-  }
-
-  initializeBackBtn();
-  initializeSwapBtn();
 
   function databaseQuery() {
     let tempGiftCheckIndex = 0;
@@ -446,6 +432,26 @@ window.onload = function instantiate() {
     listeningFirebaseRefs.push(limitsInitial);
   }
 };
+
+function initializeSwapBtn() {
+  let privateSwapFirstName = findFirstNameInFullName(giftUser.name);
+  swapList.innerHTML = "View " + privateSwapFirstName + "'s <br/>Public List";
+  swapList.onclick = function () {
+    sessionStorage.setItem("validGiftUser", JSON.stringify(giftUser));
+    navigation(9);//FriendList
+  };
+}
+
+function initializeBackBtn() {
+  backBtn.innerHTML = "Back To Gift Lists";
+  backBtn.onclick = function () {
+    if (moderationSet == 1) {
+      navigation(14);//Moderation
+    } else {
+      navigation(3);//Lists
+    }
+  };
+}
 
 function findRemovedGift(oldArr, newArr) {
   let removedGiftIndex = -1;
