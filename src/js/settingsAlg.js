@@ -52,171 +52,55 @@ function getCurrentUser(){
 }
 
 window.onload = function instantiate() {
-  pageName = "Settings";
-  inviteNote = document.getElementById("inviteNote");
-  usernameInfo = document.getElementById("usernameInfo");
-  usernameDisplay = document.getElementById("usernameDisplay");
-  nameInfo = document.getElementById("nameInfo");
-  nameDisplay = document.getElementById("nameDisplay");
-  shareCodeInfo = document.getElementById("shareCodeInfo");
-  shareCodeDisplay = document.getElementById("shareCodeDisplay");
-  userScoreInfo = document.getElementById("userScoreInfo");
-  userScoreDisplay = document.getElementById("userScoreDisplay");
-  editBtn = document.getElementById("editBtn");
-  faqBtn = document.getElementById("faqBtn");
-  giftyVersionIdentifier = document.getElementById("giftyVersionIdentifier");
-  giftyCopyrightIdentifier = document.getElementById("giftyCopyrightIdentifier");
-  modBtn = document.getElementById("modBtn");
-  familyBtn = document.getElementById("familyBtn");
-  moderationModal = document.getElementById("moderationModal");
-  moderationSpan = document.getElementById("moderationSpan");
-  moderationQueueBtn = document.getElementById("moderationQueueBtn");
-  userListBtn = document.getElementById("userListBtn");
+  try {
+    pageName = "Settings";
+    inviteNote = document.getElementById("inviteNote");
+    usernameInfo = document.getElementById("usernameInfo");
+    usernameDisplay = document.getElementById("usernameDisplay");
+    nameInfo = document.getElementById("nameInfo");
+    nameDisplay = document.getElementById("nameDisplay");
+    shareCodeInfo = document.getElementById("shareCodeInfo");
+    shareCodeDisplay = document.getElementById("shareCodeDisplay");
+    userScoreInfo = document.getElementById("userScoreInfo");
+    userScoreDisplay = document.getElementById("userScoreDisplay");
+    editBtn = document.getElementById("editBtn");
+    faqBtn = document.getElementById("faqBtn");
+    giftyVersionIdentifier = document.getElementById("giftyVersionIdentifier");
+    giftyCopyrightIdentifier = document.getElementById("giftyCopyrightIdentifier");
+    modBtn = document.getElementById("modBtn");
+    familyBtn = document.getElementById("familyBtn");
+    moderationModal = document.getElementById("moderationModal");
+    moderationSpan = document.getElementById("moderationSpan");
+    moderationQueueBtn = document.getElementById("moderationQueueBtn");
+    userListBtn = document.getElementById("userListBtn");
 
-  getCurrentUser();
-  commonInitialization();
+    getCurrentUser();
+    commonInitialization();
 
-  settingsElements = [offlineModal, offlineSpan, inviteNote, usernameInfo, usernameDisplay, nameInfo, nameDisplay,
-    shareCodeInfo, shareCodeDisplay, userScoreInfo, userScoreDisplay, editBtn, faqBtn, modBtn, familyBtn,
-    moderationModal, moderationSpan, moderationQueueBtn, userListBtn, notificationModal, notificationTitle,
-    notificationInfo, noteSpan];
+    settingsElements = [offlineModal, offlineSpan, inviteNote, usernameInfo, usernameDisplay, nameInfo, nameDisplay,
+      shareCodeInfo, shareCodeDisplay, userScoreInfo, userScoreDisplay, editBtn, faqBtn, modBtn, familyBtn,
+      moderationModal, moderationSpan, moderationQueueBtn, userListBtn, notificationModal, notificationTitle,
+      notificationInfo, noteSpan];
 
-  verifyElementIntegrity(settingsElements);
+    verifyElementIntegrity(settingsElements);
 
-  giftyVersionIdentifier.innerHTML = "Version: " + giftyVersion;
-  giftyCopyrightIdentifier.innerHTML = "©Donovan Adrian 2023";
+    giftyVersionIdentifier.innerHTML = "Version: " + giftyVersion;
+    giftyCopyrightIdentifier.innerHTML = "©Donovan Adrian 2023";
 
-  function initializeEditBtn() {
-    editBtn.onclick = function () {
-      navigation(13, false);//UserAddUpdate
-    };
+    initializeEditBtn();
+    initializeFAQBtn();
+    initializeUserInfo();
+    initializeFamilyDBCheck();
+
+    userBase = firebase.database().ref("users/");
+    userInvites = firebase.database().ref("users/" + user.uid + "/invites");
+
+    databaseQuery();
+  } catch (err) {
+    console.log("Critical Error: " + err.toString());
+    updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+        "Error To A Gifty Developer.");
   }
-
-  function initializeFAQBtn() {
-    faqBtn.onclick = function (){
-      navigation(12);//FAQ
-    };
-  }
-
-  function initializeUserInfo() {
-    updateSettingsUserData();
-
-    usernameInfo.onclick = function() {displayUserDataAlert(0)};
-    usernameDisplay.onclick = function() {displayUserDataAlert(0)};
-    nameInfo.onclick = function() {displayUserDataAlert(1)};
-    nameDisplay.onclick = function() {displayUserDataAlert(1)};
-    shareCodeInfo.onclick = function() {displayUserDataAlert(2)};
-    shareCodeDisplay.onclick = function() {displayUserDataAlert(2)};
-    userScoreInfo.onclick = function() {displayUserDataAlert(3)};
-    userScoreDisplay.onclick = function() {displayUserDataAlert(3)};
-  }
-
-  function displayUserDataAlert(userDataItem) {
-    let extraText = "";
-
-    if (user.settingsScoreBlock == undefined) {
-      user.settingsScoreBlock = 0;
-    }
-
-    if (settingsUserScore < settingsUserScoreLimit && user.settingsScoreBlock == 0 && settingsEasterEggScore != 0) {
-      settingsUserScore++;
-
-      if (settingsUserScore == settingsUserScoreLimit) {
-        extraText = "<br\><br\><br\>...NOW you've done it! No more points for you! >:(";
-        updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\", found an easter egg... But got greedy :(" +
-            "  Their ability to obtain user score points through this easter egg has been disabled!");
-        updateUserScore(user,settingsEasterEggScore, true);
-      } else if (settingsUserScore >= 7) {
-        extraText = "<br\><br\><br\>...Don't get greedy now!";
-        updateUserScore(user,settingsEasterEggScore, false);
-      } else if (settingsUserScore >= 5) {
-        extraText = "<br\><br\><br\>...Yes... You can click on these text icons to get more points!";
-        updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg!");
-        updateUserScore(user, settingsEasterEggScore, false);
-      } else {
-        updateUserScore(user, settingsEasterEggScore, false);
-      }
-    }
-
-    switch (userDataItem) {
-      case 0:
-        deployNotificationModal(false, "Your Username!", "This is your Username! Other people can use this to invite you to see their list!" + extraText);
-        break;
-      case 1:
-        deployNotificationModal(false, "Your Name!", "This is your Name! This is what other people will see when they look at your list and when you buy gifts." + extraText);
-        break;
-      case 2:
-        deployNotificationModal(false, "Your Share Code!", "This is your Share Code! Other people can use this to invite you to see their list!" + extraText);
-        break;
-      case 3:
-        deployNotificationModal(false, "Your User Score!", "This is your User Score! This is an arbitrary number that shows how active you are on Gifty!" + extraText);
-        break;
-      default:
-        console.log("Unknown Input Data Item..." + extraText);
-        break;
-    }
-  }
-
-  function initializeFamilyDBCheck(){
-    if (user.moderatorInt == 1) {
-      familyInitial = firebase.database().ref("family/");
-
-      let fetchFamilies = function (postRef){
-        postRef.once("value").then(function(snapshot) {
-          if (snapshot.exists()) {
-            postRef.on("child_added", function (data) {
-              let i = findUIDItemInArr(data.val().uid, familyArr, true);
-              if (i == -1) {
-                familyArr.push(data.val());
-                saveCriticalCookies();
-              } else {
-                localObjectChanges = findObjectChanges(familyArr[i], data.val());
-                if (localObjectChanges.length != 0) {
-                  familyArr[i] = data.val();
-                  saveCriticalCookies();
-                }
-              }
-            });
-
-            postRef.on("child_changed", function (data) {
-              let i = findUIDItemInArr(data.key, familyArr);
-              if (i != -1) {
-                localObjectChanges = findObjectChanges(familyArr[i], data.val());
-                if (localObjectChanges.length != 0) {
-                  familyArr[i] = data.val();
-                  saveCriticalCookies();
-                }
-              }
-            });
-
-            postRef.on("child_removed", function (data) {
-              let i = findUIDItemInArr(data.key, familyArr);
-              if (i != -1) {
-                familyArr.splice(i, 1);
-                saveCriticalCookies();
-              }
-            });
-          } else {
-            deployListEmptyNotification("No Families Found!");
-          }
-        });
-      };
-
-      fetchFamilies(familyInitial);
-
-      listeningFirebaseRefs.push(familyInitial);
-    }
-  }
-
-  initializeEditBtn();
-  initializeFAQBtn();
-  initializeUserInfo();
-  initializeFamilyDBCheck();
-
-  userBase = firebase.database().ref("users/");
-  userInvites = firebase.database().ref("users/" + user.uid + "/invites");
-
-  databaseQuery();
 
   function databaseQuery() {
     let fetchData = function (postRef) {
@@ -315,6 +199,128 @@ window.onload = function instantiate() {
   });
   observer.observe(targetNode, { attributes: true, childList: true });
 };
+
+function initializeEditBtn() {
+  editBtn.onclick = function () {
+    navigation(13, false);//UserAddUpdate
+  };
+}
+
+function initializeFAQBtn() {
+  faqBtn.onclick = function (){
+    navigation(12);//FAQ
+  };
+}
+
+function initializeUserInfo() {
+  updateSettingsUserData();
+
+  usernameInfo.onclick = function() {displayUserDataAlert(0)};
+  usernameDisplay.onclick = function() {displayUserDataAlert(0)};
+  nameInfo.onclick = function() {displayUserDataAlert(1)};
+  nameDisplay.onclick = function() {displayUserDataAlert(1)};
+  shareCodeInfo.onclick = function() {displayUserDataAlert(2)};
+  shareCodeDisplay.onclick = function() {displayUserDataAlert(2)};
+  userScoreInfo.onclick = function() {displayUserDataAlert(3)};
+  userScoreDisplay.onclick = function() {displayUserDataAlert(3)};
+}
+
+function displayUserDataAlert(userDataItem) {
+  let extraText = "";
+
+  if (user.settingsScoreBlock == undefined) {
+    user.settingsScoreBlock = 0;
+  }
+
+  if (settingsUserScore < settingsUserScoreLimit && user.settingsScoreBlock == 0 && settingsEasterEggScore != 0) {
+    settingsUserScore++;
+
+    if (settingsUserScore == settingsUserScoreLimit) {
+      extraText = "<br\><br\><br\>...NOW you've done it! No more points for you! >:(";
+      updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\", found an easter egg... But got greedy :(" +
+          "  Their ability to obtain user score points through this easter egg has been disabled!");
+      updateUserScore(user,settingsEasterEggScore, true);
+    } else if (settingsUserScore >= 7) {
+      extraText = "<br\><br\><br\>...Don't get greedy now!";
+      updateUserScore(user,settingsEasterEggScore, false);
+    } else if (settingsUserScore >= 5) {
+      extraText = "<br\><br\><br\>...Yes... You can click on these text icons to get more points!";
+      updateMaintenanceLog(pageName, "The user, \"" + user.userName + "\" found an easter egg!");
+      updateUserScore(user, settingsEasterEggScore, false);
+    } else {
+      updateUserScore(user, settingsEasterEggScore, false);
+    }
+  }
+
+  switch (userDataItem) {
+    case 0:
+      deployNotificationModal(false, "Your Username!", "This is your Username! Other people can use this to invite you to see their list!" + extraText);
+      break;
+    case 1:
+      deployNotificationModal(false, "Your Name!", "This is your Name! This is what other people will see when they look at your list and when you buy gifts." + extraText);
+      break;
+    case 2:
+      deployNotificationModal(false, "Your Share Code!", "This is your Share Code! Other people can use this to invite you to see their list!" + extraText);
+      break;
+    case 3:
+      deployNotificationModal(false, "Your User Score!", "This is your User Score! This is an arbitrary number that shows how active you are on Gifty!" + extraText);
+      break;
+    default:
+      console.log("Unknown Input Data Item..." + extraText);
+      break;
+  }
+}
+
+function initializeFamilyDBCheck(){
+  if (user.moderatorInt == 1) {
+    familyInitial = firebase.database().ref("family/");
+
+    let fetchFamilies = function (postRef){
+      postRef.once("value").then(function(snapshot) {
+        if (snapshot.exists()) {
+          postRef.on("child_added", function (data) {
+            let i = findUIDItemInArr(data.val().uid, familyArr, true);
+            if (i == -1) {
+              familyArr.push(data.val());
+              saveCriticalCookies();
+            } else {
+              localObjectChanges = findObjectChanges(familyArr[i], data.val());
+              if (localObjectChanges.length != 0) {
+                familyArr[i] = data.val();
+                saveCriticalCookies();
+              }
+            }
+          });
+
+          postRef.on("child_changed", function (data) {
+            let i = findUIDItemInArr(data.key, familyArr);
+            if (i != -1) {
+              localObjectChanges = findObjectChanges(familyArr[i], data.val());
+              if (localObjectChanges.length != 0) {
+                familyArr[i] = data.val();
+                saveCriticalCookies();
+              }
+            }
+          });
+
+          postRef.on("child_removed", function (data) {
+            let i = findUIDItemInArr(data.key, familyArr);
+            if (i != -1) {
+              familyArr.splice(i, 1);
+              saveCriticalCookies();
+            }
+          });
+        } else {
+          deployListEmptyNotification("No Families Found!");
+        }
+      });
+    };
+
+    fetchFamilies(familyInitial);
+
+    listeningFirebaseRefs.push(familyInitial);
+  }
+}
 
 function updateSettingsUserData() {
   usernameDisplay.innerHTML = user.userName;
