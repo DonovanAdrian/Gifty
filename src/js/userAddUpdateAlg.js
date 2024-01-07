@@ -27,84 +27,53 @@ let btnDelete;
 
 
 window.onload = function instantiate() {
-  failedNavNum = 13;
-  pageName = "UserAddUpdate";
-  nameField = document.getElementById("nameField");
-  userNameField = document.getElementById("userNameField");
-  pinField = document.getElementById("pinField");
-  pinConfField = document.getElementById("pinConfField");
-  btnUpdate = document.getElementById("updateUser");
-  btnDelete = document.getElementById("deleteUser");
-  backBtn = document.getElementById("backBtn");
-  offlineModal = document.getElementById("offlineModal");
-  offlineSpan = document.getElementById("closeOffline");
-  confirmModal = document.getElementById("confirmModal");
-  confirmSpan = document.getElementById("closeConfirm");
-  deleteConfirm = document.getElementById("deleteConfirm");
-  deleteDeny = document.getElementById("deleteDeny");
-  notificationModal = document.getElementById("notificationModal");
-  notificationTitle = document.getElementById("notificationTitle");
-  notificationInfo = document.getElementById("notificationInfo");
-  noteSpan = document.getElementById("closeNotification");
+  try {
+    failedNavNum = 13;
+    pageName = "UserAddUpdate";
+    nameField = document.getElementById("nameField");
+    userNameField = document.getElementById("userNameField");
+    pinField = document.getElementById("pinField");
+    pinConfField = document.getElementById("pinConfField");
+    btnUpdate = document.getElementById("updateUser");
+    btnDelete = document.getElementById("deleteUser");
+    backBtn = document.getElementById("backBtn");
+    offlineModal = document.getElementById("offlineModal");
+    offlineSpan = document.getElementById("closeOffline");
+    confirmModal = document.getElementById("confirmModal");
+    confirmSpan = document.getElementById("closeConfirm");
+    deleteConfirm = document.getElementById("deleteConfirm");
+    deleteDeny = document.getElementById("deleteDeny");
+    notificationModal = document.getElementById("notificationModal");
+    notificationTitle = document.getElementById("notificationTitle");
+    notificationInfo = document.getElementById("notificationInfo");
+    noteSpan = document.getElementById("closeNotification");
 
-  getCurrentUserCommon();
-  commonInitialization();
+    getCurrentUserCommon();
+    commonInitialization();
 
-  userAddUpdateElements = [nameField, userNameField, pinField, pinConfField, btnUpdate, btnDelete, backBtn,
-    offlineModal, offlineSpan, confirmModal, confirmSpan, deleteConfirm, deleteDeny, notificationModal,
-    notificationTitle, notificationInfo, noteSpan];
+    userAddUpdateElements = [nameField, userNameField, pinField, pinConfField, btnUpdate, btnDelete, backBtn,
+      offlineModal, offlineSpan, confirmModal, confirmSpan, deleteConfirm, deleteDeny, notificationModal,
+      notificationTitle, notificationInfo, noteSpan];
 
-  verifyElementIntegrity(userAddUpdateElements);
+    verifyElementIntegrity(userAddUpdateElements);
 
-  function initializeBackBtn() {
-    backBtn.style.display = "block";
-    backBtn.style.left = "50%";
-    backBtn.style.transform = "translate(-50%)";
-    backBtn.innerHTML = "Loading...";
-    backBtn.onclick = function() {
-      navigation(5, true);//Settings
-    };
+    if (user != null) {
+      initializeBackBtn();
+      initializeDeleteUserBtn();
+    }
+
+    initializeUpdateUserBtn();
+    initializePinField();
+
+    userInitial = firebase.database().ref("users/");
+    limitsInitial = firebase.database().ref("limits/");
+
+    databaseQuery();
+  } catch (err) {
+    console.log("Critical Error: " + err.toString());
+    updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
+        "Error To A Gifty Developer.");
   }
-
-  function initializeDeleteUserBtn() {
-    btnDelete.style.display = "block";
-    btnDelete.style.left = "50%";
-    btnDelete.style.transform = "translate(-50%)";
-    btnDelete.innerHTML = "Loading...";
-    btnDelete.onclick = function() {
-      deleteCheck();
-    };
-  }
-
-  function initializeUpdateUserBtn() {
-    btnUpdate.innerHTML = "Loading...";
-    btnUpdate.onclick = function() {
-      updateSuppressCheck();
-    };
-  }
-
-  function initializePinField() {
-    pinField.onclick = function() {
-      if(pinClearedInt == 0) {
-        pinField.value = "";
-        pinConfField.value = "";
-        pinClearedInt++;
-      }
-    };
-  }
-
-  if(user != null) {
-    initializeBackBtn();
-    initializeDeleteUserBtn();
-  }
-
-  initializeUpdateUserBtn();
-  initializePinField();
-
-  userInitial = firebase.database().ref("users/");
-  limitsInitial = firebase.database().ref("limits/");
-
-  databaseQuery();
 
   function databaseQuery() {
     let fetchData = function (postRef) {
@@ -229,6 +198,43 @@ window.onload = function instantiate() {
     }
   }
 };
+
+function initializeBackBtn() {
+  backBtn.style.display = "block";
+  backBtn.style.left = "50%";
+  backBtn.style.transform = "translate(-50%)";
+  backBtn.innerHTML = "Loading...";
+  backBtn.onclick = function() {
+    navigation(5, true);//Settings
+  };
+}
+
+function initializeDeleteUserBtn() {
+  btnDelete.style.display = "block";
+  btnDelete.style.left = "50%";
+  btnDelete.style.transform = "translate(-50%)";
+  btnDelete.innerHTML = "Loading...";
+  btnDelete.onclick = function() {
+    deleteCheck();
+  };
+}
+
+function initializeUpdateUserBtn() {
+  btnUpdate.innerHTML = "Loading...";
+  btnUpdate.onclick = function() {
+    updateSuppressCheck();
+  };
+}
+
+function initializePinField() {
+  pinField.onclick = function() {
+    if(pinClearedInt == 0) {
+      pinField.value = "";
+      pinConfField.value = "";
+      pinClearedInt++;
+    }
+  };
+}
 
 function deleteCheck(){
   let deleteCleanupUser;
