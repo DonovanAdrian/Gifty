@@ -10,12 +10,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/main.css?v=2023-12-18" rel="stylesheet" type="text/css"/>
+  <link href="css/main.css?v=2023-12-26" rel="stylesheet" type="text/css"/>
   <title>Family</title>
 
-  <script src="js/familyAlg.js?v=2023-12-18" type="text/javascript"></script>
-  <script src="js/secretSantaAlg.js?v=2023-12-18" type="text/javascript"></script>
-  <script src="js/common.js?v=2023-12-18" type="text/javascript"></script>
+  <script src="js/familyAlg.js?v=2023-12-26" type="text/javascript"></script>
+  <script src="js/secretSantaAlg.js?v=2023-12-26" type="text/javascript"></script>
+  <script src="js/common.js?v=2023-12-26" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -58,6 +58,9 @@
     <!--Modal Body-->
     <div class="modal-body">
       <p id="familyUID" alt="This Family's Unique ID">Loading Family UID...</p>
+      <br/>
+      <br/>
+      <span class="basicBtn" id="secretSantaShowHideBtn" alt="Show/Hide Secret Santa Options">Loading Secret Santa Options...</span>
       <p id="secretSantaSectionHeader" alt="Secret Santa Section Header" class="giftInfBold">Secret Santa Controls:</p>
       <p id="secretSantaStateText" alt="Current Secret Santa State">Secret Santa State: Unknown</p>
       <p id="secretSantaNextStateText" alt="Current Secret Santa State">Next Secret Santa State: Unknown</p>
@@ -69,6 +72,8 @@
       <br/>
       <br/>
       <span class="basicBtn" id="secretSantaExportBtn" alt="Export Secret Santa Data">Export Data To CSV</span>
+      <br/>
+      <br/>
       <p id="familyMemberCount" alt="The Amount Of Members In This Family">Loading Number Of Family Members...</p>
       <ul id="familyListContainer" class="giftList">
         <li class="gift" id="testFamily">Loading...</li>
