@@ -12,6 +12,7 @@ let secretSantaNameText;
 let showSecretSantaAssignment;
 
 //Family Page Variables
+let secretSantaShowHideBtn;
 let secretSantaSectionHeader;
 let secretSantaStateText;
 let secretSantaNextStateText;
@@ -595,6 +596,7 @@ function initializeSecretSantaDB() {
 * Family Page Functions
 */
 function initializeSecretSantaFamilyPageVars() {
+  secretSantaShowHideBtn = document.getElementById("secretSantaShowHideBtn");
   secretSantaSectionHeader = document.getElementById("secretSantaSectionHeader");
   secretSantaStateText = document.getElementById("secretSantaStateText");
   secretSantaNextStateText = document.getElementById("secretSantaNextStateText");
@@ -605,7 +607,7 @@ function initializeSecretSantaFamilyPageVars() {
   secretSantaAutoBtn = document.getElementById("secretSantaAutoBtn");
   secretSantaExportBtn = document.getElementById("secretSantaExportBtn");
 
-  secretSantaElements = [secretSantaSectionHeader, secretSantaStateText, secretSantaNextStateText,
+  secretSantaElements = [secretSantaShowHideBtn, secretSantaSectionHeader, secretSantaStateText, secretSantaNextStateText,
     secretSantaStatusText, secretSantaInfoIcon, secretSantaStateBtn, secretSantaShuffleBtn, secretSantaAutoBtn,
     secretSantaExportBtn];
   verifyElementIntegrity(secretSantaElements);
@@ -613,6 +615,24 @@ function initializeSecretSantaFamilyPageVars() {
   //Generate shortened dates
   showDateShort = getMonthName(showDateShort.getMonth()) + " " + showDateShort.getDate() + ", " + showDateShort.getFullYear();
   assignDateShort = getMonthName(assignDateShort.getMonth()) + " " + assignDateShort.getDate() + ", " + assignDateShort.getFullYear();
+}
+
+function hideSecretSantaOptions() {
+  secretSantaInfoIcon.style.display = "none";
+  secretSantaSectionHeader.style.display = "none";
+  secretSantaStateText.style.display = "none";
+  secretSantaNextStateText.style.display = "none";
+  secretSantaNextStateText.style.display = "none";
+  secretSantaStatusText.style.display = "none";
+  secretSantaShuffleBtn.style.display = "none";
+  secretSantaStateBtn.style.display = "none";
+  secretSantaAutoBtn.style.display = "none";
+  secretSantaExportBtn.style.display = "none";
+
+  secretSantaStateBtn.onclick = function() {};
+  secretSantaAutoBtn.onclick = function() {};
+  secretSantaShuffleBtn.onclick = function() {};
+  secretSantaExportBtn.onclick = function() {};
 }
 
 function initializeSecretSantaFamilyModalElements(familyData) {
@@ -638,6 +658,17 @@ function initializeSecretSantaFamilyModalElements(familyData) {
       automaticSantaControl: 0
     });
   }
+  if (familyData.showSecretSantaOptions == undefined) {
+    familyData.showSecretSantaOptions = 0;
+    firebase.database().ref("family/" + familyData.uid).update({
+      showSecretSantaOptions: 0
+    });
+  } else if (familyData.showSecretSantaOptions > 1 || familyData.showSecretSantaOptions < 0) {
+    familyData.showSecretSantaOptions = 0;
+    firebase.database().ref("family/" + familyData.uid).update({
+      showSecretSantaOptions: 0
+    });
+  }
 
   if (familyData.automaticSantaControl == 0) {
     secretSantaAutoBtn.innerHTML = "Enable Automatic Control";
@@ -648,6 +679,8 @@ function initializeSecretSantaFamilyModalElements(familyData) {
   if (familyData.members == undefined)
     familyData.members = [];
 
+  secretSantaSectionHeader.style.display = "block";
+  secretSantaInfoIcon.style.display = "inline-block";
   secretSantaInfoIcon.onclick = function() {
     deployNotificationModal(true, "Secret Santa Info", "These are the Secret Santa " +
         "Controls. Depending on what state Secret Santa is in, some buttons will not appear. Additional information " +
@@ -677,6 +710,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     secretSantaNextStateText.style.display = "block";
     secretSantaStatusText.style.display = "none";
     secretSantaShuffleBtn.style.display = "none";
+    secretSantaStateBtn.style.display = "inline-block";
     secretSantaAutoBtn.style.display = "inline-block";
     secretSantaExportBtn.style.display = "none";
 
@@ -700,6 +734,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     secretSantaNextStateText.style.display = "block";
     secretSantaStatusText.style.display = "block";
     secretSantaShuffleBtn.style.display = "inline-block";
+    secretSantaStateBtn.style.display = "inline-block";
     secretSantaAutoBtn.style.display = "inline-block";
     secretSantaExportBtn.style.display = "inline-block";
 
@@ -738,6 +773,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     }
     secretSantaNextStateText.style.display = "block";
     secretSantaShuffleBtn.style.display = "inline-block";
+    secretSantaStateBtn.style.display = "inline-block";
     secretSantaAutoBtn.style.display = "inline-block";
     secretSantaExportBtn.style.display = "inline-block";
 
@@ -755,6 +791,36 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     };
     secretSantaExportBtn.onclick = function() {
       exportSecretSantaData(2, familyData);
+    };
+  }
+
+  if (familyData.showSecretSantaOptions == 0) {
+    setSecretSantaShow();
+  } else if (familyData.showSecretSantaOptions == 1) {
+    setSecretSantaHide();
+  }
+
+  function setSecretSantaShow() {
+    hideSecretSantaOptions();
+    secretSantaShowHideBtn.innerHTML = "Show Secret Santa Options";
+    secretSantaShowHideBtn.onclick = function() {
+      familyData.showSecretSantaOptions = 1;
+      initializeSecretSantaFamilyModalElements(familyData);
+      firebase.database().ref("family/" + familyData.uid).update({
+        showSecretSantaOptions: 1
+      });
+    }
+  }
+
+  function setSecretSantaHide() {
+    secretSantaShowHideBtn.innerHTML = "Hide Secret Santa Options";
+    secretSantaShowHideBtn.onclick = function() {
+      familyData.showSecretSantaOptions = 0;
+      hideSecretSantaOptions();
+      setSecretSantaShow();
+      firebase.database().ref("family/" + familyData.uid).update({
+        showSecretSantaOptions: 0
+      });
     };
   }
 }
