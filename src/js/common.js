@@ -526,10 +526,7 @@ function getCurrentUserCommon() {
     try {
       const config = JSON.parse(sessionStorage.config);
       initializeDB(config);
-      updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
-          "Error To A Gifty Developer.");
-      if (consoleOutput)
-        console.log("Error Report Sent!");
+      sendCriticalInitializationError(err);
     } catch (err) {
       if (consoleOutput)
         console.log("Error Report Failed!");
@@ -539,6 +536,19 @@ function getCurrentUserCommon() {
     navigation(1, false);//Index
     throw "Error Reading Data!";
   }
+}
+
+function sendCriticalInitializationError(errorData) {
+  let errorString = errorData.toString();
+  if (consoleOutput)
+    console.log("Critical Error: " + errorString);
+
+  initializeDB(config);
+  updateMaintenanceLog(pageName, "Critical Initialization Error: " + errorString + " - Send This " +
+      "Error To A Gifty Developer.");
+
+  if (consoleOutput)
+    console.log("Error Report Sent!");
 }
 
 function checkNotifications() {
