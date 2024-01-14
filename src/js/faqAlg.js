@@ -42,9 +42,7 @@ window.onload = function instantiate() {
             "&body=Hey Gifty Support, %0D%0A%0D%0A%0D%0A%0D%0A Sincerely, " + user.userName);
       };
     } catch (err) {
-      console.log("Critical Error: " + err.toString());
-      updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
-          "Error To A Gifty Developer.");
+      sendCriticalInitializationError(err);
     }
   }
 
