@@ -70,9 +70,7 @@ window.onload = function instantiate() {
 
     databaseQuery();
   } catch (err) {
-    console.log("Critical Error: " + err.toString());
-    updateMaintenanceLog(pageName, "Critical Initialization Error: " + err.toString() + " - Send This " +
-        "Error To A Gifty Developer.");
+    sendCriticalInitializationError(err);
   }
 
   function databaseQuery() {
