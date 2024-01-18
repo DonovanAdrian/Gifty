@@ -7,48 +7,31 @@ This website is meant to be a free gift list registry that
 aims at eliminating the double-buying of gifts. My personal
 goal here was to offer something to my family that would
 give an extra layer of confidence when buying gifts for each
-other. Getting two of everything isn't as fun as it sounds!
-
-
-## How Well Does This Work?
-While Gifty is far from perfect, I was able to bring
-it up to full functionality in early 2020! Since then,
-Gifty has experienced significant change since it's
-early Android Application days. This includes a smooth
-and simple user interface, rich notifications based on
-various user interactions, and useful moderation tools.
-Did I mention that Gifty is FREE? To accomplish this,
-I enlisted Google Firebase to follow through with all
-database and hosting operations, while I handled all
-the data processing operations with the code written here.
-Speaking of the code written here, there is plenty
-of progress to be made. While my time has worn thin,
-I still try to make small steps towards my big goal
-as of late - v1.3, which employs a more fleshed
-out Secret Santa system, Backup functionality, redone
-look and feel, and better reliability for all kinds of 
-users. While none of these features are particularly
-fancy or new, they are interesting challenges for
-me to solve that are taking more time than expected.
+other. Getting two of everything isn't usually as fun as it sounds!
 
 
 ## What Are Some Possible Use Cases For This Program?
 As mentioned before, the primary use for this program is to
 be utilized as a gift list registry for my family. As such,
 this could easily be used among families, friends, clubs, parties...
-You name it! It should be noted that I have NO current plans
+You name it! Ideally, this should only be deployed in "small"
+use cases. Overall this was only designed with one family in mind,
+with the ability to "expand" to a larger group... But not the world.
+Speaking of... It should be noted that I have NO current plans
 to release this to the world besides this repository on GitHub.
-As a result, the strengths of this system rely on SMALL
-instances being deployed, especially with Firebase's stringent
-data limits.
+As a result, the strengths of this system rely on the "small"
+use cases being deployed, especially with Firebase's stringent
+(free) data limits.
 
 
 ## Do You Have Any Other Plans For This Program?
-At this time, I am in the process of adding various functions
-that will improve the user experience for moderators and normal
-users alike. Some planned features are listed in the
-"Projects" section of my GitHub profile, which will be added
-as they are created/planned.
+I've been hard at work bringing Gifty up to the point where it
+is now... It's been a passion project for over 5 years. It started
+as an Android app in 2018 and evolved into a "web-app" as time
+went on. As of writing this at the beginning of 2024, I'm going to
+start winding down on my plans for this project. Any latent ideas 
+that I had for this project will trickle it's way into this 
+repository someday.
 
 
 ## How Do I Set This Up For My Family And Friends?
@@ -61,11 +44,10 @@ section for more details on this!
 
 
 ## Great, Now I'm All Set Up! How Do I Use Gifty?
-I have PDF documentation that I am still working
-on improving. Of course, as some of the major
-features like the updated Secret Santa system and
-Backups are on their way, I won't be able to
-post that until they are done.
+I have PDF documentation that will be in the works
+coming up soon. It will detail how to use the basic
+user interface, simple tasks, how to use Secret Santa, 
+and moderation instructions.
 
 
 ## Gifty Setup Tutorial
@@ -90,9 +72,12 @@ https://firebase.google.com/docs/cli
     "Add an app to get started" section (It may look like this:
     "</>").
   - Follow the registration setup prompts and select "Also
-    set up Firebase Hosting for this app", if desired.
-    - Once you reach step two, your firebaseConfig info
-      should now be generated and look something like this:
+    set up Firebase Hosting for this app".
+  - If you have other plans for hosting your Gifty deployment, 
+    then Firebase Hosting can be ignored.
+    - Once you reach step two of the Firebase setup, your 
+      firebaseConfig info should now be generated and look 
+      something like this:
       - const firebaseConfig = {
       - apiKey: "AtaxStyhBwVcVh0rD4T6HBu9O3xTB0vcW-NPpl0",
       - authDomain: "test-projects.firebaseapp.com",
@@ -120,6 +105,9 @@ https://firebase.google.com/docs/cli
     [measurementId: "MEASUREMENTIDGOESHERE"],
     it should be [measurementId: "G-9EIWMCLYSK"]
 - 5, Deploy Gifty (This is where it may get a little tricky)
+  - If you are using Firebase Hosting, these deployment steps will
+    apply to you. Otherwise, continue with your alternate deployment 
+    method.
   - In the Firebase Console, navigate to Build > Hosting and
     click on "Get Started". Follow the steps that are displayed
     by using a console (this varies depending on your Operating
