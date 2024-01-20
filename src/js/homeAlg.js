@@ -101,22 +101,36 @@ function getCurrentUser() {
 function checkYearlyReview() {
   let tempVettedUserGifts = reviewUserGifts();
   let lastLoginReviewValid = JSON.parse(sessionStorage.lastLoginReviewValid);
+  let postponedReviewBool = false;
 
   if (user.yearlyReview == undefined) {
-    user.yearlyReview = 0;
+    user.yearlyReview = "0";
+  } else {
+    user.yearlyReview = user.yearlyReview + "";
   }
 
+  if (user.yearlyReview == "0") {
+    setYearlyReviewBool = true;
+  }
+
+  if (user.yearlyReview.includes("*")) {
+    postponedReviewBool = true;
+    user.yearlyReview = user.yearlyReview.replace("*", "");
+  }
+  user.yearlyReview = parseInt(user.yearlyReview);
+
   if (tempVettedUserGifts.length > 0) {
-    if (user.yearlyReview > currentYear) {
+    if (user.yearlyReview >= currentYear && !postponedReviewBool) {
       if (consoleOutput)
         console.log("User Does Not Need Yearly Review! Skipping...");
-    } else if (user.yearlyReview < currentYear && currentDate > reviewDate) {
+    } else if ((user.yearlyReview < currentYear && currentDate > reviewDate) || postponedReviewBool) {
       reviewGifts.style.display = "block";
       reviewGifts.innerHTML = "Review Gifts";
       reviewGifts.onclick = function () {
         initializeYearlyReview();
       };
-      if (user.yearlyReview != 0) {
+
+      if (user.yearlyReview < currentYear) {
         initializeYearlyReview();
       }
     }
@@ -304,10 +318,10 @@ function processReviewedGifts() {
 
   if (bulkDeleteError) {
     deployNotificationModal(false, "Yearly Review Delete Error!", "One or more of " +
-        "the gifts that you wanted to remove failed to be deleted! Please try removing them again manually.", 5);
+        "the gifts that you wanted to remove failed to be deleted! Please try removing them again manually.", 10);
   } else {
     deployNotificationModal(false, "Yearly Review Complete!", "Thank you for " +
-        "completing the Yearly Gift Review! Your changes have been successfully applied.");
+        "completing the Yearly Gift Review! Your changes have been successfully applied.", 8);
   }
 }
 
@@ -532,8 +546,9 @@ window.onload = function instantiate() {
       databaseQuery();
 
       if (setYearlyReviewBool) {
+        let customCurrentYear = currentYear + "*";
         firebase.database().ref("users/" + user.uid).update({
-          yearlyReview: 0
+          yearlyReview: customCurrentYear
         });
       }
       if (setNextYearReviewBool) {
