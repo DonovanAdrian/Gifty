@@ -14,7 +14,7 @@ let logoutReminder = 300; //default 300, 300 (5 mins) -> Notifies user when they
 let logoutLimit = 900; //default 900, 900 (15 mins), 600 (10 mins) -> Logs out user after this long
 let commonLoadingTimerLimit = 15000; //default 15000 -> Amount of time before displaying load error
 let jokeGiftChances = 10000; //default 10000 (1 out of jokeGiftChances * 2) -> Chance to generate a joke gift
-let debugElementIntegrity = false; //Used to debug if elements are properly initialized (developer tool)
+let debugElementIntegrity = true; //Used to debug if elements are properly initialized (developer tool)
 let redirectWarningBool = true; //Used to enable or disable URL redirect warnings
 let twentyFourHourTime = false; //Used to enable or disable 24 hour time for getLocalTime();
 let jokeGiftEnabled = true; //Enables/disables a joke gift that has a chance to randomly appear
@@ -540,12 +540,26 @@ function getCurrentUserCommon() {
 
 function sendCriticalInitializationError(errorData) {
   let errorString = errorData.toString();
+  let userDataString = "";
+
+  if (user != undefined) {
+    userDataString = ", Experienced by " + user.userName + " (" + user.uid + ")";
+  }
+
   if (consoleOutput)
     console.log("Critical Error: " + errorString);
 
-  initializeDB(config);
-  updateMaintenanceLog(pageName, "Critical Initialization Error: " + errorString + " - Send This " +
-      "Error To A Gifty Developer.");
+  try {
+    const config = JSON.parse(sessionStorage.config);
+    initializeDB(config);
+  } catch (err) {}
+
+  updateMaintenanceLog(pageName, "Critical Initialization Error" + userDataString + ": \"" +
+      errorString + "\" - Send This Error To A Gifty Developer.");
+
+  deployNotificationModal(false, "Uh Oh! Something Went Wrong!", "It seems " +
+      "like there was a small hiccup on this page, so some things may not work properly. Please let a moderator " +
+      "know about this popup! Thank you!", 10);
 
   if (consoleOutput)
     console.log("Error Report Sent!");
