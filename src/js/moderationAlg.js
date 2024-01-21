@@ -18,6 +18,7 @@ let listLimit = 0;
 let giftLimit = 0;
 let userLimit = 0;
 
+let showHideUserDataBool = false;
 let userUpdateLocal = false;
 let secretSantaAssignmentShown = false;
 let allowLogin = null;
@@ -36,6 +37,8 @@ let giftLinkInfoIcon;
 let giftLinkBtn;
 let limitsInfoIcon;
 let limitsBtn;
+let extraDataInfoIcon;
+let hideExtraDataBtn;
 let userListInfoIcon;
 let userListDropDown;
 let showNone;
@@ -95,7 +98,9 @@ let userPublicGifts;
 let userPrivateGifts;
 let userFriendsList;
 let userRelationshipList;
+let userRelationshipBuffer;
 let userNotificationsList;
+let userNotificationsBuffer;
 let userLastLogin;
 let userLastAction;
 let userLastReview;
@@ -104,6 +109,7 @@ let userFamilyName;
 let userSecretSanta;
 let userSecretSantaPrior;
 let userSecretSantaBtn;
+let userSecretSantaBuffer;
 let userPassword;
 let moderatorOp;
 let sendPrivateMessage;
@@ -179,6 +185,8 @@ window.onload = function instantiate() {
     giftLinkBtn = document.getElementById("giftLinkBtn");
     limitsInfoIcon = document.getElementById("limitsInfoIcon");
     limitsBtn = document.getElementById("limitsBtn");
+    extraDataInfoIcon = document.getElementById("extraDataInfoIcon");
+    hideExtraDataBtn = document.getElementById("hideExtraDataBtn");
     userListInfoIcon = document.getElementById("userListInfoIcon");
     userListDropDown = document.getElementById("userListDropDown");
     showNone = document.getElementById("showNone");
@@ -238,7 +246,9 @@ window.onload = function instantiate() {
     userPrivateGifts = document.getElementById("userPrivateGifts");
     userFriendsList = document.getElementById("userFriendsList");
     userRelationshipList = document.getElementById("userRelationshipList");
+    userRelationshipBuffer = document.getElementById("userRelationshipBuffer");
     userNotificationsList = document.getElementById("userNotificationsList");
+    userNotificationsBuffer = document.getElementById("userNotificationsBuffer");
     userLastLogin = document.getElementById("userLastLogin");
     userLastAction = document.getElementById("userLastAction");
     userLastReview = document.getElementById("userLastReview");
@@ -247,6 +257,7 @@ window.onload = function instantiate() {
     userSecretSanta = document.getElementById("userSecretSanta");
     userSecretSantaPrior = document.getElementById("userSecretSantaPrior");
     userSecretSantaBtn = document.getElementById("userSecretSantaBtn");
+    userSecretSantaBuffer = document.getElementById("userSecretSantaBuffer");
     userPassword = document.getElementById("userPassword");
     moderatorOp = document.getElementById("moderatorOp");
     sendPrivateMessage = document.getElementById("sendPrivateMessage");
@@ -287,19 +298,21 @@ window.onload = function instantiate() {
       privateMessageModal, sendGlobalNotification, nukeAllUserNotifications, nukeAllUserScores, loginFxnBtn, giftLinkBtn,
       limitsBtn, databaseLimitsModal, closeDatabaseLimitsModal, giftLimitInp, userLimitInp, confirmLimits, cancelLimits,
       loginDisabledModal, loginDisabledTitle, closeLoginDisabledModal, loginDisabledDesc, loginDisabledInp,
-      loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, userListDropDown,
-      showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore, showShareCode, showGifts,
-      showFriends, showNotifications, showRelationships, showModerator, showFamilyAssignment, showSecretSanta,
-      showCurrentSecretSanta, showLastSecretSanta, sendPrivateMessage, userModal, userOptionsBtn, userOptionsModal,
-      userOptionsSpan, settingsNote, testData, closeUserModal, userName, userUID, userUserName, userPublicGifts,
-      userPrivateGifts, userFriendsList, userRelationshipList, userNotificationsList, userLastLogin, userLastAction,
-      userLastReview, userScoreElem, userFamilyName, userSecretSanta, userSecretSantaPrior, userSecretSantaBtn,
-      userPassword, moderatorOp, sendPrivateMessage, warnUser, banUser, userDataViewModal, closeUserDataViewModal,
-      userDataViewTitle, userDataViewText, userDataViewListContainer, userDataViewBack, testUserDataView,
-      moderationTicketViewModal, closeModerationTicketViewModal, moderationTicketViewTitle, moderationTicketViewText,
+      loginDisabledInfo, resetDefaultLoginDisabledBtn, confirmLoginDisabled, cancelLoginDisabled, hideExtraDataBtn,
+      userListDropDown, showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore,
+      showShareCode, showGifts, showFriends, showNotifications, showRelationships, showModerator, showFamilyAssignment,
+      showSecretSanta, showCurrentSecretSanta, showLastSecretSanta, sendPrivateMessage, userModal, userOptionsBtn,
+      userOptionsModal, userOptionsSpan, settingsNote, testData, closeUserModal, userName, userUID, userUserName,
+      userPublicGifts, userPrivateGifts, userFriendsList, userRelationshipList, userRelationshipBuffer,
+      userNotificationsList, userNotificationsBuffer, userLastLogin, userLastAction, userLastReview, userScoreElem,
+      userFamilyName, userSecretSanta, userSecretSantaPrior, userSecretSantaBtn, userSecretSantaBuffer, userPassword,
+      moderatorOp, sendPrivateMessage, warnUser, banUser, userDataViewModal, closeUserDataViewModal, userDataViewTitle,
+      userDataViewText, userDataViewListContainer, userDataViewBack, testUserDataView, moderationTicketViewModal,
+      closeModerationTicketViewModal, moderationTicketViewTitle, moderationTicketViewText,
       moderationTicketViewLastTicket, moderationTicketViewOldestTicket, moderationTicketViewListContainer,
       testModerationTicketView, moderationTicketViewNavigate, closePrivateMessageModal, globalMsgTitle, globalMsgInp,
-      sendMsg, cancelMsg];
+      sendMsg, cancelMsg, nukeNoteInfoIcon, nukeScoreInfoIcon, giftLinkInfoIcon, limitsInfoIcon, extraDataInfoIcon,
+      userListInfoIcon, globalNoteInfoIcon, loginFxnInfoIcon, listLimitInfoIcon];
 
     verifyElementIntegrity(moderationElements);
 
@@ -445,6 +458,7 @@ window.onload = function instantiate() {
         if(globalNoteInt == 0) {
           globalNoteInt = 1;
           initializeGlobalNotification();
+          initializeHideExtraDataButtonPlatform();
           initializeNukeNotification();
           initializeNukeScores();
         }
@@ -695,9 +709,17 @@ function initializeInfoIcons() {
         "However, no users will be able to create an account except for a moderator with their respective credentials.", 12);
   };
 
+  extraDataInfoIcon.onclick = function () {
+    deployNotificationModal(true, "Hide Extraneous Data Points", "This button will " +
+        "hide any extra data points that tend to clutter the moderation user interface, including \"quick-info\" options. " +
+        "Please note that this setting is per-moderator, so don't worry about messing with hiding data for other moderators.",
+        10);
+  };
+
   userListInfoIcon.onclick = function () {
     deployNotificationModal(true, "Supplemental User Info", "This dropdown menu " +
-        "allows you to pick what quick-info you'd like to view upon loading the user list.", 6);
+        "allows you to pick what quick-info you would like to view upon loading the user list. Please note that this " +
+        "setting is global to all moderators, so this will affect what other moderators see.", 8);
   };
 
   globalNoteInfoIcon.onclick = function () {
@@ -718,6 +740,39 @@ function initializeInfoIcons() {
         "vis versa if the parent is accessing their infants account.", 10);
   };
 }
+
+function initializeHideExtraDataButtonPlatform() {
+  if (user.hideExtraData == undefined) {
+    user.hideExtraData = 1;
+    firebase.database().ref("users/" + user.uid).update({
+      hideExtraData: 1
+    });
+  }
+
+  if (user.hideExtraData == 1) {
+    hideExtraDataBtn.innerHTML = "Show Extra Data Points";
+    hideExtraDataBtn.onclick = function() {
+      initializeHideExtraDataButton(0);
+    }
+  } else if (user.hideExtraData == 0) {
+    hideExtraDataBtn.innerHTML = "Hide Extra Data Points";
+    hideExtraDataBtn.onclick = function() {
+      initializeHideExtraDataButton(1);
+    }
+  } else {
+    initializeHideExtraDataButton(1);
+  }
+}
+
+function initializeHideExtraDataButton(desiredHiddenState) {
+  user.hideExtraData = desiredHiddenState;
+  firebase.database().ref("users/" + user.uid).update({
+    hideExtraData: desiredHiddenState
+  });
+  initializeHideExtraDataButtonPlatform();
+  initializeUserListDropdownOptions(true);
+}
+
 
 function initializeNukeNotification() {
   nukeAllUserNotifications.innerHTML = "Remove All User's Notifications";
@@ -1190,6 +1245,7 @@ function initUserElement(liItem, userData) {
   let userFoundInFam = false;
   let relationshipModifier = "";
   let tempString = "";
+  let localFamilyData;
 
   userData = initUserDataIfEmpty(userData);
 
@@ -1197,232 +1253,65 @@ function initUserElement(liItem, userData) {
 
   liItem.onclick = function () {
     userName.innerHTML = userData.name;
-    userUID.innerHTML = "UID: " + userData.uid;
     userUserName.innerHTML = "Username: " + userData.userName;
-    userPassword.innerHTML = "View " + userData.name + "'s Password";
-    userPassword.onclick = function() {
-      if (!showPassBool) {
-        confirmOperation("Show Password?", "Are you sure you wish to view " +
-            userData.name + "'s password?", "showPass", userData, userModal, userData.uid);
-        showPassBool = true;
+    if (userData.lastLogin == "Never Logged In") {
+      userLastLogin.innerHTML = "Last Login: Never Logged In";
+    } else {
+      userLastLogin.innerHTML = "Last Login: " + getLocalTime(userData.lastLogin);
+    }
+    userLastAction.innerHTML = "Last Action: " + userData.lastPerformedAction
+    userScoreElem.innerHTML = "User Score: " + userData.userScore;
+
+    userPublicGifts.onclick = function() {
+      if (userData.uid == user.uid) {
+        deployNotificationModal(true, "User Info",
+            "Navigate to the home page to see your gifts!");
       } else {
-        userPassword.innerHTML = "View " + userData.userName + "'s Password";
-        showPassBool = false;
+        generateUserDataViewModal(userData.giftList, userData);
       }
     };
-    if (userData.lastLogin != undefined) {
-      if (userData.lastLogin == "Never Logged In") {
-        userLastLogin.innerHTML = "Last Login: Never Logged In";
-      } else {
-        userLastLogin.innerHTML = "Last Login: " + getLocalTime(userData.lastLogin);
-      }
-    } else {
-      userLastLogin.innerHTML = "This User Has No Log In Recorded";
-    }
-    if (userData.lastPerformedAction != undefined) {
-      userLastAction.innerHTML = "Last Action: " + userData.lastPerformedAction
-    } else {
-      userLastAction.innerHTML = "This User Has No Last Action Recorded";
-    }
-    if (userData.yearlyReview != undefined) {
-      userLastReview.innerHTML = "Last Yearly Review: " + userData.yearlyReview;
-    } else {
-      userLastReview.innerHTML = "This User Has No Yearly Review Recorded";
-    }
-    if(userData.userScore != undefined) {
-      userScoreElem.innerHTML = "User Score: " + userData.userScore;
-    } else {
-      userScoreElem.innerHTML = "User Score: 0";
-    }
-    if (userData.secretSantaNamePrior != undefined) {
-      if (userData.secretSantaNamePrior != "") {
-        let tempIndex = 0;
-        tempIndex = findUIDItemInArr(userData.secretSantaNamePrior, userArr, true);
-        if (tempIndex != -1) {
-          userSecretSantaPrior.innerHTML = "Last Secret Santa Assignment: " + findFirstNameInFullName(userArr[tempIndex].name);
-        } else {
-          userSecretSantaPrior.innerHTML = "Last Secret Santa Assignment: This User No Longer Exists!";
-        }
-      } else {
-        userSecretSantaPrior.innerHTML = "Last Secret Santa Assignment: No Previous Assignment";
-      }
-    } else {
-      userSecretSantaPrior.innerHTML = "This User Has No Previous Secret Santa Assignment Recorded";
-    }
-    if (userData.secretSanta != undefined) {
-      userSecretSantaBtn.className = "basicBtn";
-      if (userData.secretSanta == 0) {
-        userSecretSanta.innerHTML = "Secret Santa: Not Signed Up";
-        userSecretSantaBtn.innerHTML = "Opt Into Secret Santa";
-      } else if (userData.secretSanta == 1) {
-        userSecretSanta.innerHTML = "Secret Santa: Signed Up!";
-        userSecretSantaBtn.innerHTML = "Opt Out Of Secret Santa";
-      }
-      userSecretSantaBtn.onclick = function() {
-        userUpdateLocal = true;
-        manuallyOptInOut(userData);
-      };
-      if (userData.secretSantaName != undefined) {
-        if (userData.secretSantaName != "") {
-          if (secretSantaAssignmentShown && secretSantaAssignmentShownUser != userData.uid) {
-            secretSantaAssignmentShown = false;
-            secretSantaAssignmentShownUser = "";
-          }
-          if (!secretSantaAssignmentShown) {
-            userSecretSanta.innerHTML = "Secret Santa: Assigned!";
-            userSecretSantaBtn.innerHTML = "View Secret Santa Assignment";
-            userSecretSantaBtn.onclick = function() {
-              confirmOperation("View " + userData.name + "'s Secret Santa Assignment?", "Are " +
-                  "you sure you would like to view " + userData.name + "'s Secret Santa Assignment? If you are included " +
-                  "in this individual's family within Gifty, their assignment could be you!", "showSanta",
-                  userData, userModal, userData.uid);
-            };
-          } else {
-            let tempIndex = findUIDItemInArr(userData.secretSantaName, userArr, true);
-            userSecretSanta.innerHTML = "Secret Santa: " + findFirstNameInFullName(userArr[tempIndex].name);
-            userSecretSantaBtn.innerHTML = "Hide Secret Santa Assignment";
-            userSecretSantaBtn.onclick = function() {
-              secretSantaAssignmentShown = false;
-              deployNotificationModal(false, "Assignment Hidden!", userData.name +
-                  "'s Secret Santa assignment has been hidden. The modal can now be opened again if desired.");
-            };
-          }
-        }
-      }
-    } else {
-      userSecretSanta.innerHTML = "Secret Santa: No Data";
-      userSecretSantaBtn.innerHTML = "Button Disabled";
-      userSecretSantaBtn.className = "basicBtn btnDisabled";
-      userSecretSantaBtn.onclick = function() {};
-    }
-    if (userData.giftList != undefined) {
-      userPublicGifts.onclick = function() {
-        if (userData.uid == user.uid) {
-          deployNotificationModal(true, "User Info",
-              "Navigate to the home page to see your gifts!");
-        } else {
-          generateUserDataViewModal(userData.giftList, userData);
-        }
-      };
-      if (userData.giftList.length == 0) {
-        userPublicGifts.innerHTML = "This User Has No Gifts";
-        userPublicGifts.onclick = function() {};
-      } else if (userData.giftList.length == 1) {
-        userPublicGifts.innerHTML = "View " + userData.giftList.length + " Public Gift";
-      } else {
-        userPublicGifts.innerHTML = "View " + userData.giftList.length + " Public Gifts";
-      }
-    } else {
+    if (userData.giftList.length == 0) {
       userPublicGifts.innerHTML = "This User Has No Gifts";
       userPublicGifts.onclick = function() {};
-    }
-    if (userData.privateList != undefined) {
-      if (userData.uid == user.uid) {
-        userPrivateGifts.innerHTML = "??? Private Gifts ???";
-        userPrivateGifts.onclick = function() {
-          deployNotificationModal(true, "User Info",
-              "You aren't allowed to see your private gifts!");
-        };
-      } else {
-        userPrivateGifts.onclick = function() {
-          generateUserDataViewModal(userData.privateList, userData);
-        };
-        if (userData.privateList.length == 0) {
-          userPrivateGifts.innerHTML = "This User Has No Private Gifts";
-          userPrivateGifts.onclick = function() {};
-        } else if (userData.privateList.length == 1) {
-          userPrivateGifts.innerHTML = "View " + userData.privateList.length + " Private Gift";
-        } else {
-          userPrivateGifts.innerHTML = "View " + userData.privateList.length + " Private Gifts";
-        }
-      }
+    } else if (userData.giftList.length == 1) {
+      userPublicGifts.innerHTML = "View " + userData.giftList.length + " Public Gift";
     } else {
-      userPrivateGifts.innerHTML = "This User Has No Private Gifts";
-      userPrivateGifts.onclick = function() {};
+      userPublicGifts.innerHTML = "View " + userData.giftList.length + " Public Gifts";
     }
-    if (userData.friends != undefined) {
-      userFriendsList.onclick = function() {
-        if (userData.uid == user.uid) {
-          deployNotificationModal(true, "User Info",
-              "Navigate to the \"Friends\" page to see your friends!");
-        } else {
-          generateUserDataViewModal(userData.friends, userData);
-        }
+    if (userData.uid == user.uid) {
+      userPrivateGifts.innerHTML = "??? Private Gifts ???";
+      userPrivateGifts.onclick = function() {
+        deployNotificationModal(true, "User Info",
+            "You aren't allowed to see your private gifts!");
       };
-      if (userData.friends.length == 0) {
-        userFriendsList.innerHTML = "This User Has No Friends";
-        userFriendsList.onclick = function() {};
-      } else if (userData.friends.length == 1) {
-        userFriendsList.innerHTML = "View " + userData.friends.length + " Friend";
-      } else {
-        userFriendsList.innerHTML = "View " + userData.friends.length + " Friends";
-      }
     } else {
+      userPrivateGifts.onclick = function() {
+        generateUserDataViewModal(userData.privateList, userData);
+      };
+      if (userData.privateList.length == 0) {
+        userPrivateGifts.innerHTML = "This User Has No Private Gifts";
+        userPrivateGifts.onclick = function() {};
+      } else if (userData.privateList.length == 1) {
+        userPrivateGifts.innerHTML = "View " + userData.privateList.length + " Private Gift";
+      } else {
+        userPrivateGifts.innerHTML = "View " + userData.privateList.length + " Private Gifts";
+      }
+    }
+    userFriendsList.onclick = function() {
+      if (userData.uid == user.uid) {
+        deployNotificationModal(true, "User Info",
+            "Navigate to the \"Friends\" page to see your friends!");
+      } else {
+        generateUserDataViewModal(userData.friends, userData);
+      }
+    };
+    if (userData.friends.length == 0) {
       userFriendsList.innerHTML = "This User Has No Friends";
       userFriendsList.onclick = function() {};
-    }
-    if (userData.parentUser == undefined)
-      userData.parentUser = [];
-    if (userData.childUser == undefined)
-      userData.childUser = [];
-
-    userRelationshipList.onclick = function() {
-      generateRelationshipDataList(userData);
-    };
-    if (userData.childUser.length == 0 && userData.parentUser.length == 0) {
-      userRelationshipList.innerHTML = "This User Has No Family Members";
-      userRelationshipList.onclick = function() {};
-    } else if (userData.childUser.length != 0 && userData.parentUser.length == 0) {
-      if (userData.childUser.length > 1)
-        relationshipModifier = "ren";
-      userRelationshipList.innerHTML = "View " + userData.childUser.length + " Child" + relationshipModifier;
-    } else if (userData.childUser.length == 0 && userData.parentUser.length != 0) {
-      if (userData.parentUser.length > 1)
-        relationshipModifier = "s";
-      userRelationshipList.innerHTML = "View " + userData.parentUser.length + " Parent" + relationshipModifier;
+    } else if (userData.friends.length == 1) {
+      userFriendsList.innerHTML = "View " + userData.friends.length + " Friend";
     } else {
-      if (userData.parentUser.length > 1)
-        relationshipModifier = "s";
-      tempString = "View " + userData.parentUser.length + " Parent" + relationshipModifier;
-      if (userData.childUser.length > 1)
-        relationshipModifier = "ren";
-      tempString =+ ", " + userData.childUser.length + " Child" + relationshipModifier;
-      userRelationshipList.innerHTML = tempString;
-    }
-    if (userData.notifications != undefined) {
-      userNotificationsList.innerHTML = "This User Has No Notifications";
-      userNotificationsList.onclick = function() {
-        if (userData.uid == user.uid) {
-          deployNotificationModal(true, "User Info",
-              "Click on the bell icon at the bottom of MOST pages (Home, Lists, Friends, etc) to see your notifications!");
-        } else {
-          generateUserDataViewModal(userData.notifications, userData);
-        }
-      };
-      if (userData.notifications.length == 0) {
-        userNotificationsList.innerHTML = "This User Has No Notifications";
-        userNotificationsList.onclick = function() {};
-      } else if (userData.notifications.length == 1) {
-        userNotificationsList.innerHTML = "View " + userData.notifications.length + " Notification";
-      } else {
-        userNotificationsList.innerHTML = "View " + userData.notifications.length + " Notifications";
-      }
-    } else {
-      userNotificationsList.innerHTML = "This User Has No Notifications";
-      userNotificationsList.onclick = function() {};
-    }
-
-    for (let i = 0; i < familyArr.length; i++) {
-      if (familyArr[i].members != undefined) {
-        if (familyArr[i].members.includes(userData.uid)) {
-          userFamilyName.innerHTML = "Family: \"" + familyArr[i].name + "\"";
-          userFoundInFam = true;
-        }
-      }
-    }
-
-    if (!userFoundInFam) {
-      userFamilyName.innerHTML = "Family: No Family Found";
+      userFriendsList.innerHTML = "View " + userData.friends.length + " Friends";
     }
 
     warnUser.onclick = function(){
@@ -1459,7 +1348,7 @@ function initUserElement(liItem, userData) {
               "You cannot adjust your own role");
         } else {
           confirmOperation("Revoke " + userData.name + "'s Moderator Role?",
-              "Are you sure you'd like to revoke " +
+              "Are you sure you would like to revoke " +
               userData.name + " from being a moderator?", "modRevoke", userData, userModal, userData.uid);
         }
       };
@@ -1472,7 +1361,7 @@ function initUserElement(liItem, userData) {
               "You cannot adjust your own role");
         } else {
           confirmOperation("Grant " + userData.name + " Moderator Role?",
-              "A moderator is powerful on Gifty, are you sure you'd like to grant " +
+              "A moderator is powerful on Gifty, are you sure you would like to grant " +
               userData.name + " a moderator role?", "modGrant", userData, userModal, userData.uid);
         }
       };
@@ -1494,7 +1383,195 @@ function initUserElement(liItem, userData) {
     closeUserModal.onclick = function() {
       closeModal(userModal);
     };
+
+    for (let i = 0; i < familyArr.length; i++) {
+      if (familyArr[i].members != undefined) {
+        if (familyArr[i].members.includes(userData.uid)) {
+          userFoundInFam = true;
+          localFamilyData = familyArr[i];
+          break;
+        }
+      }
+    }
+
+    if (user.hideExtraData == 0) {
+      userPassword.innerHTML = "View " + userData.name + "'s Password";
+      userPassword.onclick = function() {
+        if (!showPassBool) {
+          confirmOperation("Show Password?", "Are you sure you wish to view " +
+              userData.name + "'s password?", "showPass", userData, userModal, userData.uid);
+          showPassBool = true;
+        } else {
+          userPassword.innerHTML = "View " + userData.userName + "'s Password";
+          showPassBool = false;
+        }
+      };
+      userPassword.style.display = "inline-block";
+
+      userUID.innerHTML = "UID: " + userData.uid;
+      userUID.style.display = "block";
+
+      userLastReview.innerHTML = "Last Yearly Review: " + userData.yearlyReview;
+      userLastReview.style.display = "block";
+
+      userFamilyName.style.display = "block";
+      if (localFamilyData == undefined) {
+        userFamilyName.innerHTML = "Family: Not Assigned To A Family";
+      } else {
+        userFamilyName.innerHTML = "Family: \"" + localFamilyData.name + "\"";
+      }
+
+      userNotificationsList.style.display = "inline-block";
+      userNotificationsBuffer.style.display = "block";
+      userNotificationsList.onclick = function() {
+        if (userData.uid == user.uid) {
+          deployNotificationModal(true, "User Info",
+              "Click on the bell icon at the bottom of MOST pages (Home, Lists, Friends, etc) to see your notifications!");
+        } else {
+          generateUserDataViewModal(userData.notifications, userData);
+        }
+      };
+      if (userData.notifications.length == 0) {
+        userNotificationsList.innerHTML = "This User Has No Notifications";
+        userNotificationsList.onclick = function() {};
+      } else if (userData.notifications.length == 1) {
+        userNotificationsList.innerHTML = "View " + userData.notifications.length + " Notification";
+      } else {
+        userNotificationsList.innerHTML = "View " + userData.notifications.length + " Notifications";
+      }
+
+      userSecretSantaPrior.style.display = "block";
+      if (userData.secretSantaNamePrior != "") {
+        let tempIndex = 0;
+        tempIndex = findUIDItemInArr(userData.secretSantaNamePrior, userArr, true);
+        if (tempIndex != -1) {
+          userSecretSantaPrior.innerHTML = "Last Secret Santa Assignment: " + findFirstNameInFullName(userArr[tempIndex].name);
+        } else {
+          userSecretSantaPrior.innerHTML = "Last Secret Santa Assignment: This User No Longer Exists!";
+        }
+      } else {
+        userSecretSantaPrior.innerHTML = "Last Secret Santa Assignment: No Previous Assignment";
+      }
+
+      showSecretSantaUserControls(localFamilyData);
+
+      userRelationshipList.style.display = "inline-block";
+      userRelationshipBuffer.style.display = "block";
+      userRelationshipList.onclick = function() {
+        generateRelationshipDataList(userData);
+      };
+      if (userData.childUser.length == 0 && userData.parentUser.length == 0) {
+        userRelationshipList.innerHTML = "No Family Relationships Set";
+        userRelationshipList.onclick = function() {};
+      } else if (userData.childUser.length != 0 && userData.parentUser.length == 0) {
+        if (userData.childUser.length > 1)
+          relationshipModifier = "ren";
+        userRelationshipList.innerHTML = "View " + userData.childUser.length + " Child" + relationshipModifier;
+      } else if (userData.childUser.length == 0 && userData.parentUser.length != 0) {
+        if (userData.parentUser.length > 1)
+          relationshipModifier = "s";
+        userRelationshipList.innerHTML = "View " + userData.parentUser.length + " Parent" + relationshipModifier;
+      } else {
+        if (userData.parentUser.length > 1)
+          relationshipModifier = "s";
+        tempString = "View " + userData.parentUser.length + " Parent" + relationshipModifier;
+        if (userData.childUser.length > 1)
+          relationshipModifier = "ren";
+        tempString =+ ", " + userData.childUser.length + " Child" + relationshipModifier;
+        userRelationshipList.innerHTML = tempString;
+      }
+    } else {
+      userPassword.innerHTML = "";
+      userPassword.onclick = function() {};
+      userPassword.style.display = "none";
+
+      userUID.innerHTML = "";
+      userUID.style.display = "none";
+
+      userLastReview.innerHTML = "";
+      userLastReview.style.display = "none";
+
+      userFamilyName.innerHTML = "";
+      userFamilyName.style.display = "none";
+
+      userNotificationsList.innerHTML = "";
+      userNotificationsList.style.display = "none";
+      userNotificationsList.onclick = function() {};
+      userNotificationsBuffer.style.display = "none";
+
+      userSecretSanta.innerHTML = "";
+      userSecretSanta.style.display = "none";
+      userSecretSantaPrior.innerHTML = "";
+      userSecretSantaPrior.style.display = "none";
+      userSecretSantaBtn.innerHTML = "";
+      userSecretSantaBtn.style.display = "none";
+      userSecretSantaBtn.onclick = function() {};
+      userSecretSantaBuffer.style.display = "none";
+      showSecretSantaUserControls(localFamilyData);
+
+      userRelationshipList.innerHTML = "";
+      userRelationshipList.style.display = "none";
+      userRelationshipList.onclick = function() {};
+      userRelationshipBuffer.style.display = "none";
+    }
   };
+
+  function showSecretSantaUserControls(userFamilyData) {
+    if (userFamilyData != undefined) {
+      if (userFamilyData.secretSantaState != 1) {
+        userSecretSanta.style.display = "block";
+        userSecretSantaBtn.style.display = "inline-block";
+        userSecretSantaBuffer.style.display = "block";
+      }
+      if (userFamilyData.secretSantaState == 1) {
+        userSecretSanta.innerHTML = "Secret Santa: Idle";
+        userSecretSantaBtn.innerHTML = "Secret Santa Idle";
+        userSecretSantaBtn.onclick = function () {};
+      } else if (userFamilyData.secretSantaState == 2) {
+        if (userData.secretSanta == 0) {
+          userSecretSanta.innerHTML = "Secret Santa: Not Signed Up";
+          userSecretSantaBtn.innerHTML = "Opt Into Secret Santa";
+        } else if (userData.secretSanta == 1) {
+          userSecretSanta.innerHTML = "Secret Santa: Signed Up!";
+          userSecretSantaBtn.innerHTML = "Opt Out Of Secret Santa";
+        }
+        userSecretSantaBtn.onclick = function () {
+          userUpdateLocal = true;
+          manuallyOptInOut(userData, localFamilyData);
+        };
+      } else if (userFamilyData.secretSantaState == 3) {
+        if (userData.secretSantaName != "") {
+          if (secretSantaAssignmentShown && secretSantaAssignmentShownUser != userData.uid) {
+            secretSantaAssignmentShown = false;
+            secretSantaAssignmentShownUser = "";
+          }
+          if (!secretSantaAssignmentShown) {
+            userSecretSanta.innerHTML = "Secret Santa: Assigned!";
+            userSecretSantaBtn.innerHTML = "View Secret Santa Assignment";
+            userSecretSantaBtn.onclick = function () {
+              confirmOperation("View " + userData.name + "'s Secret Santa Assignment?", "Are " +
+                  "you sure you would like to view " + userData.name + "'s Secret Santa Assignment? If you are included " +
+                  "in this individual's family within Gifty, their assignment could be you!", "showSanta",
+                  userData, userModal, userData.uid);
+            };
+          } else {
+            let tempIndex = findUIDItemInArr(userData.secretSantaName, userArr, true);
+            userSecretSanta.innerHTML = "Secret Santa: " + findFirstNameInFullName(userArr[tempIndex].name);
+            userSecretSantaBtn.innerHTML = "Hide Secret Santa Assignment";
+            userSecretSantaBtn.onclick = function () {
+              secretSantaAssignmentShown = false;
+              deployNotificationModal(false, "Assignment Hidden!", userData.name +
+                  "'s Secret Santa assignment has been hidden. The modal can now be opened again if desired.");
+            };
+          }
+        }
+      }
+    } else {
+      userSecretSanta.innerHTML = "Secret Santa: Unavailable";
+      userSecretSantaBtn.innerHTML = "Secret Santa Button Unavailable";
+      userSecretSantaBtn.onclick = function () {};
+    }
+  }
 }
 
 function generateRelationshipDataList(userData) {
@@ -1832,50 +1909,84 @@ function removeUserElement(uid) {
 }
 
 function initializeShowUserData(showDataSelection) {
+  userListDropDown.innerHTML = "Show Quick Info (Current: " + showDataSelection + ")";
+  userListDropDown.onclick = function() {
+    initializeUserListDropdownOptions(false);
+  };
+}
+
+function initializeUserListDropdownOptions(refreshBool) {
   let listOfShowUserElements = [showNone, showUID, showName, showLastLogin, showActions, showReview, showUserScore,
     showShareCode, showGifts, showFriends, showNotifications, showRelationships, showModerator, showSecretSanta,
     showFamilyAssignment, showCurrentSecretSanta, showLastSecretSanta];
-  let showHideUserDataBool = false;
 
-  userListDropDown.innerHTML = "Select Listed User Data (" + showDataSelection + ")";;
-  userListDropDown.onclick = function() {
-    for (let i = 0; i < listOfShowUserElements.length; i++) {
+  for (let i = 0; i < listOfShowUserElements.length; i++) {
+    if (refreshBool) {
+      if (showHideUserDataBool) {
+        listOfShowUserElements[i].style.display = "block";
+      } else {
+        listOfShowUserElements[i].style.display = "none";
+      }
+    } else {
       if (showHideUserDataBool) {
         listOfShowUserElements[i].style.display = "none";
       } else {
         listOfShowUserElements[i].style.display = "block";
       }
     }
+  }
 
+  if (!refreshBool)
     if (showHideUserDataBool) {
       showHideUserDataBool = false;
     } else {
       showHideUserDataBool = true;
     }
 
-    showNone.onclick = function(){
-      updateDBWithShowUserData("None");
-    };
-    showUID.onclick = function(){
-      updateDBWithShowUserData("UID");
-    };
-    showName.onclick = function(){
-      updateDBWithShowUserData("Username");
-    };
-    showLastLogin.onclick = function(){
-      updateDBWithShowUserData("Login");
-    };
+  showNone.onclick = function(){
+    updateDBWithShowUserData("None");
+  };
+  showUID.onclick = function(){
+    updateDBWithShowUserData("UID");
+  };
+  showName.onclick = function(){
+    updateDBWithShowUserData("Username");
+  };
+  showLastLogin.onclick = function(){
+    updateDBWithShowUserData("Login");
+  };
+  showUserScore.onclick = function(){
+    updateDBWithShowUserData("Score");
+  };
+  showShareCode.onclick = function(){
+    updateDBWithShowUserData("Share");
+  };
+  showModerator.onclick = function(){
+    updateDBWithShowUserData("Moderator");
+  };
+  showFamilyAssignment.onclick = function(){
+    updateDBWithShowUserData("Family");
+  };
+  showSecretSanta.onclick = function(){
+    updateDBWithShowUserData("SecretSanta");
+  };
+  showCurrentSecretSanta.onclick = function(){
+    confirmOperation("Activate Current Secret Santa?", "Are you sure that you would like " +
+        "to activate the \"Current Secret Santa\" quick view? If you are participating in a Secret Santa event, you " +
+        "may have your Secret Santa spoiled!", "showCurrentSecretSanta", undefined,
+        userOptionsModal, "userOptionsModal");
+  }
+  showLastSecretSanta.onclick = function(){
+    updateDBWithShowUserData("LastSecretSanta");
+  };
+
+
+  if (user.hideExtraData == 0) {
     showActions.onclick = function(){
       updateDBWithShowUserData("Action");
     };
     showReview.onclick = function(){
       updateDBWithShowUserData("Review");
-    };
-    showUserScore.onclick = function(){
-      updateDBWithShowUserData("Score");
-    };
-    showShareCode.onclick = function(){
-      updateDBWithShowUserData("Share");
     };
     showGifts.onclick = function(){
       updateDBWithShowUserData("Gifts");
@@ -1889,25 +2000,21 @@ function initializeShowUserData(showDataSelection) {
     showRelationships.onclick = function(){
       updateDBWithShowUserData("Relationships");
     };
-    showModerator.onclick = function(){
-      updateDBWithShowUserData("Moderator");
-    };
-    showFamilyAssignment.onclick = function(){
-      updateDBWithShowUserData("Family");
-    };
-    showSecretSanta.onclick = function(){
-      updateDBWithShowUserData("SecretSanta");
-    };
-    showCurrentSecretSanta.onclick = function(){
-      confirmOperation("Activate Current Secret Santa?", "Are you sure that you'd like " +
-          "to activate the \"Current Secret Santa\" quick view? If you are participating in a Secret Santa event, you " +
-          "may have your Secret Santa spoiled!", "showCurrentSecretSanta", undefined,
-          userOptionsModal, "userOptionsModal");
-    }
-    showLastSecretSanta.onclick = function(){
-      updateDBWithShowUserData("LastSecretSanta");
-    };
-  };
+  } else {
+    showActions.style.display = "none";
+    showReview.style.display = "none";
+    showGifts.style.display = "none";
+    showFriends.style.display = "none";
+    showNotifications.style.display = "none";
+    showRelationships.style.display = "none";
+
+    showActions.onclick = function(){};
+    showReview.onclick = function(){};
+    showGifts.onclick = function(){};
+    showFriends.onclick = function(){};
+    showNotifications.onclick = function(){};
+    showRelationships.onclick = function(){};
+  }
 }
 
 function updateDBWithShowUserData(showUserDataItem) {
@@ -2200,28 +2307,21 @@ function saveTicketArrToCookie(){
   initializeTicketCount(1);
 }
 
-function manuallyOptInOut(userData) {
-  let foundUserInFam = false;
-  if (userData.secretSanta == null)
-    userData.secretSanta = 0;
-
-  for (let i = 0; i < familyArr.length; i++) {
-    if (familyArr[i].members != undefined)
-      if (familyArr[i].members.includes(userData.uid)) {
-        if (familyArr[i].secretSantaState != 2) {
-          deployNotificationModal(true, "Opt In Failed!",
-              findFirstNameInFullName(userData.name) + "'s assigned family is not in the correct state! Their " +
-              "family (" + familyArr[i].name + "), must be in the \"Ready\" state in order to opt users in manually.", 10);
-          return;
-        }
-        foundUserInFam = true;
-      }
-  }
-
-  if (!foundUserInFam) {
+function manuallyOptInOut(userData, userFamilyData) {
+  if (userFamilyData == undefined) {
     deployNotificationModal(true, "Opt In Failed!",
         findFirstNameInFullName(userData.name) + " is not assigned to a family! Secret Santa cannot be opted " +
         "in without an accompanying family.", 10);
+    return;
+  }
+
+  if (userData.secretSanta == null)
+    userData.secretSanta = 0;
+
+  if (userFamilyData.secretSantaState != 2) {
+    deployNotificationModal(true, "Opt In Failed!",
+        findFirstNameInFullName(userData.name) + "'s assigned family is not in the correct state! Their " +
+        "family (" + familyArr[i].name + "), must be in the \"Ready\" state in order to opt users in manually.", 10);
     return;
   }
 
