@@ -10,13 +10,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/main.css?v=2023-12-18" rel="stylesheet" type="text/css"/>
+  <link href="css/main.css?v=2023-12-26" rel="stylesheet" type="text/css"/>
   <title>Moderation</title>
 
-  <script src="js/passOp.js?v=2023-12-18" type="text/javascript"></script>
-  <script src="js/moderationAlg.js?v=2023-12-18" type="text/javascript"></script>
-  <script src="js/common.js?v=2023-12-18" type="text/javascript"></script>
-  <script src="js/moderationCommon.js?v=2023-12-18" type="text/javascript"></script>
+  <script src="js/passOp.js?v=2023-12-26" type="text/javascript"></script>
+  <script src="js/moderationAlg.js?v=2023-12-26" type="text/javascript"></script>
+  <script src="js/common.js?v=2023-12-26" type="text/javascript"></script>
+  <script src="js/moderationCommon.js?v=2023-12-26" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -62,7 +62,6 @@
     <div class="modal-body">
       <p id="userUserName" alt="This User's User Name">Loading User Name...</p>
       <span class="basicBtn" id="userPassword" alt="View This User's Password">Loading Password...</span>
-      <br/>
       <p id="userUID" alt="This User's Unique ID">Loading UID...</p>
       <p id="userLastLogin" alt="The Last Time This User Logged In">Loading Last Login...</p>
       <p id="userLastAction" alt="The Last Action This User Performed">Loading Last Action...</p>
@@ -72,8 +71,7 @@
       <p id="userSecretSanta" alt="This User's Secret Santa Status">Loading Secret Santa Status...</p>
       <p id="userSecretSantaPrior" alt="This User's Prior Secret Santa Assignment">Loading Prior Secret Santa...</p>
       <span class="basicBtn" id="userSecretSantaBtn" alt="This User's Extra Secret Santa Info">Loading Secret Santa...</span>
-      <br/>
-      <br/>
+      <p id="userSecretSantaBuffer"></p>
       <span class="basicBtn" id="userPublicGifts" alt="This User's Public Gift Count, Click To View Gifts">Loading Public Gifts...</span>
       <br/>
       <br/>
@@ -84,11 +82,9 @@
       <br/>
       <br/>
       <span class="basicBtn" id="userRelationshipList" alt="This User's Relationship Count, Click To View Relationships">Loading Relationships...</span>
-      <br/>
-      <br/>
+      <p id="userRelationshipBuffer"></p>
       <span class="basicBtn" id="userNotificationsList" alt="This User's Notification Count, Click To View Notifications">Loading Notifications...</span>
-      <br/>
-      <br/>
+      <p id="userNotificationsBuffer"></p>
       <span class="basicBtn" id="sendPrivateMessage" alt="Send User A Private Message">Loading Private Message...</span>
       <br/>
       <br/>
@@ -213,6 +209,10 @@
       <br/>
       <br/>
       <p>General Options:</p>
+      <img class=infoIcon id="extraDataInfoIcon" src="img/info.png">
+      <span class="basicBtn" id="hideExtraDataBtn" alt="Hide Extraneous Data Points">Loading Hide Data Button...</span>
+      <br/>
+      <br/>
       <img class=infoIcon id="userListInfoIcon" src="img/info.png">
       <span class="basicBtn" id="userListDropDown" alt="Select User Data To Show">Loading User List Options...</span>
       <span class="dropdown" id="showNone" alt="Show Nothing" style="display: none">None</span>
