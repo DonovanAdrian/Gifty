@@ -131,7 +131,6 @@ let userReadNotifications;
 let userNotifications;
 let moderatorSettings;
 let colorShifter;
-
 let offlineSpan;
 let offlineModal;
 let offlineTimer;
@@ -952,11 +951,10 @@ function initGiftDataIfEmpty(inputGiftData) {
 }
 
 function initUserDataIfEmpty(inputUserData) {
-  let userDataProperties = ["ban", "encodeStr", "firstLogin", "friends",
-    "lastLogin", "lastPerformedAction", "moderatorInt", "name", "notifications",
-    "organize", "privateList", "secretSanta", "secretSantaName", "secretSantaNamePrior",
-    "settingsScoreBlock", "shareCode", "strike", "theme", "uid", "userName",
-    "userScore", "warn", "yearlyReview"];
+  let userDataProperties = ["ban", "encodeStr", "firstLogin", "friends", "giftList", "childUser", "parentUser",
+    "lastLogin", "lastPerformedAction", "moderatorInt", "name", "notifications", "organize", "privateList",
+    "secretSanta", "secretSantaName", "secretSantaNamePrior", "settingsScoreBlock", "shareCode", "strike",
+    "theme", "uid", "userName", "userScore", "warn", "yearlyReview"];
 
   for (let i = 0; i < userDataProperties.length; i++) {
     if (inputUserData[userDataProperties[i]] == undefined)
@@ -977,6 +975,9 @@ function initUserDataIfEmpty(inputUserData) {
         case "notifications":
         case "readNotifications":
         case "privateList":
+        case "giftList":
+        case "childUser":
+        case "parentUser":
           inputUserData[userDataProperties[i]] = [];
           break;
           //encodeStr, lastLogin, lastPerformedAction, name, secretSantaName, secretSantaNamePrior, shareCode, uid, userName
@@ -1568,7 +1569,7 @@ function openModal(openThisModal, modalName, ignoreBool) {
               console.log("A Modal Was Trying To Reopen, But Failed!");
             clearInterval(openModalTimer);
             updateMaintenanceLog(pageName, user.userName + " (" + user.uid + ") encountered a modal that " +
-                "failed to reopen!");
+                "failed to reopen! Error Message: " + err.toString());
           }
         }
       }
