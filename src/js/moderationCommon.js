@@ -28,10 +28,18 @@ let ticketTitles = [
     "URL Limiter set by",
     "Gift List Fix Performed",
     "Database limits set by",
+    "The users in this family are not active enough on Gifty.",
+    "There were not enough family members signed up.",                      //25
+    "There were not enough members in the family.",
+    "). This failure was possibly due to:",
+    "Failed Calling Automatic Control For ",
+    "Secret Santa Automatic Control successfully changed",
+    "Successfully shuffled the family,",                           //30
+    "Successfully assigned the members of the family,",
     "has opened their warning",
-    "Login disabled message reset by",                      //25
+    "Login disabled message reset by",
     "Login enabled by",
-    "found an easter egg!",
+    "found an easter egg!",                          //35
     "found an easter egg... But got greedy",
     "found an easter egg..."
 ];
@@ -60,10 +68,18 @@ let ticketSeverities = [
     " mediumSev",
     " mediumSev",
     " mediumSev",
+    " mediumSev",
+    " mediumSev",        //25
+    " mediumSev",
+    " mediumSev",
+    " mediumSev",
     " lowSev",
-    " lowSev",        //25
+    " lowSev",      //30
     " lowSev",
     " lowSev",
+    " lowSev",
+    " lowSev",
+    " lowSev",      //35
     " lowSev",
     " lowSev"
 ];
@@ -92,10 +108,18 @@ let ticketSuffixes = [
     " - URL Limits Set",
     " - Automatic Gift List Fix Performed",
     " - Database Limits Set",
+    " - Failed To Auto-Set Secret Santa (Inactivity)",
+    " - Failed To Auto-Set Secret Santa (Sign Ups)",                          //25
+    " - Failed To Auto-Set Secret Santa (Membership)",
+    " - Failed To Auto-Set Secret Santa (Assignments)",
+    " - Failed To Initialize Automatic Control",
+    " - Performed Secret Santa Automatic Control",
+    " - Shuffled Secret Santa",                       //30
+    " - Assigned Secret Santa",
     " - A Warned User Was Successfully Notified",
-    " - Login Message Reset",                          //25
+    " - Login Message Reset",
     " - Login Enabled",
-    " - Easter Egg Found!",
+    " - Easter Egg Found!",                         //35
     " - Easter Egg Found...",
     " - Easter Egg Found...?"
 ];
