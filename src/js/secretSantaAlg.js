@@ -28,6 +28,7 @@ let secretSantaElements = [];
 let hideSecretSantaName = true;
 let runningExportProcess = false;
 let secretSantaStressTesting = false;
+let secretSantaShuffledInSession = false;
 let secretSantaStressTestingLimit = 1000;
 let mostRecentSecretSantaState = 0;
 let familyMemberSignUpMinimum = 4;
@@ -37,8 +38,8 @@ let showDate = new Date(currentYear, 9, 1, 0, 0, 0, 0);//Oct 1st
 let assignDate = new Date(currentYear, 10, 1, 0, 0, 0, 0);//Nov 1st
 let showDateShort = new Date(showDate);
 let assignDateShort = new Date(assignDate);
-let hideDateMin = 1; //Jan
-let hideDateMax = 9; //Sept
+let hideDateMin = 0; //Jan
+let hideDateMax = 8; //Sept
 let localReRollLimit = 5;
 let assignmentAttemptLimits = 5;
 let processingResultTextLimit = 5;
@@ -47,6 +48,10 @@ let processingResultTextTimer = 0;
 let processingSuccessCount = 0;
 let processingFailureCount = 0;
 let processingResultTextInterval;
+let automaticControlFailureCount = 0;
+let automaticControlFailureTimer = 0;
+let automaticControlFailureLimit = 5;
+let automaticControlFailureInterval;
 let previousStatusValue = "";
 let globalThanks = "Thank you for participating in the Secret Santa! See you next year!";
 let globalApology = "Unfortunately the Secret Santa for this year has come to an early end! Please contact" +
@@ -715,7 +720,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     secretSantaExportBtn.style.display = "none";
 
     secretSantaStateBtn.onclick = function() {
-      changeSecretSantaState(familyData, 2);
+      changeSecretSantaState(familyData, 2, false);
     };
     secretSantaAutoBtn.onclick = function() {
       toggleAutomaticFunctionality(familyData);
@@ -739,7 +744,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     secretSantaExportBtn.style.display = "inline-block";
 
     secretSantaStateBtn.onclick = function() {
-      changeSecretSantaState(familyData, 3);
+      changeSecretSantaState(familyData, 3, false);
     };
     secretSantaAutoBtn.onclick = function() {
       toggleAutomaticFunctionality(familyData);
@@ -778,12 +783,18 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     secretSantaExportBtn.style.display = "inline-block";
 
     secretSantaStateBtn.onclick = function() {
-      changeSecretSantaState(familyData, 1);
+      changeSecretSantaState(familyData, 1, false);
     };
     secretSantaShuffleBtn.onclick = function() {
       if (!assignUsersToNames(familyData.members)) {
         deployNotificationModal(true, "Secret Santa Shuffle Failed!", "Shuffling " +
             "Secret Santa users was unsuccessful! Please try again...");
+      } else {
+        if (!secretSantaShuffledInSession) {
+          secretSantaShuffledInSession = true;
+          updateMaintenanceLog(pageName, "Successfully shuffled the family, \"" + familyData.name + "\"" +
+              "! This was initiated by " + user.userName  + " (" + user.uid + ").");
+        }
       }
     };
     secretSantaAutoBtn.onclick = function() {
@@ -825,7 +836,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
   }
 }
 
-function changeSecretSantaState(familyData, desiredStateInt) {
+function changeSecretSantaState(familyData, desiredStateInt, suppressDialogs) {
   let stateIndicatorText;
   let changedStateConcatString;
   let validStateChange = false;
@@ -846,7 +857,7 @@ function changeSecretSantaState(familyData, desiredStateInt) {
     case 3:
       if (evaluateUserReadiness(familyData.members))
         validStateChange = true;
-      if (familyData.members.length > familyMemberSignUpMinimum) {
+      if (familyData.members.length >= familyMemberSignUpMinimum) {
         invalidStateChangeReason = "Not enough members are signed up! Make sure that at least " +
             familyMemberSignUpMinimum + " family members are signed up prior to trying again!";
       } else {
@@ -856,6 +867,8 @@ function changeSecretSantaState(familyData, desiredStateInt) {
       if (validStateChange)
         if (assignUsersToNames(familyData.members)) {
           validStateChange = true;
+          updateMaintenanceLog(pageName, "Successfully assigned the members of the family, \"" +
+              familyData.name + "\"! This was initiated by " + user.userName  + " (" + user.uid + ").");
         } else {
           invalidStateChangeReason = "Assigning Secret Santa users was unsuccessful! Please try again...";
         }
@@ -863,9 +876,11 @@ function changeSecretSantaState(familyData, desiredStateInt) {
       break;
   }
 
-  let updateFamily = document.getElementById("family" + familyData.uid);
-  updateFamily.innerHTML = familyData.name;
-  generateFamilyMemberList(updateFamily, familyData.members);
+  if (!suppressDialogs) {
+    let updateFamily = document.getElementById("family" + familyData.uid);
+    updateFamily.innerHTML = familyData.name;
+    generateFamilyMemberList(updateFamily, familyData.members);
+  }
 
   if (validStateChange) {
     firebase.database().ref("family/" + familyData.uid).update({
@@ -876,14 +891,31 @@ function changeSecretSantaState(familyData, desiredStateInt) {
         stateIndicatorText + "!";
 
     familyData.secretSantaState = desiredStateInt;
-    deployNotificationModal(true, "State Changed!", changedStateConcatString, 4);
-    initializeSecretSantaFamilyModalElements(familyData);
+    if (!suppressDialogs) {
+      deployNotificationModal(true, "State Changed!", changedStateConcatString, 4);
+      initializeSecretSantaFamilyModalElements(familyData);
+    } else {
+      updateMaintenanceLog(pageName, "Secret Santa Automatic Control successfully changed to state " +
+          desiredStateInt + ". This change was triggered by " + user.userName + " (" + user.uid + ")");
+    }
   } else {
     if (invalidStateChangeReason.length > 150)
       invalidModalOpenTime = 20;
-    deployNotificationModal(true, "Secret Santa State Change Failed!",
-        invalidStateChangeReason, invalidModalOpenTime);
+    if (!suppressDialogs) {
+      deployNotificationModal(true, "Secret Santa State Change Failed!",
+          invalidStateChangeReason, invalidModalOpenTime);
+    } else {
+      if (consoleOutput)
+        console.log("Secret Santa state change failed! Reason: " + invalidStateChangeReason);
+      automaticControlFailureCount++;
+      updateMaintenanceLog(pageName, "Secret Santa Automatic Control FAILED to change to state " +
+          desiredStateInt + " for the family \"" + familyData.name + "\". This automatic state change was triggered " +
+          "by " + user.userName + " (" + user.uid + "). This failure was possibly due to: \"" +
+          invalidStateChangeReason + "\"");
+      checkForFailedFamilies();
+    }
   }
+  saveCriticalCookies();
 }
 
 function evaluateUserReadiness(familyMembers) {
@@ -905,38 +937,52 @@ function evaluateUserReadiness(familyMembers) {
   return familyReady;
 }
 
-function toggleAutomaticFunctionality(familyData) {
-  let currentAutomaticControlCount = 0;
+function toggleAutomaticFunctionality(familyData, automaticOverride) {
+  if (automaticOverride != undefined) {
+    let enableDisableAutoStr = "Enabled";
 
-  for (let i = 0; i < familyArr.length; i++) {
-    if (familyArr[i].automaticSantaControl == undefined)
-      familyArr[i].automaticSantaControl = 0;
+    if (automaticOverride == 0)
+      enableDisableAutoStr = "Disabled";
 
-    if (familyArr[i].automaticSantaControl == 1) {
-      currentAutomaticControlCount++;
-    }
-  }
-
-  if (familyData.automaticSantaControl == 1) {
     firebase.database().ref("family/" + familyData.uid).update({
-      automaticSantaControl: 0
+      automaticSantaControl: automaticOverride
     });
-    deployNotificationModal(false, "Automatic Control Disabled!", "Secret Santa " +
-        "Automatic Control has been successfully disabled!");
-  } else if (currentAutomaticControlCount < automaticSecretSantaLimit) {
-    if (familyData.automaticSantaControl == 0) {
-      firebase.database().ref("family/" + familyData.uid).update({
-        automaticSantaControl: 1
-      });
-      deployNotificationModal(false, "Automatic Control Enabled!", "Secret Santa " +
-          "Automatic Control has been successfully enabled!");
-    }
+
+    if (consoleOutput)
+      console.log("Set Automatic Control Override (" + enableDisableAutoStr + ")");
   } else {
-    deployNotificationModal(true, "Automatic Control Limit Reached!", "Warning! " +
-        "You have reached the set limit of families that can have Automatic Control Enabled! Disable some other " +
-        "families and try again!<br><br><br>If desired, this limit can be changed in the common.js file of Gifty and " +
-        "redeployed. Please note that an increased amount of automatic controlled families will potentially degrade " +
-        "the Gifty experience!", 20);
+    let currentAutomaticControlCount = 0;
+
+    for (let i = 0; i < familyArr.length; i++) {
+      if (familyArr[i].automaticSantaControl == undefined)
+        familyArr[i].automaticSantaControl = 0;
+
+      if (familyArr[i].automaticSantaControl == 1) {
+        currentAutomaticControlCount++;
+      }
+    }
+
+    if (familyData.automaticSantaControl == 1) {
+      firebase.database().ref("family/" + familyData.uid).update({
+        automaticSantaControl: 0
+      });
+      deployNotificationModal(false, "Automatic Control Disabled!", "Secret Santa " +
+          "Automatic Control has been successfully disabled!");
+    } else if (currentAutomaticControlCount < automaticSecretSantaLimit) {
+      if (familyData.automaticSantaControl == 0) {
+        firebase.database().ref("family/" + familyData.uid).update({
+          automaticSantaControl: 1
+        });
+        deployNotificationModal(false, "Automatic Control Enabled!", "Secret Santa " +
+            "Automatic Control has been successfully enabled!");
+      }
+    } else {
+      deployNotificationModal(true, "Automatic Control Limit Reached!", "Warning! " +
+          "You have reached the set limit of families that can have Automatic Control Enabled! Disable some other " +
+          "families and try again!<br><br><br>If desired, this limit can be changed in the common.js file of Gifty and " +
+          "redeployed. Please note that an increased amount of automatic controlled families will potentially degrade " +
+          "the Gifty experience!", 20);
+    }
   }
 }
 
@@ -1043,7 +1089,7 @@ function unassignAllFamilyMembers(familyData) {
     tempIndex = findUIDItemInArr(familyMembers[i], userArr, true);
     if (tempIndex != -1) {
       try {
-        console.log("Resetting " + userArr[tempIndex]);
+        console.log("Resetting " + userArr[tempIndex].userName);
         resetSecretSantaNum(tempIndex);
         resetSecretSantaName(tempIndex);
       } catch (err) {
@@ -1259,5 +1305,133 @@ function setSecretSantaResultsText(processingResults, ignoreLastYearsAssignments
     }
 
     return processingStatusText;
+  }
+}
+
+function dateCalculationHandler(familyData) {
+  let currentFamilyState = familyData.secretSantaState;
+  let currentFamilyName = familyData.name;
+  let desiredNextState;
+
+  if (consoleOutput)
+    console.log(" * * * Secret Santa Automatic Control * * *");
+
+  commonToday = new Date();
+  let UTChh = commonToday.getUTCHours() + "";
+  let UTCmm = commonToday.getUTCMinutes() + "";
+  let UTCss = commonToday.getUTCSeconds() + "";
+  let dd = commonToday.getUTCDate() + "";
+  let mm = commonToday.getMonth() + 1 + "";
+  let yy = commonToday.getFullYear() + "";
+
+
+  if (UTChh.length == 1)
+    UTChh = "0" + UTChh
+  if (UTCmm.length == 1)
+    UTCmm = "0" + UTCmm
+  if (UTCss.length == 1)
+    UTCss = "0" + UTCss
+  if (dd.length == 1)
+    dd = "0" + dd
+  if (mm.length == 1)
+    mm = "0" + mm
+
+  let timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
+
+  if (showDate <= commonToday && commonToday < assignDate) { //Between October 1st and November 1st
+    if (consoleOutput)
+      console.log("SET STATE 2, READY");
+    desiredNextState = 2;
+  } else if (assignDate <= commonToday && (hideDateMax < commonToday.getMonth())) { //Between November 1st and January
+    if (consoleOutput)
+      console.log("SET STATE 3, ACTIVE - ASSIGN USERS");
+    desiredNextState = 3;
+  } else if (commonToday < showDate &&
+      (hideDateMin <= commonToday.getMonth() && commonToday.getMonth() <= hideDateMax)) { //Between January and October
+    if (consoleOutput)
+      console.log("SET STATE 1, IDLE");
+    desiredNextState = 1;
+  } else {
+    if (consoleOutput)
+      console.log("Unknown Condition! Setting To Default!");
+    desiredNextState = 1;
+  }
+
+  if (familyData.secretSantaState == 2 && desiredNextState == 3)
+    if (familyData.members.length >= familyMemberSignUpMinimum) {
+      if (evaluateUserReadiness(familyData.members)) {
+        if (consoleOutput)
+          console.log("Family Members Checked And Verified");
+      } else {
+        automaticControlFailureCount++;
+        updateMaintenanceLog(pageName, "Secret Santa Automatic Control FAILED to assign users to each " +
+            "other for the family \"" + familyData.name + "\". There were not enough family members signed up. " +
+            "Please note that automatic control has been disabled for this family. This automatic state change was " +
+            "triggered by " + user.userName + " (" + user.uid + ").");
+        toggleAutomaticFunctionality(familyData, 0);
+        checkForFailedFamilies();
+        return;
+      }
+    } else {
+      automaticControlFailureCount++;
+      updateMaintenanceLog(pageName, "Secret Santa Automatic Control FAILED to assign users to each " +
+          "other for the family \"" + familyData.name + "\". There were not enough members in the family. " +
+          "Please note that automatic control has been disabled for this family. This automatic state change was " +
+          "triggered by " + user.userName + " (" + user.uid + ").");
+      toggleAutomaticFunctionality(familyData, 0);
+      checkForFailedFamilies();
+      return;
+    }
+
+  if (desiredNextState == familyData.secretSantaState) {
+    if (consoleOutput)
+      console.log("No State Change Needed...");
+  } else if (desiredNextState != (familyData.secretSantaState + 1) &&
+      !(familyData.secretSantaState == 3 && desiredNextState == 1)) {
+    if (consoleOutput)
+      console.log(" * * Skipped State Detected! * *");
+    automaticControlFailureCount++;
+    updateMaintenanceLog(pageName, "Secret Santa Automatic Control FAILED to change to state " +
+        desiredNextState + " for the family \"" + familyData.name + "\". The users in this family are not active " +
+        "enough on Gifty. Please note that automatic control has been disabled for this family. This automatic state " +
+        "change was triggered by " + user.userName + " (" + user.uid + ").");
+    toggleAutomaticFunctionality(familyData, 0);
+    checkForFailedFamilies();
+  } else {
+    console.log("Performing State Change...");
+    changeSecretSantaState(familyData, desiredNextState, true);
+  }
+
+  if (consoleOutput) {
+    console.log("Family: " + currentFamilyName);
+    console.log("Current Time: " + timeData);
+    console.log("Old State: " + currentFamilyState);
+    console.log("New State: " + desiredNextState);
+    console.log(" * * * Secret Santa Automatic Control Complete * * *");
+  }
+}
+
+function checkForFailedFamilies(failureCheckDelay) {
+  let familySupplementText = "family";
+
+  if (failureCheckDelay == undefined)
+    failureCheckDelay = automaticControlFailureLimit;
+
+  if (automaticControlFailureCount > 0 && user.moderatorInt == 1) {
+    if (automaticControlFailureCount > 1)
+      familySupplementText = "families";
+
+    automaticControlFailureTimer = 0;
+    clearInterval(automaticControlFailureInterval);
+    automaticControlFailureInterval = setInterval(function () {
+      automaticControlFailureTimer = automaticControlFailureTimer + 1;
+      if (automaticControlFailureTimer > failureCheckDelay) {
+        deployNotificationModal(true, "Secret Santa Automatic Control Failure",
+            "Unfortunately " + automaticControlFailureCount + " " + familySupplementText +
+            " encountered issues during Secret Santa automatic control. Check the audit log for more details.", 10);
+        automaticControlFailureCount = 0;
+        clearInterval(automaticControlFailureInterval);
+      }
+    }, 1000);
   }
 }
