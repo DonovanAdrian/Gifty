@@ -27,11 +27,28 @@ let cancelFamily;
 
 
 
-function checkFamilyCookie(){
+function checkFamilyCookie() {
   try {
     familyArr = JSON.parse(sessionStorage.familyArr);
     for (let i = 0; i < familyArr.length; i++) {
       createFamilyElement(familyArr[i]);
+      if (familyArr[i].automaticSantaControl != undefined) {
+        if (familyArr[i].automaticSantaControl == 1) {
+          if (consoleOutput)
+            console.log("Calling Automatic Control For " + familyArr[i].name + "...");
+          try {
+            dateCalculationHandler(familyArr[i]);
+          } catch (err) {
+            if (consoleOutput)
+              console.log("Failed Calling Automatic Control For " + familyData.name + "... \"" + err.toString() + "\"");
+            updateMaintenanceLog(pageName, "Failed To Initialize Automatic Control for " + familyData.name +
+                ". Triggered by " + user.userName + "(" + user.uid + "). The following error occurred: " +
+                err.toString() + "\"");
+            automaticControlFailureCount++;
+            checkForFailedFamilies();
+          }
+        }
+      }
     }
   } catch (err) {}
 }
