@@ -25,6 +25,7 @@ let secretSantaExportBtn;
 
 //General Variables
 let secretSantaElements = [];
+let manualStateChange = false;
 let hideSecretSantaName = true;
 let runningExportProcess = false;
 let secretSantaStressTesting = false;
@@ -50,7 +51,7 @@ let processingFailureCount = 0;
 let processingResultTextInterval;
 let automaticControlFailureCount = 0;
 let automaticControlFailureTimer = 0;
-let automaticControlFailureLimit = 5;
+let automaticControlFailureLimit = 1;
 let automaticControlFailureInterval;
 let previousStatusValue = "";
 let globalThanks = "Thank you for participating in the Secret Santa! See you next year!";
@@ -720,6 +721,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     secretSantaExportBtn.style.display = "none";
 
     secretSantaStateBtn.onclick = function() {
+      manualStateChange = true;
       changeSecretSantaState(familyData, 2, false);
     };
     secretSantaAutoBtn.onclick = function() {
@@ -744,6 +746,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     secretSantaExportBtn.style.display = "inline-block";
 
     secretSantaStateBtn.onclick = function() {
+      manualStateChange = true;
       changeSecretSantaState(familyData, 3, false);
     };
     secretSantaAutoBtn.onclick = function() {
@@ -783,6 +786,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     secretSantaExportBtn.style.display = "inline-block";
 
     secretSantaStateBtn.onclick = function() {
+      manualStateChange = true;
       changeSecretSantaState(familyData, 1, false);
     };
     secretSantaShuffleBtn.onclick = function() {
@@ -843,6 +847,13 @@ function changeSecretSantaState(familyData, desiredStateInt, suppressDialogs) {
   let invalidStateChangeReason = "";
   let invalidModalOpenTime = 10;
 
+  if (manualStateChange) {
+    toggleAutomaticFunctionality(familyData, 0);
+    updateMaintenanceLog(pageName, "A manual state change was triggered by " + user.userName + " (" +
+        user.uid + ")" + " for the family \"" + familyData.name + "\". Please note that manually changing the state of " +
+        "Secret Santa when Automatic Control is enabled will cause the Automatic Control to be disabled as a result.");
+  }
+
   switch (desiredStateInt) {
     case 1:
       if (unassignAllFamilyMembers(familyData))
@@ -895,8 +906,9 @@ function changeSecretSantaState(familyData, desiredStateInt, suppressDialogs) {
       deployNotificationModal(true, "State Changed!", changedStateConcatString, 4);
       initializeSecretSantaFamilyModalElements(familyData);
     } else {
-      updateMaintenanceLog(pageName, "Secret Santa Automatic Control successfully changed to state " +
-          desiredStateInt + ". This change was triggered by " + user.userName + " (" + user.uid + ")");
+      updateMaintenanceLog(pageName, familyData.name + "'s Secret Santa Automatic Control successfully " +
+          "changed to state " + desiredStateInt + ". This change was triggered by " + user.userName +
+          " (" + user.uid + ")");
     }
   } else {
     if (invalidStateChangeReason.length > 150)
@@ -916,6 +928,7 @@ function changeSecretSantaState(familyData, desiredStateInt, suppressDialogs) {
     }
   }
   saveCriticalCookies();
+  manualStateChange = false;
 }
 
 function evaluateUserReadiness(familyMembers) {
