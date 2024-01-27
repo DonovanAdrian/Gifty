@@ -36,10 +36,11 @@ let ticketTitles = [
     "Secret Santa Automatic Control successfully changed",
     "Successfully shuffled the family,",                           //30
     "Successfully assigned the members of the family,",
+    "Please note that manually changing the state of",
     "has opened their warning",
     "Login disabled message reset by",
-    "Login enabled by",
-    "found an easter egg!",                          //35
+    "Login enabled by",                          //35
+    "found an easter egg!",
     "found an easter egg... But got greedy",
     "found an easter egg..."
 ];
@@ -81,6 +82,7 @@ let ticketSeverities = [
     " lowSev",
     " lowSev",      //35
     " lowSev",
+    " lowSev",
     " lowSev"
 ];
 
@@ -116,10 +118,11 @@ let ticketSuffixes = [
     " - Performed Secret Santa Automatic Control",
     " - Shuffled Secret Santa",                       //30
     " - Assigned Secret Santa",
+    " - Manual Secret Santa Change Triggered",
     " - A Warned User Was Successfully Notified",
     " - Login Message Reset",
-    " - Login Enabled",
-    " - Easter Egg Found!",                         //35
+    " - Login Enabled",                              //35
+    " - Easter Egg Found!",
     " - Easter Egg Found...",
     " - Easter Egg Found...?"
 ];
@@ -201,7 +204,6 @@ function evaluateInitialTicketTimeline(newestTicketElement, oldestTicketElement)
             newestTicketTime = diffTwoDates;
         }
     }
-    console.log(newestTicketTime);
 
     if (ticketArr.length > 0) {
         if (oldestTicketTime == 0) {
