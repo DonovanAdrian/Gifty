@@ -286,7 +286,7 @@ window.onload = function instantiate() {
     sendMsg = document.getElementById("sendMsg");
     cancelMsg = document.getElementById("cancelMsg");
 
-    sessionStorage.setItem("moderationSet", moderationSet);
+    sessionStorage.setItem("moderationSet", JSON.stringify(moderationSet));
     getCurrentUserCommon();
     commonInitialization();
     checkModerationCookie();
@@ -1607,7 +1607,7 @@ function generateUserDataViewModal(dataToLoad, userData) {
 
   if (typeof dataToLoad[0] == "string" &&
       (dataToLoad[0].includes("Parent") || dataToLoad[0].includes("Child"))) {
-    dataToLoadType = "Relationships";
+    dataToLoadType = "Relationship";
   } else if (typeof dataToLoad[0] == "string" && !dataToLoad[0].includes("\",,,\"")) {
     dataToLoadType = "Friend";
   } else if (dataToLoad[0].data != undefined || dataToLoad[0].includes("\",,,\"")) {
@@ -1656,7 +1656,7 @@ function generateUserDataViewModal(dataToLoad, userData) {
       loadedUserDataViewElemID = dataToLoad[i];
       liItem.id = loadedUserDataViewElemID;
       textNode = document.createTextNode(friendUserData.name);
-    } else if (dataToLoadType == "Family") {
+    } else if (dataToLoadType == "Relationship") {
       loadedUserDataViewElemID = dataToLoad[i];
       liItem.id = loadedUserDataViewElemID;
       textNode = document.createTextNode(dataToLoad[i]);
