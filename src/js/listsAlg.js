@@ -29,6 +29,35 @@ let sendMsg;
 let cancelMsg;
 
 
+function checkFamilyCookie() {
+  try {
+    familyArr = JSON.parse(sessionStorage.familyArr);
+    for (let i = 0; i < familyArr.length; i++) {
+      evaluateFamilyAutomaticControl(familyArr[i]);
+    }
+  } catch (err) {}
+}
+
+function evaluateFamilyAutomaticControl(familyData) {
+  if (user.moderatorInt == 1 || familyData.members.includes(user.uid))
+    if (familyData.automaticSantaControl != undefined) {
+      if (familyData.automaticSantaControl == 1) {
+        if (consoleOutput)
+          console.log("Calling Automatic Control For " + familyData.name + "...");
+        try {
+          dateCalculationHandler(familyData);
+        } catch (err) {
+          if (consoleOutput)
+            console.log("Failed Calling Automatic Control For " + familyData.name + "... \"" + err.toString() + "\"");
+          updateMaintenanceLog(pageName, "Failed To Initialize Automatic Control for " + familyData.name +
+              ". Triggered by " + user.userName + "(" + user.uid + "). The following error occurred: " +
+              err.toString() + "\"");
+          automaticControlFailureCount++;
+          checkForFailedFamilies();
+        }
+      }
+    }
+}
 
 function getCurrentUser(){
   getCurrentUserCommon();
@@ -75,12 +104,14 @@ window.onload = function instantiate() {
       notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, testData, userTitle,
       publicList, privateList, sendPrivateMessage, closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg];
 
+    checkFamilyCookie();
     verifyElementIntegrity(listsElements);
 
     userBase = firebase.database().ref("users/");
     userFriends = firebase.database().ref("users/" + user.uid + "/friends");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
     limitsInitial = firebase.database().ref("limits/");
+    familyInitial = firebase.database().ref("family/");
 
     databaseQuery();
     initializeSecretSantaDB();
@@ -229,15 +260,58 @@ window.onload = function instantiate() {
       });
     };
 
+    let fetchFamilies = function (postRef){
+      postRef.once("value").then(function(snapshot) {
+        if (snapshot.exists()) {
+          postRef.on("child_added", function (data) {
+            let i = findUIDItemInArr(data.val().uid, familyArr, true);
+            if (i == -1) {
+              familyArr.push(data.val());
+              evaluateFamilyAutomaticControl(data.val());
+              checkForFailedFamilies(5);
+              saveCriticalCookies();
+            } else {
+              localObjectChanges = findObjectChanges(familyArr[i], data.val());
+              if (localObjectChanges.length != 0) {
+                familyArr[i] = data.val();
+                saveCriticalCookies();
+              }
+            }
+          });
+
+          postRef.on("child_changed", function (data) {
+            let i = findUIDItemInArr(data.key, familyArr);
+            if (i != -1) {
+              localObjectChanges = findObjectChanges(familyArr[i], data.val());
+              if (localObjectChanges.length != 0) {
+                familyArr[i] = data.val();
+                saveCriticalCookies();
+              }
+            }
+          });
+
+          postRef.on("child_removed", function (data) {
+            let i = findUIDItemInArr(data.key, familyArr);
+            if (i != -1) {
+              familyArr.splice(i, 1);
+              saveCriticalCookies();
+            }
+          });
+        }
+      });
+    };
+
     fetchData(userBase);
     fetchFriends(userFriends);
     fetchInvites(userInvites);
     fetchLimits(limitsInitial);
+    fetchFamilies(familyInitial);
 
     listeningFirebaseRefs.push(userBase);
     listeningFirebaseRefs.push(userFriends);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(limitsInitial);
+    listeningFirebaseRefs.push(familyInitial);
   }
 };
 
