@@ -39,6 +39,9 @@ function checkFamilyCookie() {
 }
 
 function evaluateFamilyAutomaticControl(familyData) {
+  if (familyData.members == undefined)
+    familyData.members = [];
+
   if (user.moderatorInt == 1 || familyData.members.includes(user.uid))
     if (familyData.automaticSantaControl != undefined) {
       if (familyData.automaticSantaControl == 1) {
@@ -75,7 +78,7 @@ function getCurrentUser(){
     deployListEmptyNotification("No Friends Found! Invite Some Friends In The \"Invite\" Tab!");
     friendListEmptyBool = true;
   }
-  sessionStorage.setItem("moderationSet", moderationSet);
+  sessionStorage.setItem("moderationSet", JSON.stringify(moderationSet));
 }
 
 window.onload = function instantiate() {
@@ -111,7 +114,6 @@ window.onload = function instantiate() {
     userFriends = firebase.database().ref("users/" + user.uid + "/friends");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
     limitsInitial = firebase.database().ref("limits/");
-    familyInitial = firebase.database().ref("family/");
 
     databaseQuery();
     initializeSecretSantaDB();
@@ -260,58 +262,15 @@ window.onload = function instantiate() {
       });
     };
 
-    let fetchFamilies = function (postRef){
-      postRef.once("value").then(function(snapshot) {
-        if (snapshot.exists()) {
-          postRef.on("child_added", function (data) {
-            let i = findUIDItemInArr(data.val().uid, familyArr, true);
-            if (i == -1) {
-              familyArr.push(data.val());
-              evaluateFamilyAutomaticControl(data.val());
-              checkForFailedFamilies(5);
-              saveCriticalCookies();
-            } else {
-              localObjectChanges = findObjectChanges(familyArr[i], data.val());
-              if (localObjectChanges.length != 0) {
-                familyArr[i] = data.val();
-                saveCriticalCookies();
-              }
-            }
-          });
-
-          postRef.on("child_changed", function (data) {
-            let i = findUIDItemInArr(data.key, familyArr);
-            if (i != -1) {
-              localObjectChanges = findObjectChanges(familyArr[i], data.val());
-              if (localObjectChanges.length != 0) {
-                familyArr[i] = data.val();
-                saveCriticalCookies();
-              }
-            }
-          });
-
-          postRef.on("child_removed", function (data) {
-            let i = findUIDItemInArr(data.key, familyArr);
-            if (i != -1) {
-              familyArr.splice(i, 1);
-              saveCriticalCookies();
-            }
-          });
-        }
-      });
-    };
-
     fetchData(userBase);
     fetchFriends(userFriends);
     fetchInvites(userInvites);
     fetchLimits(limitsInitial);
-    fetchFamilies(familyInitial);
 
     listeningFirebaseRefs.push(userBase);
     listeningFirebaseRefs.push(userFriends);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(limitsInitial);
-    listeningFirebaseRefs.push(familyInitial);
   }
 };
 
