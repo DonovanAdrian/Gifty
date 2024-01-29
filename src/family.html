@@ -58,8 +58,16 @@
     <!--Modal Body-->
     <div class="modal-body">
       <p id="familyUID" alt="This Family's Unique ID">Loading Family UID...</p>
-      <br/>
-      <br/>
+      <p id="familyMemberCount" alt="The Amount Of Members In This Family">Loading Number Of Family Members...</p>
+      <ul id="familyListContainer" class="giftList">
+        <li class="gift" id="testFamily">Loading...</li>
+      </ul>
+      <p id="familyOptionsHeaderBuffer"></p>
+      <p id="familyOptionsHeader" alt="Family Options">Family Options:</p>
+      <span class="basicBtn" id="messageAllFamilyMembers" alt="Message All Family Members">Loading Messaging Button...</span>
+      <p id="familyMessagingBuffer"></p>
+      <span class="basicBtn" id="messageSecretSantaFamilyMembers" alt="Message Secret Santa Family Members">Loading Secret Santa Messaging Button...</span>
+      <p id="secretSantaMessagingBuffer"></p>
       <span class="basicBtn" id="secretSantaShowHideBtn" alt="Show/Hide Secret Santa Options">Loading Secret Santa Options...</span>
       <p id="secretSantaSectionHeader" alt="Secret Santa Section Header" class="giftInfBold">Secret Santa Controls:</p>
       <p id="secretSantaStateText" alt="Current Secret Santa State">Secret Santa State: Unknown</p>
@@ -73,11 +81,6 @@
       <br/>
       <span class="basicBtn" id="secretSantaExportBtn" alt="Export Secret Santa Data">Export Data To CSV</span>
       <br/>
-      <br/>
-      <p id="familyMemberCount" alt="The Amount Of Members In This Family">Loading Number Of Family Members...</p>
-      <ul id="familyListContainer" class="giftList">
-        <li class="gift" id="testFamily">Loading...</li>
-      </ul>
       <br/>
     </div>
 
@@ -109,6 +112,30 @@
     <div class="modal-footer">
       <h3 style="float: left;padding-left: 10px" id="addFamily" alt="Add The Family To The Database">Add</h3>
       <h3 style="float: right;padding-right: 10px" id="cancelFamily" alt="Cancel Adding The Family To The Database">Cancel</h3>
+    </div>
+  </div>
+</div>
+
+<div id="privateMessageModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closePrivateMessageModal">&times;</span>
+      <h2 id="globalMsgTitle">Loading Title...</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p></p>
+      <input type="text" id="globalMsgInp" placeholder="Loading Placeholder..." class="giftInp">
+      <p></p>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3 class="modal-footer-left" id="sendMsg">Send</h3>
+      <h3 class="modal-footer-right" id="cancelMsg">Cancel</h3>
     </div>
   </div>
 </div>
