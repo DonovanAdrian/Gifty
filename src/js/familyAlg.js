@@ -17,6 +17,10 @@ let familyUID;
 let familyMemberCount;
 let familyListContainer;
 let testFamily;
+let familyOptionsHeaderBuffer;
+let familyOptionsHeader;
+let messageAllFamilyMembers;
+let familyMessagingBuffer;
 let familyEdit;
 let familyRemove;
 let familyAddModal;
@@ -24,6 +28,12 @@ let closeFamilyAddModal;
 let familyNameInp;
 let addFamily;
 let cancelFamily;
+let privateMessageModal;
+let closePrivateMessageModal;
+let globalMsgTitle;
+let globalMsgInp;
+let sendMsg;
+let cancelMsg;
 
 
 
@@ -71,6 +81,10 @@ window.onload = function instantiate() {
       familyMemberCount = document.getElementById("familyMemberCount");
       familyListContainer = document.getElementById("familyListContainer");
       testFamily = document.getElementById("testFamily");
+      familyOptionsHeaderBuffer = document.getElementById("familyOptionsHeaderBuffer");
+      familyOptionsHeader = document.getElementById("familyOptionsHeader");
+      messageAllFamilyMembers = document.getElementById("messageAllFamilyMembers");
+      familyMessagingBuffer = document.getElementById("familyMessagingBuffer");
       familyEdit = document.getElementById("familyEdit");
       familyRemove = document.getElementById("familyRemove");
       familyAddModal = document.getElementById("familyAddModal");
@@ -78,15 +92,23 @@ window.onload = function instantiate() {
       familyNameInp = document.getElementById("familyNameInp");
       addFamily = document.getElementById("addFamily");
       cancelFamily = document.getElementById("cancelFamily");
+      privateMessageModal = document.getElementById("privateMessageModal");
+      closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
+      globalMsgTitle = document.getElementById("globalMsgTitle");
+      globalMsgInp = document.getElementById("globalMsgInp");
+      sendMsg = document.getElementById("sendMsg");
+      cancelMsg = document.getElementById("cancelMsg");
 
       getCurrentUserCommon();
       commonInitialization();
       initializeSecretSantaFamilyPageVars();
 
       familyElements = [inviteNote, settingsNote, dataListContainer, testData, createFamilyBtn, backBtn, familyModal,
-        closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily, familyEdit,
-        familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, offlineModal,
-        offlineSpan, notificationModal, noteSpan, notificationTitle, notificationInfo];
+        closeFamilyModal, familyTitle, familyUID, familyMemberCount, familyListContainer, testFamily,
+        familyOptionsHeaderBuffer, familyOptionsHeader, messageAllFamilyMembers, familyMessagingBuffer, familyEdit,
+        familyRemove, familyAddModal, closeFamilyAddModal, familyNameInp, addFamily, cancelFamily, privateMessageModal,
+        closePrivateMessageModal, globalMsgTitle, globalMsgInp, sendMsg, cancelMsg, offlineModal, offlineSpan,
+        notificationModal, noteSpan, notificationTitle, notificationInfo];
 
       checkFamilyCookie();
       verifyElementIntegrity(familyElements);
@@ -313,6 +335,24 @@ function initFamilyElement(liItem, familyData) {
     else
       familyMemberCount.innerHTML = "# Members: " + familyMemberArr.length + " (Click \"Edit Family\" to configure relationships!)";
 
+    if (familyMemberArr.length > 0) {
+      familyOptionsHeaderBuffer.style.display = "inline-block";
+      familyOptionsHeader.style.display = "block";
+      messageAllFamilyMembers.innerHTML = "Message All Family Members";
+      messageAllFamilyMembers.onclick = function() {
+        initializeGlobalNotification("Family", familyData);
+      };
+      messageAllFamilyMembers.style.display = "inline-block";
+      familyMessagingBuffer.style.display = "block";
+    } else {
+      familyOptionsHeaderBuffer.style.display = "none";
+      familyOptionsHeader.style.display = "none";
+      messageAllFamilyMembers.innerHTML = "";
+      messageAllFamilyMembers.onclick = function() {};
+      messageAllFamilyMembers.style.display = "none";
+      familyMessagingBuffer.style.display = "none";
+    }
+
     generateFamilyMemberList(liItem, familyMemberArr);
 
     familyEdit.onclick = function (){
@@ -330,6 +370,62 @@ function initFamilyElement(liItem, familyData) {
     closeFamilyModal.onclick = function() {
       closeModal(familyModal);
     };
+  };
+}
+
+function initializeGlobalNotification(messageType, familyData) {
+  let overallMessageType = "";
+  let supplementalExampleText = "";
+  let userList = [];
+  let tempIndex = -1;
+
+  if (messageType == "Santa") {
+    overallMessageType = " To All Secret Santa Participants";
+    supplementalExampleText = " Enjoy Secret Santa!";
+  } else if (messageType == "Family") {
+    overallMessageType = " To All Family Members";
+    supplementalExampleText = " Have a great day!";
+  }
+
+  globalMsgInp.placeholder = "Hello " + familyData.name + "!" + supplementalExampleText;
+  globalMsgTitle.innerHTML = "Send A Message" + overallMessageType;
+
+  sendMsg.onclick = function (){
+    if(globalMsgInp.value.includes(",,,")){
+      deployNotificationModal(true, "Message Error!", "Please do not use commas " +
+          "in the notification. Thank you!");
+    } else {
+      for (let i = 0; i < familyData.members.length; i++) {
+        tempIndex = findUIDItemInArr(familyData.members[i], userArr, true);
+
+        if (tempIndex != -1 && messageType == "Santa" && userArr[tempIndex].secretSanta == 1) {
+          userList.push(userArr[tempIndex]);
+        } else if (tempIndex != -1 && messageType == "Family") {
+          userList.push(userArr[tempIndex]);
+        }
+      }
+      if (userList.length > 0) {
+        addModerationNotificationMessagesToDB(globalMsgInp.value, userList);
+        globalMsgInp.value = "";
+        closeModal(privateMessageModal);
+        deployNotificationModal(false, "Message Sent!",
+            "The Message Has Been Sent!");
+      } else {
+        deployNotificationModal(false, "Message Failed!",
+            "The message failed to send! Please try again later.");
+      }
+    }
+  };
+  cancelMsg.onclick = function (){
+    globalMsgInp.value = "";
+    closeModal(privateMessageModal);
+    openModal(familyModal, familyData.uid);
+  };
+
+  openModal(privateMessageModal, "addGlobalMsgModal");
+
+  closePrivateMessageModal.onclick = function() {
+    closeModal(privateMessageModal);
   };
 }
 
