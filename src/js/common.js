@@ -243,6 +243,7 @@ function commonInitialization() {
 
   if (!ranCommonInitialization) {
     backgroundAlternator();
+    loadCriticalCookies();
 
     window.addEventListener("pageshow", function (event) {
       var historyTraversal = event.persisted ||
@@ -1986,6 +1987,16 @@ function giftLinkRedirect(link) {
   }
 }
 
+function addModerationNotificationMessagesToDB(message, userList) {
+  let globalNotification = "";
+  globalNotificationBool = true;
+  for (let i = 0; i < userList.length; i++){
+    globalNotification = generateNotificationString(">adminGlobal" + user.uid, "", message, "");
+    addNotificationToDB(userList[i], globalNotification);
+  }
+  globalNotificationBool = false;
+}
+
 function generateNotificationString(senderUID, deleterUID, messageGiftTitle, pageNameStr) {
   let message;
   message = "\"" + senderUID + "\",,,\"" + deleterUID + "\",,,\"" + messageGiftTitle + "\",,,\"" + pageNameStr + "\"";
@@ -2000,12 +2011,38 @@ function addReviewDays(date, days) {
   return tempDate;
 }
 
+function loadCriticalCookies() {
+  if (privateUserOverride) {
+    if (sessionStorage.validUser != undefined)
+      giftUser = JSON.parse(sessionStorage.validUser);
+    if (sessionStorage.privateList != undefined)
+      giftUser = JSON.parse(sessionStorage.privateList);
+    if (sessionStorage.validPrivateUser != undefined)
+      user = JSON.parse(sessionStorage.validPrivateUser);
+    if (sessionStorage.userArr != undefined)
+      userArr = JSON.parse(sessionStorage.userArr);
+    if (sessionStorage.giftStorage != undefined)
+      giftStorage = JSON.parse(sessionStorage.giftStorage);
+    if (sessionStorage.familyArr != undefined)
+      familyArr = JSON.parse(sessionStorage.familyArr);
+  } else {
+    if (sessionStorage.validUser != undefined)
+      user = JSON.parse(sessionStorage.validUser);
+    if (sessionStorage.userArr != undefined)
+      userArr = JSON.parse(sessionStorage.userArr);
+    if (sessionStorage.validGiftUser != undefined)
+      giftUser = JSON.parse(sessionStorage.validGiftUser);
+    if (sessionStorage.familyArr != undefined)
+      familyArr = JSON.parse(sessionStorage.familyArr);
+  }
+}
+
 function saveCriticalCookies() {
-  let possibleKeys ;
+  let possibleKeys;
   let possibleValues;
   if (privateUserOverride) {
-    possibleKeys = ["privateList", "validUser", "validPrivateUser", "userArr", "giftStorage"];
-    possibleValues = [giftUser, giftUser, user, userArr, giftStorage];
+    possibleKeys = ["privateList", "validUser", "validPrivateUser", "userArr", "giftStorage", "familyArr"];
+    possibleValues = [giftUser, giftUser, user, userArr, giftStorage, familyArr];
   } else {
     possibleKeys = ["validUser", "userArr", "validGiftUser", "familyArr"];
     possibleValues = [user, userArr, giftUser, familyArr];
