@@ -12,6 +12,8 @@ let secretSantaNameText;
 let showSecretSantaAssignment;
 
 //Family Page Variables
+let messageSecretSantaFamilyMembers;
+let secretSantaMessagingBuffer;
 let secretSantaShowHideBtn;
 let secretSantaSectionHeader;
 let secretSantaStateText;
@@ -556,6 +558,8 @@ function initializeSecretSantaDB() {
           let i = findUIDItemInArr(data.val().uid, familyArr, true);
           if (i == -1) {
             familyArr.push(data.val());
+            evaluateFamilyAutomaticControl(data.val());
+            checkForFailedFamilies(5);
             saveCriticalCookies();
             evaluateSecretSantaButton(data.val());
           } else {
@@ -602,6 +606,8 @@ function initializeSecretSantaDB() {
 * Family Page Functions
 */
 function initializeSecretSantaFamilyPageVars() {
+  messageSecretSantaFamilyMembers = document.getElementById("messageSecretSantaFamilyMembers");
+  secretSantaMessagingBuffer = document.getElementById("secretSantaMessagingBuffer");
   secretSantaShowHideBtn = document.getElementById("secretSantaShowHideBtn");
   secretSantaSectionHeader = document.getElementById("secretSantaSectionHeader");
   secretSantaStateText = document.getElementById("secretSantaStateText");
@@ -809,10 +815,41 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     };
   }
 
-  if (familyData.showSecretSantaOptions == 0) {
-    setSecretSantaShow();
-  } else if (familyData.showSecretSantaOptions == 1) {
-    setSecretSantaHide();
+  if (familyData.secretSantaState == 2 || familyData.secretSantaState == 3) {
+    if (evaluateUserReadiness(familyData.members)) {
+      showSecretSantaMessengerBtn();
+    } else {
+      hideSecretSantaMessengerBtn();
+    }
+  } else {
+    hideSecretSantaMessengerBtn();
+  }
+  if (familyData.members.length > 0) {
+    secretSantaShowHideBtn.style.display = "inline-block";
+    if (familyData.showSecretSantaOptions == 0) {
+      setSecretSantaShow();
+    } else if (familyData.showSecretSantaOptions == 1) {
+      setSecretSantaHide();
+    }
+  } else {
+    hideSecretSantaOptions();
+    secretSantaShowHideBtn.style.display = "none";
+  }
+
+  function showSecretSantaMessengerBtn() {
+    messageSecretSantaFamilyMembers.innerHTML = "Message Secret Santa Participants";
+    messageSecretSantaFamilyMembers.onclick = function(){
+      initializeGlobalNotification("Santa", familyData);
+    };
+    messageSecretSantaFamilyMembers.style.display = "inline-block";
+    secretSantaMessagingBuffer.style.display = "block";
+  }
+
+  function hideSecretSantaMessengerBtn() {
+    messageSecretSantaFamilyMembers.innerHTML = "";
+    messageSecretSantaFamilyMembers.onclick = function(){};
+    messageSecretSantaFamilyMembers.style.display = "none";
+    secretSantaMessagingBuffer.style.display = "none";
   }
 
   function setSecretSantaShow() {
@@ -847,7 +884,7 @@ function changeSecretSantaState(familyData, desiredStateInt, suppressDialogs) {
   let invalidStateChangeReason = "";
   let invalidModalOpenTime = 10;
 
-  if (manualStateChange) {
+  if (manualStateChange && familyData.automaticSantaControl == 1) {
     toggleAutomaticFunctionality(familyData, 0);
     updateMaintenanceLog(pageName, "A manual state change was triggered by " + user.userName + " (" +
         user.uid + ")" + " for the family \"" + familyData.name + "\". Please note that manually changing the state of " +
@@ -1003,7 +1040,6 @@ function exportSecretSantaData(desiredExportType, familyData) {
   if (!runningExportProcess) {
     runningExportProcess = true;
     let familyMembers = familyData.members;
-    console.log(familyMembers);
     let today = new Date();
     let UTCmm = today.getUTCMinutes();
     let UTChh = today.getUTCHours();
@@ -1102,7 +1138,8 @@ function unassignAllFamilyMembers(familyData) {
     tempIndex = findUIDItemInArr(familyMembers[i], userArr, true);
     if (tempIndex != -1) {
       try {
-        console.log("Resetting " + userArr[tempIndex].userName);
+        if (consoleOutput)
+          console.log("Resetting " + userArr[tempIndex].userName);
         resetSecretSantaNum(tempIndex);
         resetSecretSantaName(tempIndex);
       } catch (err) {
@@ -1182,7 +1219,8 @@ function assignUsersToNames(familyMembers, testingInt) {
     if (consoleOutput && !secretSantaStressTesting)
       console.log(" ***********************************************");
     processingResults = processFamily(familyMembers, ignoreLastYearsAssignments, testingInt);
-    console.log("Result Code: " + processingResults);
+    if (consoleOutput)
+      console.log("Result Code: " + processingResults);
 
     if (processingResults == 0 && !secretSantaStressTesting) {
       processingSuccess = true;
@@ -1238,7 +1276,8 @@ function setSecretSantaResultsText(processingResults, ignoreLastYearsAssignments
   }
 
   if (!stressOverride) {
-    console.log(fetchProcessingStatusText());
+    if (consoleOutput)
+      console.log(fetchProcessingStatusText());
     if (processingResults == 0) {
       secretSantaStatusText.innerHTML = "Secret Santa Status: " + "Successful Assignment After " + attemptCount +
           " Tries!";
@@ -1411,7 +1450,8 @@ function dateCalculationHandler(familyData) {
     toggleAutomaticFunctionality(familyData, 0);
     checkForFailedFamilies();
   } else {
-    console.log("Performing State Change...");
+    if (consoleOutput)
+      console.log("Performing State Change...");
     changeSecretSantaState(familyData, desiredNextState, true);
   }
 
