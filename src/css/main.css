@@ -98,6 +98,9 @@ p.faqInf {
   padding-bottom: 10px;
   font-family: Verdana;
   text-decoration: underline;
+  text-align: left;
+  padding-left: 5%;
+  padding-right: 5%;
 }
 
 p.faqInfSpec {
@@ -105,6 +108,9 @@ p.faqInfSpec {
   font-size: 15px;
   padding-bottom: 10px;
   font-family: Verdana;
+  text-align: left;
+  padding-left: 2%;
+  padding-right: 2%;
 }
 
 p.giftInfLarge {
@@ -239,6 +245,18 @@ span.boughtBtnB:hover {
   color: #000;
 }
 
+span.addBtnGeneric {
+  border-radius: 4px;
+  font-weight: bold;
+  position: relative;
+  font-family: Verdana;
+  text-align: right;
+  background: #ff8e8e;
+  color: #FFF;
+  transition: 0.3s;
+  z-index: 2;
+}
+
 span.addBtn {
   border-radius: 4px;
   font-weight: bold;
@@ -342,6 +360,11 @@ span.familyBtn:hover {
   border-radius: 12px;
   background-color: #ff4c4c;
   color: #000;
+}
+
+img.genericImageWide {
+  position: relative;
+  z-index: 2;
 }
 
 img.leftCornerImgHidden {
@@ -735,6 +758,13 @@ ul li.santa::before {
     font-size: 13px;
   }
 
+  span.addBtnGeneric {
+    left: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
   span.addBtn {
     right: 5px;
     bottom: 5px;
@@ -850,6 +880,11 @@ ul li.santa::before {
     height: 15px;
   }
 
+  img.genericImageWide {
+    width: 30px;
+    height: 20px;
+  }
+
   img.leftCornerImgHidden {
     width: 30px;
     height: 30px;
@@ -915,6 +950,13 @@ ul li.santa::before {
   span.boughtBtnB {
     left: 5px;
     bottom: 50px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.addBtnGeneric {
+    left: 5px;
+    bottom: 5px;
     padding: 5px;
     font-size: 13px;
   }
@@ -1022,6 +1064,11 @@ ul li.santa::before {
   img.infoIcon {
     width: 15px;
     height: 15px;
+  }
+
+  img.genericImageWide {
+    width: 30px;
+    height: 20px;
   }
 
   img.leftCornerImgHidden {
@@ -1132,6 +1179,13 @@ ul li.santa::before {
     font-size: 15px;
   }
 
+  span.addBtnGeneric {
+    left: 7px;
+    bottom: 7px;
+    padding: 7px;
+    font-size: 15px;
+  }
+
   span.addBtn {
     right: 7px;
     bottom: 7px;
@@ -1196,6 +1250,11 @@ ul li.santa::before {
   img.infoIcon {
     width: 15px;
     height: 15px;
+  }
+
+  img.genericImageWide {
+    width: 40px;
+    height: 30px;
   }
 
   img.leftCornerImgHidden {
@@ -1311,6 +1370,13 @@ ul li.santa::before {
     font-size: 17px;
   }
 
+  span.addBtnGeneric {
+    left: 10px;
+    bottom: 10px;
+    padding: 9px;
+    font-size: 17px;
+  }
+
   span.addBtn {
     right: 9px;
     bottom: 9px;
@@ -1370,6 +1436,11 @@ ul li.santa::before {
   img.infoIcon {
     width: 17px;
     height: 17px;
+  }
+
+  img.genericImageWide {
+    width: 50px;
+    height: 36px;
   }
 
   img.leftCornerImgHidden {
@@ -1481,6 +1552,13 @@ ul li.santa::before {
     font-size: 21px;
   }
 
+  span.addBtnGeneric {
+    left: 11px;
+    bottom: 11px;
+    padding: 11px;
+    font-size: 21px;
+  }
+
   span.addBtn {
     right: 11px;
     bottom: 11px;
@@ -1548,6 +1626,11 @@ ul li.santa::before {
   img.infoIcon {
     width: 19px;
     height: 19px;
+  }
+
+  img.genericImageWide {
+    width: 65px;
+    height: 47px;
   }
 
   img.leftCornerImgHidden {
@@ -1659,6 +1742,13 @@ ul li.santa::before {
     font-size: 23px;
   }
 
+  span.addBtnGeneric {
+    left: 13px;
+    bottom: 13px;
+    padding: 13px;
+    font-size: 23px;
+  }
+
   span.addBtn {
     right: 13px;
     bottom: 13px;
@@ -1726,6 +1816,11 @@ ul li.santa::before {
   img.infoIcon {
     width: 20px;
     height: 20px;
+  }
+
+  img.genericImageWide {
+    width: 75px;
+    height: 55px;
   }
 
   img.leftCornerImgHidden {
@@ -1837,6 +1932,13 @@ ul li.santa::before {
     font-size: 26px;
   }
 
+  span.addBtnGeneric {
+    left: 13px;
+    bottom: 13px;
+    padding: 13px;
+    font-size: 26px;
+  }
+
   span.addBtn {
     right: 13px;
     bottom: 13px;
@@ -1904,6 +2006,11 @@ ul li.santa::before {
   img.infoIcon {
     width: 22px;
     height: 22px;
+  }
+
+  img.genericImageWide {
+    width: 80px;
+    height: 58px;
   }
 
   img.leftCornerImgHidden {
