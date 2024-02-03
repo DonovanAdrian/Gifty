@@ -10,11 +10,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/main.css?v=2023-12-18" rel="stylesheet" type="text/css"/>
+  <link href="css/main.css?v=2023-12-26" rel="stylesheet" type="text/css"/>
   <title>Help/FAQ</title>
 
-  <script src="js/faqAlg.js?v=2023-12-18" type="text/javascript"></script>
-  <script src="js/common.js?v=2023-12-18" type="text/javascript"></script>
+  <script src="js/faqAlg.js?v=2023-12-26" type="text/javascript"></script>
+  <script src="js/common.js?v=2023-12-26" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -37,35 +37,64 @@
 <svg id="fader"></svg>
 
 <div class="faqContainer">
-  <p class="faqInf" alt="Frequently Asked Questions">FAQ</p>
-  <p class="faqInfSpec">Welcome to Gifty! Below are some common questions that people asked me.</p>
-  <p class="faqInf">How do I add a gift to my list?</p>
-  <p class="faqInfSpec">On the "Home" page, you can click or tap the "Add Gift" button to add a gift to your list.
-    You will be brought to another page where you can fill out any necessary information that will help others
-    find the gift you are asking for.</p>
-  <p class="faqInf">How do I invite friends to see my list?</p>
-  <p class="faqInfSpec">On the "Invite" page, you can click or tap the "Send Invite" button to invite a friend
-    to your friend list. You will need your friend's user name in order to invite them, so be sure that you type it in
-    correctly. Otherwise the system will not know which user you are trying to invite. Once they accept your friend
-    request, their name will be added to your "Gift Lists" and "Friends" page and will be able to see your list.</p>
-  <p class="faqInf">How do I view someone else's friend list?</p>
-  <p class="faqInfSpec">Once you have some friends on your friend list, the "Gift Lists" page will show anyone that has
-    accepted your friend request. If you click on their name and they have gifts in their list, you will be brought
-    to their friend list. On this page you can click on each gift to see details and you can choose to buy/unbuy
-    a gift. That user will not see that you bought that gift, though, so you don't have to worry about them finding out!</p>
-  <p class="faqInf">How do I remove a friend from my friend list?</p>
-  <p class="faqInfSpec">Once you have some friends on your friend list, the "Friends" page will show anyone that has
-    accepted your friend request. If you click on their name, you will be shown their public account details. In
-    addition, you can click on "Remove Access" to remove that user from your friend list.</p>
-  <p class="faqInf">Something went wrong and I'm not sure why! (or) I have a suggestion to improve Gifty!</p>
-  <p class="faqInfSpec">If you are in need of assistance or just want to send me a suggestion, feel free to email me
-    below! An email dialog will automatically pop up for you with some example text filled in. Thanks for helping me
-    make this app better!</p><br/><br/>
+  <br>
+  <p class="faqInf" style="font-weight: bolder">Welcome to Gifty!</p>
+  <p class="faqInfSpec" style="font-style: italic">You have successfully navigated to the Frequently Asked
+    Questions/Help page. Need some help? You're in the right place. Some frequently asked questions are below. Still
+    have questions? Check out the Tutorial page on the <b>"Settings"</b> tab at the top of the page. Otherwise, send
+    the creator of Gifty an email using the button at the very bottom of the page!</p>
+  <br><br>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">"How do I add a gift to my list?"</p>
+  <p class="faqInfSpec">By selecting the <b>"Home"</b> tab at the top of the page, you click/tap the <b>"Add Gift"</b>
+    button to add a gift to your list. You will be brought to another page where you can fill out any necessary
+    information that will help others find the gift you are asking for.</p>
+  <p class="faqInfSpec">This same "Add Gift" button can also be found on your friend's private lists, in which you can
+    add gifts that your friends cannot see.</p>
+  <br>
+  <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Add Button">Add Gift</span>
+  <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example)</p>
+  <br><br><br><br>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">"How do I invite friends to see my list?"</p>
+  <p class="faqInfSpec">First and foremost, you will need your friend's user name <i>or</i> their share code in
+    order to invite them, so be sure to have that information ready. By selecting the <b>"# Friends"</b> tab at the
+    top of the page, you can click/tap the <b>"Send Invite"</b> button. A popup will appear where you can provide their
+    user name or share code to invite a friend to your friend list. Once they accept your friend request, their name
+    will be added to the<b>"Gift Lists"</b> page, <b>"Friends"</b> page, <b><i>and</i></b> will be able to see your
+    gift list.</p>
+  <br>
+  <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Invite Button">Send Invite</span>
+  <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example)</p>
+  <br><br><br><br>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">"How do I view someone else's gift list?"</p>
+  <p class="faqInfSpec">By selecting the <b>"Gift Lists"</b> tab at the top of the page, you can see one of the lists
+    of individuals that have accepted your friend requests. Each item in the list will say <b>"View *person*'s Gift
+      Lists"</b>. By clicking on one of these items, a popup will appear where you can choose to view one the two types of
+    gift lists... Public and private gift lists. No matter what, the owner of these lists <b>can't</b> see what is
+    bought, but only the public list is curated by the owner (<i>The gifts in the public list are the same gifts that
+      everyone adds on the <b>"Home"</b> tab</i>). The private list, however, is curated by their friends! Therefore,
+    the private list will always remain a mystery to the owner.</p>
+  <br>
+  <ul class="giftList" style="display: inline-block;">
+    <li class="gift" style="text-align: left; width: 160%; right: 30%">View Jerry's Gift Lists</li>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example)</p>
+  </ul>
+  <br><br><br><br>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">"How do I remove a friend from my friend list?"</p>
+  <p class="faqInfSpec">By selecting the <b>"# Friends"</b> tab at the top of the page, you can see another of the
+    lists of individuals that have accepted your friend requests. If you click on their name, a popup window will
+    appear where you will be shown their public account details. In addition, you can click on <b>"Unfriend"</b> on the
+    bottom right of the popup window to remove that user from your friend list.</p>
+  <br><br><br><br>
+  <p class="faqInf" style="font-style: italic"><b>"Something went wrong and I'm not sure why!"</b> or
+    <b>"I have a suggestion to improve Gifty!"</b></p>
+  <p class="faqInfSpec">If you are in need of assistance or just want to submit a suggestion, feel free to email the
+    creator of Gifty below! An email dialog will automatically pop up for you with some example text filled in. Thanks
+    for helping make this project better!</p>
+  <br/><br/><br/><br/>
   <span class="faqBtn" id="emailBtn" alt="Email The Developer A Question, Comment, Or Concern!">Email Me</span>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
+  <br/><br/>
+  <a style="font-family:Verdana; text-decoration: none; font-style: italic;" href="https://github.com/DonovanAdrian/Gifty" alt="For The Curious, Take A Peek At Gifty's GitHub Page">What is Gifty? Click here to find out!</a>
+  <br/><br/><br/><br/><br/><br/>
 </div>
 
 <div id="offlineModal" class="modal">
