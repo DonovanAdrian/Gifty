@@ -21,6 +21,7 @@ let userScoreInfo;
 let userScoreDisplay;
 let editBtn;
 let faqBtn;
+let tutorialBtn;
 let giftyVersionIdentifier;
 let giftyCopyrightIdentifier;
 let modBtn;
@@ -65,6 +66,7 @@ window.onload = function instantiate() {
     userScoreDisplay = document.getElementById("userScoreDisplay");
     editBtn = document.getElementById("editBtn");
     faqBtn = document.getElementById("faqBtn");
+    tutorialBtn = document.getElementById("tutorialBtn");
     giftyVersionIdentifier = document.getElementById("giftyVersionIdentifier");
     giftyCopyrightIdentifier = document.getElementById("giftyCopyrightIdentifier");
     modBtn = document.getElementById("modBtn");
@@ -78,7 +80,7 @@ window.onload = function instantiate() {
     commonInitialization();
 
     settingsElements = [offlineModal, offlineSpan, inviteNote, usernameInfo, usernameDisplay, nameInfo, nameDisplay,
-      shareCodeInfo, shareCodeDisplay, userScoreInfo, userScoreDisplay, editBtn, faqBtn, modBtn, familyBtn,
+      shareCodeInfo, shareCodeDisplay, userScoreInfo, userScoreDisplay, editBtn, faqBtn, tutorialBtn, modBtn, familyBtn,
       moderationModal, moderationSpan, moderationQueueBtn, userListBtn, notificationModal, notificationTitle,
       notificationInfo, noteSpan];
 
@@ -89,6 +91,7 @@ window.onload = function instantiate() {
 
     initializeEditBtn();
     initializeFAQBtn();
+    initializeTutorialBtn();
     initializeUserInfo();
     initializeFamilyDBCheck();
 
@@ -208,6 +211,12 @@ function initializeFAQBtn() {
   faqBtn.onclick = function (){
     navigation(12);//FAQ
   };
+}
+
+function initializeTutorialBtn() {
+  tutorialBtn.onclick = function (){
+    navigation(18);//Tutorial
+  }
 }
 
 function initializeUserInfo() {
