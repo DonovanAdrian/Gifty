@@ -1486,7 +1486,7 @@ function navigation(navNum, loginOverride) {
         "family.html",//15
         "familyUpdate.html",//16
         "moderationQueue.html",//17
-        "backup.html"];//18
+        "tutorial.html"];//18
 
       if (navNum >= navLocations.length)
         navNum = 0;
