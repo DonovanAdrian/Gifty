@@ -33,13 +33,14 @@ let ticketTitles = [
     "There were not enough members in the family.",
     "). This failure was possibly due to:",
     "Failed Calling Automatic Control For ",
-    "Secret Santa Automatic Control successfully changed",
-    "Successfully shuffled the family,",                           //30
+    ") issued a password reset for ",
+    "Secret Santa Automatic Control successfully changed",                 //30
+    "Successfully shuffled the family,",
     "Successfully assigned the members of the family,",
     "Please note that manually changing the state of",
     "has opened their warning",
-    "Login disabled message reset by",
-    "Login enabled by",                          //35
+    "Login disabled message reset by",                          //35
+    "Login enabled by",
     "found an easter egg!",
     "found an easter egg... But got greedy",
     "found an easter egg..."
@@ -74,13 +75,14 @@ let ticketSeverities = [
     " mediumSev",
     " mediumSev",
     " mediumSev",
-    " lowSev",
+    " mediumSev",
     " lowSev",      //30
     " lowSev",
     " lowSev",
     " lowSev",
     " lowSev",
     " lowSev",      //35
+    " lowSev",
     " lowSev",
     " lowSev",
     " lowSev"
@@ -115,13 +117,14 @@ let ticketSuffixes = [
     " - Failed To Auto-Set Secret Santa (Membership)",
     " - Failed To Auto-Set Secret Santa (Assignments)",
     " - Failed To Initialize Automatic Control",
-    " - Performed Secret Santa Automatic Control",
-    " - Shuffled Secret Santa",                       //30
+    " - A Moderator Issued A Password Reset",
+    " - Performed Secret Santa Automatic Control",                       //30
+    " - Shuffled Secret Santa",
     " - Assigned Secret Santa",
     " - Manual Secret Santa Change Triggered",
     " - A Warned User Was Successfully Notified",
-    " - Login Message Reset",
-    " - Login Enabled",                              //35
+    " - Login Message Reset",                              //35
+    " - Login Enabled",
     " - Easter Egg Found!",
     " - Easter Egg Found...",
     " - Easter Egg Found...?"
