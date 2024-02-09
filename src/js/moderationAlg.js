@@ -825,7 +825,7 @@ function initializeGlobalNotification() {
         deployNotificationModal(true, "Message Error!", "Please do not use commas " +
             "in the notification. Thank you!");
       } else {
-        addGlobalMessageToDB(globalMsgInp.value);
+        addModerationNotificationMessagesToDB(globalMsgInp.value, userArr);
         globalMsgInp.value = "";
         closeModal(privateMessageModal);
         deployNotificationModal(false, "Message Sent!",
@@ -1173,8 +1173,8 @@ function confirmOperation(operationTitle, operationContent, operationType, opera
       });
       deployNotificationModal(false, "Moderator Role Granted",
           "Granted role for " + operationData.userName);
-    } else if (operationType == "showPass") {
-      userPassword.innerHTML = decode(operationData.encodeStr);
+    } else if (operationType == "resetPass") {
+      userPassword.innerHTML = "Temporary Password: " + resetUserPassword(operationData);
       openModal(previousModal, previousModalTitle);
     } else if (operationType == "showSanta") {
       secretSantaAssignmentShown = true;
@@ -1241,7 +1241,7 @@ function changeUserElement(userData) {
 }
 
 function initUserElement(liItem, userData) {
-  let showPassBool = false;
+  let resetPassBool = false;
   let userFoundInFam = false;
   let relationshipModifier = "";
   let tempString = "";
@@ -1378,6 +1378,18 @@ function initUserElement(liItem, userData) {
       generateModeratorPrivateMessageDialog(userData, false);
     };
 
+    userPassword.innerHTML = "Reset " + userData.name + "'s Password";
+    userPassword.onclick = function() {
+      if (!resetPassBool) {
+        confirmOperation("Reset Password?", "Are you sure you wish to reset " +
+            userData.name + "'s password?", "resetPass", userData, userModal, userData.uid);
+        resetPassBool = true;
+      } else {
+        userPassword.innerHTML = "Reset " + userData.userName + "'s Password";
+        resetPassBool = false;
+      }
+    };
+
     openModal(userModal, userData.uid);
 
     closeUserModal.onclick = function() {
@@ -1395,19 +1407,6 @@ function initUserElement(liItem, userData) {
     }
 
     if (user.hideExtraData == 0) {
-      userPassword.innerHTML = "View " + userData.name + "'s Password";
-      userPassword.onclick = function() {
-        if (!showPassBool) {
-          confirmOperation("Show Password?", "Are you sure you wish to view " +
-              userData.name + "'s password?", "showPass", userData, userModal, userData.uid);
-          showPassBool = true;
-        } else {
-          userPassword.innerHTML = "View " + userData.userName + "'s Password";
-          showPassBool = false;
-        }
-      };
-      userPassword.style.display = "inline-block";
-
       userUID.innerHTML = "UID: " + userData.uid;
       userUID.style.display = "block";
 
@@ -1481,10 +1480,6 @@ function initUserElement(liItem, userData) {
         userRelationshipList.innerHTML = tempString;
       }
     } else {
-      userPassword.innerHTML = "";
-      userPassword.onclick = function() {};
-      userPassword.style.display = "none";
-
       userUID.innerHTML = "";
       userUID.style.display = "none";
 
@@ -1572,6 +1567,28 @@ function initUserElement(liItem, userData) {
       userSecretSantaBtn.onclick = function () {};
     }
   }
+}
+
+function resetUserPassword(userData) {
+  let tempPasswordReturn = "";
+  let maxPasswordLength = 4;
+  let newEncodeStr;
+
+  for (let i = 0; i <= maxPasswordLength; i++) {
+    tempPasswordReturn += getRandomNumber();
+  }
+
+  newEncodeStr = encode(tempPasswordReturn);
+
+  firebase.database().ref("users/" + userData.uid).update({
+    encodeStr: newEncodeStr
+  });
+
+  updateMaintenanceLog(pageName, user.userName + " (" + user.uid + ") issued a password reset for " +
+      userData.userName + " (" + userData.uid + "). The temporary password is \"" + tempPasswordReturn + "\". This password " +
+      "is only temporary and will be removed from this log after 3 days!");
+
+  return tempPasswordReturn;
 }
 
 function generateRelationshipDataList(userData) {
