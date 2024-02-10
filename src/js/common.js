@@ -571,7 +571,10 @@ function checkNotifications() {
   notificationBtn.className = "notificationIcon noteBasicBuffer";
   if (user.notifications == undefined) {
     notificationBtn.src = "img/bellNotificationOff.png";
-    notificationBtn.onclick = function() {}
+    notificationBtn.onclick = function() {
+      deployNotificationModal(false, "No Notifications!", "You do not have any " +
+          "notifications at this time!");
+    }
   } else {
     if (user.notifications[0].read != undefined) {
       readNotificationsBool = checkReadNotes(false);
@@ -591,7 +594,10 @@ function checkNotifications() {
       }
     } else if (user.notifications.length == 0) {
       notificationBtn.src = "img/bellNotificationOff.png";
-      notificationBtn.onclick = function() {}
+      notificationBtn.onclick = function() {
+        deployNotificationModal(false, "No Notifications!", "You do not have any " +
+            "notifications at this time!");
+      }
     }
   }
 }
