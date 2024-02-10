@@ -290,6 +290,19 @@ function createModerationTicket (ticketData) {
   let liItem = document.createElement("LI");
   liItem.id = "ticket" + ticketData.uid;
 
+  if (ticketData.details.includes(") issued a password reset for ")) {
+    if (((Date.parse(commonToday) - Date.parse(ticketData.time)) / 86400000) > 3) {
+      let tempTicketDetails = ticketData.details;
+      let tempTicketIndex = tempTicketDetails.indexOf(" The temporary password is ");
+      let newTicketDetails = tempTicketDetails.substring(0, tempTicketIndex);
+      newTicketDetails += " The temporary password was removed automatically after 3 days.";
+
+      firebase.database().ref("maintenance/" + ticketData.uid).update({
+        details: newTicketDetails
+      });
+    }
+  }
+
   ticketTitleTextReturned = initModTicketElement(liItem, ticketData);
 
   let textNode = document.createTextNode(ticketTitleTextReturned);

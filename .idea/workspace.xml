@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="77ae722c-e8b2-463c-8bb6-522420418add" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/js/moderationAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/moderationAlg.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/moderationQueueAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/moderationQueueAlg.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -399,7 +399,7 @@
       <workItem from="1689126743232" duration="56641000" />
       <workItem from="1694492578262" duration="523000" />
       <workItem from="1694571154241" duration="123768000" />
-      <workItem from="1706674016454" duration="5539000" />
+      <workItem from="1706674016454" duration="6141000" />
     </task>
     <servers />
   </component>
