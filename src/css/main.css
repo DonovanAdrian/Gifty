@@ -103,9 +103,28 @@ p.faqInf {
   padding-right: 5%;
 }
 
+p.faqHeader {
+  margin: 10px;
+  padding-bottom: 10px;
+  font-family: Verdana;
+  text-decoration: underline;
+  font-weight: bolder;
+  text-align: center;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+p.faqTableHeader {
+  margin: 10px;
+  font-family: Verdana;
+  text-decoration: underline;
+  font-weight: bolder;
+  text-align: center;
+  padding: 5% 5% 10px;
+}
+
 p.faqInfSpec {
   margin: 10px;
-  font-size: 15px;
   padding-bottom: 10px;
   font-family: Verdana;
   text-align: left;
@@ -257,6 +276,12 @@ span.addBtnGeneric {
   z-index: 2;
 }
 
+span.addBtnGeneric:hover {
+  border-radius: 12px;
+  background-color: #ff4c4c;
+  color: #000;
+}
+
 span.addBtn {
   border-radius: 4px;
   font-weight: bold;
@@ -368,18 +393,24 @@ img.genericImageWide {
 }
 
 img.leftCornerImgHidden {
-  position: fixed;
   left: 10px;
   bottom: 10px;
+  position: fixed;
   display: none;
-  transition: 0.3s;
-  z-index: 2;
+}
+
+img.leftCornerImgShown {
+  left: 10px;
+  bottom: 10px;
+  position: fixed;
+}
+
+img.leftCornerImgExample {
+  position: relative;
+  display: inline-block;
 }
 
 img.leftCornerImg {
-  position: fixed;
-  left: 10px;
-  bottom: 10px;
   transition: 0.3s;
   z-index: 2;
 }
@@ -422,6 +453,108 @@ span.btnDisabled {
 span.btnDisabled:hover {
   border-radius: 12px;
   background: #c48686;
+}
+
+span.upperContents {
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+span.lowerContents {
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+span.centeredContentBtn {
+  background: whitesmoke;
+}
+
+span.centeredContentBtn:hover {
+  background-color: #d4d4d4;
+}
+
+span.rightContentBtn {
+  background-color: #d4d4d4;
+  color: #000;
+}
+
+span.rightContentBtn:hover {
+  background: #eeeeee;
+  color: #424242;
+}
+
+span.centeredBtn {
+  padding-right: 1%;
+  padding-left: 1%;
+  text-align: left;
+  display: table;
+  margin: 0 auto;
+  font-weight: bold;
+  font-family: Verdana;
+  transition: 0.3s;
+}
+
+span.rightBtn {
+  border-radius: 10px;
+  display: table;
+  margin-left: auto;
+  margin-top: 10%;
+  right: 5%;
+  font-weight: bold;
+  font-family: Verdana;
+  transition: 0.3s;
+  position: relative;
+}
+
+.exampleCreate {
+  font-family: Verdana;
+  font-weight: bold;
+}
+
+.loginContainer {
+  position: relative;
+  text-align: center;
+  z-index: 1;
+  animation: fadeInAnimation ease 3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+input.upperLogin {
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+input.standardLogin {
+  font-weight: bold;
+  font-family: Verdana;
+  margin: auto;
+  border: none;
+  border-radius: 0;
+  width: 430px;
+  padding: 10px;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+span.lowerLogin {
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+span.centeredLoginBtn {
+  display: table;
+  margin: 0 auto;
+  font-weight: bold;
+  font-family: Verdana;
+  transition: 0.3s;
+  background-color: #d4d4d4;
+  color: #000;
+}
+
+span.centeredLoginBtn:hover {
+  background: #eeeeee;
+  color: #424242;
 }
 
 img.imgIcon {
@@ -484,6 +617,63 @@ div.topnav ul li a.signOut:hover:not(.active) {
 
 div.topnav ul li.right,
 div.topnav ul li{
+  float: left;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+div.exampleNav {
+  background-color: #870b0b;
+}
+
+div.exampleNav ul{
+  font-family: Verdana;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+div.exampleNav ul li a {
+  border-radius: 4px;
+  font-weight: bold;
+  display: block;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  transition: 0.6s;
+}
+
+div.exampleNav ul li a:hover:not(.active) {
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.4);
+  color: black;
+}
+
+div.exampleNav ul li a.active {
+  border-radius: 8px;
+  background-color: rgba(200, 200, 200, 0.5);
+  color: white;
+}
+
+div.exampleNav ul li a:hover.active {
+  border-radius: 12px;
+  background-color: rgba(225, 225, 225, 0.6);
+  color: black;
+}
+
+div.exampleNav ul li a.signOut {
+  border-radius: 4px;
+  background-color: rgba(255, 57, 35, 0.8);
+}
+
+div.exampleNav ul li a.signOut:hover:not(.active) {
+  border-radius: 12px;
+  background-color: #ff3923;
+}
+
+div.exampleNav ul li.right,
+div.exampleNav ul li{
   float: left;
   padding-top: 0px;
   padding-bottom: 0px;
@@ -681,6 +871,33 @@ ul li.santa::before {
   color: white;
 }
 
+span.modal-footer-example {
+  font-weight: bold;
+  position: relative;
+  font-family: Verdana;
+  text-align: right;
+  background: #5cb85c;
+  color: #FFF;
+  transition: 0.3s;
+  z-index: 2;
+}
+
+span.modal-footer-example:hover {
+  color: black;
+}
+
+span.modal-footer-example-left {
+  border-bottom-left-radius: 12px;
+}
+
+span.modal-footer-example-right {
+  border-bottom-right-radius: 12px;
+}
+
+span.modal-footer-example-override:hover {
+  color:red;
+}
+
 .modal-footer-left {
   float: left;
   padding-right: 10px;
@@ -744,6 +961,30 @@ ul li.santa::before {
 }
 
 @media screen and (min-width: 0px) and (max-width: 425px) {
+  input.standardLogin {
+    font-size: 12px;
+    width: 180px;
+  }
+
+  span.centeredLoginBtn {
+    width: 200px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 12px;
+  }
+
+  span.centeredBtn {
+    width: 200px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 12px;
+  }
+
+  span.rightBtn {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
   span.boughtBtn {
     left: 5px;
     bottom: 5px;
@@ -759,6 +1000,13 @@ ul li.santa::before {
   }
 
   span.addBtnGeneric {
+    left: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.modal-footer-example {
     left: 5px;
     bottom: 5px;
     padding: 5px;
@@ -836,6 +1084,22 @@ ul li.santa::before {
 
   p {
     font-size: 14px;
+  }
+
+  p.faqHeader {
+    font-size: 23px;
+  }
+
+  p.faqTableHeader {
+    font-size: 18px;
+  }
+
+  p.faqInf {
+    font-size: 14px;
+  }
+
+  p.faqInfSpec {
+    font-size: 13px;
   }
 
   p.giftInfSmall {
@@ -885,14 +1149,14 @@ ul li.santa::before {
     height: 20px;
   }
 
-  img.leftCornerImgHidden {
+  img.leftCornerImg {
     width: 30px;
     height: 30px;
   }
 
-  img.leftCornerImg {
-    width: 30px;
-    height: 30px;
+  img.leftCornerImgExample {
+    top:5px;
+    left:5px;
   }
 
   div.topnav ul li.right,
@@ -903,6 +1167,17 @@ ul li.santa::before {
 
   div.topnav ul li a {
     font-size: 13px;
+    padding: 5px;
+  }
+
+  div.exampleNav ul li.right,
+  div.exampleNav ul li {
+    float: none;
+    padding: 0;
+  }
+
+  div.exampleNav ul li a {
+    font-size: 10px;
     padding: 5px;
   }
 
@@ -940,6 +1215,30 @@ ul li.santa::before {
 }
 
 @media screen and (min-width: 425px) and (max-width: 650px) {
+  input.standardLogin {
+    font-size: 12px;
+    width: 355px;
+  }
+
+  span.centeredLoginBtn {
+    width: 375px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 12px;
+  }
+
+  span.centeredBtn {
+    width: 375px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 12px;
+  }
+
+  span.rightBtn {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
   span.boughtBtn {
     left: 5px;
     bottom: 5px;
@@ -955,6 +1254,13 @@ ul li.santa::before {
   }
 
   span.addBtnGeneric {
+    left: 5px;
+    bottom: 5px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  span.modal-footer-example {
     left: 5px;
     bottom: 5px;
     padding: 5px;
@@ -1032,6 +1338,22 @@ ul li.santa::before {
     font-size: 14px;
   }
 
+  p.faqHeader {
+    font-size: 23px;
+  }
+
+  p.faqTableHeader {
+    font-size: 18px;
+  }
+
+  p.faqInf {
+    font-size: 14px;
+  }
+
+  p.faqInfSpec {
+    font-size: 13px;
+  }
+
   p.giftInfSmall {
     font-size: 10px;
   }
@@ -1071,14 +1393,14 @@ ul li.santa::before {
     height: 20px;
   }
 
-  img.leftCornerImgHidden {
+  img.leftCornerImg {
     width: 30px;
     height: 30px;
   }
 
-  img.leftCornerImg {
-    width: 30px;
-    height: 30px;
+  img.leftCornerImgExample {
+    top:5px;
+    left:5px;
   }
 
   div.topnav ul li.right,
@@ -1089,6 +1411,17 @@ ul li.santa::before {
 
   div.topnav ul li a {
     font-size: 13px;
+    padding: 5px;
+  }
+
+  div.exampleNav ul li.right,
+  div.exampleNav ul li {
+    float: none;
+    padding: 0;
+  }
+
+  div.exampleNav ul li a {
+    font-size: 10px;
     padding: 5px;
   }
 
@@ -1126,6 +1459,30 @@ ul li.santa::before {
 }
 
 @media screen and (min-width: 650px) and (max-width: 1000px) {
+  input.standardLogin {
+    font-size: 14px;
+    width: 550px;
+  }
+
+  span.centeredLoginBtn {
+    width: 570px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    font-size: 14px;
+  }
+
+  span.centeredBtn {
+    width: 570px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    font-size: 14px;
+  }
+
+  span.rightBtn {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
   span.basicBtn {
     padding: 7px;
     font-size: 15px;
@@ -1180,6 +1537,13 @@ ul li.santa::before {
   }
 
   span.addBtnGeneric {
+    left: 7px;
+    bottom: 7px;
+    padding: 7px;
+    font-size: 15px;
+  }
+
+  span.modal-footer-example {
     left: 7px;
     bottom: 7px;
     padding: 7px;
@@ -1238,6 +1602,22 @@ ul li.santa::before {
     font-size: 15px;
   }
 
+  p.faqHeader {
+    font-size: 24px;
+  }
+
+  p.faqTableHeader {
+    font-size: 19px;
+  }
+
+  p.faqInf {
+    font-size: 15px;
+  }
+
+  p.faqInfSpec {
+    font-size: 14px;
+  }
+
   p.giftInfSmall {
     font-size: 11px;
   }
@@ -1257,14 +1637,14 @@ ul li.santa::before {
     height: 30px;
   }
 
-  img.leftCornerImgHidden {
+  img.leftCornerImg {
     width: 40px;
     height: 40px;
   }
 
-  img.leftCornerImg {
-    width: 40px;
-    height: 40px;
+  img.leftCornerImgExample {
+    top:5px;
+    left:5px;
   }
 
   .break{
@@ -1305,6 +1685,18 @@ ul li.santa::before {
     padding: 14px 16px;
   }
 
+  div.exampleNav ul li.right,
+  div.exampleNav ul li {
+    font-size: 7px;
+    padding: 0px;
+  }
+
+  div.exampleNav ul li a {
+    width: 65px;
+    font-size: 11px;
+    padding: 12px 14px;
+  }
+
   ul li.gift {
     padding: 10px 6px 10px 30px;
     font-size: 15px;
@@ -1317,6 +1709,30 @@ ul li.santa::before {
 }
 
 @media screen and (min-width: 1000px) and (max-width: 1500px) {
+  input.standardLogin {
+    font-size: 16px;
+    width: 900px;
+  }
+
+  span.centeredLoginBtn {
+    width: 920px;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    font-size: 16px;
+  }
+
+  span.centeredBtn {
+    width: 920px;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    font-size: 16px;
+  }
+
+  span.rightBtn {
+    padding: 9px 14px;
+    font-size: 15px;
+  }
+
   span.basicBtn {
     padding: 9px;
     font-size: 17px;
@@ -1377,6 +1793,13 @@ ul li.santa::before {
     font-size: 17px;
   }
 
+  span.modal-footer-example {
+    left: 10px;
+    bottom: 10px;
+    padding: 9px;
+    font-size: 17px;
+  }
+
   span.addBtn {
     right: 9px;
     bottom: 9px;
@@ -1424,6 +1847,22 @@ ul li.santa::before {
     font-size: 17px;
   }
 
+  p.faqHeader {
+    font-size: 26px;
+  }
+
+  p.faqTableHeader {
+    font-size: 21px;
+  }
+
+  p.faqInf {
+    font-size: 17px;
+  }
+
+  p.faqInfSpec {
+    font-size: 16px;
+  }
+
   p.giftInfSmall {
     font-size: 12px;
   }
@@ -1443,14 +1882,14 @@ ul li.santa::before {
     height: 36px;
   }
 
-  img.leftCornerImgHidden {
+  img.leftCornerImg {
     width: 50px;
     height: 50px;
   }
 
-  img.leftCornerImg {
-    width: 50px;
-    height: 50px;
+  img.leftCornerImgExample {
+    top:5px;
+    left:5px;
   }
 
   .close {
@@ -1487,6 +1926,18 @@ ul li.santa::before {
     padding: 15.5px 16px;
   }
 
+  div.exampleNav ul li.right,
+  div.exampleNav ul li {
+    font-size: 9px;
+    padding: 0px;
+  }
+
+  div.exampleNav ul li a {
+    width: 65px;
+    font-size: 12px;
+    padding: 17.5px 11px;
+  }
+
   ul li.gift {
     padding: 12px 8px 12px 40px;
     font-size: 17px;
@@ -1499,6 +1950,30 @@ ul li.santa::before {
 }
 
 @media screen and (min-width: 1500px) and (max-width: 2000px) {
+  input.standardLogin {
+    font-size: 18px;
+    width: 1400px;
+  }
+
+  span.centeredLoginBtn {
+    width: 1420px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 18px;
+  }
+
+  span.centeredBtn {
+    width: 1420px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 18px;
+  }
+
+  span.rightBtn {
+    padding: 10px 16px;
+    font-size: 17px;
+  }
+
   span.basicBtn {
     padding: 11px;
     font-size: 21px;
@@ -1553,6 +2028,13 @@ ul li.santa::before {
   }
 
   span.addBtnGeneric {
+    left: 11px;
+    bottom: 11px;
+    padding: 11px;
+    font-size: 21px;
+  }
+
+  span.modal-footer-example {
     left: 11px;
     bottom: 11px;
     padding: 11px;
@@ -1606,6 +2088,22 @@ ul li.santa::before {
     font-size: 21px;
   }
 
+  p.faqHeader {
+    font-size: 30px;
+  }
+
+  p.faqTableHeader {
+    font-size: 25px;
+  }
+
+  p.faqInf {
+    font-size: 21px;
+  }
+
+  p.faqInfSpec {
+    font-size: 18px;
+  }
+
   p.giftInfSmall {
     font-size: 15px;
   }
@@ -1633,14 +2131,14 @@ ul li.santa::before {
     height: 47px;
   }
 
-  img.leftCornerImgHidden {
+  img.leftCornerImg {
     width: 65px;
     height: 65px;
   }
 
-  img.leftCornerImg {
-    width: 65px;
-    height: 65px;
+  img.leftCornerImgExample {
+    top:7px;
+    left:7px;
   }
 
   .close {
@@ -1677,6 +2175,18 @@ ul li.santa::before {
     padding: 15.5px 16px;
   }
 
+  div.exampleNav ul li.right,
+  div.exampleNav ul li {
+    font-size: 15px;
+    padding: 0px;
+  }
+
+  div.exampleNav ul li a {
+    width: 125px;
+    font-size: 17px;
+    padding: 17px 16px;
+  }
+
   ul li.gift {
     padding: 12px 8px 12px 40px;
     font-size: 22px;
@@ -1689,6 +2199,30 @@ ul li.santa::before {
 }
 
 @media screen and (min-width: 2000px) and (max-width: 2700px) {
+  input.standardLogin {
+    font-size: 20px;
+    width: 1900px;
+  }
+
+  span.centeredLoginBtn {
+    width: 1920px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 20px;
+  }
+
+  span.centeredBtn {
+    width: 1920px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 20px;
+  }
+
+  span.rightBtn {
+    padding: 10px 16px;
+    font-size: 18px;
+  }
+
   span.basicBtn {
     padding: 13px;
     font-size: 23px;
@@ -1743,6 +2277,13 @@ ul li.santa::before {
   }
 
   span.addBtnGeneric {
+    left: 13px;
+    bottom: 13px;
+    padding: 13px;
+    font-size: 23px;
+  }
+
+  span.modal-footer-example {
     left: 13px;
     bottom: 13px;
     padding: 13px;
@@ -1796,6 +2337,22 @@ ul li.santa::before {
     font-size: 23px;
   }
 
+  p.faqHeader {
+    font-size: 33px;
+  }
+
+  p.faqTableHeader {
+    font-size: 28px;
+  }
+
+  p.faqInf {
+    font-size: 23px;
+  }
+
+  p.faqInfSpec {
+    font-size: 19px;
+  }
+
   p.giftInfSmall {
     font-size: 17px;
   }
@@ -1823,14 +2380,14 @@ ul li.santa::before {
     height: 55px;
   }
 
-  img.leftCornerImgHidden {
+  img.leftCornerImg {
     width: 75px;
     height: 75px;
   }
 
-  img.leftCornerImg {
-    width: 75px;
-    height: 75px;
+  img.leftCornerImgExample {
+    top:9px;
+    left:9px;
   }
 
   .close {
@@ -1867,6 +2424,18 @@ ul li.santa::before {
     padding: 17px 17px;
   }
 
+  div.exampleNav ul li.right,
+  div.exampleNav ul li {
+    font-size: 17px;
+    padding: 0px;
+  }
+
+  div.exampleNav ul li a {
+    width: 145px;
+    font-size: 19px;
+    padding: 19px 17px;
+  }
+
   ul li.gift {
     padding: 12px 8px 12px 40px;
     font-size: 24px;
@@ -1879,6 +2448,30 @@ ul li.santa::before {
 }
 
 @media screen and (min-width: 2700px) {
+  input.standardLogin {
+    font-size: 23px;
+    width: 2600px;
+  }
+
+  span.centeredLoginBtn {
+    width: 2620px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 23px;
+  }
+
+  span.centeredBtn {
+    width: 2620px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 23px;
+  }
+
+  span.rightBtn {
+    padding: 10px 16px;
+    font-size: 19px;
+  }
+
   span.basicBtn {
     padding: 13px;
     font-size: 26px;
@@ -1939,6 +2532,13 @@ ul li.santa::before {
     font-size: 26px;
   }
 
+  span.modal-footer-example {
+    left: 13px;
+    bottom: 13px;
+    padding: 13px;
+    font-size: 26px;
+  }
+
   span.addBtn {
     right: 13px;
     bottom: 13px;
@@ -1986,6 +2586,22 @@ ul li.santa::before {
     font-size: 26px;
   }
 
+  p.faqHeader {
+    font-size: 35px;
+  }
+
+  p.faqTableHeader {
+    font-size: 30px;
+  }
+
+  p.faqInf {
+    font-size: 26px;
+  }
+
+  p.faqInfSpec {
+    font-size: 20px;
+  }
+
   p.giftInfSmall {
     font-size: 19px;
   }
@@ -2013,14 +2629,14 @@ ul li.santa::before {
     height: 58px;
   }
 
-  img.leftCornerImgHidden {
+  img.leftCornerImg {
     width: 80px;
     height: 80px;
   }
 
-  img.leftCornerImg {
-    width: 80px;
-    height: 80px;
+  img.leftCornerImgExample {
+    top:11px;
+    left:11px;
   }
 
   .close {
@@ -2055,6 +2671,18 @@ ul li.santa::before {
     width: 170px;
     font-size: 25px;
     padding: 15.5px 16px;
+  }
+
+  div.exampleNav ul li.right,
+  div.exampleNav ul li {
+    font-size: 20px;
+    padding: 0px;
+  }
+
+  div.exampleNav ul li a {
+    width: 170px;
+    font-size: 22px;
+    padding: 17px 16px;
   }
 
   ul li.gift {
