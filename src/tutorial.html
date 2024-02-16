@@ -1,0 +1,795 @@
+<!--
+ * This project was created by Donovan Adrian and any
+ * edits or changes must be confirmed as valid by Donovan
+ * with written consent under any circumstance.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="img/giftySmol.png">
+  <link href="css/main.css?v=2023-12-26" rel="stylesheet" type="text/css"/>
+  <title>Tutorial</title>
+
+  <script src="js/tutorialAlg.js?v=2023-12-26" type="text/javascript"></script>
+  <script src="js/common.js?v=2023-12-26" type="text/javascript"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
+</head>
+<body>
+
+<div class="topnav">
+  <ul>
+    <li><div class="cropIcon"><img class="imgIcon" src="img/giftyIcon.png"></div></li>
+    <div class="break"></div>
+    <li><a onclick="navigation(2)">Home</a></li>
+    <li><a onclick="navigation(3)">Gift Lists</a></li>
+    <li><a onclick="navigation(4)" id="inviteNote">Friends</a></li>
+    <li><a class="active" onclick="navigation(5)" id="settingsNote">Settings</a></li>
+    <li><a class="signOut" onclick="signOut()">Sign Out</a></li>
+  </ul>
+</div>
+
+<svg id="fader"></svg>
+
+<div class="faqContainer">
+  <br>
+  <p class="faqHeader">Tutorial</p>
+  <br>
+  <p class="faqInf" style="font-weight: bolder">Welcome to Gifty!</p>
+  <p class="faqInfSpec" style="font-style: italic">
+    You have successfully navigated to the Tutorial page. Need some <b>in-depth</b> help? You are in the right place.
+    This tutorial page is meant to give an in-depth view of how to use Gifty. Still have questions? Check out the
+    FAQ page on the<b>"Settings"</b> tab at the top of the page. The FAQ will give a quick reference on how to use
+    Gifty. If your questions aren't answered here, send the creator of Gifty an email using the button at the very
+    bottom of the page!
+  </p>
+  <br>
+  <p class="faqTableHeader" id="tableOfContents">Table Of Contents</p>
+  <span onclick="window.open('#creatingAnAccount', '_self')" class="upperContents centeredBtn centeredContentBtn">Creating An Account</span>
+  <span onclick="window.open('#loggingIn', '_self')" class="centeredBtn centeredContentBtn">Logging In</span>
+  <span onclick="window.open('#theNavigationHeader', '_self')" class="centeredBtn centeredContentBtn">The Navigation Header</span>
+  <span onclick="window.open('#theHomePage', '_self')" class="centeredBtn centeredContentBtn">The Home Page</span>
+  <span onclick="window.open('#addEditDeleteGifts', '_self')" class="centeredBtn centeredContentBtn">&ensp;&ensp;&ensp;&ensp;Adding/Editing/Deleting Gifts</span>
+  <span onclick="window.open('#viewingBoughtGifts', '_self')" class="centeredBtn centeredContentBtn">&ensp;&ensp;&ensp;&ensp;Viewing Bought Gifts</span>
+  <span onclick="window.open('#theListsPage', '_self')" class="centeredBtn centeredContentBtn">The Lists Page</span>
+  <span onclick="window.open('#thePublicListPage', '_self')" class="centeredBtn centeredContentBtn">&ensp;&ensp;&ensp;&ensp;The Public List Page</span>
+  <span onclick="window.open('#thePrivateListPage', '_self')" class="centeredBtn centeredContentBtn">&ensp;&ensp;&ensp;&ensp;The Private List Page</span>
+  <span onclick="window.open('#addEditDeleteGifts', '_self')" class="centeredBtn centeredContentBtn">&ensp;&ensp;&ensp;&ensp;Adding/Editing/Deleting Gifts</span>
+  <span onclick="window.open('#theFriendsPage', '_self')" class="centeredBtn centeredContentBtn">The Friends Page</span>
+  <span onclick="window.open('#interactingWithFriends', '_self')" class="centeredBtn centeredContentBtn">&ensp;&ensp;&ensp;&ensp;Interacting With Friends</span>
+  <span onclick="window.open('#theSettingsPage', '_self')" class="centeredBtn centeredContentBtn">The Settings Page</span>
+  <span onclick="window.open('#updatingYourProfile', '_self')" class="centeredBtn centeredContentBtn">&ensp;&ensp;&ensp;&ensp;Updating Your Profile / Deleting Your Account</span>
+  <span onclick="window.open('#theNotificationsPage', '_self')" class="centeredBtn centeredContentBtn">The Notifications Page</span>
+  <span onclick="window.open('#moreHelp', '_self')" class="lowerContents centeredBtn centeredContentBtn">Need More Help?</span>
+
+  <div id="moderationTableOfContentsDiv">
+    <p class="faqTableHeader" id="moderationTableOfContents">Moderation Table Of Contents</p>
+    <span onclick="window.open('#moderatingGifty', '_self')" class="upperContents centeredBtn centeredContentBtn">Moderating Gifty</span>
+    <span onclick="window.open('#theModerationPage', '_self')" class="centeredBtn centeredContentBtn">The Moderation Page</span>
+    <span onclick="window.open('#theAuditLogPage', '_self')" class="centeredBtn centeredContentBtn">The Audit Log Page</span>
+    <span onclick="window.open('#theFamilyPage', '_self')" class="centeredBtn centeredContentBtn">The Family Page</span>
+    <span onclick="window.open('#interactingWithFamilies', '_self')" class="centeredBtn centeredContentBtn">&ensp;&ensp;&ensp;&ensp;Interacting With Families</span>
+    <span onclick="window.open('#familySettings', '_self')" class="centeredBtn centeredContentBtn">&ensp;&ensp;&ensp;&ensp;Family Settings</span>
+    <span onclick="window.open('#secretSantaOperation', '_self')" class="lowerContents centeredBtn centeredContentBtn">&ensp;&ensp;&ensp;&ensp;Secret Santa Operation</span>
+  </div>
+
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="creatingAnAccount">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">Creating An Account</p>
+  <p class="faqInfSpec">
+    While on the login page, also known as "index", click/tap on the "Don't have an account? Click here!" message. The
+    resulting page will ask you for required user profile information.
+    <br><br><u><b><i>User Profile Fields:</i></b></u>
+    <br><br><u><i>Full Name:</i></u> This field will be where you enter your full name (First and Last),
+    so that way your friends and family can easily identify who you are.
+    <br><br><u><i>User Name:</i></u> This field will be what you share with your friends and family to invite them to
+    see what you have on your gift list. It can be as plain, creative, or silly as you'd like. Make sure that it is
+    something unique, because if it's taken, then you'll have to pick something else!
+    <br><br><u><i>Pin:</i></u> This is your desired pin/number combination to log into Gifty. Keep this a secret and use a pin
+    you have never used before. No computer system is 100% secure, so your due diligence as a user will be critical in
+    protecting your pins.
+    <br><br><u><i>Confirm Pin:</i></u> This is where you will confirm your pin to verify that you entered your pin
+    correctly!
+    <br><br>
+    Once you have completed providing your desired user profile information, click/tap "Create User Profile" to create
+    your account. Done! You will be redirected back to the login page to use your new account!
+  </p>
+  <div class="loginContainer">
+    <p alt="Sign Up And Create A Gifty Account" class="exampleCreate">Don't have an account? Click here!</p>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Account Create Link)</p>
+  </div>
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="loggingIn">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">Logging In</p>
+  <p class="faqInfSpec">
+    While on the login page, also known as "index", fill in your user name and pin in the respective fields. Once you
+    have provided this information, click/tap on "Log In" to be navigated to the Home page. If you don't provide the
+    correct credentials, an error will be displayed and the failed attempt will be reported to moderators.
+  </p>
+  <div class="loginContainer">
+    <input class="upperLogin standardLogin" type="text" placeholder="User Name" alt="Enter Your UserName">
+    <input class="standardLogin" type="password" placeholder="Pin" alt="Enter Your Pin"><br>
+    <span class="lowerLogin centeredLoginBtn" alt="Log In To Gifty">Log In</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Login)</p>
+    <br/><br/>
+  </div>
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="theNavigationHeader">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">The Navigation Header</p>
+  <div class="exampleNav" style="width: 75%; margin: 0 auto">
+    <ul>
+      <li><div class="cropIcon"><img class="imgIcon" src="img/giftyIcon.png"></div></li>
+      <div class="break"></div>
+      <li><a>Home</a></li>
+      <li><a>Gift Lists</a></li>
+      <li><a>Friends</a></li>
+      <li><a class="active" id="settingsNote2">Settings</a></li>
+      <li><a class="signOut">Sign Out</a></li>
+    </ul>
+  </div>
+  <p class="faqInfSpec">
+    After you've logged in, take note of the bar(s) at the top of the web page, this is the Navigation Header. The
+    Navigation Header contains the "primary pages" and is the easiest way to navigate to everything you need in Gifty!
+    The primary pages are the Home Page, the Gift List Page, the Friend List Page, and the Settings Page, which are all
+    accessible from this bar. Each of these pages have all sorts of other utilities and functions, so be sure to explore
+    or keep reading the tutorial to find out more! The lighter colored button indicates which primary page you are on
+    and the text will sometimes alternate to more precisely say which page you are on. Finally, you can sign out of
+    Gifty by simply clicking/tapping the "Sign Out" option on the Navigation header.
+  </p>
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="theHomePage">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">The Home Page</p>
+  <p class="faqInfSpec">
+    The Home page is the first page that you are navigated to after being logged in. If you're new to Gifty, this is
+    where your gift list is stored! Add gifts with the
+    <u><i><a onclick="window.open('#addingGifts', '_self')">"Add Gift"</a></i></u> button on the bottom right of the page.
+  </p>
+  <div class="faqContainer">
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Add Button">Add Gift</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Add Button)</p>
+  </div>
+  <p class="faqInfSpec">
+    After adding a gift or two, they will appear here in a list view. By clicking/tapping on each gift, you can see a summary of the details
+    you provided for each gift, update the gift, or delete the gift from your list. Note that only the details you
+    provide will be shown to your friends!
+  </p>
+  <div class="faqContainer">
+    <ul class="giftList" style="display: inline-block;">
+      <li class="gift" style="text-align: left; width: 160%; right: 30%">Exotic butters gift!</li>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Gift Entry)</p>
+    </ul>
+  </div>
+  <p class="faqInfSpec">
+    Once you've bought some gifts from some of your
+    <u><i><a onclick="window.open('#theListsPage', '_self')">friend's gift lists</a></i></u>, you can view them
+    with the <u><i><a onclick="window.open('#viewingBoughtGifts', '_self')">"Bought Gifts"</a></i></u> button on the bottom left of the page.
+  </p>
+  <div class="faqContainer">
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Bought Button">Bought Gifts</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Bought Gifts Button)</p>
+  </div>
+  <p class="faqInfSpec">
+    You can also find
+    <u><i><a onclick="window.open('#theNotificationsPage', '_self')">notifications</a></i></u> with the bell button on
+    the bottom middle of the page. This bell will turn red if you have new notifications! If you have no notifications,
+    you won't be able to navigate to the notifications page.
+  </p>
+  <div class="faqContainer">
+    <img class="genericImageWide" src="img/arrowRight.png">&ensp;&ensp;
+    <img class="notificationIcon" src="img/bellNotificationOff.png">&ensp;&ensp;
+    <img class="notificationIcon" id="notificationButton" src="img/bellNotificationOn.png">
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Notification Buttons)</p>
+  </div>
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="addEditDeleteGifts">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">The Home Page / The Lists Page -> Adding/Editing/Deleting Gifts</p>
+
+  <p class="faqInfSpec">
+    <br><br><u><b><i>Adding Gifts:</i></b></u>
+    After clicking/tapping the "Add Gift" button on the bottom <b>right</b> of <u><i>
+    <a onclick="window.open('#theHomePage', '_self')">the Home page</a></i></u> or the "Add Private Gift" on the bottom
+    <b>right</b> of <u><i><a onclick="window.open('#thePrivateListPage', '_self')">the Private List Page!</a></i></u>, the
+    resulting page will ask you for your gift's details. Note that only the details you provide will be shown to your
+    friends! Of course, if you are adding a private gift, then your friend's friends will be the only ones that see this
+    gift!
+    <br>
+  </p>
+  <div class="faqContainer">
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Add Button">Add Gift</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Add Button)</p>
+  </div>
+  <p class="faqInfSpec">
+    <br><br><u><b><i>Gift Fields:</i></b></u>
+    <br><br><u><i>Gift Title:</i></u> The gift's title is the only required field! All the other fields are only
+    necessary if you'd like to give your friends a better idea of what you're looking for!
+    <br><br><u><i>Gift URL:</i></u> This field is for a website URL to spur ideas or to be precise about what you
+    would like. For example, a link from Amazon, Best Buy, or some other website!
+    <br><br><u><i>Where To Find The Gift:</i></u> This field is for telling your friends where they would be able to
+    find your gift. For example, a local shop or boutique!
+    <br><br><u><i>Gift Description:</i></u> This field is for any other details that you would like to add along with
+    your gift that were too much for the other fields. Type away!
+    <br><br><u><i>Multiple Purchases Allowed:</i></u> This checkbox is meant to tell your friends whether or not you
+    are fine with this gift being purchased multiple times. If this box is checked, then a blue checkmark will indicate
+    a purchased gift as opposed to the regular red checkmark.
+    <br><br>Once you are done adding your desired details to your gift, click/tap "Add New Gift". You will then be
+    navigated back to the Home Page, where you will see your new gift at the top of the list!
+  </p>
+  </p>
+  <div class="faqContainer">
+    <ul class="giftList" style="display: inline-block;">
+      <li class="gift" style="text-align: left; width: 160%; right: 30%">Exotic butters gift!</li>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Gift Entry)</p>
+    </ul>
+  </div>
+  <p class="faqInfSpec">
+    <br><br><u><b><i>Editing Gifts:</i></b></u>
+    After you have successfully created a gift, you can click/tap on it to see a popup window with a summary of the
+    details you provided for your gift, <b>edit</b> the gift, or delete the gift from your list. In this particular case,
+    click/tap "Edit" on the bottom <b>left</b> of the popup window to edit the details of your gift. The resulting page will have
+    your details filled out in the fields, just as you left them! Feel free to make any updates as you please. Once
+    you're done adjusting any details for your gift, click/tap "Update Gift". You will then be navigated back to the
+    Home Page.
+  </p>
+  <div class="faqContainer">
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="modal-footer-example modal-footer-example-left" alt="Example Bought Button">Edit</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Edit Button In Popup)</p>
+  </div>
+  <p class="faqInfSpec">
+    <br><br><u><b><i>Deleting Gifts:</i></b></u>
+    After you have successfully created a gift, you can click/tap on it to see a popup window with a summary of the
+    details you provided for your gift, edit the gift, or <b>delete</b> the gift from your list. In this particular case,
+    click/tap "Delete" on the bottom <b>right</b> of the popup window to delete your gift from your list. A popup dialog
+    will appear where you can confirm that you would like to delete your gift. Upon confirming your selection, the gift
+    will be deleted from your list!
+  </p>
+  <div class="faqContainer">
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="modal-footer-example modal-footer-example-right modal-footer-example-override" alt="Example Bought Button">Delete</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Delete Button In Popup)</p>
+  </div>
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="viewingBoughtGifts">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">The Home Page -> Viewing Bought Gifts</p>
+  <p class="faqInfSpec">
+    After clicking/tapping the "Bought Gifts" button on the bottom <b>left</b> of <u><i>
+    <a onclick="window.open('#theHomePage', '_self')">the Home page</a></i></u>, the resulting page will show you any
+    gifts that you have bought from your <u><i><a onclick="window.open('#theListsPage', '_self')">
+    friend's gift lists</a></i></u>. The gift's colors in the list will alternate to help differentiate between each
+    friend that you have bought for. Each gift in the list will also specify which friend you have bought it for in
+    addition to other potential details. By clicking on each gift, you can see a quick summary of that gift without
+    having to back to each friend's gift list. If you do need to go to a certain user's gift list though, open the
+    desired gift and click/tap "View *user's* List" on the bottom right of the popup window.
+  </p>
+  <div class="faqContainer">
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Bought Button">Bought Gifts</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Bought Gifts Button)</p>
+  </div>
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="theListsPage">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">The Lists Page</p>
+  <p class="faqInfSpec">
+    The Lists page is where you'll find your friend's gift lists after other users or you have accepted
+    <u><i><a onclick="window.open('#theFriendsPage', '_self')">some friend requests!</a></i></u> Each of your friends
+    will appear in rows on this page, which can each be clicked/tapped to show how many gifts they have in each of their
+    lists. If they don't have any gifts yet, not to worry. You can always help them out by adding some gifts to their
+    <u><i><a onclick="window.open('#thePrivateListPage', '_self')">private list.</a></i></u> If they have added any gifts
+    from their own home page, click/tap on their <u><i><a onclick="window.open('#thePublicListPage', '_self')">public
+    gift(s)</a></i></u> button to see what they'd like!
+  <div class="faqContainer">
+    <ul class="giftList" style="display: inline-block;">
+      <li class="gift" style="text-align: left; width: 160%; right: 30%">View Jeremy's Gift Lists</li>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example List Entry)</p>
+    </ul>
+    <br>
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Gift List Button">There are 15 Un-Bought Public Gifts!</span>
+    <br>
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Gift List Button">There are 12 Un-Bought Private Gifts!</span>
+    <br>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Gift List Buttons In Popup)</p>
+  </div>
+  </p>
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="thePublicListPage">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">The Lists Page -> The Public List Page</p>
+  <p class="faqInfSpec">
+    The Public Gift List is fairly self explanatory! It's the public list of gifts that your friend would like. The
+    gifts that appear in this list are what your friend added on <i>their</i> home page. Not to worry, though! They
+    can't see whether or not any of these gifts are bought. Please note that you can also quickly swap between the
+    Public List and the Private list by clicking on the button on the <b>bottom left</b> of the page!
+    <br><br>
+    Once you've bought a gift, you may notice that it is crossed off in either <b>red</b> or <b>blue</b>! A <b>red</b>
+    gift means that it's been bought and that your friend only wanted <b>one</b> of that specific gift. A <b>blue</b>
+    gift, however, means that it's been bought and that your friend is okay with receiving <b>multiples</b> of that
+    specific gift. For example, if they want a bunch of pairs of socks or lots of gift cards, they could ask for
+    multiples!
+    <br><br>
+    But what if someone else buys a gift at the exact same time you do? Not to worry! As long as you have a <b>strong
+    internet connection</b>, the gift list updates in <b>real time</b>! You can rest easy knowing that your bought gifts
+    are communicated to your friend's friends as well, as long as they are keeping a close watch on the gift list, too.
+    <br><br>
+    If your friend happens to update or remove their gift from
+    their public gift list <i>after you've bought it</i>, not to worry! You will be sent a
+    <u><i><a onclick="window.open('#theNotificationsPage', '_self')">notification</a></i></u> to ensure that you're
+    up to date on whether or not you need to return the gift you already bought.
+    <br>
+  <div class="faqContainer">
+    <ul class="giftList" style="display: inline-block;">
+      <li class="gift checked" style="text-align: left; width: 160%; right: 30%">This is an example bought gift!</li>
+      <li class="gift multiCheck" style="text-align: left; width: 160%; right: 30%">This is a multi-purchase gift!</li>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Bought Gifts)</p>
+    </ul>
+  </div>
+  </p>
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="thePrivateListPage">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">The Lists Page -> The Private List Page</p>
+  <p class="faqInfSpec">
+    You may now know what the <u><i><a onclick="window.open('#thePublicListPage', '_self')">Public List is</a></i></u>,
+    but what is the Private List? The Private List is a private gift list which your friend <b>cannot see</b>. The
+    gifts that appear in this list are what your <i>friend's friends</i> added on the home page, so this is a list
+    where your friend's friends can all collaborate and surprise your common buddy! For example, if someone overhears
+    that your common friend wants something in particular, but they don't add it to their public list, someone can add
+    it to their private list for a sweet surprise! Please note that you can also quickly swap between the Public List
+    and the Private list by clicking on the button on the <b>bottom left</b> of the page!
+    <br><br>
+    From here, you can <u><i><a onclick="window.open('#addEditDeleteGifts', '_self')">add a gift</a></i></u> on the
+    <b>bottom right</b> of the page. Once you've added a gift, your friend's friends can all see the gift appear and any
+    changes that happen to it, too. <i>Please note that only you, the gift creator, can remove the private gifts that
+    you create!</i> However, any of the common friends can update this gift in your stead just in case corrections are
+    needed.
+    <br><br>
+    Once you've bought a gift, you may notice that it is crossed off in either <b>red</b> or <b>blue</b>! A <b>red</b>
+    gift means that it's been bought and that someone indicated that your common friend only wanted <b>one</b> of that
+    specific gift. A <b>blue</b> gift, however, means that it's been bought and that someone indicated that your common
+    friend is okay with receiving <b>multiples</b> of that specific gift.
+    <br><br>
+    But what if someone else buys a gift at the exact same time you do? Not to worry! As long as you have a <b>strong
+    internet connection</b>, the gift list updates in <b>real time</b>! You can rest easy knowing that your bought gifts
+    are communicated to your friend's friends as well, as long as they are keeping a close watch on the gift list, too.
+    <br><br>
+    If someone happens to update the private gift from the gift list <i>after you've bought it</i>, not to worry! You
+    will be sent a <u><i><a onclick="window.open('#theNotificationsPage', '_self')">notification</a></i></u> to ensure
+    that you're up to date on whether or not you need to return the gift you already bought.
+    <br>
+  <div class="faqContainer">
+    <ul class="giftList" style="display: inline-block;">
+      <li class="gift checked" style="text-align: left; width: 160%; right: 30%">This is an example bought gift!</li>
+      <li class="gift multiCheck" style="text-align: left; width: 160%; right: 30%">This is a multi-purchase gift!</li>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Bought Gifts)</p>
+    </ul>
+  </div>
+  </p>
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="theFriendsPage">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">The Friends Page</p>
+  <p class="faqInfSpec">
+    The Friends Page is where you can invite new friends to see your Gifty profile and where any existing friends are
+    stored. When someone else accepts an invite to your friend list or if you accept a friend invite from someone, you
+    will both be able to see each other's gift lists.
+    <br><br>
+    <u><i>Sending Invites</i></u><br>
+    Are your <u><i><a onclick="window.open('#theListsPage', '_self')">Lists Page</a></i></u> or
+    <u><i><a onclick="window.open('#theFriendsPage', '_self')">Friends Page</a></i></u> looking a little scarce or you
+    just need to invite some new friends to add to your friend list? This is the place! Click/Tap on the "Invite User"
+    button on the <b>bottom right</b> of the page to send a friend request. However, be sure to fetch either your friend's
+    <i>User Name</i> or <i>Share Code</i> from them in order to send an invite, otherwise this won't work. Once you've
+    sent the invite, it will be sent to your friend's pending invites.
+    <br><br>
+    <i>If you have any friends that you might have in common with someone,</i> but you haven't sent them an invite, your
+    "Send Invite" button may appear <b>green</b>. If you click on the "Send Invite" button in this case, you will see a
+    suggested friend that you can send an invite to. If you don't want this friend to be suggested to you in the future,
+    however, then you can click/tap on the "X" next to their name to remove them from the suggestions pool.
+  </p>
+  <div class="faqContainer">
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Invite Button">Invite User</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Invite User Button)</p>
+    <br>
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="modal-footer-example modal-footer-example-left" alt="Example Send Invite">Send Invite</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Send Invite In Popup)</p>
+  </div>
+  <p class="faqInfSpec">
+    <br><br><u><i>Accepting or Rejecting Invites</i></u><br>
+    Wondering if you have a Pending Invite? Check your
+    <u><i><a onclick="window.open('#theNotificationsPage', '_self')">notifications</a></i></u> or the <i>"# Friends"</i> button on
+    <u><i><a onclick="window.open('#theNavigationHeader', '_self')">the Navigation Header</a></i></u>
+    will turn <b>red</b>. If you go to <i>the Friends Page</i>, you will see a pending invite envelope on the
+    <b>bottom left</b> of the page. Click on this envelope to be brought to your pending invites!
+    <br><br>
+    On the resulting page, you will see a list of all your pending invites. Click/tap to see a pop up window with a
+    quick summary of the Gifty user who sent you the friend invite. If you'd like, you can click/tap "Accept Invite" on the
+    bottom left of the pop up to accept their invite. Otherwise, you can also delete the invite by clicking/tapping
+    "Delete Invite" on the bottom right of the pop up.
+  </p>
+  <div class="faqContainer">
+    <img class="genericImageWide" src="img/arrowRight.png"> <img src="img/newInvite.png" class="leftCornerImg leftCornerImgExample" alt="You Have A New Invite! Click Here To View Your Pending Invites">
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Pending Invite Image)</p>
+    <br>
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="modal-footer-example modal-footer-example-left" alt="Example Accept Invite">Accept Invite</span>
+    <br>
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="modal-footer-example modal-footer-example-right modal-footer-example-override" alt="Example Delete Invite">Delete Invite</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Send Invite In Popup)</p>
+  </div>
+  <p class="faqInfSpec">
+    <br><br><u><i>Viewing Friends</i></u><br>
+    Now that you've accepted some friend requests, you can view them in two ways. The first way is by going to
+    <u><i><a onclick="window.open('#theListsPage', '_self')">"the Lists Page"</a></i></u> and seeing their gift lists.
+    The second way is by going to "the Friends Page" and <u><i><a onclick="window.open('#interactingWithFriends', '_self')">
+    and interacting with them</a></i></u> from there.
+  </p>
+  <div class="faqContainer">
+    <ul class="giftList" style="display: inline-block;">
+      <li class="gift" style="text-align: left; width: 160%; right: 30%">Jeremy Springer</li>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Friend)</p>
+    </ul>
+  </div>
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="interactingWithFriends">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">The Friends Page -> Interacting With Friends</p>
+  <p class="faqInfSpec">
+    Please note that the primary way to interact with your friends is by viewing and buying gifts from their gift lists! This can be
+    done on the Gift List page, which you can find more information about here:
+    <b><u><i><a onclick="window.open('#theListsPage', '_self')">The Lists Page</a></i></u></b>
+    <br><br><u><i>Private Messages</i></u><br>
+    Just in case if you'd like to send a friend a private message, click/tap on their name in the list on The Friends
+    Page and click/tap on "Send Message" on the <b>bottom left</b> of the popup window. Another popup window will
+    appear where you can type your message! Once you've finished typing your message, simply click/tap "Send" on
+    the <b>bottom left</b> of the popup window. Done!
+    <br><br>
+    Messages that you've received, whether from a moderator or from a regular user, will appear on your
+    <u><i><a onclick="window.open('#theNotificationsPage', '_self')">notifications</a></i></u> page.
+  </p>
+  <div class="faqContainer">
+    <ul class="giftList" style="display: inline-block;">
+      <li class="gift" style="text-align: left; width: 160%; right: 30%">Jeremy Springer</li>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Friend)</p>
+    </ul>
+    <br>
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="modal-footer-example modal-footer-example-left" alt="Example Bought Button">Send Message</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Send Message In Popup)</p>
+  </div>
+  <p class="faqInfSpec">
+    <br><br><u><i>Removing Friends</i></u><br>
+    In the unfortunate and unlikely event that you will need to remove someone from your friends list, click/tap on
+    their name in the list on The Friends Page and click/tap on "Unfriend" on the <b>bottom right</b> of the popup
+    window. Another popup window will appear where you have one final chance to confirm your decision. To remove this
+    user from your friends list, click/tap "Yes" on the <b>bottom left</b> of the popup window. That user will then be
+    removed from your friends list and any references to each other will be removed.
+  </p>
+  <div class="faqContainer">
+    <ul class="giftList" style="display: inline-block;">
+      <li class="gift" style="text-align: left; width: 160%; right: 30%">Jeremy Springer</li>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Friend)</p>
+    </ul>
+    <br>
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="modal-footer-example modal-footer-example-override modal-footer-example-right" alt="Example Bought Button">Unfriend</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Unfriend In Popup)</p>
+  </div>
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="theSettingsPage">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">The Settings Page</p>
+  <p class="faqInfSpec">
+    The Settings Page is where you can view a quick summary of your user profile details will appear! Your Username,
+    full name, share code, and your user score are all here. If you click on each of these items, a quick summary of
+    their purpose will pop up. If you'd like to update your account information, click/tap
+    <b><u><i><a onclick="window.open('#updatingYourProfile', '_self')">"Edit Account Info"</a></i></u></b> directly
+    below your user profile summary. You could also click/tap on the FAQ or the Tutorial on this page as well!
+    <br><br>
+  </p>
+  <div class="faqContainer">
+    <p class="giftInfLarge" style="font-weight: bold">Your Account Info</p>
+    <hr style="width: 35%; height:2px; border-width:0; color:gray; background-color:gray">
+    <p class="giftInfSmall" style="font-style: italic">Click/Tap on each item below for more information!</p>
+    <br>
+    <p class="giftInf" style="font-style: italic;font-weight: bold">Username:</p>
+    <p class="giftInf">sjones</p>
+    <br>
+    <p class="giftInf" style="font-style: italic;font-weight: bold">Name:</p>
+    <p class="giftInf">Sheila Jones</p>
+    <br>
+    <p class="giftInf" style="font-style: italic;font-weight: bold">Share Code:</p>
+    <p class="giftInf">1234-ABCD-5678-EFGH</p>
+    <br>
+    <p class="giftInf" style="font-style: italic;font-weight: bold">User Score:</p>
+    <p class="giftInf">303</p>
+    <hr style="width: 35%; height:2px; border-width:0; color:gray; background-color:gray">
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Settings Page Information)</p>
+    <br><br>
+  </div>
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="updatingYourProfile">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">The Settings Page -> Updating Your Profile / Deleting Your Account</p>
+  <p class="faqInfSpec">
+    <u><i>Updating Your Profile</i></u><br>
+    Need to make some changes to your user profile? You can update your username or pin at any time from The Settings
+    Page. After navigating to <b><u><i><a onclick="window.open('#theSettingsPage', '_self')">The Settings Page</a></i></u></b>,
+    click/tap on "Edit Account Info" directly below your account summary. On the resulting page you can change your
+    full name, username, and/or pin. Once you've finalized your changes, confirm your pin and click/tap "Update User Profile".
+    Done!
+    <br><br><u><i>Deleting Your Profile</i></u><br>
+    In the unfortunate event that you'd like to delete your account, you can do so at any time from The Settings Page.
+    After navigating to <b><u><i><a onclick="window.open('#theSettingsPage', '_self')">The Settings Page</a></i></u></b>,
+    click/tap on "Edit Account Info" directly below your account summary. On the resulting page, click/tap "Delete User Profile".
+    <b>Please note that this is an irreversible action.</b> Your account and any data along with it will be removed
+    permanently.
+    <br><br>
+  <div class="faqContainer">
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Edit Button">Edit Account Info</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Edit Button)</p>
+  </div>
+  </p>
+
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="theNotificationsPage">
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-weight: bold; font-style: italic">The Notifications Page</p>
+  <p class="faqInfSpec">
+    The Notification Page can be found on almost any of the Gifty webpages in the form of a bell icon! Please note
+    that there are some pages where the notification icon will <i>not</i> appear, such as The Settings Page. If the bell
+    is black and white, then you do not have any pending notifications! If the bell icon is slowly flashing red, then
+    you have some pending notifications. Check them out! Simply click/tap on the bell icon at the <b>bottom middle</b>
+    of the page. After clicking/tapping on the bell icon, the resulting page will take you to the list of pending or
+    read notifications that you may have. This is where any important messages for you are located! Some examples of
+    possible notifications are private messages, friend requests, and notifications letting you know that a gift you
+    bought has been deleted/updated.
+    <br><br>
+    A notification will automatically be marked as "read" if you open it. Click/tap on a given notification to view the
+    message inside! A pop-up will open and display the notification's title and message. If you'd like to delete a
+    specific notification, click/tap "Delete Notification" on the <b>bottom right</b> of the pop-up window. If you'd
+    like to remove all of your notifications, you can click/tap the "Remove All Notifications" button on the
+    <b>bottom right</b> of the Notifications Page.
+    <br><br>
+  </p>
+  <div class="faqContainer">
+    <img class="genericImageWide" src="img/arrowRight.png">&ensp;&ensp;
+    <img class="notificationIcon" src="img/bellNotificationOff.png">&ensp;&ensp;
+    <img class="notificationIcon" id="notificationButton2" src="img/bellNotificationOn.png">
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Notification Buttons)</p>
+    <br>
+    <ul class="giftList" style="display: inline-block;">
+      <li class="gift" style="text-align: left; width: 160%; right: 30%">Important Unread Notification!</li>
+      <li class="gift checked" style="text-align: left; width: 160%; right: 30%">Important Read Notification!</li>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Notifications)</p>
+    </ul>
+    <br><br>
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="modal-footer-example modal-footer-example-override modal-footer-example-right" alt="Example Delete Button">Delete Notification</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Delete Notification In Popup)</p>
+    <br><br>
+    <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Remove All Button">Remove All Notifications</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Remove All Notifications Button)</p>
+  </div>
+
+  <div id="moderationTutorialContentDiv">
+    <!--*************************************************************************************************************-->
+    <br><br><br><br><br><br><hr id="moderatingGifty">
+    <span onclick="window.open('#moderationTableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Moderation Table Of Contents</span>
+    <p class="faqInf" style="font-weight: bold; font-style: italic">Moderating Gifty</p>
+    <p class="faqInfSpec">
+      <u><i>Moderation Considerations</i></u><br>
+      Any user that has the "moderation" role has a lot of power in Gifty. It is important to be careful who you grant
+      access to this role, as they could cause unnecessary damage to the Gifty users and their experience. At the end of
+      the day, however, the user that set up the Gifty instance and/or users who have access to the database have
+      absolute control over the Gifty experience.
+      <br><br><u><i>Configurable Variables</i></u><br>
+      Although this is exclusive to the individual who set up the Gifty instance, there are variables that can be easily
+      accessed which can affect the Gifty user's experience. These variables can be found near the top of the "common.js"
+      file. While there are other variables that are littered across Gifty that can also affect a Gifty user's
+      experience, only those on the "common.js" file should be changed.
+    </p>
+
+    <!--*************************************************************************************************************-->
+    <br><br><br><br><br><br><hr id="theModerationPage">
+    <span onclick="window.open('#moderationTableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Moderation Table Of Contents</span>
+    <p class="faqInf" style="font-weight: bold; font-style: italic">The Moderation Page</p>
+    <p class="faqInfSpec">
+      <br><b><u><i>Viewing and Moderating User Accounts</i></u></b><br>
+      This is an example blurb of text (Please note that this view may differ depending on your personal moderation settings.
+      This can be changed in the Moderation Settings as specified below.)
+      <br><br><u><i>Warning and Banning Users</i></u><br>
+      This is an example blurb of text
+      <br><br><u><i>Quick Audit Log Preview</i></u><br>
+      This is an example blurb of text
+      <br><br><b><u><i>Moderation Settings</i></u></b><br>
+      This is an example blurb of text
+      <br><br><u><i>Database Options</i></u><br>
+      This is an example blurb of text
+      <br><br><u><i>General Options</i></u><br>
+      This is an example blurb of text
+      <br><br><u><i>User Creation Override</i></u><br>
+      If a user limit is set on your Gifty instance, but you'd like to create an extra account for someone, you can use
+      the user creation override. While on the login page, or "index", you can input your user credentials and click the
+      "Gifty Database Full! Existing Users Can Still Log In Above!" message. This will take you to the
+      <u><i><a onclick="window.open('#creatingAnAccount', '_self')">user creation page</a></i></u>, where you can create
+      a new account despite the Gifty user limit.
+    </p>
+    <div class="faqContainer">
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Moderation Button">Moderation</span>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Moderation Button)</p>
+    </div>
+
+    <!--*************************************************************************************************************-->
+    <br><br><br><br><br><br><hr id="theAuditLogPage">
+    <span onclick="window.open('#moderationTableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Moderation Table Of Contents</span>
+    <p class="faqInf" style="font-weight: bold; font-style: italic">The Audit Log Page</p>
+    <p class="faqInfSpec">
+      This is an example blurb of text
+    </p>
+    <div class="faqContainer">
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Moderation Button">Moderation</span>&ensp;&ensp;&ensp;&ensp;
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Audit Log Button">System Audit Log</span>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Audit Log Button)</p>
+    </div>
+
+    <!--*************************************************************************************************************-->
+    <br><br><br><br><br><br><hr id="theFamilyPage">
+    <span onclick="window.open('#moderationTableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Moderation Table Of Contents</span>
+    <p class="faqInf" style="font-weight: bold; font-style: italic">The Family Page</p>
+    <p class="faqInfSpec">
+      This is an example blurb of text
+    </p>
+    <div class="faqContainer">
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Family Button">Family</span>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Family Button)</p>
+    </div>
+
+    <!--*************************************************************************************************************-->
+    <br><br><br><br><br><br><hr id="interactingWithFamilies">
+    <span onclick="window.open('#moderationTableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Moderation Table Of Contents</span>
+    <p class="faqInf" style="font-weight: bold; font-style: italic">The Family Page -> Interacting With Families</p>
+    <p class="faqInfSpec">
+      This is an example blurb of text
+    </p>
+    <div class="faqContainer">
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Family Button">Family</span>
+      <br>
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Create Family Button">Create Family</span>
+      <br>
+      <ul class="giftList" style="display: inline-block;">
+        <li class="gift" style="text-align: left; width: 160%; right: 30%">Example Family!</li>
+      </ul>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Family Creation)</p>
+    </div>
+
+    <!--*************************************************************************************************************-->
+    <br><br><br><br><br><br><hr id="familySettings">
+    <span onclick="window.open('#moderationTableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Moderation Table Of Contents</span>
+    <p class="faqInf" style="font-weight: bold; font-style: italic">The Family Page -> Family Settings</p>
+    <p class="faqInfSpec">
+      This is an example blurb of text
+    </p>
+    <div class="faqContainer">
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Family Button">Family</span>
+      <br>
+
+      <ul class="giftList" style="display: inline-block;">
+        <li class="gift" style="text-align: left; width: 160%; right: 30%">Example Family!</li>
+      </ul>
+      <br><br>
+
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Create Family Button">Family Settings</span>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Family Settings Button)</p>
+    </div>
+
+    <!--*************************************************************************************************************-->
+    <br><br><br><br><br><br><hr id="secretSantaOperation">
+    <span onclick="window.open('#moderationTableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Moderation Table Of Contents</span>
+    <p class="faqInf" style="font-weight: bold; font-style: italic">The Family Page -> Secret Santa Operation</p>
+    <p class="faqInfSpec">
+      <u><i>Hiding or Showing The Secret Santa Controls</i></u><br>
+      This is an example blurb of text.
+      Hidden controls are set on a per-family basis. If you have a family that you never need Secret Santa controls for,
+      then their controls can remain hidden for as long as you need it to be.
+      If automatic control is enabled and the Secret Santa controls are hidden, automatic control will still run in the background.
+      <br><br><u><i>Secret Santa States</i></u><br>
+      <i>There are three Secret Santa States. The three Secret Santa states are as follows:</i>
+      <br>&ensp;&ensp;&ensp;<b>Idle State:</b>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This state is when Secret Santa is idle. Nothing is happening and each family member will not see any Secret Santa prompts. This state will also reset any Secret Santa settings for every family member!
+      <br>&ensp;&ensp;&ensp;<b>Ready State:</b>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This state is when Secret Santa is ready to assign users. Each family member will see a "Sign Up" button on the "Gift Lists" page. Once enough users are signed up (4), then the next state can be activated.
+      <br>&ensp;&ensp;&ensp;<b>Active State:</b>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This state is when Secret Santa is fully active. Each family member has been assigned a user to buy a gift for. Let the gifting begin!
+      <br><br><u><i>Secret Santa Statuses</i></u><br>
+      This is an example blurb of text. If there is a failure upon manually changing states, it will show up here.
+      More failure details will appear in the audit log. If automatic control is running, the upcoming state change
+      will be specified here.
+      <br><br><u><i>Testing Assignments</i></u><br>
+      This is an example blurb of text.
+      <br><br><u><i>Automatic Control</i></u><br>
+      This is an example blurb of text.
+      The key to automatic control is user activity.
+      *explain per user versus moderator*
+      If you manually change the state, automatic control will be disabled. If there are any errors changing states or
+      assigning users, automatic control will be disabled.
+      There is a limit to how many families can have automatic control enabled at one time. This amount is configurable
+      if absolutely necessary in the "common.js" file (automaticSecretSantaLimit), but the individual who set up
+      the Gifty instance will need to adjust it. It is not recommended to update this variable, as it could have
+      potentially adverse affects on the Gifty user's experience.
+      <br><br><u><i>Exporting Secret Santa Data</i></u><br>
+      This is an example blurb of text.
+      <br><br><u><i>Considerations and Caveats</i></u><br>
+      This is an example blurb of text.
+      <br><br><u><i>Potential Secret Santa Errors</i></u><br>
+      This is an example blurb of text.
+    </p>
+  </div>
+  <!--*************************************************************************************************************-->
+  <br><br><br><br><br><br><hr id="moreHelp">
+
+  <span onclick="window.open('#tableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Table Of Contents</span>
+  <p class="faqInf" style="font-style: italic"><b>"Something went wrong and I'm not sure why!"</b> or
+    <b>"I have a suggestion to improve Gifty!"</b></p>
+  <p class="faqInfSpec">
+    If you are in need of assistance or just want to submit a suggestion, feel free to email the creator of Gifty
+    below! An email dialog will automatically pop up for you with some example text filled in. Thanks for helping
+    make this project better!
+  </p>
+
+  <span class="faqBtn" id="emailBtn" alt="Email The Developer A Question, Comment, Or Concern!">Email The Gifty Creator</span>
+  <br/><br/>
+  <a style="font-family:Verdana; text-decoration: none; font-style: italic;" href="https://github.com/DonovanAdrian/Gifty" alt="For The Curious, Take A Peek At Gifty's GitHub Page">What is Gifty? Click here to find out!</a>
+  <br/><br/><br/><br/><br/><br/>
+</div>
+
+<div id="offlineModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeOffline">&times;</span>
+      <h2>It appears that you are offline!</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p>Please reconnect to the internet in order to use Gifty properly!</p>
+    </div>
+  </div>
+</div>
+
+<div id="notificationModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeNotification">&times;</span>
+      <h2 id="notificationTitle"></h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p id="notificationInfo"></p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
