@@ -336,7 +336,10 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchFamilies = function (postRef){
       postRef.on("child_added", function (data) {
-        familyArr.push(data.val());
+        let i = findUIDItemInArr(data.val().uid, familyArr, true);
+        if (i == -1) {
+          familyArr.push(data.val());
+        }
       });
 
       postRef.on("child_changed", function (data) {
