@@ -432,37 +432,56 @@ function changeGiftElement(giftData, giftOwnerUID, giftOwner){
 function initGiftElement(liItem, giftData, giftOwnerUID, giftOwner, createGiftBool) {
   let giftOwnerIndex = findUIDItemInArr(giftOwnerUID, userArr, true);
   let giftOwnerData = userArr[giftOwnerIndex];
+  giftData = initGiftDataIfEmpty(giftData);
+  let buttonVisible = false;
+  let buttonBreakAdded = false;
+  let giftInfoPrefix = "";
 
   if (createGiftBool)
     liItem.className = "gift";
   liItem.onclick = function (){
+    giftTitleFld.innerHTML = giftData.title + " - <i>for " + giftOwner + "</i>";
+
     if (giftData.link != ""){
-      giftLinkFld.innerHTML = "Click me to go to the webpage!";
+      buttonVisible = true;
+      giftLinkFld.innerHTML = "Click me to go to this gift's webpage!";
+      giftLinkFld.style.display = "inline-block";
+      giftLinkFld.className = "basicBtn";
       giftLinkFld.onclick = function() {
         giftLinkRedirect(giftData.link);
       };
     } else {
-      giftLinkFld.innerHTML = "There was no link provided";
+      giftLinkFld.innerHTML = "<i>There was no link provided</i>";
+      giftLinkFld.style.display = "none";
       giftLinkFld.onclick = function() {};
     }
-    if(giftData.description != "") {
-      giftDescriptionFld.innerHTML = "Description: " + giftData.description;
+
+    if (buttonVisible) {
+      giftInfoPrefix = "<br>";
+      buttonBreakAdded = true;
+    }
+    if (giftData.where != "") {
+      giftWhereFld.innerHTML = giftInfoPrefix + "<b>This can be found at:</b> " + giftData.where;
     } else {
-      giftDescriptionFld.innerHTML = "There was no description provided";
+      giftWhereFld.innerHTML = "";
     }
-    giftTitleFld.innerHTML = giftData.title + " - for " + giftOwner;
-    if(giftData.where != "") {
-      giftWhereFld.innerHTML = "This can be found at: " + giftData.where;
+    giftInfoPrefix = "";
+
+    if (buttonVisible && !buttonBreakAdded) {
+      giftInfoPrefix = "<br>";
+      buttonBreakAdded = true;
+    }
+    if (giftData.description != "") {
+      giftDescriptionFld.innerHTML = giftInfoPrefix + "<b>Description:</b> " + giftData.description;
     } else {
-      giftWhereFld.innerHTML = "There was no location provided";
+      giftDescriptionFld.innerHTML = "";
     }
-    if(giftData.creationDate == undefined) {
-      giftData.creationDate = "";
-    }
+    giftInfoPrefix = "";
+
     if (giftData.creationDate != "") {
-      giftCreationDateFld.innerHTML = "Created on: " + giftData.creationDate;
+      giftCreationDateFld.innerHTML = "<b>Created on:</b> " + giftData.creationDate;
     } else {
-      giftCreationDateFld.innerHTML = "Creation date not available";
+      giftCreationDateFld.innerHTML = "<i>Creation date not available</i>";
     }
 
     if (giftOwnerIndex != -1) {
