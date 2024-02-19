@@ -9,6 +9,9 @@ let tutorialElements = [];
 let moderationTableOfContentsDiv;
 let moderationTutorialContentDiv;
 let settingsNote;
+let settingsNote2;
+let notificationBtn2;
+let customAlternateButtonTimer;
 
 
 
@@ -33,17 +36,24 @@ window.onload = function instantiate() {
             pageName = "Tutorial";
             inviteNote = document.getElementById("inviteNote");
             settingsNote = document.getElementById("settingsNote");
+            settingsNote2 = document.getElementById("settingsNote2");
+            notificationBtn = document.getElementById("notificationButton");
+            notificationBtn2 = document.getElementById("notificationButton2");
             moderationTableOfContentsDiv = document.getElementById("moderationTableOfContentsDiv");
             moderationTutorialContentDiv = document.getElementById("moderationTutorialContentDiv");
 
             getCurrentUser();
             commonInitialization();
+            flickerNotification();
+            customFlickerNotification();
 
-            tutorialElements = [offlineModal, offlineSpan, inviteNote, settingsNote, notificationModal, notificationTitle,
-                notificationInfo, noteSpan];
+            tutorialElements = [offlineModal, offlineSpan, inviteNote, settingsNote, settingsNote2, notificationBtn,
+                notificationBtn2, moderationTableOfContentsDiv, moderationTutorialContentDiv, notificationModal,
+                notificationTitle, notificationInfo, noteSpan];
 
             verifyElementIntegrity(tutorialElements);
             alternateButtonLabel(settingsNote, "Settings", "Tutorial");
+            customAlternateButtonLabel(settingsNote2, "Settings", "Tutorial");
 
             userInitial = firebase.database().ref("users/");
 
@@ -119,6 +129,73 @@ window.onload = function instantiate() {
         listeningFirebaseRefs.push(userInitial);
     }
 };
+
+function customFlickerNotification() {
+    let flickerTimer = 0;
+    let flickerAlternator = 0;
+    let normalFilter = "grayscale(0%)";
+    let applyFilter = "grayscale(75%)";
+    let normalOpacity = "1";
+    let applyOpacity = "0.75";
+
+
+    if (consoleOutput)
+        console.log("Notification Feature 2 Active");
+    notificationBtn2.src = "img/bellNotificationOn.png";
+    setInterval(function() {
+        flickerTimer = flickerTimer + 1000;
+        if (flickerTimer >= 1000) {
+            flickerTimer = 0;
+            flickerAlternator++;
+            if (flickerAlternator == 0) {
+                notificationBtn2.style.filter = applyFilter;
+                notificationBtn2.style.opacity = applyOpacity;
+            } else if (flickerAlternator == 1) {
+                notificationBtn2.style.filter = normalFilter;
+                notificationBtn2.style.opacity = normalOpacity;
+            } else if (flickerAlternator == 2) {
+                notificationBtn2.style.filter = applyFilter;
+                notificationBtn2.style.opacity = applyOpacity;
+            } else if (flickerAlternator == 3) {
+                notificationBtn2.style.filter = normalFilter;
+                notificationBtn2.style.opacity = normalOpacity;
+            } else if (flickerAlternator == 4) {
+                notificationBtn2.style.filter = applyFilter;
+                notificationBtn2.style.opacity = applyOpacity;
+            } else if (flickerAlternator <= 12) {
+                notificationBtn2.style.filter = normalFilter;
+                notificationBtn2.style.opacity = normalOpacity;
+            } else {
+                flickerAlternator = 0;
+                notificationBtn2.style.filter = applyFilter;
+                notificationBtn2.style.opacity = applyOpacity;
+            }
+        }
+    }, 750);
+}
+
+function customAlternateButtonLabel(button, parentLabel, childLabel) {
+    let nowConfirm = 0;
+    let alternator = 0;
+    clearInterval(customAlternateButtonTimer);
+    if (consoleOutput)
+        console.log(childLabel + " Button 2 Feature Set");
+    customAlternateButtonTimer = setInterval(function() {
+        nowConfirm = nowConfirm + 1000;
+        if (nowConfirm >= 3000) {
+            nowConfirm = 0;
+            if (alternator == 0) {
+                alternator++;
+                button.innerHTML = parentLabel;
+                button.style.background = "rgba(200, 200, 200, 0.5)";
+            } else {
+                alternator--;
+                button.innerHTML = childLabel;
+                button.style.background = "rgba(200, 200, 200, 0.75)";
+            }
+        }
+    }, 1000);
+}
 
 function genSupport() {
     let supportCode = "";
