@@ -597,10 +597,10 @@
       <u><i>Moderation Considerations</i></u><br>
       Any user that has the "moderation" role has a lot of power in Gifty. It is important to be careful who you grant
       access to this role, as they could cause unnecessary damage to the Gifty users and their experience. At the end of
-      the day, however, the user that set up the Gifty instance and/or users who have access to the database have
+      the day, however, the user that set up the Gifty server and/or users who have access to the database have
       absolute control over the Gifty experience.
       <br><br><u><i>Configurable Variables</i></u><br>
-      Although this is exclusive to the individual who set up the Gifty instance, there are variables that can be easily
+      Although this is exclusive to the individual who set up the Gifty server, there are variables that can be easily
       accessed which can affect the Gifty user's experience. These variables can be found near the top of the "common.js"
       file. While there are other variables that are littered across Gifty that can also affect a Gifty user's
       experience, only those on the "common.js" file should be changed.
@@ -610,38 +610,137 @@
     <br><br><br><br><br><br><hr id="theModerationPage">
     <span onclick="window.open('#moderationTableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Moderation Table Of Contents</span>
     <p class="faqInf" style="font-weight: bold; font-style: italic">The Moderation Page</p>
+    <div class="faqContainer">
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Moderation Button">Moderation</span>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Moderation Button)</p>
+    </div>
     <p class="faqInfSpec">
-      <br><b><u><i>Viewing and Moderating User Accounts</i></u></b><br>
-      This is an example blurb of text (Please note that this view may differ depending on your personal moderation settings.
-      This can be changed in the Moderation Settings as specified below.)
+      <br>
+      Once on <b><u><i><a onclick="window.open('#theSettingsPage', '_self')">the Settings Page</a></i></u></b>,
+      click/tap on the "Moderation" button on the <b>bottom right</b> of the page. Please note
+      that you can only see this button if you are a moderator. The moderation page is where you can quickly view a
+      summary of all of your users - and their activity - across Gifty. In addition to this, you can also keep an eye on
+      if any audit log tickets are received. In effect, this is the "main hub" for moderators. There are also various
+      configurable settings that can be updated to enhance your moderation experience. Continue reading for more details.
+      <br><br><b><u><i>Viewing and Moderating User Accounts</i></u></b><br>
+      By clicking/tapping on a user, you can view a quick summary of all of their details. You can also manually sign
+      them up for Secret Santa, view their gift lists, view their notifications, and other in-depth information all in
+      one place (Please note that this view may differ depending on your personal moderation settings. This can be
+      changed in the <u><i>Moderation Settings</i></u> section specified below).
       <br><br><u><i>Warning and Banning Users</i></u><br>
-      This is an example blurb of text
+      If you notice that some of your users' actions are getting out of hand, then you can send them warnings or ban them
+      as needed. You will receive an audit log notification when a given user has opened their warning, which will be sent
+      to their notifications page. When you ban a user, the login page will simply appear as if they have forgotten their
+      password. You will additionally receive an audit log notification when a banned user tries to log in.
+      <br><br>
+      To warn a user, simply click/tap on the user you'd like to warn, then click/tap on "Warn" on the <b>bottom
+      left</b> of the popup window. A popup window will appear in which you can type the warning you'd like to notify
+      the user for. Once you have provided your message, click/tap on "Send" on the <b>bottom left</b> of the message
+      window. You have now successfully warned a user.
+      <br><br><br>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="modal-footer-example modal-footer-example-left" alt="Example Warn Button">Warn</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Warn Button In Popup)</p>
+    <br><br>
+    <p class="faqInfSpec">
+      To ban a user, click/tap on the user you'd like to ban, then click/tap on "Ban" on the <b>bottom right</b> of the
+      popup window. A popup window will appear in which you can confirm whether or not you'd like to ban the user. If you
+      are sure, click/tap on "Yes" on the <b>bottom left</b> of the confirmation window. You have now successfully banned
+      a user. This user will appear as "(UserName) - BANNED" on the user list from now on.
+      <br><br>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="modal-footer-example modal-footer-example-override modal-footer-example-right" alt="Example Ban Button">Ban</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Ban Button In Popup)</p>
+    <br>
+    <ul class="giftList" style="display: inline-block;">
+      <li class="gift highSev" style="text-align: left; width: 160%; right: 30%">Jeremy Springer - BANNED</li>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Banned User Entry)</p>
+    </ul>
+    <br><br>
+    <p class="faqInfSpec">
+      To unban a user, click/tap on the user you'd like to unban, then click/tap on "Unban" on the <b>bottom right</b> of the
+      popup window. There will not be a popup <i>confirmation</i> window to confirm your decision. Instead, a popup window
+      will appear to notify you that the user has been successfully unbanned. You have now successfully unbanned a user.
+      <br><br>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="modal-footer-example modal-footer-example-override modal-footer-example-right" alt="Example Ban Button">Unban</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Unban Button In Popup)</p>
+    </p>
+    <p class="faqInfSpec">
       <br><br><u><i>Quick Audit Log Preview</i></u><br>
-      This is an example blurb of text
+      To view an Audit Log Ticket Preview, click/tap on the "Tickets" button on the <b>bottom right</b> of the Moderation
+      Page. A modal will open that will provide you a summary of all of your audit log tickets and key information at that
+      time. At the <b>bottom right</b> of the popup window, you can navigate to
+      <b><u><i><a onclick="window.open('#theAuditLogPage', '_self')">The Audit Log</a></i></u></b>.
+      If it says "No Tickets!", then a preview modal will not open, but a notification window will open instead. If the tickets button is green, then you either have <i>no tickets</i> or a <i>new ticket</i>.
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="modal-footer-example modal-footer-example-right" alt="Example Shortcut Button">View Tickets Page</span>
+    <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Shortcut Button In Popup)</p>
+    <br><br>
+    <div class="faqContainer">
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" style="background: #3be357" alt="Example Tickets Button">No Tickets!</span>
+      <br><br>
+      <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Tickets Button">25 Tickets</span>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Ticket Preview Buttons)</p>
+    </div>
+    <p class="faqInfSpec">
       <br><br><b><u><i>Moderation Settings</i></u></b><br>
-      This is an example blurb of text
+      To view the Moderation Settings, click/tap on the gear icon on the <b>bottom left</b> of the Moderation Page. A popup
+      window will then appear where you can change various database and general settings which will affect the Gifty
+      experience in one way or another.
       <br><br><u><i>Database Options</i></u><br>
-      This is an example blurb of text
-      <br><br><u><i>General Options</i></u><br>
-      This is an example blurb of text
-      <br><br><u><i>User Creation Override</i></u><br>
-      If a user limit is set on your Gifty instance, but you'd like to create an extra account for someone, you can use
+      <br>&ensp;&ensp;&ensp;<i>Remove All User's Notifications:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This button removes all Gifty user's notifications and is an irreversible action.
+      <br><br>&ensp;&ensp;&ensp;<i>Reset All User's Scores:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This button resets all Gifty user's scores to zero and is an irreversible action.
+      <br><br>&ensp;&ensp;&ensp;<i>Enable/Disable Gift URL Limiter:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This limiter is meant to restrict what kinds of URLs your users can link to in
+      their gifts. The Gift URL Limiter is disabled by default, but when activated, the default is
+      "amazon,amzn,bestbuy,barnesandnoble". For example, www.amazon.com would be valid with this default.
+      <br><br>&ensp;&ensp;&ensp;<i>Set Database Limits:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This limiter is meant to restrict the amount of users and gifts that your Gifty
+      server will accept. This cannot be disabled, but you can set each limit to a large number to "disable" it. The
+      Database limits are defaulted to 100 users and 50 gifts per each user's list.
+      <br><br><br><u><i>General Options</i></u><br>
+      <br>&ensp;&ensp;&ensp;<i>Hide Extra Data Points:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This setting is meant to de-clutter your user interface on the Moderation Page.
+      This setting is per-Moderator and is defaulted to "hidden". When extra data points are "hidden", some data points
+      (like Secret Santa) will appear and disappear if they apply per-user.
+      <br><br>&ensp;&ensp;&ensp;<i>Show Quick Info:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This setting is meant to give you a quick view of specific user information in
+      the user list. This setting is per-Moderator and is defaulted to "None".
+      <br><br>&ensp;&ensp;&ensp;<i>Send Global Message:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This button allows you to send Global Notifications to all Gifty users, including
+      yourself. This notification will be sent to each user's Notification Page.
+      <br><br>&ensp;&ensp;&ensp;<i>Disable Login Function:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This button allows you to disable login functionality on Gifty if your Gifty is
+      experiencing significant issues. This will block all normal users from logging in. Please note that moderators are
+      still able to login while this is active.
+      <br><br>&ensp;&ensp;&ensp;<i>Disable Gift Limiter:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This button blocks users who are related to each other from viewing their lists.
+      Please note that "related" in this case means that a moderator set a specific user to be a parent/child of
+      another user. This is meant to dissuade a parent from viewing who has bought their gifts by logging in as their
+      child.
+      <br><br><br><u><i>User Creation Override</i></u><br>
+      If you have a user limit is set on your Gifty database, but you'd like to create an extra account for someone, you can use
       the user creation override. While on the login page, or "index", you can input your user credentials and click the
       "Gifty Database Full! Existing Users Can Still Log In Above!" message. This will take you to the
       <u><i><a onclick="window.open('#creatingAnAccount', '_self')">user creation page</a></i></u>, where you can create
       a new account despite the Gifty user limit.
     </p>
-    <div class="faqContainer">
-      <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Moderation Button">Moderation</span>
-      <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Moderation Button)</p>
-    </div>
 
     <!--*************************************************************************************************************-->
     <br><br><br><br><br><br><hr id="theAuditLogPage">
     <span onclick="window.open('#moderationTableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Moderation Table Of Contents</span>
     <p class="faqInf" style="font-weight: bold; font-style: italic">The Audit Log Page</p>
     <p class="faqInfSpec">
-      This is an example blurb of text
+      The Audit Log page is a Moderator's friend for monitoring any minor, medium, high, and critical items that require
+      a moderator's attention. This means anything as small as an easter egg being found all the way up to a
+      non-moderator user forcing a moderator window to open. By clicking/tapping on each audit log entry, you can see when
+      and where the ticket was experienced. Depending on the ticket, you may also see who experienced the log entry. By
+      clicking/tapping on the "# Ticket(s)" button on the <b>bottom right</b>, you can see a quick summary of your audit
+      log entries. This pop-up window also contains a shortcut to the Moderation Page. If you'd like to remove all of the
+      audit log entries in bulk, you can click/tap on the <b>bottom left</b> of the page.
     </p>
     <div class="faqContainer">
       <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Moderation Button">Moderation</span>&ensp;&ensp;&ensp;&ensp;
@@ -654,7 +753,9 @@
     <span onclick="window.open('#moderationTableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Moderation Table Of Contents</span>
     <p class="faqInf" style="font-weight: bold; font-style: italic">The Family Page</p>
     <p class="faqInfSpec">
-      This is an example blurb of text
+      To navigate to the Family Page, first go to the <u><i><a onclick="window.open('#theSettingsPage', '_self')">Settings
+      Page</a></i></u>, then click on the "Family" button on the <b>bottom left</b> of the page. The Family Page is
+      primarily meant to enhance your Gifty users' experiences through Secret Santa and other minor customization options.
     </p>
     <div class="faqContainer">
       <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Family Button">Family</span>
@@ -666,7 +767,26 @@
     <span onclick="window.open('#moderationTableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Moderation Table Of Contents</span>
     <p class="faqInf" style="font-weight: bold; font-style: italic">The Family Page -> Interacting With Families</p>
     <p class="faqInfSpec">
-      This is an example blurb of text
+      You will first need to create a family by clicking/tapping on the "Create Family" button on the <b>bottom left</b>
+      of the page. A pop-up will appear where you can input the family's name. Don't worry about anything fancy for now,
+      this can be changed later at any time. Click "Add" on the <b>bottom left</b> of the pop-up window to create the
+      family. You can now click on the family in the list to perform any of the below actions.
+      <br><br>&ensp;&ensp;&ensp;<i>Preview Family Members:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;By clicking/tapping on a family in the list, one of the first things you will see
+      is the preview of family members. You cannot interact with this list, but you can add, edit, or remove members by
+      clicking "Edit Family" on the <b>bottom left</b> of the pop-up window.
+      <br><br>&ensp;&ensp;&ensp;<i>Message All Family Members:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This button allows you to message all of the Gifty users that you have assigned
+      to this family. Please note that this button will only appear if you have members assigned to this family.
+      <br><br>&ensp;&ensp;&ensp;<i>Message Secret Santa Participants:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This button allows you to message all of the Gifty users in this family that are
+      participating in Secret Santa. Please note that this button will only appear if Secret Santa is in the "Ready" or
+      "Active" states.
+      <br><br>&ensp;&ensp;&ensp;<i>Hide/Show Secret Santa Options:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This button allows you to hide or show the Secret Santa options for this family.
+      Please note that this setting applies per-family, so this is especially helpful if you have a family that doesn't
+      plan on using Secret Santa. Please see the <u><i><a onclick="window.open('#secretSantaOperation', '_self')">Secret
+      Santa Operation</a></i></u> section for more information.
     </p>
     <div class="faqContainer">
       <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Family Button">Family</span>
@@ -684,7 +804,37 @@
     <span onclick="window.open('#moderationTableOfContents', '_self')" class="rightContentBtn rightBtn">Back To Moderation Table Of Contents</span>
     <p class="faqInf" style="font-weight: bold; font-style: italic">The Family Page -> Family Settings</p>
     <p class="faqInfSpec">
-      This is an example blurb of text
+      <br>To update a given family's settings, navigate to <u><i><a onclick="window.open('#theFamilyPage', '_self')">the
+      Family Page</a></i></u>, select the family you would like to edit, and select "Edit Family" on the <b>bottom left</b>
+      of the popup window. Once on the Family Settings Page, select the "Family Settings" button on the <b>bottom left</b>
+      of the page.
+      <br><br>&ensp;&ensp;&ensp;<i>Change Family Name:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This button allows you to change a family's name. By clicking/tapping on this
+      button, a pop-up window will appear where you can enter the family's new name. After entering the family's new
+      name, click on "Update" on the <b>bottom left</b> of the pop-up window.
+      <br><br>&ensp;&ensp;&ensp;<i>Clear All Parent/Child Relationships:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;See below "Parent/Child Relationships" section for more information regarding
+      relationships. This button will clear all of the user's parent/child relationships in this family and is irreversible.
+      By clicking/tapping on this button, a pop-up confirmation window will appear before you can officially complete the
+      action. If you would like to set your user's relationships again, you would have to do so manually.
+      <br><br>&ensp;&ensp;&ensp;<i>Remove All Members:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This button will remove all of the users from this family and is irreversible.
+      By clicking/tapping on this button, a pop-up confirmation window will appear before you can officially complete the
+      action. If you would like to add all the users back to a given family, you would have to do so manually.
+      <br><br>&ensp;&ensp;&ensp;<i>Add Members:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;Click on this button to add a member to this family. Please note that a given
+      member cannot be in two families at the same time. By clicking/tapping this button, a pop-up window will appear to
+      enter the user's user name. After entering the user's user name, click/tap "Add" on the <b>bottom left</b> of the
+      pop-up window. A final pop-up window will appear to confirm that the user you are requesting is correct. Click/tap
+      on "Yes" to add the user to the family.
+      <br><br>&ensp;&ensp;&ensp;<b>Parent/Child Relationships:</b>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;If you have any users that are under age who cannot use Gifty, like an infant or
+      toddler, you can set them to be "related" to their parent in Gifty. Please note that you cannot relate users in this
+      family to users in a separate family. By doing adding users as a parent or child to each other, they will
+      <b><i>not</i></b> be assigned to each other during Secret Santa. You can also optionally enable the Gift List
+      Limiter on <u><i><a onclick="window.open('#theModerationPage', '_self')">the Moderation Page</a></i></u>, which
+      will prevent a child user from viewing a parent's list and vis versa. This is meant to prevent a parent from
+      viewing what has been bought on their gift list through their child's account.
     </p>
     <div class="faqContainer">
       <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Family Button">Family</span>
@@ -694,8 +844,10 @@
         <li class="gift" style="text-align: left; width: 160%; right: 30%">Example Family!</li>
       </ul>
       <br><br>
-
-      <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Create Family Button">Family Settings</span>
+      <p class="faqInfSpec" style="font-style: italic; text-align: center">
+        <img class="genericImageWide" src="img/arrowRight.png"> <span class="modal-footer-example modal-footer-example-left" alt="Example Warn Button">Edit Family</span>
+        <br>
+        <img class="genericImageWide" src="img/arrowRight.png"> <span class="addBtnGeneric" alt="Example Create Family Button">Family Settings</span>
       <p class="faqInfSpec" style="font-style: italic; text-align: center">(Example Family Settings Button)</p>
     </div>
 
@@ -705,7 +857,6 @@
     <p class="faqInf" style="font-weight: bold; font-style: italic">The Family Page -> Secret Santa Operation</p>
     <p class="faqInfSpec">
       <u><i>Hiding or Showing The Secret Santa Controls</i></u><br>
-      This is an example blurb of text.
       Hidden controls are set on a per-family basis. If you have a family that you never need Secret Santa controls for,
       then their controls can remain hidden for as long as you need it to be.
       If automatic control is enabled and the Secret Santa controls are hidden, automatic control will still run in the background.
@@ -718,27 +869,66 @@
       <br>&ensp;&ensp;&ensp;<b>Active State:</b>
       <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;This state is when Secret Santa is fully active. Each family member has been assigned a user to buy a gift for. Let the gifting begin!
       <br><br><u><i>Secret Santa Statuses</i></u><br>
-      This is an example blurb of text. If there is a failure upon manually changing states, it will show up here.
+      If there is a failure upon manually changing states, it will show up here.
       More failure details will appear in the audit log. If automatic control is running, the upcoming state change
       will be specified here.
       <br><br><u><i>Testing Assignments</i></u><br>
-      This is an example blurb of text.
+      Testing Assignments allows you to test a given family's assignments without actually performing any permanent assignments.
+      The purpose of this button is to verify whether or not your family has enough family members and has enough family
+      members signed up for the Secret Santa activity.
       <br><br><u><i>Automatic Control</i></u><br>
-      This is an example blurb of text.
-      The key to automatic control is user activity.
-      *explain per user versus moderator*
-      If you manually change the state, automatic control will be disabled. If there are any errors changing states or
-      assigning users, automatic control will be disabled.
-      There is a limit to how many families can have automatic control enabled at one time. This amount is configurable
-      if absolutely necessary in the "common.js" file (automaticSecretSantaLimit), but the individual who set up
-      the Gifty instance will need to adjust it. It is not recommended to update this variable, as it could have
-      potentially adverse affects on the Gifty user's experience.
+      The key to automatic control is user activity. Automatic state changes will occur if a user in a given family navigates
+      to the Lists Page. Please note that moderator users will trigger automatic state changes for all families if they are
+      on the Lists Page or the Family Page. If users are <b>not</b> active in a given family, then Automatic Control may
+      be automatically disabled. Automatic control can be disabled through skipped states, manual state changes while automatic
+      control is active, and automatic state change errors. Audit Log tickets are delivered for each of these cases. If
+      automatic control is automatically disabled, then manual control must be performed to go to the next state for a
+      given family. If you manually change the state while automatic control is enabled, automatic control will be
+      disabled. If there are any errors changing states or assigning users, automatic control will be disabled. There is
+      a limit to how many families can have automatic control enabled at one time. This amount is configurable if
+      absolutely necessary in the "common.js" file (automaticSecretSantaLimit), but the individual who set up the Gifty
+      server will need to adjust it. It is not recommended to update this variable, as it could have potentially adverse
+      affects on the Gifty user's experience if misused.
       <br><br><u><i>Exporting Secret Santa Data</i></u><br>
-      This is an example blurb of text.
+      Exporting Secret Santa Data is a great way to quickly get a summary of a given family's Secret Santa data in a
+      document format. The type of document that gets generated will depend on what state the given family is in and will
+      export all of the relevant data pertaining to that state and the users in that family.
       <br><br><u><i>Considerations and Caveats</i></u><br>
-      This is an example blurb of text.
-      <br><br><u><i>Potential Secret Santa Errors</i></u><br>
-      This is an example blurb of text.
+      Secret Santa is a great way to enhance the experience of your families when using Gifty, but there are some things to
+      consider before you jump in! As you can see above, there are plenty of details that go into this process. Once you
+      know how to operate Secret Santa from the moderator's perspective, however, then your family or families can all
+      have tons of fun for the holidays.
+      <br><br>&ensp;&ensp;&ensp;<i>Minimum Amount Of Sign Ups:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;One thing that you must consider is that there must be a minimum amount of users
+      that can be signed up to Secret Santa in a family before they can be assigned. For example, a family of two users
+      doesn't make for a very fun Secret Santa experience. Please note that each member who signs up can only be assigned
+      to another user in that family who also signed up! The more family members you have signed up, the better!
+      <br><br>&ensp;&ensp;&ensp;<i>Friends and Relationships:</i>
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;If you have any relationships applied to your users or if your family members aren't all friends with each
+      other, then this can heavily affect your Secret Santa experience. Each user's friend list is their list of potential
+      Secret Santa matches. As a result, the less friends they have, the less possibilities of assignments they have, too.
+      The same idea applies for parent/child relationships, as this will further restrict how many possible assignments
+      they could have.
+      <br><br><br><u><i>Potential Secret Santa Errors</i></u><br>
+      If you are one of the lucky few moderators who have noticed that I intentionally spit out lots of in-depth information
+      into your browser's console log, then Secret Santa is no exception. Every time you "Test Assignments" or assign users
+      for real, a "Result Code" will be output into the console log. These Result Codes do actually correspond with what
+      occurred while assigning users. Please note that errors, whether during assignments or automatic control, will also
+      be sent to the Audit Log. The Result Codes are as follows:
+      <br><br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>-1</b>  is a processing error, there's something very wrong
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>0</b>  (Zero) is a success
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>1</b>  is a failure to find a viable "Giver" user
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>2</b>  is a user that had ZERO potential assignments
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>3</b>  is a Secret Santa recipient that was duplicated
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>4</b>  is a Secret Santa recipient that was not properly assigned
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>5</b>  Verification Step, a Secret Santa giver was duplicated
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>6</b>  Verification Step, a Secret Santa recipient was duplicated
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>7</b>  Verification Step, a Secret Santa giver was not in the same family
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>8</b>  Verification Step, a Secret Santa recipient was not in the same family
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>9</b>  Verification Step, a Secret Santa giver was NOT assigned a Secret Santa name
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>10</b> Verification Step, Givers, Recipients, and Family Member count mismatch
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>11</b> Verification Step, Giver and Receiver records do not match
+      <br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<b>12</b> Completion Step, Error Saving records to DB
     </p>
   </div>
   <!--*************************************************************************************************************-->
