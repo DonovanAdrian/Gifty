@@ -53,6 +53,7 @@ let userShareCode;
 let sendPrivateMessage;
 let userInviteRemove;
 let closePrivateMessageModal;
+let privateMsgTitle;
 let privateMessageInp;
 let sendMsg;
 let cancelMsg;
@@ -124,6 +125,7 @@ window.onload = function instantiate() {
     denyBtn = document.getElementById("denyBtn");
     privateMessageModal = document.getElementById("privateMessageModal");
     closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
+    privateMsgTitle = document.getElementById("privateMsgTitle");
     privateMessageInp = document.getElementById("privateMessageInp");
     sendMsg = document.getElementById("sendMsg");
     cancelMsg = document.getElementById("cancelMsg");
@@ -144,9 +146,9 @@ window.onload = function instantiate() {
       closeConfirmUserModal, confUserName, inviteConfirm, inviteDeny, inviteNote, newInviteIcon, blacklistModal,
       closeBlacklistModal, blacklistDescription, blacklistContainer, testBlacklist, blacklistRemove, blacklistedUsers,
       addUser, confirmModal, closeConfirmModal, confirmTitle, confirmContent, confirmBtn, denyBtn, notificationModal,
-      notificationTitle, notificationInfo, noteSpan, privateMessageModal, closePrivateMessageModal, privateMessageInp,
-      sendMsg, cancelMsg, inviteModal, closeInviteModal, userName, userUName, userShareCode, sendPrivateMessage,
-      userInviteRemove, testData];
+      notificationTitle, notificationInfo, noteSpan, privateMessageModal, closePrivateMessageModal, privateMsgTitle,
+      privateMessageInp, sendMsg, cancelMsg, inviteModal, closeInviteModal, userName, userUName, userShareCode,
+      sendPrivateMessage, userInviteRemove, testData];
 
     verifyElementIntegrity(inviteElements);
 
@@ -521,6 +523,7 @@ function initFriendElement(liItem, friendData) {
 function generatePrivateMessageDialog(userData) {
   let message = "";
 
+  privateMsgTitle.innerHTML = "Send A Private Message To " + findFirstNameInFullName(userData.name) + " Below";
   privateMessageInp.placeholder = "Hey! Just to let you know...";
 
   sendMsg.onclick = function (){
