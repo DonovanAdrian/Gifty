@@ -23,6 +23,7 @@ let publicList;
 let multipleGiftCaveat;
 let sendPrivateMessage;
 let closePrivateMessageModal;
+let privateMsgTitle;
 let privateMessageInp;
 let giftListInterval;
 let sendMsg;
@@ -95,6 +96,7 @@ window.onload = function instantiate() {
     multipleGiftCaveat = document.getElementById("multipleGiftCaveat");
     sendPrivateMessage = document.getElementById("sendPrivateMessage");
     closePrivateMessageModal = document.getElementById("closePrivateMessageModal");
+    privateMsgTitle = document.getElementById("privateMsgTitle");
     privateMessageInp = document.getElementById("privateMessageInp");
     sendMsg = document.getElementById("sendMsg");
     cancelMsg = document.getElementById("cancelMsg");
@@ -105,7 +107,8 @@ window.onload = function instantiate() {
 
     listsElements = [notificationBtn, dataListContainer, offlineModal, offlineSpan, inviteNote, notificationModal,
       notificationTitle, notificationInfo, noteSpan, privateMessageModal, closeUserModal, userModal, testData, userTitle,
-      publicList, privateList, sendPrivateMessage, closePrivateMessageModal, privateMessageInp, sendMsg, cancelMsg];
+      publicList, privateList, sendPrivateMessage, closePrivateMessageModal, privateMsgTitle, privateMessageInp,
+      sendMsg, cancelMsg];
 
     checkFamilyCookie();
     verifyElementIntegrity(listsElements);
@@ -625,6 +628,7 @@ function flashGiftNumbers(privateGiftList, publicGiftList) {
 function generatePrivateMessageDialog(userData) {
   let message = "";
 
+  privateMsgTitle.innerHTML = "Send A Private Message To " + findFirstNameInFullName(userData.name) + " Below";
   privateMessageInp.placeholder = "Hey! Just to let you know...";
 
   sendMsg.onclick = function (){
