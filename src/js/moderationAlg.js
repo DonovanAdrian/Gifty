@@ -1111,7 +1111,7 @@ function generateModeratorPrivateMessageDialog(userData, warnBool) {
     globalMsgTitle.innerHTML = "Send A Warning Message Below";
     globalMsgInp.placeholder = "Your next offense will result in a ban...";
   } else {
-    globalMsgTitle.innerHTML = "Send A Private Message Below";
+    globalMsgTitle.innerHTML = "Send A Private Message To " + findFirstNameInFullName(userData.name) + " Below";
     globalMsgInp.placeholder = "Hey! Just to let you know...";
   }
 
