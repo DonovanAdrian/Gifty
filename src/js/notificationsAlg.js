@@ -24,6 +24,7 @@ let notificationViewDetails;
 let notificationViewPage;
 let notificationViewDelete;
 let privateMessageSpan;
+let privateMsgTitle;
 let privateMessageInp;
 let sendMsg;
 let cancelMsg;
@@ -65,6 +66,7 @@ window.onload = function instantiate() {
     notificationViewPage = document.getElementById("notificationViewPage");
     notificationViewDelete = document.getElementById("notificationViewDelete");
     privateMessageSpan = document.getElementById("privateMessageSpan");
+    privateMsgTitle = document.getElementById("privateMsgTitle");
     privateMessageInp = document.getElementById("privateMessageInp");
     sendMsg = document.getElementById("sendMsg");
     cancelMsg = document.getElementById("cancelMsg");
@@ -75,7 +77,7 @@ window.onload = function instantiate() {
     notificationsElements = [dataListContainer, nukeNotifications, offlineModal, offlineSpan, inviteNote,
       notificationModal, notificationTitle, notificationInfo, noteSpan, privateMessageModal, noteViewModal, testData,
       closeNoteViewModal, notificationViewTitle, notificationViewDetails, notificationViewPage, notificationViewDelete,
-      privateMessageSpan, privateMessageInp, sendMsg, cancelMsg];
+      privateMessageSpan, privateMsgTitle, privateMessageInp, sendMsg, cancelMsg];
 
     verifyElementIntegrity(notificationsElements);
 
@@ -503,6 +505,7 @@ function initNotificationElement(liItem, notificationPage, notificationData, not
 function generatePrivateMessageDialog(userData) {
   let message = "";
 
+  privateMsgTitle.innerHTML = "Send A Private Message To " + findFirstNameInFullName(userData.name) + " Below";
   privateMessageInp.placeholder = "Hey! Just to let you know...";
 
   sendMsg.onclick = function (){
