@@ -780,43 +780,49 @@ function changeGiftElement(uid) {
 function initGiftElement(liItem, uid) {
   let giftIndex = findUIDItemInArr(uid, giftArr, true);
   if (giftIndex != -1) {
+    giftArr[giftIndex] = initGiftDataIfEmpty(giftArr[giftIndex]);
     let description = giftArr[giftIndex].description;
     let link = giftArr[giftIndex].link;
     let title = giftArr[giftIndex].title;
     let where = giftArr[giftIndex].where;
     let date = giftArr[giftIndex].creationDate;
     let buyer = giftArr[giftIndex].buyer;
+    let multiples = giftArr[giftIndex].multiples;
 
     liItem.className = "gift";
     liItem.onclick = function () {
+      if (multiples) {
+        giftTitle.innerHTML = title + " - <i>(Multiple Purchase Gift)</i>";
+      } else {
+        giftTitle.innerHTML = title;
+      }
       if (link != "") {
         giftLink.innerHTML = "Click me to go to the webpage you provided!";
         giftLink.onclick = function () {
           giftLinkRedirect(link);
         };
       } else {
-        giftLink.innerHTML = "You did not provide a link for this gift";
+        giftLink.innerHTML = "<i>You did not provide a link for this gift</i>";
         giftLink.onclick = function () {
         };
       }
       if (description != "") {
-        giftDescription.innerHTML = "Description: " + description;
+        giftDescription.innerHTML = "<b>Description:</b> " + description;
       } else {
-        giftDescription.innerHTML = "You did not provide a description for this gift";
+        giftDescription.innerHTML = "<i>You did not provide a description for this gift</i>";
       }
-      giftTitle.innerHTML = title;
       if (where != "") {
-        giftWhere.innerHTML = "This can be found at: " + where;
+        giftWhere.innerHTML = "<b>This can be found at:</b> " + where;
       } else {
-        giftWhere.innerHTML = "You did not provide a location for where to find this gift";
+        giftWhere.innerHTML = "<i>You did not provide a location for where to find this gift</i>";
       }
       if (date == undefined) {
         date = "";
       }
       if (date != "") {
-        giftCreationDate.innerHTML = "Created on: " + date;
+        giftCreationDate.innerHTML = "<b>Created on:</b> " + date;
       } else {
-        giftCreationDate.innerHTML = "Creation date not available";
+        giftCreationDate.innerHTML = "<i>Creation date not available</i>";
       }
       giftUpdate.onclick = function () {
         updateGiftElement(uid);
