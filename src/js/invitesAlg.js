@@ -169,8 +169,6 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchData = function (postRef) {
       postRef.on("child_added", function (data) {
-        globalNoteInt = 1;
-
         let i = findUIDItemInArr(data.key, userArr, true);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -494,9 +492,13 @@ function initFriendElement(liItem, friendData) {
     if (friendData.shareCode == undefined || friendData.shareCode == "")
       friendData.shareCode = "This User Does Not Have A Share Code";
 
-    userName.innerHTML = friendData.name;
-    userUName.innerHTML = "User Name: " + friendData.userName;
-    userShareCode.innerHTML = "Share Code: " + friendData.shareCode;
+    if (friendData.moderatorInt == 1) {
+      userName.innerHTML = friendData.name + " <i>(Moderator)</i>";
+    } else {
+      userName.innerHTML = friendData.name;
+    }
+    userUName.innerHTML = "<b>User Name:</b> " + friendData.userName;
+    userShareCode.innerHTML = "<b>Share Code:</b> " + friendData.shareCode;
 
     sendPrivateMessage.onclick = function() {
       closeModal(inviteModal);
@@ -550,7 +552,7 @@ function generatePrivateMessageDialog(userData) {
 }
 
 function addPrivateMessageToDB(userData, message) {
-  updateUserScore(user, sendPrivateMessage);
+  updateUserScore(user, sendPrivateMessageScore);
 
   closeModal(privateMessageModal);
   addNotificationToDB(userData, message);
@@ -1047,7 +1049,7 @@ function generateAddUserBtn(){
           inviteInfo.style.display = "block";
           addToBlackList.style.display = "block";
           addUser.style.background = "#3be357";
-          inviteInfo.innerHTML = "Suggested Friend: " + userArr[commonFriendIndex].userName + " " + "(" + userArr[commonFriendIndex].name + ")";
+          inviteInfo.innerHTML = "<b>Suggested Friend:</b> " + userArr[commonFriendIndex].userName + " <i>(" + userArr[commonFriendIndex].name + ")</i>";
           inviteInfo.onclick = function() {
             userNameInp.value = userArr[commonFriendIndex].userName;
           };
