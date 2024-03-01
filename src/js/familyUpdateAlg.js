@@ -305,8 +305,11 @@ window.onload = function instantiate() {
 
     let fetchFamilies = function (postRef){
       postRef.on("child_added", function (data) {
-        familyArr.push(data.val());
-        saveCriticalCookies();
+        let i = findUIDItemInArr(data.val().uid, familyArr, true);
+        if (i == -1) {
+          familyArr.push(data.val());
+          saveCriticalCookies();
+        }
       });
 
       postRef.on("child_changed", function (data) {
@@ -656,8 +659,8 @@ function initFamilyElement(liItem, familyMemberData) {
   liItem.className = "gift";
   liItem.onclick = function (){
     familyMemberName.innerHTML = familyMemberData.name;
-    familyMemberUserName.innerHTML = familyMemberData.userName;
-    familyMemberUID.innerHTML = familyMemberData.uid;
+    familyMemberUserName.innerHTML = "<b>User Name:</b> " + familyMemberData.userName;
+    familyMemberUID.innerHTML = "<b>UID:</b> " + familyMemberData.uid;
 
     if (familyData.members.length > 3) {
       familyMemberParent.className = "basicBtn";
