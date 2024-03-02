@@ -236,6 +236,6 @@ function evaluateInitialTicketTimeline(newestTicketElement, oldestTicketElement)
         }
     }
 
-    newestTicketElement.innerHTML = "Newest Ticket: " + newestTicketDayCounterText;
-    oldestTicketElement.innerHTML = "Oldest Ticket: " + oldestTicketDayCounterText;
+    newestTicketElement.innerHTML = "<b>Newest Ticket:</b> " + newestTicketDayCounterText;
+    oldestTicketElement.innerHTML = "<b>Oldest Ticket:</b> " + oldestTicketDayCounterText;
 }
