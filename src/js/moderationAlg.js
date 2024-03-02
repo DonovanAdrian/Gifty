@@ -971,10 +971,10 @@ function generateLoginDisabledModal(urlLimitBool) {
 
   if (urlLimitBool) {
     loginDisabledTitle.innerHTML = "Set Custom URL Limiter String";
-    loginDisabledDesc.innerHTML = "URL Limiter String:";
+    loginDisabledDesc.innerHTML = "<b>URL Limiter String:</b>";
     loginDisabledInp.value = giftURLLimit;
     loginDisabledInp.placeholder = "Set Custom URL Limiter";
-    loginDisabledInfo.innerHTML = "Set A Custom List Of Acceptable URL Domains (i.e., amazon,amzn,bestbuy,barnesandnoble)";
+    loginDisabledInfo.innerHTML = "<i>Set A Custom List Of Acceptable URL Domains (i.e., amazon,amzn,bestbuy,barnesandnoble)</i>";
     if (giftURLLimit == "") {
       resetDefaultLoginDisabledBtn.innerHTML = "Enable Default URL Limiter";
       confirmLoginDisabled.innerHTML = "Confirm & Enable";
@@ -984,10 +984,10 @@ function generateLoginDisabledModal(urlLimitBool) {
     }
   } else {
     loginDisabledTitle.innerHTML = "Set Login Disabled Message Below";
-    loginDisabledDesc.innerHTML = "Login Disabled Message:";
+    loginDisabledDesc.innerHTML = "<b>Login Disabled Message:</b>";
     loginDisabledInp.value = loginDisabledMsg;
     loginDisabledInp.placeholder = "Set Login Disabled Message";
-    loginDisabledInfo.innerHTML = "Set A Custom Alert Upon Attempted Login";
+    loginDisabledInfo.innerHTML = "<i>Set A Custom Alert Upon Attempted Login</i>";
     resetDefaultLoginDisabledBtn.innerHTML = "Reset To Default Alert";
     confirmLoginDisabled.innerHTML = "Confirm & Disable";
   }
@@ -1256,14 +1256,14 @@ function initUserElement(liItem, userData) {
 
   liItem.onclick = function () {
     userName.innerHTML = userData.name;
-    userUserName.innerHTML = "Username: " + userData.userName;
+    userUserName.innerHTML = "<b>Username:</b> " + userData.userName;
     if (userData.lastLogin == "Never Logged In") {
-      userLastLogin.innerHTML = "Last Login: Never Logged In";
+      userLastLogin.innerHTML = "<b>Last Login:</b> Never Logged In";
     } else {
-      userLastLogin.innerHTML = "Last Login: " + getLocalTime(userData.lastLogin);
+      userLastLogin.innerHTML = "<b>Last Login:</b> " + getLocalTime(userData.lastLogin);
     }
-    userLastAction.innerHTML = "Last Action: " + userData.lastPerformedAction
-    userScoreElem.innerHTML = "User Score: " + userData.userScore;
+    userLastAction.innerHTML = "<b>Last Action:</b> " + userData.lastPerformedAction
+    userScoreElem.innerHTML = "<b>User Score:</b> " + userData.userScore;
 
     userPublicGifts.onclick = function() {
       if (userData.uid == user.uid) {
@@ -1410,17 +1410,17 @@ function initUserElement(liItem, userData) {
     }
 
     if (user.hideExtraData == 0) {
-      userUID.innerHTML = "UID: " + userData.uid;
+      userUID.innerHTML = "<b>UID:</b> " + userData.uid;
       userUID.style.display = "block";
 
-      userLastReview.innerHTML = "Last Yearly Review: " + userData.yearlyReview;
+      userLastReview.innerHTML = "<b>Last Yearly Review:</b> " + userData.yearlyReview;
       userLastReview.style.display = "block";
 
       userFamilyName.style.display = "block";
       if (localFamilyData == undefined) {
-        userFamilyName.innerHTML = "Family: Not Assigned To A Family";
+        userFamilyName.innerHTML = "<b>Family:</b> Not Assigned To A Family";
       } else {
-        userFamilyName.innerHTML = "Family: \"" + localFamilyData.name + "\"";
+        userFamilyName.innerHTML = "<b>Family:</b> \"" + localFamilyData.name + "\"";
       }
 
       userNotificationsList.style.display = "inline-block";
@@ -1447,12 +1447,12 @@ function initUserElement(liItem, userData) {
         let tempIndex = 0;
         tempIndex = findUIDItemInArr(userData.secretSantaNamePrior, userArr, true);
         if (tempIndex != -1) {
-          userSecretSantaPrior.innerHTML = "Last Secret Santa Assignment: " + findFirstNameInFullName(userArr[tempIndex].name);
+          userSecretSantaPrior.innerHTML = "<b>Last Secret Santa Assignment:</b> " + findFirstNameInFullName(userArr[tempIndex].name);
         } else {
-          userSecretSantaPrior.innerHTML = "Last Secret Santa Assignment: This User No Longer Exists!";
+          userSecretSantaPrior.innerHTML = "<b>Last Secret Santa Assignment:</b> This User No Longer Exists!";
         }
       } else {
-        userSecretSantaPrior.innerHTML = "Last Secret Santa Assignment: No Previous Assignment";
+        userSecretSantaPrior.innerHTML = "<b>Last Secret Santa Assignment:</b> No Previous Assignment";
       }
 
       showSecretSantaUserControls(localFamilyData);
@@ -1522,15 +1522,15 @@ function initUserElement(liItem, userData) {
         userSecretSantaBuffer.style.display = "block";
       }
       if (userFamilyData.secretSantaState == 1) {
-        userSecretSanta.innerHTML = "Secret Santa: Idle";
+        userSecretSanta.innerHTML = "<b>Secret Santa:</b> Idle";
         userSecretSantaBtn.innerHTML = "Secret Santa Idle";
         userSecretSantaBtn.onclick = function () {};
       } else if (userFamilyData.secretSantaState == 2) {
         if (userData.secretSanta == 0) {
-          userSecretSanta.innerHTML = "Secret Santa: Not Signed Up";
+          userSecretSanta.innerHTML = "<b>Secret Santa:</b> Not Signed Up";
           userSecretSantaBtn.innerHTML = "Opt Into Secret Santa";
         } else if (userData.secretSanta == 1) {
-          userSecretSanta.innerHTML = "Secret Santa: Signed Up!";
+          userSecretSanta.innerHTML = "<b>Secret Santa:</b> Signed Up!";
           userSecretSantaBtn.innerHTML = "Opt Out Of Secret Santa";
         }
         userSecretSantaBtn.onclick = function () {
@@ -1544,7 +1544,7 @@ function initUserElement(liItem, userData) {
             secretSantaAssignmentShownUser = "";
           }
           if (!secretSantaAssignmentShown) {
-            userSecretSanta.innerHTML = "Secret Santa: Assigned!";
+            userSecretSanta.innerHTML = "<b>Secret Santa:</b> Assigned!";
             userSecretSantaBtn.innerHTML = "View Secret Santa Assignment";
             userSecretSantaBtn.onclick = function () {
               confirmOperation("View " + userData.name + "'s Secret Santa Assignment?", "Are " +
@@ -1554,7 +1554,7 @@ function initUserElement(liItem, userData) {
             };
           } else {
             let tempIndex = findUIDItemInArr(userData.secretSantaName, userArr, true);
-            userSecretSanta.innerHTML = "Secret Santa: " + findFirstNameInFullName(userArr[tempIndex].name);
+            userSecretSanta.innerHTML = "<b>Secret Santa:</b> " + findFirstNameInFullName(userArr[tempIndex].name);
             userSecretSantaBtn.innerHTML = "Hide Secret Santa Assignment";
             userSecretSantaBtn.onclick = function () {
               secretSantaAssignmentShown = false;
@@ -1565,7 +1565,7 @@ function initUserElement(liItem, userData) {
         }
       }
     } else {
-      userSecretSanta.innerHTML = "Secret Santa: Unavailable";
+      userSecretSanta.innerHTML = "<b>Secret Santa:</b> Unavailable";
       userSecretSantaBtn.innerHTML = "Secret Santa Button Unavailable";
       userSecretSantaBtn.onclick = function () {};
     }
@@ -1625,19 +1625,23 @@ function generateUserDataViewModal(dataToLoad, userData) {
   let dataToLoadType;
   let userUID = userData.uid;
 
-  if (typeof dataToLoad[0] == "string" &&
-      (dataToLoad[0].includes("Parent") || dataToLoad[0].includes("Child"))) {
-    dataToLoadType = "Relationship";
-  } else if (typeof dataToLoad[0] == "string" && !dataToLoad[0].includes("\",,,\"")) {
-    dataToLoadType = "Friend";
-  } else if (dataToLoad[0].data != undefined || dataToLoad[0].includes("\",,,\"")) {
-    dataToLoadType = "Notification";
-  } else {
+  try {
+    if (typeof dataToLoad[0] == "string" &&
+        (dataToLoad[0].includes("Parent") || dataToLoad[0].includes("Child"))) {
+      dataToLoadType = "Relationship";
+    } else if (typeof dataToLoad[0] == "string" && !dataToLoad[0].includes("\",,,\"")) {
+      dataToLoadType = "Friend";
+    } else if (dataToLoad[0].data != undefined || dataToLoad[0].includes("\",,,\"")) {
+      dataToLoadType = "Notification";
+    } else {
+      dataToLoadType = "Gift";
+    }
+  } catch (err) {
     dataToLoadType = "Gift";
   }
 
   userDataViewTitle.innerHTML = userData.name + "'s " + dataToLoadType + " List";
-  userDataViewText.innerHTML = "Total " + dataToLoadType + "s: " + dataToLoad.length;
+  userDataViewText.innerHTML = "<b>Total " + dataToLoadType + "s:</b> " + dataToLoad.length;
 
   closeModal(userModal);
 
@@ -1717,9 +1721,10 @@ function generateUserDataViewModal(dataToLoad, userData) {
 
 function generateModerationTicketViewModal() {
   let viewedTicketElem;
+  evaluateInitialTicketTimeline(moderationTicketViewLastTicket, moderationTicketViewOldestTicket);
 
   moderationTicketViewTitle.innerHTML = "Audit Log Ticket Preview";
-  moderationTicketViewText.innerHTML = "Total: " + ticketArr.length + ", New: " + newTicketArr.length;
+  moderationTicketViewText.innerHTML = "<b>Total:</b> " + ticketArr.length + ", <b>New:</b> " + newTicketArr.length;
 
   moderationTicketViewNavigate.onclick = function() {
     navigation(17); //moderationQueue
