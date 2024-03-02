@@ -522,12 +522,12 @@ function deploySecretSantaModal() {
   showSecretSantaAssignment.onclick = function() {
     if (hideSecretSantaName) {
       tempIndex = findUIDItemInArr(user.secretSantaName, userArr, true);
-      secretSantaNameText.innerHTML = "Your Secret Santa Assignment: " + userArr[tempIndex].name;
+      secretSantaNameText.innerHTML = "<b>Your Secret Santa Assignment:</b> " + userArr[tempIndex].name;
       secretSantaBtn.innerHTML = findFirstNameInFullName(userArr[tempIndex].name);
       showSecretSantaAssignment.innerHTML = "Hide Secret Santa Name";
       hideSecretSantaName = false;
     } else {
-      secretSantaNameText.innerHTML = "Your Secret Santa Assignment: (Hidden)";
+      secretSantaNameText.innerHTML = "<b>Your Secret Santa Assignment:</b> <i>(Hidden)</i>";
       secretSantaBtn.innerHTML = "View Your Assignment";
       showSecretSantaAssignment.innerHTML = "Show Secret Santa Name";
       hideSecretSantaName = true;
@@ -698,27 +698,11 @@ function initializeSecretSantaFamilyModalElements(familyData) {
         "Controls. Depending on what state Secret Santa is in, some buttons will not appear. Additional information " +
         "regarding the Secret Santa status is also provided for your benefit, like the current state, next state, and " +
         "current status.<br><br>" +
-        "The four total buttons are CHANGE STATE, SHUFFLE, AUTOMATIC CONTROL, and EXPORT.<br>" +
-        "->EXPORT: This button will export a list of signed up users (Ready state) or a list of the assigned users " +
-        "(Active state) in csv format.<br>" +
-        "->AUTOMATIC CONTROL: This button will automatically change Secret Santa states on predetermined dates, when active.<br>" +
-        "->SHUFFLE: This button will shuffle the family member's Secret Santa assignments.<br>" +
-        "->CHANGE STATE: This button will change the Secret Santa states.<br><br>" +
-        "The three Secret Santa states are as follows:<br>" +
-        "->Idle State:<br>" +
-        "--->This state is when Secret Santa is idle. Nothing is happening and each family member will not see any Secret " +
-        "Santa prompts. This state will also reset any Secret Santa settings for every family member!<br>" +
-        "->Ready State:<br>" +
-        "--->This state is when Secret Santa is ready to assign users. Each family member will see a \"Sign Up\" button " +
-        "on the \"Gift Lists\" page. Once enough users are signed up (" + familyMemberSignUpMinimum + "), then the " +
-        "next state can be activated.<br>" +
-        "->Active State:<br>" +
-        "--->This state is when Secret Santa is fully active. Each family member has been assigned a user to buy a gift for. " +
-        "Let the gifting begin!", 60);
+        "For more information, click/tap the Tutorial button on the Settings Page!", 20);
   };
   if (familyData.secretSantaState == 1) {
-    secretSantaStateText.innerHTML = "Secret Santa State: Idle";
-    secretSantaNextStateText.innerHTML = "Next Secret Santa State: Ready";
+    secretSantaStateText.innerHTML = "<i>Secret Santa State:</i> Idle";
+    secretSantaNextStateText.innerHTML = "<i>Next Secret Santa State:</i> Ready";
     secretSantaNextStateText.style.display = "block";
     secretSantaStatusText.style.display = "none";
     secretSantaShuffleBtn.style.display = "none";
@@ -736,13 +720,13 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     secretSantaShuffleBtn.onclick = function() {};
     secretSantaExportBtn.onclick = function() {};
   } else if (familyData.secretSantaState == 2) {
-    secretSantaStateText.innerHTML = "Secret Santa State: Ready";
-    secretSantaNextStateText.innerHTML = "Next Secret Santa State: Active";
+    secretSantaStateText.innerHTML = "<i>Secret Santa State:</i> Ready";
+    secretSantaNextStateText.innerHTML = "<i>Next Secret Santa State:</i> Active";
     secretSantaShuffleBtn.innerHTML = "Test Assignments";
     if (familyData.automaticSantaControl == 1) {
-      secretSantaStatusText.innerHTML = "Secret Santa Status: Assigning Names On " + assignDateShort;
+      secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> Assigning Names On " + assignDateShort;
     } else {
-      secretSantaStatusText.innerHTML = "Secret Santa Status: Ready To Assign Names";
+      secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> Ready To Assign Names";
     }
     secretSantaNextStateText.style.display = "block";
     secretSantaStatusText.style.display = "block";
@@ -777,13 +761,13 @@ function initializeSecretSantaFamilyModalElements(familyData) {
       }
     };
   } else if (familyData.secretSantaState == 3) {
-    secretSantaStateText.innerHTML = "Secret Santa State: Active";
-    secretSantaNextStateText.innerHTML = "Next Secret Santa State: Idle";
+    secretSantaStateText.innerHTML = "<i>Secret Santa State:</i> Active";
+    secretSantaNextStateText.innerHTML = "<i>Next Secret Santa State:</i> Idle";
     secretSantaShuffleBtn.innerHTML = "Shuffle";
     if (familyData.automaticSantaControl == 1) {
-      secretSantaStatusText.innerHTML = "Secret Santa Status: Activating On " + showDateShort;
+      secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> Activating On " + showDateShort;
     } else {
-      secretSantaStatusText.innerHTML = "Secret Santa Status: Nominal";
+      secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> Nominal";
     }
     secretSantaNextStateText.style.display = "block";
     secretSantaShuffleBtn.style.display = "inline-block";
@@ -1197,8 +1181,8 @@ function assignUsersToNames(familyMembers, testingInt) {
   }
 
   if (secretSantaStressTesting) {
-    if (secretSantaStatusText.innerHTML == "Secret Santa Status: Nominal" ||
-        secretSantaStatusText.innerHTML == "Secret Santa Status: Ready To Assign Names") {
+    if (secretSantaStatusText.innerHTML == "<i>Secret Santa Status:</i> Nominal" ||
+        secretSantaStatusText.innerHTML == "<i>Secret Santa Status:</i> Ready To Assign Names") {
       previousStatusValue = secretSantaStatusText.innerHTML;
     }
 
@@ -1270,8 +1254,8 @@ function setSecretSantaResultsText(processingResults, ignoreLastYearsAssignments
     12 Completion Step, Error Saving records to DB
    */
 
-  if (secretSantaStatusText.innerHTML == "Secret Santa Status: Nominal" ||
-      secretSantaStatusText.innerHTML == "Secret Santa Status: Ready To Assign Names") {
+  if (secretSantaStatusText.innerHTML == "<i>Secret Santa Status:</i> Nominal" ||
+      secretSantaStatusText.innerHTML == "<i>Secret Santa Status:</i> Ready To Assign Names") {
     previousStatusValue = secretSantaStatusText.innerHTML;
   }
 
@@ -1279,10 +1263,10 @@ function setSecretSantaResultsText(processingResults, ignoreLastYearsAssignments
     if (consoleOutput)
       console.log(fetchProcessingStatusText());
     if (processingResults == 0) {
-      secretSantaStatusText.innerHTML = "Secret Santa Status: " + "Successful Assignment After " + attemptCount +
+      secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> " + "Successful Assignment After " + attemptCount +
           " Tries!";
     } else {
-      secretSantaStatusText.innerHTML = "Secret Santa Status: " + "UNSUCCESSFUL Assignment After " + attemptCount +
+      secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> " + "UNSUCCESSFUL Assignment After " + attemptCount +
           " Tries... Check Console For More Details...";
       if (consoleOutput)
         console.log("Errors usually occur due to users that have too many restrictions... This can be resolved by " +
@@ -1291,7 +1275,7 @@ function setSecretSantaResultsText(processingResults, ignoreLastYearsAssignments
             "and/or increasing the amount of users in a given family.");
     }
   } else {
-    secretSantaStatusText.innerHTML = "Secret Santa Status: Stress Testing Enabled, " +
+    secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> Stress Testing Enabled, " +
         "Successful: " + successfulStressTest + " Failed: " + failedStressTest + " Total: " + totalStressTests;
   }
 
