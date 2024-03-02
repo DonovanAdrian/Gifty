@@ -343,13 +343,13 @@ function initModTicketElement (liItem, ticketData) {
 
   liItem.onclick = function (){
     ticketTitle.innerHTML = ticketTitleText;
-    ticketDetails.innerHTML = ticketData.details;
-    ticketUID.innerHTML = "UID: " + ticketData.uid;
-    ticketTime.innerHTML = "Time: " + localTime;
+    ticketDetails.innerHTML = "<b>Ticket Details:</b> " + ticketData.details;
+    ticketUID.innerHTML = "<b>UID:</b> " + ticketData.uid;
+    ticketTime.innerHTML = "<b>Time:</b> " + localTime;
     if (ticketData.location == "index") {
-      ticketLocation.innerHTML = "Location: login/index";
+      ticketLocation.innerHTML = "<b>Location:</b> login/index";
     } else {
-      ticketLocation.innerHTML = "Location: " + ticketData.location;
+      ticketLocation.innerHTML = "<b>Location:</b> " + ticketData.location;
     }
 
     deleteTicket.onclick = function () {
@@ -418,7 +418,7 @@ function saveTicketArrToCookie(){
 function generateModerationTicketDataModal() {
   evaluateInitialTicketTimeline(moderationTicketDataLastTicket, moderationTicketDataOldestTicket);
   moderationTicketDataTitle.innerHTML = "Audit Log Ticket Data";
-  moderationTicketDataText.innerHTML = "Total: " + ticketArr.length + " Ticket(s)";
+  moderationTicketDataText.innerHTML = "<b>Total:</b> " + ticketArr.length + " Ticket(s)";
 
   moderationTicketDataNavigate.onclick = function() {
     navigation(14); //moderation
