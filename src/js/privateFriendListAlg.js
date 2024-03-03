@@ -643,7 +643,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
 
   liItem.onclick = function (){
     if (pGiftMultiples) {
-      giftTitle.innerHTML = pGiftTitle + " (Multiple Purchase Gift)";
+      giftTitle.innerHTML = pGiftTitle + " <i>(Multiple Purchase Gift)</i>";
     } else {
       giftTitle.innerHTML = pGiftTitle;
     }
@@ -657,7 +657,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
         giftLinkRedirect(pGiftLink);
       };
     } else {
-      giftLink.innerHTML = "There was no link provided";
+      giftLink.innerHTML = "<i>There was no link provided</i>";
       giftLink.style.display = "none";
       giftLink.onclick = function() {};
     }
@@ -667,7 +667,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
       buttonBreakAdded = true;
     }
     if (pGiftWhere != "") {
-      giftWhere.innerHTML = giftInfoPrefix + "This can be found at: " + pGiftWhere;
+      giftWhere.innerHTML = giftInfoPrefix + "<b>This can be found at:</b> " + pGiftWhere;
     } else {
       giftWhere.innerHTML = "";
     }
@@ -678,7 +678,7 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
       buttonBreakAdded = true;
     }
     if (pGiftDescription != "") {
-      giftDescription.innerHTML = giftInfoPrefix + "Description: " + pGiftDescription;
+      giftDescription.innerHTML = giftInfoPrefix + "<b>Description:</b> " + pGiftDescription;
     } else {
       giftDescription.innerHTML = "";
     }
@@ -692,9 +692,9 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
       giftCreator.innerHTML = "";
     } else {
       if (pGiftData.creator == user.uid) {
-        giftCreator.innerHTML = giftInfoPrefix + "This gift was created by you!";
+        giftCreator.innerHTML = giftInfoPrefix + "<b>This gift was created by you!</b>";
       } else {
-        giftCreator.innerHTML = giftInfoPrefix + "Gift was created by " + pGiftCreator;
+        giftCreator.innerHTML = giftInfoPrefix + "<b>Gift was created by</b> " + pGiftCreator;
       }
     }
     giftInfoPrefix = "";
@@ -704,14 +704,14 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
     giftBought.style.display = "block";
     if(pGiftReceived == 1) {
       if(pGiftBuyer == "") {
-        giftBought.innerHTML = "This gift has been bought";
+        giftBought.innerHTML = "<i>This gift has been bought</i>";
       } else {
-        giftBought.innerHTML = "This gift has been bought by " +
-            fetchGiftReceivedSuffix(false, pGiftBuyer, pGiftReceivedBy);
+        giftBought.innerHTML = "<i>This gift has been bought by " +
+            fetchGiftReceivedSuffix(false, pGiftBuyer, pGiftReceivedBy) + "</i>";
       }
     } else {
       if (pGiftReceived == 0) {
-        giftBought.innerHTML = "This gift has not been bought yet";
+        giftBought.innerHTML = "<b>This gift has not been bought yet</b>";
       } else {
         if (pGiftReceived < -1) {
           giftBuyerList.style.display = "inline-block";
@@ -721,16 +721,16 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
           };
           giftBuyerList.innerHTML = "View Gift Buyers";
         } else {
-          giftBought.innerHTML = "This gift has been bought by " +
-              fetchGiftReceivedSuffix(true, pGiftBuyer, pGiftReceivedBy);
+          giftBought.innerHTML = "<i>This gift has been bought by " +
+              fetchGiftReceivedSuffix(true, pGiftBuyer, pGiftReceivedBy) + "</i>";
         }
       }
     }
 
     if (pGiftDate != "") {
-      giftCreationDate.innerHTML = "Created on: " + pGiftDate;
+      giftCreationDate.innerHTML = "<b>Created on:</b> " + pGiftDate;
     } else {
-      giftCreationDate.innerHTML = "Creation date not available";
+      giftCreationDate.innerHTML = "<i>Creation date not available</i>";
     }
 
     giftEdit.onclick = function(){
@@ -771,7 +771,7 @@ function generateBuyerDataViewModal(giftData) {
   let buyersToLoad = giftData.receivedBy;
 
   buyerDataViewTitle.innerHTML = giftData.title + "'s Buyers";
-  buyerDataViewText.innerHTML = "Total Buyers: " + buyersToLoad.length;
+  buyerDataViewText.innerHTML = "<b>Total Buyers:</b> " + buyersToLoad.length;
 
   closeModal(giftModal);
 
