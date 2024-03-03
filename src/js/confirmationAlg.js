@@ -308,8 +308,8 @@ function initInviteElement(liItem, inviteData) {
     }
 
     userNameFld.innerHTML = inviteData.name;
-    userUNameFld.innerHTML = "User Name: " + inviteData.userName;
-    userShareCodeFld.innerHTML = "Share Code: " + inviteData.shareCode;
+    userUNameFld.innerHTML = "<b>User Name:</b> " + inviteData.userName;
+    userShareCodeFld.innerHTML = "<b>Share Code:</b> " + inviteData.shareCode;
 
     userAcceptBtn.onclick = function(){
       addInvite(inviteData);
