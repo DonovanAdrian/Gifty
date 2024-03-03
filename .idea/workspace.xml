@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77ae722c-e8b2-463c-8bb6-522420418add" name="Default Changelist" comment="" />
+    <list default="true" id="77ae722c-e8b2-463c-8bb6-522420418add" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/js/friendListAlg.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/friendListAlg.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -397,7 +399,7 @@
       <workItem from="1689126743232" duration="56641000" />
       <workItem from="1694492578262" duration="523000" />
       <workItem from="1694571154241" duration="123768000" />
-      <workItem from="1706674016454" duration="26028000" />
+      <workItem from="1706674016454" duration="26639000" />
     </task>
     <servers />
   </component>

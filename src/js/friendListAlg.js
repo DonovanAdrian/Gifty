@@ -548,7 +548,7 @@ function initGiftElement(liItem, giftData, giftKey) {
 
   liItem.onclick = function () {
     if (giftMultiples) {
-      giftTitle.innerHTML = giftTitleData + " (Multiple Purchase Gift)";
+      giftTitle.innerHTML = giftTitleData + " <i>(Multiple Purchase Gift)</i>";
     } else {
       giftTitle.innerHTML = giftTitleData;
     }
@@ -562,7 +562,7 @@ function initGiftElement(liItem, giftData, giftKey) {
         giftLinkRedirect(giftLinkData);
       };
     } else {
-      giftLink.innerHTML = "There was no link provided";
+      giftLink.innerHTML = "<i>There was no link provided</i>";
       giftLink.style.display = "none";
       giftLink.onclick = function() {};
     }
@@ -572,7 +572,7 @@ function initGiftElement(liItem, giftData, giftKey) {
       buttonBreakAdded = true;
     }
     if (giftWhereData != "") {
-      giftWhere.innerHTML = giftInfoPrefix + "This can be found at: " + giftWhereData;
+      giftWhere.innerHTML = giftInfoPrefix + "<b>This can be found at:</b> " + giftWhereData;
     } else {
       giftWhere.innerHTML = "";
     }
@@ -583,7 +583,7 @@ function initGiftElement(liItem, giftData, giftKey) {
       buttonBreakAdded = true;
     }
     if (giftDescriptionData != "") {
-      giftDescription.innerHTML = giftInfoPrefix + "Description: " + giftDescriptionData;
+      giftDescription.innerHTML = giftInfoPrefix + "<b>Description:</b> " + giftDescriptionData;
     } else {
       giftDescription.innerHTML = "";
     }
@@ -594,14 +594,14 @@ function initGiftElement(liItem, giftData, giftKey) {
     giftBought.style.display = "block";
     if (giftReceivedData == 1) {
       if (giftBuyer == "") {
-        giftBought.innerHTML = "This gift has been bought";
+        giftBought.innerHTML = "<i>This gift has been bought</i>";
       } else {
-        giftBought.innerHTML = "This gift has been bought by " +
-            fetchGiftReceivedSuffix(false, giftBuyer, giftReceivedBy);
+        giftBought.innerHTML = "<i>This gift has been bought by " +
+            fetchGiftReceivedSuffix(false, giftBuyer, giftReceivedBy) + "</i>";
       }
     } else {
       if (giftReceivedData == 0) {
-        giftBought.innerHTML = "This gift has not been bought yet";
+        giftBought.innerHTML = "<b>This gift has not been bought yet</b>";
       } else {
         if (giftReceivedData < -1) {
           giftBuyerList.style.display = "inline-block";
@@ -611,16 +611,16 @@ function initGiftElement(liItem, giftData, giftKey) {
           };
           giftBuyerList.innerHTML = "View Gift Buyers";
         } else {
-          giftBought.innerHTML = "This gift has been bought by " +
-              fetchGiftReceivedSuffix(true, giftBuyer, giftReceivedBy);
+          giftBought.innerHTML = "<i>This gift has been bought by " +
+              fetchGiftReceivedSuffix(true, giftBuyer, giftReceivedBy) + "</i>";
         }
       }
     }
 
     if (giftDate != "") {
-      giftCreationDate.innerHTML = "Created on: " + giftDate;
+      giftCreationDate.innerHTML = "<b>Created on:</b> " + giftDate;
     } else {
-      giftCreationDate.innerHTML = "Creation date not available";
+      giftCreationDate.innerHTML = "<i>Creation date not available</i>";
     }
 
     giftBuy.onclick = function(){
@@ -643,7 +643,7 @@ function generateBuyerDataViewModal(giftData) {
   let buyersToLoad = giftData.receivedBy;
 
   buyerDataViewTitle.innerHTML = giftData.title + "'s Buyers";
-  buyerDataViewText.innerHTML = "Total Buyers: " + buyersToLoad.length;
+  buyerDataViewText.innerHTML = "<b>Total Buyers:</b> " + buyersToLoad.length;
 
   closeModal(giftModal);
 
