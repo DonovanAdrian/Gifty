@@ -136,6 +136,7 @@ window.onload = function instantiate() {
             if (data.key == user.uid) {
               user = data.val();
               checkNotifications();
+              updateFriendNav(user.friends);
             }
             saveCriticalCookies();
           }
@@ -158,6 +159,10 @@ window.onload = function instantiate() {
             if (consoleOutput)
               console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
+
+            if (initializedUsers.includes(data.key)) {
+              changeFriendElement(data.key);
+            }
 
             if(data.key == user.uid){
               user = data.val();
@@ -633,7 +638,8 @@ function generatePrivateMessageDialog(userData) {
 
   sendMsg.onclick = function (){
     if(privateMessageInp.value.includes(",,,")){
-      deployNotificationModal(true, "Message Error!", "Please do not use commas in the message. Thank you!");
+      deployNotificationModal(true, "Message Error!", "Please do not use commas " +
+          "in the message. Thank you!");
     } else {
       message = generateNotificationString(user.uid, "", privateMessageInp.value, "");
       addPrivateMessageToDB(userData, message);
@@ -662,7 +668,7 @@ function generatePrivateMessageDialog(userData) {
 
 function addPrivateMessageToDB(userData, message) {
   updateUserScore(user, sendPrivateMessageScore);
-  updateUserScore(user, sendPrivateMessageScore);
+
   closeModal(privateMessageModal);
   addNotificationToDB(userData, message);
   successfulDBOperationTitle = "Message Sent!";
