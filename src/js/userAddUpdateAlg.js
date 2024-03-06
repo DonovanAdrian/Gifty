@@ -466,6 +466,12 @@ function updateUserToDB(){
     if (user.secretSanta == undefined) {
       user.secretSanta = 0;
     }
+    if (user.hideExtraData == undefined) {
+      user.hideExtraData = 1;
+    }
+    if (user.listedUserData == undefined) {
+      user.listedUserData = "None";
+    }
 
     firebase.database().ref("users/" + user.uid).update({
       name: nameField.value,
@@ -492,7 +498,9 @@ function updateUserToDB(){
       secretSanta: user.secretSanta,
       secretSantaName: user.secretSantaName,
       secretSantaNamePrior: user.secretSantaNamePrior,
-      yearlyReview: user.yearlyReview
+      yearlyReview: user.yearlyReview,
+      hideExtraData: user.hideExtraData,
+      listedUserData: user.listedUserData
     });
 
     if (user.pin != undefined) {
