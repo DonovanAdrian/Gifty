@@ -449,14 +449,6 @@ function queryModeratorData() {
             listedUserData: "None"
           });
         });
-      } else {
-        if (consoleOutput)
-          console.log("Initializing Moderator Settings In DB");
-
-        firebase.database().ref("moderatorSettings/").update({
-          listedUserData: "None"
-        });
-        fetchModeratorSettings(moderatorSettings);
       }
     });
   };
