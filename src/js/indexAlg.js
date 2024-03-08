@@ -27,6 +27,8 @@ let loginBool = false;
 let banOverride = false;
 let allowLogin = true;
 let displayUserText = false;
+let initializedDatabaseCheck = false;
+let initializedDatabaseCheckAlt = false;
 
 let config;
 let signUpTimerInterval;
@@ -217,7 +219,7 @@ function loginQuery() {
 
   let fetchLogin = function (postRef) {
     postRef.once("value").then(function(snapshot) {
-      if(snapshot.exists()) {
+      if(snapshot.exists() || initializedDatabaseCheck) {
         clearInterval(commonLoadingTimer);
         clearInterval(offlineTimer);
         postRef.on("child_added", function (data) {
@@ -295,6 +297,7 @@ function loginQuery() {
         });
         userLimit = 50;
         initializeLoginBtns();
+        initializedDatabaseCheck = true;
         fetchLogin(loginInitial);
       }
     });
@@ -330,7 +333,7 @@ function initializeLoginBtnPlatform() {
 function databaseQuery() {
   let fetchPosts = function (postRef) {
     postRef.once("value").then(function(snapshot) {
-      if (snapshot.exists()) {
+      if (snapshot.exists() || initializedDatabaseCheckAlt) {
         postRef.on("child_added", function (data) {
           if (findUIDItemInArr(data.key, userArr, true) == -1)
             userArr.push(data.val());
@@ -362,6 +365,8 @@ function databaseQuery() {
         lastLoginStatus = "Create A New User First!";
         allowLogin = false;
         loginDisabledMsg = newGiftyMessage;
+        initializedDatabaseCheckAlt = true;
+        fetchPosts(userInitial);
       }
     });
   };
