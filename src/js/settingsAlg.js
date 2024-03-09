@@ -10,6 +10,8 @@ let ticketArr = [];
 let settingsUserScore = 0;
 let settingsUserScoreLimit = 10;
 
+let initializedDatabaseCheck = false;
+
 let localListedUserData;
 let usernameInfo;
 let usernameDisplay;
@@ -317,8 +319,6 @@ function initializeFamilyDBCheck(){
               saveCriticalCookies();
             }
           });
-        } else {
-          deployListEmptyNotification("No Families Found!");
         }
       });
     };
@@ -369,7 +369,7 @@ function queryModeratorData() {
 
   let fetchModerationQueue = function (postRef) {
     postRef.once("value").then(function(snapshot) {
-      if (snapshot.exists()) {
+      if (snapshot.exists() || initializedDatabaseCheck) {
         postRef.on("child_added", function (data) {
           let i = findUIDItemInArr(data.key, ticketArr, true);
           if(i != -1) {
@@ -409,8 +409,9 @@ function queryModeratorData() {
           }
         });
       } else {
-        firebase.database().ref("maintenance/").update({});
+        ticketArr = [];
         saveTicketArrToCookie();
+        initializedDatabaseCheck = true;
         fetchModerationQueue(moderationTickets);
       }
     });
