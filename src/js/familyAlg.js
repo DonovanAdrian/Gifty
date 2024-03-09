@@ -8,6 +8,8 @@ let familyElements = [];
 let familyMemberArr = [];
 let loadedFamilyMembersArr = [];
 
+let initializedDatabaseCheck = false;
+
 let settingsNote;
 let createFamilyBtn;
 let familyModal;
@@ -203,7 +205,7 @@ window.onload = function instantiate() {
 
     let fetchFamilies = function (postRef){
       postRef.once("value").then(function(snapshot) {
-        if (snapshot.exists()) {
+        if (snapshot.exists() || initializedDatabaseCheck) {
           postRef.on("child_added", function (data) {
             let i = findUIDItemInArr(data.val().uid, familyArr, true);
             if (i == -1) {
@@ -244,6 +246,8 @@ window.onload = function instantiate() {
           });
         } else {
           deployListEmptyNotification("No Families Found!");
+          initializedDatabaseCheck = true;
+          fetchFamilies(familyInitial);
         }
       });
     };
