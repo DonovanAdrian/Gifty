@@ -10,6 +10,8 @@ let ticketArr = [];
 
 let moderationSet = 1;
 
+let initializedDatabaseCheck = false;
+
 let ticketCount;
 let nukeTickets;
 let ticketModal;
@@ -168,7 +170,7 @@ window.onload = function instantiate() {
 
     let fetchModerationQueue = function (postRef) {
       postRef.once("value").then(function(snapshot) {
-        if (snapshot.exists()) {
+        if (snapshot.exists() || initializedDatabaseCheck) {
           postRef.on("child_added", function (data) {
             let i = findUIDItemInArr(data.key, ticketArr, true);
             if(i != -1) {
@@ -213,10 +215,10 @@ window.onload = function instantiate() {
             }
           });
         } else {
-          firebase.database().ref("maintenance/").update({});
           deployListEmptyNotification("There Are No Items In The Moderation Queue!");
           ticketArr = [];
           saveTicketArrToCookie();
+          initializedDatabaseCheck = true;
           fetchModerationQueue(moderationTickets);
         }
       });
