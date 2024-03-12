@@ -21,6 +21,7 @@ let userLimit = 0;
 let showHideUserDataBool = false;
 let userUpdateLocal = false;
 let secretSantaAssignmentShown = false;
+let initializedDatabaseCheck = false;
 let allowLogin = null;
 
 let secretSantaAssignmentShownUser = "";
@@ -168,6 +169,24 @@ function checkTicketCookie() {
     evaluateInitialTicketTimeline(moderationTicketViewLastTicket, moderationTicketViewOldestTicket);
     initializeTicketCount(0);
   } catch (err) {}
+}
+
+function initializeListedUserData(listedUserDataInput, initializeCurrentUser) {
+  localListedUserData = listedUserDataInput;
+  if (listedUserDataInput == undefined) {
+    listedUserDataInput = "None";
+    updateDBWithShowUserData(listedUserDataInput);
+  }
+
+  if (initializeCurrentUser == undefined)
+    initializeCurrentUser = false;
+
+  if (initializeCurrentUser)
+    updateDBWithShowUserData(listedUserDataInput);
+
+  initializeShowUserData(listedUserDataInput);
+  updateInitializedUsers();
+  saveListedUserDataToCookie();
 }
 
 window.onload = function instantiate() {
@@ -329,6 +348,7 @@ window.onload = function instantiate() {
     generateUserOptionsModal();
     initializeBackBtn();
     initializeInfoIcons();
+    initializeListedUserData(user.listedUserData);
   } catch (err) {
     sendCriticalInitializationError(err);
   }
@@ -357,7 +377,7 @@ window.onload = function instantiate() {
 
     let fetchModerationQueue = function (postRef) {
       postRef.once("value").then(function(snapshot) {
-        if (snapshot.exists()) {
+        if (snapshot.exists() || initializedDatabaseCheck) {
           postRef.on("child_added", function (data) {
             let i = findUIDItemInArr(data.key, ticketArr, true);
             if(i != -1) {
@@ -403,10 +423,10 @@ window.onload = function instantiate() {
             }
           });
         } else {
-          firebase.database().ref("maintenance/").update({});
           ticketArr = [];
           saveTicketArrToCookie();
           nukeQuickModerationTicketElem();
+          initializedDatabaseCheck = true;
           fetchModerationQueue(moderationTickets);
         }
       });
@@ -421,9 +441,9 @@ window.onload = function instantiate() {
 
             if (data.key == "listedUserData") {
               localListedUserData = data.val();
-              initializeShowUserData(data.val());
-              updateInitializedUsers();
-              saveListedUserDataToCookie();
+              initializeListedUserData(localListedUserData, true);
+              firebase.database().ref("moderatorSettings/").child("listedUserData").remove();
+              console.log("Added, correcting listedUserData source to current moderator.");
             }
           });
 
@@ -432,26 +452,11 @@ window.onload = function instantiate() {
 
             if (data.key == "listedUserData") {
               localListedUserData = data.val();
-              initializeShowUserData(data.val());
-              updateInitializedUsers();
-              saveListedUserDataToCookie();
+              initializeListedUserData(localListedUserData, true);
+              firebase.database().ref("moderatorSettings/").child("listedUserData").remove();
+              console.log("Changed, correcting listedUserData source to current moderator.");
             }
           });
-
-          postRef.on("child_removed", function (data) {
-            console.log(data.key + " removed!");
-
-            firebase.database().ref("moderatorSettings/").update({
-              listedUserData: "None"
-            });
-          });
-        } else {
-          console.log("Initializing Moderator Settings In DB");
-
-          firebase.database().ref("moderatorSettings/").update({
-            listedUserData: "None"
-          });
-          fetchModeratorSettings(moderatorSettings);
         }
       });
     };
@@ -477,6 +482,9 @@ window.onload = function instantiate() {
             if (data.key == user.uid) {
               user = data.val();
               updateFriendNav(user.friends);
+              if (localObjectChanges.includes("listedUserData")) {
+                initializeListedUserData(user.listedUserData);
+              }
             }
             saveCriticalCookies();
           }
@@ -511,6 +519,9 @@ window.onload = function instantiate() {
             if (data.key == user.uid) {
               user = data.val();
               updateFriendNav(user.friends);
+              if (localObjectChanges.includes("listedUserData")) {
+                initializeListedUserData(user.listedUserData);
+              }
               if(consoleOutput)
                 console.log("Current User Updated");
             }
@@ -2042,10 +2053,13 @@ function initializeUserListDropdownOptions(refreshBool) {
   }
 }
 
-function updateDBWithShowUserData(showUserDataItem) {
-  firebase.database().ref("moderatorSettings/").update({
-    listedUserData: showUserDataItem
+function updateDBWithShowUserData(listedUserDataInput) {
+  firebase.database().ref("users/" + user.uid).update({
+    listedUserData: listedUserDataInput
   });
+
+  user.listedUserData = listedUserDataInput;
+  saveCriticalCookies();
 }
 
 function updateInitializedUsers(){
@@ -2300,7 +2314,7 @@ function updateInitializedUsers(){
 function initializeTicketCount(initializeInt) {//0 is initializing, 1 is updates
   let ticketCountString = "";
 
-  if (initializeInt == 1) {
+  if (initializeInt == 1 && ticketArr.length > 0) {
     ticketCount.style.background = "#3be357";
     ticketCount.onmouseover = function () {
       ticketCount.style.backgroundColor = "#3be357";
