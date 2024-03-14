@@ -15,29 +15,76 @@
   background: #870b0b;
   animation-duration: 600ms;
   -webkit-animation-duration: 600ms;
+  -moz-animation-duration: 600ms;
+  -o-animation-duration: 600ms;
+  animation-fill-mode: both;
+  -webkit-animation-fill-mode: both;
+  -moz-animation-fill-mode: both;
+  -o-animation-fill-mode: both;
+  animation-iteration-count: initial;
+  -webkit-animation-iteration-count: initial;
+  -moz-animation-iteration-count: initial;
+  -o-animation-iteration-count: initial;
   animation-timing-function: ease-in-out;
+  -webkit-animation-timing-function: ease-in-out;
+  -moz-animation-timing-function: ease-in-out;
+  -o-animation-timing-function: ease-in-out;
 }
 
 @keyframes fade-out {
-  from { opacity: 1 }
-  to { opacity: 0 }
+  from { opacity: 100% }
+  to { opacity: 0% }
+}
+
+@-webkit-keyframes fade-out {
+  from { opacity: 100% }
+  to { opacity: 0% }
+}
+
+@-moz-keyframes fade-out {
+  from { opacity: 100% }
+  to { opacity: 0% }
+}
+
+@-o-keyframes fade-out {
+  from { opacity: 100% }
+  to { opacity: 0% }
 }
 
 @keyframes fade-in {
-  from { opacity: 0 }
-  to { opacity: 1 }
+  from { opacity: 0% }
+  to { opacity: 100% }
+}
+
+@-webkit-keyframes fade-in {
+  from { opacity: 0% }
+  to { opacity: 100% }
+}
+
+@-moz-keyframes fade-in {
+  from { opacity: 0% }
+  to { opacity: 100% }
+}
+
+@-o-keyframes fade-in {
+  from { opacity: 0% }
+  to { opacity: 100% }
 }
 
 #fader.fade-out {
-  opacity: 0;
+  opacity: 0%;
   animation-name: fade-out;
   -webkit-animation-name: fade-out;
+  -moz-animation-name: fade-out;
+  -o-animation-name: fade-out;
 }
 
 #fader.fade-in {
-  opacity: 1;
+  opacity: 100%;
   animation-name: fade-in;
   -webkit-animation-name: fade-in;
+  -moz-animation-name: fade-in;
+  -o-animation-name: fade-in;
 }
 
 body {
