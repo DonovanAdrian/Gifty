@@ -1456,8 +1456,7 @@ function navigation(navNum, loginOverride) {
 
         try {
           sessionStorage.setItem("userArr", JSON.stringify(userArr));
-        } catch (err) {
-        }
+        } catch (err) {}
       } else if (loginOverride == undefined && privateUserOverride) {
         sessionStorage.setItem("privateList", JSON.stringify(giftUser));
         sessionStorage.setItem("validUser", JSON.stringify(giftUser));
@@ -1513,7 +1512,6 @@ function navigation(navNum, loginOverride) {
       }
       fader.classList.add("fade-in");
     }
-  } else {
   }
   navigationSuppressionTimer();
 }
