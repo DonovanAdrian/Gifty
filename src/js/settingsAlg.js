@@ -89,7 +89,7 @@ window.onload = function instantiate() {
     verifyElementIntegrity(settingsElements);
 
     giftyVersionIdentifier.innerHTML = "Version: " + giftyVersion;
-    giftyCopyrightIdentifier.innerHTML = "©Donovan Adrian 2023";
+    giftyCopyrightIdentifier.innerHTML = "©Donovan Adrian 2024";
 
     initializeEditBtn();
     initializeFAQBtn();
