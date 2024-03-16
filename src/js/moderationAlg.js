@@ -697,13 +697,15 @@ function initializeBackBtn() {
 function initializeInfoIcons() {
   nukeNoteInfoIcon.onclick = function () {
     deployNotificationModal(true, "Remove All User Notifications", "This button " +
-        "allows you to remove all the user's notifications. This cannot be reversed!", 6);
+        "allows you to remove all the user's notifications. This cannot be reversed!" +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 10);
   };
 
   nukeScoreInfoIcon.onclick = function () {
     deployNotificationModal(true, "Reset User Scores", "This button allows you to " +
         "reset all the user's scores. This cannot be reversed!" +
-        "<br><br>Note: User scores are an arbitrary means to tell how active a user is.", 10);
+        "<br><br>Note: User scores are an arbitrary means to tell how active a user is." +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 15);
   };
 
   giftLinkInfoIcon.onclick = function () {
@@ -713,45 +715,52 @@ function initializeInfoIcons() {
         "<br><br>For example, to allow www.barnesandnoble.com, specify the area inbetween \"www\" and " +
         "\"com\"." +
         "<br><br>To allow more than one website, use this same principle in a comma-separated string, i.e., " +
-        "amazon,amzn,bestbuy,barnesandnoble", 15);
+        "amazon,amzn,bestbuy,barnesandnoble" +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 20);
   };
 
   limitsInfoIcon.onclick = function () {
     deployNotificationModal(true, "Database Limiter", "This button allows you to " +
         "select database limits if you happen to be on a limited budget for database storage data. (For example) " +
         "Please note that if you set a limit of 15 users and your database has 20, users will NOT be deleted. " +
-        "However, no users will be able to create an account except for a moderator with their respective credentials.", 12);
+        "However, no users will be able to create an account except for a moderator with their respective credentials." +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 20);
   };
 
   extraDataInfoIcon.onclick = function () {
     deployNotificationModal(true, "Hide Extraneous Data Points", "This button will " +
         "hide any extra data points that tend to clutter the moderation user interface, including \"quick-info\" options. " +
-        "Please note that this setting is per-moderator, so don't worry about messing with hiding data for other moderators.",
-        10);
+        "Please note that this setting is per-moderator, so don't worry about messing with hiding data for other moderators." +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.",
+        20);
   };
 
   userListInfoIcon.onclick = function () {
     deployNotificationModal(true, "Supplemental User Info", "This dropdown menu " +
         "allows you to pick what quick-info you would like to view upon loading the user list. Please note that this " +
-        "setting is global to all moderators, so this will affect what other moderators see.", 8);
+        "setting is global to all moderators, so this will affect what other moderators see." +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 15);
   };
 
   globalNoteInfoIcon.onclick = function () {
     deployNotificationModal(true, "Global Message", "This button allows you " +
-        "to send a global notification to all of your users.", 6);
+        "to send a global notification to all of your users." +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 15);
   };
 
   loginFxnInfoIcon.onclick = function () {
     deployNotificationModal(true, "Login Functionality", "This button allows " +
         "you to disable and enable login functionality if significant issues were to occur. Please note that " +
-        "moderators are still able to login even if login functionality is disabled.", 10);
+        "moderators are still able to login even if login functionality is disabled." +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 20);
   };
 
   listLimitInfoIcon.onclick = function () {
     deployNotificationModal(true, "Parent/Child List Access", "Since " +
         "the parent/child feature is intended to prevent infants from being assigned to their parents, this button " +
         "would optionally allow you to prevent parents from seeing what has been bought on their infant's list and " +
-        "vis versa if the parent is accessing their infants account.", 10);
+        "vis versa if the parent is accessing their infants account." +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 25);
   };
 }
 
@@ -1266,7 +1275,11 @@ function initUserElement(liItem, userData) {
   liItem.className = "gift";
 
   liItem.onclick = function () {
-    userName.innerHTML = userData.name;
+    if (userData.ban == 1) {
+      userName.innerHTML = userData.name + " - (BANNED)";
+    } else {
+      userName.innerHTML = userData.name;
+    }
     userUserName.innerHTML = "<b>Username:</b> " + userData.userName;
     if (userData.lastLogin == "Never Logged In") {
       userLastLogin.innerHTML = "<b>Last Login:</b> Never Logged In";
@@ -1421,10 +1434,17 @@ function initUserElement(liItem, userData) {
     }
 
     if (user.hideExtraData == 0) {
+      let tempYearlyReview = userData.yearlyReview.toString();
       userUID.innerHTML = "<b>UID:</b> " + userData.uid;
       userUID.style.display = "block";
 
-      userLastReview.innerHTML = "<b>Last Yearly Review:</b> " + userData.yearlyReview;
+      if (tempYearlyReview.includes("*")) {
+        userLastReview.innerHTML = "<b>Last Yearly Review:</b> " + userData.yearlyReview.slice(0, 4) + " <i>(Dismissed Popup)</i>";
+      } else {
+        userLastReview.innerHTML = "<b>Last Yearly Review:</b> " + userData.yearlyReview;
+      }
+
+
       userLastReview.style.display = "block";
 
       userFamilyName.style.display = "block";
