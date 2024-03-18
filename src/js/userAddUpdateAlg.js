@@ -58,8 +58,11 @@ window.onload = function instantiate() {
     verifyElementIntegrity(userAddUpdateElements);
 
     if (user != null) {
-      initializeBackBtn();
+      initializeBackBtn(5, true);
       initializeDeleteUserBtn();
+    } else {
+      initializeBackBtn(1, false);
+      backBtn.innerHTML = "Cancel Account Creation";
     }
 
     initializeUpdateUserBtn();
@@ -197,13 +200,13 @@ window.onload = function instantiate() {
   }
 };
 
-function initializeBackBtn() {
+function initializeBackBtn(navigationInt, loginOverride) {
   backBtn.style.display = "block";
   backBtn.style.left = "50%";
   backBtn.style.transform = "translate(-50%)";
   backBtn.innerHTML = "Loading...";
   backBtn.onclick = function() {
-    navigation(5, true);//Settings
+    navigation(navigationInt, loginOverride);
   };
 }
 
@@ -569,7 +572,9 @@ function addUserToDB(){
       secretSanta: 0,
       secretSantaName: "",
       secretSantaNamePrior: "",
-      yearlyReview: currentYear
+      yearlyReview: currentYear,
+      hideExtraData: 1,
+      listedUserData: "None"
     });
 
     btnUpdate.innerHTML = "Please Wait...";
