@@ -36,6 +36,7 @@ let giftTitleInp;
 let giftWhereInp;
 let giftLinkInp;
 let multiplePurchases;
+let multipleSuppText;
 let titleInfoIcon;
 let urlInfoIcon;
 let whereInfoIcon;
@@ -164,6 +165,7 @@ window.onload = function instantiate() {
       giftWhereInp = document.getElementById("giftWhereInp");
       giftLinkInp = document.getElementById("giftLinkInp");
       multiplePurchases = document.getElementById("multiplePurchases");
+      multipleSuppText = document.getElementById("multipleSuppText");
       titleInfoIcon = document.getElementById("titleInfoIcon");
       urlInfoIcon = document.getElementById("urlInfoIcon");
       whereInfoIcon = document.getElementById("whereInfoIcon");
@@ -179,9 +181,9 @@ window.onload = function instantiate() {
       commonInitialization();
 
       giftAddUpdateElements = [offlineModal, offlineSpan, confirmModal, closeConfirmModal, confirmTitle, confirmContent,
-        confirmBtn, denyBtn, giftDescriptionInp, giftTitleInp, giftWhereInp, giftLinkInp, multiplePurchases, titleInfoIcon,
-        urlInfoIcon, whereInfoIcon, descriptionInfoIcon, multipleInfoIcon, updateGift, homeNote, listNote, inviteNote,
-        notificationModal, notificationTitle, notificationInfo, noteSpan];
+        confirmBtn, denyBtn, giftDescriptionInp, giftTitleInp, giftWhereInp, giftLinkInp, multiplePurchases,
+        multipleSuppText, titleInfoIcon, urlInfoIcon, whereInfoIcon, descriptionInfoIcon, multipleInfoIcon, updateGift,
+        homeNote, listNote, inviteNote, notificationModal, notificationTitle, notificationInfo, noteSpan];
 
       verifyElementIntegrity(giftAddUpdateElements);
 
@@ -203,6 +205,7 @@ window.onload = function instantiate() {
       initializeInfoIcons();
       initializeBackBtn();
       initializeGiftAddBtn();
+      initializeMultiplesBox();
     } catch (err) {
       sendCriticalInitializationError(err);
     }
@@ -322,11 +325,13 @@ window.onload = function instantiate() {
   }
 };
 
-function initializeBackBtn() {
-  backBtn.innerHTML = buttonText;
-
-  backBtn.onclick = function() {
-    navigation(giftNavigationInt);//PrivateFriendList/Home
+function initializeMultiplesBox() {
+  multiplePurchases.onclick = function () {
+    if (multiplePurchases.checked) {
+      multipleSuppText.style.display = "inline-block";
+    } else {
+      multipleSuppText.style.display = "none";
+    }
   };
 }
 
@@ -350,6 +355,14 @@ function initializeGiftAddBtn() {
       updateGift.onclick = function () {};
     };
   }
+}
+
+function initializeBackBtn() {
+  backBtn.innerHTML = buttonText;
+
+  backBtn.onclick = function() {
+    navigation(giftNavigationInt);//PrivateFriendList/Home
+  };
 }
 
 function initializeInfoIcons() {
