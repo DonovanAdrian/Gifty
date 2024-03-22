@@ -28,6 +28,12 @@ let privateMsgTitle;
 let privateMessageInp;
 let sendMsg;
 let cancelMsg;
+let confirmModal;
+let closeConfirmModal;
+let confirmTitle;
+let confirmContent;
+let confirmBtn;
+let denyBtn;
 
 
 
@@ -70,6 +76,12 @@ window.onload = function instantiate() {
     privateMessageInp = document.getElementById("privateMessageInp");
     sendMsg = document.getElementById("sendMsg");
     cancelMsg = document.getElementById("cancelMsg");
+    confirmModal = document.getElementById("confirmModal");
+    closeConfirmModal = document.getElementById("closeConfirmModal");
+    confirmTitle = document.getElementById("confirmTitle");
+    confirmContent = document.getElementById("confirmContent");
+    confirmBtn = document.getElementById("confirmBtn");
+    denyBtn = document.getElementById("denyBtn");
 
     getCurrentUser();
     commonInitialization();
@@ -77,11 +89,12 @@ window.onload = function instantiate() {
     notificationsElements = [dataListContainer, nukeNotifications, offlineModal, offlineSpan, inviteNote,
       notificationModal, notificationTitle, notificationInfo, noteSpan, privateMessageModal, noteViewModal, testData,
       closeNoteViewModal, notificationViewTitle, notificationViewDetails, notificationViewPage, notificationViewDelete,
-      privateMessageSpan, privateMsgTitle, privateMessageInp, sendMsg, cancelMsg];
+      privateMessageSpan, privateMsgTitle, privateMessageInp, sendMsg, cancelMsg, confirmModal, closeConfirmModal,
+      confirmTitle, confirmContent, confirmBtn, denyBtn];
 
     verifyElementIntegrity(notificationsElements);
 
-    userBase = firebase.database().ref("users/");
+    userInitial = firebase.database().ref("users/");
     userReadNotifications = firebase.database().ref("users/" + user.uid + "/readNotifications");
     userNotifications = firebase.database().ref("users/" + user.uid + "/notifications");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
@@ -169,6 +182,7 @@ window.onload = function instantiate() {
               user = data.val();
               updateFriendNav(user.friends);
             }
+            saveCriticalCookies();
           }
         } else {
           userArr.push(data.val());
@@ -177,6 +191,7 @@ window.onload = function instantiate() {
             user = data.val();
             updateFriendNav(user.friends);
           }
+          saveCriticalCookies();
         }
       });
 
@@ -198,6 +213,7 @@ window.onload = function instantiate() {
               if(consoleOutput)
                 console.log("Current User Updated");
             }
+            saveCriticalCookies();
           }
         }
       });
@@ -215,11 +231,11 @@ window.onload = function instantiate() {
     fetchReadNotifications(userReadNotifications);
     fetchNotifications(userNotifications);
     fetchInvites(userInvites);
-    fetchData(userBase);
+    fetchData(userInitial);
 
     listeningFirebaseRefs.push(userNotifications);
     listeningFirebaseRefs.push(userInvites);
-    listeningFirebaseRefs.push(userBase);
+    listeningFirebaseRefs.push(userInitial);
   }
 };
 
@@ -422,41 +438,41 @@ function initNotificationElement(liItem, notificationPage, notificationData, not
       }
     }
     if (notificationPage == "privateMessage" && friendUserData != -1) {
-      notificationViewPage.innerHTML = "To reply to this message, click here!";
+      notificationViewPage.innerHTML = "<b>To reply to this message, click here!</b>";
       notificationViewPage.onclick = function(){
         generatePrivateMessageDialog(friendUserData);
       };
     } else if (notificationPage == "globalNotification"){
-      notificationViewPage.innerHTML = "Please send a message to a moderator if there are any questions or concerns.";
+      notificationViewPage.innerHTML = "<i>Please send a message to a moderator if there are any questions or concerns.</i>";
       notificationViewPage.onclick = function(){};
     } else if (notificationPage == "invites.html") {
-      notificationViewPage.innerHTML = "Click here to access your invites!";
+      notificationViewPage.innerHTML = "<b>Click here to access your invites!</b>";
       notificationViewPage.onclick = function () {
         navigation(11);//Confirmation
       };
     } else if (notificationPage == "friendList.html" && friendUserData != -1) {
-      notificationViewPage.innerHTML = "Click here to access their friend list!";
+      notificationViewPage.innerHTML = "<b>Click here to access their friend list!</b>";
       notificationViewPage.onclick = function () {
         sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));
         navigation(9);//FriendList
       };
     } else if (notificationPage == "privateFriendList.html" && friendUserData != -1) {
-      notificationViewPage.innerHTML = "Click here to access their private friend list!";
+      notificationViewPage.innerHTML = "<b>Click here to access their private friend list!</b>";
       notificationViewPage.onclick = function () {
         sessionStorage.setItem("validGiftUser", JSON.stringify(friendUserData));
         navigation(10);//PrivateFriendList
       };
     } else if (notificationPage == "deleteGift") {
-      notificationViewPage.innerHTML = "If this has been done in error, please contact the gift owner.";
+      notificationViewPage.innerHTML = "<i>If this has been done in error, please contact the gift owner.</i>";
       notificationViewPage.onclick = function () {};
     } else if (notificationPage == "deleteGiftPrivate") {
-      notificationViewPage.innerHTML = "If this has been done in error, please contact the person who deleted " +
-          "the gift.";
+      notificationViewPage.innerHTML = "<i>If this has been done in error, please contact the person who deleted " +
+          "the gift.</i>";
       notificationViewPage.onclick = function () {};
     } else {
       if(consoleOutput)
         console.log("Notification Page Error, 2");
-      notificationViewPage.innerHTML = "Alternatively, send an email to Gifty support on the Settings > FAQ page!";
+      notificationViewPage.innerHTML = "<i>Alternatively, send an email to Gifty support on the Settings > FAQ page!</i>";
       notificationViewPage.onclick = function () {
         navigation(12);//FAQ
       };
@@ -509,7 +525,7 @@ function generatePrivateMessageDialog(userData) {
   privateMessageInp.placeholder = "Hey! Just to let you know...";
 
   sendMsg.onclick = function (){
-    message = generatePrivateMessage(user.uid, privateMessageInp.value);
+    message = generateNotificationString(user.uid, "", privateMessageInp.value, "");
     addPrivateMessageToDB(userData, message);
     privateMessageInp.value = "";
     closeModal(privateMessageModal);
@@ -526,25 +542,14 @@ function generatePrivateMessageDialog(userData) {
   };
 }
 
-function generatePrivateMessage(userUID, message){
-  return userUID + "@#$:" + message;
-}
-
 function addPrivateMessageToDB(userData, message) {
-  let userNotificationArr = [];
-  if(userData.notifications != undefined) {
-    userNotificationArr = userData.notifications;
-  }
+  updateUserScore(user, sendPrivateMessageScore);
 
-  userNotificationArr.push(message);
-
-  if(userData.notifications == undefined) {
-    firebase.database().ref("users/" + userData.uid).update({notifications:{0:message}});
-  } else {
-    firebase.database().ref("users/" + userData.uid).update({
-      notifications: userNotificationArr
-    });
-  }
+  closeModal(privateMessageModal);
+  addNotificationToDB(userData, message);
+  successfulDBOperationTitle = "Message Sent!";
+  successfulDBOperationNotice = "Your message to " + userData.userName + " was successfully delivered!";
+  showSuccessfulDBOperation = true;
 }
 
 function deleteNotification(uid) {
@@ -602,15 +607,15 @@ function removeNotificationElement(uid) {
 }
 
 function initializeNukeBtn() {
+  if (notificationArr == undefined)
+    notificationArr = [];
+
   if (notificationArr.length > 0) {
     if (!noteErrorBool) {
       nukeNotifications.innerHTML = "Remove All Notifications";
       nukeNotifications.onclick = function () {
-        firebase.database().ref("users/" + user.uid + "/notifications/").remove();
-
-        notificationArr = [];
-        initializedNotifications = [];
-        navigation(2);//Home
+        confirmOperation("Are You Sure?", "This will remove ALL of your notifications. This " +
+            "cannot be undone. Are you sure?");
       };
     } else {
       nukeNotifications.innerHTML = "Notification Removal Disabled!";
@@ -623,4 +628,39 @@ function initializeNukeBtn() {
     nukeNotifications.innerHTML = "No Notifications To Remove!";
     nukeNotifications.onclick = function() {};
   }
+}
+
+function confirmOperation(operationTitle, operationContent) {
+  confirmTitle.innerHTML = operationTitle;
+  confirmContent.innerHTML = operationContent;
+
+  confirmBtn.onclick = function() {
+    firebase.database().ref("users/" + user.uid + "/notifications/").remove();
+
+    for (let i = 0; i < initializedNotifications.length; i++) {
+      removeNotificationElement(initializedNotifications[i]);
+    }
+
+    notificationArr = [];
+    initializedNotifications = [];
+    deployNotificationModal(false, "All Notifications Successfully Removed!",
+        "All of your notifications have been successfully removed. You will now be redirected to the Home page.",
+        5, 2); //Home
+  };
+
+  denyBtn.onclick = function() {
+    closeModal(confirmModal);
+  }
+
+  openModal(confirmModal, "confirmModal", true);
+
+  closeConfirmModal.onclick = function() {
+    closeModal(confirmModal);
+  };
+
+  window.onclick = function(event) {
+    if (event.target == confirmModal) {
+      closeModal(confirmModal);
+    }
+  };
 }
