@@ -29,6 +29,12 @@ let moderationTicketDataText;
 let moderationTicketDataLastTicket;
 let moderationTicketDataOldestTicket;
 let moderationTicketDataNavigate;
+let confirmModal;
+let closeConfirmModal;
+let confirmTitle;
+let confirmContent;
+let confirmBtn;
+let denyBtn;
 let moderationTickets;
 let userName;
 
@@ -65,6 +71,12 @@ window.onload = function instantiate() {
     moderationTicketDataLastTicket = document.getElementById("moderationTicketDataLastTicket");
     moderationTicketDataOldestTicket = document.getElementById("moderationTicketDataOldestTicket");
     moderationTicketDataNavigate = document.getElementById("moderationTicketDataNavigate");
+    confirmModal = document.getElementById("confirmModal");
+    closeConfirmModal = document.getElementById("closeConfirmModal");
+    confirmTitle = document.getElementById("confirmTitle");
+    confirmContent = document.getElementById("confirmContent");
+    confirmBtn = document.getElementById("confirmBtn");
+    denyBtn = document.getElementById("denyBtn");
     inviteNote = document.getElementById("inviteNote");
 
     sessionStorage.setItem("moderationSet", moderationSet);
@@ -75,8 +87,9 @@ window.onload = function instantiate() {
     moderationQueueElements = [dataListContainer, nukeTickets, backBtn, ticketCount, ticketModal, closeTicketModal,
       ticketTitle, ticketUID, ticketDetails, ticketLocation, ticketTime, deleteTicket, moderationTicketDataModal,
       closeModerationTicketDataModal, moderationTicketDataTitle, moderationTicketDataText, moderationTicketDataLastTicket,
-      moderationTicketDataOldestTicket, moderationTicketDataNavigate, offlineModal, offlineSpan, inviteNote,
-      notificationModal, notificationTitle, notificationInfo, noteSpan, testData];
+      moderationTicketDataOldestTicket, moderationTicketDataNavigate, confirmModal, closeConfirmModal, confirmTitle,
+      confirmContent, confirmBtn, denyBtn, offlineModal, offlineSpan, inviteNote, notificationModal, notificationTitle,
+      notificationInfo, noteSpan, testData];
 
     verifyElementIntegrity(moderationQueueElements);
 
@@ -262,25 +275,59 @@ function initializeTicketCount() {
 }
 
 function initializeNukeBtn() {
+  if (ticketArr == undefined)
+    ticketArr = [];
+
   if (ticketArr.length > 0) {
     nukeTickets.innerHTML = "Remove All Tickets";
     nukeTickets.onclick = function () {
-      firebase.database().ref("maintenance/").remove();
-      for (let i = 0; i < initializedTickets.length; i++) {
-        try {
-          removeModerationTicket(initializedTickets[i]);
-        } catch(err) {}
-      }
-      initializedTickets = [];
-      ticketArr = [];
-      nukeTickets.innerHTML = "No Tickets To Remove!";
-      nukeTickets.onclick = function () {};
+      confirmOperation("Are You Sure?", "This will remove ALL of your audit log tickets. This " +
+          "cannot be undone. Are you sure?");
     };
   } else {
     nukeTickets.innerHTML = "No Tickets To Remove!";
     nukeTickets.onclick = function () {};
   }
   initializeTicketCount();
+}
+
+function confirmOperation(operationTitle, operationContent) {
+  confirmTitle.innerHTML = operationTitle;
+  confirmContent.innerHTML = operationContent;
+
+  confirmBtn.onclick = function() {
+    firebase.database().ref("maintenance/").remove();
+
+    for (let i = 0; i < initializedTickets.length; i++) {
+      try {
+        removeModerationTicket(initializedTickets[i]);
+      } catch(err) {}
+    }
+
+    initializedTickets = [];
+    ticketArr = [];
+    nukeTickets.innerHTML = "No Tickets To Remove!";
+    nukeTickets.onclick = function () {};
+    deployNotificationModal(false, "All Tickets Successfully Removed!",
+        "All of your tickets have been successfully removed.",
+        5); //Home
+  };
+
+  denyBtn.onclick = function() {
+    closeModal(confirmModal);
+  }
+
+  openModal(confirmModal, "confirmModal", true);
+
+  closeConfirmModal.onclick = function() {
+    closeModal(confirmModal);
+  };
+
+  window.onclick = function(event) {
+    if (event.target == confirmModal) {
+      closeModal(confirmModal);
+    }
+  };
 }
 
 function createModerationTicket (ticketData) {
