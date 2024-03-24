@@ -368,23 +368,28 @@ function initializeBackBtn() {
 function initializeInfoIcons() {
   titleInfoIcon.onclick = function() {
     deployNotificationModal(false, "Gift Title", "This field is for the title " +
-        "of your gift! This is the only mandatory field.", 4);
+        "of your gift! This is the only mandatory field." +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 10);
   };
   urlInfoIcon.onclick = function() {
     deployNotificationModal(false, "Gift URL", "This field is for a website URL " +
-        "to spur ideas or to be precise about what you would like.", 6);
+        "to spur ideas or to be precise about what you would like." +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 10);
   };
   whereInfoIcon.onclick = function() {
     deployNotificationModal(false, "Gift Location", "This field is for telling " +
-        "your friends where they would be able to find your gift.", 6);
+        "your friends where they would be able to find your gift." +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 10);
   };
   descriptionInfoIcon.onclick = function() {
     deployNotificationModal(false, "Gift Description", "This field is for any " +
-        "other details that you would like to add along with your gift. Type away!", 6);
+        "other details that you would like to add along with your gift. Type away!" +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 10);
   };
   multipleInfoIcon.onclick = function() {
     deployNotificationModal(false, "Gift Multiples?", "This checkbox allows this " +
-        "gift to be bought more than once. For example, gift cards, candles, or pairs of socks!", 6);
+        "gift to be bought more than once. For example, gift cards, candles, or pairs of socks!" +
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 10);
   };
 }
 
@@ -798,6 +803,7 @@ function addUpdateNoteToDB(buyerUserData, giftTitle){
   if(privateListBool){
     pageNameNote = "privateFriendList.html";
     giftOwner = privateList.uid;
+    giftTitle = giftTitle + " (Edited by " + privateUser.name + ")";
   }
   let notificationString = generateNotificationString(giftOwner,"", giftTitle, pageNameNote);
 
