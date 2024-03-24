@@ -10,12 +10,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="img/giftySmol.png">
-  <link href="css/main.css?v=2023-12-18" rel="stylesheet" type="text/css"/>
+  <link href="css/main.css?v=2024-03-20" rel="stylesheet" type="text/css"/>
   <title>Moderation Queue</title>
 
-  <script src="js/moderationQueueAlg.js?v=2023-12-18" type="text/javascript"></script>
-  <script src="js/common.js?v=2023-12-18" type="text/javascript"></script>
-  <script src="js/moderationCommon.js?v=2023-12-18" type="text/javascript"></script>
+  <script src="js/moderationQueueAlg.js?v=2024-03-20" type="text/javascript"></script>
+  <script src="js/common.js?v=2024-03-20" type="text/javascript"></script>
+  <script src="js/moderationCommon.js?v=2024-03-20" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -92,6 +92,28 @@
     <!--Modal Footer-->
     <div class="modal-footer">
       <h3 class="modal-footer-right" id="moderationTicketDataNavigate" alt="Navigate To Moderation Page">View Moderation Page</h3>
+    </div>
+  </div>
+</div>
+
+<div id="confirmModal" class="modal">
+  <div class="modal-content">
+
+    <!--Modal Header-->
+    <div class="modal-header">
+      <span class="close" id="closeConfirmModal">&times;</span>
+      <h2 id="confirmTitle">Loading Confirm Title...</h2>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+      <p id="confirmContent">Loading Confirm Content...</p>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer">
+      <h3 class="modal-footer-left" id="confirmBtn" alt="Confirm The Modal Decision">Yes</h3>
+      <h3 class="modal-footer-right" id="denyBtn" alt="Deny The Modal Decision">No</h3>
     </div>
   </div>
 </div>
