@@ -389,38 +389,40 @@ function initializeInfoIcons() {
     deployNotificationModal(true, "Secret Santa Parent Restriction", "Use this " +
         "button to assign a parent to a user. By assigning a parent to a user, the user is restricted from being " +
         "assigned to the parent for Secret Santa. Additionally, the parent will automatically be assigned to the " +
-        "child in return.", 10);
+        "child in return. <br><br>For more information, reference the Tutorial button on the Settings page.", 15);
   };
   childInfoIcon.onclick = function() {
     deployNotificationModal(true, "Secret Santa Child Restriction", "Use this " +
         "button to assign a child to a user. By assigning a child to a user, the user is restricted from being " +
         "assigned to the child for Secret Santa. Additionally, the child will automatically be assigned to the " +
-        "parent in return.", 10);
+        "parent in return. <br><br>For more information, reference the Tutorial button on the Settings page.", 15);
   };
   clearInfoIcon.onclick = function() {
     deployNotificationModal(true, "Clear Parent & Child Data", "This button " +
         "offers a quick way to clear any relationships between this user and their respective parent(s)/child(ren). " +
-        "If you would like to clear ALL Parent/Child relationships in this family, select the \"Family Settings\" " +
-        "button on the bottom left, then select \"Clear All Parent/Child Relationships\".", 15);
+        "<br><br>For more information, reference the Tutorial button on the Settings page.", 10);
   };
 
   changeNameInfoIcon.onclick = function() {
     deployNotificationModal(true, "Change Family Name", "This button allows " +
-        "you to update this family's name within Gifty.", 6);
+        "you to update this family's name within Gifty. <br><br>For more information, reference the Tutorial button on " +
+        "the Settings page.", 10);
   };
   clearAllInfoIcon.onclick = function() {
     deployNotificationModal(true, "Clear All Parent & Child Data", "This button " +
-        "offers a quick way to clear ALL relationships between every user in this family.", 6);
+        "offers a quick way to clear ALL relationships between every user in this family. <br><br>For more information, " +
+        "reference the Tutorial button on the Settings page.", 10);
   };
   removeMembersInfoIcon.onclick = function() {
     deployNotificationModal(true, "Remove All Members", "This button " +
         "offers a quick way to remove every member from this family.<br><br>Please note that any parent/child " +
-        "relationships will also be cleared as a result.", 8);
+        "relationships will also be cleared as a result. <br><br>For more information, reference the Tutorial button " +
+        "on the Settings page.", 10);
   };
   addMemberInfoIcon.onclick = function() {
     deployNotificationModal(true, "Add Member", "This button " +
         "allows you to add a given user to this family. Please note that a given user cannot exist in two families " +
-        "at the same time.", 8);
+        "at the same time. <br><br>For more information, reference the Tutorial button on the Settings page.", 10);
   };
 }
 
