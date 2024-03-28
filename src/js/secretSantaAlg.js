@@ -698,7 +698,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
         "Controls. Depending on what state Secret Santa is in, some buttons will not appear. Additional information " +
         "regarding the Secret Santa status is also provided for your benefit, like the current state, next state, and " +
         "current status.<br><br>" +
-        "For more information, click/tap the Tutorial button on the Settings Page!", 20);
+        "For more information, reference the Tutorial button on the Settings page.", 20);
   };
   if (familyData.secretSantaState == 1) {
     secretSantaStateText.innerHTML = "<i>Secret Santa State:</i> Idle";
