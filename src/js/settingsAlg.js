@@ -97,7 +97,7 @@ window.onload = function instantiate() {
     initializeUserInfo();
     initializeFamilyDBCheck();
 
-    userBase = firebase.database().ref("users/");
+    userInitial = firebase.database().ref("users/");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
     databaseQuery();
@@ -186,9 +186,9 @@ window.onload = function instantiate() {
       });
     };
 
-    fetchData(userBase);
+    fetchData(userInitial);
     fetchInvites(userInvites);
-    listeningFirebaseRefs.push(userBase);
+    listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userInvites);
   }
 
