@@ -113,7 +113,7 @@ window.onload = function instantiate() {
     checkFamilyCookie();
     verifyElementIntegrity(listsElements);
 
-    userBase = firebase.database().ref("users/");
+    userInitial = firebase.database().ref("users/");
     userFriends = firebase.database().ref("users/" + user.uid + "/friends");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
     limitsInitial = firebase.database().ref("limits/");
@@ -270,12 +270,12 @@ window.onload = function instantiate() {
       });
     };
 
-    fetchData(userBase);
+    fetchData(userInitial);
     fetchFriends(userFriends);
     fetchInvites(userInvites);
     fetchLimits(limitsInitial);
 
-    listeningFirebaseRefs.push(userBase);
+    listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userFriends);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(limitsInitial);
