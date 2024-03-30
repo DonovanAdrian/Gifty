@@ -183,7 +183,7 @@ window.onload = function instantiate() {
 
       verifyElementIntegrity(friendListElements);
 
-      userBase = firebase.database().ref("users/");
+      userInitial = firebase.database().ref("users/");
       userGifts = firebase.database().ref("users/" + giftUser.uid + "/giftList");
       userInvites = firebase.database().ref("users/" + user.uid + "/invites");
 
@@ -370,11 +370,11 @@ window.onload = function instantiate() {
       });
     };
 
-    fetchData(userBase);
+    fetchData(userInitial);
     fetchGifts(userGifts);
     fetchInvites(userInvites);
 
-    listeningFirebaseRefs.push(userBase);
+    listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userGifts);
     listeningFirebaseRefs.push(userInvites);
   }
