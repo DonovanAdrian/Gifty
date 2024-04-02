@@ -201,7 +201,7 @@ window.onload = function instantiate() {
 
     verifyElementIntegrity(privateFriendListElements);
 
-    userBase = firebase.database().ref("users/");
+    userInitial = firebase.database().ref("users/");
     userGifts = firebase.database().ref("users/" + giftUser.uid + "/privateList/");
     userInvites = firebase.database().ref("users/" + user.uid + "/invites");
     limitsInitial = firebase.database().ref("limits/");
@@ -419,12 +419,12 @@ window.onload = function instantiate() {
       });
     };
 
-    fetchData(userBase);
+    fetchData(userInitial);
     fetchGifts(userGifts);
     fetchInvites(userInvites);
     fetchLimits(limitsInitial);
 
-    listeningFirebaseRefs.push(userBase);
+    listeningFirebaseRefs.push(userInitial);
     listeningFirebaseRefs.push(userGifts);
     listeningFirebaseRefs.push(userInvites);
     listeningFirebaseRefs.push(limitsInitial);
