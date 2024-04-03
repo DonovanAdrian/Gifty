@@ -123,7 +123,6 @@ let loginInitial;
 let userInitial;
 let limitsInitial;
 let familyInitial;
-let userBase;
 let userGifts;
 let userInvites;
 let userFriends;
