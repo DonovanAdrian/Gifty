@@ -44,10 +44,13 @@ section for more details on this!
 
 
 ## Great, Now I'm All Set Up! How Do I Use Gifty?
-I have PDF documentation that will be in the works
-coming up soon. It will detail how to use the basic
-user interface, simple tasks, how to use Secret Santa, 
-and moderation instructions.
+Once you've gotten Gifty all set up, create your first
+account on the login! The first user will automatically 
+be designated a moderator in the Gifty system. Once 
+logged in, navigate to the "Settings" tab on the 
+navigation bar, then click on "Tutorial". This page is
+where you will find all the information you will need to
+get started and use Gifty to the fullest!
 
 
 ## Gifty Setup Tutorial
@@ -147,6 +150,7 @@ Everything below this point is supplemental data for those who are curious!
     - settings
       - faq
         - email form
+      - tutorial
       - moderationQueue *\(Moderator Role Only)*
       - moderation *\(Moderator Role Only)*
         - friendList
@@ -170,6 +174,7 @@ Everything below this point is supplemental data for those who are curious!
       - confirmationAlg, commonAlg
     - settingsAlg, commonAlg
       - faqAlg, commonAlg
+      - tutorialAlg, commonAlg
       - moderationQueueAlg, commonAlg, moderationCommonAlg
       - moderationAlg, commonAlg, moderationCommonAlg, passOp
         - friendListAlg, commonAlg
