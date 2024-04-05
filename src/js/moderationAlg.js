@@ -1272,6 +1272,8 @@ function initUserElement(liItem, userData) {
 
   userData = initUserDataIfEmpty(userData);
 
+  userData = fixUserDataToDB(userData);
+
   liItem.className = "gift";
 
   liItem.onclick = function () {
@@ -1601,6 +1603,46 @@ function initUserElement(liItem, userData) {
       userSecretSantaBtn.onclick = function () {};
     }
   }
+}
+
+function fixUserDataToDB(userData) {
+  let updatedUser = false;
+
+  if (userData.lastLogin == "") {
+    userData.lastLogin = "Never Logged In";
+    firebase.database().ref("users/" + userData.uid).update({
+      lastLogin: userData.lastLogin
+    });
+    console.log("Updated " + userData.name + " Login");
+    updatedUser = true;
+  }
+  if (userData.yearlyReview == 0) {
+    userData.yearlyReview = commonToday.getFullYear() + "*";
+    firebase.database().ref("users/" + userData.uid).update({
+      yearlyReview: userData.yearlyReview
+    });
+    console.log("Updated " + userData.name + " Review");
+    updatedUser = true;
+  }
+  if (userData.lastPerformedAction == "") {
+    userData.lastPerformedAction = "Upgraded Gifty Account";
+    firebase.database().ref("users/" + userData.uid).update({
+      lastPerformedAction: userData.lastPerformedAction
+    });
+    console.log("Updated " + userData.name + " Action");
+    updatedUser = true;
+  }
+
+  if (updatedUser) {
+    let updatedUserIndex = findUIDItemInArr(userData.uid, userArr, true);
+    if (updatedUserIndex != -1) {
+      userArr[updatedUserIndex] = userData;
+      saveCriticalCookies();
+      console.log("Saved changes locally.");
+    }
+  }
+
+  return userData;
 }
 
 function resetUserPassword(userData) {
@@ -2178,7 +2220,12 @@ function updateInitializedUsers(){
           if (userData.yearlyReview == "") {
             userDataString = userDataName + " - No Yearly Review Recorded";
           } else {
-            userDataString = userDataName + " - Last Review: " + userData.yearlyReview;
+            let tempYearlyReview = userData.yearlyReview.toString();
+            if (tempYearlyReview.includes("*")) {
+              userDataString = userDataName + " - Last Review: " + userData.yearlyReview.slice(0, 4) + " <i>(Dismissed Popup)</i>";
+            } else {
+              userDataString = userDataName + " - Last Review: " + userData.yearlyReview;
+            }
           }
           break;
         case "Score":
