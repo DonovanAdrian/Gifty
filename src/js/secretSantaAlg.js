@@ -37,10 +37,13 @@ let mostRecentSecretSantaState = 0;
 let familyMemberSignUpMinimum = 4;
 let currentDate = new Date();
 let currentYear = currentDate.getFullYear();
+let nextYear = currentYear + 1;
 let showDate = new Date(currentYear, 9, 1, 0, 0, 0, 0);//Oct 1st
 let assignDate = new Date(currentYear, 10, 1, 0, 0, 0, 0);//Nov 1st
+let hideDatePreview = new Date(nextYear, 0, 1, 0, 0, 0);//Jan 1st, Next Year
 let showDateShort = new Date(showDate);
 let assignDateShort = new Date(assignDate);
+let hideDatePreviewShort = new Date(hideDatePreview);
 let hideDateMin = 0; //Jan
 let hideDateMax = 8; //Sept
 let localReRollLimit = 5;
@@ -627,6 +630,7 @@ function initializeSecretSantaFamilyPageVars() {
   //Generate shortened dates
   showDateShort = getMonthName(showDateShort.getMonth()) + " " + showDateShort.getDate() + ", " + showDateShort.getFullYear();
   assignDateShort = getMonthName(assignDateShort.getMonth()) + " " + assignDateShort.getDate() + ", " + assignDateShort.getFullYear();
+  hideDatePreviewShort = getMonthName(hideDatePreviewShort.getMonth()) + " " + hideDatePreviewShort.getDate() + ", " + hideDatePreviewShort.getFullYear();
 }
 
 function hideSecretSantaOptions() {
@@ -703,12 +707,20 @@ function initializeSecretSantaFamilyModalElements(familyData) {
   if (familyData.secretSantaState == 1) {
     secretSantaStateText.innerHTML = "<i>Secret Santa State:</i> Idle";
     secretSantaNextStateText.innerHTML = "<i>Next Secret Santa State:</i> Ready";
+    secretSantaStateText.style.display = "block";
     secretSantaNextStateText.style.display = "block";
-    secretSantaStatusText.style.display = "none";
     secretSantaShuffleBtn.style.display = "none";
     secretSantaStateBtn.style.display = "inline-block";
     secretSantaAutoBtn.style.display = "inline-block";
     secretSantaExportBtn.style.display = "none";
+
+    if (familyData.automaticSantaControl == 1) {
+      secretSantaStatusText.style.display = "block";
+      secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> Starting On " + showDateShort;
+    } else {
+      secretSantaStatusText.style.display = "none";
+      secretSantaStatusText.innerHTML = "";
+    }
 
     secretSantaStateBtn.onclick = function() {
       manualStateChange = true;
@@ -765,7 +777,7 @@ function initializeSecretSantaFamilyModalElements(familyData) {
     secretSantaNextStateText.innerHTML = "<i>Next Secret Santa State:</i> Idle";
     secretSantaShuffleBtn.innerHTML = "Shuffle";
     if (familyData.automaticSantaControl == 1) {
-      secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> Activating On " + showDateShort;
+      secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> Deactivating On " + hideDatePreviewShort;
     } else {
       secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> Nominal";
     }
