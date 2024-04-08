@@ -16,6 +16,7 @@ let invalidURLBool = false;
 let invalidURLOverride = false;
 let giftChangeReloadNeeded = false;
 let localGiftAddUpdate = false;
+let initializedCheckboxes = false;
 
 let invalidURL = "";
 let buttonText = "";
@@ -326,13 +327,20 @@ window.onload = function instantiate() {
 };
 
 function initializeMultiplesBox() {
-  multiplePurchases.onclick = function () {
-    if (multiplePurchases.checked) {
-      multipleSuppText.style.display = "inline-block";
-    } else {
-      multipleSuppText.style.display = "none";
-    }
-  };
+  if (!initializedCheckboxes) {
+    multiplePurchases.onclick = function () {
+      if (multiplePurchases.checked) {
+        multipleSuppText.style.display = "inline-block";
+      } else {
+        multipleSuppText.style.display = "none";
+      }
+    };
+  }
+  if (multiplePurchases.checked) {
+    multipleSuppText.style.display = "inline-block";
+  } else {
+    multipleSuppText.style.display = "none";
+  }
 }
 
 function initializeGiftAddBtn() {
@@ -532,7 +540,13 @@ function initializeGiftFieldListeners() {
       changedLocalGiftEditFields.push("Multiples");
       unsavedChanges = true;
     }
+    if (multiplePurchases.checked) {
+      multipleSuppText.style.display = "inline-block";
+    } else {
+      multipleSuppText.style.display = "none";
+    }
   };
+  initializedCheckboxes = true;
 }
 
 function initializeData() {
