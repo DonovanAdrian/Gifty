@@ -858,24 +858,17 @@ function initializeGlobalNotification() {
     cancelMsg.onclick = function (){
       globalMsgInp.value = "";
       closeModal(privateMessageModal);
+      openModal(userOptionsModal, "userOptionsModal");
+      userOptionsBtn.style.transform = "rotate(" + (-60 % 360) + "deg)";
     };
 
     openModal(privateMessageModal, "addGlobalMsgModal");
 
     closePrivateMessageModal.onclick = function() {
       closeModal(privateMessageModal);
+      userOptionsBtn.style.transform = "rotate(" + (-60 % 360) + "deg)";
     };
   };
-}
-
-function addGlobalMessageToDB(message) {
-  let globalNotification = "";
-  globalNotificationBool = true;
-  for (let i = 0; i < userArr.length; i++){
-    globalNotification = generateNotificationString(">adminGlobal" + user.uid, "", message, "");
-    addNotificationToDB(userArr[i], globalNotification);
-  }
-  globalNotificationBool = false;
 }
 
 function initializeLoginBtn() {
@@ -1163,6 +1156,7 @@ function generateModeratorPrivateMessageDialog(userData, warnBool) {
   cancelMsg.onclick = function (){
     globalMsgInp.value = "";
     closeModal(privateMessageModal);
+    openModal(userModal, userData.uid);
   };
 
   openModal(privateMessageModal, "addGlobalMsgModal");
