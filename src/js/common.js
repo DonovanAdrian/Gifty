@@ -913,7 +913,7 @@ function signOut() {
       unsavedChangesNav = 1;
       unsavedChangesOverride = false;
       deployConfirmationModal("Unsaved Changes!", "You have unsaved changes! " +
-          "Would you like to continue?");
+          "Are you sure you would you like to Sign Out?");
       return;
     }
   }
@@ -1425,7 +1425,7 @@ function navigation(navNum, loginOverride) {
       if (pageName == "GiftAddUpdate") {
         unsavedChangesNav = navNum;
         deployConfirmationModal("Unsaved Changes!", "You have unsaved changes! " +
-            "Would you like to continue?");
+            "Are you sure you would you like to leave?");
         pendingNavigation = 0;
         return;
       }
