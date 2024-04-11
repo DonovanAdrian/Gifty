@@ -276,7 +276,6 @@ function checkGiftLists(updatedUserData, oldUserData){
           userBoughtGiftsArr.push(newPrivateGiftList[i]);
           userBoughtGiftsUIDs.push(updatedUserData.uid);
           userBoughtGiftsUsersArr.push(updatedUserData.name + " (Private List)");
-          console.log(userBoughtGiftsArr);
           createGiftElement(newPrivateGiftList[i], updatedUserData.uid, updatedUserData.name + " (Private List)");
         }
       } else if (newPrivateGiftList[i].receivedBy != undefined)
@@ -329,7 +328,6 @@ function checkGiftLists(updatedUserData, oldUserData){
 }
 
 function removeGiftElement(uid) {
-  console.log("Remove gift " + uid);
   document.getElementById("gift" + uid).remove();
 
   dataCounter--;
