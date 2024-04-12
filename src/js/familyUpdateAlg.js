@@ -230,8 +230,7 @@ window.onload = function instantiate() {
               }
             }
 
-            if (consoleOutput)
-              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
 
             let memberIndex = familyData.members.indexOf(userArr[i].uid);
@@ -249,8 +248,7 @@ window.onload = function instantiate() {
             if (data.key == user.uid) {
               user = data.val();
               updateFriendNav(user.friends);
-              if(consoleOutput)
-                console.log("Current User Updated");
+              console.log("Current User Updated");
             }
             saveCriticalCookies();
           }
