@@ -505,8 +505,7 @@ window.onload = function instantiate() {
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
-            if (consoleOutput)
-              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
             changeUserElement(data.val());
             updateInitializedUsers();
@@ -522,8 +521,7 @@ window.onload = function instantiate() {
               if (localObjectChanges.includes("listedUserData")) {
                 initializeListedUserData(user.listedUserData);
               }
-              if(consoleOutput)
-                console.log("Current User Updated");
+              console.log("Current User Updated");
             }
             saveCriticalCookies();
           }
@@ -1939,8 +1937,7 @@ function fetchNotificationTitle(notificationData) {
           notificationDetails = "The gift you bought for " + friendUserData.name + ", \"" + messageGiftTitle + "\", was" +
               " deleted from their public gift list...";
         } else {
-          if (consoleOutput)
-            console.log("Notification Page Error, 1");
+          console.log("Notification Page Error, 1");
         }
       } else if (noteSplitCount == 4) {//Z, Gift Deletion (Private)
         let z = findUIDItemInArr(deleterUID, userArr, true);
@@ -1950,16 +1947,13 @@ function fetchNotificationTitle(notificationData) {
           notificationDetails = "The gift you bought for " + friendUserData.name + ", \"" + messageGiftTitle + "\", was" +
               " deleted by " + deleterData.name + " from " + friendUserData.name + "'s private gift list...";
         } else {
-          if (consoleOutput)
-            console.log("DeleterUID not found!");
+          console.log("DeleterUID not found!");
         }
       } else {
-        if (consoleOutput)
-          console.log("Unknown Notification String Received...");
+        console.log("Unknown Notification String Received...");
       }
     } else {
-      if (consoleOutput)
-        console.log("SenderUID not found for notification UID " + notificationData.uid);
+      console.log("SenderUID not found for notification UID " + notificationData.uid);
       notificationDataTitle = "A Notification From A Deleted User!";
       if (noteSplitCount == 1) {
         notificationDetails = "This was related to an invitation to see their gift list, but the user no longer " +
@@ -1973,13 +1967,11 @@ function fetchNotificationTitle(notificationData) {
     }
   } else {
     if (noteSplit.data == undefined) {
-      if (consoleOutput)
-        console.log("Severely Deprecated Notification Format!");
+      console.log("Severely Deprecated Notification Format!");
       notificationDataTitle = "Deprecated Notification Format! Showing Unaltered Notification Data";
       notificationDetails = noteSplit;
     } else {
-      if (consoleOutput)
-        console.log("Deprecated Notification Format!");
+      console.log("Deprecated Notification Format!");
       notificationDataTitle = "Deprecated Notification Format! Showing Unaltered Notification Data";
       notificationDetails = noteSplit.data.data;
     }
