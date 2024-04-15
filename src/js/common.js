@@ -39,9 +39,6 @@ let confirmInviteScore = 5;
 //User Scoring Variables
 //***************************
 
-let userScoreElements = [firstLoginIncrementScore, loginIncrementScore, jokeEasterEggScore, settingsEasterEggScore,
-  invitesEasterEggScoreA, invitesEasterEggScoreB, invitesEasterEggScoreC,
-  sendPrivateMessageScore, confirmInviteScore];
 let listeningFirebaseRefs = [];
 let userArr = [];
 let inviteArr = [];
@@ -185,13 +182,14 @@ function verifyElementIntegrity(arr) {
       }
     }
 
-    if (consoleOutput)
-      if (arr.length != verifiedElements.length) {
+    if (arr.length != verifiedElements.length) {
+      if (consoleOutput)
         console.log("Only Verified " + verifiedElements.length + " Elements, Check The Above Log!");
-        updateMaintenanceLog(pageName, "Element Verification Failure, Send This Error To A Gifty Developer!");
-      } else {
+      updateMaintenanceLog(pageName, "Element Verification Failure, Send This Error To A Gifty Developer!");
+    } else {
+      if (consoleOutput)
         console.log("Verified " + verifiedElements.length + " Elements!");
-      }
+    }
   }
 }
 
@@ -253,8 +251,8 @@ function commonInitialization() {
       }
     });
 
+    commonToday = new Date();
     if (consoleOutput) {
-      commonToday = new Date();
       console.log(commonToday);
       console.log("Initializing the " + pageName + " Page...");
     }
