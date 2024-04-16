@@ -275,7 +275,8 @@ function displayUserDataAlert(userDataItem) {
       deployNotificationModal(false, "Your User Score!", "This is your User Score! This is an arbitrary number that shows how active you are on Gifty!" + extraText);
       break;
     default:
-      console.log("Unknown Input Data Item..." + extraText);
+      if (consoleOutput)
+        console.log("Unknown Input Data Item..." + extraText);
       break;
   }
 }
