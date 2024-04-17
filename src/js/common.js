@@ -157,38 +157,31 @@ function verifyElementIntegrity(arr) {
 
     try {
       if (arr.length < 1)
-        if (consoleOutput)
-          console.log("Element List Empty!");
+        logOutput("Element List Empty!");
     } catch (err) {
-      if (consoleOutput)
-        console.log("Element List Empty!");
+      logOutput("Element List Empty! " + err.toString());
       arr = [];
     }
 
-    if (consoleOutput)
-      console.log("Checking " + arr.length + " Elements...");
+    logOutput("Checking " + arr.length + " Elements...");
 
     for (let i = 0; i < arr.length; i++) {
       try {
         if (arr[i] == undefined) {
-          if (consoleOutput)
-            console.log("WARNING: Element Index " + i + " Undefined!");
+          logOutput("Warning Finding Element " + i + ", Undefined", false, true);
         } else {
           verifiedElements.push(arr[i]);
         }
       } catch (err) {
-        if (consoleOutput)
-          console.log("ERROR: Element " + i + " " + err.toString());
+        logOutput("Error Finding Element " + i + ", " + err.toString(), false, true);
       }
     }
 
     if (arr.length != verifiedElements.length) {
-      if (consoleOutput)
-        console.log("Only Verified " + verifiedElements.length + " Elements, Check The Above Log!");
+      logOutput("Only Verified " + verifiedElements.length + " Elements, Check The Above Log!");
       updateMaintenanceLog(pageName, "Element Verification Failure, Send This Error To A Gifty Developer!");
     } else {
-      if (consoleOutput)
-        console.log("Verified " + verifiedElements.length + " Elements!");
+      logOutput("Verified " + verifiedElements.length + " Elements!");
     }
   }
 }
@@ -252,10 +245,8 @@ function commonInitialization() {
     });
 
     commonToday = new Date();
-    if (consoleOutput) {
-      console.log(commonToday);
-      console.log("Initializing the " + pageName + " Page...");
-    }
+    logOutput(commonToday);
+    logOutput("Initializing the " + pageName + " Page...");
 
     fadeInPage();
     initializeFadeOut();
@@ -269,8 +260,7 @@ function commonInitialization() {
     } catch (err) {
       let dbInitTimer = 0;
       let dbInitInterval;
-      if (consoleOutput)
-        console.log("Error initializing database... Attempting to reconnect...");
+      logOutput("Error initializing database... Attempting to reconnect...");
 
       dbInitInterval = setInterval(function () {
         dbInitTimer = dbInitTimer + 1000;
@@ -280,8 +270,8 @@ function commonInitialization() {
           saveLastActionToCookie("Viewed " + pageName);
           clearInterval(dbInitInterval);
         } else if (commonDBInitCount >= commonDBInitLimit) {
-          console.log("ERROR! There were significant issues experienced trying to initialize the connection to the " +
-              "database! Please refresh the page or test your connection!");
+          logOutput("ERROR! There were significant issues experienced trying to initialize the connection to the " +
+              "database! Please refresh the page or test your connection!", true, true);
           dbInitializedFailed = true;
           try {
             deployNotificationModal(false, "Database Connection Error!", "It appears " +
@@ -314,8 +304,7 @@ function commonInitialization() {
               document.getElementById("testData").innerHTML = "Loading Failed, Please Connect To Internet";
             } catch (err) {
               if (dataCounter == 0) {
-                if (consoleOutput)
-                  console.log("Loading Element Missing, Creating A New One");
+                logOutput("Loading Element Missing, Creating A New One");
                 let liItem = document.createElement("LI");
                 liItem.id = "testData";
                 liItem.className = "gift";
@@ -369,8 +358,7 @@ function commonInitialization() {
                 "continues, please note that your experience will be severely degraded. If desired, try refreshing the " +
                 "page and contact a moderator.", 180);
           }
-          if (consoleOutput)
-            console.log("Timer Critical Error Issued");
+          logOutput("Timer Critical Error Issued");
           timerErrorIssued = 2;
           clearInterval(commonLoadingTimer);
           clearInterval(loginTimerInterval);
@@ -381,8 +369,7 @@ function commonInitialization() {
           }
         } else if (commonLoadingTimerInt >= commonLoadingTimerLimit && !validPulseReceived) {
           if (timerErrorIssued == 0) {
-            if (consoleOutput)
-              console.log("Timer Error Issued");
+            logOutput("Timer Error Issued");
             timerErrorIssued = 1;
             if (document.getElementById("testData") != undefined) {
               document.getElementById("testData").innerHTML = "Loading Is Taking Longer Than Expected...";
@@ -409,13 +396,10 @@ function commonInitialization() {
     if (user != undefined && pageName != "Index") {
       loginTimer();
     } else {
-      if (consoleOutput) {
-        console.log("User Not Found!");
-      }
+      logOutput("User Not Found!");
     }
 
-    if (consoleOutput)
-      console.log("The " + pageName + " Page has been initialized!");
+    logOutput("The " + pageName + " Page has been initialized!");
     ranCommonInitialization = true;
   }
 }
@@ -439,8 +423,7 @@ function databaseCommonPulse() {
     postRef.on("child_added", function (data) {
       if (data.key == "ban") {
         validPulseReceived = true;
-        if (consoleOutput)
-          console.log("Direct Pulse Received. Database Connection Intact.");
+        logOutput("Direct Pulse Received. Database Connection Intact.");
         if (data.val() != 0) {
           signOut();
         }
@@ -479,7 +462,7 @@ function getCurrentUserCommon() {
 
       if (user.moderatorInt == 1 && privateUser == undefined) {
         consoleOutput = true;
-        console.log("User: " + user.userName + " loaded in");
+        logOutput("User: " + user.userName + " loaded in");
         checkInvites(user);
         updateFriendNav(user.friends, true);
       }
@@ -488,7 +471,7 @@ function getCurrentUserCommon() {
 
       if (user.moderatorInt == 1 && privateUser == undefined) {
         consoleOutput = true;
-        console.log("User: " + user.userName + " loaded in");
+        logOutput("User: " + user.userName + " loaded in");
       } else if (restrictedPages.includes(pageName)) {
         pageName = pageName.toLowerCase();
         const config = JSON.parse(sessionStorage.config);
@@ -511,25 +494,23 @@ function getCurrentUserCommon() {
         user = JSON.parse(sessionStorage.validUser);
         if (user.moderatorInt == 1) {
           consoleOutput = true;
-          console.log("User: " + user.userName + " loaded in");
+          logOutput("User: " + user.userName + " loaded in");
         }
       } catch (err) {}
     }
 
     userArr = JSON.parse(sessionStorage.userArr);
   } catch (err) {
-    if (consoleOutput)
-      console.log("Error Reading Data... Attempting To Send Error Report To DB.");
+    logOutput("Critical Error: " + err.toString(), true, true);
+    logOutput("Attempting To Send Error Report To DB.", true, true);
     try {
       const config = JSON.parse(sessionStorage.config);
       initializeDB(config);
       sendCriticalInitializationError(err);
+      logOutput("Successfully Sent Error To DB.", true);
     } catch (err) {
-      if (consoleOutput)
-        console.log("Error Report Failed!");
+      logOutput("Error Report Failed!", true, true);
     }
-    if (consoleOutput)
-      console.log(err.toString());
     navigation(1, false);//Index
     throw "Error Reading Data!";
   }
@@ -543,8 +524,7 @@ function sendCriticalInitializationError(errorData) {
     userDataString = ", Experienced by " + user.userName + " (" + user.uid + ")";
   }
 
-  if (consoleOutput)
-    console.log("Critical Error: " + errorString);
+  logOutput("Critical Error: " + errorString, true, true);
 
   try {
     const config = JSON.parse(sessionStorage.config);
@@ -558,8 +538,7 @@ function sendCriticalInitializationError(errorData) {
       "like there was a small hiccup on this page, so some things may not work properly. Please let a moderator " +
       "know about this popup! Thank you!", 10);
 
-  if (consoleOutput)
-    console.log("Error Report Sent!");
+  logOutput("Error Report Sent!");
 }
 
 function checkNotifications() {
@@ -677,8 +656,7 @@ function generateNewNoteUID (noteKey, noteString, readOverride) {
 
 function checkInvites(inputUser) {
   if (inputUser.invites == undefined) {
-    if (consoleOutput)
-      console.log("Invites Not Found");
+    logOutput("Invites Not Found");
     inputUser.invites = [];
   }
   if (inputUser.invites.length > 0) {
@@ -730,12 +708,10 @@ function loginTimer() {
     document.onclick = loginTimer;
     loginNum = loginNum + 1;
     if (loginNum >= logoutLimit) {//default 900
-      if (consoleOutput)
-        console.log("User Timed Out");
+      logOutput("User Timed Out");
       signOut();
     } else if (loginNum > logoutReminder) {//default 600
-      if (consoleOutput)
-        console.log("User Inactive");
+      logOutput("User Inactive");
       areYouStillThereNote(loginNum);
       areYouStillThereBool = true;
       document.title = "Where'd You Go?";
@@ -767,8 +743,7 @@ function areYouStillThereNote(timeElapsed) {
     areYouStillThereBool = false;
     areYouStillThereInit = false;
     document.title = currentTitle;
-    if (consoleOutput)
-      console.log("User Active");
+    logOutput("User Active");
     ohThereYouAre();
   };
 
@@ -779,8 +754,7 @@ function areYouStillThereNote(timeElapsed) {
       areYouStillThereBool = false;
       areYouStillThereInit = false;
       document.title = currentTitle;
-      if (consoleOutput)
-        console.log("User Active");
+      logOutput("User Active");
       ohThereYouAre();
     }
   };
@@ -841,22 +815,20 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
   else if (isNaN(customNavigation))
     navigationBool = false;
   else
-  if (consoleOutput)
-    console.log("Navigation Ready");
+    logOutput("Navigation Ready");
 
   notificationInfo.innerHTML = noteInfo;
   notificationTitle.innerHTML = noteTitle;
   if (!notificationDeployed) {
     openModal(notificationModal, "noteModal", true);
-    if (pageName != "Index" && consoleOutput)
-      console.log("Notification Deployed");
+    if (pageName != "Index")
+      logOutput("Notification Deployed");
   }
   notificationDeployed = true;
 
   noteSpan.onclick = function() {
     if (navigationBool) {
-      if (consoleOutput)
-        console.log("Notification Navigating....");
+      logOutput("Notification Navigating....");
       navigation(customNavigation, customNavParam);//Custom
     }
     notificationDeployed = false;
@@ -871,8 +843,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
     deployedNoteTimer = deployedNoteTimer + 1;
     if (deployedNoteTimer >= customTime) {
       if (navigationBool) {
-        if (consoleOutput)
-          console.log("Notification Navigating...");
+        logOutput("Notification Navigating...");
         navigation(customNavigation, customNavParam);//Custom
       }
       notificationDeployed = false;
@@ -887,8 +858,7 @@ function deployNotificationModal(reopenPreviousModal, noteTitle, noteInfo, custo
   window.onclick = function(event) {
     if (event.target == notificationModal) {
       if (navigationBool) {
-        if (consoleOutput)
-          console.log("Notification Navigating.....");
+        logOutput("Notification Navigating.....");
         navigation(customNavigation, customNavParam);//Custom
       }
       notificationDeployed = false;
@@ -1107,12 +1077,11 @@ function findObjectChanges(objInputOld, objInputNew, limiterBool) {
   }
 
   if (!limiterBool) {
-    if (consoleOutput)
-      if (objectKeysChanged.length != 0) {
-        console.log("Key(s) Changed:");
-        console.log(objectKeysChanged);
-        console.log(objectDataChanged);
-      }
+    if (objectKeysChanged.length != 0) {
+      logOutput("Key(s) Changed:");
+      logOutput(objectKeysChanged);
+      logOutput(objectDataChanged);
+    }
 
     for (let i = 0; i < objectKeysChanged.length; i++) {
       globalDBKeyChangesArr.push(objectKeysChanged[i]);
@@ -1176,8 +1145,7 @@ function listenForDBChanges(dbChangeType, expectedUID) {
   listenForDBInterval = setInterval(function() {
     listenForDBTimer = listenForDBTimer + 1;
     if (globalDBKeyChangesArr.length != 0) {
-      if (consoleOutput)
-        console.log("Checking For Changes...");
+      logOutput("Checking For Changes...");
       checkGlobalDBChanges();
     }
     if (listenForDBTimer >= maxListenForDB) {
@@ -1273,7 +1241,7 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
   }
 
   if (overrideBool) {
-    console.log(receivedUID)
+    logOutput(receivedUID);
     if (receivedUID != undefined)
       updateArrs = true;
   } else {
@@ -1349,8 +1317,7 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
     }
 
     if (listenExpectedUIDs.length == 0 || unrelatedCancelOverride) {
-      if (consoleOutput)
-        console.log("All Expected Changes Received!");
+      logOutput("All Expected Changes Received!");
       saveLastActionToCookie("Performed " + globalDBChangeAction + " Operation On " + pageName + " Page");
       if (showSuccessfulDBOperation) {
         if (privateListBool)
@@ -1437,17 +1404,14 @@ function navigation(navNum, loginOverride) {
       if (loginOverride == undefined && !privateUserOverride) {
         try {
           if (privateUser != undefined && !giftAddUpdateOverride) {
-            if (consoleOutput)
-              console.log("***Private***");
+            logOutput("***Private***");
             sessionStorage.setItem("validUser", JSON.stringify(privateUser));
           } else {
-            if (consoleOutput)
-              console.log("***Normal***");
+            logOutput("***Normal***");
             sessionStorage.setItem("validUser", JSON.stringify(user));
           }
         } catch (err) {
-          if (consoleOutput)
-            console.log("***Normal + Catch***");
+          logOutput("***Normal + Catch***");
           sessionStorage.setItem("validUser", JSON.stringify(user));
         }
 
@@ -1493,8 +1457,7 @@ function navigation(navNum, loginOverride) {
       if (navNum >= navLocations.length)
         navNum = 0;
 
-      if (consoleOutput)
-        console.log("Navigating to " + navLocations[navNum]);
+      logOutput("Navigating to " + navLocations[navNum]);
 
       let fader = document.getElementById("fader");
       let listener = function () {
@@ -1520,8 +1483,7 @@ function navigationSuppressionTimer() {
   if (navSuppressTimerCount > 0) {
     navSuppressImpatientCount++;
     if (navSuppressImpatientCount > navSuppressImpatientLimit) {
-      if (consoleOutput)
-        console.log("Chill out, man");
+      logOutput("Chill out, man");
       deployNotificationModal(false, "Navigation Suppression Error", "It appears " +
           "that there is an issue navigating. Please wait about 5 seconds and try again. If issues persist, contact " +
           "a moderator.", 10);
@@ -1563,12 +1525,10 @@ function openModal(openThisModal, modalName, ignoreBool) {
             currentModalOpenObj = openThisModal;
             currentModalOpen = modalName;
             openThisModal.style.display = "block";
-            if (consoleOutput)
-              console.log("A Modal Opened: " + modalName);
+            logOutput("A Modal Opened: " + modalName);
             clearInterval(openModalTimer);
           } catch (err) {
-            if (consoleOutput)
-              console.log("A Modal Was Trying To Reopen, But Failed!");
+            logOutput("A Modal Was Trying To Reopen, But Failed!");
             clearInterval(openModalTimer);
             updateMaintenanceLog(pageName, user.userName + " (" + user.uid + ") encountered a modal that " +
                 "failed to reopen! Error Message: " + err.toString());
@@ -1584,8 +1544,7 @@ function openModal(openThisModal, modalName, ignoreBool) {
     currentModalOpenObj = openThisModal;
     currentModalOpen = modalName;
     openThisModal.style.display = "block";
-    if (consoleOutput)
-      console.log("B Modal Opened: " + modalName);
+    logOutput("B Modal Opened: " + modalName);
   }
 
   if (!ignoreBool) {
@@ -1628,18 +1587,16 @@ function closeModal(closeThisModal) {
 
     window.onclick = function(event) {}
   } catch (err) {
-    if (consoleOutput)
-      console.log("Modal Not Open");
+    logOutput("Modal Not Open");
   }
 
   function closeModalFinal() {
     closeThisModal.style.display = "none";
     modalClosingBool = false;
-    if (consoleOutput)
-      if (currentModalOpen != "" && currentModalOpen != undefined)
-        console.log(currentModalOpen + " Modal Closed");
-      else
-        console.log("Modal Closed");
+    if (currentModalOpen != "" && currentModalOpen != undefined)
+      logOutput(currentModalOpen + " Modal Closed");
+    else
+      logOutput("Modal Closed");
     currentModalOpenObj = null;
     currentModalOpen = "";
     clearInterval(transparencyInterval);
@@ -1653,8 +1610,7 @@ function flickerNotification() {
   let applyFilter = "grayscale(75%)";
   let normalOpacity = "1";
   let applyOpacity = "0.75";
-  if (consoleOutput)
-    console.log("Notification Feature Active");
+  logOutput("Notification Feature Active");
   notificationBtn.src = "img/bellNotificationOn.png";
   setInterval(function() {
     flickerTimer = flickerTimer + 1000;
@@ -1692,8 +1648,7 @@ function alternateButtonLabel(button, parentLabel, childLabel) {
   let nowConfirm = 0;
   let alternator = 0;
   clearInterval(alternateButtonTimer);
-  if (consoleOutput)
-    console.log(childLabel + " Button Feature Set");
+  logOutput(childLabel + " Button Feature Set");
   alternateButtonTimer = setInterval(function() {
     nowConfirm = nowConfirm + 1000;
     if (nowConfirm >= 3000) {
@@ -1793,9 +1748,8 @@ function findUIDItemInArr(item, array, override) {
   if (array != undefined) {
     for (let i = 0; i < array.length; i++) {
       if (array[i].uid == item) {
-        if (consoleOutput && !override) {
-          console.log("Found item: " + item);
-        }
+        if (override)
+          logOutput("Found item: " + item);
         return i;
       }
     }
@@ -1807,9 +1761,8 @@ function findUserNameItemInArr(item, userArray, override) {
   if (userArray != undefined) {
     for (let i = 0; i < userArray.length; i++) {
       if (userArray[i].userName == item) {
-        if (consoleOutput && !override) {
-          console.log("Found item: " + item);
-        }
+        if (override)
+          logOutput("Found item: " + item);
         return i;
       }
     }
@@ -1879,8 +1832,7 @@ function deployListEmptyNotification(dataItemText) {
   loadingTimerCancelled = true;
 
   function generateTestDataElement() {
-    if (consoleOutput)
-      console.log("Loading Element Missing, Creating A New One");
+    logOutput("Loading Element Missing, Creating A New One");
     let liItem = document.createElement("LI");
     liItem.id = "testData";
     liItem.className = "gift";
@@ -1925,8 +1877,7 @@ function updateMaintenanceLog(locationData, detailsData) {
       time: timeData
     });
   } else {
-    if (consoleOutput)
-      console.log("Attempted To Update Maintenance Log... DB Not Initialized!");
+    logOutput("Attempted To Update Maintenance Log... DB Not Initialized!");
   }
 }
 
@@ -2001,8 +1952,7 @@ function addModerationNotificationMessagesToDB(message, userList) {
 function generateNotificationString(senderUID, deleterUID, messageGiftTitle, pageNameStr) {
   let message;
   message = "\"" + senderUID + "\",,,\"" + deleterUID + "\",,,\"" + messageGiftTitle + "\",,,\"" + pageNameStr + "\"";
-  if (consoleOutput)
-    console.log("Generating Notification String...");
+  logOutput("Generating Notification String...");
   return message;
 }
 
@@ -2138,7 +2088,7 @@ function getMonthName(month) {
     case 11:
       return "December";
     default:
-      console.log("Invalid Month!");
+      logOutput("Invalid Month!");
       break;
   }
 }
@@ -2290,8 +2240,7 @@ function saveLastActionToCookie(actionPerformed, signOutOverride) {
   }
 
   if (saveLastAction && dbInitialized) {
-    if (consoleOutput)
-      console.log("Saving Last Action...");
+    logOutput("Saving Last Action...");
     if (!signOutOverride)
       sessionStorage.setItem("lastUserAction", JSON.stringify(lastActionCookie));
 
@@ -2300,5 +2249,19 @@ function saveLastActionToCookie(actionPerformed, signOutOverride) {
     });
 
     lastSavedDBAction = lastActionCookie;
+  }
+}
+
+function logOutput(outputMessage, overrideBool, errorBool) {
+  if (errorBool == undefined)
+    errorBool = false;
+  if (overrideBool == undefined)
+    overrideBool = false;
+
+  if (consoleOutput || overrideBool) {
+    if (!errorBool)
+      console.log(outputMessage);
+    else
+      console.error(outputMessage);
   }
 }
