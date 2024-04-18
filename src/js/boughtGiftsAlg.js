@@ -140,8 +140,7 @@ window.onload = function instantiate() {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
 
           if (localObjectChanges.length != 0) {
-            if(consoleOutput)
-              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            logOutput("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             previousUserData = userArr[i];
             userArr[i] = data.val();
 
@@ -149,8 +148,7 @@ window.onload = function instantiate() {
               user = data.val();
               checkNotifications();
               updateFriendNav(user.friends);
-              if(consoleOutput)
-                console.log("Current User Updated");
+              logOutput("Current User Updated");
             } else {
               checkGiftLists(data.val(), previousUserData);
             }
@@ -162,8 +160,7 @@ window.onload = function instantiate() {
       postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if(i != -1){
-          if(consoleOutput)
-            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          logOutput("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
           saveCriticalCookies();
         }
@@ -178,23 +175,14 @@ window.onload = function instantiate() {
       });
 
       postRef.on("child_changed", function (data) {
-        if(consoleOutput)
-          console.log(inviteArr);
         inviteArr[data.key] = data.val();
-        if(consoleOutput)
-          console.log(inviteArr);
       });
 
       postRef.on("child_removed", function (data) {
-        if(consoleOutput)
-          console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        if(consoleOutput)
-          console.log(inviteArr);
 
         if (inviteArr.length == 0) {
-          if(consoleOutput)
-            console.log("Invite List Removed");
+          logOutput("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -420,8 +408,7 @@ function createGiftElement(giftData, giftOwnerUID, giftOwner){
 }
 
 function changeGiftElement(giftData, giftOwnerUID, giftOwner){
-  if(consoleOutput)
-    console.log("Updating " + giftData.uid);
+  logOutput("Updating " + giftData.uid);
   let editGift = document.getElementById("gift" + giftData.uid);
   editGift.innerHTML = giftData.title + " - for " + giftOwner;
   initGiftElement(editGift, giftData, giftOwnerUID, giftOwner, false);
