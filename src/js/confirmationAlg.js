@@ -114,8 +114,7 @@ window.onload = function instantiate() {
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
-            if (consoleOutput)
-              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            logOutput("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
 
             if(data.key == currentModalOpen) {
@@ -137,8 +136,7 @@ window.onload = function instantiate() {
                 findRemovedUser(oldInviteArr, inviteArr);
                 potentialRemoval = false;
               }
-              if(consoleOutput)
-                console.log("Current User Updated");
+              logOutput("Current User Updated");
             }
             saveCriticalCookies();
           }
@@ -148,9 +146,7 @@ window.onload = function instantiate() {
       postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
-          if(consoleOutput) {
-            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
-          }
+          logOutput("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
           saveCriticalCookies();
         }
@@ -338,10 +334,8 @@ function addInvite(inviteData){
   let friendFriendArr;
   let userFriendArr;
 
-  if(consoleOutput) {
-    console.log("Pre-adding " + inviteData.uid + " to User's Friend List:");
-    console.log(friendArr);
-  }
+  logOutput("Pre-adding " + inviteData.uid + " to User's Friend List:");
+  logOutput(friendArr);
 
   if(inviteData.friends == undefined || inviteData.friends.length == 0) {
     friendFriendArr = [];
@@ -351,10 +345,8 @@ function addInvite(inviteData){
 
   if (!friendFriendArr.includes(user.uid)) {
     friendFriendArr.push(user.uid);
-    if (consoleOutput) {
-      console.log("Added current user (" + user.uid + ") to friend's Friend List:");
-      console.log(friendFriendArr);
-    }
+    logOutput("Added current user (" + user.uid + ") to friend's Friend List:");
+    logOutput(friendFriendArr);
   }
 
   if (!friendFriendArr.includes(user.uid)) {
@@ -373,10 +365,8 @@ function addInvite(inviteData){
 
   if (!userFriendArr.includes(inviteData.uid)) {
     userFriendArr.push(inviteData.uid);
-    if (consoleOutput) {
-      console.log("Added friend user (" + inviteData.uid + ") to current user's Friend List:");
-      console.log(userFriendArr);
-    }
+    logOutput("Added friend user (" + inviteData.uid + ") to current user's Friend List:");
+    logOutput(userFriendArr);
   }
 
   if (!userFriendArr.includes(inviteData.uid)) {
@@ -387,10 +377,8 @@ function addInvite(inviteData){
     return;
   }
 
-  if(consoleOutput) {
-    console.log("New User's Friend List:")
-    console.log(userFriendArr);
-  }
+  logOutput("New User's Friend List:");
+  logOutput(userFriendArr)
 
   finalInviteData = [friendFriendArr, userFriendArr];
   updateUserScore(user, confirmInviteScore);
@@ -430,10 +418,8 @@ function deleteInvite(inviteData, finalInviteData) {
   let toDelete;
   let uid = inviteData.uid;
 
-  if(consoleOutput) {
-    console.log("Pre User Invites:");
-    console.log(inviteArr);
-  }
+  logOutput("Pre User Invites:");
+  logOutput(inviteArr);
 
   toDelete = inviteArr.indexOf(uid);
 
@@ -455,10 +441,8 @@ function deleteInvite(inviteData, finalInviteData) {
       initializedUsers.splice(i, 1);
     }
 
-    if (consoleOutput) {
-      console.log("New User Invites:");
-      console.log(inviteArr);
-    }
+    logOutput("New User Invites:")
+    logOutput(inviteArr);
 
     let inviteNoteIndex = findUIDItemInArr(uid, userArr);
     let noteSplit = [];
@@ -492,19 +476,15 @@ function deleteInvite(inviteData, finalInviteData) {
     });
 
     if (finalInviteData != undefined) {
-      if(consoleOutput) {
-        console.log("Updating Friend's Friend List To DB:");
-        console.log(finalInviteData[0]);
-      }
+      logOutput("Updating Friend's Friend List To DB:");
+      logOutput(finalInviteData[0]);
 
       firebase.database().ref("users/" + uid).update({
         friends: finalInviteData[0]
       });
 
-      if(consoleOutput) {
-        console.log("Updating User's Friend List To DB:");
-        console.log(finalInviteData[1]);
-      }
+      logOutput("Updating User's Friend List To DB:");
+      logOutput(finalInviteData[1]);
 
       firebase.database().ref("users/" + user.uid).update({
         friends: finalInviteData[1]
