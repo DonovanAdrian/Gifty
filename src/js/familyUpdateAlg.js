@@ -230,7 +230,7 @@ window.onload = function instantiate() {
               }
             }
 
-            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            logOutput("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
 
             let memberIndex = familyData.members.indexOf(userArr[i].uid);
@@ -248,7 +248,7 @@ window.onload = function instantiate() {
             if (data.key == user.uid) {
               user = data.val();
               updateFriendNav(user.friends);
-              console.log("Current User Updated");
+              logOutput("Current User Updated");
             }
             saveCriticalCookies();
           }
@@ -295,7 +295,7 @@ window.onload = function instantiate() {
         inviteArr.splice(data.key, 1);
 
         if (inviteArr.length == 0) {
-          console.log("Invite List Removed");
+          logOutput("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -452,7 +452,7 @@ function generateAddMemberModal() {
                     "Confirm Member Name Below",
                     "user", userArr[i].uid);
               } else {
-                console.log("User is already in THIS family!");
+                logOutput("User is already in THIS family!");
                 addMemberInfo.innerHTML = "That user is already added to this family, please try another!";
               }
             else {
@@ -462,14 +462,14 @@ function generateAddMemberModal() {
                   "user", userArr[i].uid);
             }
           } else {
-            console.log("User is already in ANOTHER family!");
+            logOutput("User is already in ANOTHER family!");
             addMemberInfo.innerHTML = "A user can only be in one family at a time!";
           }
           break;
         }
       }
       if(!familyMemberFound && !familyMemberDuplicate) {
-        console.log("Username doesn't exist!");
+        logOutput("Username doesn't exist!");
         addMemberInfo.innerHTML = "That user name does not exist, please try again!";
       }
     }
@@ -684,10 +684,8 @@ function initFamilyElement(liItem, familyMemberData) {
           familyMemberParent.innerHTML = "1 Parent, Click To View"
         else
           familyMemberParent.innerHTML = familyMemberData.parentUser.length + " Parents, Click To View";
-        if (consoleOutput) {
-          console.log("Found Parent Data For " + familyMemberData.name + ":");
-          console.log(familyMemberData.parentUser);
-        }
+        logOutput("Found Parent Data For " + familyMemberData.name + ":");
+        logOutput(familyMemberData.parentUser);
       }
       if (familyMemberData.childUser.length == 0) {
         familyMemberChild.innerHTML = "View Children Options";
@@ -697,10 +695,8 @@ function initFamilyElement(liItem, familyMemberData) {
           familyMemberChild.innerHTML = "1 Child, Click To View"
         else
           familyMemberChild.innerHTML = familyMemberData.childUser.length + " Children, Click To View";
-        if (consoleOutput) {
-          console.log("Found Child Data For " + familyMemberData.name + ":");
-          console.log(familyMemberData.childUser);
-        }
+        logOutput("Found Child Data For " + familyMemberData.name + ":");
+        logOutput(familyMemberData.childUser);
       }
       if (enableClearPCData) {
         familyMemberPCClear.innerHTML = "Clear Parent & Child Data";
@@ -1163,7 +1159,7 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
                 }
                 break;
               default:
-                console.log("Error!");
+                logOutput("Error Toggling Color!");
             }
           } else if (parentChild == "parent") {
             globalParentChildState = "parent";
@@ -1189,7 +1185,7 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
                 }
                 break;
               default:
-                console.log("Error Toggling Color!");
+                logOutput("Error Toggling Color!");
             }
           }
         };
