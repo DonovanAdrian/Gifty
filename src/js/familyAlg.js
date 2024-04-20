@@ -46,11 +46,11 @@ function checkFamilyCookie() {
       createFamilyElement(familyArr[i]);
       if (familyArr[i].automaticSantaControl != undefined) {
         if (familyArr[i].automaticSantaControl == 1) {
-          console.log("Calling Automatic Control For " + familyArr[i].name + "...");
+          logOutput("Calling Automatic Control For " + familyArr[i].name + "...");
           try {
             dateCalculationHandler(familyArr[i]);
           } catch (err) {
-            console.log("Failed Calling Automatic Control For " + familyData.name + "... \"" + err.toString() + "\"");
+            logOutput("Failed Calling Automatic Control For " + familyData.name + "... \"" + err.toString() + "\"");
             updateMaintenanceLog(pageName, "Failed To Initialize Automatic Control for " + familyData.name +
                 ". Triggered by " + user.userName + "(" + user.uid + "). The following error occurred: " +
                 err.toString() + "\"");
@@ -156,13 +156,13 @@ window.onload = function instantiate() {
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
-            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            logOutput("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
 
             if (data.key == user.uid) {
               user = data.val();
               updateFriendNav(user.friends);
-              console.log("Current User Updated");
+              logOutput("Current User Updated");
             }
             saveCriticalCookies();
           }
@@ -193,7 +193,7 @@ window.onload = function instantiate() {
         inviteArr.splice(data.key, 1);
 
         if (inviteArr.length == 0) {
-          console.log("Invite List Removed");
+          logOutput("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
