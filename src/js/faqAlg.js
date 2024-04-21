@@ -77,15 +77,13 @@ window.onload = function instantiate() {
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
-            if (consoleOutput)
-              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            logOutput("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
 
             if (data.key == user.uid) {
               user = data.val();
               updateFriendNav(user.friends);
-              if (consoleOutput)
-                console.log("Current User Updated");
+              logOutput("Current User Updated");
             }
             saveCriticalCookies();
           }
@@ -123,10 +121,8 @@ function addSupportToDB(supportCode) {
   } catch (err) {
 
   }
-  if(consoleOutput) {
-    console.log(supportCode);
-    console.log(supportCount);
-  }
+  logOutput(supportCode);
+  logOutput(supportCount);
   firebase.database().ref("users/" + user.uid + "/support/" + supportCount).push();
   firebase.database().ref("users/" + user.uid + "/support/" + supportCount).set({
     supportCount: supportCount,
