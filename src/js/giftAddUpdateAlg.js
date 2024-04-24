@@ -70,9 +70,7 @@ function getCurrentUser(){
     listNote.className = "active";
     if (privateUser.moderatorInt == 1)
       consoleOutput = true;
-    if(consoleOutput) {
-      console.log("Private User: " + privateUser.userName + " loaded in");
-    }
+    logOutput("Private User: " + privateUser.userName + " loaded in");
     buttonText = "Back To Private List";
     giftNavigationInt = 10;
     updateFriendNav(privateUser.friends, true);
@@ -106,8 +104,7 @@ function getCurrentUser(){
   if (giftStorage == undefined || giftStorage == "") {
     giftPresent = false;
   } else {
-    if(consoleOutput)
-      console.log("Gift: " + giftStorage + " found");
+    logOutput("Gift: " + giftStorage + " found");
     if (privateListBool) {
       getGiftIndex = findUIDItemInArr(giftStorage, user.privateList, true);
       if (getGiftIndex != -1)
@@ -742,23 +739,21 @@ function updateGiftToDB() {
         }
       }
 
-      if(currentGift.buyer != "" && !notificationSent){
+      if (currentGift.buyer != "" && !notificationSent) {
         let userFound = findUserNameItemInArr(currentGift.buyer, userArr);
-        if(userFound != -1){
-          if(privateListBool){
+        if (userFound != -1) {
+          if (privateListBool) {
             if (userArr[userFound].uid != privateUser.uid) {
               addUpdateNoteToDB(userArr[userFound], currentGift.title);
             }
           } else {
-            if(consoleOutput)
-              console.log(user.uid);
+            logOutput(user.uid);
             if (userArr[userFound].uid != user.uid) {
               addUpdateNoteToDB(userArr[userFound], currentGift.title);
             }
           }
         } else {
-          if(consoleOutput)
-            console.log("User not found");
+          logOutput("User not found");
         }
       } else if (currentGift.receivedBy != null && !notificationSent) {
         for (let i = 0; i < currentGift.receivedBy.length; i++) {
@@ -768,13 +763,11 @@ function updateGiftToDB() {
               addUpdateNoteToDB(userArr[userFound], currentGift.title);
             }
           } else {
-            if(consoleOutput)
-              console.log("User not found");
+            logOutput("User not found");
           }
         }
       } else {
-        if(consoleOutput)
-          console.log("No buyer, no notification needed");
+        logOutput("No buyer, no notification needed");
       }
 
       let tempUnsavedChanges = true;
@@ -1019,8 +1012,7 @@ function verifyURLString(url){
   else if (invalidChar)
     invalidURLBool = true;
   else
-  if(consoleOutput)
-    console.log("Valid URL! " + tempURL);
+    logOutput("Valid URL! " + tempURL);
 
   return tempURL;
 }
