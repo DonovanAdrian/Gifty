@@ -121,8 +121,7 @@ function checkYearlyReview() {
 
   if (tempVettedUserGifts.length > 0) {
     if (user.yearlyReview >= currentYear && !postponedReviewBool) {
-      if (consoleOutput)
-        console.log("User Does Not Need Yearly Review! Skipping...");
+      logOutput("User Does Not Need Yearly Review! Skipping...");
     } else if ((user.yearlyReview < currentYear && currentDate > reviewDate) || postponedReviewBool) {
       reviewGifts.style.display = "block";
       reviewGifts.innerHTML = "Review Gifts";
@@ -375,8 +374,7 @@ function checkUserErrors(){
     userUIDs.push(userArr[i].uid);
   }
 
-  if(consoleOutput)
-    console.log("Checking for errors...");
+  logOutput("Checking for errors...");
 
   if(invitesValidBool){
     for(let i = 0; i < user.invites.length; i++){
@@ -388,8 +386,7 @@ function checkUserErrors(){
 
     if(inviteEditInt > 0){
       updateUserBool = true;
-      if(consoleOutput)
-        console.log("Update to DB required: 1...");
+      logOutput("Update to DB required: 1...");
     }
 
     if(user.invites.length > 0) {
@@ -407,19 +404,16 @@ function checkUserErrors(){
 
     if(friendEditInt > 0){
       updateUserBool = true;
-      if(consoleOutput)
-        console.log("Update to DB required: 2...");
+      logOutput("Update to DB required: 2...");
     }
   }
 
   if(updateUserBool){
-    if(consoleOutput)
-      console.log("Updates needed! Computing...");
+    logOutput("Updates needed! Computing...");
     totalErrors = friendEditInt + inviteEditInt;
     updateUserToDB(totalErrors, friendEditInt, inviteEditInt);
   } else {
-    if(consoleOutput)
-      console.log("No updates needed!");
+    logOutput("No updates needed!");
   }
 }
 
@@ -438,8 +432,7 @@ function updateUserToDB(totalErrors, friendEditInt, inviteEditInt){
     });
     user.friends = supplementaryFriendsArr;
   }
-  if(consoleOutput)
-    console.log("Updates pushed!");
+  logOutput("Updates pushed!");
 }
 
 function collectUserBoughtGifts(){
@@ -596,8 +589,7 @@ window.onload = function instantiate() {
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
-            if (consoleOutput)
-              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            logOutput("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
 
             if (data.key == user.uid) {
@@ -609,8 +601,7 @@ window.onload = function instantiate() {
                 findRemovedGift(oldGiftArr, giftArr);
                 potentialRemoval = false;
               }
-              if(consoleOutput)
-                console.log("Current User Updated");
+              logOutput("Current User Updated");
             }
             saveCriticalCookies();
           }
@@ -620,8 +611,7 @@ window.onload = function instantiate() {
       postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
-          if(consoleOutput)
-            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          logOutput("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
           saveCriticalCookies();
         }
@@ -669,23 +659,14 @@ window.onload = function instantiate() {
       });
 
       postRef.on("child_changed", function (data) {
-        if(consoleOutput)
-          console.log(inviteArr);
         inviteArr[data.key] = data.val();
-        if(consoleOutput)
-          console.log(inviteArr);
       });
 
       postRef.on("child_removed", function (data) {
-        if(consoleOutput)
-          console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        if(consoleOutput)
-          console.log(inviteArr);
 
         if (inviteArr.length == 0) {
-          if(consoleOutput)
-            console.log("Invite List Removed");
+          logOutput("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -851,7 +832,6 @@ function findRemovedGift(oldArr, newArr) {
 }
 
 function removeGiftElement(uid) {
-  console.log("Remove gift " + uid);
   document.getElementById("gift" + uid).remove();
   checkGiftLimit();
   dataCounter--;
@@ -914,12 +894,10 @@ function deleteGiftElement(title, uid, buyer, bulkDelete) {
       if(userFound != -1){
         addDeleteNoteToDB(userArr[userFound], title);
       } else {
-        if(consoleOutput)
-          console.log("User not found");
+        logOutput("User not found");
       }
     } else {
-      if(consoleOutput)
-        console.log("No buyer, no notification needed");
+      logOutput("No buyer, no notification needed");
     }
 
     if (!bulkDelete) {
