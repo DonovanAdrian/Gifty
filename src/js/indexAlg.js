@@ -154,7 +154,7 @@ function fetchConfigFile(){
       deployNotificationModal(false, "Initialization Error!", "Config not properly " +
           "initialized! Please contact an administrator!", 4);
     } else {
-      console.log("WARNING: Missing measurementId. This variable is optional. Disregard if this is intentional.");
+      logOutput("WARNING: Missing measurementId. This variable is optional. Disregard if this is intentional.", true);
 
       config = {
         apiKey: apiKeyString,
@@ -507,8 +507,8 @@ function authenticate() {
           }
         }
       } catch (err) {
-        console.log("The following error occurred:");
-        console.log(err);
+        logOutput("The following error occurred:", true);
+        logOutput(err, true, true);
         setLoginInfoTextAndTimer("Login Error Occurred. Please Contact A Moderator!");
         updateMaintenanceLog("index", "Login Error Occurred: \"" + username.value.toLowerCase() + "\" - " + err);
       }
