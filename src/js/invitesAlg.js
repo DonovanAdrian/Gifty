@@ -199,8 +199,7 @@ window.onload = function instantiate() {
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
-            if (consoleOutput)
-              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            logOutput("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
 
             if (initializedUsers.includes(data.key) && deletePendingUid != data.key) {
@@ -217,8 +216,7 @@ window.onload = function instantiate() {
                 findRemovedUser(oldFriendArr, friendArr);
                 potentialRemoval = false;
               }
-              if(consoleOutput)
-                console.log("Current User Updated");
+              logOutput("Current User Updated");
             }
             saveCriticalCookies();
           }
@@ -228,9 +226,7 @@ window.onload = function instantiate() {
       postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
-          if(consoleOutput) {
-            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
-          }
+          logOutput("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
           saveCriticalCookies();
         }
@@ -249,8 +245,7 @@ window.onload = function instantiate() {
 
       postRef.on("child_changed", function (data) {
         friendArr[data.key] = data.val();
-        if(consoleOutput)
-          console.log("Changing " + data.val());
+        logOutput("Changing " + data.val());
         changeFriendElement(data.key);
         user.friends = friendArr;
         saveCriticalCookies();
@@ -281,8 +276,7 @@ window.onload = function instantiate() {
         inviteArr.splice(data.key, 1);
 
         if (inviteArr.length == 0) {
-          if(consoleOutput)
-            console.log("Invite List Removed");
+          logOutput("Invite List Removed");
           disableInviteIcon();
           inviteNote.style.background = "#008222";
         }
@@ -341,7 +335,6 @@ function showBlacklistModal() {
           unBlacklistUsers.push(tempBlacklist[i]);
         }
       }
-      console.log(unBlacklistUsers);
     };
 
     loadedBlacklistUsers.push("blacklist" + tempBlacklist[i]);
@@ -1026,9 +1019,6 @@ function generateAddUserBtn(){
   };
   addUser.innerHTML = "Invite User";
 
-  if(consoleOutput)
-    console.log("Add Button Generated");
-
   function clearInviteModalFields() {
     userNameInp.value = "";
     addToBlackList.style.display = "none";
@@ -1081,10 +1071,8 @@ function generateAddUserBtn(){
 }
 
 function generateConfirmDialog(userLocation) {
-  if(consoleOutput) {
-    console.log(userLocation);
-    console.log(userArr[userLocation].userName);
-  }
+  logOutput(userLocation);
+  logOutput(userArr[userLocation].userName);
   if (userLocation != -1) {
     closeModal(userInviteModal);
     confUserName.innerHTML = "Did you mean to add \"" + userArr[userLocation].name + "\"?";
@@ -1156,8 +1144,6 @@ function inviteUserDB(invitedUser) {
       invites: invitedUserInvites
     });
   } else {
-    if(consoleOutput)
-      console.log("New Invite List");
     firebase.database().ref("users/" + invitedUser.uid).update({invites:{0:user.uid}});
   }
 
