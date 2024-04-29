@@ -46,13 +46,11 @@ function evaluateFamilyAutomaticControl(familyData) {
   if (user.moderatorInt == 1 || familyData.members.includes(user.uid))
     if (familyData.automaticSantaControl != undefined) {
       if (familyData.automaticSantaControl == 1) {
-        if (consoleOutput)
-          console.log("Calling Automatic Control For " + familyData.name + "...");
+        logOutput("Calling Automatic Control For " + familyData.name + "...");
         try {
           dateCalculationHandler(familyData);
         } catch (err) {
-          if (consoleOutput)
-            console.log("Failed Calling Automatic Control For " + familyData.name + "... \"" + err.toString() + "\"");
+          logOutput("Failed Calling Automatic Control For " + familyData.name + "... \"" + err.toString() + "\"", true, true);
           updateMaintenanceLog(pageName, "Failed To Initialize Automatic Control for " + familyData.name +
               ". Triggered by " + user.userName + "(" + user.uid + "). The following error occurred: " +
               err.toString() + "\"");
@@ -156,8 +154,7 @@ window.onload = function instantiate() {
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
-            if (consoleOutput)
-              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            logOutput("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
 
             if (initializedUsers.includes(data.key)) {
@@ -173,8 +170,7 @@ window.onload = function instantiate() {
                 findRemovedUser(oldFriendArr, friendArr);
                 potentialRemoval = false;
               }
-              if(consoleOutput)
-                console.log("Current User Updated");
+              logOutput("Current User Updated");
             }
             saveCriticalCookies();
           }
@@ -184,8 +180,7 @@ window.onload = function instantiate() {
       postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
-          if(consoleOutput)
-            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          logOutput("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
           saveCriticalCookies();
         }
@@ -204,8 +199,7 @@ window.onload = function instantiate() {
 
       postRef.on("child_changed", function (data) {
         friendArr[data.key] = data.val();
-        if(consoleOutput)
-          console.log("Changing " + data.val());
+        logOutput("Changing " + data.val());
         changeFriendElement(data.val());
         user.friends = friendArr;
         saveCriticalCookies();
@@ -228,23 +222,14 @@ window.onload = function instantiate() {
       });
 
       postRef.on("child_changed", function (data) {
-        if(consoleOutput)
-          console.log(inviteArr);
         inviteArr[data.key] = data.val();
-        if(consoleOutput)
-          console.log(inviteArr);
       });
 
       postRef.on("child_removed", function (data) {
-        if(consoleOutput)
-          console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        if(consoleOutput)
-          console.log(inviteArr);
 
         if (inviteArr.length == 0) {
-          if(consoleOutput)
-            console.log("Invite List Removed");
+          logOutput("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
