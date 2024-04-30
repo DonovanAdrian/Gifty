@@ -383,7 +383,7 @@ window.onload = function instantiate() {
             if(i != -1) {
               localObjectChanges = findObjectChanges(ticketArr[i], data.val());
               if (localObjectChanges.length != 0) {
-                console.log("Changing " + ticketArr[i].uid);
+                logOutput("Changing " + ticketArr[i].uid);
                 ticketArr[i] = data.val();
                 saveTicketArrToCookie();
                 changeQuickModerationTicketElem(data.val());
@@ -403,7 +403,7 @@ window.onload = function instantiate() {
             if(i != -1){
               localObjectChanges = findObjectChanges(ticketArr[i], data.val());
               if (localObjectChanges.length != 0) {
-                console.log("Changing " + ticketArr[i].uid);
+                logOutput("Changing " + ticketArr[i].uid);
                 ticketArr[i] = data.val();
                 saveTicketArrToCookie();
                 changeQuickModerationTicketElem(data.val());
@@ -412,10 +412,10 @@ window.onload = function instantiate() {
           });
 
           postRef.on("child_removed", function (data) {
-            console.log(data.key + " Removed!");
+            logOutput(data.key + " Removed From DB!");
             let i = findUIDItemInArr(data.key, ticketArr);
             if(i != -1){
-              console.log("Removing " + ticketArr[i].uid);
+              logOutput("Removing " + ticketArr[i].uid);
               ticketArr.splice(i, 1);
 
               removeQuickModerationTicketElem(data.val());
@@ -435,26 +435,26 @@ window.onload = function instantiate() {
     let fetchModeratorSettings = function (postRef) {
       postRef.once("value").then(function(snapshot) {
         if(snapshot.exists()) {
-          console.log("Moderator Settings Snapshot Exists!");
+          logOutput("Moderator Settings Snapshot Exists!");
           postRef.on("child_added", function (data) {
-            console.log(data.key + " added");
+            logOutput(data.key + " added");
 
             if (data.key == "listedUserData") {
               localListedUserData = data.val();
+              logOutput("Added, correcting listedUserData source to current moderator.");
               initializeListedUserData(localListedUserData, true);
               firebase.database().ref("moderatorSettings/").child("listedUserData").remove();
-              console.log("Added, correcting listedUserData source to current moderator.");
             }
           });
 
           postRef.on("child_changed", function (data) {
-            console.log(data.key + " changed");
+            logOutput(data.key + " changed");
 
             if (data.key == "listedUserData") {
               localListedUserData = data.val();
+              logOutput("Changed, correcting listedUserData source to current moderator.");
               initializeListedUserData(localListedUserData, true);
               firebase.database().ref("moderatorSettings/").child("listedUserData").remove();
-              console.log("Changed, correcting listedUserData source to current moderator.");
             }
           });
         }
@@ -505,7 +505,7 @@ window.onload = function instantiate() {
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
-            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            logOutput("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
             changeUserElement(data.val());
             updateInitializedUsers();
@@ -521,7 +521,7 @@ window.onload = function instantiate() {
               if (localObjectChanges.includes("listedUserData")) {
                 initializeListedUserData(user.listedUserData);
               }
-              console.log("Current User Updated");
+              logOutput("Current User Updated");
             }
             saveCriticalCookies();
           }
@@ -531,7 +531,7 @@ window.onload = function instantiate() {
       postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
-          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          logOutput("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
           removeUserElement(data.val().uid);
 
@@ -558,7 +558,7 @@ window.onload = function instantiate() {
         inviteArr.splice(data.key, 1);
 
         if (inviteArr.length == 0) {
-          console.log("Invite List Removed");
+          logOutput("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -1605,7 +1605,7 @@ function fixUserDataToDB(userData) {
     firebase.database().ref("users/" + userData.uid).update({
       lastLogin: userData.lastLogin
     });
-    console.log("Updated " + userData.name + " Login");
+    logOutput("Updated " + userData.name + " Login");
     updatedUser = true;
   }
   if (userData.yearlyReview == 0) {
@@ -1613,7 +1613,7 @@ function fixUserDataToDB(userData) {
     firebase.database().ref("users/" + userData.uid).update({
       yearlyReview: userData.yearlyReview
     });
-    console.log("Updated " + userData.name + " Review");
+    logOutput("Updated " + userData.name + " Review");
     updatedUser = true;
   }
   if (userData.lastPerformedAction == "") {
@@ -1621,7 +1621,7 @@ function fixUserDataToDB(userData) {
     firebase.database().ref("users/" + userData.uid).update({
       lastPerformedAction: userData.lastPerformedAction
     });
-    console.log("Updated " + userData.name + " Action");
+    logOutput("Updated " + userData.name + " Action");
     updatedUser = true;
   }
 
@@ -1630,7 +1630,7 @@ function fixUserDataToDB(userData) {
     if (updatedUserIndex != -1) {
       userArr[updatedUserIndex] = userData;
       saveCriticalCookies();
-      console.log("Saved changes locally.");
+      logOutput("Saved changes locally.");
     }
   }
 
@@ -1937,7 +1937,7 @@ function fetchNotificationTitle(notificationData) {
           notificationDetails = "The gift you bought for " + friendUserData.name + ", \"" + messageGiftTitle + "\", was" +
               " deleted from their public gift list...";
         } else {
-          console.log("Notification Page Error, 1");
+          logOutput("Notification Page Error, 1");
         }
       } else if (noteSplitCount == 4) {//Z, Gift Deletion (Private)
         let z = findUIDItemInArr(deleterUID, userArr, true);
@@ -1947,13 +1947,13 @@ function fetchNotificationTitle(notificationData) {
           notificationDetails = "The gift you bought for " + friendUserData.name + ", \"" + messageGiftTitle + "\", was" +
               " deleted by " + deleterData.name + " from " + friendUserData.name + "'s private gift list...";
         } else {
-          console.log("DeleterUID not found!");
+          logOutput("DeleterUID not found!");
         }
       } else {
-        console.log("Unknown Notification String Received...");
+        logOutput("Unknown Notification String Received...");
       }
     } else {
-      console.log("SenderUID not found for notification UID " + notificationData.uid);
+      logOutput("SenderUID not found for notification UID " + notificationData.uid);
       notificationDataTitle = "A Notification From A Deleted User!";
       if (noteSplitCount == 1) {
         notificationDetails = "This was related to an invitation to see their gift list, but the user no longer " +
@@ -1967,11 +1967,11 @@ function fetchNotificationTitle(notificationData) {
     }
   } else {
     if (noteSplit.data == undefined) {
-      console.log("Severely Deprecated Notification Format!");
+      logOutput("Severely Deprecated Notification Format!");
       notificationDataTitle = "Deprecated Notification Format! Showing Unaltered Notification Data";
       notificationDetails = noteSplit;
     } else {
-      console.log("Deprecated Notification Format!");
+      logOutput("Deprecated Notification Format!");
       notificationDataTitle = "Deprecated Notification Format! Showing Unaltered Notification Data";
       notificationDetails = noteSplit.data.data;
     }
@@ -2355,7 +2355,7 @@ function updateInitializedUsers(){
           }
           break;
         default:
-          console.log("Unknown User Data Input: " + localListedUserData);
+          logOutput("Unknown User Data Input: " + localListedUserData);
           break;
       }
     }
