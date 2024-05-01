@@ -137,14 +137,13 @@ window.onload = function instantiate() {
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
-            if (consoleOutput)
-              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            logOutput("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
 
             if(data.key == user.uid){
               user = data.val();
               updateFriendNav(user.friends);
-              console.log("Current User Updated");
+              logOutput("Current User Updated");
             }
             saveCriticalCookies();
           }
@@ -154,7 +153,7 @@ window.onload = function instantiate() {
       postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
-          console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          logOutput("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
         saveCriticalCookies();
@@ -175,7 +174,7 @@ window.onload = function instantiate() {
         inviteArr.splice(data.key, 1);
 
         if (inviteArr.length == 0) {
-          console.log("Invite List Removed");
+          logOutput("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -189,7 +188,7 @@ window.onload = function instantiate() {
             if(i != -1) {
               localObjectChanges = findObjectChanges(ticketArr[i], data.val());
               if (localObjectChanges.length != 0) {
-                console.log("Changing " + ticketArr[i].uid);
+                logOutput("Changing " + ticketArr[i].uid);
                 ticketArr[i] = data.val();
                 changeModerationTicket(data.val());
                 saveTicketArrToCookie();
@@ -206,7 +205,7 @@ window.onload = function instantiate() {
             if(i != -1){
               localObjectChanges = findObjectChanges(ticketArr[i], data.val());
               if (localObjectChanges.length != 0) {
-                console.log("Changing " + ticketArr[i].uid);
+                logOutput("Changing " + ticketArr[i].uid);
                 ticketArr[i] = data.val();
                 changeModerationTicket(data.val());
                 saveTicketArrToCookie();
@@ -215,10 +214,10 @@ window.onload = function instantiate() {
           });
 
           postRef.on("child_removed", function (data) {
-            console.log(data.key + " Removed!");
+            logOutput(data.key + " Removed!");
             let i = findUIDItemInArr(data.key, ticketArr);
             if(i != -1){
-              console.log("Removing " + ticketArr[i].uid);
+              logOutput("Removing " + ticketArr[i].uid);
               ticketArr.splice(i, 1);
 
               let x = initializedTickets.indexOf(data.key);
@@ -256,17 +255,13 @@ function initializeBackBtn() {
 
 function initializeTicketCount() {
   let ticketCountString = "";
-  let ticketCountStringAlt = "";
 
   if (ticketArr.length == 0) {
     ticketCountString = "No Tickets!";
-    ticketCountStringAlt = "are currently no tickets";
   } else if (ticketArr.length == 1) {
     ticketCountString = "1 Ticket";
-    ticketCountStringAlt = "is only one ticket";
   } else if (ticketArr.length > 1) {
     ticketCountString = ticketArr.length + " Tickets";
-    ticketCountStringAlt = "are currently " + ticketArr.length + " tickets";
   }
   ticketCount.innerHTML = ticketCountString;
   ticketCount.onclick = function() {
@@ -386,7 +381,6 @@ function initModTicketElement (liItem, ticketData) {
   liItem.className = "gift";
   ticketTitleSuffix = ticketDataReturn[0];
   liItem.className += ticketDataReturn[1];
-  console.log(ticketDataReturn[1]);
 
   ticketTitleText = localTime + ticketTitleSuffix;
 
