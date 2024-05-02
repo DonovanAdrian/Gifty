@@ -42,8 +42,7 @@ function getCurrentUser(){
   failedNavNum = 6;
 
   if(user.notifications == undefined) {
-    if(consoleOutput)
-      console.log("Notifications Not Found");
+    logOutput("Notifications Not Found");
     deployListEmptyNotification("No Notifications Found!");
     initializeNukeBtn();
     notificationArr = [];
@@ -210,8 +209,7 @@ window.onload = function instantiate() {
                 findRemovedNotification(oldNotificationArr, notificationArr);
                 potentialRemoval = false;
               }
-              if(consoleOutput)
-                console.log("Current User Updated");
+              logOutput("Current User Updated");
             }
             saveCriticalCookies();
           }
@@ -221,8 +219,7 @@ window.onload = function instantiate() {
       postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
-          if(consoleOutput)
-            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          logOutput("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
         }
       });
@@ -318,8 +315,7 @@ function fetchNotificationData(createBool, liElem, notificationData, noteKey) {
           notificationDetails = "The gift you bought for " + friendUserData.name + ", \"" + messageGiftTitle + "\", was" +
               " deleted from their public gift list...";
         } else {
-          if (consoleOutput)
-            console.log("Notification Page Error, 1");
+          logOutput("Notification Page Error, 1");
           notificationPage = "noteERROR";
         }
         if (notificationPage != "noteError") {
@@ -334,20 +330,17 @@ function fetchNotificationData(createBool, liElem, notificationData, noteKey) {
               " deleted by " + deleterData.name + " from " + friendUserData.name + "'s private gift list...";
           notificationPage = pageNameNote;
         } else {
-          if (consoleOutput)
-            console.log("DeleterUID not found!");
+          logOutput("DeleterUID not found!");
           notificationPage = "noteERROR";
         }
       } else {
-        if (consoleOutput)
-          console.log("Unknown Notification String Received...");
+        logOutput("Unknown Notification String Received...");
         notificationPage = "noteERROR";
       }
       initNotificationElement(liElem, notificationPage, notificationData, notificationDataTitle,
           notificationDetails, friendUserData, noteKey);
     } else {
-      if (consoleOutput)
-        console.log("SenderUID not found for notification UID " + notificationData.uid);
+      logOutput("SenderUID not found for notification UID " + notificationData.uid);
       notificationDataTitle = "A Notification From A Deleted User!";
       if (noteSplitCount == 1) {
         notificationDetails = "This was related to an invitation to see their gift list, but the user no longer " +
@@ -363,8 +356,7 @@ function fetchNotificationData(createBool, liElem, notificationData, noteKey) {
           notificationDetails, undefined, noteKey);
     }
   } else {
-    if (consoleOutput)
-      console.log("Deprecated Notification Format!");
+    logOutput("Deprecated Notification Format!");
     notificationPage = "noteErrorLegacy";
     initNotificationElement(liElem, notificationPage, notificationData);
   }
@@ -470,8 +462,7 @@ function initNotificationElement(liItem, notificationPage, notificationData, not
           "the gift.</i>";
       notificationViewPage.onclick = function () {};
     } else {
-      if(consoleOutput)
-        console.log("Notification Page Error, 2");
+      logOutput("Notification Page Error, 2");
       notificationViewPage.innerHTML = "<i>Alternatively, send an email to Gifty support on the Settings > FAQ page!</i>";
       notificationViewPage.onclick = function () {
         navigation(12);//FAQ
@@ -556,8 +547,7 @@ function deleteNotification(uid) {
   let verifyDeleteBool = true;
   let toDelete = -1;
 
-  if(consoleOutput)
-    console.log("Deleting " + uid);
+  logOutput("Deleting " + uid);
 
   toDelete = findUIDItemInArr(uid, notificationArr, true);
   if (toDelete != -1) {
