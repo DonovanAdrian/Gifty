@@ -60,13 +60,11 @@ function getCurrentUser(){
   failedNavNum = 10;
 
   if(user.uid == giftUser.uid){
-    if(consoleOutput)
-      console.log("***HOW'D YOU GET HERE???***");
+    logOutput("***HOW'D YOU GET HERE???***");
     navigation(1);//Index
   }
 
-  if(consoleOutput)
-    console.log("Friend: " + giftUser.userName + " loaded in");
+  logOutput("Friend: " + giftUser.userName + " loaded in");
   let privateFirstName = findFirstNameInFullName(giftUser.name);
   document.title = privateFirstName + "'s List";
 
@@ -98,8 +96,7 @@ function rollForAPrivateJokeGift() {
     generateCustomPrivateGift();
     createdJokeGift = true;
   } else {
-    if (consoleOutput)
-      console.log("Nope... Not this time!");
+    logOutput("Nope... Not this time!");
   }
 }
 
@@ -264,8 +261,7 @@ window.onload = function instantiate() {
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
-            if (consoleOutput)
-              console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+            logOutput("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
             userArr[i] = data.val();
 
             if (data.key == giftUser.uid) {
@@ -276,14 +272,12 @@ window.onload = function instantiate() {
                 findRemovedGift(oldGiftArr, giftArr);
                 potentialRemoval = false;
               }
-              if(consoleOutput)
-                console.log("Current Gift User Updated");
+              logOutput("Current Gift User Updated");
             } else if (data.key == user.uid) {
               user = data.val();
               checkNotifications();
               updateFriendNav(user.friends);
-              if(consoleOutput)
-                console.log("Current User Updated");
+              logOutput("Current User Updated");
             }
             saveCriticalCookies();
           }
@@ -293,8 +287,7 @@ window.onload = function instantiate() {
       postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
-          if(consoleOutput)
-            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          logOutput("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
           saveCriticalCookies();
         }
@@ -329,8 +322,7 @@ window.onload = function instantiate() {
           let previousBoughtStatus = giftArr[data.key].received;
           let currentBoughtStatus = data.val().received;
 
-          if (consoleOutput)
-            console.log("Changing " + data.val().uid);
+          logOutput("Changing " + data.val().uid);
           giftArr[data.key] = data.val();
 
           if (data.val().uid == currentModalOpen) {
@@ -374,23 +366,14 @@ window.onload = function instantiate() {
       });
 
       postRef.on("child_changed", function (data) {
-        if(consoleOutput)
-          console.log(inviteArr);
         inviteArr[data.key] = data.val();
-        if(consoleOutput)
-          console.log(inviteArr);
       });
 
       postRef.on("child_removed", function (data) {
-        if(consoleOutput)
-          console.log(inviteArr);
         inviteArr.splice(data.key, 1);
-        if(consoleOutput)
-          console.log(inviteArr);
 
         if (inviteArr.length == 0) {
-          if(consoleOutput)
-            console.log("Invite List Removed");
+          logOutput("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -487,8 +470,7 @@ function checkGiftBuyer(giftData) {
   if (received < 0 || receivedBy.length > 0) {
     if (receivedBy.length != Math.abs(received)) {
       updateGiftToDB = -2;
-      if(consoleOutput)
-        console.log("Multiple buyer error found!");
+      logOutput("Multiple buyer error found!");
     }
   } else if (buyer == "" || buyer == undefined || userUIDList.includes(buyer)) {
     updateGiftToDB = 0;
@@ -497,8 +479,7 @@ function checkGiftBuyer(giftData) {
     updateGiftToDB = findUserNameItemInArr(userUserNames[tempIndexOfUserName], userArr, true);
   } else {
     updateGiftToDB = -1;
-    if(consoleOutput)
-      console.log("Buyer error found!");
+    logOutput("Buyer error found!");
   }
 
   return updateGiftToDB;
@@ -506,8 +487,7 @@ function checkGiftBuyer(giftData) {
 
 function updateGiftError(giftData, giftKey, buyerData) {
   if (buyerData == undefined) {
-    if(consoleOutput)
-      console.log("A multi-gift needs to be updated! Key: " + giftKey);
+    logOutput("A multi-gift needs to be updated! Key: " + giftKey);
 
     let tempReceivedBy = giftData.receivedBy;
     let tempReceivedByLen = 0;
@@ -521,8 +501,7 @@ function updateGiftError(giftData, giftKey, buyerData) {
       received: tempReceivedByLen
     });
   } else {
-    if(consoleOutput)
-      console.log("A gift needs to be updated! Key: " + giftKey);
+    logOutput("A gift needs to be updated! Key: " + giftKey);
 
     firebase.database().ref("users/" + giftUser.uid + "/privateList/" + giftKey).update({
       buyer: buyerData
@@ -987,8 +966,7 @@ function deleteGiftElement(key, title, uid, buyer, receivedBy) {
           addPrivateDeleteNoteToDB(userArr[userFound], user.uid, title);
         }
       } else {
-        if(consoleOutput)
-          console.log("User not found");
+        logOutput("Buyer user not found");
       }
     } else if (receivedBy != null) {
       for (let i = 0; i < receivedBy.length; i++) {
@@ -998,13 +976,11 @@ function deleteGiftElement(key, title, uid, buyer, receivedBy) {
             addPrivateDeleteNoteToDB(userArr[userFound], user.uid, title);
           }
         } else {
-          if(consoleOutput)
-            console.log("User not found");
+          logOutput("Buyer user not found");
         }
       }
     } else {
-      if(consoleOutput)
-        console.log("No buyer, no notification needed");
+      logOutput("No buyer, no notification needed");
     }
     giftDeleteLocal = false;
   } else {
