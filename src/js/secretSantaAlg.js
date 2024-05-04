@@ -103,8 +103,8 @@ function processFamily(familyMembers, ignoreLastYearsAssignments, testingInt) {
   let tempIndex = 0;
   let altTempIndex = 0;
 
-  if (consoleOutput && !secretSantaStressTesting)
-    console.log("Starting Processing Attempt # " + processFamilyAttempts);
+  if (!secretSantaStressTesting)
+    logOutput("Starting Processing Attempt # " + processFamilyAttempts);
   try {
     //Iterate through all the family members and prepare to assign each user
     for (let i = 0; i < familyMembers.length; i++) {
@@ -216,9 +216,9 @@ function processFamily(familyMembers, ignoreLastYearsAssignments, testingInt) {
       }
     }
   } catch (err) {
-    if (consoleOutput && !secretSantaStressTesting) {
-      console.log("ERROR ENCOUNTERED PROCESSING FAMILY:");
-      console.log(err.toString());
+    if (!secretSantaStressTesting) {
+      logOutput("ERROR ENCOUNTERED PROCESSING FAMILY:");
+      logOutput(err.toString(), false, true);
     }
     if (processingResultCode == 0)
       processingResultCode = -1;
@@ -238,8 +238,8 @@ function processFamily(familyMembers, ignoreLastYearsAssignments, testingInt) {
       }
     }
 
-    if (consoleOutput && !secretSantaStressTesting)
-      console.log("Found Next User To Be Assigned, " + userList[tempIndexOfLowestCount]);
+    if (!secretSantaStressTesting)
+      logOutput("Found Next User To Be Assigned, " + userList[tempIndexOfLowestCount]);
     //The user with the least amount of possible users is determined and verified. Assign them a name randomly.
     if (tempIndexOfLowestCount >= 0 && tempIndexOfLowestCount <= potentialAssignments.length) {
       if (potentialAssignments[tempIndexOfLowestCount].length > 0) {
@@ -282,8 +282,8 @@ function processFamily(familyMembers, ignoreLastYearsAssignments, testingInt) {
       //Return a -1 to indicate that a failure occurred
       indexToAssign = -1;
     }
-    if (consoleOutput && !secretSantaStressTesting)
-      console.log("Successfully Assigned " + userList[indexToAssign]);
+    if (!secretSantaStressTesting)
+      logOutput("Successfully Assigned " + userList[indexToAssign]);
 
     return indexToAssign;
   }
@@ -302,8 +302,8 @@ function processFamily(familyMembers, ignoreLastYearsAssignments, testingInt) {
       let tempGiverUser = "";
       let tempRecipientUser = "";
       let tempDuplicationCount = 0;
-      if (consoleOutput && !secretSantaStressTesting)
-        console.log("Successfully Completed Processing... Verifying Results.");
+      if (!secretSantaStressTesting)
+        logOutput("Successfully Completed Processing... Verifying Results.");
 
       //The Givers, Recipients, and Family Members size should all match
       if (secretGivers.length != secretRecipients.length && secretRecipients.length != familyMembers.length) {
@@ -375,8 +375,8 @@ function processFamily(familyMembers, ignoreLastYearsAssignments, testingInt) {
         for (let i = 0; i < familyMembers.length; i++) {
           tempIndex = findUIDItemInArr(familyMembers[i], tempUserArr, true);
           if (tempIndex != -1) {
-            if (consoleOutput && !secretSantaStressTesting)
-              console.log("Saving " + tempUserArr[tempIndex].userName + "...");
+            if (!secretSantaStressTesting)
+              logOutput("Saving " + tempUserArr[tempIndex].userName + "...");
             saveSecretSantaAssignmentToDB(tempUserArr[tempIndex]);
           } else {
             processingResultCode = 12;
@@ -385,20 +385,20 @@ function processFamily(familyMembers, ignoreLastYearsAssignments, testingInt) {
         }
       }
 
-      if (consoleOutput && !secretSantaStressTesting)
-        console.log("Verification Complete. Secret Santa Assignments Successful!");
+      if (!secretSantaStressTesting)
+        logOutput("Verification Complete. Secret Santa Assignments Successful!");
     }
   } catch (err) {
-    if (consoleOutput && !secretSantaStressTesting) {
-      console.log("ERROR ENCOUNTERED PROCESSING FAMILY:");
-      console.log(err.toString());
+    if (!secretSantaStressTesting) {
+      logOutput("ERROR ENCOUNTERED PROCESSING FAMILY:");
+      logOutput(err.toString(), false, true);
     }
     if (processingResultCode == 0)
       processingResultCode = -1;
   }
 
-  if (consoleOutput && !secretSantaStressTesting)
-    console.log(" ***********************************************");
+  if (!secretSantaStressTesting)
+    logOutput(" ***********************************************");
   return processingResultCode;
 
   /*
@@ -950,8 +950,7 @@ function changeSecretSantaState(familyData, desiredStateInt, suppressDialogs) {
       deployNotificationModal(true, "Secret Santa State Change Failed!",
           invalidStateChangeReason, invalidModalOpenTime);
     } else {
-      if (consoleOutput)
-        console.log("Secret Santa state change failed! Reason: " + invalidStateChangeReason);
+      logOutput("Secret Santa state change failed! Reason: " + invalidStateChangeReason, false, true);
       automaticControlFailureCount++;
       updateMaintenanceLog(pageName, "Secret Santa Automatic Control FAILED to change to state " +
           desiredStateInt + " for the family \"" + familyData.name + "\". This automatic state change was triggered " +
@@ -994,8 +993,7 @@ function toggleAutomaticFunctionality(familyData, automaticOverride) {
       automaticSantaControl: automaticOverride
     });
 
-    if (consoleOutput)
-      console.log("Set Automatic Control Override (" + enableDisableAutoStr + ")");
+    logOutput("Set Automatic Control Override (" + enableDisableAutoStr + ")");
   } else {
     let currentAutomaticControlCount = 0;
 
@@ -1134,13 +1132,11 @@ function unassignAllFamilyMembers(familyData) {
     tempIndex = findUIDItemInArr(familyMembers[i], userArr, true);
     if (tempIndex != -1) {
       try {
-        if (consoleOutput)
-          console.log("Resetting " + userArr[tempIndex].userName);
+        logOutput("Resetting " + userArr[tempIndex].userName);
         resetSecretSantaNum(tempIndex);
         resetSecretSantaName(tempIndex);
       } catch (err) {
-        if (consoleOutput)
-          console.log("Error Occurred! " + err.toString());
+        logOutput("Error Occurred! " + err.toString(), false, true);
         errorEncountered = true;
       }
     }
@@ -1158,8 +1154,7 @@ function unassignAllFamilyMembers(familyData) {
       tempPreviousSecretSanta = userData.secretSantaNamePrior;
     }
 
-    if (consoleOutput)
-      console.log(userData.userName + "'s Current -> Previous Assignment: " + tempPreviousSecretSanta);
+    logOutput(userData.userName + "'s Current -> Previous Assignment: " + tempPreviousSecretSanta);
     firebase.database().ref("users/" + userData.uid).update({
       secretSantaNamePrior: tempPreviousSecretSanta,
       secretSantaName: ""
@@ -1171,8 +1166,7 @@ function unassignAllFamilyMembers(familyData) {
   function resetSecretSantaNum(tempIndex) {
     let userData = userArr[tempIndex];
 
-    if (consoleOutput)
-      console.log("Resetting " + userData.userName + "'s Secret Santa Status...");
+    logOutput("Resetting " + userData.userName + "'s Secret Santa Status...");
     firebase.database().ref("users/" + userData.uid).update({
       secretSanta: 0
     });
@@ -1212,11 +1206,10 @@ function assignUsersToNames(familyMembers, testingInt) {
       ignoreLastYearsAssignments = 1;
     }
 
-    if (consoleOutput && !secretSantaStressTesting)
-      console.log(" ***********************************************");
+    if (!secretSantaStressTesting)
+      logOutput(" ***********************************************");
     processingResults = processFamily(familyMembers, ignoreLastYearsAssignments, testingInt);
-    if (consoleOutput)
-      console.log("Result Code: " + processingResults);
+    logOutput("Result Code: " + processingResults);
 
     if (processingResults == 0 && !secretSantaStressTesting) {
       processingSuccess = true;
@@ -1272,19 +1265,17 @@ function setSecretSantaResultsText(processingResults, ignoreLastYearsAssignments
   }
 
   if (!stressOverride) {
-    if (consoleOutput)
-      console.log(fetchProcessingStatusText());
+    logOutput(fetchProcessingStatusText());
     if (processingResults == 0) {
       secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> " + "Successful Assignment After " + attemptCount +
           " Tries!";
     } else {
       secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> " + "UNSUCCESSFUL Assignment After " + attemptCount +
           " Tries... Check Console For More Details...";
-      if (consoleOutput)
-        console.log("Errors usually occur due to users that have too many restrictions... This can be resolved by " +
-            "removing the amount of relationships that each user has, increasing the amount of friends in each user's " +
-            "friend list, increasing the amount of signed up users in a family, " +
-            "and/or increasing the amount of users in a given family.");
+      logOutput("Errors usually occur due to users that have too many restrictions... This can be resolved by " +
+          "removing the amount of relationships that each user has, increasing the amount of friends in each user's " +
+          "friend list, increasing the amount of signed up users in a family, " +
+          "and/or increasing the amount of users in a given family.");
     }
   } else {
     secretSantaStatusText.innerHTML = "<i>Secret Santa Status:</i> Stress Testing Enabled, " +
@@ -1361,8 +1352,7 @@ function dateCalculationHandler(familyData) {
   let currentFamilyName = familyData.name;
   let desiredNextState;
 
-  if (consoleOutput)
-    console.log(" * * * Secret Santa Automatic Control * * *");
+  logOutput(" * * * Secret Santa Automatic Control * * *");
 
   commonToday = new Date();
   let UTChh = commonToday.getUTCHours() + "";
@@ -1387,29 +1377,24 @@ function dateCalculationHandler(familyData) {
   let timeData = mm + "/" + dd + "/" + yy + " " + UTChh + ":" + UTCmm + ":" + UTCss;
 
   if (showDate <= commonToday && commonToday < assignDate) { //Between October 1st and November 1st
-    if (consoleOutput)
-      console.log("SET STATE 2, READY");
+    logOutput("SET STATE 2, READY");
     desiredNextState = 2;
   } else if (assignDate <= commonToday && (hideDateMax < commonToday.getMonth())) { //Between November 1st and January
-    if (consoleOutput)
-      console.log("SET STATE 3, ACTIVE - ASSIGN USERS");
+    logOutput("SET STATE 3, ACTIVE - ASSIGN USERS");
     desiredNextState = 3;
   } else if (commonToday < showDate &&
       (hideDateMin <= commonToday.getMonth() && commonToday.getMonth() <= hideDateMax)) { //Between January and October
-    if (consoleOutput)
-      console.log("SET STATE 1, IDLE");
+    logOutput("SET STATE 1, IDLE");
     desiredNextState = 1;
   } else {
-    if (consoleOutput)
-      console.log("Unknown Condition! Setting To Default!");
+    logOutput("Unknown Condition! Setting To Default!");
     desiredNextState = 1;
   }
 
   if (familyData.secretSantaState == 2 && desiredNextState == 3)
     if (familyData.members.length >= familyMemberSignUpMinimum) {
       if (evaluateUserReadiness(familyData.members)) {
-        if (consoleOutput)
-          console.log("Family Members Checked And Verified");
+        logOutput("Family Members Checked And Verified");
       } else {
         automaticControlFailureCount++;
         updateMaintenanceLog(pageName, "Secret Santa Automatic Control FAILED to assign users to each " +
@@ -1432,12 +1417,10 @@ function dateCalculationHandler(familyData) {
     }
 
   if (desiredNextState == familyData.secretSantaState) {
-    if (consoleOutput)
-      console.log("No State Change Needed...");
+    logOutput("No State Change Needed...");
   } else if (desiredNextState != (familyData.secretSantaState + 1) &&
       !(familyData.secretSantaState == 3 && desiredNextState == 1)) {
-    if (consoleOutput)
-      console.log(" * * Skipped State Detected! * *");
+    logOutput(" * * Skipped State Detected! * *");
     automaticControlFailureCount++;
     updateMaintenanceLog(pageName, "Secret Santa Automatic Control FAILED to change to state " +
         desiredNextState + " for the family \"" + familyData.name + "\". The users in this family are not active " +
@@ -1446,18 +1429,15 @@ function dateCalculationHandler(familyData) {
     toggleAutomaticFunctionality(familyData, 0);
     checkForFailedFamilies();
   } else {
-    if (consoleOutput)
-      console.log("Performing State Change...");
+    logOutput("Performing State Change...");
     changeSecretSantaState(familyData, desiredNextState, true);
   }
 
-  if (consoleOutput) {
-    console.log("Family: " + currentFamilyName);
-    console.log("Current Time: " + timeData);
-    console.log("Old State: " + currentFamilyState);
-    console.log("New State: " + desiredNextState);
-    console.log(" * * * Secret Santa Automatic Control Complete * * *");
-  }
+  logOutput("Family: " + currentFamilyName);
+  logOutput("Current Time: " + timeData);
+  logOutput("Old State: " + currentFamilyState);
+  logOutput("New State: " + desiredNextState);
+  logOutput(" * * * Secret Santa Automatic Control Complete * * *");
 }
 
 function checkForFailedFamilies(failureCheckDelay) {
