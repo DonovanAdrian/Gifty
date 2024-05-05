@@ -146,8 +146,7 @@ window.onload = function instantiate() {
               user = data.val();
               updateFriendNav(user.friends);
               updateSettingsUserData();
-              if(consoleOutput)
-                console.log("Current User Updated");
+              logOutput("Current User Updated");
             }
             saveCriticalCookies();
           }
@@ -157,8 +156,7 @@ window.onload = function instantiate() {
       postRef.on("child_removed", function (data) {
         let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
-          if(consoleOutput)
-            console.log("Removing " + userArr[i].userName + " / " + data.val().userName);
+          logOutput("Removing " + userArr[i].userName + " / " + data.val().userName);
           userArr.splice(i, 1);
           saveCriticalCookies();
         }
@@ -179,8 +177,7 @@ window.onload = function instantiate() {
         inviteArr.splice(data.key, 1);
 
         if (inviteArr.length == 0) {
-          if (consoleOutput)
-            console.log("Invite List Removed");
+          logOutput("Invite List Removed");
           inviteNote.style.background = "#008222";
         }
       });
@@ -275,8 +272,7 @@ function displayUserDataAlert(userDataItem) {
       deployNotificationModal(false, "Your User Score!", "This is your User Score! This is an arbitrary number that shows how active you are on Gifty!" + extraText);
       break;
     default:
-      if (consoleOutput)
-        console.log("Unknown Input Data Item..." + extraText);
+      logOutput("Unknown Input Data Item..." + extraText);
       break;
   }
 }
@@ -376,8 +372,7 @@ function queryModeratorData() {
           if(i != -1) {
             localObjectChanges = findObjectChanges(ticketArr[i], data.val());
             if (localObjectChanges.length != 0) {
-              if (consoleOutput)
-                console.log("Changing " + ticketArr[i].uid);
+              logOutput("Changing " + ticketArr[i].uid);
               ticketArr[i] = data.val();
               saveTicketArrToCookie();
             }
@@ -392,8 +387,7 @@ function queryModeratorData() {
           if(i != -1){
             localObjectChanges = findObjectChanges(ticketArr[i], data.val());
             if (localObjectChanges.length != 0) {
-              if (consoleOutput)
-                console.log("Changing " + ticketArr[i].uid);
+              logOutput("Changing " + ticketArr[i].uid);
               ticketArr[i] = data.val();
               saveTicketArrToCookie();
             }
@@ -403,8 +397,7 @@ function queryModeratorData() {
         postRef.on("child_removed", function (data) {
           let i = findUIDItemInArr(data.key, ticketArr);
           if(i != -1){
-            if (consoleOutput)
-              console.log("Removing " + ticketArr[i].uid);
+            logOutput("Removing " + ticketArr[i].uid);
             ticketArr.splice(i, 1);
             saveTicketArrToCookie();
           }
@@ -421,11 +414,9 @@ function queryModeratorData() {
   let fetchModeratorSettings = function (postRef) {
     postRef.once("value").then(function(snapshot) {
       if(snapshot.exists()) {
-        if (consoleOutput)
-          console.log("Moderator Settings Snapshot Exists!");
+        logOutput("Moderator Settings Snapshot Exists!");
         postRef.on("child_added", function (data) {
-          if (consoleOutput)
-            console.log(data.key + " added");
+          logOutput(data.key + " added");
 
           if (data.key == "listedUserData") {
             localListedUserData = data.val();
@@ -434,8 +425,7 @@ function queryModeratorData() {
         });
 
         postRef.on("child_changed", function (data) {
-          if (consoleOutput)
-            console.log(data.key + " changed");
+          logOutput(data.key + " changed");
 
           if (data.key == "listedUserData") {
             localListedUserData = data.val();
@@ -444,8 +434,7 @@ function queryModeratorData() {
         });
 
         postRef.on("child_removed", function (data) {
-          if (consoleOutput)
-            console.log(data.key + " removed!");
+          logOutput(data.key + " removed!");
 
           firebase.database().ref("moderatorSettings/").update({
             listedUserData: "None"
