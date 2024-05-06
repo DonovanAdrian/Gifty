@@ -100,15 +100,13 @@ window.onload = function instantiate() {
                 if (i != -1) {
                     localObjectChanges = findObjectChanges(userArr[i], data.val());
                     if (localObjectChanges.length != 0) {
-                        if (consoleOutput)
-                            console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+                        logOutput("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
                         userArr[i] = data.val();
 
                         if (data.key == user.uid) {
                             user = data.val();
                             updateFriendNav(user.friends);
-                            if (consoleOutput)
-                                console.log("Current User Updated");
+                            logOutput("Current User Updated");
                         }
                         saveCriticalCookies();
                     }
@@ -139,8 +137,7 @@ function customFlickerNotification() {
     let applyOpacity = "0.75";
 
 
-    if (consoleOutput)
-        console.log("Notification Feature 2 Active");
+    logOutput("Notification Feature 2 Active");
     notificationBtn2.src = "img/bellNotificationOn.png";
     setInterval(function() {
         flickerTimer = flickerTimer + 1000;
@@ -178,8 +175,7 @@ function customAlternateButtonLabel(button, parentLabel, childLabel) {
     let nowConfirm = 0;
     let alternator = 0;
     clearInterval(customAlternateButtonTimer);
-    if (consoleOutput)
-        console.log(childLabel + " Button 2 Feature Set");
+    logOutput(childLabel + " Button 2 Feature Set");
     customAlternateButtonTimer = setInterval(function() {
         nowConfirm = nowConfirm + 1000;
         if (nowConfirm >= 3000) {
@@ -213,10 +209,8 @@ function addSupportToDB(supportCode) {
     } catch (err) {
 
     }
-    if(consoleOutput) {
-        console.log(supportCode);
-        console.log(supportCount);
-    }
+    logOutput(supportCode);
+    logOutput(supportCount);
     firebase.database().ref("users/" + user.uid + "/support/" + supportCount).push();
     firebase.database().ref("users/" + user.uid + "/support/" + supportCount).set({
         supportCount: supportCount,
