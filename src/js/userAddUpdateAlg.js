@@ -127,8 +127,7 @@ window.onload = function instantiate() {
             if(user != null)
               if (data.key == user.uid) {
                 user = data.val();
-                if(consoleOutput)
-                  console.log("Current User Updated");
+                logOutput("Current User Updated");
               }
           }
         }
@@ -244,13 +243,11 @@ function deleteCheck(){
   let deleteBuyerBool = false;
   updateMaintenanceLog("userAddUpdate", "Attempting to delete user: \"" + user.userName + "\"");
 
-  if(consoleOutput)
-    console.log(user.uid + " will be deleted. Are you sure?");
+  logOutput(user.uid + " will be deleted. Are you sure?");
   openModal(confirmModal, "confirmModal");
 
   deleteConfirm.onclick = function () {
-    if(consoleOutput)
-      console.log("Confirmed to delete user " + user.uid);
+    logOutput("Confirmed to delete user " + user.uid);
 
     for (let i = 0; i < userArr.length; i++) {
       if (userArr[i].uid != user.uid) {
@@ -363,23 +360,18 @@ function deleteCheck(){
     btnUpdate.onclick = function(){};
     btnDelete.onclick = function(){};
     backBtn.onclick = function(){};
-    if(consoleOutput) {
-      console.log("");
-      console.log("Completed deleting user " + user.uid);
-    }
+    logOutput("Completed deleting user " + user.uid);
     deployNotificationModal(false, "User Account Deleted!", "Your account has been " +
         "successfully deleted. Redirecting back to Login...", 5, 1, false);
   };
 
   deleteDeny.onclick = function () {
-    if(consoleOutput)
-      console.log("Denied to delete user " + user.uid);
+    logOutput("Denied to delete user " + user.uid);
     closeModal(confirmModal);
   };
 
   confirmSpan.onclick = function () {
-    if(consoleOutput)
-      console.log("Closed window, user " + user.uid + " not deleted");
+    logOutput("Closed window, user " + user.uid + " not deleted");
     closeModal(confirmModal);
   };
 
