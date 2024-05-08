@@ -979,9 +979,9 @@ function fetchGiftReceivedSuffix(multipleBuyer, buyerStr, buyerArr) {
     let userBought = buyerArr.indexOf(user.uid);
     if (userBought == -1) {
       if (buyerArr.length == 1) {
-        userBought = findUIDItemInArr(buyerArr[0], userArr, true);
+        userBought = findUIDItemInArr(buyerArr[0], userArr);
         if (userBought == -1) {
-          userBought = findUserNameItemInArr(buyerArr[0], userArr, true);
+          userBought = findUserNameItemInArr(buyerArr[0], userArr);
         }
         if (userBought != -1) {
           returnGiftSuffix = findFirstNameInFullName(userArr[userBought].name);
@@ -1272,7 +1272,7 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
         if (receivedUID == undefined) {
           updateArrs = true;
           overrideBool = true;
-        } else if (findUIDItemInArr(listenExpectedUIDs[i], receivedUID, true)) {
+        } else if (findUIDItemInArr(listenExpectedUIDs[i], receivedUID)) {
           updateArrs = true;
           overrideBool = true;
         }
@@ -1287,7 +1287,7 @@ function cancelDBChangeListener(expectedChange, receivedUID, overrideBool) {
         }
       }
       if (expectedChange == "Delete") {
-        if (findUIDItemInArr(listenExpectedUIDs[i], receivedUID, true) == -1) {
+        if (findUIDItemInArr(listenExpectedUIDs[i], receivedUID) == -1) {
           receivedUID = listenExpectedUIDs[i];
         }
       }
