@@ -110,7 +110,7 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchData = function (postRef) {
       postRef.on("child_added", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         let previousUserData;
         if(i != -1){
           localObjectChanges = findObjectChanges(userArr[i], data.val());
@@ -213,7 +213,7 @@ function checkGiftLists(updatedUserData, oldUserData){
     newPrivateGiftList = [];
 
   for (let i = 0; i < newGiftList.length; i++) {
-    let a = findUIDItemInArr(newGiftList[i].uid, userBoughtGiftsArr, true);
+    let a = findUIDItemInArr(newGiftList[i].uid, userBoughtGiftsArr);
     if (a == -1) {
       if (newGiftList[i].buyer != "") {
         if (newGiftList[i].buyer == user.userName) {
@@ -247,7 +247,7 @@ function checkGiftLists(updatedUserData, oldUserData){
 
   removedGiftIndex = findRemovedData(oldGiftList, newGiftList);
   if (removedGiftIndex != -1) {
-    let b = findUIDItemInArr(oldGiftList[removedGiftIndex].uid, userBoughtGiftsArr, true);
+    let b = findUIDItemInArr(oldGiftList[removedGiftIndex].uid, userBoughtGiftsArr);
     if (b != -1) {
       userBoughtGiftsArr.splice(b, 1);
       userBoughtGiftsUIDs.splice(b, 1);
@@ -257,7 +257,7 @@ function checkGiftLists(updatedUserData, oldUserData){
   }
 
   for (let i = 0; i < newPrivateGiftList.length; i++) {
-    let a = findUIDItemInArr(newPrivateGiftList[i].uid, userBoughtGiftsArr, true);
+    let a = findUIDItemInArr(newPrivateGiftList[i].uid, userBoughtGiftsArr);
     if (a == -1) {
       if (newPrivateGiftList[i].buyer != "") {
         if (newPrivateGiftList[i].buyer == user.userName) {
@@ -291,7 +291,7 @@ function checkGiftLists(updatedUserData, oldUserData){
 
   removedGiftIndex = findRemovedData(oldPrivateGiftList, newPrivateGiftList);
   if (removedGiftIndex != -1) {
-    let b = findUIDItemInArr(oldPrivateGiftList[removedGiftIndex].uid, userBoughtGiftsArr, true);
+    let b = findUIDItemInArr(oldPrivateGiftList[removedGiftIndex].uid, userBoughtGiftsArr);
     if (b != -1) {
       userBoughtGiftsArr.splice(b, 1);
       userBoughtGiftsUIDs.splice(b, 1);
@@ -301,14 +301,14 @@ function checkGiftLists(updatedUserData, oldUserData){
   }
 
   for (let i = 0; i < userBoughtGiftsArr.length; i++) {
-    let a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newGiftList, true);
+    let a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newGiftList);
     if (a != -1) {
       checkGiftData(userBoughtGiftsArr[i], newGiftList[a], userBoughtGiftsUIDs[i], userBoughtGiftsUsersArr[i]);
     }
   }
 
   for (let i = 0; i < userBoughtGiftsArr.length; i++) {
-    let a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newPrivateGiftList, true);
+    let a = findUIDItemInArr(userBoughtGiftsArr[i].uid, newPrivateGiftList);
     if (a != -1) {
       checkGiftData(userBoughtGiftsArr[i], newPrivateGiftList[a], userBoughtGiftsUIDs[i], userBoughtGiftsUsersArr[i]);
     }
@@ -361,7 +361,7 @@ function checkGiftData(currentGiftData, newGiftData, giftOwnerUID, giftOwner){
             "was updated by " + giftOwnerTrim + "! Please reopen the gift to view the changes.", 5);
       }
     }
-    let i = findUIDItemInArr(currentGiftData.uid, userBoughtGiftsArr, true);
+    let i = findUIDItemInArr(currentGiftData.uid, userBoughtGiftsArr);
     if (i != -1) {
       userBoughtGiftsArr[i] = newGiftData;
     }
@@ -415,7 +415,7 @@ function changeGiftElement(giftData, giftOwnerUID, giftOwner){
 }
 
 function initGiftElement(liItem, giftData, giftOwnerUID, giftOwner, createGiftBool) {
-  let giftOwnerIndex = findUIDItemInArr(giftOwnerUID, userArr, true);
+  let giftOwnerIndex = findUIDItemInArr(giftOwnerUID, userArr);
   let giftOwnerData = userArr[giftOwnerIndex];
   giftData = initGiftDataIfEmpty(giftData);
   let buttonVisible = false;
