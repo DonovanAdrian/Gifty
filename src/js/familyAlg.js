@@ -130,7 +130,7 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchData = function (postRef) {
       postRef.on("child_added", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -152,7 +152,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on("child_changed", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -203,7 +203,7 @@ window.onload = function instantiate() {
       postRef.once("value").then(function(snapshot) {
         if (snapshot.exists() || initializedDatabaseCheck) {
           postRef.on("child_added", function (data) {
-            let i = findUIDItemInArr(data.val().uid, familyArr, true);
+            let i = findUIDItemInArr(data.val().uid, familyArr);
             if (i == -1) {
               familyArr.push(data.val());
 
@@ -396,7 +396,7 @@ function initializeGlobalNotification(messageType, familyData) {
           "in the notification. Thank you!");
     } else {
       for (let i = 0; i < familyData.members.length; i++) {
-        tempIndex = findUIDItemInArr(familyData.members[i], userArr, true);
+        tempIndex = findUIDItemInArr(familyData.members[i], userArr);
 
         if (tempIndex != -1 && messageType == "Santa" && userArr[tempIndex].secretSanta == 1) {
           userList.push(userArr[tempIndex]);
@@ -440,7 +440,7 @@ function generateFamilyMemberList(liItem, familyMemberArr) {
   if (familyMemberArr.length > 0) {
     for (let i = 0; i < familyMemberArr.length; i++) {
       let liItem = document.createElement("LI");
-      let familyMember = findUIDItemInArr(familyMemberArr[i], userArr, true);
+      let familyMember = findUIDItemInArr(familyMemberArr[i], userArr);
 
       if (!loadedFamilyMembersArr.includes(familyMemberArr[i])) {
         liItem.id = familyMemberArr[i];
