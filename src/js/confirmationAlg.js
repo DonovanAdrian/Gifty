@@ -84,7 +84,7 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchData = function (postRef) {
       postRef.on("child_added", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -110,7 +110,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on("child_changed", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -257,8 +257,8 @@ function findRemovedUser(oldArr, newArr) {
 }
 
 function createInviteElement(inviteKey){
-  let inviteIndex = findUIDItemInArr(inviteKey, userArr, true);
-  let inviteData = userArr[inviteIndex];;
+  let inviteIndex = findUIDItemInArr(inviteKey, userArr);
+  let inviteData = userArr[inviteIndex];
 
   try{
     document.getElementById("testData").remove();
