@@ -184,7 +184,7 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchData = function (postRef) {
       postRef.on("child_added", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -219,7 +219,7 @@ window.onload = function instantiate() {
 
       postRef.on("child_changed", function (data) {
         let tempExpectedIndex = 0;
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -303,7 +303,7 @@ window.onload = function instantiate() {
 
     let fetchFamilies = function (postRef){
       postRef.on("child_added", function (data) {
-        let i = findUIDItemInArr(data.val().uid, familyArr, true);
+        let i = findUIDItemInArr(data.val().uid, familyArr);
         if (i == -1) {
           familyArr.push(data.val());
           saveCriticalCookies();
@@ -329,7 +329,7 @@ window.onload = function instantiate() {
             } else {
               for (let i = 0; i < familyData.members.length; i++) {
                 if (initializedElementsArr.indexOf(familyData.members[i]) == -1) {
-                  let userIndex = findUIDItemInArr(familyData.members[i], userArr, true);
+                  let userIndex = findUIDItemInArr(familyData.members[i], userArr);
                   createFamilyMemberElement(userArr[userIndex]);
                   refreshMemberModalData();
                   break;
@@ -599,7 +599,7 @@ function generateFamilyNameModal() {
 
 function removeAllFamilyMembers(familyRemove) {
   let emptyFamily = false;
-  let i = findUIDItemInArr(familyRemove.uid, familyArr, true);
+  let i = findUIDItemInArr(familyRemove.uid, familyArr);
   if (familyArr[i].members != null) {
     if (familyArr[i].members.length == 0) {
       emptyFamily = true;
@@ -807,7 +807,7 @@ function checkForUserStringConversionToArr(strChkData, returnUserData) {
     returnChildArray = [];
   else if (typeof strChkData == "string" && strChkData != "") {
     if (returnUserData) {
-      tempStrChkIndex = findUIDItemInArr(strChkData, userArr, true);
+      tempStrChkIndex = findUIDItemInArr(strChkData, userArr);
       returnChildArray.push(userArr[tempStrChkIndex]);
     } else {
       returnChildArray.push(strChkData);
@@ -831,7 +831,7 @@ function clearParentChildData (familyMemberData) {
   if (familyMemberData.parentUser != null) {
     if (familyMemberData.parentUser.length != 0)
       for (let i = 0; i < familyMemberData.parentUser.length; i++) {
-        tempPCIndex = findUIDItemInArr(familyMemberData.parentUser[i], userArr, true);
+        tempPCIndex = findUIDItemInArr(familyMemberData.parentUser[i], userArr);
         if (tempPCIndex != -1)
           parentUsers.push(userArr[tempPCIndex]);
       }
@@ -841,7 +841,7 @@ function clearParentChildData (familyMemberData) {
   if (familyMemberData.childUser != null) {
     if (familyMemberData.childUser.length != 0)
       for (let i = 0; i < familyMemberData.childUser.length; i++) {
-        tempPCIndex = findUIDItemInArr(familyMemberData.childUser[i], userArr, true);
+        tempPCIndex = findUIDItemInArr(familyMemberData.childUser[i], userArr);
         if (tempPCIndex != -1)
           childUsers.push(userArr[tempPCIndex]);
       }
@@ -897,7 +897,7 @@ function clearAllParentChildData() {
   let userIndex = 0;
 
   for (let i = 0; i < familyData.members.length; i++) {
-    userIndex = findUIDItemInArr(familyData.members[i], userArr, false);
+    userIndex = findUIDItemInArr(familyData.members[i], userArr);
     if (userIndex != -1) {
       userArr[userIndex].childUser = [];
       userArr[userIndex].parentUser = [];
@@ -975,14 +975,14 @@ function generateFamilyPCModal(parentChild, parentChildData) {
     familyPCTitle.innerHTML = "Choose Children";
     tempPCData = parentChildData.childUser;
     for (let i = 0; i < tempPCData.length; i++) {
-      tempFamPCIndex = findUIDItemInArr(tempPCData[i], userArr, true);
+      tempFamPCIndex = findUIDItemInArr(tempPCData[i], userArr);
       globalChildData.push(userArr[tempFamPCIndex]);
     }
   } else if (parentChild == "parent") {
     familyPCTitle.innerHTML = "Choose Parents";
     tempPCData = parentChildData.parentUser;
     for (let i = 0; i < tempPCData.length; i++) {
-      tempFamPCIndex = findUIDItemInArr(tempPCData[i], userArr, true);
+      tempFamPCIndex = findUIDItemInArr(tempPCData[i], userArr);
       globalParentData.push(userArr[tempFamPCIndex]);
     }
   }
@@ -1067,7 +1067,7 @@ function generateFamilyPCModal(parentChild, parentChildData) {
 
       if (!changesFound) {
         for (let i = 0; i < tempChildData.length; i++) {
-          if (findUIDItemInArr(tempChildData[i], globalChildData, true) == -1) {
+          if (findUIDItemInArr(tempChildData[i], globalChildData) == -1) {
             changesFound = true;
             break;
           }
@@ -1083,7 +1083,7 @@ function generateFamilyPCModal(parentChild, parentChildData) {
 
       if (!changesFound) {
         for (let i = 0; i < tempParentData.length; i++) {
-          if (findUIDItemInArr(tempParentData[i], globalParentData, true) == -1) {
+          if (findUIDItemInArr(tempParentData[i], globalParentData) == -1) {
             changesFound = true;
             break;
           }
@@ -1115,7 +1115,7 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
 
   if (userArr.length > 1) {
     for (let i = 0; i < userArr.length; i++) {
-      if (userArr[i].uid != parentChildOmit.uid && findUIDItemInArr(userArr[i].uid, loadedPCUserArr, true) == -1 &&
+      if (userArr[i].uid != parentChildOmit.uid && findUIDItemInArr(userArr[i].uid, loadedPCUserArr) == -1 &&
           familyData.members.indexOf(userArr[i].uid) != -1 &&
           ((tempChildData.indexOf(userArr[i].uid) == -1 && parentChild == "parent") ||
               tempParentData.indexOf(userArr[i].uid) == -1 && parentChild == "child")) {
@@ -1137,7 +1137,7 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
         liItem.onclick = function () {
           if (parentChild == "child") {
             globalParentChildState = "child";
-            if (findUIDItemInArr(parentChildOmit.uid, globalParentData, true) == -1) {
+            if (findUIDItemInArr(parentChildOmit.uid, globalParentData) == -1) {
               globalParentData.push(parentChildOmit);
             }
             switch (liItem.className) {
@@ -1150,7 +1150,7 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
                 liItem.className = "gift lowSev";
                 break;
               case "gift lowSev":
-                let a = findUIDItemInArr(userArr[i].uid, globalChildData, true);
+                let a = findUIDItemInArr(userArr[i].uid, globalChildData);
                 globalChildData.splice(a, 1);
                 if (notAnOriginalPC) {
                   liItem.className = "gift";
@@ -1163,7 +1163,7 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
             }
           } else if (parentChild == "parent") {
             globalParentChildState = "parent";
-            if (findUIDItemInArr(parentChildOmit.uid, globalChildData, true) == -1) {
+            if (findUIDItemInArr(parentChildOmit.uid, globalChildData) == -1) {
               globalChildData.push(parentChildOmit);
             }
             switch (liItem.className) {
@@ -1176,7 +1176,7 @@ function generateFamilyPCUserList(parentChild, parentChildOmit) {
                 liItem.className = "gift lowSev";
                 break;
               case "gift lowSev":
-                let a = findUIDItemInArr(userArr[i].uid, globalParentData, true);
+                let a = findUIDItemInArr(userArr[i].uid, globalParentData);
                 globalParentData.splice(a, 1);
                 if (notAnOriginalPC) {
                   liItem.className = "gift";
@@ -1303,10 +1303,10 @@ function updateFamilyRelationsToDB() {
       if (tempPCArrData != undefined)
         for (let i = 0; i < tempPCArrData.length; i++) {
           //if childData[0].parents isn't in parentData (If old list user is not in new list user, remove)
-          if (findUIDItemInArr(tempPCArrData[i], globalParentData, true) == -1)
+          if (findUIDItemInArr(tempPCArrData[i], globalParentData) == -1)
             if (removePCFromList(true, globalChildData[0], tempPCArrData[i])) {
               changesMade++;
-              tempIndex = findUIDItemInArr(tempPCArrData[i], userArr, true);
+              tempIndex = findUIDItemInArr(tempPCArrData[i], userArr);
               tempPCUserData = userArr[tempIndex];
               //if childData[0] in childUser (if current child is still in other user's childUser list, remove)
               if (tempPCUserData.childUser.indexOf(globalChildData[0].uid) != -1)
@@ -1326,10 +1326,10 @@ function updateFamilyRelationsToDB() {
       if (tempPCArrData != undefined)
         for (let i = 0; i < tempPCArrData.length; i++) {
           //if parentData[0].children isn't in childData (If old list user is not in new list user, remove)
-          if (findUIDItemInArr(tempPCArrData[i], globalChildData, true) == -1)
+          if (findUIDItemInArr(tempPCArrData[i], globalChildData) == -1)
             if (removePCFromList(false, globalParentData[0], tempPCArrData[i])) {
               changesMade++;
-              tempIndex = findUIDItemInArr(tempPCArrData[i], userArr, true);
+              tempIndex = findUIDItemInArr(tempPCArrData[i], userArr);
               tempPCUserData = userArr[tempIndex];
               //if parentData[0] in parentUser (if current child is still in other user's childUser list, remove)
               if (tempPCUserData.parentUser.indexOf(globalParentData[0].uid) != -1)
