@@ -106,11 +106,11 @@ function getCurrentUser(){
   } else {
     logOutput("Gift: " + giftStorage + " found");
     if (privateListBool) {
-      getGiftIndex = findUIDItemInArr(giftStorage, user.privateList, true);
+      getGiftIndex = findUIDItemInArr(giftStorage, user.privateList);
       if (getGiftIndex != -1)
         currentGift = user.privateList[getGiftIndex];
     } else {
-      getGiftIndex = findUIDItemInArr(giftStorage, user.giftList, true);
+      getGiftIndex = findUIDItemInArr(giftStorage, user.giftList);
       if (getGiftIndex != -1)
         currentGift = user.giftList[getGiftIndex];
     }
@@ -242,7 +242,7 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on("child_added", function (data) {
-        if (findUIDItemInArr(data.val().uid, giftArr, true) == -1) {
+        if (findUIDItemInArr(data.val().uid, giftArr) == -1) {
           oldGiftArr = forceNewArray(giftArr);
           giftArr.push(data.val());
           localObjectChanges = findObjectChanges(oldGiftArr, giftArr);
@@ -257,11 +257,11 @@ window.onload = function instantiate() {
         } else {
           if (data.val().uid == giftStorage) {
             if (privateListBool) {
-              getGiftIndex = findUIDItemInArr(giftStorage, user.privateList, true);
+              getGiftIndex = findUIDItemInArr(giftStorage, user.privateList);
               if (getGiftIndex != -1)
                 currentGift = user.privateList[getGiftIndex];
             } else {
-              getGiftIndex = findUIDItemInArr(giftStorage, user.giftList, true);
+              getGiftIndex = findUIDItemInArr(giftStorage, user.giftList);
               if (getGiftIndex != -1)
                 currentGift = user.giftList[getGiftIndex];
             }
