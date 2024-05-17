@@ -284,7 +284,7 @@ function processReviewedGifts() {
   let bulkDeleteError = false;
 
   for (let i = 0; i < reviewedGiftsToKeep.length; i++) {
-    tempGiftIndex = findUIDItemInArr(reviewedGiftsToKeep[i], tempGiftArr, true);
+    tempGiftIndex = findUIDItemInArr(reviewedGiftsToKeep[i], tempGiftArr);
     if (tempGiftIndex != -1) {
       firebase.database().ref("users/" + user.uid + "/giftList/" + tempGiftIndex).update({
         received: 0,
@@ -296,7 +296,7 @@ function processReviewedGifts() {
   }
 
   for (let i = 0; i < reviewedGiftsToRemove.length; i++) {
-    tempGiftIndex = findUIDItemInArr(reviewedGiftsToRemove[i], tempGiftArr, true);
+    tempGiftIndex = findUIDItemInArr(reviewedGiftsToRemove[i], tempGiftArr);
     if (tempGiftIndex != -1) {
       tempError = deleteGiftElement(tempGiftArr[tempGiftIndex].title, tempGiftArr[tempGiftIndex].uid, tempGiftArr[tempGiftIndex].buyer, true);
 
@@ -559,7 +559,7 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchData = function (postRef) {
       postRef.on("child_added", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -585,7 +585,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on("child_changed", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -620,7 +620,7 @@ window.onload = function instantiate() {
 
     let fetchGifts = function (postRef) {
       postRef.on("child_added", function (data) {
-        if (findUIDItemInArr(data.val().uid, giftArr, true) == -1) {
+        if (findUIDItemInArr(data.val().uid, giftArr) == -1) {
           giftArr.push(data.val());
           user.giftList = giftArr;
           saveCriticalCookies();
@@ -723,7 +723,7 @@ function initializeBoughtGiftsBtn() {
 }
 
 function createGiftElement(uid) {
-  let giftIndex = findUIDItemInArr(uid, giftArr, true);
+  let giftIndex = findUIDItemInArr(uid, giftArr);
   if (giftIndex != -1 && initializedGifts.indexOf(uid) == -1) {
     try {
       document.getElementById("testData").remove();
@@ -750,7 +750,7 @@ function createGiftElement(uid) {
 }
 
 function changeGiftElement(uid) {
-  let giftIndex = findUIDItemInArr(uid, giftArr, true);
+  let giftIndex = findUIDItemInArr(uid, giftArr);
   if (giftIndex != -1) {
     let editGift = document.getElementById("gift" + uid);
     editGift.innerHTML = giftArr[giftIndex].title;
@@ -759,7 +759,7 @@ function changeGiftElement(uid) {
 }
 
 function initGiftElement(liItem, uid) {
-  let giftIndex = findUIDItemInArr(uid, giftArr, true);
+  let giftIndex = findUIDItemInArr(uid, giftArr);
   if (giftIndex != -1) {
     giftArr[giftIndex] = initGiftDataIfEmpty(giftArr[giftIndex]);
     let description = giftArr[giftIndex].description;
