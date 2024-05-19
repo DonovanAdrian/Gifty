@@ -335,7 +335,7 @@ function databaseQuery() {
     postRef.once("value").then(function(snapshot) {
       if (snapshot.exists() || initializedDatabaseCheckAlt) {
         postRef.on("child_added", function (data) {
-          if (findUIDItemInArr(data.key, userArr, true) == -1)
+          if (findUIDItemInArr(data.key, userArr) == -1)
             userArr.push(data.val());
 
           initializeLoginBtns();
