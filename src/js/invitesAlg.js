@@ -169,7 +169,7 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchData = function (postRef) {
       postRef.on("child_added", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -195,7 +195,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on("child_changed", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -314,7 +314,7 @@ function showBlacklistModal() {
 
   for (let i = 0; i < tempBlacklist.length; i++) {
     let liItem = document.createElement("LI");
-    blacklistedUserIndex = findUIDItemInArr(tempBlacklist[i], userArr, true);
+    blacklistedUserIndex = findUIDItemInArr(tempBlacklist[i], userArr);
     liItem.id = "blacklist" + tempBlacklist[i];
     liItem.className = "gift";
     if (unBlacklistUsers.includes(tempBlacklist[i])) {
@@ -435,7 +435,7 @@ function findRemovedUser(oldArr, newArr) {
 
 function createFriendElement(friendKey){
   let textNode;
-  let friendIndex = findUIDItemInArr(friendKey, userArr, true);
+  let friendIndex = findUIDItemInArr(friendKey, userArr);
   let friendData = userArr[friendIndex];
 
   if(friendIndex != -1 && initializedUsers.indexOf(friendKey) == -1) {
@@ -462,7 +462,7 @@ function createFriendElement(friendKey){
 }
 
 function changeFriendElement(friendKey){
-  let friendIndex = findUIDItemInArr(friendKey, userArr, true);
+  let friendIndex = findUIDItemInArr(friendKey, userArr);
   let friendData = userArr[friendIndex];
 
   if(friendData != null) {
@@ -780,7 +780,7 @@ function deleteFriend(delFriendData) {
 
     if (friendNeededUser.friends.length > 0)
       for (let i = 0; i < friendNeededUser.friends.length; i++) {
-        userReplacementIndex = findUIDItemInArr(friendNeededUser.friends[i], userArr, true);
+        userReplacementIndex = findUIDItemInArr(friendNeededUser.friends[i], userArr);
         if (userReplacementIndex != -1) {
           if (userArr[userReplacementIndex].userScore > tempFriendReplacementScore) {
             tempFriendReturn = userArr[userReplacementIndex];
@@ -815,13 +815,13 @@ function evaluateCommonFriends(){
 
   if (userFriendLength > 3) {
     for (let i = 0; i < userFriendLength; i++) {
-      userFriendInt1 = findUIDItemInArr(user.friends[i], userArr, true);
+      userFriendInt1 = findUIDItemInArr(user.friends[i], userArr);
       userFriendData1 = userArr[userFriendInt1].friends;
       if (userArr[userFriendInt1].friends == undefined)
         userFriendData1 = [];
 
       for (let a = 0; a < userFriendData1.length; a++) {
-        userFriendInt2 = findUIDItemInArr(user.friends[i], userArr, true);
+        userFriendInt2 = findUIDItemInArr(user.friends[i], userArr);
         userFriendData2 = userArr[userFriendInt2].friends;
         if (userArr[userFriendInt2].friends == undefined)
           userFriendData2 = [];
@@ -842,7 +842,7 @@ function evaluateCommonFriends(){
     if (commonFriendData != undefined) {
       for (let c = 0; c < commonFriendData.friends.length; c++) {
         if (!user.friends.includes(commonFriendData.friends[c]) && commonFriendData.friends[c] != user.uid) {
-          userInviteInt = findUIDItemInArr(commonFriendData.friends[c], userArr, true);
+          userInviteInt = findUIDItemInArr(commonFriendData.friends[c], userArr);
           if (userInviteInt != undefined) {
             userInviteData = userArr[userInviteInt].invites;
             if (userInviteData == undefined)
@@ -1034,7 +1034,7 @@ function generateAddUserBtn(){
     evaluateCommonFriends();
     if (commonFriendArr.length > 0) {
       for (let z = 0; z < commonFriendArr.length; z++) {
-        commonFriendIndex = findUIDItemInArr(commonFriendArr[z], userArr, true);
+        commonFriendIndex = findUIDItemInArr(commonFriendArr[z], userArr);
         if (commonFriendIndex != -1 && !userBlackList.includes(userArr[commonFriendIndex].uid)) {
           inviteInfo.style.display = "block";
           addToBlackList.style.display = "block";
