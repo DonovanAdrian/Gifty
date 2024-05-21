@@ -125,7 +125,7 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchData = function (postRef) {
       postRef.on("child_added", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -150,7 +150,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on("child_changed", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -280,7 +280,7 @@ function findRemovedUser(oldArr, newArr) {
 }
 
 function createFriendElement(friendKey) {
-  let friendIndex = findUIDItemInArr(friendKey, userArr, true);
+  let friendIndex = findUIDItemInArr(friendKey, userArr);
   let friendData = userArr[friendIndex];
 
   if(friendIndex != -1 && initializedUsers.indexOf(friendKey) == -1){
@@ -305,7 +305,7 @@ function createFriendElement(friendKey) {
 }
 
 function changeFriendElement(friendKey){
-  let friendIndex = findUIDItemInArr(friendKey, userArr, true);
+  let friendIndex = findUIDItemInArr(friendKey, userArr);
   let friendData = userArr[friendIndex];
 
   if (friendData != null) {
