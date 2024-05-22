@@ -356,7 +356,7 @@ window.onload = function instantiate() {
   function databaseQuery() {
     let fetchFamilies = function (postRef){
       postRef.on("child_added", function (data) {
-        let i = findUIDItemInArr(data.val().uid, familyArr, true);
+        let i = findUIDItemInArr(data.val().uid, familyArr);
         if (i == -1) {
           familyArr.push(data.val());
         }
@@ -379,7 +379,7 @@ window.onload = function instantiate() {
       postRef.once("value").then(function(snapshot) {
         if (snapshot.exists() || initializedDatabaseCheck) {
           postRef.on("child_added", function (data) {
-            let i = findUIDItemInArr(data.key, ticketArr, true);
+            let i = findUIDItemInArr(data.key, ticketArr);
             if(i != -1) {
               localObjectChanges = findObjectChanges(ticketArr[i], data.val());
               if (localObjectChanges.length != 0) {
@@ -399,7 +399,7 @@ window.onload = function instantiate() {
           });
 
           postRef.on("child_changed", function (data) {
-            let i = findUIDItemInArr(data.key, ticketArr, true);
+            let i = findUIDItemInArr(data.key, ticketArr);
             if(i != -1){
               localObjectChanges = findObjectChanges(ticketArr[i], data.val());
               if (localObjectChanges.length != 0) {
@@ -471,7 +471,7 @@ window.onload = function instantiate() {
           initializeNukeScores();
         }
 
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -501,7 +501,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on("child_changed", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -1470,7 +1470,7 @@ function initUserElement(liItem, userData) {
       userSecretSantaPrior.style.display = "block";
       if (userData.secretSantaNamePrior != "") {
         let tempIndex = 0;
-        tempIndex = findUIDItemInArr(userData.secretSantaNamePrior, userArr, true);
+        tempIndex = findUIDItemInArr(userData.secretSantaNamePrior, userArr);
         if (tempIndex != -1) {
           userSecretSantaPrior.innerHTML = "<b>Last Secret Santa Assignment:</b> " + findFirstNameInFullName(userArr[tempIndex].name);
         } else {
@@ -1578,7 +1578,7 @@ function initUserElement(liItem, userData) {
                   userData, userModal, userData.uid);
             };
           } else {
-            let tempIndex = findUIDItemInArr(userData.secretSantaName, userArr, true);
+            let tempIndex = findUIDItemInArr(userData.secretSantaName, userArr);
             userSecretSanta.innerHTML = "<b>Secret Santa:</b> " + findFirstNameInFullName(userArr[tempIndex].name);
             userSecretSantaBtn.innerHTML = "Hide Secret Santa Assignment";
             userSecretSantaBtn.onclick = function () {
@@ -1626,7 +1626,7 @@ function fixUserDataToDB(userData) {
   }
 
   if (updatedUser) {
-    let updatedUserIndex = findUIDItemInArr(userData.uid, userArr, true);
+    let updatedUserIndex = findUIDItemInArr(userData.uid, userArr);
     if (updatedUserIndex != -1) {
       userArr[updatedUserIndex] = userData;
       saveCriticalCookies();
@@ -1666,13 +1666,13 @@ function generateRelationshipDataList(userData) {
   let childList = userData.childUser;
 
   for (let i = 0; i < parentList.length; i++) {
-    tempIndex = findUIDItemInArr(parentList[i], userArr, true);
+    tempIndex = findUIDItemInArr(parentList[i], userArr);
     if (tempIndex != -1) {
       tempFamilyData.push("Parent -> " + userArr[tempIndex].name);
     }
   }
   for (let i = 0; i < childList.length; i++) {
-    tempIndex = findUIDItemInArr(childList[i], userArr, true);
+    tempIndex = findUIDItemInArr(childList[i], userArr);
     if (tempIndex != -1) {
       tempFamilyData.push("Child -> " + userArr[tempIndex].name);
     }
@@ -1740,7 +1740,7 @@ function generateUserDataViewModal(dataToLoad, userData) {
     liItem.className = "gift";
 
     if (dataToLoadType == "Friend") {
-      let friendUserDataIndex = findUIDItemInArr(dataToLoad[i], userArr, true);
+      let friendUserDataIndex = findUIDItemInArr(dataToLoad[i], userArr);
       let friendUserData = userArr[friendUserDataIndex];
       loadedUserDataViewElemID = dataToLoad[i];
       liItem.id = loadedUserDataViewElemID;
@@ -1836,7 +1836,7 @@ function createQuickModerationTicketElem(ticketData) {
   liItem.id = loadedModerationTicketViewElemID;
   textNode = document.createTextNode(fetchModerationTitle(ticketData));
 
-  if (findUIDItemInArr(ticketData.uid, newTicketArr, true) != -1) {
+  if (findUIDItemInArr(ticketData.uid, newTicketArr) != -1) {
     liItem.className += " lowSev";
   }
 
@@ -1908,7 +1908,7 @@ function fetchNotificationTitle(notificationData) {
       }
     }
 
-    let i = findUIDItemInArr(senderUID, userArr, true);
+    let i = findUIDItemInArr(senderUID, userArr);
     if (i != -1) {
       friendUserData = userArr[i];
 
@@ -1940,7 +1940,7 @@ function fetchNotificationTitle(notificationData) {
           logOutput("Notification Page Error, 1");
         }
       } else if (noteSplitCount == 4) {//Z, Gift Deletion (Private)
-        let z = findUIDItemInArr(deleterUID, userArr, true);
+        let z = findUIDItemInArr(deleterUID, userArr);
         if (z != -1) {
           let deleterData = userArr[z];
           notificationDataTitle = deleterData.name + " deleted a private gift you bought...";
@@ -2137,7 +2137,7 @@ function updateInitializedUsers(){
   }
 
   function fetchUserData(uid) {
-    let userIndex = findUIDItemInArr(uid, userArr, true);
+    let userIndex = findUIDItemInArr(uid, userArr);
     let userData = userArr[userIndex];
     let userDataName = userData.name;
     let userDataString;
@@ -2334,7 +2334,7 @@ function updateInitializedUsers(){
           if (userData.secretSantaNamePrior == "") {
             userDataString = userDataName + " - No Previous Assignments";
           } else {
-            tempIndex = findUIDItemInArr(userData.secretSantaNamePrior, userArr, true);
+            tempIndex = findUIDItemInArr(userData.secretSantaNamePrior, userArr);
             tempElem.className += " mediumSev";
             userDataString = userDataName + " - Previous Assignment: " + findFirstNameInFullName(userArr[tempIndex].name);
           }
@@ -2346,7 +2346,7 @@ function updateInitializedUsers(){
           if (userData.secretSantaName == "") {
             userDataString = userDataName + " - No Current Assignment";
           } else {
-            tempIndex = findUIDItemInArr(userData.secretSantaName, userArr, true);
+            tempIndex = findUIDItemInArr(userData.secretSantaName, userArr);
             tempElem.className += " lowSev";
             if (tempIndex != -1)
               userDataString = userDataName + " - Current Assignment: " + findFirstNameInFullName(userArr[tempIndex].name);
