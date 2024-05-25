@@ -171,7 +171,7 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on("child_added", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -195,7 +195,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on("child_changed", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -282,7 +282,7 @@ function fetchNotificationData(createBool, liElem, notificationData, noteKey) {
       }
     }
 
-    let i = findUIDItemInArr(senderUID, userArr, true);
+    let i = findUIDItemInArr(senderUID, userArr);
     if (i != -1) {
       friendUserData = userArr[i];
 
@@ -322,7 +322,7 @@ function fetchNotificationData(createBool, liElem, notificationData, noteKey) {
           notificationPage = pageNameNote;
         }
       } else if (noteSplitCount == 4) {//Z, Gift Deletion (Private)
-        let z = findUIDItemInArr(deleterUID, userArr, true);
+        let z = findUIDItemInArr(deleterUID, userArr);
         if (z != -1) {
           let deleterData = userArr[z];
           notificationDataTitle = deleterData.name + " deleted a private gift you bought...";
@@ -549,7 +549,7 @@ function deleteNotification(uid) {
 
   logOutput("Deleting " + uid);
 
-  toDelete = findUIDItemInArr(uid, notificationArr, true);
+  toDelete = findUIDItemInArr(uid, notificationArr);
   if (toDelete != -1) {
     notificationArr.splice(toDelete, 1);
     notificationKeyArr.splice(toDelete, 1);
