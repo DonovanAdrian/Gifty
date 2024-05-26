@@ -227,7 +227,7 @@ window.onload = function instantiate() {
 
     let fetchData = function (postRef) {
       postRef.on("child_added", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -257,7 +257,7 @@ window.onload = function instantiate() {
       });
 
       postRef.on("child_changed", function (data) {
-        let i = findUIDItemInArr(data.key, userArr, true);
+        let i = findUIDItemInArr(data.key, userArr);
         if (i != -1) {
           localObjectChanges = findObjectChanges(userArr[i], data.val());
           if (localObjectChanges.length != 0) {
@@ -296,7 +296,7 @@ window.onload = function instantiate() {
 
     let fetchGifts = function (postRef) {
       postRef.on("child_added", function (data) {
-        if (findUIDItemInArr(data.val().uid, giftArr, true) == -1)
+        if (findUIDItemInArr(data.val().uid, giftArr) == -1)
           giftArr.push(data.val());
 
         tempGiftCheckIndex = checkGiftBuyer(data.val());
@@ -476,7 +476,7 @@ function checkGiftBuyer(giftData) {
     updateGiftToDB = 0;
   } else if (userUserNames.includes(buyer)) {
     tempIndexOfUserName = userUserNames.indexOf(buyer);
-    updateGiftToDB = findUserNameItemInArr(userUserNames[tempIndexOfUserName], userArr, true);
+    updateGiftToDB = findUserNameItemInArr(userUserNames[tempIndexOfUserName], userArr);
   } else {
     updateGiftToDB = -1;
     logOutput("Buyer error found!");
@@ -570,9 +570,9 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
   let giftInfoPrefix = "";
 
   if (pGiftCreator != "") {
-    let uidIndex = findUIDItemInArr(pGiftCreator, userArr, true);
+    let uidIndex = findUIDItemInArr(pGiftCreator, userArr);
     if (uidIndex == -1) {
-      uidIndex = findUserNameItemInArr(pGiftCreator, userArr, true);
+      uidIndex = findUserNameItemInArr(pGiftCreator, userArr);
       creatorUserNameFetchedOrBlank = true;
     }
     if (uidIndex == -1) {
@@ -592,9 +592,9 @@ function initGiftElement(liItem, pGiftData, pGiftKey) {
   }
 
   if (pGiftBuyer != "") {
-    let uidIndex = findUIDItemInArr(pGiftBuyer, userArr, true);
+    let uidIndex = findUIDItemInArr(pGiftBuyer, userArr);
     if (uidIndex == -1) {
-      uidIndex = findUserNameItemInArr(pGiftBuyer, userArr, true);
+      uidIndex = findUserNameItemInArr(pGiftBuyer, userArr);
       buyerUserNameFetchedOrBlank = true;
     }
     if (uidIndex == -1) {
@@ -783,9 +783,9 @@ function generateBuyerDataViewModal(giftData) {
     let loadedBuyerDataName = "";
     let loadedBuyerDataIndex = -1;
 
-    loadedBuyerDataIndex = findUIDItemInArr(buyersToLoad[i], userArr, true);
+    loadedBuyerDataIndex = findUIDItemInArr(buyersToLoad[i], userArr);
     if (loadedBuyerDataIndex == -1)
-      loadedBuyerDataIndex = findUserNameItemInArr(buyersToLoad[i], userArr, true)
+      loadedBuyerDataIndex = findUserNameItemInArr(buyersToLoad[i], userArr)
 
     if (loadedBuyerDataIndex == -1)
       loadedBuyerDataName = "Buyer's Name Not Found!";
