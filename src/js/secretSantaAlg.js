@@ -114,7 +114,7 @@ function processFamily(familyMembers, ignoreLastYearsAssignments, testingInt) {
       tempUsersToBeGiversParentRel = [];
 
       //Initialize temporary arrays
-      tempIndex = findUIDItemInArr(tempFamilyMemberArr[i], tempUserArr, true);
+      tempIndex = findUIDItemInArr(tempFamilyMemberArr[i], tempUserArr);
       if (tempUserArr[tempIndex].secretSanta == 1) {
         usersToBeGivers.push(tempUserArr[tempIndex].uid);
         if (tempUserArr[tempIndex].friends != undefined) {
@@ -139,7 +139,7 @@ function processFamily(familyMembers, ignoreLastYearsAssignments, testingInt) {
             tempUsersToBeGiversFriends.splice(a, 1);
             itemRemoved = true;
           } else {
-            altTempIndex = findUIDItemInArr(tempUsersToBeGiversFriends[a], tempUserArr, true);
+            altTempIndex = findUIDItemInArr(tempUsersToBeGiversFriends[a], tempUserArr);
             if (altTempIndex != -1) {
               if (tempUserArr[altTempIndex].secretSanta != 1) {
                 tempUsersToBeGiversFriends.splice(a, 1);
@@ -275,7 +275,7 @@ function processFamily(familyMembers, ignoreLastYearsAssignments, testingInt) {
     secretGivers.push(userList[indexToAssign]);
     secretRecipients.push(listOfPotentialUsersArr[selector]);
 
-    tempIndex = findUIDItemInArr(userList[indexToAssign], tempUserArr, true);
+    tempIndex = findUIDItemInArr(userList[indexToAssign], tempUserArr);
     if (tempIndex != -1) {
       tempUserArr[tempIndex].secretSantaName = listOfPotentialUsersArr[selector];
     } else {
@@ -315,7 +315,7 @@ function processFamily(familyMembers, ignoreLastYearsAssignments, testingInt) {
       // they have not been duplicated, are within the correct family, and there are no other issues otherwise
       for (let i = 0; i < secretGivers.length; i++) {
         tempGiverUser = secretGivers[i];
-        tempIndex = findUIDItemInArr(tempGiverUser, tempUserArr, true);
+        tempIndex = findUIDItemInArr(tempGiverUser, tempUserArr);
         if (tempIndex != -1) {
           if (tempUserArr[tempIndex].secretSantaName == undefined) {
             processingResultCode = 9;
@@ -373,7 +373,7 @@ function processFamily(familyMembers, ignoreLastYearsAssignments, testingInt) {
 
       if (testingInt == 0) {
         for (let i = 0; i < familyMembers.length; i++) {
-          tempIndex = findUIDItemInArr(familyMembers[i], tempUserArr, true);
+          tempIndex = findUIDItemInArr(familyMembers[i], tempUserArr);
           if (tempIndex != -1) {
             if (!secretSantaStressTesting)
               logOutput("Saving " + tempUserArr[tempIndex].userName + "...");
@@ -470,7 +470,7 @@ function evaluateSecretSantaButton(familyData) {
     if (familyData.secretSantaState == 2) {
       initializeSecretSantaButton(2);
     } else if (familyData.secretSantaState == 3) {
-      let i = findUIDItemInArr(user.secretSantaName, userArr, true);
+      let i = findUIDItemInArr(user.secretSantaName, userArr);
       if (i != -1) {
         initializeSecretSantaButton(3);
       } else if (user.secretSanta == 1) {
@@ -524,7 +524,7 @@ function deploySecretSantaModal() {
 
   showSecretSantaAssignment.onclick = function() {
     if (hideSecretSantaName) {
-      tempIndex = findUIDItemInArr(user.secretSantaName, userArr, true);
+      tempIndex = findUIDItemInArr(user.secretSantaName, userArr);
       secretSantaNameText.innerHTML = "<b>Your Secret Santa Assignment:</b> " + userArr[tempIndex].name;
       secretSantaBtn.innerHTML = findFirstNameInFullName(userArr[tempIndex].name);
       showSecretSantaAssignment.innerHTML = "Hide Secret Santa Name";
@@ -558,7 +558,7 @@ function initializeSecretSantaDB() {
     postRef.once("value").then(function(snapshot) {
       if (snapshot.exists()) {
         postRef.on("child_added", function (data) {
-          let i = findUIDItemInArr(data.val().uid, familyArr, true);
+          let i = findUIDItemInArr(data.val().uid, familyArr);
           if (i == -1) {
             familyArr.push(data.val());
             evaluateFamilyAutomaticControl(data.val());
@@ -969,7 +969,7 @@ function evaluateUserReadiness(familyMembers) {
   let familyReady = false;
 
   for (let i = 0; i < familyMembers.length; i++) {
-    tempIndex = findUIDItemInArr(familyMembers[i], userArr, true);
+    tempIndex = findUIDItemInArr(familyMembers[i], userArr);
     if (tempIndex != -1) {
       if (userArr[tempIndex].secretSanta == 1)
         tempSignUpCount++;
@@ -1093,7 +1093,7 @@ function exportSecretSantaData(desiredExportType, familyData) {
     }
 
     for (let i = 0; i < familyMemberArr.length; i++) {
-      tempIndex = findUIDItemInArr(familyMemberArr[i], userArr, true);
+      tempIndex = findUIDItemInArr(familyMemberArr[i], userArr);
       if (tempIndex != -1) {
         if (exportType == 1) {
           if (userArr[tempIndex].secretSanta == undefined)
@@ -1107,7 +1107,7 @@ function exportSecretSantaData(desiredExportType, familyData) {
         } else if (exportType == 2) {
           if (userArr[tempIndex].secretSantaName == undefined)
             tempSignUpAssign = "Error! Assignment Failure...";
-          tempIndexAlt = findUIDItemInArr(userArr[tempIndex].secretSantaName, userArr, true);
+          tempIndexAlt = findUIDItemInArr(userArr[tempIndex].secretSantaName, userArr);
           if (tempIndexAlt == -1)
             tempSignUpAssign = "Error! Assignment Failure...";
           else
@@ -1129,7 +1129,7 @@ function unassignAllFamilyMembers(familyData) {
   let familyMembers = familyData.members;
 
   for (let i = 0; i < familyMembers.length; i++) {
-    tempIndex = findUIDItemInArr(familyMembers[i], userArr, true);
+    tempIndex = findUIDItemInArr(familyMembers[i], userArr);
     if (tempIndex != -1) {
       try {
         logOutput("Resetting " + userArr[tempIndex].userName);
