@@ -74,7 +74,7 @@ window.onload = function instantiate() {
             postRef.on("child_added", function (data) {
                 clearInterval(commonLoadingTimer);
                 clearInterval(offlineTimer);
-                let i = findUIDItemInArr(data.key, userArr, true);
+                let i = findUIDItemInArr(data.key, userArr);
                 if (i != -1) {
                     localObjectChanges = findObjectChanges(userArr[i], data.val());
                     if (localObjectChanges.length != 0) {
@@ -96,7 +96,7 @@ window.onload = function instantiate() {
             });
 
             postRef.on("child_changed", function (data) {
-                let i = findUIDItemInArr(data.key, userArr, true);
+                let i = findUIDItemInArr(data.key, userArr);
                 if (i != -1) {
                     localObjectChanges = findObjectChanges(userArr[i], data.val());
                     if (localObjectChanges.length != 0) {
