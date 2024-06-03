@@ -43,7 +43,8 @@ let ticketTitles = [
     "Login enabled by",
     "found an easter egg!",
     "found an easter egg... But got greedy",
-    "found an easter egg..."
+    "found an easter egg...",
+    "impatient user detected"                                   //40
 ];
 
 let ticketSeverities = [
@@ -85,7 +86,8 @@ let ticketSeverities = [
     " lowSev",
     " lowSev",
     " lowSev",
-    " lowSev"
+    " lowSev",
+    " lowSev"       //40
 ];
 
 let ticketSuffixes = [
@@ -127,7 +129,8 @@ let ticketSuffixes = [
     " - Login Enabled",
     " - Easter Egg Found!",
     " - Easter Egg Found...",
-    " - Easter Egg Found...?"
+    " - Easter Egg Found...?",
+    " - Impatient User"                                    //40
 ];
 
 let ticketSeverityFail = " highSev";
