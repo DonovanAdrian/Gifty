@@ -1487,6 +1487,7 @@ function navigationSuppressionTimer() {
       deployNotificationModal(false, "Navigation Suppression Error", "It appears " +
           "that there is an issue navigating. Please wait about 5 seconds and try again. If issues persist, contact " +
           "a moderator.", 10);
+      updateMaintenanceLog(pageName, "Impatient user detected: " + user.userName + "(" + user.uid + ")");
     }
   }
 
