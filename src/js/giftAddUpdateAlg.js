@@ -18,6 +18,7 @@ let giftChangeReloadNeeded = false;
 let localGiftAddUpdate = false;
 let initializedCheckboxes = false;
 
+let urlToSendToDB = "";
 let invalidURL = "";
 let buttonText = "";
 let previousTitle = "";
@@ -566,15 +567,14 @@ function initializeData() {
   }
 }
 
-function updateGiftToDB() {
-  let newURL = verifyURLString(giftLinkInp.value);
-  let clearReceivedByBool = false;
-  let notificationSent = false;
+function verifyGiftFields() {
+  let giftFieldsVerified = false;
   let giftLimitBool = true;
 
+  urlToSendToDB = verifyURLString(giftLinkInp.value);
   if (giftURLLimit != "") {
     for (let i = 0; i < giftURLLimit.length; i++) {
-      if (newURL.includes(giftURLLimit[i])) {
+      if (urlToSendToDB.includes(giftURLLimit[i])) {
         giftLimitBool = false;
       }
     }
@@ -582,25 +582,109 @@ function updateGiftToDB() {
     giftLimitBool = false;
   }
 
-  if(invalidURL != newURL)
+  if(invalidURL != urlToSendToDB)
     invalidURLOverride = false;
-  if (giftTitleInp.value.includes(",,,") || giftWhereInp.value.includes(",,,")
-      || giftDescriptionInp.value.includes(",,,")) {
+  if (giftTitleInp.value.includes(",,,") || giftWhereInp.value.includes(",,,") || giftDescriptionInp.value.includes(",,,")) {
     deployNotificationModal(false, "Gift Error!", "Please do not include excess " +
         "commas in any of the fields!");
   } else if (giftTitleInp.value === "") {
     deployNotificationModal(false, "Gift Title Blank!", "It looks like you left " +
         "the title blank. Make sure you add a title so other people know what to get you!", 4);
-  } else if (giftLimitBool && newURL != "") {
+  } else if (giftLimitBool && urlToSendToDB != "") {
     deployNotificationModal(false, "Invalid Gift URL!", "It looks like the URL" +
         " you are trying to use is restricted by moderators. Please use a different link or leave it blank!", 4);
   } else if (invalidURLBool && !invalidURLOverride) {
     deployNotificationModal(false, "Invalid Gift URL!", "It looks like you " +
         "entered an invalid URL, please enter a valid URL or leave the field blank. If this is intentional, you can " +
-        "click \"Add Gift\", but the gift URL will not be saved.", 4);
+        "click \"Add Gift\", but the gift URL will *not* be saved.", 4);
     invalidURLOverride = true;
-    invalidURL = newURL;
-  } else if (!unsavedChanges) {
+    invalidURL = urlToSendToDB;
+  } else {
+    giftFieldsVerified = true;
+  }
+
+  return giftFieldsVerified;
+}
+
+function addGiftToDB() {
+  let uid = giftArr.length;
+  let today = new Date();
+  let dd = today.getDate();
+  let mm = today.getMonth()+1;
+  let yy = today.getFullYear();
+  let creationDate = mm + "/" + dd + "/" + yy;
+
+  if (verifyGiftFields()) {
+    unsavedChanges = false;
+    localGiftAddUpdate = true;
+
+    if(!privateListBool) {
+      updateUserScore(user, 2);
+
+      let newUid = firebase.database().ref("users/" + user.uid + "/giftList/" + uid).push();
+      newUid = newUid.toString();
+      newUid = findUIDInString(newUid);
+      firebase.database().ref("users/" + user.uid + "/giftList/" + uid).set({
+        title: giftTitleInp.value,
+        link: urlToSendToDB,
+        where: giftWhereInp.value,
+        received: 0,
+        uid: newUid,
+        buyer: "",
+        description: giftDescriptionInp.value,
+        creationDate: creationDate,
+        multiples: multiplePurchases.checked
+      });
+    } else {
+      if (user.uid != privateUser.uid) {
+        updateUserScore(privateUser, 4);
+
+        let newUid = firebase.database().ref("users/" + user.uid + "/privateList/" + uid).push();
+        newUid = newUid.toString();
+        newUid = findUIDInString(newUid);
+        firebase.database().ref("users/" + user.uid + "/privateList/" + uid).set({
+          title: giftTitleInp.value,
+          link: urlToSendToDB,
+          where: giftWhereInp.value,
+          received: 0,
+          uid: newUid,
+          buyer: "",
+          description: giftDescriptionInp.value,
+          creationDate: creationDate,
+          creator: privateUser.uid,
+          multiples: multiplePurchases.checked
+        });
+      } else {
+        deployNotificationModal(false, "Gift Add Error!", "Please go back to your " +
+            "friend's list and try to add this gift again!");
+      }
+    }
+    let tempUnsavedChanges = true;
+    unsavedGiftStorage = [giftTitleInp.value, giftLinkInp.value, giftWhereInp.value, giftDescriptionInp.value, multiplePurchases.checked]
+    sessionStorage.setItem("unsavedChanges", JSON.stringify(tempUnsavedChanges));
+    sessionStorage.setItem("unsavedGiftStorage", JSON.stringify(unsavedGiftStorage));
+    showSuccessfulDBOperation = true;
+    listenForDBChanges("Add", uid);
+    if (!privateListBool) {
+      successfulDBOperationTitle = "Gift Added!";
+      successfulDBOperationNotice = "The gift, \"" + giftTitleInp.value + "\", has been successfully added to your gift list! Redirecting back to home...";
+      successfulDBNavigation = 2;
+    } else {
+      successfulDBOperationTitle = "Private Gift Added!";
+      successfulDBOperationNotice = "The gift, \"" + giftTitleInp.value + "\", has been successfully added to " + user.name + "'s private gift list! Redirecting back to their private list...";
+      successfulDBNavigation = 10;
+    }
+
+    localGiftAddUpdate = false;
+  }
+  invalidURLBool = false;
+}
+
+function updateGiftToDB() {
+  let clearReceivedByBool = false;
+  let notificationSent = false;
+
+  if (!verifyGiftFields() && !unsavedChanges) {
     deployNotificationModal(false, "No Changes Made!", "It looks like you didn't " +
         "make any changes to this gift! If this is the case, click on any of the navigation buttons or the \"Back\" " +
         "button below!", 4);
@@ -608,47 +692,66 @@ function updateGiftToDB() {
     if(giftUID != -1) {
       unsavedChanges = false;
       localGiftAddUpdate = true;
+
+
+      if (currentGift.creationDate == undefined) {
+        let today = new Date();
+        let dd = today.getDate();
+        let mm = today.getMonth()+1;
+        let yy = today.getFullYear();
+        let creationDate = mm + "/" + dd + "/" + yy;
+        currentGift.creationDate = creationDate;
+      }
+
+      //swapping from multiples -> single gift
+      if (!multiplePurchases.checked && currentGift.multiples && currentGift.receivedBy.length != undefined) {
+        if (currentGift.receivedBy.length != 0) {
+          let userFound;
+          for (let i = 0; i < currentGift.receivedBy.length; i++) {
+            userFound = findUIDItemInArr(currentGift.receivedBy[i], userArr);
+            if (userFound != -1)
+              addUpdateNoteToDB(userArr[userFound], currentGift.title);
+          }
+          notificationSent = true;
+
+          clearReceivedByBool = true;
+          currentGift.received = 0;
+        }
+        //swapping from single gift -> multiple
+      } else if (multiplePurchases.checked && !currentGift.multiples && currentGift.received > 0) {
+        currentGift.receivedBy = [];
+        for (let i = 0; i < userArr.length; i++) {
+          if (userArr[i].userName == currentGift.buyer) {
+            currentGift.receivedBy.push(userArr[i].uid);
+          }
+        }
+        currentGift.received = -1;
+        currentGift.buyer = "";
+
+        firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
+          received: -1,
+          receivedBy: currentGift.receivedBy,
+          buyer: ""
+        });
+      }
+
+      //Fix potential individual gift errors
+      if (currentGift.receivedBy != undefined) {
+        firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
+          receivedBy: currentGift.receivedBy
+        });
+        if (clearReceivedByBool) {
+          firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID + "/receivedBy").remove();
+        }
+      }
+      if (currentGift.userScore != undefined) {
+        firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID + "/userScore").remove();
+      }
+
       if (!privateListBool) {
-        if (!multiplePurchases.checked && currentGift.multiples && currentGift.receivedBy.length != undefined) {
-          if (currentGift.receivedBy.length != 0) {
-            let userFound;
-            for (let i = 0; i < currentGift.receivedBy.length; i++) {
-              userFound = findUIDItemInArr(currentGift.receivedBy[i], userArr);
-              if (userFound != -1)
-                addUpdateNoteToDB(userArr[userFound], currentGift.title);
-            }
-            notificationSent = true;
-
-            clearReceivedByBool = true;
-            currentGift.received = 0;
-          }
-        } else if (multiplePurchases.checked && !currentGift.multiples && currentGift.received > 0) {
-          currentGift.receivedBy = [];
-          for (let i = 0; i < userArr.length; i++) {
-            if (userArr[i].userName == currentGift.buyer) {
-              currentGift.receivedBy.push(userArr[i].uid);
-            }
-          }
-
-          firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
-            received: -1,
-            receivedBy: currentGift.receivedBy,
-            buyer: ""
-          });
-        }
-
-        if (currentGift.creationDate == undefined) {
-          let today = new Date();
-          let dd = today.getDate();
-          let mm = today.getMonth()+1;
-          let yy = today.getFullYear();
-          let creationDate = mm + "/" + dd + "/" + yy;
-          currentGift.creationDate = creationDate;
-        }
-
         firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
           title: giftTitleInp.value,
-          link: newURL,
+          link: urlToSendToDB,
           where: giftWhereInp.value,
           received: currentGift.received,
           uid: giftStorage,
@@ -657,61 +760,10 @@ function updateGiftToDB() {
           multiples: multiplePurchases.checked,
           creationDate: currentGift.creationDate
         });
-
-        if (currentGift.receivedBy != undefined) {
-          firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID).update({
-            receivedBy: currentGift.receivedBy
-          });
-          if (clearReceivedByBool) {
-            firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID + "/receivedBy").remove();
-          }
-        }
-        if (currentGift.userScore != undefined) {
-          firebase.database().ref("users/" + user.uid + "/giftList/" + giftUID + "/userScore").remove();
-        }
       } else {
-        if (!multiplePurchases.checked && currentGift.multiples && currentGift.receivedBy.length != undefined) {
-          if (currentGift.receivedBy.length != 0) {
-            let userFound;
-            for (let i = 0; i < currentGift.receivedBy.length; i++) {
-              userFound = findUIDItemInArr(currentGift.receivedBy[i], userArr);
-              if (userFound != -1)
-                addUpdateNoteToDB(userArr[userFound], currentGift.title);
-            }
-            notificationSent = true;
-
-            clearReceivedByBool = true;
-            currentGift.received = 0;
-          }
-        } else if (multiplePurchases.checked && !currentGift.multiples && currentGift.received > 0) {
-          currentGift.receivedBy = [];
-          for (let i = 0; i < userArr.length; i++) {
-            if (userArr[i].userName == currentGift.buyer) {
-              currentGift.receivedBy.push(userArr[i].uid);
-            }
-          }
-          currentGift.received = -1;
-          currentGift.buyer = "";
-
-          firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
-            received: -1,
-            receivedBy: currentGift.receivedBy,
-            buyer: ""
-          });
-        }
-
-        if (currentGift.creationDate == undefined) {
-          let today = new Date();
-          let dd = today.getDate();
-          let mm = today.getMonth()+1;
-          let yy = today.getFullYear();
-          let creationDate = mm + "/" + dd + "/" + yy;
-          currentGift.creationDate = creationDate;
-        }
-
         firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
           title: giftTitleInp.value,
-          link: newURL,
+          link: urlToSendToDB,
           where: giftWhereInp.value,
           received: currentGift.received,
           uid: giftStorage,
@@ -725,17 +777,6 @@ function updateGiftToDB() {
           firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
             creator: currentGift.creator
           });
-        }
-        if (currentGift.receivedBy != undefined) {
-          firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID).update({
-            receivedBy: currentGift.receivedBy
-          });
-          if (clearReceivedByBool) {
-            firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID + "/receivedBy").remove();
-          }
-        }
-        if (currentGift.userScore != undefined) {
-          firebase.database().ref("users/" + privateList.uid + "/privateList/" + giftUID + "/userScore").remove();
         }
       }
 
@@ -837,113 +878,6 @@ function addUpdateNoteToDB(buyerUserData, giftTitle){
       notifications: buyerUserNotifications
     });
   }
-}
-
-function addGiftToDB(){
-  let uid = giftArr.length;
-  let today = new Date();
-  let dd = today.getDate();
-  let mm = today.getMonth()+1;
-  let yy = today.getFullYear();
-  let creationDate = mm + "/" + dd + "/" + yy;
-  let newURL = verifyURLString(giftLinkInp.value);
-  let giftLimitBool = true;
-
-  if (giftURLLimit != "") {
-    for (let i = 0; i < giftURLLimit.length; i++) {
-      if (newURL.includes(giftURLLimit[i])) {
-        giftLimitBool = false;
-      }
-    }
-  } else {
-    giftLimitBool = false;
-  }
-
-  if(invalidURL != newURL)
-    invalidURLOverride = false;
-  if (giftTitleInp.value.includes(",,,") || giftWhereInp.value.includes(",,,")
-      || giftDescriptionInp.value.includes(",,,")) {
-    deployNotificationModal(false, "Gift Error!", "Please do not include excess " +
-        "commas in any of the fields!");
-  } else if (giftTitleInp.value === "") {
-    deployNotificationModal(false, "Gift Title Blank!", "It looks like you " +
-        "left the title blank. Make sure you add a title so other people know what to get you!", 4);
-  } else if (giftLimitBool && newURL != "") {
-    deployNotificationModal(false, "Invalid Gift URL!", "It looks like the URL" +
-        " you are trying to use is restricted by moderators. Please use a different link or leave it blank!", 4);
-  } else if (invalidURLBool && !invalidURLOverride) {
-    deployNotificationModal(false, "Invalid Gift URL!", "It looks like you " +
-        "entered an invalid URL, please enter a valid URL or leave the field blank. If this is intentional, you can " +
-        "click \"Add Gift\", but the gift URL will not be saved.", 4);
-    invalidURLOverride = true;
-    invalidURL = newURL;
-  } else {
-    unsavedChanges = false;
-    localGiftAddUpdate = true;
-    if(!privateListBool) {
-      updateUserScore(user, 2);
-
-      let newUid = firebase.database().ref("users/" + user.uid + "/giftList/" + uid).push();
-      newUid = newUid.toString();
-      newUid = findUIDInString(newUid);
-      firebase.database().ref("users/" + user.uid + "/giftList/" + uid).set({
-        title: giftTitleInp.value,
-        link: newURL,
-        where: giftWhereInp.value,
-        received: 0,
-        uid: newUid,
-        buyer: "",
-        description: giftDescriptionInp.value,
-        creationDate: creationDate,
-        multiples: multiplePurchases.checked
-      });
-
-      let tempUnsavedChanges = true;
-      unsavedGiftStorage = [giftTitleInp.value, giftLinkInp.value, giftWhereInp.value, giftDescriptionInp.value, multiplePurchases.checked];
-      sessionStorage.setItem("unsavedChanges", JSON.stringify(tempUnsavedChanges));
-      sessionStorage.setItem("unsavedGiftStorage", JSON.stringify(unsavedGiftStorage));
-      showSuccessfulDBOperation = true;
-      listenForDBChanges("Add", uid);
-      successfulDBOperationTitle = "Gift Added!";
-      successfulDBOperationNotice = "The gift, \"" + giftTitleInp.value + "\", has been successfully added to your gift list! Redirecting back to home...";
-      successfulDBNavigation = 2;
-    } else {
-      if (user.uid != privateUser.uid) {
-        updateUserScore(privateUser, 4);
-
-        let newUid = firebase.database().ref("users/" + user.uid + "/privateList/" + uid).push();
-        newUid = newUid.toString();
-        newUid = findUIDInString(newUid);
-        firebase.database().ref("users/" + user.uid + "/privateList/" + uid).set({
-          title: giftTitleInp.value,
-          link: newURL,
-          where: giftWhereInp.value,
-          received: 0,
-          uid: newUid,
-          buyer: "",
-          description: giftDescriptionInp.value,
-          creationDate: creationDate,
-          creator: privateUser.uid,
-          multiples: multiplePurchases.checked
-        });
-
-        let tempUnsavedChanges = true;
-        unsavedGiftStorage = [giftTitleInp.value, giftLinkInp.value, giftWhereInp.value, giftDescriptionInp.value, multiplePurchases.checked]
-        sessionStorage.setItem("unsavedChanges", JSON.stringify(tempUnsavedChanges));
-        sessionStorage.setItem("unsavedGiftStorage", JSON.stringify(unsavedGiftStorage));
-        showSuccessfulDBOperation = true;
-        listenForDBChanges("Add", uid);
-        successfulDBOperationTitle = "Private Gift Added!";
-        successfulDBOperationNotice = "The gift, \"" + giftTitleInp.value + "\", has been successfully added to " + user.name + "'s private gift list! Redirecting back to their private list...";
-        successfulDBNavigation = 10;
-      } else {
-        deployNotificationModal(false, "Gift Add Error!", "Please go back to your " +
-            "friend's list and try to add this gift again!");
-      }
-    }
-    localGiftAddUpdate = false;
-  }
-  invalidURLBool = false;
 }
 
 function verifyURLString(url){
