@@ -564,7 +564,6 @@ function initializeSecretSantaDB() {
             evaluateFamilyAutomaticControl(data.val());
             checkForFailedFamilies(5);
             saveCriticalCookies();
-            evaluateSecretSantaButton(data.val());
           } else {
             localObjectChanges = findObjectChanges(familyArr[i], data.val());
             if (localObjectChanges.length != 0) {
@@ -572,6 +571,7 @@ function initializeSecretSantaDB() {
               saveCriticalCookies();
             }
           }
+          evaluateSecretSantaButton(data.val());
         });
 
         postRef.on("child_changed", function (data) {
