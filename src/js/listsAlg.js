@@ -14,6 +14,7 @@ let friendListEmptyBool = false;
 
 let moderationSet = 0;
 let listLimit = 0;
+let secretDelayInt = 0;
 
 let privateMessageModal;
 let closeUserModal;
@@ -26,6 +27,7 @@ let closePrivateMessageModal;
 let privateMsgTitle;
 let privateMessageInp;
 let giftListInterval;
+let secretDelayInterval;
 let sendMsg;
 let cancelMsg;
 
@@ -108,7 +110,14 @@ window.onload = function instantiate() {
       publicList, privateList, sendPrivateMessage, closePrivateMessageModal, privateMsgTitle, privateMessageInp,
       sendMsg, cancelMsg];
 
-    checkFamilyCookie();
+    secretDelayInterval = setInterval(function() {
+      secretDelayInt = secretDelayInt + 1;
+      if (secretDelayInt > 0) {
+        clearInterval(secretDelayInterval);
+        checkFamilyCookie();
+      }
+    }, 1000);
+
     verifyElementIntegrity(listsElements);
 
     userInitial = firebase.database().ref("users/");
